@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "volue.mesh"
+version = "0.0.0"
+description = ""
+license = "Proprietary"
+authors = ["Volue AS <erik.nyhus@volue.com>"]
+readme = "README.md"
+homepage = "https://github.com/PowelAS/sme-mesh-python"
+repository = "https://github.com/PowelAS/sme-mesh-python"
+packages = [
+    { include = "volue/mesh", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
