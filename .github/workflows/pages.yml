@@ -1,0 +1,31 @@
+name: GitHub pages
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout origin/master to master/
+      uses: actions/checkout@v2
+      with:
+        path: master
+
+    - name: Checkout origin/gh-pages to gh-pages/
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+        path: gh-pages
+
+    - name: Install Sphinx
+      run: pip3 install sphinx
+
+    - name: Build and publish page
+      run: |
+        git -C gh-pages config user.name $GITHUB_ACTOR
+        git -C gh-pages config user.email "$GITHUB_ACTOR@bots.github.com"
+        ./master/.github/workflows/pages.sh master/ gh-pages/
