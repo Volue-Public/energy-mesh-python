@@ -10,10 +10,26 @@ repository = "https://github.com/PowelAS/sme-mesh-python"
 packages = [
     { include = "volue/mesh", from = "src" }
 ]
+# By default Poetry doesn't package files in .gitignore.
+include = [
+    "src/volue/mesh/proto/mesh_pb2.py",
+    "src/volue/mesh/proto/mesh_pb2_grpc.py"
+]
 
 [tool.poetry.dependencies]
 python = "^3.7"
+grpcio = "^1.37.0"
+
+[tool.poetry.dev-dependencies]
+grpcio-tools = "^1.37.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = [
+    "poetry-core>=1.0.3",
+    "grpcio-tools>=1.37.0"
+]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = false
