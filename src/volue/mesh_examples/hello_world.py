@@ -10,14 +10,10 @@ import asyncio
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 
-async def AsyncServerVersion() -> None:
+async def AsyncServerVersion():
     async with grpc.aio.insecure_channel('localhost:50051') as channel: 
         stub = mesh_pb2_grpc.MeshServiceStub(channel)
         return await stub.GetVersion(mesh_pb2.Null())
-
-def GetServerVersion():
-    response = asyncio.run(AsyncServerVersion())
-    return response.full_version
 
 async def SayHello(threadName) -> None:
     async with grpc.aio.insecure_channel('localhost:50051') as channel: 
@@ -51,8 +47,8 @@ if __name__ == "__main__":
 
     logging.info("Main    : before creating thread")
 
-    version = GetServerVersion()
-    logging.info("Mesh server: %s", version)
+    version = asyncio.run(AsyncServerVersion())
+    logging.info("Mesh server: %s", version.full_version)
     
     threadList = []
     for x in range(10):
