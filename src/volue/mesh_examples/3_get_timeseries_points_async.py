@@ -11,7 +11,7 @@ from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh import mesh_client
 
-def PrintTimeseriesPoints(theTimeseries, theTimskey, verbose):
+def PrintTimeseriesPoints(theTimeseries, theTimskey, verbose = False):
     n = 0
     for segment in theTimeseries.segments:
         for point in segment.points:
@@ -42,13 +42,13 @@ async def DoSomeWork() -> None:
     logging.info("Requesting timeseries points for timskey %s", str(timskey_3))
     timeseries_3_future = mesh_client.AsyncGetTimeseriesPoints(theTimskey = timskey_3, theInterval = interval)
 
-    # Now we actually need the points for timskey1, so lets make sure we have them:
+    # Now we actually need the points, so lets make sure we have them:
     timeseries_1 = await timeseries_1_future
-    PrintTimeseriesPoints(theTimeseries = timeseries_1, theTimskey = timskey_1, verbose = False)
+    PrintTimeseriesPoints(theTimeseries = timeseries_1, theTimskey = timskey_1)
     timeseries_2 = await timeseries_2_future
-    PrintTimeseriesPoints(theTimeseries = timeseries_2, theTimskey = timskey_2, verbose = False)
+    PrintTimeseriesPoints(theTimeseries = timeseries_2, theTimskey = timskey_2)
     timeseries_3 = await timeseries_3_future
-    PrintTimeseriesPoints(theTimeseries = timeseries_3, theTimskey = timskey_3, verbose = False)
+    PrintTimeseriesPoints(theTimeseries = timeseries_3, theTimskey = timskey_3)
 
 if __name__ == "__main__":
     format = "%(asctime)s: %(message)s"
