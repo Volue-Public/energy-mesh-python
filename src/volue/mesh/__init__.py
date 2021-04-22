@@ -7,13 +7,14 @@ import grpc
 
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
+from google import protobuf
 from volue import mesh
 
 
 async def async_get_version():
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
         stub = mesh_pb2_grpc.MeshServiceStub(channel)
-        return await stub.GetVersion(mesh_pb2.Null())
+        return await stub.GetVersion((protobuf.empty_pb2.Empty()))
 
 
 def get_version_string():

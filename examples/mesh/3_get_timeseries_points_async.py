@@ -2,8 +2,8 @@ from __future__ import print_function
 import logging
 import asyncio
 
-from volue.mesh.proto import mesh_pb2
-from volue.mesh.client import mesh_client
+from volue import mesh
+from volue.mesh import mesh_pb2
 
 
 def print_timeseries_points(timeseries, timskey, verbose=False):
@@ -27,7 +27,7 @@ async def do_some_work() -> None:
     timskey_1 = 2125
 
     logging.info("Requesting timeseries points for timskey %s", str(timskey_1))
-    timeseries_1_future = mesh_client.async_get_timeseries_points(
+    timeseries_1_future = mesh.async_get_timeseries_points(
         timskey=timskey_1, interval=interval
     )
 
@@ -37,13 +37,13 @@ async def do_some_work() -> None:
     # Send some other requests
     timskey_2 = 2122
     logging.info("Requesting timeseries points for timskey %s", str(timskey_2))
-    timeseries_2_future = mesh_client.async_get_timeseries_points(
+    timeseries_2_future = mesh.async_get_timeseries_points(
         timskey=timskey_2, interval=interval
     )
 
     timskey_3 = 2123
     logging.info("Requesting timeseries points for timskey %s", str(timskey_3))
-    timeseries_3_future = mesh_client.async_get_timeseries_points(
+    timeseries_3_future = mesh.async_get_timeseries_points(
         timskey=timskey_3, interval=interval
     )
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     format = "%(asctime)s: %(message)s"
     logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
     # Print version info
-    logging.info(mesh_client.get_version_string())
+    logging.info(mesh.get_version_string())
 
     # Do some meaningful and important work
     asyncio.run(do_some_work())

@@ -1,15 +1,15 @@
 syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
 package mesh;
 
 // The greeting service definition.
 service MeshService {
-  rpc GetVersion(Null) returns (VersionInfo) {}
+  rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
   // Read timeseries points with timskey
   rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
-}
-
-message Null{
 }
 
 message VersionInfo {
