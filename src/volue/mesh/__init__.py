@@ -11,14 +11,43 @@ from google import protobuf
 from volue import mesh
 
 
-async def async_get_version():
-    async with grpc.aio.insecure_channel("localhost:50051") as channel:
-        stub = mesh_pb2_grpc.MeshServiceStub(channel)
-        return await stub.GetVersion((protobuf.empty_pb2.Empty()))
+class AsyncConnection:
+    def __init__(self):
+        self.channel = grpc.aio.insecure_channel("localhost:50051")
+        self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
+
+    async def get_version(self):
+        return await self.stub.GetVersion((protobuf.empty_pb2.Empty()))
+
+    async def get_timeseries_points(self, timskey, interval):
+        return await self.stub.GetTimeseriesPoints(
+            mesh_pb2.GetTimeseriesPointsRequest(
+                timskey=timskey, interval=interval
+            )
+        )
+
+
+class Connection:
+    def __init__(self):
+        self.async_connection = AsyncConnection()
+        self.loop = asyncio.get_event_loop()
+
+    def get_version(self):
+        return self.loop.run_until_complete(
+            self.async_connection.get_version()
+            )
+
+    def get_timeseries_points(self, timskey, interval):
+        return self.loop.run_until_complete(
+            self.async_connection.get_timeseries_points(
+                timskey, interval
+            )
+        )
 
 
 def get_version_string():
-    server_version = asyncio.run(async_get_version())
+    conn = Connection()
+    server_version = conn.get_version()
     return (
         "\n\nServer: "
         + server_version.full_version
@@ -26,19 +55,3 @@ def get_version_string():
         + mesh.__version__
         + "\n"
     )
-
-
-async def async_get_timeseries_points(timskey, interval):
-    async with grpc.aio.insecure_channel("localhost:50051") as channel:
-        stub = mesh_pb2_grpc.MeshServiceStub(channel)
-        timeseries = await stub.GetTimeseriesPoints(
-            mesh_pb2.GetTimeseriesPointsRequest(
-                timskey=timskey, interval=interval
-            )
-        )
-        return timeseries
-
-
-def get_timeseries_points(timskey, start_time, end_time):
-    interval = mesh_pb2.UtcInterval(start_time=start_time, end_time=end_time)
-    return asyncio.run(async_get_timeseries_points(timskey, interval))
