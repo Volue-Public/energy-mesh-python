@@ -2,7 +2,6 @@
 
 __version__ = "0.0.0"
 
-import asyncio
 import grpc
 
 from volue.mesh.proto import mesh_pb2
@@ -26,32 +25,38 @@ class AsyncConnection:
             )
         )
 
-
-class Connection:
-    def __init__(self):
-        self.async_connection = AsyncConnection()
-        self.loop = asyncio.get_event_loop()
-
-    def get_version(self):
-        return self.loop.run_until_complete(
-            self.async_connection.get_version()
-            )
-
-    def get_timeseries_points(self, timskey, interval):
-        return self.loop.run_until_complete(
-            self.async_connection.get_timeseries_points(
-                timskey, interval
-            )
+    async def get_version_string(self):
+        server_version = await self.get_version()
+        return (
+            "\n\nServer: "
+            + server_version.full_version
+            + "\nClient: "
+            + mesh.__version__
+            + "\n"
         )
 
 
-def get_version_string():
-    conn = Connection()
-    server_version = conn.get_version()
-    return (
-        "\n\nServer: "
-        + server_version.full_version
-        + "\nClient: "
-        + mesh.__version__
-        + "\n"
-    )
+class Connection:
+    def __init__(self):
+        self.channel = grpc.insecure_channel('localhost:50051')
+        self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
+
+    def get_version(self):
+        return self.stub.GetVersion((protobuf.empty_pb2.Empty()))
+
+    def get_version_string(self):
+        server_version = self.get_version()
+        return (
+            "\n\nServer: "
+            + server_version.full_version
+            + "\nClient: "
+            + mesh.__version__
+            + "\n"
+        )
+
+    def get_timeseries_points(self, timskey, interval):
+        return self.stub.GetTimeseriesPoints(
+            mesh_pb2.GetTimeseriesPointsRequest(
+                timskey=timskey, interval=interval
+            )
+        )

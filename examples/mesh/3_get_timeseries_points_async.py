@@ -18,7 +18,12 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
 
 async def do_some_async_work() -> None:
     # First, prepare the connection:
-    async_connection = mesh.async_connection()
+    async_connection = mesh.AsyncConnection()
+
+    # Print version info
+    version_info = await async_connection.get_version_string()
+    logging.info(version_info)
+
 
     # Let's request some timeseries.
     # While we wait for the response, we can
@@ -62,8 +67,6 @@ async def do_some_async_work() -> None:
 if __name__ == "__main__":
     format = "%(asctime)s: %(message)s"
     logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
-    # Print version info
-    logging.info(mesh.get_version_string())
 
     # Do some meaningful and important work
     asyncio.run(do_some_async_work())

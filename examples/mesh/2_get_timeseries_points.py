@@ -7,11 +7,12 @@ from volue.mesh import mesh_pb2
 if __name__ == "__main__":
     format = "%(asctime)s: %(message)s"
     logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
-    # Print version info
-    logging.info(mesh.get_version_string())
-
     # Prepare a connection
-    connection = mesh.connection()
+    connection = mesh.Connection()
+    # Print version info
+    version_info = connection.get_version_string()
+    logging.info(version_info)
+
 
     # Preapare the request
     timskey = 2125
