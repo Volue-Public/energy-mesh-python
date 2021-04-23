@@ -1,18 +1,51 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package mesh;
 
 // The greeting service definition.
 service MeshService {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
+
+  // Read timeseries points with timskey
+  rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
 }
 
-message HelloRequest {
-  string name = 1;
+message VersionInfo {
+    string version = 1;
+    string name = 2;
+    string build_date = 3;
+    string commit = 4;
+    string full_version = 5;
 }
 
-message HelloReply {
-  string message = 1;
+message UtcInterval
+{
+	uint64 start_time = 1;
+	uint64 end_time = 2;
 }
 
+message GetTimeseriesPointsRequest 
+{
+  int64 timskey = 1;
+  UtcInterval interval = 2;
+}
+
+message TimeseriesPoint
+{
+	uint64 timestamp = 1;
+	double value = 2;
+	uint32 flags = 3;
+}
+
+message TimeseriesPointSegment
+{
+	repeated TimeseriesPoint points = 1;
+}
+
+message GetTimeseriesPointsReply 
+{
+  int64 timskey = 1;
+  repeated TimeseriesPointSegment segments = 2;
+}
