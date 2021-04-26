@@ -1,18 +1,12 @@
-from __future__ import print_function
-import logging
-
 from volue import mesh
 from volue.mesh import mesh_pb2
 
 if __name__ == "__main__":
-    format = "%(asctime)s: %(message)s"
-    logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
     # Prepare a connection
     connection = mesh.Connection()
     # Print version info
-    version_info = connection.get_version_string()
-    logging.info(version_info)
-
+    version_info = connection.get_version()
+    print(version_info.full_version)
 
     # Preapare the request
     timskey = 2125
@@ -29,6 +23,6 @@ if __name__ == "__main__":
     n = 0
     for segment in timeseries.segments:
         for point in segment.points:
-            logging.info("%s : %s", str(point.timestamp), str(point.value))
+            print(str(point.timestamp) + ": " + str(point.value))
             n += 1
-    logging.info("Received %s points for timskey %s.", str(n), str(timskey))
+    print("Received " + str(n) + " points for timskey " + str(timskey))

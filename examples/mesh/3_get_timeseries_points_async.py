@@ -1,7 +1,4 @@
-from __future__ import print_function
-import logging
 import asyncio
-
 from volue import mesh
 from volue.mesh import mesh_pb2
 
@@ -10,10 +7,10 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
     n = 0
     for segment in timeseries.segments:
         for point in segment.points:
-            if verbose:
-                logging.info("%s : %s", str(point.timestamp), str(point.value))
+            if (verbose):
+                print(str(point.timestamp) + ": " + str(point.value))
             n += 1
-    logging.info("Received %s points for timskey %s.", str(n), str(timskey))
+    print("Received " + str(n) + " points for timskey " + str(timskey))
 
 
 async def do_some_async_work() -> None:
@@ -21,9 +18,8 @@ async def do_some_async_work() -> None:
     async_connection = mesh.AsyncConnection()
 
     # Print version info
-    version_info = await async_connection.get_version_string()
-    logging.info(version_info)
-
+    version_info = await async_connection.get_version()
+    print(version_info.full_version)
 
     # Let's request some timeseries.
     # While we wait for the response, we can
@@ -34,7 +30,7 @@ async def do_some_async_work() -> None:
 
     timskey_1 = 2125
 
-    logging.info("Requesting timeseries points for timskey %s", str(timskey_1))
+    print("Requesting timeseries points for timskey " + str(timskey_1))
     timeseries_1_future = async_connection.get_timeseries_points(
         timskey=timskey_1, interval=interval
     )
@@ -44,13 +40,13 @@ async def do_some_async_work() -> None:
 
     # Send some other requests
     timskey_2 = 2122
-    logging.info("Requesting timeseries points for timskey %s", str(timskey_2))
+    print("Requesting timeseries points for timskey " + str(timskey_2))
     timeseries_2_future = async_connection.get_timeseries_points(
         timskey=timskey_2, interval=interval
     )
 
     timskey_3 = 2123
-    logging.info("Requesting timeseries points for timskey %s", str(timskey_3))
+    print("Requesting timeseries points for timskey " + str(timskey_3))
     timeseries_3_future = async_connection.get_timeseries_points(
         timskey=timskey_3, interval=interval
     )
@@ -65,8 +61,5 @@ async def do_some_async_work() -> None:
 
 
 if __name__ == "__main__":
-    format = "%(asctime)s: %(message)s"
-    logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
-
     # Do some meaningful and important work
     asyncio.run(do_some_async_work())

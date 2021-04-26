@@ -7,7 +7,6 @@ import grpc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 from google import protobuf
-from volue import mesh
 
 
 class AsyncConnection:
@@ -25,16 +24,6 @@ class AsyncConnection:
             )
         )
 
-    async def get_version_string(self):
-        server_version = await self.get_version()
-        return (
-            "\n\nServer: "
-            + server_version.full_version
-            + "\nClient: "
-            + mesh.__version__
-            + "\n"
-        )
-
 
 class Connection:
     def __init__(self):
@@ -43,16 +32,6 @@ class Connection:
 
     def get_version(self):
         return self.stub.GetVersion((protobuf.empty_pb2.Empty()))
-
-    def get_version_string(self):
-        server_version = self.get_version()
-        return (
-            "\n\nServer: "
-            + server_version.full_version
-            + "\nClient: "
-            + mesh.__version__
-            + "\n"
-        )
 
     def get_timeseries_points(self, timskey, interval):
         return self.stub.GetTimeseriesPoints(
