@@ -23,6 +23,6 @@ if __name__ == "__main__":
     n = 0
     for segment in timeseries.segments:
         for point in segment.points:
-            print(str(point.timestamp) + ": " + str(point.value))
+            print(f"{point.timestamp} : {point.value}")
             n += 1
-    print("Received " + str(n) + " points for timskey " + str(timskey))
+    print(f"Received {n} points for timskey {timskey}")

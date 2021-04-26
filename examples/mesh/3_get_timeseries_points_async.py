@@ -8,9 +8,9 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
     for segment in timeseries.segments:
         for point in segment.points:
             if (verbose):
-                print(str(point.timestamp) + ": " + str(point.value))
+                print(f"{point.timestamp} : {point.value}")
             n += 1
-    print("Received " + str(n) + " points for timskey " + str(timskey))
+    print(f"Received {n} points for timskey {timskey}")
 
 
 async def do_some_async_work() -> None:
@@ -30,7 +30,7 @@ async def do_some_async_work() -> None:
 
     timskey_1 = 2125
 
-    print("Requesting timeseries points for timskey " + str(timskey_1))
+    print(f"Requesting timeseries points for timskey {timskey_1}")
     timeseries_1_future = async_connection.get_timeseries_points(
         timskey=timskey_1, interval=interval
     )
@@ -40,13 +40,13 @@ async def do_some_async_work() -> None:
 
     # Send some other requests
     timskey_2 = 2122
-    print("Requesting timeseries points for timskey " + str(timskey_2))
+    print(f"Requesting timeseries points for timskey {timskey_2}")
     timeseries_2_future = async_connection.get_timeseries_points(
         timskey=timskey_2, interval=interval
     )
 
     timskey_3 = 2123
-    print("Requesting timeseries points for timskey " + str(timskey_3))
+    print(f"Requesting timeseries points for timskey {timskey_3}")
     timeseries_3_future = async_connection.get_timeseries_points(
         timskey=timskey_3, interval=interval
     )
