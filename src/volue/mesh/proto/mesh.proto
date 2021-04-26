@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-package mesh;
+package volue.mesh.protobuf;
 
 // The greeting service definition.
 service MeshService {
