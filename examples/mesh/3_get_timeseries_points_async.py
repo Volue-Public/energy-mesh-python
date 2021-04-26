@@ -7,7 +7,7 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
     n = 0
     for segment in timeseries.segments:
         for point in segment.points:
-            if (verbose):
+            if verbose:
                 print(f"{point.timestamp} : {point.value}")
             n += 1
     print(f"Received {n} points for timskey {timskey}")
