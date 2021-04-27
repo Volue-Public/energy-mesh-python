@@ -32,6 +32,7 @@ release = '0.1.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'm2r2'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
