@@ -51,7 +51,7 @@ NB! Function names are so far only to signal functionality, and they will change
 
 * **Sprint 2** - week 17-19
   
-  Start implementing security related to the new APIs. All communication shall be encrypted using HTTPs. We will try to implement integration with an authentication provider using standard Kerberos correctly. Kerberos is selected because thar is still what is in use in the other SmE applications, but this may very well be changed in a later stage based on general Volue recommendations.
+  Start implementing security related to the new APIs. All communication shall be encrypted using HTTPs. We will try to implement integration with an authentication provider using standard Kerberos correctly. Kerberos is selected because that is still what is in use in the other SmE applications, but this may very well be changed in a later stage based on general Volue recommendations.
 
   Authorisation requirements for the first Python version is to limit access to None/Read/Write either time series data and objects.
 
