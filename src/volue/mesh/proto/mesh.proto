@@ -10,6 +10,10 @@ service MeshService {
 
   // Read timeseries points with timskey
   rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
+
+  // Start a Mesh session, return the id of the session
+  rpc StartSession(google.protobuf.Empty) returns (Guid) {}
+  rpc EndSession(Guid) returns (google.protobuf.Empty) {}
 }
 
 message VersionInfo {
@@ -20,16 +24,22 @@ message VersionInfo {
     string full_version = 5;
 }
 
+message Guid {
+  // Bytes in LITTLE ENDIAN format
+  bytes value = 1;
+}
+
 message UtcInterval
 {
-	uint64 start_time = 1;
-	uint64 end_time = 2;
+  uint64 start_time = 1;
+  uint64 end_time = 2;
 }
 
 message GetTimeseriesPointsRequest 
 {
-  int64 timskey = 1;
-  UtcInterval interval = 2;
+  Guid session_id = 1;
+  int64 timskey = 2;
+  UtcInterval interval = 3;
 }
 
 message TimeseriesPoint

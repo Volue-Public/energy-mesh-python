@@ -8,6 +8,9 @@ if __name__ == "__main__":
     version_info = connection.get_version()
     print(version_info.full_version)
 
+    # Start session
+    connection.start_session()
+
     # Preapare the request
     timskey = 2125
     interval = mesh_pb2.UtcInterval(
@@ -26,3 +29,5 @@ if __name__ == "__main__":
             print(f"{point.timestamp} : {point.value}")
             n += 1
     print(f"Received {n} points for timskey {timskey}")
+
+    connection.end_session()
