@@ -58,6 +58,26 @@ class AsyncConnection:
             self.session_id_value = tmp.value
             self.session_id = uuid.UUID(bytes_le = bytes(self.session_id_value))
         return self.session_id
+    
+    #TODO: Find a better way of doing this.
+    async def edit_timeseries_points(self, timskey, interval, points):
+        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        return await self.stub.EditTimeseriesPoints( 
+            mesh_pb2.EditTimeseriesPointsRequest(
+                session_id = session_id,
+                timskey = timskey,
+                interval = interval,
+                segment = points
+            )
+        )
+
+    async def rollback(self):
+        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        return await self.stub.Rollback(session_id)
+    
+    async def commit(self):
+        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        return await self.stub.Commit(session_id)
 
 class Connection:
     def __init__(self):
@@ -93,3 +113,22 @@ class Connection:
             self.session_id = uuid.UUID(bytes_le = bytes(self.session_id_value))
         return self.session_id
         
+    #TODO: Find a better way of doing this.
+    def edit_timeseries_points(self, timskey, interval, points):
+        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        return self.stub.EditTimeseriesPoints( 
+            mesh_pb2.EditTimeseriesPointsRequest(
+                session_id = session_id,
+                timskey = timskey,
+                interval = interval,
+                segment = points
+            )
+        )
+
+    def rollback(self):
+        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        return self.stub.Rollback(session_id)
+    
+    def commit(self):
+        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        return self.stub.Commit(session_id)

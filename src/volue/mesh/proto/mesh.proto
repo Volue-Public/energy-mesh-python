@@ -10,10 +10,14 @@ service MeshService {
 
   // Read timeseries points with timskey
   rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
+  // Edit (write) timeseries points with timskey
+  rpc EditTimeseriesPoints(EditTimeseriesPointsRequest) returns (BooleanMessage) {}  
 
   // Start a Mesh session, return the id of the session
   rpc StartSession(google.protobuf.Empty) returns (Guid) {}
   rpc EndSession(Guid) returns (google.protobuf.Empty) {}
+  rpc Commit(Guid) returns (BooleanMessage) {}
+  rpc Rollback(Guid) returns (BooleanMessage) {}
 }
 
 message VersionInfo {
@@ -38,7 +42,8 @@ message UtcInterval
 message GetTimeseriesPointsRequest 
 {
   Guid session_id = 1;
-  int64 timskey = 2;
+  // replace with oneof https://developers.google.com/protocol-buffers/docs/proto#oneof
+  int64 timskey = 2; 
   UtcInterval interval = 3;
 }
 
@@ -49,7 +54,7 @@ message TimeseriesPoint
 	uint32 flags = 3;
 }
 
-message TimeseriesPointSegment
+message TimeseriesSegment
 {
 	repeated TimeseriesPoint points = 1;
 }
@@ -57,5 +62,18 @@ message TimeseriesPointSegment
 message GetTimeseriesPointsReply 
 {
   int64 timskey = 1;
-  repeated TimeseriesPointSegment segments = 2;
+  repeated TimeseriesSegment segments = 2;
+}
+
+message EditTimeseriesPointsRequest
+{
+    Guid session_id = 1;
+    int64 timskey = 2;
+    TimeseriesSegment segment = 3;
+    UtcInterval interval = 4;
+}
+
+message BooleanMessage
+{
+    bool status = 1;
 }
