@@ -11,7 +11,6 @@ from google import protobuf
 
 import uuid
 
-# TODO
 
 class Credentials:
     def __init__(self):
@@ -24,6 +23,7 @@ class Credentials:
 
         self.channel_creds = grpc.ssl_channel_credentials(
             root_certificates=self.server_cert)
+
 
 class AsyncConnection:
     def __init__(self):
@@ -39,45 +39,49 @@ class AsyncConnection:
         return await self.stub.GetVersion(protobuf.empty_pb2.Empty())
 
     async def get_timeseries_points(self, timskey, interval):
-        id = mesh_pb2.Guid(value = self.session_id_value)
+        id = mesh_pb2.Guid(value=self.session_id_value)
         return await self.stub.GetTimeseriesPoints(
             mesh_pb2.GetTimeseriesPointsRequest(
-                session_id = id, timskey=timskey, interval=interval
+                session_id=id,
+                timskey=timskey,
+                interval=interval
             )
         )
 
     async def end_session(self):
-        if (self.session_id != None):
-            await self.stub.EndSession(mesh_pb2.Guid(value = self.session_id_value))
+        if (self.session_id is not None):
+            await self.stub.EndSession(
+                mesh_pb2.Guid(
+                    value=self.session_id_value))
             self.session_id = None
             self.session_id_value = None
 
     async def start_session(self):
-        if (self.session_id == None):
+        if (self.session_id is None):
             tmp = await self.stub.StartSession(protobuf.empty_pb2.Empty())
             self.session_id_value = tmp.value
-            self.session_id = uuid.UUID(bytes_le = bytes(self.session_id_value))
+            self.session_id = uuid.UUID(bytes_le=bytes(self.session_id_value))
         return self.session_id
-    
-    #TODO: Find a better way of doing this.
+
     async def edit_timeseries_points(self, timskey, interval, points):
-        session_id = mesh_pb2.Guid(value = self.session_id_value)
-        return await self.stub.EditTimeseriesPoints( 
+        session_id = mesh_pb2.Guid(value=self.session_id_value)
+        return await self.stub.EditTimeseriesPoints(
             mesh_pb2.EditTimeseriesPointsRequest(
-                session_id = session_id,
-                timskey = timskey,
-                interval = interval,
-                segment = points
+                session_id=session_id,
+                timskey=timskey,
+                interval=interval,
+                segment=points
             )
         )
 
     async def rollback(self):
-        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        session_id = mesh_pb2.Guid(value=self.session_id_value)
         return await self.stub.Rollback(session_id)
-    
+
     async def commit(self):
-        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        session_id = mesh_pb2.Guid(value=self.session_id_value)
         return await self.stub.Commit(session_id)
+
 
 class Connection:
     def __init__(self):
@@ -93,42 +97,43 @@ class Connection:
         return self.stub.GetVersion(protobuf.empty_pb2.Empty())
 
     def get_timeseries_points(self, timskey, interval):
-        id = mesh_pb2.Guid(value = self.session_id_value)
+        id = mesh_pb2.Guid(value=self.session_id_value)
         return self.stub.GetTimeseriesPoints(
             mesh_pb2.GetTimeseriesPointsRequest(
-                session_id = id, timskey=timskey, interval=interval
+                session_id=id,
+                timskey=timskey,
+                interval=interval
             )
         )
-    
+
     def end_session(self):
-        if (self.session_id != None):
-            self.stub.EndSession(mesh_pb2.Guid(value = self.session_id_value))
+        if (self.session_id is not None):
+            self.stub.EndSession(mesh_pb2.Guid(value=self.session_id_value))
             self.session_id = None
             self.session_id_value = None
 
     def start_session(self):
-        if (self.session_id == None):
+        if (self.session_id is None):
             tmp = self.stub.StartSession(protobuf.empty_pb2.Empty())
             self.session_id_value = tmp.value
-            self.session_id = uuid.UUID(bytes_le = bytes(self.session_id_value))
+            self.session_id = uuid.UUID(bytes_le=bytes(self.session_id_value))
         return self.session_id
-        
-    #TODO: Find a better way of doing this.
+
     def edit_timeseries_points(self, timskey, interval, points):
-        session_id = mesh_pb2.Guid(value = self.session_id_value)
-        return self.stub.EditTimeseriesPoints( 
+        session_id = mesh_pb2.Guid(value=self.session_id_value)
+        return self.stub.EditTimeseriesPoints(
             mesh_pb2.EditTimeseriesPointsRequest(
-                session_id = session_id,
-                timskey = timskey,
-                interval = interval,
-                segment = points
+                session_id=session_id,
+                timskey=timskey,
+                interval=interval,
+                segment=points
             )
         )
 
     def rollback(self):
-        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        session_id = mesh_pb2.Guid(value=self.session_id_value)
         return self.stub.Rollback(session_id)
-    
+
     def commit(self):
-        session_id = mesh_pb2.Guid(value = self.session_id_value)
+        session_id = mesh_pb2.Guid(value=self.session_id_value)
         return self.stub.Commit(session_id)

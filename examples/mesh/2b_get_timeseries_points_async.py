@@ -16,7 +16,7 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
 async def do_some_async_work() -> None:
     # First, prepare the connection:
     async_connection = mesh.AsyncConnection()
-    async_session = await async_connection.start_session()
+    await async_connection.start_session()
     # Print version info
     version_info = await async_connection.get_version()
     print(version_info.full_version)

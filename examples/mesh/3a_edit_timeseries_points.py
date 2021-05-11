@@ -23,11 +23,13 @@ if __name__ == "__main__":
     # Start session
     connection.start_session()
 
-    start_time=637450560000000000
-    end_time=637450776000000000
+    start_time = 637450560000000000
+    end_time = 637450776000000000
     # Preapare the request
     timskey = 2125
-    interval = mesh_pb2.UtcInterval(start_time = start_time, end_time = end_time)    
+    interval = mesh_pb2.UtcInterval(
+        start_time=start_time,
+        end_time=end_time)
 
     # Send request, and wait for reply
     timeseries = connection.get_timeseries_points(
@@ -44,10 +46,10 @@ if __name__ == "__main__":
 
     while (t < end_time):
         point = segment.points.add()
-        point.value = random.randint(-10000,10000)
+        point.value = random.randint(-10000, 10000)
         point.timestamp = t
         t += 36000000000
-    
+
     print("\nEdited timeseries points:")
     connection.edit_timeseries_points(timskey, interval, segment)
 
@@ -66,8 +68,9 @@ if __name__ == "__main__":
     )
     print_timeseries_points(timeseries, timskey, True)
 
-    #Edit again, and commit. Now the changes will be stored in database:
-    print ("\nEdit timeseries again, and commit. Run the example " \
+    # Edit again, and commit. Now the changes will be stored in database:
+    print(
+        "\nEdit timeseries again, and commit. Run the example "
         "again, to verify that the changes have been stored in DB.")
     connection.edit_timeseries_points(timskey, interval, segment)
     connection.commit()

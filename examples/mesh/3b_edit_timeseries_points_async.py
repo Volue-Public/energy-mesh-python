@@ -1,7 +1,7 @@
-import asyncio
 from volue import mesh
 from volue.mesh import mesh_pb2
 import random
+import asyncio
 
 
 def print_timeseries_points(timeseries, timskey, verbose=False):
@@ -13,6 +13,7 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
             n += 1
     print(f"Received {n} points for timskey {timskey}")
 
+
 async def do_some_async_work() -> None:
     # Prepare a connection
     connection = mesh.AsyncConnection()
@@ -23,11 +24,13 @@ async def do_some_async_work() -> None:
     # Start session
     await connection.start_session()
 
-    start_time=637450560000000000
-    end_time=637450776000000000
+    start_time = 637450560000000000
+    end_time = 637450776000000000
     # Preapare the request
     timskey = 2125
-    interval = mesh_pb2.UtcInterval(start_time = start_time, end_time = end_time)    
+    interval = mesh_pb2.UtcInterval(
+        start_time=start_time,
+        end_time=end_time)
 
     # Send request, and wait for reply
     timeseries = await connection.get_timeseries_points(
@@ -44,10 +47,10 @@ async def do_some_async_work() -> None:
 
     while (t < end_time):
         point = segment.points.add()
-        point.value = random.randint(-10000,10000)
+        point.value = random.randint(-10000, 10000)
         point.timestamp = t
         t += 36000000000
-    
+
     print("\nEdited timeseries points:")
     await connection.edit_timeseries_points(timskey, interval, segment)
 
@@ -66,13 +69,15 @@ async def do_some_async_work() -> None:
     )
     print_timeseries_points(timeseries, timskey, True)
 
-    #Edit again, and commit. Now the changes will be stored in database:
-    print ("\nEdit timeseries again, and commit. Run the example " \
+    # Edit again, and commit. Now the changes will be stored in database:
+    print(
+        "\nEdit timeseries again, and commit. Run the example "
         "again, to verify that the changes have been stored in DB.")
     await connection.edit_timeseries_points(timskey, interval, segment)
     await connection.commit()
 
-    await connection.end_session()
+    connection.end_session()
+
 
 if __name__ == "__main__":
     asyncio.run(do_some_async_work())

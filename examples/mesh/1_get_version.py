@@ -1,7 +1,6 @@
 import asyncio
 from volue import mesh
 
-import uuid
 
 async def async_print_version() -> None:
     async_connection = mesh.AsyncConnection()
@@ -12,8 +11,8 @@ async def async_print_version() -> None:
     version_info = await future
     print(version_info.full_version)
 
-    sessionId = await async_connection.start_session()
-    print (sessionId)
+    session_id = await async_connection.start_session()
+    print(session_id)
 
     await async_connection.end_session()
 
@@ -28,10 +27,10 @@ if __name__ == "__main__":
     version_info = connection.get_version()
     print(version_info.full_version)
 
-    sessionId = connection.start_session()
-    print (str(sessionId))
+    session_id = connection.start_session()
+    print(str(session_id))
 
     connection.end_session()
-    
+
     print("Asynchronous get version: ")
     asyncio.run(async_print_version())
