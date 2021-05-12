@@ -1,5 +1,18 @@
+import string
+import uuid
 from volue import mesh
 from volue.mesh import mesh_pb2
+
+
+def print_timeseries_points(timeseries, name, verbose=False):
+    n = 0
+    for segment in timeseries.segments:
+        for point in segment.points:
+            if verbose:
+                print(f"{point.timestamp} : {point.value}")
+            n += 1
+    print(f"Received {n} points for timeseries: {name}")
+
 
 if __name__ == "__main__":
     # Prepare a connection
@@ -19,15 +32,20 @@ if __name__ == "__main__":
 
     # Send request, and wait for reply
     timeseries = connection.get_timeseries_points(
-        timskey, interval
+        timskey=timskey,
+        interval=interval
     )
 
     # Lets have a look at what we got
-    n = 0
-    for segment in timeseries.segments:
-        for point in segment.points:
-            print(f"{point.timestamp} : {point.value}")
-            n += 1
-    print(f"Received {n} points for timskey {timskey}")
+    print_timeseries_points(timeseries, str(timskey))
+
+    # Lets try with a guid instead
+    entry_id = uuid.UUID("3F639110-D1D5-440C-A3D1-09E75D333DFF")
+    timeseries = connection.get_timeseries_points(
+        entry_id=entry_id,
+        interval=interval
+    )
+    
+    print_timeseries_points(timeseries, str(entry_id))
 
     connection.end_session()

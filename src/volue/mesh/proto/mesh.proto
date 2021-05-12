@@ -11,13 +11,14 @@ service MeshService {
   // Read timeseries points with timskey
   rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
   // Edit (write) timeseries points with timskey
-  rpc EditTimeseriesPoints(EditTimeseriesPointsRequest) returns (BooleanMessage) {}  
+  rpc EditTimeseriesPoints(EditTimeseriesPointsRequest) returns (Status) {}  
 
   // Start a Mesh session, return the id of the session
   rpc StartSession(google.protobuf.Empty) returns (Guid) {}
+
   rpc EndSession(Guid) returns (google.protobuf.Empty) {}
-  rpc Commit(Guid) returns (BooleanMessage) {}
-  rpc Rollback(Guid) returns (BooleanMessage) {}
+  rpc Commit(Guid) returns (Status) {}
+  rpc Rollback(Guid) returns (Status) {}
 }
 
 message VersionInfo {
@@ -30,7 +31,14 @@ message VersionInfo {
 
 message Guid {
   // Bytes in LITTLE ENDIAN format
-  bytes value = 1;
+  bytes bytes_le = 1;
+}
+
+message Status
+{
+  // Will probably be replaced with 
+  // https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto
+  bool status = 1;
 }
 
 message UtcInterval
@@ -39,12 +47,35 @@ message UtcInterval
   uint64 end_time = 2;
 }
 
+// Contains one of several ways to uniquely identify a Timeseries
+message TimeseriesId
+{
+  oneof id {
+    int64 timskey = 1;
+    Guid entry_id = 2;
+    string search_string = 3;
+  }
+}
+
 message GetTimeseriesPointsRequest 
 {
   Guid session_id = 1;
-  // replace with oneof https://developers.google.com/protocol-buffers/docs/proto#oneof
-  int64 timskey = 2; 
+  TimeseriesId timeseries_id = 2;
   UtcInterval interval = 3;
+}
+
+message GetTimeseriesPointsReply 
+{
+  TimeseriesId timeseries_id = 1;
+  repeated TimeseriesSegment segments = 2;
+}
+
+message EditTimeseriesPointsRequest
+{
+    Guid session_id = 1;
+    TimeseriesId timeseries_id = 2;
+    TimeseriesSegment segment = 3;
+    UtcInterval interval = 4;
 }
 
 message TimeseriesPoint
@@ -57,23 +88,4 @@ message TimeseriesPoint
 message TimeseriesSegment
 {
 	repeated TimeseriesPoint points = 1;
-}
-
-message GetTimeseriesPointsReply 
-{
-  int64 timskey = 1;
-  repeated TimeseriesSegment segments = 2;
-}
-
-message EditTimeseriesPointsRequest
-{
-    Guid session_id = 1;
-    int64 timskey = 2;
-    TimeseriesSegment segment = 3;
-    UtcInterval interval = 4;
-}
-
-message BooleanMessage
-{
-    bool status = 1;
 }

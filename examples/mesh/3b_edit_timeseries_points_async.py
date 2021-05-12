@@ -34,7 +34,7 @@ async def do_some_async_work() -> None:
 
     # Send request, and wait for reply
     timeseries = await connection.get_timeseries_points(
-        timskey, interval
+        timskey=timskey, interval=interval
     )
 
     # Lets have a look at what we got
@@ -52,12 +52,14 @@ async def do_some_async_work() -> None:
         t += 36000000000
 
     print("\nEdited timeseries points:")
-    await connection.edit_timeseries_points(timskey, interval, segment)
+    await connection.edit_timeseries_points(
+        timskey=timskey, 
+        interval=interval, 
+        points=segment)
 
     # Let's have a look at the points again
     timeseries = await connection.get_timeseries_points(
-        timskey, interval
-    )
+        timskey=timskey, interval=interval)
     print("\nTimeseries after editing:")
     print_timeseries_points(timeseries, timskey, True)
 
@@ -65,18 +67,20 @@ async def do_some_async_work() -> None:
     await connection.rollback()
     print("\nTimeseries after Rollback:")
     timeseries = await connection.get_timeseries_points(
-        timskey, interval
-    )
+        timskey=timskey, interval=interval)
     print_timeseries_points(timeseries, timskey, True)
 
     # Edit again, and commit. Now the changes will be stored in database:
     print(
         "\nEdit timeseries again, and commit. Run the example "
         "again, to verify that the changes have been stored in DB.")
-    await connection.edit_timeseries_points(timskey, interval, segment)
+    await connection.edit_timeseries_points(
+        timskey=timskey,
+        interval=interval, 
+        points=segment)
     await connection.commit()
 
-    connection.end_session()
+    await connection.end_session()
 
 
 if __name__ == "__main__":
