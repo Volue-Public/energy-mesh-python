@@ -10,23 +10,29 @@ service MeshService {
 
   // Read timeseries points with timskey
   rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
+  
+  // TODO: All the rpcs below should probably have their own Request/Reply messages
   // Edit (write) timeseries points with timskey
-  rpc EditTimeseriesPoints(EditTimeseriesPointsRequest) returns (Status) {}  
+  rpc EditTimeseriesPoints(EditTimeseriesPointsRequest) returns (StatusReply) {}  
 
   // Start a Mesh session, return the id of the session
-  rpc StartSession(google.protobuf.Empty) returns (Guid) {}
+  rpc StartSession(google.protobuf.Empty) returns (StartSessionReply) {}
 
-  rpc EndSession(Guid) returns (google.protobuf.Empty) {}
-  rpc Commit(Guid) returns (Status) {}
-  rpc Rollback(Guid) returns (Status) {}
+  rpc EndSession(Guid) returns (StatusReply) {}
+  rpc Commit(Guid) returns (StatusReply) {}
+  rpc Rollback(Guid) returns (StatusReply) {}
 }
 
-message VersionInfo {
-    string version = 1;
-    string name = 2;
-    string build_date = 3;
-    string commit = 4;
-    string full_version = 5;
+message Status{
+  enum StatusCode {
+	  OK = 0;
+	  INVALID_INPUT = 1;
+	  NOT_FOUND = 2;
+	  SESSION_NOT_FOUND = 3;
+	  UNKNOWN_ERROR = 999;
+  }
+  StatusCode status_code = 1;
+  string error_text = 2;
 }
 
 message Guid {
@@ -34,22 +40,13 @@ message Guid {
   bytes bytes_le = 1;
 }
 
-message Status
-{
-  // Will probably be replaced with 
-  // https://github.com/googleapis/googleapis/blob/master/google/rpc/status.proto
-  bool status = 1;
-}
-
-message UtcInterval
-{
+message UtcInterval {
   uint64 start_time = 1;
   uint64 end_time = 2;
 }
 
-// Contains one of several ways to uniquely identify a Timeseries
-message TimeseriesId
-{
+// Contains one of three ways to uniquely identify a Timeseries
+message TimeseriesId {
   oneof id {
     int64 timskey = 1;
     Guid entry_id = 2;
@@ -57,35 +54,50 @@ message TimeseriesId
   }
 }
 
-message GetTimeseriesPointsRequest 
-{
-  Guid session_id = 1;
-  TimeseriesId timeseries_id = 2;
-  UtcInterval interval = 3;
-}
-
-message GetTimeseriesPointsReply 
-{
-  TimeseriesId timeseries_id = 1;
-  repeated TimeseriesSegment segments = 2;
-}
-
-message EditTimeseriesPointsRequest
-{
-    Guid session_id = 1;
-    TimeseriesId timeseries_id = 2;
-    TimeseriesSegment segment = 3;
-    UtcInterval interval = 4;
-}
-
-message TimeseriesPoint
-{
+message TimeseriesPoint {
 	uint64 timestamp = 1;
 	double value = 2;
 	uint32 flags = 3;
 }
 
-message TimeseriesSegment
-{
+message TimeseriesSegment {
 	repeated TimeseriesPoint points = 1;
 }
+
+message VersionInfo {
+  Status status = 1;
+  string version = 2;
+  string name = 3;
+  string build_date = 4;
+  string commit = 5;
+  string full_version = 6;
+}
+
+message GetTimeseriesPointsRequest {
+  Guid session_id = 1;
+  TimeseriesId timeseries_id = 2;
+  UtcInterval interval = 3;
+}
+
+message GetTimeseriesPointsReply {
+  Status status = 1;
+  TimeseriesId timeseries_id = 2;
+  repeated TimeseriesSegment segments = 3;
+}
+
+message EditTimeseriesPointsRequest {
+  Guid session_id = 1;
+  TimeseriesId timeseries_id = 2;
+  TimeseriesSegment segment = 3;
+  UtcInterval interval = 4;
+}
+
+message StatusReply {
+  Status status = 1;
+}
+
+message StartSessionReply {
+  Status status = 1;
+  Guid session_id = 2;
+}
+
