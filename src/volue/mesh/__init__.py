@@ -39,11 +39,14 @@ def guid_to_uuid(id : mesh_pb2.Guid) -> uuid.UUID:
         return None
     return uuid.UUID(bytes_le=id.bytes_le)
 
-
 def check_result(reply):
     if (reply.status.status_code is not Status.StatusCode.OK):
-        # TODO: Handle error codes here
-        print ("Something bad happened!\n")
+        # TODO: Handle specific error codes here?
+        print (F"Something bad happened in Mesh!" \
+            F"Status Code: { reply.status.status_code }" \
+            F"Error text: \"{ reply.status.error_text }\"" \
+            ". See Mesh Server logs for more details.")
+    
     return reply.status.status_code
 
 
@@ -176,7 +179,10 @@ class AsyncConnection:
             if (reply.status.status_code is Status.StatusCode.OK):
                 self.session_id = None
             return reply
-        status = mesh_pb2.Status(status_code=Status.StatusCode.SESSION_NOT_FOUND)
+        status = mesh_pb2.Status(
+            status_code=Status.StatusCode.INVALID_INPUT,
+            error_text="No session associated with Connection object."
+            )
         reply = mesh_pb2.StatusReply(status=status)
         return reply
 
@@ -186,7 +192,10 @@ class AsyncConnection:
             if (reply.status.status_code is Status.StatusCode.OK):
                 self.session_id = guid_to_uuid(reply.session_id)
             return reply
-        status = mesh_pb2.Status(status_code=Status.StatusCode.SESSION_NOT_FOUND)
+        status = mesh_pb2.Status(
+            status_code=Status.StatusCode.INVALID_INPUT,
+            error_text="No session associated with Connection object."
+            )
         reply = mesh_pb2.StatusReply(status=status)
         return reply
 
