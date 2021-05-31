@@ -1,7 +1,7 @@
 import string
 import uuid
 from volue import mesh
-from volue.mesh import mesh_pb2
+from volue.mesh import check_result, mesh_pb2
 
 
 def print_timeseries_points(timeseries, name, verbose=False):
@@ -13,6 +13,12 @@ def print_timeseries_points(timeseries, name, verbose=False):
             n += 1
     print(f"Received {n} points for timeseries: {name}")
 
+def my_error_handler(mesh_reply):
+    if (mesh_reply is None):
+        exit()
+    result = mesh.check_result(mesh_reply)
+    if (result != mesh.Status.OK):
+        exit()
 
 if __name__ == "__main__":
     # Prepare a connection
@@ -40,11 +46,14 @@ if __name__ == "__main__":
     print_timeseries_points(timeseries, str(timskey))
 
     # Lets try with a guid instead
-    entry_id = uuid.UUID("3F639110-D1D5-440C-A3D1-09E75D333DFF")
+    # entry_id = uuid.UUID("3F639110-D1D5-440C-A3D1-09E75D333DFF")
+    entry_id = uuid.UUID("3F639110-D1D5-440C-A3D1-09E75D333DFD")
     timeseries = connection.get_timeseries_points(
         entry_id=entry_id,
         interval=interval
     )
+    
+    check_result(timeseries)
     
     print_timeseries_points(timeseries, str(entry_id))
 

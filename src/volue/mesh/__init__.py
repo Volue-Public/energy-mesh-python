@@ -42,10 +42,9 @@ def guid_to_uuid(id : mesh_pb2.Guid) -> uuid.UUID:
 def check_result(reply):
     if (reply.status.status_code is not Status.StatusCode.OK):
         # TODO: Handle specific error codes here?
-        print (F"Something bad happened in Mesh!" \
-            F"Status Code: { reply.status.status_code }" \
-            F"Error text: \"{ reply.status.error_text }\"" \
-            ". See Mesh Server logs for more details.")
+        print (F"Error response from Mesh server:\n" \
+            F"  StatusCode: { reply.status.status_code }\n" \
+            F"  ErrorText: \"{ reply.status.error_text }\"")
     
     return reply.status.status_code
 
@@ -88,7 +87,7 @@ class Connection:
 
         return self.stub.GetTimeseriesPoints(
             mesh_pb2.GetTimeseriesPointsRequest(
-                session_id=self.session_id,
+                session_id=uuid_to_guid(self.session_id),
                 timeseries_id=timeseries_id,
                 interval=interval
             )
@@ -100,7 +99,7 @@ class Connection:
             if (reply.status.status_code is Status.StatusCode.OK):
                 self.session_id = None
             return reply
-        status = mesh_pb2.Status(status_code=Status.StatusCode.SESSION_NOT_FOUND)
+        status = mesh_pb2.Status(status_code=Status.StatusCode.OK)
         reply = mesh_pb2.StatusReply(status=status)
         return reply
 
@@ -110,7 +109,7 @@ class Connection:
             if (reply.status.status_code is Status.StatusCode.OK):
                 self.session_id = guid_to_uuid(reply.session_id)
             return reply
-        status = mesh_pb2.Status(status_code=Status.StatusCode.SESSION_NOT_FOUND)
+        status = mesh_pb2.Status(status_code=Status.StatusCode.OK)
         reply = mesh_pb2.StatusReply(status=status)
         return reply
 
@@ -128,7 +127,7 @@ class Connection:
 
         return self.stub.EditTimeseriesPoints(
             mesh_pb2.EditTimeseriesPointsRequest(
-                session_id=self.session_id,
+                session_id=uuid_to_guid(self.session_id),
                 timeseries_id=timeseries_id,
                 interval=interval,
                 segment=points
@@ -136,10 +135,10 @@ class Connection:
         )
 
     def rollback(self):
-        return self.stub.Rollback(self.session_id)
+        return self.stub.Rollback(uuid_to_guid(self.session_id))
 
     def commit(self):
-        return self.stub.Commit(self.session_id)
+        return self.stub.Commit(uuid_to_guid(self.session_id))
 
 
 class AsyncConnection:
@@ -167,7 +166,7 @@ class AsyncConnection:
 
         return await self.stub.GetTimeseriesPoints(
             mesh_pb2.GetTimeseriesPointsRequest(
-                session_id=self.session_id,
+                session_id=uuid_to_guid(self.session_id),
                 timeseries_id=timeseries_id,
                 interval=interval
             )
@@ -213,7 +212,7 @@ class AsyncConnection:
 
         return await self.stub.EditTimeseriesPoints(
             mesh_pb2.EditTimeseriesPointsRequest(
-                session_id=self.session_id,
+                session_id=uuid_to_guid(self.session_id),
                 timeseries_id=timeseries_id,
                 interval=interval,
                 segment=points
@@ -221,7 +220,7 @@ class AsyncConnection:
         )
 
     async def rollback(self):
-        return await self.stub.Rollback(self.session_id)
+        return await self.stub.Rollback(uuid_to_guid(self.session_id))
 
     async def commit(self):
-        return await self.stub.Commit(self.session_id)
+        return await self.stub.Commit(uuid_to_guid(self.session_id))

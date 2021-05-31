@@ -25,11 +25,12 @@ service MeshService {
 
 message Status{
   enum StatusCode {
-	  OK = 0;
-	  INVALID_INPUT = 1;
-	  NOT_FOUND = 2;
-	  SESSION_NOT_FOUND = 3;
-	  UNKNOWN_ERROR = 999;
+	OK = 0;
+	INVALID_INPUT = 1;
+	SESSION_NOT_FOUND = 2;
+	OBJECT_NOT_FOUND = 3;
+	NOT_SUPPORTED = 4;
+	UNKNOWN_ERROR = 999;
   }
   StatusCode status_code = 1;
   string error_text = 2;
