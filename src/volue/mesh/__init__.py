@@ -12,22 +12,6 @@ from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh.proto.mesh_pb2 import Status
 from google import protobuf
 
-# Purpose
-# Usability: 
-# . Intuitive
-# . Interactions: 
-#   . Feedback 
-#   . Input
-#   . Flow
-# . Predictable: 
-#   General flow of an API call (Consistent):
-#     1. Call the desired function on a connection
-#     2. Check status. All replys from Mesh has a status field.
-#     3. Use returned data
-#   . Adaptable 
-#   . Discoverable
-# Constraints
-
 def uuid_to_guid(id : uuid.UUID) -> mesh_pb2.Guid:
     if (id is None):
         return None
