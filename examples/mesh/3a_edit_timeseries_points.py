@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # Send request, and wait for reply
     timeseries = connection.get_timeseries_points(
-        timskey=timskey, 
+        timskey=timskey,
         interval=interval
     )
 
@@ -53,13 +53,13 @@ if __name__ == "__main__":
 
     print("\nEdited timeseries points:")
     connection.edit_timeseries_points(
-        timskey=timskey, 
-        interval=interval, 
+        timskey=timskey,
+        interval=interval,
         points=segment)
 
     # Let's have a look at the points again
     timeseries = connection.get_timeseries_points(
-        timskey=timskey, 
+        timskey=timskey,
         interval=interval)
     print("\nTimeseries after editing:")
     print_timeseries_points(timeseries, timskey, True)
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     connection.rollback()
     print("\nTimeseries after Rollback:")
     timeseries = connection.get_timeseries_points(
-        timskey=timskey, 
+        timskey=timskey,
         interval=interval)
     print_timeseries_points(timeseries, timskey, True)
 
@@ -77,8 +77,8 @@ if __name__ == "__main__":
         "\nEdit timeseries again, and commit. Run the example "
         "again, to verify that the changes have been stored in DB.")
     connection.edit_timeseries_points(
-        timskey=timskey, 
-        interval=interval, 
+        timskey=timskey,
+        interval=interval,
         points=segment)
     connection.commit()
 

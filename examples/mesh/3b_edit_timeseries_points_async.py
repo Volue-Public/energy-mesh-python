@@ -53,8 +53,8 @@ async def do_some_async_work() -> None:
 
     print("\nEdited timeseries points:")
     await connection.edit_timeseries_points(
-        timskey=timskey, 
-        interval=interval, 
+        timskey=timskey,
+        interval=interval,
         points=segment)
 
     # Let's have a look at the points again
@@ -76,7 +76,7 @@ async def do_some_async_work() -> None:
         "again, to verify that the changes have been stored in DB.")
     await connection.edit_timeseries_points(
         timskey=timskey,
-        interval=interval, 
+        interval=interval,
         points=segment)
     await connection.commit()
 

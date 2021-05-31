@@ -22,7 +22,9 @@ async def async_print_version() -> None:
 
     ret = await async_connection.start_session()
     my_error_handler(ret)
-    print("Asynchronously started session with ID: " + str(async_connection.session_id))
+    print(
+        "Asynchronously started session with ID: "
+        f"{async_connection.session_id}")
 
     ret = await async_connection.end_session()
     my_error_handler(ret)
@@ -37,7 +39,7 @@ if __name__ == "__main__":
     connection = mesh.Connection()
     version_info = connection.get_version()
     my_error_handler(version_info)
-        
+
     print(version_info.full_version)
 
     ret = connection.start_session()
@@ -48,5 +50,5 @@ if __name__ == "__main__":
     ret = connection.end_session()
     my_error_handler(ret)
     print("Closed session.")
-    
+
     asyncio.run(async_print_version())
