@@ -87,7 +87,10 @@ class Connection:
             if (reply.status.status_code is Status.StatusCode.OK):
                 self.session_id = None
             return reply
-        status = mesh_pb2.Status(status_code=Status.StatusCode.OK)
+        status = mesh_pb2.Status(
+            status_code=Status.StatusCode.INVALID_INPUT,
+            error_text="No session associated with Connection object."
+            )
         reply = mesh_pb2.StatusReply(status=status)
         return reply
 
@@ -97,7 +100,10 @@ class Connection:
             if (reply.status.status_code is Status.StatusCode.OK):
                 self.session_id = guid_to_uuid(reply.session_id)
             return reply
-        status = mesh_pb2.Status(status_code=Status.StatusCode.OK)
+        status = mesh_pb2.Status(
+            status_code=Status.StatusCode.INVALID_INPUT,
+            error_text="No session associated with Connection object."
+            )
         reply = mesh_pb2.StatusReply(status=status)
         return reply
 
