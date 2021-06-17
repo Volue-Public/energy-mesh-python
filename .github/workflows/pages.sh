@@ -19,6 +19,7 @@ set -o nounset # Fail the script if an unset variable is used.
 repo_dir=$1
 pages_dir=$2
 
+source "$HOME/.poetry/env"
 poetry run "$repo_dir/docs/make html"
 rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
