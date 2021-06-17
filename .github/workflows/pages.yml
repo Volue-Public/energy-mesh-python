@@ -22,7 +22,9 @@ jobs:
         path: gh-pages
 
     - name: Install Sphinx
-      run: pip3 install sphinx
+      run: |
+        pip3 install sphinx
+        pip3 install m2r2
 
     - name: Build and publish page
       run: |
