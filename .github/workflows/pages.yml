@@ -26,6 +26,7 @@ jobs:
 
     - name: Build and publish page
       run: |
+        `source $HOME/.poetry/env`
         git -C gh-pages config user.name $GITHUB_ACTOR
         git -C gh-pages config user.email "$GITHUB_ACTOR@bots.github.com"
         ./master/.github/workflows/pages.sh master/ gh-pages/
