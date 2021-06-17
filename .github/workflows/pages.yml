@@ -10,10 +10,10 @@ jobs:
     name: Build and publish
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout origin/master to master/
+    - name: Checkout origin/adding-m2r2 to adding-m2r2/
       uses: actions/checkout@v2
       with:
-        path: master
+        path: adding-m2r2
 
     - name: Checkout origin/gh-pages to gh-pages/
       uses: actions/checkout@v2
