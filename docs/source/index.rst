@@ -8,6 +8,8 @@
    :maxdepth: 2
    :caption: Contents:
 
+   Development schedule <schedule.md>
+
 
 Indices and tables
 ==================
