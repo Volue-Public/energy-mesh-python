@@ -13,13 +13,8 @@ jobs:
     - name: Checkout origin/master to master/
       uses: actions/checkout@v2
       with:
-        path: master
-    
-    - name: Checkout origin/adding-m2r2 to adding-m2r2/
-      uses: actions/checkout@v2
-      with:
         ref: adding-m2r2
-        path: adding-m2r2
+        path: master
 
     - name: Checkout origin/gh-pages to gh-pages/
       uses: actions/checkout@v2
@@ -34,5 +29,5 @@ jobs:
       run: |
         git -C gh-pages config user.name $GITHUB_ACTOR
         git -C gh-pages config user.email "$GITHUB_ACTOR@bots.github.com"
-        cd adding-m2r2
+        cd master
         .github/workflows/pages.sh . gh-pages/
