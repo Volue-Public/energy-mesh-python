@@ -19,8 +19,8 @@ set -o nounset # Fail the script if an unset variable is used.
 repo_dir=$1
 pages_dir=$2
 
-make -C "$repo_dir/docs" html
-rm -rf "$pages_dir/"*
+poetry run "$repo_dir/docs/make html"
+rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
