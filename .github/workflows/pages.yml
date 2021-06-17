@@ -14,7 +14,6 @@ jobs:
     - name: Checkout origin/master to master/
       uses: actions/checkout@v2
       with:
-        ref: adding-m2r2
         path: master
 
     - name: Checkout origin/gh-pages to gh-pages/
