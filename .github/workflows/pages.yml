@@ -33,4 +33,5 @@ jobs:
       run: |
         git -C gh-pages config user.name $GITHUB_ACTOR
         git -C gh-pages config user.email "$GITHUB_ACTOR@bots.github.com"
-        ./adding-m2r2/.github/workflows/pages.sh adding-m2r2/ gh-pages/
+        cd adding-m2r2
+        .github/workflows/pages.sh . gh-pages/
