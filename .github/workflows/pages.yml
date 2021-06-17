@@ -18,6 +18,7 @@ jobs:
     - name: Checkout origin/adding-m2r2 to adding-m2r2/
       uses: actions/checkout@v2
       with:
+        ref: adding-m2r2
         path: adding-m2r2
 
     - name: Checkout origin/gh-pages to gh-pages/
