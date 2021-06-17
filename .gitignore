@@ -4,3 +4,4 @@ __pycache__/
 /docs/build
 /src/volue/mesh/proto/mesh_pb2.py
 /src/volue/mesh/proto/mesh_pb2_grpc.py
+.idea/
