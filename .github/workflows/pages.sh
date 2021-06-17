@@ -21,7 +21,7 @@ pages_dir=$2
 
 source "$HOME/.poetry/env"
 cd "$repo_dir"
-poetry run "$repo_dir/src/docs/make html"
+poetry -v run "$repo_dir/src/docs/make html"
 rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 
