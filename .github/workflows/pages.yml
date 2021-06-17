@@ -26,6 +26,9 @@ jobs:
         pip3 install sphinx
         pip3 install m2r2
 
+    - name: Install m2r2
+      run: pip3 install m2r2
+
     - name: Build and publish page
       run: |
         git -C gh-pages config user.name $GITHUB_ACTOR
