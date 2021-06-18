@@ -1,5 +1,7 @@
 # Python SDK for Mesh
 
+[![GitHub pages](https://github.com/PowelAS/sme-mesh-python/actions/workflows/pages.yml/badge.svg)](https://github.com/PowelAS/sme-mesh-python/actions/workflows/pages.yml)
+
 `volue.mesh` is a **work in progress** Python library that can be used to
 communicate with Volue Energy's Mesh server.
 
