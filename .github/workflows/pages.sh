@@ -29,7 +29,7 @@ echo "(DEBUG) Virtual environment activate"
 poetry run make -C "$repo_dir/docs" html
 deactivate
 echo "(DEBUG) Virtual environment deactivated"
-cwd=${pwd}
+cwd=$(pwd)
 echo "(DEBUG) PWD is $cwd"
 rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir"
