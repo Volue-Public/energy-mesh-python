@@ -19,16 +19,20 @@ set -o nounset # Fail the script if an unset variable is used.
 repo_dir=$1
 pages_dir=$2
 
-echo "Starting pages.sh"
+echo "(DEBUG) Starting pages.sh"
 source "$HOME/.poetry/env"
 poetry install
 venv_path=$(poetry env info --path)
-echo "Virtual environment path is ${venv_path}"
+echo "(DEBUG) Virtual environment path is ${venv_path}"
 source "$venv_path"/bin/activate
-echo "Virtual environment activate"
+echo "(DEBUG) Virtual environment activate"
 poetry run make -C "$repo_dir/docs" html
+deactivate
+echo "(DEBUG) Virtual environment deactivated"
+cwd=${pwd}
+echo "(DEBUG) PWD is $cwd"
 rm -rf "${pages_dir:?}/"*
-cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
+cp -r "$repo_dir/docs/build/html/"* "$pages_dir"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
