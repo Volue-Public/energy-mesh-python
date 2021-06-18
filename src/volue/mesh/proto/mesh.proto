@@ -4,48 +4,131 @@ import "google/protobuf/empty.proto";
 
 package volue.mesh.protobuf;
 
+// We use googles set of error codes, as defined in:
+// https://developers.google.com/maps-booking/reference/grpc-api/status_codes
+
 // The greeting service definition.
 service MeshService {
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
-  // Read timeseries points with timskey
-  rpc GetTimeseriesPoints(GetTimeseriesPointsRequest) returns (GetTimeseriesPointsReply) {}  
+  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesReply) {}  
+  rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}  
+
+  // Start a Mesh session, return the id of the session
+  rpc StartSession(google.protobuf.Empty) returns (Guid) {}
+
+  rpc EndSession(Guid) returns (google.protobuf.Empty) {}
+  rpc Commit(Guid) returns (google.protobuf.Empty) {}
+  rpc Rollback(Guid) returns (google.protobuf.Empty) {}
+}
+
+message Guid {
+  // Bytes in LITTLE ENDIAN format
+  bytes bytes_le = 1;
+}
+
+message UtcInterval {
+  // start_time and end_time is in utc ticks
+  uint64 start_time = 1;
+  uint64 end_time = 2;
+}
+
+// Contains one of several ways to uniquely identify an object
+message ObjectId {
+  optional int64 timskey = 1; // Might be obsolete. Maybe not expose this. 
+  optional Guid guid = 2;
+  optional string full_name = 3; // Not implemented yet
 }
 
 message VersionInfo {
-    string version = 1;
-    string name = 2;
-    string build_date = 3;
-    string commit = 4;
-    string full_version = 5;
+  string version = 1;
+  string name = 2;
+  string build_date = 3;
+  string commit = 4;
+  string full_version = 5;
 }
 
-message UtcInterval
-{
-	uint64 start_time = 1;
-	uint64 end_time = 2;
+message Timeseries {
+  ObjectId object_id = 1;
+
+  // resolution (AKA deltaT) is in ticks
+  uint64 resolution = 2;
+
+  // source_delta_t denotes which resolution this 
+  // timeseries has in storage. If delta_t and source_delta_t
+  // doesn't match, then you are not allowed to write.
+  // optional uint64 source_resolution = 2;
+
+  // TODO:
+  // optional curve_type <- Relevant when visualizing data
+  // optional unit_of_measurement <- Relevant
+  // optional version
+
+  UtcInterval interval = 3;
+
+  // data contains an apache arrow byte representation of the timeseries points.
+  // Stored in the following columns:
+  // 0: (uint64) ticks
+  // 1: (uint32) flags
+  // 2: (double) value
+  bytes data = 4;
 }
 
-message GetTimeseriesPointsRequest 
-{
-  int64 timskey = 1;
-  UtcInterval interval = 2;
+// Not implemented server-side yet {
+message Transformation {
+  uint64 resolution = 1;
+  enum TransformationType {
+	UNDEFINED = 0;
+	SUM = 1;
+	SUMI = 2;
+	AVG = 3;
+	AVGI = 4;
+	FIRST = 5;
+	LAST = 6;
+	MIN = 7;
+	MAX = 8;
+  }
+  TransformationType type = 2;
+
+  // timezone is relevant when transforming to Day/Week/Month, 
+  // to know when exactly the local day begins. Thus we need
+  // to include some time zone info, to be able to do the transform:
+  // TODO: optional string timezone = 3;
+}
+// }
+
+message ReadTimeseriesRequest {
+  Guid session_id = 1;
+
+  // The search can return more than one valid object.
+  // In that case, the timeseries will be read for all
+  // valid objects, for the requested interval. 
+  ObjectId object_id = 2;
+  UtcInterval interval = 3;
+
+  // if we request points from a breakpoint series, the actual points
+  // describing our interval, might be long before the actual interval.
+  // Should we then return the actual point (outside our interval),
+  // or a "fake"/virtual point inside our interval?
+  // TODO: bool allow_virtual_points?
+
+  // TODO: optional Transformation transformation = 4;
 }
 
-message TimeseriesPoint
-{
-	uint64 timestamp = 1;
-	double value = 2;
-	uint32 flags = 3;
+message ReadTimeseriesReply {
+  // A search expression may return several timeseries.
+  repeated Timeseries timeseries = 2;
 }
 
-message TimeseriesPointSegment
-{
-	repeated TimeseriesPoint points = 1;
+message WriteTimeseriesRequest {
+  Guid session_id = 1;  
+  
+  // Must point to exactly one Timeseries
+  // (entry, attribute or value)
+  ObjectId object_id = 2;
+
+  // The resolution of the points has to fit the stored timeseries. 
+  // Otherwise it will be rejected.
+  Timeseries timeseries = 3;
 }
 
-message GetTimeseriesPointsReply 
-{
-  int64 timskey = 1;
-  repeated TimeseriesPointSegment segments = 2;
-}

@@ -16,7 +16,7 @@ def print_timeseries_points(timeseries, timskey, verbose=False):
 async def do_some_async_work() -> None:
     # First, prepare the connection:
     async_connection = mesh.AsyncConnection()
-
+    await async_connection.start_session()
     # Print version info
     version_info = await async_connection.get_version()
     print(version_info.full_version)
@@ -36,7 +36,7 @@ async def do_some_async_work() -> None:
     )
 
     # Do some other work
-    await asyncio.sleep(1)
+    # await asyncio.sleep(1)
 
     # Send some other requests
     timskey_2 = 2122
@@ -58,6 +58,8 @@ async def do_some_async_work() -> None:
     print_timeseries_points(timeseries=timeseries_2, timskey=timskey_2)
     timeseries_3 = await timeseries_3_future
     print_timeseries_points(timeseries=timeseries_3, timskey=timskey_3)
+
+    await async_connection.end_session()
 
 
 if __name__ == "__main__":
