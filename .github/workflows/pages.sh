@@ -21,7 +21,7 @@ pages_dir=$2
 
 echo "Starting pages.sh"
 source "$HOME/.poetry/env"
-# poetry shell
+poetry install
 venv_path=$(poetry env info --path)
 echo "Virtual environment path is ${venv_path}"
 source "$venv_path"/bin/activate
