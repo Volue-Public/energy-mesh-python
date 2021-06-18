@@ -21,7 +21,7 @@ pages_dir=$2
 
 source "$HOME/.poetry/env"
 # poetry shell
-venv_path = poetry env info --path
+venv_path=$(poetry env info --path)
 source "$venv_path"/bin/activate
 poetry run make -C "$repo_dir/docs" html
 rm -rf "${pages_dir:?}/"*
