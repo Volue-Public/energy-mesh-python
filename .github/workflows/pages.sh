@@ -19,17 +19,9 @@ set -o nounset # Fail the script if an unset variable is used.
 repo_dir=$1
 pages_dir=$2
 
-echo "(DEBUG) Starting pages.sh"
 source "$HOME/.poetry/env"
 poetry install
-venv_path=$(poetry env info --path)
-echo "(DEBUG) Virtual environment path is ${venv_path}"
-source "$venv_path"/bin/activate
-echo "(DEBUG) Virtual environment activate"
 poetry run make -C "$repo_dir/docs" html
-deactivate
-echo "(DEBUG) Virtual environment deactivated"
-echo "(DEBUG) PWD is $(pwd)"
 rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
 
