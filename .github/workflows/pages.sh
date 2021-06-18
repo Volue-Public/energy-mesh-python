@@ -29,10 +29,11 @@ echo "(DEBUG) Virtual environment activate"
 poetry run make -C "$repo_dir/docs" html
 deactivate
 echo "(DEBUG) Virtual environment deactivated"
-cwd=$(pwd)
-echo "(DEBUG) PWD is $cwd"
+echo "(DEBUG) PWD is $(pwd)"
+cd ..
+echo "(DEBUG) PWD is $(pwd)"
 rm -rf "${pages_dir:?}/"*
-cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
+cp -r "$repo_dir/docs/build/html/"* "$pages_dir"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
