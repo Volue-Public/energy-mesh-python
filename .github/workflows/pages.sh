@@ -19,10 +19,19 @@ set -o nounset # Fail the script if an unset variable is used.
 repo_dir=$1
 pages_dir=$2
 
+echo "(DEBUG) Starting pages.sh"
 source "$HOME/.poetry/env"
-poetry run "$repo_dir/src/docs/make html"
+poetry install
+venv_path=$(poetry env info --path)
+echo "(DEBUG) Virtual environment path is ${venv_path}"
+source "$venv_path"/bin/activate
+echo "(DEBUG) Virtual environment activate"
+poetry run make -C "$repo_dir/docs" html
+deactivate
+echo "(DEBUG) Virtual environment deactivated"
+echo "(DEBUG) PWD is $(pwd)"
 rm -rf "${pages_dir:?}/"*
-cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
+cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
@@ -30,7 +39,7 @@ cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 # leading underscores, and Sphinx generates directories like `_static/`.
 #
 # Adding a `.nojekyll` file make GitHub treat the page as purely static files.
-touch "$pages_dir/.nojekyll"
+touch ../"$pages_dir/.nojekyll"
 
-git -C "$pages_dir" commit -m "Update GitHub pages" --allow-empty
-git -C "$pages_dir" push
+git -C ../"$pages_dir" commit -m "Update GitHub pages" --allow-empty
+git -C ../"$pages_dir" push
