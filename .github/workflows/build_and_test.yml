@@ -27,7 +27,9 @@ jobs:
 
       # Install Poetry
       - name: Install Poetry
-        run: (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python -
+        run: |
+            (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py -UseBasicParsing).Content | python -
+            $env:Path += ";"+$env:USERPROFILE+"\.poetry\bin"
 
       # Install all the projects development and runtime dependencies to a virtual environment
       - name: Poetry install
