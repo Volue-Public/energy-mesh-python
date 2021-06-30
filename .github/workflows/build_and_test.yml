@@ -46,6 +46,6 @@ jobs:
           poetry build
         
       - name: Run Python Unittest
-        run:|
+        run: |
           echo "$USERPROFILE/.poetry/bin" >> $GITHUB_PATH
           poetry run python -m unittest tests/all_tests.py
