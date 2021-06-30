@@ -41,7 +41,7 @@ jobs:
       
       # Generates the protobuf/grpc sources and creates the api packages
       - name: Poetry build
-        run: 
+        run: |
           echo "$USERPROFILE/.poetry/bin" >> $GITHUB_PATH
           poetry build
         
