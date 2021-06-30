@@ -44,8 +44,6 @@ jobs:
         run: poetry build
         
       - name: Run Python Unittest with poetry
-        run: |
-          cd tests
-          poetry run python -m unittest discover --pattern=*.py
+        run: poetry run python -m unittest discover -s ./tests --pattern=*.py
         
 
