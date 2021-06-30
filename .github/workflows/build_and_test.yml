@@ -22,9 +22,6 @@ jobs:
     # The type of runner that the job will run on
     runs-on: windows-latest
     
-    env:
-      POETRY_PATH: ${{echo $env:USERPROFILE"/.poetry/bin/poetry.exe"}}
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -36,11 +33,11 @@ jobs:
 
       # Install all the projects development and runtime dependencies to a virtual environment
       - name: Poetry install
-        run: env[POETRY_PATH] install
+        run: $env:USERPROFILE"/.poetry/bin/poetry.exe" install
       
       # Generates the protobuf/grpc sources and creates the api packages
       - name: Poetry build
-        run: env[POETRY_PATH] build
+        run: $env:USERPROFILE"/.poetry/bin/poetry.exe" build
         
       - name: Run Python Unittest
-        run: env[POETRY_PATH] run python -m unittest tests/all_tests.py
+        run: $env:USERPROFILE"/.poetry/bin/poetry.exe" run python -m unittest tests/all_tests.py
