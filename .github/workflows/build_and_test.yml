@@ -46,10 +46,4 @@ jobs:
       - name: Run Python Unittest with poetry
         run: poetry run python -m unittest discover --pattern=*.py
         
-  # This workflow contains a single job called "test"
-  unittest:
-    runs-on: windows-latest
-    
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
 
