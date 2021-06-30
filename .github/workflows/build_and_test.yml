@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  # This workflow contains a single job called "build"
+  # This workflow contains a single job called "build_and_test"
   build_and_test:
   
     # The type of runner that the job will run on
@@ -25,11 +25,19 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Sets up the python version we wanna use
       - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
-      # Install Poetry
-      - name: Install Poetry
-        run: (Invoke-WebRequest -Uri https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py -UseBasicParsing).Content | python -
+      # Installs Poetry
+      - name: Installing poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: '1.1.6'
+      - name: View poetry --help
+        run: poetry --help
 
       # Install all the projects development and runtime dependencies to a virtual environment
       - name: Poetry install
