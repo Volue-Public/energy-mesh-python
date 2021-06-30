@@ -35,11 +35,17 @@ jobs:
 
       # Install all the projects development and runtime dependencies to a virtual environment
       - name: Poetry install
-        run: poetry install
+        run: |
+          echo "$USERPROFILE/.poetry/bin" >> $GITHUB_PATH
+          poetry install
       
       # Generates the protobuf/grpc sources and creates the api packages
       - name: Poetry build
-        run: poetry build
+        run: 
+          echo "$USERPROFILE/.poetry/bin" >> $GITHUB_PATH
+          poetry build
         
       - name: Run Python Unittest
-        run: poetry run python -m unittest tests/all_tests.py
+        run:|
+          echo "$USERPROFILE/.poetry/bin" >> $GITHUB_PATH
+          poetry run python -m unittest tests/all_tests.py
