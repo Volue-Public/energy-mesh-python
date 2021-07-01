@@ -57,9 +57,10 @@ jobs:
     
   Users_are_important:
 
-      runs-on: [windows-latest, ubuntu-latest, mac-latest]
+      runs-on: ['${{matrix.os}}']
       strategy:
         matrix:
+          os: [windows-latest, ubuntu-latest, mac-latest]
           python-version: [3.6, 3.7, 3.8, 3.9]
       needs: Downloading_a_mesh_server
       
