@@ -11,14 +11,14 @@ on:
 
 jobs:
 
-  Downloading a mesh server:
+  Downloading_a_mesh_server:
     runs-on: windows-latest
     
     steps:
       - name: Download mesh server from github releases
         run: echo "Download mesh server and run."
 
-  Making sure developers can keep developing:
+  Making_sure_developers_can_keep_developing:
     #TODO: matrix: win, linux, mac (?)
     runs-on: windows-latest
     
@@ -54,7 +54,7 @@ jobs:
           name: dist
           path: dist
     
-  Users are important:
+  Users_are_important:
     #TODO: matrix: win, linux, mac
       runs-on: windows-latest
       
