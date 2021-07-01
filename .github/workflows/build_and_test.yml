@@ -48,8 +48,11 @@ jobs:
       - name: Run Python Unittest with poetry
         run: poetry run python -m unittest discover -s ./tests --pattern=*.py
         
-      -name: Upload artiacts
-        run: echo "Uploading artifacts needed for the next step"
+      - name: Upload artiacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
     
   Users are important:
     #TODO: matrix: win, linux, mac
