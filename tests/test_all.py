@@ -1,8 +1,8 @@
 import unittest
 
 from test_utilities import *
-from timeseries_tests import *
-from session_tests import *
+from test_timeseries import *
+from test_session import *
 
 
 class RunExamples(unittest.TestCase):
