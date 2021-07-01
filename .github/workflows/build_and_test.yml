@@ -47,7 +47,7 @@ jobs:
         run: poetry build
         
       - name: Run Python Unittest with poetry
-        run: poetry run python -m unittest discover -s ./tests --pattern=*.py
+        run: poetry run python -m unittest discover -s ${{ github.workspace }}/tests --pattern=*.py
         
       - name: Upload artiacts
         uses: actions/upload-artifact@v2
@@ -77,6 +77,7 @@ jobs:
           run: |
             python -m pip install --upgrade pip
             python -m pip install ${{ github.workspace }} 
+            python -m unittest discover -s ${{ github.workspace }}/tests --pattern=*.py
 
       
         
