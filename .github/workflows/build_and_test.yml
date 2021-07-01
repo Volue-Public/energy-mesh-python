@@ -1,4 +1,4 @@
-name: Build, test and publish
+name: Build and test
 
 on:
 
@@ -47,7 +47,7 @@ jobs:
         run: poetry build
         
       - name: Run Python Unittest with poetry
-        run: poetry run python -m unittest discover -v -s ./tests
+        run: poetry run python -m unittest discover -v -s ${{ github.workspace }}\tests
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -80,7 +80,7 @@ jobs:
             
         - name: Run tests
           run: |
-            python -m unittest discover -v -s ./tests
+            python -m unittest discover -v -s ${{ github.workspace }}\tests
       
         
 
