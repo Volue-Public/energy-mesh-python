@@ -21,6 +21,7 @@ jobs:
   Making_sure_developers_can_keep_developing:
     #TODO: matrix: win, linux, mac (?)
     runs-on: windows-latest
+    needs: Downloading_a_mesh_server
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -55,15 +56,25 @@ jobs:
           path: dist
     
   Users_are_important:
-    #TODO: matrix: win, linux, mac
-      runs-on: windows-latest
+
+      runs-on: [windows-latest, ubuntu-latest, mac-latest]
+      strategy:
+        matrix:
+          python-version: [3.6, 3.7, 3.8, 3.9]
+      needs: Downloading_a_mesh_server
       
       steps:
-        - name: Create virtual environment
-          run: echo "Create venv, pip install requirements.txt"
-        
-        - name: Run script that imports volue.mesh, examples and tests
-          run: echo "Using volue.mesh in scripts"
+
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v2
+          with:
+            python-version: ${{ matrix.python-version }}
+
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            python -m pip install git+https://github.com/PowelAS/sme-mesh-python
+
       
         
 
