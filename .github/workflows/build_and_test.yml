@@ -19,18 +19,18 @@ jobs:
         run: echo "Download mesh server and run."
 
   Making_sure_developers_can_keep_developing:
-    #TODO: matrix: win, linux, mac (?)
+
     runs-on: windows-latest
+    strategy:
+        matrix:
+          python-version: [3.7, 3.9]
     needs: Downloading_a_mesh_server
     
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      # Sets up the python version we wanna use
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       # Installs Poetry
       - name: Installing poetry
