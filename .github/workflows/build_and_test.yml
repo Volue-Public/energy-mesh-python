@@ -83,8 +83,8 @@ jobs:
         - name: Run tests
           working-directory: ${{ github.workspace }}
           run: |
-            python -m unittest discover -v -s ./tests
-            python ./tests/test_all.py
+            python -m unittest discover -v -s tests/
+            python tests/test_all.py
       
         
 
