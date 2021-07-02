@@ -65,12 +65,9 @@ jobs:
           os: [windows-latest, ubuntu-latest, macos-latest]
           python-version: [3.7, 3.9]
       needs: Downloading_a_mesh_server
-      
+
       steps:
-      
         - uses: actions/checkout@v2
-          with:
-            ref: master
 
         - name: Set up Python ${{ matrix.python-version }}
           uses: actions/setup-python@v2
@@ -81,13 +78,10 @@ jobs:
           run: |
             python -m pip install --upgrade pip
             python -m pip install ${{ github.workspace }} 
-            
+
         - name: Run tests
           working-directory: ${{ github.workspace }}
           run: |
             cd tests
             python -m unittest discover
             python test_all.py
-      
-        
-
