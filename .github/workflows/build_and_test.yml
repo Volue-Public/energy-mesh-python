@@ -47,8 +47,9 @@ jobs:
         run: poetry build
         
       - name: Run Python Unittest with poetry
+        working-directory: ${{ github.workspace }}
         run: |
-          poetry run python -m unittest discover -v -s ${{ github.workspace }}/tests
+          poetry run python -m unittest discover -v -s ./tests
         
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
@@ -80,8 +81,9 @@ jobs:
             python -m pip install ${{ github.workspace }} 
             
         - name: Run tests
+          working-directory: ${{ github.workspace }}
           run: |
-            python -m unittest discover -v -s ${{ github.workspace }}/tests/
+            python -m unittest discover -v -s ./tests
       
         
 
