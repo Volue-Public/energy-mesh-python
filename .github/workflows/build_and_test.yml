@@ -62,7 +62,7 @@ jobs:
       strategy:
         matrix:
           os: [windows-latest, ubuntu-latest, macos-latest]
-          python-version: [3.9]
+          python-version: [3.7, 3.9]
       needs: Downloading_a_mesh_server
       
       steps:
