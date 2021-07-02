@@ -1,6 +1,5 @@
 import pyarrow as pa
 from volue.mesh.proto import mesh_pb2
-import pandas as pd
 
 class Timeserie:
 

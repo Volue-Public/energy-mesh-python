@@ -3,11 +3,13 @@ import sys
 import asyncio
 
 
+def can_talk_to_mesh_health_point(host, port) -> bool:
+    # TODO implement
+    return False
+
 def powel_mesh_service_is_running_locally() -> bool:
-    process_name = "Powel.Mesh.Server.exe"
-    call = 'TASKLIST', '/FI', 'imagename eq %s' % process_name
-    output = subprocess.check_output(call).decode('windows-1252')
-    return output.find(process_name) != -1
+    mesh_health_port = None
+    return can_talk_to_mesh_health_point('localhost', mesh_health_port)
 
 
 def run_example_script(test, path):

@@ -20,6 +20,7 @@ include = [
 python = "^3.7"
 grpcio = "^1.37.0"
 pyarrow = "^4.0.1"
+protobuf = "^3.17.3"
 
 [tool.poetry.dev-dependencies]
 grpcio-tools = "^1.37.0"
