@@ -17,7 +17,9 @@ class Connection:
         self.credentials = Credentials()
         address = host+':'+port
         self.channel = grpc.secure_channel(
-            address, self.credentials.channel_creds)
+            target = address,
+            credentials = self.credentials.channel_creds
+        )
         self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
         self.session_id = None
 

@@ -3,7 +3,7 @@ from volue.mesh.proto import mesh_pb2
 
 class Timeserie:
 
-    def __init__(self, table = None, resolution=36000000000):
+    def __init__(self, table = None, resolution = mesh_pb2.Resolution(type = mesh_pb2.Resolution.HOUR)):
         fields = [
             pa.field('ticks', pa.uint64()),
             pa.field('flags', pa.uint32()),
@@ -46,7 +46,7 @@ class Timeserie:
         return ts
 
     @staticmethod
-    def read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesReply):
+    def read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesResponse):
         timeseries = []
         for timeserie in reply.timeseries:
             reader = pa.ipc.open_stream(timeserie.data)

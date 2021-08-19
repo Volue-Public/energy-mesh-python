@@ -17,8 +17,11 @@ async def do_some_async_work() -> None:
     # Let's request some timeseries.
     # While we wait for the response, we can
     # and do other stuff (like send new requests).
+    start = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=td.eagle_wind.start_time, end_time=td.eagle_wind.end_time
+        start_time=start,
+        end_time=end
     )
 
     timskey_1 = td.eagle_wind.timskey

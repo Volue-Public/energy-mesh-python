@@ -17,12 +17,12 @@ if __name__ == "__main__":
     connection.start_session()
 
     # Preapare the request
-    start_time = td.eagle_wind.start_time
-    end_time = td.eagle_wind.end_time
+    start = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     timskey = td.eagle_wind.timskey
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=start_time,
-        end_time=end_time)
+        start_time=start,
+        end_time=end)
 
     # Send request, and wait for reply
     timeseries_reply = connection.read_timeseries_points(

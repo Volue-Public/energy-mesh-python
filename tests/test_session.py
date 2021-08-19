@@ -41,12 +41,10 @@ def impl_test_start_and_close_only_one_session(test, connection):
 
 class SessionTests(unittest.TestCase):
 
-    @unittest.skipUnless(powel_mesh_service_is_running_locally(), "Powel.Mesh.Server.exe is not running locally")
     def test_get_version(self):
         impl_test_get_version(self, mesh.Connection())
         impl_test_get_version(self, mesh.AsyncConnection())
 
-    @unittest.skipUnless(powel_mesh_service_is_running_locally(), "Powel.Mesh.Server.exe is not running locally")
     def test_start_and_close_session(self):
         impl_test_start_and_close_only_one_session(self, mesh.Connection())
         impl_test_start_and_close_only_one_session(self, mesh.AsyncConnection())

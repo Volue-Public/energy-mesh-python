@@ -16,8 +16,11 @@ if __name__ == "__main__":
 
     # Preapare the request
     timskey = td.eagle_wind.timskey
+    start = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=td.eagle_wind.start_time, end_time=td.eagle_wind.end_time
+        start_time=start,
+        end_time=end
     )
 
     # Send request, and wait for reply

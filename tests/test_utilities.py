@@ -3,15 +3,6 @@ import sys
 import asyncio
 
 
-def can_talk_to_mesh_health_point(host, port) -> bool:
-    # TODO implement
-    return False
-
-def powel_mesh_service_is_running_locally() -> bool:
-    mesh_health_port = None
-    return can_talk_to_mesh_health_point('localhost', mesh_health_port)
-
-
 def run_example_script(test, path):
     p = subprocess.Popen(
         [sys.executable, path],

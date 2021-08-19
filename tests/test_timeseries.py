@@ -4,8 +4,10 @@ import uuid
 
 import pyarrow
 from volue import mesh
+from volue.mesh.common import windows_ticks_to_protobuf_timestamp
 
 from test_utilities import *
+from google.protobuf.timestamp_pb2 import Timestamp
 
 
 def compare_segments(test, seg_1, seg_2):
@@ -29,8 +31,11 @@ def impl_test_get_and_edit_timeseries_points(
 
     # Preapare the request
     # TODO: When possible, check for existence and create this timeseries
+    start = mesh.windows_ticks_to_protobuf_timestamp(635976576000000000)
+    end = mesh.windows_ticks_to_protobuf_timestamp(635987808000000000)
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=635976576000000000, end_time=635987808000000000
+        start_time=start,
+        end_time=end
     )
 
     read_reply_1 = await_if_async(
@@ -68,9 +73,9 @@ def impl_test_get_and_edit_timeseries_points(
     # Check that the values are the same as we just wrote
     test.assertGreater(len(read_reply_2.timeseries), 0)
     compare_segments(test,
-            next(mesh.Timeserie.read_timeseries_reply(read_reply_1)),
-            next(mesh.Timeserie.read_timeseries_reply(read_reply_2))
-            )
+                     next(mesh.Timeserie.read_timeseries_reply(read_reply_1)),
+                     next(mesh.Timeserie.read_timeseries_reply(read_reply_2))
+                     )
 
     # Done! Close session.
     await_if_async(connection.end_session())
@@ -78,12 +83,18 @@ def impl_test_get_and_edit_timeseries_points(
 
 class TimeseriesTests(unittest.TestCase):
 
+    def test_can_convert_between_win32ticks_and_timestamp(self):
+        original_ts = Timestamp()
+        original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
+        original_ticks = 637649280000000000 #"2021-08-19T00:00:00Z"
+        ts = windows_ticks_to_protobuf_timestamp(original_ticks)
+        self.assertEqual(original_ts.ToNanoseconds(), ts.ToNanoseconds())
+
     def test_can_create_empty_timeserie(self):
         ts = mesh.Timeserie()
         self.assertNotEqual(ts, None)
 
     def test_can_add_point_to_timeserie(self):
-
         ts = mesh.Timeserie()
         self.assertEqual(ts.number_of_points, 0)
         ts.add_point(123, 123, 0.123)
@@ -92,16 +103,17 @@ class TimeseriesTests(unittest.TestCase):
         self.assertEqual(ts.number_of_points, 2)
 
     def test_can_serialize_and_deserialize_write_timeserie_request(self):
-
         object_id_original = mesh.mesh_pb2.ObjectId(
             timskey=201503,
             guid=mesh.uuid_to_guid(uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")),
             full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)"
         )
 
-        # TODO change proto file so that Timeseries does not contain interval?
+        ts_start = Timestamp(seconds=1)
+        ts_end = Timestamp(seconds=2)
         interval = mesh.mesh_pb2.UtcInterval(
-            start_time=1, end_time=10
+            start_time=ts_start,
+            end_time=ts_end
         )
 
         timeserie_original = mesh.Timeserie()
@@ -115,10 +127,10 @@ class TimeseriesTests(unittest.TestCase):
         session_id_original = mesh.uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
         request_original = mesh.mesh_pb2.WriteTimeseriesRequest(
-                    session_id=session_id_original,
-                    object_id=object_id_original,
-                    timeseries=proto_timeserie_original
-                )
+            session_id=session_id_original,
+            object_id=object_id_original,
+            timeseries=proto_timeserie_original
+        )
 
         binary_data = request_original.SerializeToString()
         self.assertIsNotNone(binary_data)
@@ -138,14 +150,11 @@ class TimeseriesTests(unittest.TestCase):
         self.assertEqual(timeserie_original.arrow_table[1], table[1])
         self.assertEqual(timeserie_original.arrow_table[2], table[2])
 
-
-    @unittest.skipUnless(powel_mesh_service_is_running_locally(), "Powel.Mesh.Server.exe is not running locally")
     def test_get_and_edit_timeseries_points_from_timskey(self):
         timskey = 201503
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(), timskey)
         impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(), timskey)
 
-    @unittest.skipUnless(powel_mesh_service_is_running_locally(), "Powel.Mesh.Server.exe is not running locally")
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(), None, uuid_id)

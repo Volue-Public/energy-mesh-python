@@ -11,7 +11,7 @@ from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh.credentials import Credentials
 
-class AsyncConnection:
+class AsyncConnection :
 
     def __init__(self, host = 'localhost', port = '50051'):
         self.credentials = Credentials()

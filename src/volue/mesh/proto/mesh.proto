@@ -1,17 +1,15 @@
 syntax = "proto3";
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 package volue.mesh.protobuf;
-
-// We use googles set of error codes, as defined in:
-// https://developers.google.com/maps-booking/reference/grpc-api/status_codes
 
 // The greeting service definition.
 service MeshService {
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
-  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesReply) {}  
+  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}  
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}  
 
   // Start a Mesh session, return the id of the session
@@ -28,14 +26,13 @@ message Guid {
 }
 
 message UtcInterval {
-  // start_time and end_time is in utc ticks
-  uint64 start_time = 1;
-  uint64 end_time = 2;
+  google.protobuf.Timestamp start_time = 1;
+  google.protobuf.Timestamp end_time = 2;
 }
 
-// Contains one of several ways to uniquely identify an object
+// Contains one or more ways to uniquely identify an object
 message ObjectId {
-  optional int64 timskey = 1; // Might be obsolete. Maybe not expose this. 
+  optional int64 timskey = 1;
   optional Guid guid = 2;
   optional string full_name = 3; // Not implemented yet
 }
@@ -48,11 +45,23 @@ message VersionInfo {
   string full_version = 5;
 }
 
+message Resolution {
+  enum ResolutionType {
+    BREAKPOINT = 0;
+    MIN15 = 1;
+    HOUR = 2;
+    DAY = 3;
+    WEEK = 4;
+    MONTH = 5;
+    YEAR = 6;
+  }
+  ResolutionType type = 1;
+}
+
 message Timeseries {
   ObjectId object_id = 1;
 
-  // resolution (AKA deltaT) is in ticks
-  uint64 resolution = 2;
+  Resolution resolution = 2;
 
   // source_delta_t denotes which resolution this 
   // timeseries has in storage. If delta_t and source_delta_t
@@ -76,17 +85,16 @@ message Timeseries {
 
 // Not implemented server-side yet {
 message Transformation {
-  uint64 resolution = 1;
+  Resolution resolution = 1;
   enum TransformationType {
-	UNDEFINED = 0;
-	SUM = 1;
-	SUMI = 2;
-	AVG = 3;
-	AVGI = 4;
-	FIRST = 5;
-	LAST = 6;
-	MIN = 7;
-	MAX = 8;
+	SUM = 0;
+	SUMI = 1;
+	AVG = 2;
+	AVGI = 3;
+	FIRST = 4;
+	LAST = 5;
+	MIN = 6;
+	MAX = 7;
   }
   TransformationType type = 2;
 
@@ -115,9 +123,9 @@ message ReadTimeseriesRequest {
   // TODO: optional Transformation transformation = 4;
 }
 
-message ReadTimeseriesReply {
+message ReadTimeseriesResponse {
   // A search expression may return several timeseries.
-  repeated Timeseries timeseries = 2;
+  repeated Timeseries timeseries = 1;
 }
 
 message WriteTimeseriesRequest {
@@ -131,4 +139,3 @@ message WriteTimeseriesRequest {
   // Otherwise it will be rejected.
   Timeseries timeseries = 3;
 }
-

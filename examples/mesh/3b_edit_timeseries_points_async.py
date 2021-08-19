@@ -17,12 +17,12 @@ async def do_some_async_work() -> None:
     # Start session
     await connection.start_session()
 
-    start_time = td.eagle_wind.start_time
-    end_time = td.eagle_wind.end_time
+    start = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     timskey = td.eagle_wind.timskey
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=start_time,
-        end_time=end_time)
+        start_time=start,
+        end_time=end)
 
     # Send request, and wait for reply
     timeseries_reply = await connection.read_timeseries_points(
