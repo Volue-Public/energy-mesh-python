@@ -25,7 +25,8 @@ protobuf = "^3.17.3"
 [tool.poetry.dev-dependencies]
 grpcio-tools = "^1.37.0"
 Sphinx = "^4.0.2"
-m2r2 = "^0.2.1"
+sphinx-rtd-theme = "^0.5.2"
+rtd = "^1.2.3"
 
 [build-system]
 requires = [

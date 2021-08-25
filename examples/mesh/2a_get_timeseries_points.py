@@ -39,6 +39,6 @@ if __name__ == "__main__":
         interval=interval
     )
 
-    print_timeseries_points(timeseries, str(guid), True)
+    print_timeseries_points(timeseries, str(guid))
 
     connection.end_session()

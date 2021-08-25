@@ -5,8 +5,8 @@ from volue.mesh.proto import mesh_pb2
 from google.protobuf.timestamp_pb2 import Timestamp
 
 def uuid_to_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
-    """
-    Convert from UUID format to Microsofts GUID format.
+    """Convert from UUID format to Microsofts GUID format.
+
     :param uuid: UUID
     :return: GUID
     """
@@ -16,8 +16,8 @@ def uuid_to_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
 
 
 def guid_to_uuid(guid: mesh_pb2.Guid) -> uuid.UUID:
-    """
-    Convert from Microsofts GUID format to UUID format.
+    """Convert from Microsofts GUID format to UUID format.
+
     :param guid: GUID to be converted
     :return: UUID
     """
@@ -27,9 +27,9 @@ def guid_to_uuid(guid: mesh_pb2.Guid) -> uuid.UUID:
 
 
 def windows_ticks_to_protobuf_timestamp(ticks: int) -> Timestamp:
-    """
-    Convert Windows ticks to protobuf timestamp.
+    """Convert Windows ticks to protobuf timestamp.
     Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+
     :param ticks: windows ticks
     :return: Timestamp
     """

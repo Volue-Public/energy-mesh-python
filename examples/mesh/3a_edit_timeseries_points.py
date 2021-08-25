@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     # Lets have a look at what we got
     print("Original timeseries:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
 
     print("\nEdited timeseries points:")
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         timskey=timskey,
         interval=interval)
     print("\nTimeseries after editing:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Rollback
     connection.rollback()
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     timeseries_reply = connection.read_timeseries_points(
         timskey=timskey,
         interval=interval)
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Edit again, and commit. Now the changes will be stored in database:
     print(

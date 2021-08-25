@@ -31,7 +31,7 @@ async def do_some_async_work() -> None:
 
     # Lets have a look at what we got
     print("Original timeseries:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Lets edit some points:
     #TODO EDIT
@@ -47,7 +47,7 @@ async def do_some_async_work() -> None:
         timskey=timskey,
         interval=interval)
     print("\nTimeseries after editing:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Rollback
     await connection.rollback()
@@ -55,7 +55,7 @@ async def do_some_async_work() -> None:
     timeseries = await connection.read_timeseries_points(
         timskey=timskey,
         interval=interval)
-    print_timeseries_points(timeseries, timskey, True)
+    print_timeseries_points(timeseries, timskey)
 
     # Edit again, and commit. Now the changes will be stored in database:
     print(

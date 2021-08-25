@@ -2,6 +2,17 @@ import pyarrow as pa
 from volue.mesh.proto import mesh_pb2
 
 class Timeserie:
+    """Represents a mesh timeserie.
+
+    Contains a arrow table with a schema of 3 fields (ticks, flags, value.)
+    Ticks are the timestamps represented as windows ticks.
+    Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+    Flags are ??? <TODO>
+    Value is the actual data for the given timestamp.
+
+
+
+    """
 
     def __init__(self, table = None, resolution = mesh_pb2.Resolution(type = mesh_pb2.Resolution.HOUR)):
         fields = [
@@ -24,6 +35,8 @@ class Timeserie:
 
     @property
     def number_of_points(self):
+        """Number of point inside the time series"""
+
         return 0 if self.arrow_table == None else self.arrow_table.num_rows
 
     def to_proto_timeseries(self, object_id, interval) -> mesh_pb2.Timeseries:

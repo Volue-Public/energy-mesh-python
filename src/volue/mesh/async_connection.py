@@ -10,18 +10,30 @@ from volue.mesh.common import *
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh.credentials import Credentials
+from volue.mesh.connection import Connection
 
-class AsyncConnection :
+class AsyncConnection(Connection):
 
-    def __init__(self, host = 'localhost', port = '50051'):
-        self.credentials = Credentials()
-        address = host + ':' + port
+    def __init__(self, host = 'localhost', port = '50051', credentials = Credentials()):
+        """
+
+        Args:
+            host:
+            port:
+            credentials:
+        """
         self.channel = grpc.aio.secure_channel(
-            address, self.credentials.channel_creds)
-        self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
-        self.session_id = None
+            target = host+':'+port,
+            credentials = credentials.channel_creds
+        )
+        super().__init__(host, port, credentials)
+
 
     async def get_version(self):
+        """
+        |coro|
+        """
+
         try:
             response = await self.stub.GetVersion(protobuf.empty_pb2.Empty())
         except grpc.RpcError as e:
@@ -30,6 +42,9 @@ class AsyncConnection :
             return response
 
     async def start_session(self):
+        """
+        |coro|
+        """
         if (self.session_id is None):
             try:
                 reply = await self.stub.StartSession(protobuf.empty_pb2.Empty())
@@ -41,6 +56,9 @@ class AsyncConnection :
         return None
 
     async def end_session(self):
+        """
+        |coro|
+        """
         if (self.session_id is not None):
             try:
                 reply = await self.stub.EndSession(uuid_to_guid(self.session_id))
@@ -56,7 +74,10 @@ class AsyncConnection :
             interval: mesh_pb2.UtcInterval,
             timskey: int = None,
             guid: uuid.UUID = None,
-            full_name: string = None):
+            full_name: str = None):
+        """
+        |coro|
+        """
 
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
@@ -83,7 +104,10 @@ class AsyncConnection :
             timeserie: Timeserie,
             timskey: int = None,
             guid: uuid.UUID = None,
-            full_name: string = None):
+            full_name: str = None):
+        """
+        |coro|
+        """
 
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
@@ -110,15 +134,14 @@ class AsyncConnection :
         return None
 
     async def rollback(self):
+        """
+        |coro|
+        """
+
         return await self.stub.Rollback(uuid_to_guid(self.session_id))
 
     async def commit(self):
+        """
+        |coro|
+        """
         return await self.stub.Commit(uuid_to_guid(self.session_id))
-
-    def react_to_error(self, e):
-        # TODO need more intelligent error handling
-        print(f"""
-            gRPC error:
-                Details:        {e.details()}
-                Status code:    {e.code()}
-        """)

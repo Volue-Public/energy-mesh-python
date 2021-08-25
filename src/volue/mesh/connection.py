@@ -2,7 +2,7 @@ import os
 import grpc
 import string
 import uuid
-
+from typing import Optional
 from google import protobuf
 
 from volue.mesh.timeserie import *
@@ -12,18 +12,36 @@ from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh.credentials import Credentials
 
 class Connection:
+    """Represents a connection to a mesh server.
 
-    def __init__(self, host = 'localhost', port = '50051'):
-        self.credentials = Credentials()
-        address = host+':'+port
-        self.channel = grpc.secure_channel(
-            target = address,
-            credentials = self.credentials.channel_creds
-        )
+    This class can be used to interact with the mesh grpc api.
+    """
+
+    def __init__(self, host: str = 'localhost', port: int = 50051, credentials: Credentials = Credentials()):
+        """Connect to a running mesh server.
+
+        Args:
+            host (str): the server address
+            port (int): servers gRPC port
+            credentials (Credentials): securety details for the connection
+        """
+
+        if not hasattr(self, 'channel'):
+            self.channel = grpc.secure_channel(
+                target = f'{host}:{port}',
+                credentials = credentials.channel_creds
+            )
         self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
         self.session_id = None
 
-    def get_version(self):
+
+    def get_version(self) -> str:
+        """Get the version of the mesh server that is connected.
+
+        Returns:
+            str: The version str for the connected mesh server.
+        """
+
         try:
             response = self.stub.GetVersion(protobuf.empty_pb2.Empty())
         except grpc.RpcError as e:
@@ -32,7 +50,13 @@ class Connection:
             return response
 
 
-    def start_session(self):
+    def start_session(self) -> Optional[mesh_pb2.Guid]:
+        """Ask the server to start a session. Only one session can be active at any give connection.
+
+        Returns:
+            Optional[mesh_pb2.Guid]: The guid of the connected session or None if session could not be started.
+        """
+
         if (self.session_id is None):
             try:
                 reply = self.stub.StartSession(protobuf.empty_pb2.Empty())
@@ -44,7 +68,9 @@ class Connection:
         return None
 
 
-    def end_session(self):
+    def end_session(self) -> None:
+        """Ask the server to end the session."""
+
         if (self.session_id is not None):
             try:
                 reply = self.stub.EndSession(uuid_to_guid(self.session_id))
@@ -60,7 +86,18 @@ class Connection:
             interval: mesh_pb2.UtcInterval,
             timskey: int = None,
             guid: uuid.UUID = None,
-            full_name: string = None):
+            full_name: str = None) -> Optional[mesh_pb2.ReadTimeseriesResponse]:
+        """
+
+        Args:
+            interval (mesh_pb2.UtcInterval):
+            timskey (int):
+            guid (uuid.UUID):
+            full_name (str):
+
+        Returns:
+            Optional[mesh_pb2.ReadTimeseriesResponse]:
+        """
 
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
@@ -86,7 +123,19 @@ class Connection:
             timeserie: Timeserie,
             timskey: int = None,
             guid: uuid.UUID = None,
-            full_name: string = None):
+            full_name: str = None) -> Optional[protobuf.empty_pb2.Empty]:
+        """
+
+        Args:
+            interval (mesh_pb2.UtcInterval):
+            timeserie (Timeserie):
+            timskey (int):
+            guid (uuid.UUID):
+            full_name (str):
+
+        Returns:
+
+        """
 
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
@@ -114,12 +163,29 @@ class Connection:
 
 
     def rollback(self):
+        """
+
+        Returns:
+
+        """
         return self.stub.Rollback(uuid_to_guid(self.session_id))
 
     def commit(self):
+        """
+
+        Returns:
+
+        """
         return self.stub.Commit(uuid_to_guid(self.session_id))
 
-    def react_to_error(self, e):
+    def react_to_error(self, e: grpc.RpcError) -> None:
+        """Prints errors received from the mesh gRPC API.
+
+        Args:
+            e (grpc.RpcError): The error thrown from
+
+        """
+
         # TODO need more intelligent error handling
         print(f"""
             gRPC error:

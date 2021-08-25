@@ -1,7 +1,10 @@
 import pyarrow
+from volue.mesh.proto import mesh_pb2
 
 
-def print_timeseries_points(reply, name, verbose=False):
+def print_timeseries_points(reply: mesh_pb2.ReadTimeseriesResponse, name: str) -> None:
+    """Helper function to print content of a timeseries respons from the the gRPC server."""
+
     print(f"Reply contains {len(reply.timeseries)} timeseries")
     n = 0
     for timeserie in reply.timeseries:
