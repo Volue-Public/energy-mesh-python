@@ -8,7 +8,6 @@ from google import protobuf
 from volue.mesh.timeserie import *
 from volue.mesh.common import *
 from volue.mesh.proto import mesh_pb2
-from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh.credentials import Credentials
 from volue.mesh.connection import Connection
 

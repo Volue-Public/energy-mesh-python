@@ -1,6 +1,4 @@
-import os
 import grpc
-import string
 import uuid
 from typing import Optional
 from google import protobuf
@@ -10,6 +8,7 @@ from volue.mesh.common import *
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 from volue.mesh.credentials import Credentials
+
 
 class Connection:
     """Represents a connection to a mesh server.
@@ -28,11 +27,17 @@ class Connection:
 
         if not hasattr(self, 'channel'):
             self.channel = grpc.secure_channel(
-                target = f'{host}:{port}',
-                credentials = credentials.channel_creds
+                target=f'{host}:{port}',
+                credentials=credentials.channel_creds
             )
         self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
         self.session_id = None
+
+
+    def is_server_compatible(self) -> bool:
+        """Checks if the connected mesh server version is compatible with this API version"""
+        #TODO Fix
+        return True
 
 
     def get_version(self) -> str:
@@ -48,7 +53,6 @@ class Connection:
             self.react_to_error(e)
         else:
             return response
-
 
     def start_session(self) -> Optional[mesh_pb2.Guid]:
         """Ask the server to start a session. Only one session can be active at any give connection.
@@ -67,11 +71,10 @@ class Connection:
                 return reply
         return None
 
-
     def end_session(self) -> None:
         """Ask the server to end the session."""
 
-        if (self.session_id is not None):
+        if self.session_id is not None:
             try:
                 reply = self.stub.EndSession(uuid_to_guid(self.session_id))
             except grpc.RpcError as e:
@@ -106,12 +109,12 @@ class Connection:
 
         try:
             reply = self.stub.ReadTimeseries(
-            mesh_pb2.ReadTimeseriesRequest(
-                session_id=uuid_to_guid(self.session_id),
-                object_id=object_id,
-                interval=interval
+                mesh_pb2.ReadTimeseriesRequest(
+                    session_id=uuid_to_guid(self.session_id),
+                    object_id=object_id,
+                    interval=interval
+                )
             )
-        )
         except grpc.RpcError as e:
             self.react_to_error(e)
         else:
@@ -161,7 +164,6 @@ class Connection:
             return reply
         return None
 
-
     def rollback(self):
         """
 
@@ -192,4 +194,3 @@ class Connection:
                 Details:        {e.details()}
                 Status code:    {e.code()}
         """)
-

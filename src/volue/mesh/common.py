@@ -4,8 +4,9 @@ from volue.mesh.proto import mesh_pb2
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
+
 def uuid_to_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
-    """Convert from UUID format to Microsofts GUID format.
+    """Convert from UUID format to Microsoft's GUID format.
 
     :param uuid: UUID
     :return: GUID
@@ -16,7 +17,7 @@ def uuid_to_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
 
 
 def guid_to_uuid(guid: mesh_pb2.Guid) -> uuid.UUID:
-    """Convert from Microsofts GUID format to UUID format.
+    """Convert from Microsoft's GUID format to UUID format.
 
     :param guid: GUID to be converted
     :return: UUID
@@ -33,14 +34,12 @@ def windows_ticks_to_protobuf_timestamp(ticks: int) -> Timestamp:
     :param ticks: windows ticks
     :return: Timestamp
     """
-    if(ticks is None):
+    if (ticks is None):
         return None
     date = datetime.datetime(1, 1, 1) + \
-        datetime.timedelta(microseconds=ticks // 10)
+           datetime.timedelta(microseconds=ticks // 10)
     if date.year < 1900:  # strftime() requires year >= 1900
         date = date.replace(year=date.year + 1900)
     ts = Timestamp()
     ts.FromJsonString(date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
     return ts
-
-

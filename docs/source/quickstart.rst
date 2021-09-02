@@ -7,7 +7,6 @@ Lets connect to the server, get its version create a session and get some data.
 
 .. literalinclude:: /../../examples/quickstart.py
    :language: python
-   :linenos:
 
 Name this file quickstart.py.
 

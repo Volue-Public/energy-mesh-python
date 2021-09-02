@@ -1,9 +1,11 @@
 import os
 import grpc
 
+
 class Credentials:
     """ Security details for connecting to a mesh server.
     """
+
     def __init__(self):
         self.server_cert_path = os.path.join(
             os.path.dirname(__file__),
@@ -18,4 +20,3 @@ class Credentials:
             private_key=None,
             certificate_chain=None
         )
-

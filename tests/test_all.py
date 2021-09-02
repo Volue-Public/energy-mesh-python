@@ -1,5 +1,4 @@
 import glob, os
-from test_session import *
 from test_timeseries import *
 
 

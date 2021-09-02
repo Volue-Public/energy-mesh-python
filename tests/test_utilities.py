@@ -11,7 +11,7 @@ def run_example_script(test, path):
 
     (stdoutdata, stderrdata) = p.communicate()
     exit_code = p.returncode
-    test.assertEqual(exit_code, 0)
+    test.assertEqual(exit_code, 0, msg=f"{stderrdata}")
 
 
 # Helper function to allow us to use same test for async and sync connection
