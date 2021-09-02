@@ -34,7 +34,15 @@ If you're having trouble, these resouces might help.
 - Report bugs in the `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_
 
 .. toctree::
-   :caption: API Reference:
+   :caption: Welcome
+
+   intro
+   quickstart
+   examples
+   faq
+
+.. toctree::
+   :caption: API Reference
 
    credentials
    connection

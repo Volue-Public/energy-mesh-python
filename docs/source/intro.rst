@@ -63,19 +63,19 @@ This concept of concurrency can be demonstrated using the following examples.
 
 Using :doc:`connection`::
 
-    <Insert example code here>
+    <TODO: Insert example code here>
     Output:
-    <Insert output here>
+    <TODO: Insert output here>
 
 
 Using :doc:`async_connection`::
 
-    <Insert example code here>
+    <TODO: Insert example code here>
     Output:
-    <Insert output here>
+    <TODO: Insert output here>
 
 The primary data retrieved from the Mesh server is time series. Depending on the request, the size of this data can be quite large. A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another. This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python API uses `Apache Arrow <https://arrow.apache.org/>`_ to store the data. Several data processing libraries are now supported for this format, including `numpy <https://arrow.apache.org/docs/python/numpy.html>`_ and `pandas <https://arrow.apache.org/docs/python/pandas.html>`_.
 
-Using :doc:`timeseries` with numpy and/or pandas::
+Using :doc:`timeserie` with numpy and/or pandas::
 
-    <Insert example code here>
+    <TODO: Insert example code here>
