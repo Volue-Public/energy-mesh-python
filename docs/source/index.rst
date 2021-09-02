@@ -40,6 +40,7 @@ If you're having trouble, these resouces might help.
    quickstart
    examples
    faq
+   glossary
 
 .. toctree::
    :caption: API Reference

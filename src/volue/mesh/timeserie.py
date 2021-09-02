@@ -15,6 +15,12 @@ class Timeserie:
     """
 
     def __init__(self, table = None, resolution = mesh_pb2.Resolution(type = mesh_pb2.Resolution.HOUR)):
+        """
+
+        Args:
+            table:
+            resolution:
+        """
         fields = [
             pa.field('ticks', pa.uint64()),
             pa.field('flags', pa.uint32()),
@@ -27,7 +33,18 @@ class Timeserie:
             self.arrow_table = table
         self.resolution = resolution
 
+
     def add_point(self, ticks, flags, value) -> None:
+        """
+
+        Args:
+            ticks:
+            flags:
+            value:
+
+        Returns:
+
+        """
         table = pa.Table.from_arrays(([ticks], [flags], [value]),
             schema=self.arrow_table.schema
         )
@@ -40,6 +57,15 @@ class Timeserie:
         return 0 if self.arrow_table == None else self.arrow_table.num_rows
 
     def to_proto_timeseries(self, object_id, interval) -> mesh_pb2.Timeseries:
+        """
+
+        Args:
+            object_id:
+            interval:
+
+        Returns:
+
+        """
         stream = pa.BufferOutputStream()
 
         writer = pa.ipc.RecordBatchStreamWriter(
@@ -60,6 +86,14 @@ class Timeserie:
 
     @staticmethod
     def read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesResponse):
+        """
+
+        Args:
+            reply:
+
+        Returns:
+
+        """
         timeseries = []
         for timeserie in reply.timeseries:
             reader = pa.ipc.open_stream(timeserie.data)
