@@ -1,12 +1,12 @@
 Introduction
 ----------------
 
-This is an introduction to the Mesh Python API, a gRPC based approach to communicate with Volues Mesh server.
+This is an introduction to the Mesh Python SDK, a gRPC based approach to communicate with Volues Mesh server.
 
 Prerequisites
 **************
 
-Mesh Python API works with Python 3.7 or higher. Support for earlier versions are not provided due to dependencies.
+Mesh Python SDK works with Python 3.7 or higher. Support for earlier versions are not provided due to dependencies.
 
 Installing
 ***********
@@ -21,9 +21,9 @@ Using pip::
 Dependencies
 *************
 
-The Mesh Python API depends on the Python standard library, but also `gRPC <https://grpc.io/>`_ and `Apache Arrow <https://arrow.apache.org/>`_.
+The Mesh Python SDK depends on the Python standard library, but also `gRPC <https://grpc.io/>`_ and `Apache Arrow <https://arrow.apache.org/>`_.
 
-These dependencies are managed, installed and packaged with the library using `Poetry <https://github.com/python-poetry/poetry>`_. So no additional dependencies should be needed after running the pip install.
+These dependencies are managed, installed and referenced by the library using `Poetry <https://github.com/python-poetry/poetry>`_. So no additional dependencies should be needed after running the pip install.
 
 Virtual Environments
 ********************
@@ -50,12 +50,12 @@ Here is a quick way:
 
     $ python -m pip install git+https://github.com/PowelAS/sme-mesh-python
 
-Your virtual environment is now up and running with the Mesh Python API and you can now develop your project.
+Your virtual environment is now up and running with the Mesh Python SDK and you can now develop your project.
 
 Basic Concepts
 ***************
 
-The Mesh Python API communicates with a Mesh server using gRPC which is a way of sending requests and responses over a network. The request is serialized and packaged then sent to the server which processes the request and sends back a response.
+The Mesh Python SDK communicates with a Mesh server using gRPC which is a way of sending requests and responses over a network. The request is serialized and packaged then sent to the server which processes the request and sends back a response.
 
 This process can take some time. The library takes advantage of this if the connection is done by using the :doc:`async_connection` which is implemented using the `asyncio <https://docs.python.org/3/library/asyncio.html>`_ library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.
 
@@ -74,7 +74,7 @@ Using :doc:`async_connection`::
     Output:
     <TODO: Insert output here>
 
-The primary data retrieved from the Mesh server is time series. Depending on the request, the size of this data can be quite large. A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another. This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python API uses `Apache Arrow <https://arrow.apache.org/>`_ to store the data. Several data processing libraries are now supported for this format, including `numpy <https://arrow.apache.org/docs/python/numpy.html>`_ and `pandas <https://arrow.apache.org/docs/python/pandas.html>`_.
+The primary data retrieved from the Mesh server is time series. Depending on the request, the size of this data can be quite large. A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another. This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python SDK uses `Apache Arrow <https://arrow.apache.org/>`_ to store the data. Several data processing libraries are now supported for this format, including `numpy <https://arrow.apache.org/docs/python/numpy.html>`_ and `pandas <https://arrow.apache.org/docs/python/pandas.html>`_.
 
 Using :doc:`timeserie` with numpy and/or pandas
 

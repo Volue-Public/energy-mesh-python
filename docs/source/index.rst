@@ -1,7 +1,7 @@
-Welcome to Mesh Python API
+Welcome to Mesh Python SDK
 ==============================
 
-Mesh Python API that can be used to
+Mesh Python SDK that can be used to
 communicate with Volue Energy's Mesh server.
 
 Getting started
@@ -16,7 +16,7 @@ Features
 **************
 
 - Communication using `gRPC <https://grpc.io/>`_
-- API using ``async``\/``await`` syntax
+- SDK using ``async``\/``await`` syntax
 - Optimised memory sharing by using `Apache Arrow <https://arrow.apache.org/>`_
 
 Prerequisites
@@ -43,7 +43,7 @@ If you're having trouble, these resouces might help.
    glossary
 
 .. toctree::
-   :caption: API Reference
+   :caption: SDK Reference
 
    credentials
    connection

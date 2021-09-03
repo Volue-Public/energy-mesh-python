@@ -6,13 +6,13 @@ connection = volue.mesh.Connection()
 # secure vs not
 # kerboros vs not
 
-# Print python api version
-python_api_version = 0 #TODO
-print(f"Python API version: {python_api_version}")
+# Print python sdk version
+python_sdk_version = 0 #TODO
+print(f"Python SDK version: {python_sdk_version}")
 
-# Check server version is compatible with python api
+# Check server version is compatible with python sdk
 compatible = connection.is_server_compatible()
-print(f"Servers version is compatible with this version of the API: {compatible}")
+print(f"Servers version is compatible with this version of the SDK: {compatible}")
 
 # Which version is the server running
 mesh_server_version = connection.get_version()

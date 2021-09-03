@@ -35,7 +35,7 @@ class Connection:
 
 
     def is_server_compatible(self) -> bool:
-        """Checks if the connected mesh server version is compatible with this API version"""
+        """Checks if the connected mesh server version is compatible with this SDK version"""
         #TODO Fix
         return True
 

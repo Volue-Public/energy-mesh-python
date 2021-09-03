@@ -1,5 +1,6 @@
 import glob, os
 from test_timeseries import *
+from test_session import *
 
 
 class RunExamples(unittest.TestCase):
