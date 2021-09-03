@@ -2,6 +2,7 @@ import unittest
 
 from volue import mesh
 from test_utilities import *
+import server_config as sc
 
 
 def impl_test_get_version(test, connection):
@@ -41,12 +42,10 @@ def impl_test_start_and_close_only_one_session(test, connection):
 
 class SessionTests(unittest.TestCase):
 
-    @unittest.skipUnless(powel_mesh_service_is_running_locally(), "Powel.Mesh.Server.exe is not running locally")
     def test_get_version(self):
-        impl_test_get_version(self, mesh.Connection())
-        impl_test_get_version(self, mesh.AsyncConnection())
+        impl_test_get_version(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION))
+        impl_test_get_version(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION))
 
-    @unittest.skipUnless(powel_mesh_service_is_running_locally(), "Powel.Mesh.Server.exe is not running locally")
     def test_start_and_close_session(self):
-        impl_test_start_and_close_only_one_session(self, mesh.Connection())
-        impl_test_start_and_close_only_one_session(self, mesh.AsyncConnection())
+        impl_test_start_and_close_only_one_session(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION))
+        impl_test_start_and_close_only_one_session(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION))

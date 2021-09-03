@@ -1,3 +1,10 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import asyncio
 
 from volue import mesh
@@ -8,7 +15,7 @@ from utility.print import print_timeseries_points
 
 async def do_some_async_work() -> None:
     # Prepare a connection
-    connection = mesh.AsyncConnection()
+    connection = mesh.AsyncConnection(address, port, secure_connection)
 
     # Print version info
     version_info = await connection.get_version()
@@ -17,12 +24,12 @@ async def do_some_async_work() -> None:
     # Start session
     await connection.start_session()
 
-    start_time = td.eagle_wind.start_time
-    end_time = td.eagle_wind.end_time
+    start = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     timskey = td.eagle_wind.timskey
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=start_time,
-        end_time=end_time)
+        start_time=start,
+        end_time=end)
 
     # Send request, and wait for reply
     timeseries_reply = await connection.read_timeseries_points(
@@ -31,7 +38,7 @@ async def do_some_async_work() -> None:
 
     # Lets have a look at what we got
     print("Original timeseries:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Lets edit some points:
     #TODO EDIT
@@ -47,7 +54,7 @@ async def do_some_async_work() -> None:
         timskey=timskey,
         interval=interval)
     print("\nTimeseries after editing:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Rollback
     await connection.rollback()
@@ -55,7 +62,7 @@ async def do_some_async_work() -> None:
     timeseries = await connection.read_timeseries_points(
         timskey=timskey,
         interval=interval)
-    print_timeseries_points(timeseries, timskey, True)
+    print_timeseries_points(timeseries, timskey)
 
     # Edit again, and commit. Now the changes will be stored in database:
     print(

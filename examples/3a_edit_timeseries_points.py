@@ -1,3 +1,8 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
 
 from volue import mesh
 
@@ -7,7 +12,7 @@ import utility.test_data as td
 
 if __name__ == "__main__":
     # Prepare a connection
-    connection = mesh.Connection()
+    connection = mesh.Connection(address, port, secure_connection)
 
     # Print version info
     version_info = connection.get_version()
@@ -17,12 +22,12 @@ if __name__ == "__main__":
     connection.start_session()
 
     # Preapare the request
-    start_time = td.eagle_wind.start_time
-    end_time = td.eagle_wind.end_time
+    start = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     timskey = td.eagle_wind.timskey
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=start_time,
-        end_time=end_time)
+        start_time=start,
+        end_time=end)
 
     # Send request, and wait for reply
     timeseries_reply = connection.read_timeseries_points(
@@ -35,7 +40,7 @@ if __name__ == "__main__":
 
     # Lets have a look at what we got
     print("Original timeseries:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
 
     print("\nEdited timeseries points:")
@@ -49,7 +54,7 @@ if __name__ == "__main__":
         timskey=timskey,
         interval=interval)
     print("\nTimeseries after editing:")
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Rollback
     connection.rollback()
@@ -57,7 +62,7 @@ if __name__ == "__main__":
     timeseries_reply = connection.read_timeseries_points(
         timskey=timskey,
         interval=interval)
-    print_timeseries_points(timeseries_reply, timskey, True)
+    print_timeseries_points(timeseries_reply, timskey)
 
     # Edit again, and commit. Now the changes will be stored in database:
     print(

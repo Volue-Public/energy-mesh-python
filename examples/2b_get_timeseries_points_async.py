@@ -1,3 +1,10 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import asyncio
 from volue import mesh
 from utility.print import print_timeseries_points
@@ -7,7 +14,7 @@ import utility.test_data as td
 async def do_some_async_work() -> None:
 
     # First, prepare the connection:
-    async_connection = mesh.AsyncConnection()
+    async_connection = mesh.AsyncConnection(address, port, secure_connection)
     await async_connection.start_session()
 
     # Print version info
@@ -17,8 +24,11 @@ async def do_some_async_work() -> None:
     # Let's request some timeseries.
     # While we wait for the response, we can
     # and do other stuff (like send new requests).
+    start = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     interval = mesh.mesh_pb2.UtcInterval(
-        start_time=td.eagle_wind.start_time, end_time=td.eagle_wind.end_time
+        start_time=start,
+        end_time=end
     )
 
     timskey_1 = td.eagle_wind.timskey
