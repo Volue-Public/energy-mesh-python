@@ -42,7 +42,7 @@ jobs:
       - name: Poetry install
         run: poetry install
       
-      # Generates the protobuf/grpc sources and creates the sdk packages
+      # Generates the protobuf/gRPC sources and creates the SDK packages
       - name: Poetry build
         run: poetry build
         
