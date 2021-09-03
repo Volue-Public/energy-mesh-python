@@ -3,5 +3,5 @@ Glossary
 
 .. glossary::
 
-    term 1
-        Something something
+    SDK
+        Software Development Kit. A collection of software development tools in one installable package.
