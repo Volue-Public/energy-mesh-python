@@ -16,7 +16,7 @@ class Connection:
     This class can be used to interact with the mesh grpc api.
     """
 
-    def __init__(self, host: str = 'localhost', port: int = 50051, credentials: Credentials = Credentials(), secure_connection: bool = False, ):
+    def __init__(self, host: str = 'localhost', port: int = 50051, secure_connection: bool = False):
         """Connect to a running mesh server.
 
         Args:
@@ -33,6 +33,7 @@ class Connection:
                     target=target
                 )
             else:
+                credentials: Credentials = Credentials()
                 self.channel = grpc.secure_channel(
                     target= target,
                     credentials=credentials.channel_creds
