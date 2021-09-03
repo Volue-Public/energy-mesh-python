@@ -16,20 +16,27 @@ class Connection:
     This class can be used to interact with the mesh grpc api.
     """
 
-    def __init__(self, host: str = 'localhost', port: int = 50051, credentials: Credentials = Credentials()):
+    def __init__(self, host: str = 'localhost', port: int = 50051, credentials: Credentials = Credentials(), secure_connection: bool = False, ):
         """Connect to a running mesh server.
 
         Args:
             host (str): the server address
             port (int): servers gRPC port
-            credentials (Credentials): securety details for the connection
+            secure_connection (bool): establish connection using TLS
+            credentials (Credentials): security details for the connection
         """
 
         if not hasattr(self, 'channel'):
-            self.channel = grpc.secure_channel(
-                target=f'{host}:{port}',
-                credentials=credentials.channel_creds
-            )
+            target = f'{host}:{port}'
+            if not secure_connection:
+                self.channel = grpc.insecure_channel(
+                    target=target
+                )
+            else:
+                self.channel = grpc.secure_channel(
+                    target= target,
+                    credentials=credentials.channel_creds
+                )
         self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
         self.session_id = None
 

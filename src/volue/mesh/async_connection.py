@@ -11,22 +11,23 @@ from volue.mesh.proto import mesh_pb2
 from volue.mesh.credentials import Credentials
 from volue.mesh.connection import Connection
 
+
 class AsyncConnection(Connection):
 
-    def __init__(self, host = 'localhost', port = '50051', credentials = Credentials()):
+    def __init__(self, host='localhost', port='50051', credentials: Credentials = Credentials(), secure_connection: bool = False):
         """
+        """
+        if not secure_connection:
+            self.channel = grpc.aio.insecure_channel(
+                target=host + ':' + port
+            )
+        else:
+            self.channel = grpc.aio.secure_channel(
+                target=host + ':' + port,
+                credentials=credentials.channel_creds
+            )
 
-        Args:
-            host:
-            port:
-            credentials:
-        """
-        self.channel = grpc.aio.secure_channel(
-            target = host+':'+port,
-            credentials = credentials.channel_creds
-        )
         super().__init__(host, port, credentials)
-
 
     async def get_version(self):
         """
@@ -85,17 +86,16 @@ class AsyncConnection(Connection):
 
         try:
             reply = await self.stub.ReadTimeseries(
-            mesh_pb2.ReadTimeseriesRequest(
-                session_id=uuid_to_guid(self.session_id),
-                object_id=object_id,
-                interval=interval
+                mesh_pb2.ReadTimeseriesRequest(
+                    session_id=uuid_to_guid(self.session_id),
+                    object_id=object_id,
+                    interval=interval
+                )
             )
-        )
         except grpc.RpcError as e:
             self.react_to_error(e)
         else:
             return reply
-
 
     async def write_timeseries_points(
             self,
