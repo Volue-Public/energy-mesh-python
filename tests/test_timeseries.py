@@ -4,7 +4,7 @@ import uuid
 
 import pyarrow
 from volue import mesh
-from volue.mesh.common import windows_ticks_to_protobuf_timestamp
+from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
 
 from test_utilities import *
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -31,8 +31,8 @@ def impl_test_get_and_edit_timeseries_points(
 
     # Preapare the request
     # TODO: When possible, check for existence and create this timeseries
-    start = mesh.windows_ticks_to_protobuf_timestamp(635976576000000000)
-    end = mesh.windows_ticks_to_protobuf_timestamp(635987808000000000)
+    start = mesh.dot_net_ticks_to_protobuf_timestamp(635976576000000000)
+    end = mesh.dot_net_ticks_to_protobuf_timestamp(635987808000000000)
     interval = mesh.mesh_pb2.UtcInterval(
         start_time=start,
         end_time=end
@@ -87,7 +87,7 @@ class TimeseriesTests(unittest.TestCase):
         original_ts = Timestamp()
         original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
         original_ticks = 637649280000000000 #"2021-08-19T00:00:00Z"
-        ts = windows_ticks_to_protobuf_timestamp(original_ticks)
+        ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
         self.assertEqual(original_ts.ToNanoseconds(), ts.ToNanoseconds())
 
     def test_can_create_empty_timeserie(self):

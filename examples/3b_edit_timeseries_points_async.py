@@ -17,8 +17,8 @@ async def do_some_async_work() -> None:
     # Start session
     await connection.start_session()
 
-    start = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
-    end = mesh.windows_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
+    start = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     timskey = td.eagle_wind.timskey
     interval = mesh.mesh_pb2.UtcInterval(
         start_time=start,

@@ -27,9 +27,10 @@ def guid_to_uuid(guid: mesh_pb2.Guid) -> uuid.UUID:
     return uuid.UUID(bytes_le=guid)
 
 
-def windows_ticks_to_protobuf_timestamp(ticks: int) -> Timestamp:
-    """Convert Windows ticks to protobuf timestamp.
-    Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+def dot_net_ticks_to_protobuf_timestamp(ticks: int) -> Timestamp:
+    """Convert .NET ticks to protobuf timestamp.
+    Note: A .NET tick is 100 nanoseconds which started at 0001-01-01T00:00:00Z
+    Note: https://docs.microsoft.com/en-us/dotnet/api/system.datetime.ticks?view=net-5.0#remarks
 
     :param ticks: windows ticks
     :return: Timestamp
