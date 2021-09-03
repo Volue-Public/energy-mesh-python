@@ -1,3 +1,10 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import volue.mesh
 
 
@@ -17,7 +24,7 @@ def start_and_end_session(connection):
 
 def main():
     # Creating a connection, but not sending any requests yet
-    connection = volue.mesh.Connection()
+    connection = volue.mesh.Connection(address, port, secure_connection)
     get_version(connection)
     start_and_end_session(connection)
 

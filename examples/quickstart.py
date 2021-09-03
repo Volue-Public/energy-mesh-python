@@ -1,7 +1,14 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import volue.mesh
 
 # Configure the connection you want
-connection = volue.mesh.Connection()
+connection = volue.mesh.Connection(address, port, secure_connection)
 
 # secure vs not
 # kerboros vs not

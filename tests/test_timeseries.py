@@ -5,6 +5,7 @@ import uuid
 import pyarrow
 from volue import mesh
 from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
+import server_config as sc
 
 from test_utilities import *
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -152,16 +153,16 @@ class TimeseriesTests(unittest.TestCase):
 
     def test_get_and_edit_timeseries_points_from_timskey(self):
         timskey = 201503
-        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(), timskey)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(), timskey)
+        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), timskey)
+        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), timskey)
 
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(), None, uuid_id)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(), None, uuid_id)
+        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), None, uuid_id)
+        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), None, uuid_id)
 
     # TODO next level??
     # def test_get_and_edit_timeseries_points_from_search_string(self):
     #     search_string = "/TEK/Windpark/Valsneset/.Vals_WindDir_forecast"
-    #     impl_test_get_and_edit_timeseries_points(self, mesh.Connection(), search_string=search_string)
-    #     impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(), search_string=search_string)
+    #     impl_test_get_and_edit_timeseries_points(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), search_string=search_string)
+    #     impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), search_string=search_string)

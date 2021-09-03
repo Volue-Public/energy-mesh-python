@@ -1,3 +1,10 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import asyncio
 
 from volue import mesh
@@ -8,7 +15,7 @@ from utility.print import print_timeseries_points
 
 async def do_some_async_work() -> None:
     # Prepare a connection
-    connection = mesh.AsyncConnection()
+    connection = mesh.AsyncConnection(address, port, secure_connection)
 
     # Print version info
     version_info = await connection.get_version()

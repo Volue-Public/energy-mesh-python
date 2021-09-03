@@ -1,3 +1,10 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import uuid
 from volue import mesh
 from utility.print import print_timeseries_points
@@ -5,7 +12,7 @@ import utility.test_data as td
 
 if __name__ == "__main__":
     # Prepare a connection
-    connection = mesh.Connection()
+    connection = mesh.Connection(address, port, secure_connection)
 
     # Print version info
     version_info = connection.get_version()

@@ -1,3 +1,10 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
+
 import asyncio
 import volue.mesh
 
@@ -18,7 +25,7 @@ async def start_and_end_session(connection):
 
 async def main():
     # Creating a connection, but not sending any requests yet
-    connection = volue.mesh.AsyncConnection()
+    connection = volue.mesh.AsyncConnection(address, port, secure_connection)
     # Indicate that these two functions can be run concurrently
     await asyncio.gather(
         get_version(connection),

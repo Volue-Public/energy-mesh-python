@@ -1,10 +1,17 @@
+import sys
+if len(sys.argv) > 1:
+    address = sys.argv[1]
+    port = int(sys.argv[2])
+    secure_connection = sys.argv[3] == "True"
+
 import asyncio
 from volue import mesh
+
 
 async def async_print_version() -> None:
 
     # create a connection object that will be used
-    async_connection = mesh.AsyncConnection()
+    async_connection = mesh.AsyncConnection(address, port, secure_connection)
 
     # request version
     future = async_connection.get_version()
@@ -26,9 +33,9 @@ if __name__ == "__main__":
     # This will request and print version info from the mesh server.
     # If some sensible version info is printed, you have successfully
     # communicated with the server.
-
+    
     print("Synchronous get version: ")
-    connection = mesh.Connection()
+    connection = mesh.Connection(address, port, secure_connection)
     version_info = connection.get_version()
 
     print(version_info.full_version)

@@ -1,7 +1,7 @@
 import glob, os
 from test_timeseries import *
 from test_session import *
-
+import server_config as sc
 
 class RunExamples(unittest.TestCase):
 
@@ -10,7 +10,7 @@ class RunExamples(unittest.TestCase):
 
         os.chdir("../examples/")
         for file in glob.glob("*.py"):
-            run_example_script(self, file)
+            run_example_script(self, file, sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION)
 
 
 if __name__ == '__main__':

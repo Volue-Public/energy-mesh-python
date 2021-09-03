@@ -14,17 +14,18 @@ from volue.mesh.connection import Connection
 
 class AsyncConnection(Connection):
 
-    def __init__(self, host='localhost', port='50051', secure_connection: bool = False):
+    def __init__(self, host, port, secure_connection: bool):
         """
         """
+        target = f'{host}:{port}'
         if not secure_connection:
             self.channel = grpc.aio.insecure_channel(
-                target=host + ':' + port
+                target=target
             )
         else:
             credentials: Credentials = Credentials()
             self.channel = grpc.aio.secure_channel(
-                target=host + ':' + port,
+                target=target,
                 credentials=credentials.channel_creds
             )
 
