@@ -48,5 +48,5 @@ If you believe you found a bug in the Mesh Python SDK or have any other suggesti
 I need more help.
 ~~~~~~~~~~~~~~~~~~~~~~
 
-If you have a more pressing issue you should contact Volues customer service.
+If you have a more pressing issue or if your issue includes confidential information you should contact Volue's customer service.
 
