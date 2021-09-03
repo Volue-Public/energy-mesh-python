@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # This will request and print version info from the mesh server.
     # If some sensible version info is printed, you have successfully
     # communicated with the server.
-    
+
     print("Synchronous get version: ")
     connection = mesh.Connection(address, port, secure_connection)
     version_info = connection.get_version()
