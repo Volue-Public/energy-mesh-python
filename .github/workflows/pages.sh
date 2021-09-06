@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+PS4='$PWD> '
+set -o xtrace
+
 # Build the library documentation and push it to GitHub pages.
 #
 # Usage: pages.sh <repo> <gh-pages>
@@ -20,10 +23,12 @@ repo_dir=$1
 pages_dir=$2
 
 source "$HOME/.poetry/env"
+pushd "$repo_dir"
 poetry install
-poetry run make -C "$repo_dir/docs" html
+poetry run make -C "./docs" html
+popd
 rm -rf "${pages_dir:?}/"*
-cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
+cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
@@ -31,7 +36,8 @@ cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
 # leading underscores, and Sphinx generates directories like `_static/`.
 #
 # Adding a `.nojekyll` file make GitHub treat the page as purely static files.
-touch ../"$pages_dir/.nojekyll"
+touch "$pages_dir/.nojekyll"
 
-git -C ../"$pages_dir" commit -m "Update GitHub pages" --allow-empty
-git -C ../"$pages_dir" push
+git -C "$pages_dir" add --all
+git -C "$pages_dir" commit -m "Update GitHub pages" --allow-empty
+git -C "$pages_dir" push

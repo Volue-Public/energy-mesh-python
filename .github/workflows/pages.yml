@@ -30,5 +30,4 @@ jobs:
       run: |
         git -C gh-pages config user.name $GITHUB_ACTOR
         git -C gh-pages config user.email "$GITHUB_ACTOR@bots.github.com"
-        cd master
-        .github/workflows/pages.sh . gh-pages/
+        ./master/.github/workflows/pages.sh master/ gh-pages/
