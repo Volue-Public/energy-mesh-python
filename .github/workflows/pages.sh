@@ -36,7 +36,7 @@ cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 # leading underscores, and Sphinx generates directories like `_static/`.
 #
 # Adding a `.nojekyll` file make GitHub treat the page as purely static files.
-touch touch "$pages_dir/.nojekyll"
+touch "$pages_dir/.nojekyll"
 
 git -C "$pages_dir" add --all
 git -C "$pages_dir" commit -m "Update GitHub pages" --allow-empty
