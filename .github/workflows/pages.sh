@@ -20,9 +20,12 @@ repo_dir=$1
 pages_dir=$2
 
 source "$HOME/.poetry/env"
+echo "(DEBUG) PWD is $(pwd)"
 cd "$repo_dir"
+echo "(DEBUG) PWD is $(pwd)"
 poetry install
 cd ..
+echo "(DEBUG) PWD is $(pwd)"
 poetry run make -C "$repo_dir/docs" html
 rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
