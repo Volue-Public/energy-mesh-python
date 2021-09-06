@@ -24,7 +24,7 @@ echo "(DEBUG) PWD is $(pwd)"
 cd "$repo_dir"
 echo "(DEBUG) PWD is $(pwd)"
 poetry install
-poetry run make -C "/docs" html
+poetry run make -C "./docs" html
 cd ..
 rm -rf "${pages_dir:?}/"*
 echo "(DEBUG) PWD is $(pwd)"
