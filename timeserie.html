@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Timeserie &mdash; volue.mesh 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Common" href="common.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="credentials.html">Credentials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async_connection.html">Async connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common.html">Common</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Timeserie</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Timeserie</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/timeserie.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-timeserie">
+<span id="timeserie"></span><h1>Timeserie<a class="headerlink" href="#module-timeserie" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-0"></span><dl class="py class">
+<dt class="sig sig-object py" id="timeserie.Timeserie">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">timeserie.</span></span><span class="sig-name descname"><span class="pre">Timeserie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">table=None</span></em>, <em class="sig-param"><span class="pre">resolution=type:</span> <span class="pre">HOUR</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timeserie.html#Timeserie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timeserie.Timeserie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a mesh timeserie.</p>
+<p>Contains a arrow table with a schema of 3 fields (ticks, flags, value.)
+Ticks are the timestamps represented as windows ticks.
+Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+Flags are ??? &lt;TODO&gt;
+Value is the actual data for the given timestamp.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="timeserie.Timeserie.add_point">
+<span class="sig-name descname"><span class="pre">add_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/timeserie.html#Timeserie.add_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timeserie.Timeserie.add_point" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ticks</strong> – </p></li>
+<li><p><strong>flags</strong> – </p></li>
+<li><p><strong>value</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="timeserie.Timeserie.number_of_points">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">number_of_points</span></span><a class="headerlink" href="#timeserie.Timeserie.number_of_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of point inside the time series</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="timeserie.Timeserie.read_timeseries_reply">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">read_timeseries_reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reply</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.ReadTimeseriesResponse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/timeserie.html#Timeserie.read_timeseries_reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timeserie.Timeserie.read_timeseries_reply" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reply</strong> – </p>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="timeserie.Timeserie.to_proto_timeseries">
+<span class="sig-name descname"><span class="pre">to_proto_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">volue.mesh.proto.mesh_pb2.Timeseries</span></span></span><a class="reference internal" href="_modules/timeserie.html#Timeserie.to_proto_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#timeserie.Timeserie.to_proto_timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>object_id</strong> – </p></li>
+<li><p><strong>interval</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="common.html" class="btn btn-neutral float-left" title="Common" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

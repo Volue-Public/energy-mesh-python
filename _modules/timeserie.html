@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>timeserie &mdash; volue.mesh 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../credentials.html">Credentials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection.html">Connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../async_connection.html">Async connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeserie.html">Timeserie</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>timeserie</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for timeserie</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2</span>
+
+<div class="viewcode-block" id="Timeserie"><a class="viewcode-back" href="../timeserie.html#timeserie.Timeserie">[docs]</a><span class="k">class</span> <span class="nc">Timeserie</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a mesh timeserie.</span>
+
+<span class="sd">    Contains a arrow table with a schema of 3 fields (ticks, flags, value.)</span>
+<span class="sd">    Ticks are the timestamps represented as windows ticks.</span>
+<span class="sd">    Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z</span>
+<span class="sd">    Flags are ??? &lt;TODO&gt;</span>
+<span class="sd">    Value is the actual data for the given timestamp.</span>
+
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resolution</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            table:</span>
+<span class="sd">            resolution:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;ticks&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint64</span><span class="p">()),</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint32</span><span class="p">()),</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
+        <span class="p">]</span>
+        <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">empty_table</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">=</span> <span class="n">table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span>
+
+
+<div class="viewcode-block" id="Timeserie.add_point"><a class="viewcode-back" href="../timeserie.html#timeserie.Timeserie.add_point">[docs]</a>    <span class="k">def</span> <span class="nf">add_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticks</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ticks:</span>
+<span class="sd">            flags:</span>
+<span class="sd">            value:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(([</span><span class="n">ticks</span><span class="p">],</span> <span class="p">[</span><span class="n">flags</span><span class="p">],</span> <span class="p">[</span><span class="n">value</span><span class="p">]),</span>
+            <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">concat_tables</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">table</span><span class="p">])</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of point inside the time series&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span>
+
+<div class="viewcode-block" id="Timeserie.to_proto_timeseries"><a class="viewcode-back" href="../timeserie.html#timeserie.Timeserie.to_proto_timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">to_proto_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            object_id:</span>
+<span class="sd">            interval:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
+
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">RecordBatchStreamWriter</span><span class="p">(</span>
+            <span class="n">sink</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span>
+            <span class="n">schema</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span>
+        <span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">)</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span>
+            <span class="n">object_id</span> <span class="o">=</span> <span class="n">object_id</span><span class="p">,</span>
+            <span class="n">resolution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="n">interval</span><span class="p">,</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ts</span></div>
+
+<div class="viewcode-block" id="Timeserie.read_timeseries_reply"><a class="viewcode-back" href="../timeserie.html#timeserie.Timeserie.read_timeseries_reply">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_timeseries_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            reply:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">timeserie</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+            <span class="k">yield</span> <span class="n">Timeserie</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">resolution</span><span class="p">)</span></div></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
