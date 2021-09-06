@@ -41,5 +41,6 @@ cd ..
 # Adding a `.nojekyll` file make GitHub treat the page as purely static files.
 touch touch "$pages_dir/.nojekyll"
 
-git -C "$pages_dir" commit -am "Update GitHub pages" --allow-empty
+git -C "$pages_dir" add --all
+git -C "$pages_dir" commit -m "Update GitHub pages" --allow-empty
 git -C "$pages_dir" push
