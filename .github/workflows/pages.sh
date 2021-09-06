@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+PS4='$PWD> '
+set -o xtrace
+
 # Build the library documentation and push it to GitHub pages.
 #
 # Usage: pages.sh <repo> <gh-pages>
@@ -20,18 +23,12 @@ repo_dir=$1
 pages_dir=$2
 
 source "$HOME/.poetry/env"
-echo "(DEBUG) PWD is $(pwd)"
-cd "$repo_dir"
-echo "(DEBUG) PWD is $(pwd)"
+pushd "$repo_dir"
 poetry install
 poetry run make -C "./docs" html
-cd ..
+popd
 rm -rf "${pages_dir:?}/"*
-echo "(DEBUG) PWD is $(pwd)"
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
-cd "$pages_dir"
-echo "(DEBUG) ls -al is $(ls -al)"
-cd ..
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
