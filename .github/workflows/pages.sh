@@ -23,7 +23,7 @@ source "$HOME/.poetry/env"
 poetry install
 poetry run make -C "$repo_dir/docs" html
 rm -rf "${pages_dir:?}/"*
-cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
+cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
@@ -31,7 +31,7 @@ cp -r "$repo_dir/docs/build/html/"* ../"$pages_dir"
 # leading underscores, and Sphinx generates directories like `_static/`.
 #
 # Adding a `.nojekyll` file make GitHub treat the page as purely static files.
-touch ../"$pages_dir/.nojekyll"
+touch touch "$pages_dir/.nojekyll"
 
-git -C ../"$pages_dir" commit -m "Update GitHub pages" --allow-empty
-git -C ../"$pages_dir" push
+git -C "$pages_dir" commit -am "Update GitHub pages" --allow-empty
+git -C "$pages_dir" push
