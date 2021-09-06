@@ -28,7 +28,7 @@ poetry run make -C "./docs" html
 cd ..
 rm -rf "${pages_dir:?}/"*
 echo "(DEBUG) PWD is $(pwd)"
-cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
+cp -a "$repo_dir/docs/build/html/" "$pages_dir/"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
@@ -38,5 +38,5 @@ cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 # Adding a `.nojekyll` file make GitHub treat the page as purely static files.
 touch touch "$pages_dir/.nojekyll"
 
-git -C "$pages_dir" commit -m "Update GitHub pages" --allow-empty
+git -C "$pages_dir" commit -am "Update GitHub pages" --allow-empty
 git -C "$pages_dir" push
