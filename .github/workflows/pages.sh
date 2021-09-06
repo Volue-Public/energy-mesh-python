@@ -24,10 +24,10 @@ echo "(DEBUG) PWD is $(pwd)"
 cd "$repo_dir"
 echo "(DEBUG) PWD is $(pwd)"
 poetry install
+poetry run make -C "/docs" html
 cd ..
-echo "(DEBUG) PWD is $(pwd)"
-poetry run make -C "$repo_dir/docs" html
 rm -rf "${pages_dir:?}/"*
+echo "(DEBUG) PWD is $(pwd)"
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
