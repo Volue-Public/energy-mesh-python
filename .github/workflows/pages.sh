@@ -28,7 +28,10 @@ poetry run make -C "./docs" html
 cd ..
 rm -rf "${pages_dir:?}/"*
 echo "(DEBUG) PWD is $(pwd)"
-cp -a "$repo_dir/docs/build/html/" "$pages_dir/"
+cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"
+cd "$pages_dir"
+echo "(DEBUG) ls -al is $(ls -al)"
+cd ..
 
 # By default GitHub pages treats a site like a Jekyll page and uses Jekyll to
 # build the page. Normally this isn't a problem for purely static content as
