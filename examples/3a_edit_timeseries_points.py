@@ -36,12 +36,11 @@ if __name__ == "__main__":
     )
 
     # Lets edit some points:
-    #TODO EDIT
+    # TODO EDIT
 
     # Lets have a look at what we got
     print("Original timeseries:")
     print_timeseries_points(timeseries_reply, timskey)
-
 
     print("\nEdited timeseries points:")
     connection.write_timeseries_points(

@@ -14,4 +14,3 @@ def print_timeseries_points(reply: mesh_pb2.ReadTimeseriesResponse, name: str) -
         print(reader.schema)
         n += 1
     print(f"Received {len(pandas)} points for timeseries: {name}")
-

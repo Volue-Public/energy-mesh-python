@@ -41,7 +41,7 @@ async def do_some_async_work() -> None:
     print_timeseries_points(timeseries_reply, timskey)
 
     # Lets edit some points:
-    #TODO EDIT
+    # TODO EDIT
 
     print("\nEdited timeseries points:")
     await connection.write_timeseries_points(
