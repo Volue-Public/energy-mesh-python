@@ -1,16 +1,17 @@
 import glob
 import os
 import unittest
-from server_config import ADDRESS, PORT, SECURE_CONNECTION
-from test_utilities import run_example_script
+from tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
+from tests.test_utilities.utilities import run_example_script
 
 
-class RunExamples(unittest.TestCase):
+class TestExamples(unittest.TestCase):
 
     def test_run_example_scripts(self):
         """Run all example scripts and check if they exit with no error code."""
 
-        os.chdir("../examples/")
+        examles = os.path.join(os.path.dirname(__file__), '..', 'examples')
+        os.chdir(examles)
         for file in glob.glob("*.py"):
             run_example_script(self, file, ADDRESS, PORT, SECURE_CONNECTION)
 

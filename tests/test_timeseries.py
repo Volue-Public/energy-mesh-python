@@ -5,9 +5,9 @@ import uuid
 import pyarrow
 from volue import mesh
 from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
-from server_config import ADDRESS, PORT, SECURE_CONNECTION
+from tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
 
-from test_utilities import await_if_async
+from tests.test_utilities.utilities import await_if_async
 from google.protobuf.timestamp_pb2 import Timestamp
 
 
@@ -82,7 +82,7 @@ def impl_test_get_and_edit_timeseries_points(
     await_if_async(connection.end_session())
 
 
-class TimeseriesTests(unittest.TestCase):
+class TestTimeseries(unittest.TestCase):
 
     def test_can_convert_between_win32ticks_and_timestamp(self):
         original_ts = Timestamp()
@@ -166,3 +166,6 @@ class TimeseriesTests(unittest.TestCase):
     #     search_string = "/TEK/Windpark/Valsneset/.Vals_WindDir_forecast"
     #     impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), search_string=search_string)
     #     impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), search_string=search_string)
+
+if __name__ == '__main__':
+    unittest.main()

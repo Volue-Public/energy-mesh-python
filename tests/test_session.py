@@ -1,8 +1,8 @@
 import unittest
 
 from volue import mesh
-from test_utilities import await_if_async
-from server_config import ADDRESS, PORT, SECURE_CONNECTION
+from tests.test_utilities.utilities import await_if_async
+from tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
 
 
 def impl_test_get_version(test, connection):
@@ -40,7 +40,7 @@ def impl_test_start_and_close_only_one_session(test, connection):
     test.assertEqual(session_id_1, session_id_2)
 
 
-class SessionTests(unittest.TestCase):
+class TestSession(unittest.TestCase):
 
     def test_get_version(self):
         impl_test_get_version(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION))
@@ -49,3 +49,7 @@ class SessionTests(unittest.TestCase):
     def test_start_and_close_session(self):
         impl_test_start_and_close_only_one_session(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION))
         impl_test_start_and_close_only_one_session(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION))
+
+
+if __name__ == '__main__':
+    unittest.main()
