@@ -28,6 +28,7 @@ def main():
     get_version(connection)
     start_and_end_session(connection)
 
+
 main()
 print("Done")
 

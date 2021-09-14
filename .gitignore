@@ -5,3 +5,4 @@ __pycache__/
 /src/volue/mesh/proto/mesh_pb2.py
 /src/volue/mesh/proto/mesh_pb2_grpc.py
 .idea/
+.vscode/

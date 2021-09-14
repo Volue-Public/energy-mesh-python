@@ -5,9 +5,9 @@ import uuid
 import pyarrow
 from volue import mesh
 from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
-import server_config as sc
+from tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
 
-from test_utilities import *
+from tests.test_utilities.utilities import await_if_async
 from google.protobuf.timestamp_pb2 import Timestamp
 
 
@@ -82,12 +82,12 @@ def impl_test_get_and_edit_timeseries_points(
     await_if_async(connection.end_session())
 
 
-class TimeseriesTests(unittest.TestCase):
+class TestTimeseries(unittest.TestCase):
 
     def test_can_convert_between_win32ticks_and_timestamp(self):
         original_ts = Timestamp()
         original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
-        original_ticks = 637649280000000000 #"2021-08-19T00:00:00Z"
+        original_ticks = 637649280000000000  # "2021-08-19T00:00:00Z"
         ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
         self.assertEqual(original_ts.ToNanoseconds(), ts.ToNanoseconds())
 
@@ -153,16 +153,19 @@ class TimeseriesTests(unittest.TestCase):
 
     def test_get_and_edit_timeseries_points_from_timskey(self):
         timskey = 201503
-        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), timskey)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), timskey)
+        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
+        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
 
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), None, uuid_id)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), None, uuid_id)
+        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
+        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
 
     # TODO next level??
     # def test_get_and_edit_timeseries_points_from_search_string(self):
     #     search_string = "/TEK/Windpark/Valsneset/.Vals_WindDir_forecast"
-    #     impl_test_get_and_edit_timeseries_points(self, mesh.Connection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), search_string=search_string)
-    #     impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(sc.ADDRESS, sc.PORT, sc.SECURE_CONNECTION), search_string=search_string)
+    #     impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), search_string=search_string)
+    #     impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), search_string=search_string)
+
+if __name__ == '__main__':
+    unittest.main()

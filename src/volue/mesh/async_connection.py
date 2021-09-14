@@ -1,12 +1,10 @@
-import os
 import grpc
-import string
 import uuid
 
 from google import protobuf
 
-from volue.mesh.timeserie import *
-from volue.mesh.common import *
+from volue.mesh.timeserie import Timeserie
+from volue.mesh.common import guid_to_uuid, uuid_to_guid
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.credentials import Credentials
 from volue.mesh.connection import Connection
