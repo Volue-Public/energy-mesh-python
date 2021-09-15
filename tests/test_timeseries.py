@@ -157,13 +157,13 @@ class TestTimeseries(unittest.TestCase):
         self.assertEqual(timeserie_original.arrow_table[1], table[1])
         self.assertEqual(timeserie_original.arrow_table[2], table[2])
 
-    @pytest.mark.server
+    @pytest.mark.database
     def test_get_and_edit_timeseries_points_from_timskey(self):
         timskey = 201503
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
         impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
 
-    @pytest.mark.server
+    @pytest.mark.database
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)

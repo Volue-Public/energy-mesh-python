@@ -32,6 +32,7 @@ pytest = "^6.2.5"
 
 [tool.pytest.ini_options]
 markers = [
+    "database: tests that require a running mesh server with a database cache with data",
     "server: tests that require a running mesh server",
     "unittest",
 ]

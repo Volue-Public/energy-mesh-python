@@ -12,7 +12,7 @@ class TestExamples(unittest.TestCase):
     def test_is_grpc_responding(self):
         self.assertTrue(is_port_responding(ADDRESS, PORT))
 
-    @pytest.mark.server
+    @pytest.mark.database
     def test_run_example_scripts(self):
         """Run all example scripts and check if they exit with no error code."""
 
