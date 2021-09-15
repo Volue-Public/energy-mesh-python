@@ -34,62 +34,50 @@ class Connection:
             else:
                 credentials: Credentials = Credentials()
                 self.channel = grpc.secure_channel(
-                    target= target,
+                    target=target,
                     credentials=credentials.channel_creds
                 )
         self.stub = mesh_pb2_grpc.MeshServiceStub(self.channel)
         self.session_id = None
 
-
     def is_server_compatible(self) -> bool:
         """Checks if the connected mesh server version is compatible with this SDK version"""
-        #TODO Fix
+        # TODO Fix
         return True
-
 
     def get_version(self) -> str:
         """Get the version of the mesh server that is connected.
 
+        Raises:
+            grpc.RpcError:
+
         Returns:
             str: The version str for the connected mesh server.
         """
+        return self.stub.GetVersion(protobuf.empty_pb2.Empty())
 
-        try:
-            response = self.stub.GetVersion(protobuf.empty_pb2.Empty())
-        except grpc.RpcError as e:
-            self.react_to_error(e)
-        else:
-            return response
-
-    def start_session(self) -> Optional[mesh_pb2.Guid]:
+    def start_session(self) -> uuid.UUID:
         """Ask the server to start a session. Only one session can be active at any give connection.
+
+        Raises:
+            grpc.RpcError:
 
         Returns:
             Optional[mesh_pb2.Guid]: The guid of the connected session or None if session could not be started.
         """
+        reply = self.stub.StartSession(protobuf.empty_pb2.Empty())
+        self.session_id = guid_to_uuid(reply.bytes_le)
 
-        if (self.session_id is None):
-            try:
-                reply = self.stub.StartSession(protobuf.empty_pb2.Empty())
-            except grpc.RpcError as e:
-                self.react_to_error(e)
-            else:
-                self.session_id = guid_to_uuid(reply.bytes_le)
-                return reply
-        return None
+        return self.session_id
 
     def end_session(self) -> None:
-        """Ask the server to end the session."""
+        """Ask the server to end the session.
 
-        if self.session_id is not None:
-            try:
-                reply = self.stub.EndSession(uuid_to_guid(self.session_id))
-            except grpc.RpcError as e:
-                self.react_to_error(e)
-            else:
-                self.session_id = None
-                return reply
-        return None
+        Raises:
+            grpc.RpcError:
+        """
+        self.stub.EndSession(uuid_to_guid(self.session_id))
+        self.session_id = None
 
     def read_timeseries_points(
             self,
@@ -105,27 +93,25 @@ class Connection:
             guid (uuid.UUID):
             full_name (str):
 
+        Raises:
+            grpc.RpcError:
+
         Returns:
             Optional[mesh_pb2.ReadTimeseriesResponse]:
         """
-
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
             guid=uuid_to_guid(guid),
             full_name=full_name)
 
-        try:
-            reply = self.stub.ReadTimeseries(
-                mesh_pb2.ReadTimeseriesRequest(
-                    session_id=uuid_to_guid(self.session_id),
-                    object_id=object_id,
-                    interval=interval
-                )
+        reply = self.stub.ReadTimeseries(
+            mesh_pb2.ReadTimeseriesRequest(
+                session_id=uuid_to_guid(self.session_id),
+                object_id=object_id,
+                interval=interval
             )
-        except grpc.RpcError as e:
-            self.react_to_error(e)
-        else:
-            return reply
+        )
+        return reply
 
     def write_timeseries_points(
             self,
@@ -133,7 +119,7 @@ class Connection:
             timeserie: Timeserie,
             timskey: int = None,
             guid: uuid.UUID = None,
-            full_name: str = None) -> Optional[protobuf.empty_pb2.Empty]:
+            full_name: str = None) -> None:
         """
 
         Args:
@@ -143,10 +129,10 @@ class Connection:
             guid (uuid.UUID):
             full_name (str):
 
-        Returns:
+        Raises:
+            grpc.RpcError:
 
         """
-
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
             guid=uuid_to_guid(guid),
@@ -157,47 +143,26 @@ class Connection:
             interval=interval
         )
 
-        try:
-            reply = self.stub.WriteTimeseries(
-                mesh_pb2.WriteTimeseriesRequest(
-                    session_id=uuid_to_guid(self.session_id),
-                    object_id=object_id,
-                    timeseries=proto_timeserie
-                )
+        self.stub.WriteTimeseries(
+            mesh_pb2.WriteTimeseriesRequest(
+                session_id=uuid_to_guid(self.session_id),
+                object_id=object_id,
+                timeseries=proto_timeserie
             )
-        except grpc.RpcError as e:
-            self.react_to_error(e)
-        else:
-            return reply
-        return None
+        )
 
-    def rollback(self):
+    def rollback(self) -> None:
+        """ Roll back changes.
+
+        Raises:
+            grpc.RpcError:
         """
+        self.stub.Rollback(uuid_to_guid(self.session_id))
 
-        Returns:
+    def commit(self) -> None:
+        """ Commit changes.
 
+        Raises:
+            grpc.RpcError:
         """
-        return self.stub.Rollback(uuid_to_guid(self.session_id))
-
-    def commit(self):
-        """
-
-        Returns:
-
-        """
-        return self.stub.Commit(uuid_to_guid(self.session_id))
-
-    def react_to_error(self, e: grpc.RpcError) -> None:
-        """Prints errors received from the mesh gRPC API.
-
-        Args:
-            e (grpc.RpcError): The error thrown from
-
-        """
-
-        # TODO need more intelligent error handling
-        print(f"""
-            gRPC error:
-                Details:        {e.details()}
-                Status code:    {e.code()}
-        """)
+        self.stub.Commit(uuid_to_guid(self.session_id))

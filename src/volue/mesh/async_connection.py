@@ -1,3 +1,5 @@
+from typing import Optional
+
 import grpc
 import uuid
 
@@ -33,41 +35,31 @@ class AsyncConnection(Connection):
         """
         |coro|
         """
+        response = await self.stub.GetVersion(protobuf.empty_pb2.Empty())
+        return response
 
-        try:
-            response = await self.stub.GetVersion(protobuf.empty_pb2.Empty())
-        except grpc.RpcError as e:
-            self.react_to_error(e)
-        else:
-            return response
-
-    async def start_session(self):
+    async def start_session(self) -> uuid.UUID:
         """
         |coro|
-        """
-        if (self.session_id is None):
-            try:
-                reply = await self.stub.StartSession(protobuf.empty_pb2.Empty())
-            except grpc.RpcError as e:
-                self.react_to_error(e)
-            else:
-                self.session_id = guid_to_uuid(reply.bytes_le)
-                return reply
-        return None
 
-    async def end_session(self):
+        Raises:
+            grpc.RpcError:
+
+        """
+        reply = await self.stub.StartSession(protobuf.empty_pb2.Empty())
+        self.session_id = guid_to_uuid(reply.bytes_le)
+
+        return self.session_id
+
+    async def end_session(self) -> None:
         """
         |coro|
+
+        Raises:
+            grpc.RpcError:
         """
-        if (self.session_id is not None):
-            try:
-                reply = await self.stub.EndSession(uuid_to_guid(self.session_id))
-            except grpc.RpcError as e:
-                self.react_to_error(e)
-            else:
-                self.session_id = None
-                return reply
-        return None
+        await self.stub.EndSession(uuid_to_guid(self.session_id))
+        self.session_id = None
 
     async def read_timeseries_points(
             self,
@@ -77,25 +69,23 @@ class AsyncConnection(Connection):
             full_name: str = None):
         """
         |coro|
-        """
 
+        Raises:
+            grpc.RpcError:
+        """
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
             guid=uuid_to_guid(guid),
             full_name=full_name)
 
-        try:
-            reply = await self.stub.ReadTimeseries(
-                mesh_pb2.ReadTimeseriesRequest(
-                    session_id=uuid_to_guid(self.session_id),
-                    object_id=object_id,
-                    interval=interval
-                )
+        reply = await self.stub.ReadTimeseries(
+            mesh_pb2.ReadTimeseriesRequest(
+                session_id=uuid_to_guid(self.session_id),
+                object_id=object_id,
+                interval=interval
             )
-        except grpc.RpcError as e:
-            self.react_to_error(e)
-        else:
-            return reply
+        )
+        return reply
 
     async def write_timeseries_points(
             self,
@@ -103,11 +93,13 @@ class AsyncConnection(Connection):
             timeserie: Timeserie,
             timskey: int = None,
             guid: uuid.UUID = None,
-            full_name: str = None):
+            full_name: str = None) -> None:
         """
         |coro|
-        """
 
+        Raises:
+            grpc.RpcError:
+        """
         object_id = mesh_pb2.ObjectId(
             timskey=timskey,
             guid=uuid_to_guid(guid),
@@ -118,29 +110,28 @@ class AsyncConnection(Connection):
             interval=interval
         )
 
-        try:
-            reply = await self.stub.WriteTimeseries(
-                mesh_pb2.WriteTimeseriesRequest(
-                    session_id=uuid_to_guid(self.session_id),
-                    object_id=object_id,
-                    timeseries=proto_timeserie
-                )
+        await self.stub.WriteTimeseries(
+            mesh_pb2.WriteTimeseriesRequest(
+                session_id=uuid_to_guid(self.session_id),
+                object_id=object_id,
+                timeseries=proto_timeserie
             )
-        except grpc.RpcError as e:
-            self.react_to_error(e)
-        else:
-            return reply
-        return None
+        )
 
-    async def rollback(self):
+    async def rollback(self) -> None:
         """
         |coro|
+
+        Raises:
+            grpc.RpcError:
         """
+        await self.stub.Rollback(uuid_to_guid(self.session_id))
 
-        return await self.stub.Rollback(uuid_to_guid(self.session_id))
-
-    async def commit(self):
+    async def commit(self) -> None:
         """
         |coro|
+
+        Raises:
+            grpc.RpcError:
         """
-        return await self.stub.Commit(uuid_to_guid(self.session_id))
+        await self.stub.Commit(uuid_to_guid(self.session_id))
