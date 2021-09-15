@@ -1,0 +1,64 @@
+name: Development
+
+on:
+
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+
+  Build_and_test:
+
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Installing poetry
+        uses: abatilo/actions-poetry@v2.0.0
+        with:
+          poetry-version: '1.1.6'
+
+      - name: Poetry install
+        run: poetry install
+
+      # Generates the protobuf/gRPC sources and creates the SDK packages
+      - name: Poetry build
+        run: poetry build
+
+      # Run tests that don't need a mesh service
+      - name: Run unit tests
+        working-directory: ${{ github.workspace }}
+        run: |
+          poetry run pytest -m unittest
+
+      - name: Checkout GitHub action
+        uses: actions/checkout@v2
+        with:
+          repository: PowelAS/sme-run-mesh-service
+          ref: master
+          token: ${{ secrets.OAUTH_TOKEN }}
+          path: .github/actions
+
+      - name: Install and run Mesh server
+        uses: ./.github/actions/
+        id: download-mesh-server
+        with:
+          GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          MESH_SERVICE_TAG: 'meshservice_v2.0.0'
+
+      - name: Run server dependent tests
+        if: ${{ success() }}
+        working-directory: ${{ github.workspace }}
+        run: |
+          poetry run pytest -m server
