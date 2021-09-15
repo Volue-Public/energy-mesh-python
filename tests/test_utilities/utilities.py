@@ -1,6 +1,20 @@
 import subprocess
 import sys
 import asyncio
+import socket
+
+
+def is_port_responding(host: str, port: int):
+    args = socket.getaddrinfo(host, port, socket.AF_INET, socket.SOCK_STREAM)
+    for family, socktype, proto, canonname, sockaddr in args:
+        s = socket.socket(family, socktype, proto)
+        try:
+            s.connect(sockaddr)
+        except socket.error:
+            return False
+        else:
+            s.close()
+            return True
 
 
 def run_example_script(test, path, address, port, secure_connection):

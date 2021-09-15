@@ -3,6 +3,8 @@ import unittest
 import uuid
 
 import pyarrow
+import pytest
+
 from volue import mesh
 from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
 from tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
@@ -84,6 +86,7 @@ def impl_test_get_and_edit_timeseries_points(
 
 class TestTimeseries(unittest.TestCase):
 
+    @pytest.mark.unittest
     def test_can_convert_between_win32ticks_and_timestamp(self):
         original_ts = Timestamp()
         original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
@@ -91,10 +94,12 @@ class TestTimeseries(unittest.TestCase):
         ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
         self.assertEqual(original_ts.ToNanoseconds(), ts.ToNanoseconds())
 
+    @pytest.mark.unittest
     def test_can_create_empty_timeserie(self):
         ts = mesh.Timeserie()
         self.assertNotEqual(ts, None)
 
+    @pytest.mark.unittest
     def test_can_add_point_to_timeserie(self):
         ts = mesh.Timeserie()
         self.assertEqual(ts.number_of_points, 0)
@@ -103,6 +108,7 @@ class TestTimeseries(unittest.TestCase):
         ts.add_point(345, 345, 0.234)
         self.assertEqual(ts.number_of_points, 2)
 
+    @pytest.mark.unittest
     def test_can_serialize_and_deserialize_write_timeserie_request(self):
         object_id_original = mesh.mesh_pb2.ObjectId(
             timskey=201503,
@@ -151,11 +157,13 @@ class TestTimeseries(unittest.TestCase):
         self.assertEqual(timeserie_original.arrow_table[1], table[1])
         self.assertEqual(timeserie_original.arrow_table[2], table[2])
 
+    @pytest.mark.database
     def test_get_and_edit_timeseries_points_from_timskey(self):
         timskey = 201503
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
         impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
 
+    @pytest.mark.database
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
