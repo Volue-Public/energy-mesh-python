@@ -39,7 +39,7 @@ jobs:
         run: |
           git config user.name $GITHUB_ACTOR
           git config user.email "$GITHUB_ACTOR@bots.github.com"
-          python -m pip install git+https://github.com/PowelAS/sme-mesh-python
+          python -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python
           echo "<TODO> Run tests"
       
       - name: Install Ubuntu 20.04 (wsl2)
