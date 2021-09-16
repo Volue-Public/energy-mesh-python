@@ -10,7 +10,8 @@ on:
 
 jobs:
   checkout_and_use:
-    runs-on: windows-latest
+    # Only windows-2019 hosts have wsl enabled
+    runs-on: windows-2019
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
@@ -37,15 +38,22 @@ jobs:
 
       - name: Install and test Python SDK (Windows)
         run: |
-          git config user.name $GITHUB_ACTOR
-          git config user.email "$GITHUB_ACTOR@bots.github.com"
           python -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python
           echo "<TODO> Run tests"
       
-      - name: Install Ubuntu 20.04 (wsl2)
-        run: echo "<TODO> Install Ubuntu in wsl2"
+      - name: Install Ubuntu 20.04 (wsl1)
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          set-as-default: 'true'
+          update: 'false'
+      - shell: wsl-bash {0}
+        run: |
+          uname -a
+          git --version
         
       - name: Install and test Python SDK (Ubuntu 20.04)
         run: |
           echo "<TODO> Installing python sdk"
+
           echo "<TODO> Testing python sdk"
