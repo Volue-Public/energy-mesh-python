@@ -163,7 +163,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for async_connection</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">grpc</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
@@ -198,41 +200,31 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">response</span></div>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">react_to_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">response</span></div>
-
-<div class="viewcode-block" id="AsyncConnection.start_session"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.start_session">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AsyncConnection.start_session"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.start_session">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
-            <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">react_to_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">guid_to_uuid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">reply</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="AsyncConnection.end_session"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.end_session">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">end_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">guid_to_uuid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span></div>
+
+<div class="viewcode-block" id="AsyncConnection.end_session"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.end_session">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">end_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">EndSession</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
-            <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">react_to_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span>
-                <span class="k">return</span> <span class="n">reply</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">EndSession</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="AsyncConnection.read_timeseries_points"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.read_timeseries_points">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -242,25 +234,23 @@
             <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
             <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
             <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
             <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">ReadTimeseries</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
-                    <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                    <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
-                    <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-                <span class="p">)</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">ReadTimeseries</span><span class="p">(</span>
+            <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
+                <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">react_to_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">reply</span></div>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">reply</span></div>
 
 <div class="viewcode-block" id="AsyncConnection.write_timeseries_points"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.write_timeseries_points">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -268,11 +258,13 @@
             <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeserie</span><span class="p">,</span>
             <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
             <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
             <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
@@ -283,32 +275,31 @@
             <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
         <span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">WriteTimeseries</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
-                    <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                    <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
-                    <span class="n">timeseries</span><span class="o">=</span><span class="n">proto_timeserie</span>
-                <span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">WriteTimeseries</span><span class="p">(</span>
+            <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
+                <span class="n">timeseries</span><span class="o">=</span><span class="n">proto_timeserie</span>
             <span class="p">)</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">react_to_error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">reply</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="AsyncConnection.rollback"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.rollback">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AsyncConnection.rollback"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.rollback">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
 
-        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="AsyncConnection.commit"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.commit">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AsyncConnection.commit"><a class="viewcode-back" href="../async_connection.html#async_connection.AsyncConnection.commit">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        |coro|</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>
