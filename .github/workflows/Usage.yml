@@ -37,6 +37,8 @@ jobs:
 
       - name: Install and test Python SDK (Windows)
         run: |
+          git config user.name $GITHUB_ACTOR
+          git config user.email "$GITHUB_ACTOR@bots.github.com"
           python -m pip install git+https://github.com/PowelAS/sme-mesh-python
           echo "<TODO> Run tests"
       
