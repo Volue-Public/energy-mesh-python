@@ -2,6 +2,7 @@ import string
 import unittest
 import uuid
 
+import grpc
 import pyarrow
 import pytest
 
@@ -48,30 +49,37 @@ def impl_test_get_and_edit_timeseries_points(
             full_name=full_name,
             interval=interval))
 
-    # Send request, and wait for reply
-    write_reply = await_if_async(
-        connection.write_timeseries_points(
-            timskey=timskey,
-            guid=mesh.uuid_to_guid(uuid),
-            full_name=full_name,
-            interval=interval,
-            timeserie=next(mesh.Timeserie.read_timeseries_reply(read_reply_1))))
+    # Send request
+    try:
+        await_if_async(
+            connection.write_timeseries_points(
+                timskey=timskey,
+                guid=mesh.uuid_to_guid(uuid),
+                full_name=full_name,
+                interval=interval,
+                timeserie=next(mesh.Timeserie.read_timeseries_reply(read_reply_1))))
+    except grpc.RpcError:
+        test.fail("Could not write timeseries points")
 
     test.assertNotEqual(write_reply, None)
 
-    write_reply = await_if_async(connection.commit())
-
-    test.assertNotEqual(write_reply, None)
+    try:
+        await_if_async(connection.commit())
+    except grpc.RpcError:
+        test.fail("Could not commit changes.")
 
     # Read the timeseries we just edited
-    read_reply_2 = await_if_async(
-        connection.read_timeseries_points(
-            timskey=timskey,
-            guid=uuid,
-            full_name=full_name,
-            interval=interval))
-
-    test.assertNotEqual(read_reply_2, None)
+    try:
+        read_reply_2 = await_if_async(
+            connection.read_timeseries_points(
+                timskey=timskey,
+                guid=uuid,
+                full_name=full_name,
+                interval=interval))
+    except grpc.RpcError:
+        test.fail("Could not read timeseries points")
+    finally:
+        test.assertNotEqual(read_reply_2, None)
 
     # Check that the values are the same as we just wrote
     test.assertGreater(len(read_reply_2.timeseries), 0)
@@ -167,13 +175,15 @@ class TestTimeseries(unittest.TestCase):
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
         impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
+        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), None,
+                                                 uuid_id)
 
     # TODO next level??
     # def test_get_and_edit_timeseries_points_from_search_string(self):
     #     search_string = "/TEK/Windpark/Valsneset/.Vals_WindDir_forecast"
     #     impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), search_string=search_string)
     #     impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), search_string=search_string)
+
 
 if __name__ == '__main__':
     unittest.main()

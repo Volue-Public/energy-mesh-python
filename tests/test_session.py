@@ -1,5 +1,6 @@
 import unittest
 
+import grpc
 import pytest
 
 from volue import mesh
@@ -30,11 +31,8 @@ def impl_test_start_and_close_only_one_session(test, connection):
 
     # We already have a session, so we should not be allowed
     # to start another one:
-    session_reply_2 = await_if_async(connection.start_session())
-
-    # Should not be ok, we are not allowed to start another session
-    # before we close the old one.
-    test.assertEqual(session_reply_2, None)
+    with test.assertRaises(grpc.RpcError):
+        await_if_async(connection.start_session())
 
     session_id_2 = connection.session_id
 
