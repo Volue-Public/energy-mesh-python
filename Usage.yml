@@ -1,0 +1,49 @@
+name: Usage
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  checkout_and_use:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          
+      - name: Checkout GitHub action
+        uses: actions/checkout@v2
+        with:
+          repository: PowelAS/sme-run-mesh-service
+          ref: master
+          token: ${{ secrets.OAUTH_TOKEN }}
+          path: .github/actions
+
+      - name: Install and run Mesh server
+        uses: ./.github/actions/
+        id: download-mesh-server
+        with:
+          GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
+          MESH_SERVICE_TAG: 'meshservice_v2.0.0'
+
+      - name: Install and test Python SDK (Windows)
+        run: |
+          python -m pip install git+https://github.com/PowelAS/sme-mesh-python
+          echo "<TODO> Run tests"
+      
+      - name: Install Ubuntu 20.04 (wsl2)
+        run: echo "<TODO> Install Ubuntu in wsl2"
+        
+      - name: Install and test Python SDK (Ubuntu 20.04)
+        run: |
+          echo "<TODO> Installing python sdk"
+          echo "<TODO> Testing python sdk"
