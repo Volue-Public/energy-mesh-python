@@ -42,20 +42,20 @@ jobs:
           echo "<TODO> Run tests"
       
       - name: Install Ubuntu 20.04 (wsl1)
-      - uses: Vampire/setup-wsl@v1
+        uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
           set-as-default: 'true'
           update: 'false'
           
-      - name: "Test"
+      - name: Test
         shell: wsl-bash {0}
         run: |
           uname -a
           git --version
         
       - name: Install and test Python SDK (Ubuntu 20.04)
+        shell: wsl-bash {0}
         run: |
           echo "<TODO> Installing python sdk"
-
           echo "<TODO> Testing python sdk"
