@@ -52,6 +52,7 @@ jobs:
       - name: Install and test Python SDK (Ubuntu 20.04)
         shell: wsl-bash {0}
         run: |
+          sudo apt install python${{ matrix.python-version }}
           python -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python@jbbakeng-patch-1
           python -m pip install pytest
           python -m pytest --pyargs volue.tests -m "unittest or server"
