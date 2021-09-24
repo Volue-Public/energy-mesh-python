@@ -1,20 +1,17 @@
-import sys
-if len(sys.argv) > 1:
-    address = sys.argv[1]
-    port = int(sys.argv[2])
-    secure_connection = sys.argv[3] == "True"
-
+from volue.mesh.async_connection import AsyncConnection
+from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
+from volue.mesh.proto.mesh_pb2 import UtcInterval
+from volue.examples.utility.print import print_timeseries_points
+from volue.examples.utility.print import get_connection_info
+import volue.examples.utility.test_data as td
 
 import asyncio
-from volue import mesh
-from utility.print import print_timeseries_points
-import utility.test_data as td
 
 
-async def do_some_async_work() -> None:
+async def main(address, port, secure_connection) -> None:
 
     # First, prepare the connection:
-    async_connection = mesh.AsyncConnection(address, port, secure_connection)
+    async_connection = AsyncConnection(address, port, secure_connection)
     await async_connection.start_session()
 
     # Print version info
@@ -24,9 +21,9 @@ async def do_some_async_work() -> None:
     # Let's request some timeseries.
     # While we wait for the response, we can
     # and do other stuff (like send new requests).
-    start = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
-    end = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
-    interval = mesh.mesh_pb2.UtcInterval(
+    start = dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
+    interval = UtcInterval(
         start_time=start,
         end_time=end
     )
@@ -66,5 +63,5 @@ async def do_some_async_work() -> None:
 
 
 if __name__ == "__main__":
-    # Do some meaningful and important work
-    asyncio.run(do_some_async_work())
+    address, port, secure_connection = get_connection_info()
+    asyncio.run(main(address, port, secure_connection))

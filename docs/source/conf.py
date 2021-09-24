@@ -19,7 +19,7 @@ author = 'Volue AS'
 
 import re
 version = ''
-with open('../../src/volue/mesh/__init__.py') as f:
+with open('../../src/volue/__init__.py') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)
 
 # The full version, including alpha/beta/rc tags

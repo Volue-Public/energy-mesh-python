@@ -1,11 +1,5 @@
-import sys
-if len(sys.argv) > 1:
-    address = sys.argv[1]
-    port = int(sys.argv[2])
-    secure_connection = sys.argv[3] == "True"
-
-
-import volue.mesh
+from volue.mesh.connection import Connection
+from volue.examples.utility.print import get_connection_info
 
 
 def get_version(connection):
@@ -22,15 +16,17 @@ def start_and_end_session(connection):
     connection.end_session()
 
 
-def main():
+def main(address, port, secure_connection):
     # Creating a connection, but not sending any requests yet
-    connection = volue.mesh.Connection(address, port, secure_connection)
+    connection = Connection(address, port, secure_connection)
     get_version(connection)
     start_and_end_session(connection)
 
 
-main()
-print("Done")
+if __name__ == "__main__":
+    address, port, secure_connection = get_connection_info()
+    main(address, port, secure_connection)
+    print("Done")
 
 # Outputs:
 # 1. Requesting server version

@@ -1,21 +1,17 @@
-import sys
-if len(sys.argv) > 1:
-    address = sys.argv[1]
-    port = int(sys.argv[2])
-    secure_connection = sys.argv[3] == "True"
-
+from volue.mesh.async_connection import AsyncConnection
+from volue.mesh.timeserie import Timeserie
+from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
+from volue.mesh.proto.mesh_pb2 import UtcInterval
+import volue.examples.utility.test_data as td
+from volue.examples.utility.print import get_connection_info
+from volue.examples.utility.print import print_timeseries_points
 
 import asyncio
 
-from volue import mesh
 
-import utility.test_data as td
-from utility.print import print_timeseries_points
-
-
-async def do_some_async_work() -> None:
+async def main(address, port, secure_connection) -> None:
     # Prepare a connection
-    connection = mesh.AsyncConnection(address, port, secure_connection)
+    connection = AsyncConnection(address, port, secure_connection)
 
     # Print version info
     version_info = await connection.get_version()
@@ -24,10 +20,10 @@ async def do_some_async_work() -> None:
     # Start session
     await connection.start_session()
 
-    start = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
-    end = mesh.dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
+    start = dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
+    end = dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
     timskey = td.eagle_wind.timskey
-    interval = mesh.mesh_pb2.UtcInterval(
+    interval = UtcInterval(
         start_time=start,
         end_time=end)
 
@@ -47,7 +43,7 @@ async def do_some_async_work() -> None:
     await connection.write_timeseries_points(
         timskey=timskey,
         interval=interval,
-        timeserie=next(mesh.Timeserie.read_timeseries_reply(timeseries_reply)))
+        timeserie=next(Timeserie.read_timeseries_reply(timeseries_reply)))
 
     # Let's have a look at the points again
     timeseries_reply = await connection.read_timeseries_points(
@@ -71,11 +67,12 @@ async def do_some_async_work() -> None:
     await connection.write_timeseries_points(
         timskey=timskey,
         interval=interval,
-        timeserie=next(mesh.Timeserie.read_timeseries_reply(timeseries_reply)))
+        timeserie=next(Timeserie.read_timeseries_reply(timeseries_reply)))
     await connection.commit()
 
     await connection.end_session()
 
 
 if __name__ == "__main__":
-    asyncio.run(do_some_async_work())
+    address, port, secure_connection = get_connection_info()
+    asyncio.run(main(address, port, secure_connection))
