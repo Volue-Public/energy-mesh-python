@@ -57,7 +57,8 @@ jobs:
           sudo add-apt-repository --yes ppa:deadsnakes/ppa
           sudo apt-cache search python${{ matrix.python-version }}
           sudo apt-get install --yes python${{ matrix.python-version }}
-          sudo apt install --yes python3-pip
+          sudo apt-get install --yes python3-distutils
+          sudo apt-get install --yes python3-pip
           python${{ matrix.python-version }} -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python@jbbakeng-patch-1
           python${{ matrix.python-version }} -m pip install pytest
           python${{ matrix.python-version }} -m pytest --pyargs volue.tests -m "unittest or server"
