@@ -55,7 +55,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes software-properties-common
           sudo add-apt-repository --yes ppa:deadsnakes/ppa
-          sudo apt-cache search python${{ matrix.python-version }}
           sudo apt-get install --yes python${{ matrix.python-version }}
           sudo apt-get install --yes python3-distutils
           sudo apt-get install --yes python3-pip
