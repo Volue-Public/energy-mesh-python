@@ -53,7 +53,7 @@ jobs:
         shell: wsl-bash {0}
         run: |
           sudo apt-get update
-          sudo apt-get install software-properties-common
+          sudo apt-get install --yes software-properties-common
           sudo add-apt-repository --yes ppa:deadsnakes/ppa
           sudo apt-cache search python${{ matrix.python-version }}
           sudo apt-get install --yes python${{ matrix.python-version }}
