@@ -98,10 +98,12 @@ def test_can_convert_between_win32ticks_and_timestamp():
     ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
     assert original_ts.ToNanoseconds() == ts.ToNanoseconds()
 
+
 @pytest.mark.unittest
 def test_can_create_empty_timeserie():
     ts = Timeserie()
     assert ts is not None
+
 
 @pytest.mark.unittest
 def test_can_add_point_to_timeserie():
@@ -111,6 +113,7 @@ def test_can_add_point_to_timeserie():
     assert ts.number_of_points == 1
     ts.add_point(345, 345, 0.234)
     assert ts.number_of_points == 2
+
 
 @pytest.mark.unittest
 def test_can_serialize_and_deserialize_write_timeserie_request():
@@ -161,11 +164,13 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert timeserie_original.arrow_table[1] == table[1]
     assert timeserie_original.arrow_table[2] == table[2]
 
+
 @pytest.mark.database
 def test_get_and_edit_timeseries_points_from_timskey():
     timskey = 201503
     impl_test_get_and_edit_timeseries_points(Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
     impl_test_get_and_edit_timeseries_points(AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
+
 
 @pytest.mark.database
 def test_get_and_edit_timeseries_points_from_uuid():
