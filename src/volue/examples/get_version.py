@@ -1,17 +1,14 @@
-import sys
-if len(sys.argv) > 1:
-    address = sys.argv[1]
-    port = int(sys.argv[2])
-    secure_connection = sys.argv[3] == "True"
+from volue.mesh.async_connection import AsyncConnection
+from volue.mesh.connection import Connection
+from volue.examples.utility.print import get_connection_info
 
 import asyncio
-from volue import mesh
 
 
-async def async_print_version() -> None:
+async def async_print_version(address, port, secure_connection) -> None:
 
     # create a connection object that will be used
-    async_connection = mesh.AsyncConnection(address, port, secure_connection)
+    async_connection = AsyncConnection(address, port, secure_connection)
 
     # request version
     future = async_connection.get_version()
@@ -29,21 +26,24 @@ async def async_print_version() -> None:
     ret = await async_connection.end_session()
     print("Asynchronously closed session.")
 
+
+def main(address, port, secure_connection):
+    print("Synchronous get version: ")
+    connection = Connection(address, port, secure_connection)
+    version_info = connection.get_version()
+    print(version_info.full_version)
+    ret = connection.start_session()
+    print("Started session with ID: " + str(connection.session_id))
+    ret = connection.end_session()
+    print("Closed session.")
+    asyncio.run(async_print_version(address, port, secure_connection))
+
+
 if __name__ == "__main__":
     # This will request and print version info from the mesh server.
     # If some sensible version info is printed, you have successfully
     # communicated with the server.
 
-    print("Synchronous get version: ")
-    connection = mesh.Connection(address, port, secure_connection)
-    version_info = connection.get_version()
+    address, port, secure_connection = get_connection_info()
 
-    print(version_info.full_version)
-
-    ret = connection.start_session()
-    print("Started session with ID: " + str(connection.session_id))
-
-    ret = connection.end_session()
-    print("Closed session.")
-
-    asyncio.run(async_print_version())
+    main(address, port, secure_connection)

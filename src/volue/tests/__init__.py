@@ -1,15 +1,3 @@
-"""
-Client library for Volue Energy's Mesh software.
-
-"""
-
-
-__title__ = 'volue.mesh'
-__author__ = 'Volue AS'
-__version__ = "0.1.0"
-
-
-
 #---------
 #https://stackoverflow.com/questions/32420646/how-to-expose-every-name-in-sub-module-in-init-py-of-a-package
 import importlib

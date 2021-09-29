@@ -3,12 +3,12 @@ name = "volue.mesh"
 version = "0.1.0"
 description = ""
 license = "Proprietary"
-authors = ["Volue AS <erik.nyhus@volue.com>"]
+authors = ["Volue AS"]
 readme = "README.md"
 homepage = "https://github.com/PowelAS/sme-mesh-python"
 repository = "https://github.com/PowelAS/sme-mesh-python"
 packages = [
-    { include = "volue/mesh", from = "src" }
+    { include = "volue", from = "src" }
 ]
 # By default Poetry doesn't package files in .gitignore.
 include = [

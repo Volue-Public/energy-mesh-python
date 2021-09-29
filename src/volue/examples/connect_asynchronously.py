@@ -1,12 +1,6 @@
-import sys
-if len(sys.argv) > 1:
-    address = sys.argv[1]
-    port = int(sys.argv[2])
-    secure_connection = sys.argv[3] == "True"
-
-
+from volue.mesh.async_connection import AsyncConnection
+from volue.examples.utility.print import get_connection_info
 import asyncio
-import volue.mesh
 
 
 async def get_version(connection):
@@ -23,18 +17,19 @@ async def start_and_end_session(connection):
     await connection.end_session()
 
 
-async def main():
+async def main(address, port, secure_connection):
     # Creating a connection, but not sending any requests yet
-    connection = volue.mesh.AsyncConnection(address, port, secure_connection)
+    connection = AsyncConnection(address, port, secure_connection)
     # Indicate that these two functions can be run concurrently
     await asyncio.gather(
         get_version(connection),
         start_and_end_session(connection)
     )
 
-
-asyncio.run(main())
-print("Done")
+if __name__ == "__main__":
+    address, port, secure_connection = get_connection_info()
+    asyncio.run(main(address, port, secure_connection))
+    print("Done")
 
 # Outputs:
 # 1. Requesting server version

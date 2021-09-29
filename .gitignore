@@ -6,3 +6,4 @@ __pycache__/
 /src/volue/mesh/proto/mesh_pb2_grpc.py
 .idea/
 .vscode/
+src/volue/tests/.pytest_cache

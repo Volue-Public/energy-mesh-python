@@ -6,11 +6,15 @@ import grpc
 import pyarrow
 import pytest
 
-from volue import mesh
+from volue.mesh.connection import Connection
+from volue.mesh.async_connection import AsyncConnection
+from volue.mesh.timeserie import Timeserie
+from volue.mesh.common import uuid_to_guid
+from volue.mesh.proto.mesh_pb2 import ObjectId, UtcInterval, WriteTimeseriesRequest
 from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
-from tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
+from volue.tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
 
-from tests.test_utilities.utilities import await_if_async
+from volue.tests.test_utilities.utilities import await_if_async
 from google.protobuf.timestamp_pb2 import Timestamp
 
 
@@ -35,9 +39,9 @@ def impl_test_get_and_edit_timeseries_points(
 
     # Preapare the request
     # TODO: When possible, check for existence and create this timeseries
-    start = mesh.dot_net_ticks_to_protobuf_timestamp(635976576000000000)
-    end = mesh.dot_net_ticks_to_protobuf_timestamp(635987808000000000)
-    interval = mesh.mesh_pb2.UtcInterval(
+    start = dot_net_ticks_to_protobuf_timestamp(635976576000000000)
+    end = dot_net_ticks_to_protobuf_timestamp(635987808000000000)
+    interval = UtcInterval(
         start_time=start,
         end_time=end
     )
@@ -54,10 +58,10 @@ def impl_test_get_and_edit_timeseries_points(
         await_if_async(
             connection.write_timeseries_points(
                 timskey=timskey,
-                guid=mesh.uuid_to_guid(uuid),
+                guid=uuid_to_guid(uuid),
                 full_name=full_name,
                 interval=interval,
-                timeserie=next(mesh.Timeserie.read_timeseries_reply(read_reply_1))))
+                timeserie=next(Timeserie.read_timeseries_reply(read_reply_1))))
     except grpc.RpcError:
         test.fail("Could not write timeseries points")
 
@@ -84,8 +88,8 @@ def impl_test_get_and_edit_timeseries_points(
     # Check that the values are the same as we just wrote
     test.assertGreater(len(read_reply_2.timeseries), 0)
     compare_segments(test,
-                     next(mesh.Timeserie.read_timeseries_reply(read_reply_1)),
-                     next(mesh.Timeserie.read_timeseries_reply(read_reply_2))
+                     next(Timeserie.read_timeseries_reply(read_reply_1)),
+                     next(Timeserie.read_timeseries_reply(read_reply_2))
                      )
 
     # Done! Close session.
@@ -104,12 +108,12 @@ class TestTimeseries(unittest.TestCase):
 
     @pytest.mark.unittest
     def test_can_create_empty_timeserie(self):
-        ts = mesh.Timeserie()
+        ts = Timeserie()
         self.assertNotEqual(ts, None)
 
     @pytest.mark.unittest
     def test_can_add_point_to_timeserie(self):
-        ts = mesh.Timeserie()
+        ts = Timeserie()
         self.assertEqual(ts.number_of_points, 0)
         ts.add_point(123, 123, 0.123)
         self.assertEqual(ts.number_of_points, 1)
@@ -118,20 +122,20 @@ class TestTimeseries(unittest.TestCase):
 
     @pytest.mark.unittest
     def test_can_serialize_and_deserialize_write_timeserie_request(self):
-        object_id_original = mesh.mesh_pb2.ObjectId(
+        object_id_original = ObjectId(
             timskey=201503,
-            guid=mesh.uuid_to_guid(uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")),
+            guid=uuid_to_guid(uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")),
             full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)"
         )
 
         ts_start = Timestamp(seconds=1)
         ts_end = Timestamp(seconds=2)
-        interval = mesh.mesh_pb2.UtcInterval(
+        interval = UtcInterval(
             start_time=ts_start,
             end_time=ts_end
         )
 
-        timeserie_original = mesh.Timeserie()
+        timeserie_original = Timeserie()
         self.assertIsNotNone(timeserie_original)
         timeserie_original.add_point(0, 0, 0.0)
         timeserie_original.add_point(1, 1, 1.0)
@@ -139,9 +143,9 @@ class TestTimeseries(unittest.TestCase):
         self.assertEqual(timeserie_original.number_of_points, 3)
 
         proto_timeserie_original = timeserie_original.to_proto_timeseries(object_id_original, interval)
-        session_id_original = mesh.uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
+        session_id_original = uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
-        request_original = mesh.mesh_pb2.WriteTimeseriesRequest(
+        request_original = WriteTimeseriesRequest(
             session_id=session_id_original,
             object_id=object_id_original,
             timeseries=proto_timeserie_original
@@ -150,7 +154,7 @@ class TestTimeseries(unittest.TestCase):
         binary_data = request_original.SerializeToString()
         self.assertIsNotNone(binary_data)
 
-        request = mesh.mesh_pb2.WriteTimeseriesRequest()
+        request = WriteTimeseriesRequest()
 
         request.ParseFromString(binary_data)
         self.assertEqual(request_original, request)
@@ -168,14 +172,14 @@ class TestTimeseries(unittest.TestCase):
     @pytest.mark.database
     def test_get_and_edit_timeseries_points_from_timskey(self):
         timskey = 201503
-        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
+        impl_test_get_and_edit_timeseries_points(self, Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
+        impl_test_get_and_edit_timeseries_points(self, AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
 
     @pytest.mark.database
     def test_get_and_edit_timeseries_points_from_uuid(self):
         uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-        impl_test_get_and_edit_timeseries_points(self, mesh.Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
-        impl_test_get_and_edit_timeseries_points(self, mesh.AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), None,
+        impl_test_get_and_edit_timeseries_points(self, Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
+        impl_test_get_and_edit_timeseries_points(self, AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), None,
                                                  uuid_id)
 
     # TODO next level??
