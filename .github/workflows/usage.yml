@@ -59,5 +59,5 @@ jobs:
           sudo apt-get install --yes python3-distutils
           sudo apt-get install --yes python3-pip
           python${{ matrix.python-version }} -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python@{{ GITHUB_REF }}
-          python${{ matrix.python-version }} -m pip install pytest
+          python${{ matrix.python-version }} -m pip install pytest pytest-asyncio
           python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m "unittest or server"
