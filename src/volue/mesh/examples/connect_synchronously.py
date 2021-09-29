@@ -1,5 +1,5 @@
 from volue.mesh import Connection
-from volue.examples.utility.print import get_connection_info
+from volue.mesh.examples.utility.print import get_connection_info
 
 
 def get_version(connection):

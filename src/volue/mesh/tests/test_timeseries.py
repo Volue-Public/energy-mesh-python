@@ -1,8 +1,8 @@
 from volue.mesh import Connection, Timeserie, uuid_to_guid, dot_net_ticks_to_protobuf_timestamp
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.proto.mesh_pb2 import ObjectId, UtcInterval, WriteTimeseriesRequest
-from volue.tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
-from volue.tests.test_utilities.utilities import await_if_async
+from volue.mesh.tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
+from volue.mesh.tests.test_utilities.utilities import await_if_async
 
 from google.protobuf.timestamp_pb2 import Timestamp
 import string

@@ -1,9 +1,8 @@
 from volue.mesh.aio import Connection
 from volue.mesh import Timeserie, dot_net_ticks_to_protobuf_timestamp
 from volue.mesh.proto.mesh_pb2 import UtcInterval
-import volue.examples.utility.test_data as td
-from volue.examples.utility.print import get_connection_info
-from volue.examples.utility.print import print_timeseries_points
+import volue.mesh.examples.utility.test_data as td
+from volue.mesh.examples.utility.print import get_connection_info, print_timeseries_points
 
 import asyncio
 
