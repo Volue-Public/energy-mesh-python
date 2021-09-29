@@ -1,4 +1,4 @@
-from volue.mesh.connection import Connection
+from volue.mesh import Connection
 from volue.examples.utility.print import get_connection_info
 
 
@@ -11,16 +11,16 @@ def get_version(connection):
 
 def start_and_end_session(connection):
     print("A. Starting session")
-    connection.start_session()
+    connection.open()
     print("B. Ending session")
-    connection.end_session()
+    connection.close()
 
 
 def main(address, port, secure_connection):
     # Creating a connection, but not sending any requests yet
     connection = Connection(address, port, secure_connection)
     get_version(connection)
-    start_and_end_session(connection)
+    start_and_end_session(connection.create_session())
 
 
 if __name__ == "__main__":
