@@ -21,14 +21,14 @@ Features
 
 Prerequisites
 **************
-(<TODO> - autoextract version info from config file)
-- Mesh server with gRPC enabled. > ???
-- Python > 3.7
+
+- Mesh server with gRPC enabled.
+- Python >= 3.7.
 
 Getting help
 ---------------
 
-If you're having trouble, these resouces might help.
+If you're having trouble, these resources might help.
 
 - Try the :doc:`faq` first.
 - Report bugs in the `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_
@@ -45,12 +45,7 @@ If you're having trouble, these resouces might help.
 .. toctree::
    :caption: SDK Reference
 
-   credentials
-   connection
-   async_connection
-   common
-   timeserie
-
+   api
 
 Indices and tables
 ==================

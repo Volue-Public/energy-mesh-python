@@ -5,7 +5,7 @@ Here is a quick start guide to setup your first project using the library. It as
 
 Lets connect to the server, get its version create a session and get some data.
 
-.. literalinclude:: /../../src/volue/examples/quickstart.py
+.. literalinclude:: /../../src/volue/mesh/examples/quickstart.py
    :language: python
 
 Name this file quickstart.py.

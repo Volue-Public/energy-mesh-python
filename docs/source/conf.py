@@ -6,10 +6,16 @@ import os
 import sys
 
 ROOT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', '..')
-EXAMPLE_FOLDER = os.path.join(ROOT_FOLDER, 'examples')
 VOLUE_FOLDER = os.path.join(ROOT_FOLDER, 'src', 'volue')
-sys.path.insert(0, os.path.join(VOLUE_FOLDER, 'mesh'))
-sys.path.insert(0, os.path.join(EXAMPLE_FOLDER, 'mesh'))
+MESH_FOLDER = os.path.join(VOLUE_FOLDER, 'mesh')
+MESH_AIO_FOLDER = os.path.join(MESH_FOLDER, 'aio')
+EXAMPLE_FOLDER = os.path.join(MESH_FOLDER, 'examples')
+TESTS_FOLDER = os.path.join(MESH_FOLDER, 'tests')
+sys.path.insert(0, VOLUE_FOLDER)
+sys.path.insert(0, MESH_FOLDER)
+sys.path.insert(0, MESH_AIO_FOLDER)
+sys.path.insert(0, EXAMPLE_FOLDER)
+sys.path.insert(0, TESTS_FOLDER)
 
 # -- Project information -----------------------------------------------------
 
@@ -30,6 +36,7 @@ release = version
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autodoc.typehints',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx.ext.extlinks',
@@ -41,7 +48,9 @@ napoleon_google_docstring = True
 napoleon_numpy_docstring = True
 
 autodoc_default_options = {
-    'members': None,
+    'members': True,
+    'undoc-members': True,
+    'special-members': True
 }
 
 extlinks = {

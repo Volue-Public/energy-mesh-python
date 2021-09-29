@@ -9,11 +9,11 @@ def get_version(connection):
     print(f"2. Server version is {version.version}")
 
 
-def start_and_end_session(connection):
+def start_and_end_session(session):
     print("A. Starting session")
-    connection.open()
+    session.open()
     print("B. Ending session")
-    connection.close()
+    session.close()
 
 
 def main(address, port, secure_connection):

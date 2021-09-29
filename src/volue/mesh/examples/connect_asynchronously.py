@@ -11,11 +11,11 @@ async def get_version(connection):
     print(f"2. Server version is {version.version}")
 
 
-async def start_and_end_session(connection):
+async def start_and_end_session(session):
     print("A. Starting session")
-    await connection.open()
+    await session.open()
     print("B. Ending session")
-    await connection.close()
+    await session.close()
 
 
 async def main(address, port, secure_connection):
