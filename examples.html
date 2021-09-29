@@ -178,20 +178,17 @@
 <p>This section contains code examples.</p>
 <div class="section" id="get-version">
 <h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.async_connection</span> <span class="kn">import</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.connection</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">async_print_version</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">async_print_version</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
     <span class="c1"># create a connection object that will be used</span>
-    <span class="n">async_connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">async_connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 
     <span class="c1"># request version</span>
     <span class="n">future</span> <span class="o">=</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
@@ -209,102 +206,98 @@
     <span class="n">ret</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronously closed session.&quot;</span><span class="p">)</span>
 
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous get version: &quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started session with ID: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closed session.&quot;</span><span class="p">)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_print_version</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
+
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="c1"># This will request and print version info from the mesh server.</span>
     <span class="c1"># If some sensible version info is printed, you have successfully</span>
     <span class="c1"># communicated with the server.</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous get version: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
-
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Started session with ID: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
-
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Closed session.&quot;</span><span class="p">)</span>
-
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_print_version</span><span class="p">())</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="get-timeseries">
 <h2>Get timeseries<a class="headerlink" href="#get-timeseries" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.connection</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.common</span> <span class="kn">import</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<span class="kn">import</span> <span class="nn">volue.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
 
 <span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
-<span class="kn">from</span> <span class="nn">utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
-<span class="kn">import</span> <span class="nn">utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+
     <span class="c1"># Prepare a connection</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="c1"># Print version info</span>
     <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
-
     <span class="c1"># Start session</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
-
     <span class="c1"># Preapare the request</span>
     <span class="n">timskey</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">(</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
         <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
         <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
     <span class="p">)</span>
-
     <span class="c1"># Send request, and wait for reply</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
     <span class="p">)</span>
-
     <span class="c1"># Lets have a look at what we got</span>
     <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">timskey</span><span class="p">))</span>
-
     <span class="c1"># Lets try with a guid instead</span>
     <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
         <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
     <span class="p">)</span>
-
     <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">guid</span><span class="p">))</span>
-
     <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="get-timeseries-asynchronously">
 <h2>Get timeseries, asynchronously<a class="headerlink" href="#get-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.async_connection</span> <span class="kn">import</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.common</span> <span class="kn">import</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<span class="kn">import</span> <span class="nn">volue.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
-<span class="kn">from</span> <span class="nn">utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
-<span class="kn">import</span> <span class="nn">utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">do_some_async_work</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
     <span class="c1"># First, prepare the connection:</span>
-    <span class="n">async_connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">async_connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
 
     <span class="c1"># Print version info</span>
@@ -314,9 +307,9 @@
     <span class="c1"># Let&#39;s request some timeseries.</span>
     <span class="c1"># While we wait for the response, we can</span>
     <span class="c1"># and do other stuff (like send new requests).</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">(</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
         <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
         <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
     <span class="p">)</span>
@@ -356,70 +349,59 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="c1"># Do some meaningful and important work</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">do_some_async_work</span><span class="p">())</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="edit-timeseries">
 <h2>Edit timeseries<a class="headerlink" href="#edit-timeseries" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
-
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
-
-<span class="kn">from</span> <span class="nn">utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
-<span class="kn">import</span> <span class="nn">utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.connection</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.timeserie</span> <span class="kn">import</span> <span class="n">Timeserie</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.common</span> <span class="kn">import</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<span class="kn">import</span> <span class="nn">volue.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+
     <span class="c1"># Prepare a connection</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="c1"># Print version info</span>
     <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
-
     <span class="c1"># Start session</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
-
     <span class="c1"># Preapare the request</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
     <span class="n">timskey</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">(</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
         <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
         <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
-
     <span class="c1"># Send request, and wait for reply</span>
     <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
     <span class="p">)</span>
-
     <span class="c1"># Lets edit some points:</span>
     <span class="c1"># TODO EDIT</span>
-
     <span class="c1"># Lets have a look at what we got</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original timeseries:&quot;</span><span class="p">)</span>
     <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Edited timeseries points:&quot;</span><span class="p">)</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
-
+        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
     <span class="c1"># Let&#39;s have a look at the points again</span>
     <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Timeseries after editing:&quot;</span><span class="p">)</span>
     <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-
     <span class="c1"># Rollback</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Timeseries after Rollback:&quot;</span><span class="p">)</span>
@@ -427,7 +409,6 @@
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
     <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-
     <span class="c1"># Edit again, and commit. Now the changes will be stored in database:</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Edit timeseries again, and commit. Run the example &quot;</span>
@@ -435,33 +416,34 @@
     <span class="n">connection</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
+        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
     <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="edit-timeseries-asynchronously">
 <h2>Edit timeseries, asynchronously<a class="headerlink" href="#edit-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.async_connection</span> <span class="kn">import</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.timeserie</span> <span class="kn">import</span> <span class="n">Timeserie</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.common</span> <span class="kn">import</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
+<span class="kn">import</span> <span class="nn">volue.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
 
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="kn">import</span> <span class="nn">utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
-<span class="kn">from</span> <span class="nn">utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span>
-
-
-<span class="k">async</span> <span class="k">def</span> <span class="nf">do_some_async_work</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># Prepare a connection</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 
     <span class="c1"># Print version info</span>
     <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
@@ -470,10 +452,10 @@
     <span class="c1"># Start session</span>
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
 
-    <span class="n">start</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
     <span class="n">timskey</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">(</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
         <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
         <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
 
@@ -493,7 +475,7 @@
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
+        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
 
     <span class="c1"># Let&#39;s have a look at the points again</span>
     <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
@@ -517,14 +499,15 @@
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
         <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
+        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">do_some_async_work</span><span class="p">())</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>

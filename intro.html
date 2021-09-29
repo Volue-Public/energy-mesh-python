@@ -227,14 +227,8 @@ $ source my-venv/bin/activate (Linux, Mac)
 <p>This process can take some time. The library takes advantage of this if the connection is done by using the <a class="reference internal" href="async_connection.html"><span class="doc">Async connection</span></a> which is implemented using the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
 <p>This concept of concurrency can be demonstrated using the following examples.</p>
 <p>Using <a class="reference internal" href="connection.html"><span class="doc">Connection</span></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
-
-
-<span class="kn">import</span> <span class="nn">volue.mesh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.connection</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
 
 
 <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -251,15 +245,17 @@ $ source my-venv/bin/activate (Linux, Mac)
     <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
     <span class="c1"># Creating a connection, but not sending any requests yet</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">volue</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
 
 
-<span class="n">main</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
 
 <span class="c1"># Outputs:</span>
 <span class="c1"># 1. Requesting server version</span>
@@ -270,15 +266,9 @@ $ source my-venv/bin/activate (Linux, Mac)
 </pre></div>
 </div>
 <p>Using <a class="reference internal" href="async_connection.html"><span class="doc">Async connection</span></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
-
-
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.async_connection</span> <span class="kn">import</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">volue.mesh</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -295,18 +285,19 @@ $ source my-venv/bin/activate (Linux, Mac)
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
     <span class="c1"># Creating a connection, but not sending any requests yet</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">volue</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
         <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span>
         <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="p">)</span>
 
-
-<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
 
 <span class="c1"># Outputs:</span>
 <span class="c1"># 1. Requesting server version</span>
@@ -318,15 +309,10 @@ $ source my-venv/bin/activate (Linux, Mac)
 </div>
 <p>The primary data retrieved from the Mesh server is timeseries. Depending on the request, the size of this data can be quite large. A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another. This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python SDK uses <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> to store the data. Several data processing libraries are now supported for this format, including <a class="reference external" href="https://arrow.apache.org/docs/python/numpy.html">numpy</a> and <a class="reference external" href="https://arrow.apache.org/docs/python/pandas.html">pandas</a>.</p>
 <p>Using <a class="reference internal" href="timeserie.html"><span class="doc">Timeserie</span></a> with numpy and/or pandas</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#from volue.examples.utility.print import get_connection_info</span>
 
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="c1">#import numpy as np</span>
+<span class="c1">#import pandas as pd</span>
 
 <span class="c1"># TODO</span>
 </pre></div>

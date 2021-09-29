@@ -170,29 +170,27 @@
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
 <p>Here is a quick start guide to setup your first project using the library. It assumes you have installed the library and that you have a running Volue Mesh server with gRPC enabled.</p>
 <p>Lets connect to the server, get its version create a session and get some data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-    <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-    <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.connection</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
-<span class="kn">import</span> <span class="nn">volue.mesh</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="c1"># Configure the connection you want</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="c1"># Which version is the server running</span>
+    <span class="n">mesh_server_version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The connected Volue Mesh Server version is </span><span class="si">{</span><span class="n">mesh_server_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Create a remote session on the Volue Mesh server</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have now a open session and can request timeseries&quot;</span><span class="p">)</span>
+    <span class="c1"># Close the remote session</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
 
-<span class="c1"># Configure the connection you want</span>
-<span class="n">connection</span> <span class="o">=</span> <span class="n">volue</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 
-<span class="c1"># Which version is the server running</span>
-<span class="n">mesh_server_version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The connected Volue Mesh Server version is </span><span class="si">{</span><span class="n">mesh_server_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
 
-<span class="c1"># Create a remote session on the Volue Mesh server</span>
-<span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have now a open session and can request timeseries&quot;</span><span class="p">)</span>
-
-<span class="c1"># Close the remote session</span>
-<span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Name this file quickstart.py.</p>
