@@ -3,6 +3,8 @@ from volue.mesh import Connection
 
 
 def main(address, port, secure_connection):
+    """Showing the quickes way to get started."""
+
     # Configure the connection you want
     connection = Connection(address, port, secure_connection)
 
@@ -21,5 +23,4 @@ def main(address, port, secure_connection):
 
 if __name__ == "__main__":
     address, port, secure_connection = get_connection_info()
-
     main(address, port, secure_connection)

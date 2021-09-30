@@ -3,13 +3,14 @@ from volue.mesh.examples.utility.print import get_connection_info
 
 
 def get_version(connection):
-    # Sending a request to the server, want to know its version
+    """Showing how to send get the server version."""
     print("1. Requesting server version")
     version = connection.get_version()
     print(f"2. Server version is {version.version}")
 
 
 def start_and_end_session(session):
+    """Showing how to start and end a session."""
     print("A. Starting session")
     session.open()
     print("B. Ending session")
@@ -17,7 +18,7 @@ def start_and_end_session(session):
 
 
 def main(address, port, secure_connection):
-    # Creating a connection, but not sending any requests yet
+    """Showing how to connect to a server and running two tasks sequentially."""
     connection = Connection(address, port, secure_connection)
     get_version(connection)
     start_and_end_session(connection.create_session())

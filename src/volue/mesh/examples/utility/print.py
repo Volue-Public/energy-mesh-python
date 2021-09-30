@@ -4,6 +4,7 @@ import sys
 
 
 def get_connection_info():
+    """Helper function to set hand over connection info to examples."""
     address = "localhost"
     port = 50051
     secure_connection = False
@@ -22,8 +23,9 @@ def print_timeseries_points(reply: mesh_pb2.ReadTimeseriesResponse, name: str) -
     n = 0
     for timeserie in reply.timeseries:
         reader = pyarrow.ipc.open_stream(timeserie.data)
-        pandas = reader.read_pandas()
-        print(pandas)
+        # TODO cannot be dependent of pandas!!!
+        # pandas = reader.read_pandas()
+        # print(pandas)
         print(reader.schema)
         n += 1
-    print(f"Received {len(pandas)} points for timeseries: {name}")
+    # print(f"Received {len(pandas)} points for timeseries: {name}")

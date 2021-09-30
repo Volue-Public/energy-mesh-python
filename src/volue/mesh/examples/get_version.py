@@ -6,6 +6,8 @@ import asyncio
 
 
 def main(address, port, secure_connection):
+    """Showing how to send get the server version both sequentially and concurrently."""
+
     print("Synchronous get version: ")
     connection = Connection(address, port, secure_connection)
     version_info = connection.get_version()

@@ -1,25 +1,42 @@
 API documentation
 -----------------
 
-Connection
-***********
+The Mesh Python API contains several packages, namespaces and modules.
 
-.. autoclass:: volue.mesh.Connection
-.. autoclass:: volue.mesh.Credentials
+volue.mesh
+~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh
 
 
-Timeseries
-***********
+volue.mesh.aio
+~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: volue.mesh.Timeserie
+.. automodule:: volue.mesh.aio
 
-aio.Connection
-***************
 
-.. autoclass:: volue.mesh.aio.Connection
+volue.mesh.examples
+~~~~~~~~~~~~~~~~~~~~
 
-Common
-***********
+.. automodule:: volue.mesh.examples
+.. automodule:: volue.mesh.examples.connect_asynchronously
+.. automodule:: volue.mesh.examples.connect_synchronously
+.. automodule:: volue.mesh.examples.edit_timeseries_points
+.. automodule:: volue.mesh.examples.edit_timeseries_points_async
+.. automodule:: volue.mesh.examples.get_timeseries_points
+.. automodule:: volue.mesh.examples.get_timeseries_points_async
+.. automodule:: volue.mesh.examples.get_version
+.. automodule:: volue.mesh.examples.quickstart
+.. automodule:: volue.mesh.examples.timeseries_with_numpy_and_pandas
 
-.. automodule:: volue.mesh._common
+
+volue.mesh.tests
+~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh.tests
+.. automodule:: volue.mesh.tests.test_examples
+.. automodule:: volue.mesh.tests.test_session
+.. automodule:: volue.mesh.tests.test_timeseries
+
+
 

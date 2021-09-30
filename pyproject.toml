@@ -18,7 +18,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-grpcio = "1.37.0"
+grpcio = "^1.37.0"
 pyarrow = "^4.0.1"
 protobuf = "^3.17.3"
 
@@ -33,9 +33,10 @@ pytest-asyncio = "^0.15.1"
 
 [tool.pytest.ini_options]
 markers = [
-    "database: tests that require a running mesh server with a database cache with data",
-    "server: tests that require a running mesh server",
-    "unittest",
+    "database: Tests that require a running mesh server with a database cache with data. Warning: might read/write to db.",
+    "server: Tests that require a running mesh server.",
+    "examples: Tests that run the examples.",
+    "unittest: Tests that do NOT require a mesh server.",
 ]
 
 [build-system]

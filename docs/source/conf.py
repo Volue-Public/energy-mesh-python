@@ -38,25 +38,33 @@ extensions = [
     'sphinx.ext.autodoc.typehints',
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.viewcode',
+    'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage'
 ]
 
+# Options for: sphinx.ext.napoleon
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
 
+# Options for: sphinx.ext.todo
+todo_include_todos = True
+
+# Options for: sphinx.ext.autodoc
 autodoc_default_options = {
     'members': True,
     'undoc-members': True,
-    'special-members': True
+    'special-members': False
 }
 
+# Options for: sphinx.ext.extlinks
 extlinks = {
-    'issue': ('https://github.com/Powel/sme-mesh-python/issues/%s', 'issue %s'),
+    'issue': ('https://github.com/PowelAS/sme-mesh-python/issues/%s', 'issue %s'),
 }
 
+# Options for: sphinx.ext.intersphinx
 # Links used for cross-referencing stuff in other documentation
 intersphinx_mapping = {
   'py': ('https://docs.python.org/3', None),
@@ -65,10 +73,17 @@ intersphinx_mapping = {
 }
 
 rst_prolog = """
+.. |deprecated| replace:: **Deprecated**.
 .. |coro| replace:: This function is a |coroutine_link|_.
 .. |maybecoro| replace:: This function *could be a* |coroutine_link|_.
 .. |coroutine_link| replace:: *coroutine*
 .. _coroutine_link: https://docs.python.org/3/library/asyncio-task.html#coroutine
+.. |test| replace:: Requires |pytest_link|_.
+.. |pytest_link| replace:: *pytest*
+.. _pytest_link: https://github.com/pytest-dev/pytest
+.. |testaio| replace:: Requires |pytest_asyncio_link|_.
+.. |pytest_asyncio_link| replace:: *pytest-asyncio*
+.. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 """
 
 

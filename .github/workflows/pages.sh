@@ -25,7 +25,7 @@ pages_dir=$2
 source "$HOME/.poetry/env"
 pushd "$repo_dir"
 poetry install
-poetry run make -C "./docs" html
+poetry run make -C "./docs" html SPHINXOPTS="-W"
 popd
 rm -rf "${pages_dir:?}/"*
 cp -r "$repo_dir/docs/build/html/"* "$pages_dir/"

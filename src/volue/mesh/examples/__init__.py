@@ -1,9 +1,3 @@
-from volue.mesh.examples.connect_asynchronously import main
-from volue.mesh.examples.connect_synchronously import main
-from volue.mesh.examples.edit_timeseries_points import main
-from volue.mesh.examples.edit_timeseries_points_async import main
-from volue.mesh.examples.get_timeseries_points import main
-from volue.mesh.examples.get_timeseries_points_async import main
-from volue.mesh.examples.get_version import main
-from volue.mesh.examples.quickstart import main
-
+"""
+Examples are written in a way that is meant to show how to use a certain feature of the API.
+"""

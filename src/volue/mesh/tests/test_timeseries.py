@@ -1,16 +1,14 @@
-from volue.mesh import Connection, Timeserie, uuid_to_guid, dot_net_ticks_to_protobuf_timestamp
-from volue.mesh.aio import Connection as AsyncConnection
-from volue.mesh.proto.mesh_pb2 import ObjectId, UtcInterval, WriteTimeseriesRequest
-from volue.mesh.tests.test_utilities.server_config import ADDRESS, PORT, SECURE_CONNECTION
-from volue.mesh.tests.test_utilities.utilities import await_if_async
-
-from google.protobuf.timestamp_pb2 import Timestamp
 import string
-import unittest
 import uuid
 import grpc
 import pyarrow
 import pytest
+from google.protobuf.timestamp_pb2 import Timestamp
+from volue.mesh import Connection, Timeserie, uuid_to_guid, dot_net_ticks_to_protobuf_timestamp
+from volue.mesh.aio import Connection as AsyncConnection
+from volue.mesh.proto.mesh_pb2 import ObjectId, UtcInterval, WriteTimeseriesRequest
+import volue.mesh.tests.test_utilities.server_config as sc
+from volue.mesh.tests.test_utilities.utilities import await_if_async
 
 
 def compare_segments(seg_1, seg_2):
@@ -92,6 +90,7 @@ def impl_test_get_and_edit_timeseries_points(
 
 @pytest.mark.unittest
 def test_can_convert_between_win32ticks_and_timestamp():
+    """Check that conversion between win32ticks and timestamp works."""
     original_ts = Timestamp()
     original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
     original_ticks = 637649280000000000  # "2021-08-19T00:00:00Z"
@@ -101,12 +100,14 @@ def test_can_convert_between_win32ticks_and_timestamp():
 
 @pytest.mark.unittest
 def test_can_create_empty_timeserie():
+    """Check that an empty timeserie can be created."""
     ts = Timeserie()
     assert ts is not None
 
 
 @pytest.mark.unittest
 def test_can_add_point_to_timeserie():
+    """|deprecated| :issue:`53` Check that a point can be added to a timeserie."""
     ts = Timeserie()
     assert ts.number_of_points == 0
     ts.add_point(123, 123, 0.123)
@@ -117,6 +118,7 @@ def test_can_add_point_to_timeserie():
 
 @pytest.mark.unittest
 def test_can_serialize_and_deserialize_write_timeserie_request():
+    """Check that timeseries can be de-/serialized."""
     object_id_original = ObjectId(
         timskey=201503,
         guid=uuid_to_guid(uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")),
@@ -167,17 +169,19 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
 
 @pytest.mark.database
 def test_get_and_edit_timeseries_points_from_timskey():
+    """Check that a timeserie can be retrieved using timskey."""
     timskey = 201503
-    impl_test_get_and_edit_timeseries_points(Connection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
-    impl_test_get_and_edit_timeseries_points(AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), timskey)
+    impl_test_get_and_edit_timeseries_points(Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION), timskey)
+    impl_test_get_and_edit_timeseries_points(AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION), timskey)
 
 
 @pytest.mark.database
 def test_get_and_edit_timeseries_points_from_uuid():
+    """Check that a timeserie can be retreived using UUID."""
     uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-    impl_test_get_and_edit_timeseries_points(Connection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
-    impl_test_get_and_edit_timeseries_points(AsyncConnection(ADDRESS, PORT, SECURE_CONNECTION), None, uuid_id)
+    impl_test_get_and_edit_timeseries_points(Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION), None, uuid_id)
+    impl_test_get_and_edit_timeseries_points(AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION), None, uuid_id)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    pytest.main()

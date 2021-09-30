@@ -10,7 +10,7 @@ Getting started
 If this is you first time using this library, here are some resources to help you get started.
 
 - **First steps:** :doc:`intro` | :doc:`quickstart`
-- **Examples:** See the `repository <https://github.com/PowelAS/sme-mesh-python/tree/master/examples/mesh>`_
+- **Examples:** :doc:`examples` | :doc:`tests`
 
 Features
 **************
@@ -39,6 +39,7 @@ If you're having trouble, these resources might help.
    intro
    quickstart
    examples
+   tests
    faq
    glossary
 
