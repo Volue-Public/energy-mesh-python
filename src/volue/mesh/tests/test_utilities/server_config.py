@@ -12,5 +12,4 @@ class ServerConfig:
     SECURE_CONNECTION: bool = False
 
 
-global DefaultServerConfig
 DefaultServerConfig: ServerConfig = ServerConfig()
