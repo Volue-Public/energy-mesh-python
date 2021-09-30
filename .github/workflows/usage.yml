@@ -61,3 +61,4 @@ jobs:
           python${{ matrix.python-version }} -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python
           python${{ matrix.python-version }} -m pip install pytest pytest-asyncio
           python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m "unittest or server"
+          
