@@ -88,16 +88,13 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="credentials.html">Credentials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="async_connection.html">Async connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common.html">Common</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeserie.html">Timeserie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
 </ul>
 
             
@@ -174,7 +171,7 @@ communicate with Volue Energy’s Mesh server.</p>
 <p>If this is you first time using this library, here are some resources to help you get started.</p>
 <ul class="simple">
 <li><p><strong>First steps:</strong> <a class="reference internal" href="intro.html"><span class="doc">Introduction</span></a> | <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a></p></li>
-<li><p><strong>Examples:</strong> See the <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/tree/master/examples/mesh">repository</a></p></li>
+<li><p><strong>Examples:</strong> <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> | <a class="reference internal" href="tests.html"><span class="doc">Tests</span></a></p></li>
 </ul>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
@@ -186,14 +183,15 @@ communicate with Volue Energy’s Mesh server.</p>
 </div>
 <div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
-<p>(&lt;TODO&gt; - autoextract version info from config file)
-- Mesh server with gRPC enabled. &gt; ???
-- Python &gt; 3.7</p>
+<ul class="simple">
+<li><p>Mesh server with gRPC enabled.</p></li>
+<li><p>Python &gt;= 3.7.</p></li>
+</ul>
 </div>
 </div>
 <div class="section" id="getting-help">
 <h2>Getting help<a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h2>
-<p>If you’re having trouble, these resouces might help.</p>
+<p>If you’re having trouble, these resources might help.</p>
 <ul class="simple">
 <li><p>Try the <a class="reference internal" href="faq.html"><span class="doc">Frequently Asked Questions</span></a> first.</p></li>
 <li><p>Report bugs in the <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/issues">issue tracker</a></p></li>
@@ -202,7 +200,6 @@ communicate with Volue Energy’s Mesh server.</p>
 <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#installing">Installing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#virtual-environments">Virtual Environments</a></li>
@@ -211,11 +208,17 @@ communicate with Volue Energy’s Mesh server.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#running-examples">Running examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#get-version">Get version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#get-timeseries">Get timeseries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#get-timeseries-asynchronously">Get timeseries, asynchronously</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#edit-timeseries">Edit timeseries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#edit-timeseries-asynchronously">Edit timeseries, asynchronously</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#preparations">Preparations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#run-tests">Run tests</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
@@ -225,6 +228,7 @@ communicate with Volue Energy’s Mesh server.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#other">Other</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="faq.html#i-ran-the-tests-and-one-or-more-of-them-failed">I ran the tests and one or more of them failed.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="faq.html#i-think-i-found-a-bug-or-i-have-a-feature-request">I think I found a bug or I have a feature request.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="faq.html#i-need-more-help">I need more help.</a></li>
 </ul>
@@ -237,11 +241,13 @@ communicate with Volue Energy’s Mesh server.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="credentials.html">Credentials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="async_connection.html">Async connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common.html">Common</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeserie.html">Timeserie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-volue.mesh">volue.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-volue.mesh.aio">volue.mesh.aio</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-volue.mesh.examples">volue.mesh.examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-volue.mesh.tests">volue.mesh.tests</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>

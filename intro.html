@@ -87,7 +87,6 @@
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing">Installing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#virtual-environments">Virtual Environments</a></li>
@@ -96,16 +95,13 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="credentials.html">Credentials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="connection.html">Connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="async_connection.html">Async connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common.html">Common</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeserie.html">Timeserie</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
 </ul>
 
             
@@ -176,10 +172,7 @@
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>This is an introduction to the Mesh Python SDK, a gRPC based approach to communicate with Volues Mesh server.</p>
-<div class="section" id="prerequisites">
-<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <p>Mesh Python SDK works with Python 3.7 or higher. Support for earlier versions are not provided due to dependencies.</p>
-</div>
 <div class="section" id="installing">
 <h2>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h2>
 <p>You can get the library directly from <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python">GitHub</a></p>
@@ -191,7 +184,7 @@
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <p>The Mesh Python SDK depends on the Python standard library, but also <a class="reference external" href="https://grpc.io/">gRPC</a> and <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a>.</p>
-<p>These dependencies are managed, installed and referenced by the library using <a class="reference external" href="https://github.com/python-poetry/poetry">Poetry</a>. So no additional dependencies should be needed after running the pip install.</p>
+<p>These dependencies are managed, installed and referenced by the library using <a class="reference external" href="https://github.com/python-poetry/poetry">Poetry</a>. So no additional dependencies should be needed after running the pip install, unless you wanna run the tests that come with the SDK, then see <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a>.</p>
 </div>
 <div class="section" id="virtual-environments">
 <h2>Virtual Environments<a class="headerlink" href="#virtual-environments" title="Permalink to this headline">¶</a></h2>
@@ -224,32 +217,33 @@ $ source my-venv/bin/activate (Linux, Mac)
 <div class="section" id="basic-concepts">
 <h2>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h2>
 <p>The Mesh Python SDK communicates with a Mesh server using gRPC which is a way of sending requests and responses over a network. The request is serialized and packaged then sent to the server which processes the request and sends back a response.</p>
-<p>This process can take some time. The library takes advantage of this if the connection is done by using the <a class="reference internal" href="async_connection.html"><span class="doc">Async connection</span></a> which is implemented using the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
+<p>This process can take some time. The library takes advantage of this if the connection if you are using the package <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a> which is implemented using the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
 <p>This concept of concurrency can be demonstrated using the following examples.</p>
-<p>Using <a class="reference internal" href="connection.html"><span class="doc">Connection</span></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.connection</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<p>Using :ref:volue.mesh`.Connection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
 
 
 <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="c1"># Sending a request to the server, want to know its version</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
-    <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
-    <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
-    <span class="c1"># Creating a connection, but not sending any requests yet</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and running two tasks sequentially.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
-    <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+    <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -265,33 +259,35 @@ $ source my-venv/bin/activate (Linux, Mac)
 <span class="c1"># Done</span>
 </pre></div>
 </div>
-<p>Using <a class="reference internal" href="async_connection.html"><span class="doc">Async connection</span></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.async_connection</span> <span class="kn">import</span> <span class="n">AsyncConnection</span>
-<span class="kn">from</span> <span class="nn">volue.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
+<p>Using <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="c1"># Sending a request to the server, want to know its version</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">start_session</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">end_session</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and running two tasks concurrently.&quot;&quot;&quot;</span>
     <span class="c1"># Creating a connection, but not sending any requests yet</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
         <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span>
-        <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
+        <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
     <span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -308,7 +304,7 @@ $ source my-venv/bin/activate (Linux, Mac)
 </pre></div>
 </div>
 <p>The primary data retrieved from the Mesh server is timeseries. Depending on the request, the size of this data can be quite large. A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another. This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python SDK uses <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> to store the data. Several data processing libraries are now supported for this format, including <a class="reference external" href="https://arrow.apache.org/docs/python/numpy.html">numpy</a> and <a class="reference external" href="https://arrow.apache.org/docs/python/pandas.html">pandas</a>.</p>
-<p>Using <a class="reference internal" href="timeserie.html"><span class="doc">Timeserie</span></a> with numpy and/or pandas</p>
+<p>Using <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Timeseries with numpy and/or pandas</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#from volue.examples.utility.print import get_connection_info</span>
 
 <span class="c1">#import numpy as np</span>
