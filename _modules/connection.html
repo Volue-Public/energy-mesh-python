@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>connection &mdash; volue.mesh 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../credentials.html">Credentials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../connection.html">Connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../async_connection.html">Async connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common.html">Common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeserie.html">Timeserie</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>connection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for connection</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.timeserie</span> <span class="kn">import</span> <span class="n">Timeserie</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.common</span> <span class="kn">import</span> <span class="n">guid_to_uuid</span><span class="p">,</span> <span class="n">uuid_to_guid</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.credentials</span> <span class="kn">import</span> <span class="n">Credentials</span>
+
+
+<div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../connection.html#connection.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a connection to a mesh server.</span>
+
+<span class="sd">    This class can be used to interact with the mesh grpc api.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connect to a running mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host (str): the server address</span>
+<span class="sd">            port (int): servers gRPC port</span>
+<span class="sd">            secure_connection (bool): establish connection using TLS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;channel&#39;</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">secure_connection</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">credentials</span><span class="p">:</span> <span class="n">Credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                    <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span> <span class="o">=</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Connection.is_server_compatible"><a class="viewcode-back" href="../connection.html#connection.Connection.is_server_compatible">[docs]</a>    <span class="k">def</span> <span class="nf">is_server_compatible</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Checks if the connected mesh server version is compatible with this SDK version&quot;&quot;&quot;</span>
+        <span class="c1"># TODO Fix</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Connection.get_version"><a class="viewcode-back" href="../connection.html#connection.Connection.get_version">[docs]</a>    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the version of the mesh server that is connected.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The version str for the connected mesh server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Connection.start_session"><a class="viewcode-back" href="../connection.html#connection.Connection.start_session">[docs]</a>    <span class="k">def</span> <span class="nf">start_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Ask the server to start a session. Only one session can be active at any give connection.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[mesh_pb2.Guid]: The guid of the connected session or None if session could not be started.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">guid_to_uuid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span></div>
+
+<div class="viewcode-block" id="Connection.end_session"><a class="viewcode-back" href="../connection.html#connection.Connection.end_session">[docs]</a>    <span class="k">def</span> <span class="nf">end_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Ask the server to end the session.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">EndSession</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Connection.read_timeseries_points"><a class="viewcode-back" href="../connection.html#connection.Connection.read_timeseries_points">[docs]</a>    <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">interval</span><span class="p">:</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">,</span>
+            <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interval (mesh_pb2.UtcInterval):</span>
+<span class="sd">            timskey (int):</span>
+<span class="sd">            guid (uuid.UUID):</span>
+<span class="sd">            full_name (str):</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[mesh_pb2.ReadTimeseriesResponse]:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
+            <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
+            <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
+            <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+
+        <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">ReadTimeseries</span><span class="p">(</span>
+            <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
+                <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">reply</span></div>
+
+<div class="viewcode-block" id="Connection.write_timeseries_points"><a class="viewcode-back" href="../connection.html#connection.Connection.write_timeseries_points">[docs]</a>    <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">interval</span><span class="p">:</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">,</span>
+            <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeserie</span><span class="p">,</span>
+            <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interval (mesh_pb2.UtcInterval):</span>
+<span class="sd">            timeserie (Timeserie):</span>
+<span class="sd">            timskey (int):</span>
+<span class="sd">            guid (uuid.UUID):</span>
+<span class="sd">            full_name (str):</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
+            <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
+            <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
+            <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+
+        <span class="n">proto_timeserie</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">to_proto_timeseries</span><span class="p">(</span>
+            <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
+            <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">WriteTimeseries</span><span class="p">(</span>
+            <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
+                <span class="n">timeseries</span><span class="o">=</span><span class="n">proto_timeserie</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.rollback"><a class="viewcode-back" href="../connection.html#connection.Connection.rollback">[docs]</a>    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Roll back changes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Connection.commit"><a class="viewcode-back" href="../connection.html#connection.Connection.commit">[docs]</a>    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Commit changes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stub</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

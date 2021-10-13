@@ -39,12 +39,6 @@ Other
 
 If neither of the above suggestions helped.
 
-I ran the tests and one or more of them failed.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you ran the :ref:`Tests` and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in :ref:`Run tests`
-
-
 I think I found a bug or I have a feature request.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

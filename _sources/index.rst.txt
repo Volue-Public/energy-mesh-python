@@ -10,7 +10,7 @@ Getting started
 If this is you first time using this library, here are some resources to help you get started.
 
 - **First steps:** :doc:`intro` | :doc:`quickstart`
-- **Examples:** :doc:`examples` | :doc:`tests`
+- **Examples:** See the `repository <https://github.com/PowelAS/sme-mesh-python/tree/master/examples/mesh>`_
 
 Features
 **************
@@ -21,14 +21,14 @@ Features
 
 Prerequisites
 **************
-
-- Mesh server with gRPC enabled.
-- Python >= 3.7.
+(<TODO> - autoextract version info from config file)
+- Mesh server with gRPC enabled. > ???
+- Python > 3.7
 
 Getting help
 ---------------
 
-If you're having trouble, these resources might help.
+If you're having trouble, these resouces might help.
 
 - Try the :doc:`faq` first.
 - Report bugs in the `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_
@@ -39,14 +39,18 @@ If you're having trouble, these resources might help.
    intro
    quickstart
    examples
-   tests
    faq
    glossary
 
 .. toctree::
    :caption: SDK Reference
 
-   api
+   credentials
+   connection
+   async_connection
+   common
+   timeserie
+
 
 Indices and tables
 ==================
