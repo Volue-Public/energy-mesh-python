@@ -1,4 +1,4 @@
-from volue.mesh import Timeserie, guid_to_uuid, uuid_to_guid, Credentials
+from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 
 import grpc
@@ -80,18 +80,18 @@ class Connection:
                     interval=interval
                 )
             )
-            return reply
+            # TODO: This need to handle more than 1 timeserie
+            return next(Timeseries._read_timeseries_reply(reply))
+
 
         async def write_timeseries_points(
                 self,
                 interval: mesh_pb2.UtcInterval,
-                timeserie: Timeserie,
+                timeserie: Timeseries,
                 timskey: int = None,
                 guid: uuid.UUID = None,
                 full_name: str = None) -> None:
             """
-            |coro|
-
             Raises:
                 grpc.RpcError:
             """
@@ -105,7 +105,7 @@ class Connection:
                 interval=interval
             )
 
-            await self.mesh_service.WriteTimeseries(
+            self.mesh_service.WriteTimeseries(
                 mesh_pb2.WriteTimeseriesRequest(
                     session_id=uuid_to_guid(self.session_id),
                     object_id=object_id,

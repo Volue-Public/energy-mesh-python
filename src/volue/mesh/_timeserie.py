@@ -1,71 +1,37 @@
 import pyarrow as pa
 from volue.mesh.proto import mesh_pb2
 
-class Timeserie:
+
+class Timeseries:
     """Represents a mesh timeserie.
 
-    Contains a arrow table with a schema of 3 fields (ticks, flags, value.)
-    Ticks are the timestamps represented as windows ticks.
-    Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+    Contains a arrow table with a schema of 3 fields (utc_time, flags, value.)
+    Utc_time is ??? <TODO>
     Flags are ??? <TODO>
     Value is the actual data for the given timestamp.
-
-
-
     """
 
-    def __init__(self, table = None, resolution = mesh_pb2.Resolution(type = mesh_pb2.Resolution.HOUR)):
-        """
-
-        Args:
-            table:
-            resolution:
-        """
+    def __init__(self, table=None, resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR)):
+        """ """
         fields = [
-            pa.field('ticks', pa.uint64()),
+            pa.field('utc_time', pa.uint64()),
             pa.field('flags', pa.uint32()),
-            pa.field('value', pa.float64()),
+            pa.field('value', pa.float64()),  # aka double
         ]
         schema = pa.schema(fields)
-        if table == None:
+        if table is None:
             self.arrow_table = schema.empty_table()
         else:
             self.arrow_table = table
         self.resolution = resolution
 
-
-    def add_point(self, ticks, flags, value) -> None:
-        """
-
-        Args:
-            ticks:
-            flags:
-            value:
-
-        Returns:
-
-        """
-        table = pa.Table.from_arrays(([ticks], [flags], [value]),
-            schema=self.arrow_table.schema
-        )
-        self.arrow_table = pa.concat_tables([self.arrow_table, table])
-
     @property
     def number_of_points(self):
         """Number of point inside the time series"""
-
-        return 0 if self.arrow_table == None else self.arrow_table.num_rows
+        return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
     def to_proto_timeseries(self, object_id, interval) -> mesh_pb2.Timeseries:
-        """
-
-        Args:
-            object_id:
-            interval:
-
-        Returns:
-
-        """
+        """ """
         stream = pa.BufferOutputStream()
 
         writer = pa.ipc.RecordBatchStreamWriter(
@@ -76,27 +42,19 @@ class Timeserie:
         buffer = stream.getvalue()
 
         ts = mesh_pb2.Timeseries(
-            object_id = object_id,
-            resolution = self.resolution,
-            interval = interval,
-            data = buffer.to_pybytes()
+            object_id=object_id,
+            resolution=self.resolution,
+            interval=interval,
+            data=buffer.to_pybytes()
         )
 
         return ts
 
     @staticmethod
-    def read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesResponse):
-        """
-
-        Args:
-            reply:
-
-        Returns:
-
-        """
+    def _read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesResponse):
+        """ """
         timeseries = []
         for timeserie in reply.timeseries:
             reader = pa.ipc.open_stream(timeserie.data)
             table = reader.read_all()
-            yield Timeserie(table, timeserie.resolution)
-
+            yield Timeseries(table, timeserie.resolution)
