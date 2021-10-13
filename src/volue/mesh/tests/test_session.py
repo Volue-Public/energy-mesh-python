@@ -1,3 +1,4 @@
+from time import sleep
 import grpc
 import pytest
 from volue.mesh import Connection
@@ -61,6 +62,7 @@ def test_can_connect_to_existing_session():
     same_session.close()
     with pytest.raises(grpc.RpcError) as info:
         session.close()
+        sleep(1)  # Closing a session on the server is not a blocking call.
     assert info.type == grpc._channel._InactiveRpcError
     assert info.value.details() == ('Session with id {} not found.'.format({str(session.session_id).upper()})).replace("'", "")
 
