@@ -1,6 +1,6 @@
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Connection
-from volue.mesh.examples.utility.print import get_connection_info
+from volue.mesh.examples import _get_connection_info
 
 import asyncio
 
@@ -24,5 +24,5 @@ if __name__ == "__main__":
     # If some sensible version info is printed, you have successfully
     # communicated with the server.
 
-    address, port, secure_connection = get_connection_info()
+    address, port, secure_connection = _get_connection_info()
     main(address, port, secure_connection)

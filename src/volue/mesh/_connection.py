@@ -1,11 +1,10 @@
-from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
-from volue.mesh.proto import mesh_pb2
-from volue.mesh.proto import mesh_pb2_grpc
-
 import grpc
 import uuid
 from typing import Optional
 from google import protobuf
+from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
+from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto import mesh_pb2_grpc
 
 
 class Connection:
@@ -72,7 +71,6 @@ class Connection:
             )
             # TODO: This need to handle more than 1 timeserie
             return next(Timeseries._read_timeseries_reply(reply))
-
 
         def write_timeseries_points(
                 self,

@@ -11,18 +11,15 @@ class Timeseries:
     Value is the actual data for the given timestamp.
     """
 
+    schema = pa.schema([
+        pa.field('utc_time', pa.uint64()),
+        pa.field('flags', pa.uint32()),
+        pa.field('value', pa.float64()),
+    ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?
+
     def __init__(self, table=None, resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR)):
         """ """
-        fields = [
-            pa.field('utc_time', pa.uint64()),
-            pa.field('flags', pa.uint32()),
-            pa.field('value', pa.float64()),  # aka double
-        ]
-        schema = pa.schema(fields)
-        if table is None:
-            self.arrow_table = schema.empty_table()
-        else:
-            self.arrow_table = table
+        self.arrow_table = table
         self.resolution = resolution
 
     @property

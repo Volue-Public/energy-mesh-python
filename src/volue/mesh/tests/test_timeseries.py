@@ -32,7 +32,7 @@ def test_can_create_timeserie_from_existing_data():
     arrays = [pa.array(['one', 'two', 'three', 'four', 'five']), pa.array([1, 2, 3, 4, 5]), pa.array([6, 7, 8, 9, 10])]
     table = pa.Table.from_arrays(arrays, names=["name", "first_list", "second_list"])
     ts = Timeseries(table)
-    assert ts.number_of_points is 5
+    assert ts.number_of_points == 5
 
 
 @pytest.mark.unittest
@@ -56,8 +56,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
         pa.array([0, 0, 0]),
         pa.array([0.0, 0.0, 0.0])]
 
-    # TODO that way of getting the schema is not good... fix!
-    table = pa.Table.from_arrays(arrays, schema=Timeseries().arrow_table.schema)
+    table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
     timeserie_original = Timeseries(table)
     assert timeserie_original is not None
 
@@ -97,74 +96,43 @@ def test_read_timeseries_points_using_timskey():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
 
-        timeseries = session.read_timeseries_points(
-                timskey=201503,
-                interval=UtcInterval(
-                    start_time=dot_net_ticks_to_protobuf_timestamp(635976576000000000),
-                    end_time=dot_net_ticks_to_protobuf_timestamp(635987808000000000))
-        )
+        try:
+            timeseries = session.read_timeseries_points(
+                    timskey=201503,
+                    interval=UtcInterval(
+                        start_time=dot_net_ticks_to_protobuf_timestamp(635976576000000000),
+                        end_time=dot_net_ticks_to_protobuf_timestamp(635987808000000000))
+            )
+        except grpc.RpcError:
+            pytest.fail("Could not read timeseries points")
         assert timeseries.number_of_points == 312
 
 
 @pytest.mark.database
-def test_get_and_edit_timeseries_points_from_timskey():
-    """Check that a timeserie can be retrieved and editet using timskey."""
+def test_write_timeseries_points_using_timskey():
+    """Check that timeseries can be written to the server using timskey."""
     timskey = 201503
 
-    # Start session
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION)
-    session = connection.create_session()
-    try:
-        session.open()
-    except grpc.RpcError:
-        pytest.fail("Could not open session.")
+    with connection.create_session() as session:
+        arrays = [
+            pa.array([1462060800, 1462064400, 1462068000]),
+            pa.array([0, 0, 0]),
+            pa.array([0.0, 10.0, 1000.0])]
+        table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
+        timeseries = Timeseries(table=table)
 
-    # Preapare the request
-    start = dot_net_ticks_to_protobuf_timestamp(635976576000000000)
-    end = dot_net_ticks_to_protobuf_timestamp(635987808000000000)
-    interval = UtcInterval(
-        start_time=start,
-        end_time=end
-    )
-
-    timeseries = session.read_timeseries_points(
-            timskey=timskey,
-            interval=interval)
-
-    # Send
-    try:
-        session.write_timeseries_points(
-            timskey=timskey,
-            interval=interval,
-            timeserie=timeseries
-        )
-    except grpc.RpcError:
-        pytest.fail("Could not write timeseries points")
-
-    try:
-        session.commit()
-    except grpc.RpcError:
-        pytest.fail("Could not commit changes.")
-
-    # Read the timeseries we just edited
-    try:
-        timeseries2 = session.read_timeseries_points(
+        try:
+            session.write_timeseries_points(
                 timskey=timskey,
-                interval=interval)
-    except grpc.RpcError:
-        pytest.fail("Could not read timeseries points")
-    finally:
-        assert timeseries2 is not None
+                interval=UtcInterval(
+                    start_time=dot_net_ticks_to_protobuf_timestamp(635976576000000000),
+                    end_time=dot_net_ticks_to_protobuf_timestamp(635987808000000000)),
+                timeserie=timeseries
+            )
+        except grpc.RpcError:
+            pytest.fail("Could not write timeseries points")
 
-    # Check that the values are the same as we just wrote
-    assert timeseries2.number_of_points == 312
-    assert timeseries.number_of_points == timeseries2.number_of_points
-
-    # Done! Close session.
-    try:
-        session.close()
-    except grpc.RpcError:
-        pytest.fail("Could not close session")
 
 
 @pytest.mark.asyncio

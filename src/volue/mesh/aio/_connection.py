@@ -1,10 +1,9 @@
-from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
-from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
-
 import grpc
 import uuid
 from google import protobuf
 from typing import Optional
+from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
+from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 
 
 class Connection:
