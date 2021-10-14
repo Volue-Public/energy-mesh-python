@@ -15,7 +15,7 @@ def test_is_grpc_responding():
 @pytest.mark.examples
 @pytest.mark.database
 def test_run_example_scripts():
-    """Check if all examples runs and that they exit with no error code."""
+    """Check if all examples run and that they exit with no error code."""
 
     examples = os.path.join(os.path.dirname(volue.mesh.__file__), 'examples')
     os.chdir(examples)
