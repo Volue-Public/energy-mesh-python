@@ -1,5 +1,5 @@
 """
-Functionality that support concurrenct using asynio.
+Functionality that supports concurrency using asynio.
 """
 
 from ._connection import Connection

@@ -4,7 +4,7 @@ from volue.mesh.examples.utility.print import get_connection_info
 
 
 async def get_version(connection):
-    """Showing how to send get the server version."""
+    """Showing how to get the server version."""
     print("1. Requesting server version")
     version = await connection.get_version()
     print(f"2. Server version is {version.version}")
@@ -19,7 +19,7 @@ async def start_and_end_session(session):
 
 
 async def main(address, port, secure_connection):
-    """Showing how to connect to a server and running two tasks concurrently."""
+    """Showing how to connect to a server and run two tasks concurrently."""
     # Creating a connection, but not sending any requests yet
     connection = Connection(address, port, secure_connection)
     # Indicate that these two functions can be run concurrently

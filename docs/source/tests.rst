@@ -1,7 +1,7 @@
 Tests
 ---------
 
-The Mesh Python SDK is shipped with the tests that is used to verify its functionality.
+The Mesh Python SDK is shipped with tests that are used to verify its functionality.
 
 .. warning::
    Some tests are written to read or write data to or from the Mesh servers database. These tests are marked with database. See :issue:`61` for a discussion around this.
@@ -24,7 +24,7 @@ Tests can be run from a python script and are grouped to indicate what they do. 
    :language: toml
    :lines: 35-40
 
-Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in `pytests documentation <https://docs.pytest.org/en/latest/how-to/output.html>`_
+Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in `pytests documentation <https://docs.pytest.org/en/latest/how-to/output.html>`_.
 
 .. literalinclude:: ../../src/volue/mesh/examples/run_tests.py
    :language: python
