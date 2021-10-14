@@ -8,7 +8,7 @@ import volue.mesh
 
 @pytest.mark.server
 def test_is_grpc_responding():
-    """Check if the servers socket is open and responding."""
+    """Check if the server's socket is open and responding."""
     assert is_port_responding(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT) is True
 
 
