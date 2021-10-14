@@ -1,6 +1,9 @@
 import pyarrow as pa
-from volue.mesh.proto import mesh_pb2
-
+from datetime import datetime
+from volue.mesh.proto.mesh_pb2 import Resolution as ProtoResolution
+from volue.mesh.proto.mesh_pb2 import Timeseries as ProtoTimeseries
+from volue.mesh.proto.mesh_pb2 import ReadTimeseriesResponse as ProtoReadTimeseriesResponse
+from volue.mesh import datetime_to_protobuf_utcinterval
 
 class Timeseries:
     """Represents a mesh timeserie.
@@ -17,7 +20,7 @@ class Timeseries:
         pa.field('value', pa.float64()),
     ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?
 
-    def __init__(self, table=None, resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR)):
+    def __init__(self, table=None, resolution=ProtoResolution(type=ProtoResolution.HOUR)):
         """ """
         self.arrow_table = table
         self.resolution = resolution
@@ -27,8 +30,12 @@ class Timeseries:
         """Number of point inside the time series"""
         return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
-    def to_proto_timeseries(self, object_id, interval) -> mesh_pb2.Timeseries:
-        """ """
+    def to_proto_timeseries(self, object_id, start_time: datetime, end_time: datetime) -> ProtoTimeseries:
+        """
+        Args:
+            start_time:
+            end_time:
+        """
         stream = pa.BufferOutputStream()
 
         writer = pa.ipc.RecordBatchStreamWriter(
@@ -38,19 +45,18 @@ class Timeseries:
         writer.write_table(self.arrow_table)
         buffer = stream.getvalue()
 
-        ts = mesh_pb2.Timeseries(
+        ts = ProtoTimeseries(
             object_id=object_id,
             resolution=self.resolution,
-            interval=interval,
+            interval=datetime_to_protobuf_utcinterval(start_time=start_time, end_time=end_time),
             data=buffer.to_pybytes()
         )
 
         return ts
 
     @staticmethod
-    def _read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesResponse):
+    def _read_timeseries_reply(reply: ProtoReadTimeseriesResponse):
         """ """
-        timeseries = []
         for timeserie in reply.timeseries:
             reader = pa.ipc.open_stream(timeserie.data)
             table = reader.read_all()

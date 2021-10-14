@@ -1,6 +1,6 @@
 import pyarrow as pa
-from volue.mesh import Connection, Timeseries, dot_net_ticks_to_protobuf_timestamp, eagle_wind
-from volue.mesh.proto.mesh_pb2 import UtcInterval
+from datetime import datetime
+from volue.mesh import Connection, Timeseries, eagle_wind
 from volue.mesh.examples import _get_connection_info
 
 
@@ -8,10 +8,8 @@ def write_timeseries_points(session: Connection.Session):
     """Showing how to write timeseries points."""
 
     # Defining a time interval to write timeseries to
-    interval = UtcInterval(
-        start_time=dot_net_ticks_to_protobuf_timestamp(eagle_wind.start_time_ticks),
-        end_time=dot_net_ticks_to_protobuf_timestamp(eagle_wind.end_time_ticks)
-    )
+    start = datetime(2016, 5, 1)
+    end = datetime(2016, 5, 14)
 
     # Defining the data we want to write
     arrays = [
@@ -23,8 +21,9 @@ def write_timeseries_points(session: Connection.Session):
 
     # Send request to write timeseries based on timskey
     session.write_timeseries_points(
+        start_time=start,
+        end_time=end,
         timskey=eagle_wind.timskey,
-        interval=interval,
         timeserie=timeseries
     )
 

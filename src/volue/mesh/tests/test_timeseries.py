@@ -2,10 +2,11 @@ import uuid
 import grpc
 import pyarrow as pa
 import pytest
+from datetime import datetime
 from google.protobuf.timestamp_pb2 import Timestamp
 from volue.mesh import Connection, Timeseries, uuid_to_guid, dot_net_ticks_to_protobuf_timestamp
 from volue.mesh.aio import Connection as AsyncConnection
-from volue.mesh.proto.mesh_pb2 import ObjectId, UtcInterval, WriteTimeseriesRequest
+from volue.mesh.proto.mesh_pb2 import ObjectId, WriteTimeseriesRequest
 import volue.mesh.tests.test_utilities.server_config as sc
 
 
@@ -17,6 +18,14 @@ def test_can_convert_between_win32ticks_and_timestamp():
     original_ticks = 637649280000000000  # "2021-08-19T00:00:00Z"
     ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
     assert original_ts.ToNanoseconds() == ts.ToNanoseconds()
+
+@pytest.mark.unittest
+def test_can_convert_between_datetime_and_timestamp():
+    """Check that conversion between datetime and protobuf.timestamp works"""
+    ts = Timestamp()
+    ts.FromDatetime(datetime(2016, 5, 1))
+    converted_ts = dot_net_ticks_to_protobuf_timestamp(635976576000000000)
+    assert ts.ToNanoseconds() == converted_ts.ToNanoseconds()
 
 
 @pytest.mark.unittest
@@ -44,12 +53,8 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
         full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)"
     )
 
-    ts_start = Timestamp(seconds=1)
-    ts_end = Timestamp(seconds=2)
-    interval = UtcInterval(
-        start_time=ts_start,
-        end_time=ts_end
-    )
+    start = datetime(year=2013, month=7, day=25, hour=0, minute=0, second=0)  # 25/07/2013 00:00:00
+    end = datetime(year=2016, month=12, day=25, hour=0, minute=0, second=0)  # 25/12/2016 00:00:00
 
     arrays = [
         pa.array([1462060800, 1462064400, 1462068000]),
@@ -60,7 +65,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     timeserie_original = Timeseries(table)
     assert timeserie_original is not None
 
-    proto_timeserie_original = timeserie_original.to_proto_timeseries(object_id_original, interval)
+    proto_timeserie_original = timeserie_original.to_proto_timeseries(object_id_original, start_time=start, end_time=end)
     session_id_original = uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
     request_original = WriteTimeseriesRequest(
@@ -98,14 +103,13 @@ def test_read_timeseries_points_using_timskey():
 
         try:
             timeseries = session.read_timeseries_points(
-                    timskey=201503,
-                    interval=UtcInterval(
-                        start_time=dot_net_ticks_to_protobuf_timestamp(635976576000000000),
-                        end_time=dot_net_ticks_to_protobuf_timestamp(635987808000000000))
-            )
+                start_time=datetime(2016, 5, 1),
+                end_time=datetime(2016, 5, 14),
+                timskey=201503)
+            assert timeseries.number_of_points == 312
         except grpc.RpcError:
             pytest.fail("Could not read timeseries points")
-        assert timeseries.number_of_points == 312
+
 
 
 @pytest.mark.database
@@ -125,9 +129,8 @@ def test_write_timeseries_points_using_timskey():
         try:
             session.write_timeseries_points(
                 timskey=timskey,
-                interval=UtcInterval(
-                    start_time=dot_net_ticks_to_protobuf_timestamp(635976576000000000),
-                    end_time=dot_net_ticks_to_protobuf_timestamp(635987808000000000)),
+                start_time=datetime(2016, 5, 1),
+                end_time=datetime(2016, 5, 14),
                 timeserie=timeseries
             )
         except grpc.RpcError:

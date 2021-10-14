@@ -4,7 +4,6 @@ from volue.mesh.examples import _get_connection_info
 
 import asyncio
 
-
 def main(address, port, secure_connection):
     """Showing how to send get the server version both sequentially and concurrently."""
 

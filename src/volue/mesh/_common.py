@@ -1,11 +1,11 @@
 import uuid
 import datetime
-from volue.mesh.proto import mesh_pb2
-
+from volue.mesh.proto.mesh_pb2 import Guid as ProtoGuid
 from google.protobuf.timestamp_pb2 import Timestamp
+from volue.mesh.proto.mesh_pb2 import UtcInterval
 
 
-def uuid_to_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
+def uuid_to_guid(uuid: uuid.UUID) -> ProtoGuid:
     """Convert from UUID format to Microsoft's GUID format.
 
     :param uuid: UUID
@@ -13,10 +13,10 @@ def uuid_to_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
     """
     if (uuid is None):
         return None
-    return mesh_pb2.Guid(bytes_le=uuid.bytes_le)
+    return ProtoGuid(bytes_le=uuid.bytes_le)
 
 
-def guid_to_uuid(guid: mesh_pb2.Guid) -> uuid.UUID:
+def guid_to_uuid(guid: ProtoGuid) -> uuid.UUID:
     """Convert from Microsoft's GUID format to UUID format.
 
     :param guid: GUID to be converted
@@ -25,6 +25,19 @@ def guid_to_uuid(guid: mesh_pb2.Guid) -> uuid.UUID:
     if (guid is None):
         return None
     return uuid.UUID(bytes_le=guid)
+
+
+def datetime_to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> UtcInterval:
+    """Convert to protobuf UtcInterval."""
+    start = Timestamp()
+    start.FromDatetime(start_time)
+    end = Timestamp()
+    end.FromDatetime(end_time)
+    interval = UtcInterval(
+        start_time=start,
+        end_time=end
+    )
+    return interval
 
 
 def dot_net_ticks_to_protobuf_timestamp(ticks: int) -> Timestamp:

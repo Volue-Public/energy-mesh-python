@@ -1,6 +1,6 @@
 import uuid
-from volue.mesh import Connection, dot_net_ticks_to_protobuf_timestamp, eagle_wind
-from volue.mesh.proto.mesh_pb2 import UtcInterval
+from datetime import datetime
+from volue.mesh import Connection, eagle_wind
 from volue.mesh.examples import _get_connection_info
 
 
@@ -8,25 +8,17 @@ def read_timeseries_points(session: Connection.Session):
     """Showing how to read timeseries points."""
 
     # Defining a time interval to read timeseries from
-    interval = UtcInterval(
-        start_time=dot_net_ticks_to_protobuf_timestamp(eagle_wind.start_time_ticks),
-        end_time=dot_net_ticks_to_protobuf_timestamp(eagle_wind.end_time_ticks)
-    )
+    start = datetime(2016, 5, 1)
+    end = datetime(2016, 5, 14)
 
     # Send request to read timeseries based on timskey
     timskey = eagle_wind.timskey
-    timeseries = session.read_timeseries_points(
-        timskey=timskey,
-        interval=interval
-    )
+    timeseries = session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey)
     print(f"Read {timeseries.number_of_points} points")
 
     # Send request to read timeseries based on guid
     guid = uuid.UUID(eagle_wind.guid)
-    timeseries = session.read_timeseries_points(
-        guid=guid,
-        interval=interval
-    )
+    timeseries = session.read_timeseries_points(start_time=start, end_time=end, guid=guid)
     print(f"Read {timeseries.number_of_points} points")
 
 

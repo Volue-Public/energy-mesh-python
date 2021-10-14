@@ -1,5 +1,6 @@
 import grpc
 import uuid
+from datetime import datetime
 from google import protobuf
 from typing import Optional
 from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
@@ -57,7 +58,8 @@ class Connection:
 
         async def read_timeseries_points(
                 self,
-                interval: mesh_pb2.UtcInterval,
+                start_time: datetime,
+                end_time: datetime,
                 timskey: int = None,
                 guid: uuid.UUID = None,
                 full_name: str = None):
@@ -76,7 +78,7 @@ class Connection:
                 mesh_pb2.ReadTimeseriesRequest(
                     session_id=uuid_to_guid(self.session_id),
                     object_id=object_id,
-                    interval=interval
+                    interval=UtcInterval(start_time, end_time)._to_protobuf_utcinterval()
                 )
             )
             # TODO: This need to handle more than 1 timeserie
@@ -85,7 +87,8 @@ class Connection:
 
         async def write_timeseries_points(
                 self,
-                interval: mesh_pb2.UtcInterval,
+                start_time: datetime,
+                end_time: datetime,
                 timeserie: Timeseries,
                 timskey: int = None,
                 guid: uuid.UUID = None,
@@ -99,10 +102,7 @@ class Connection:
                 guid=uuid_to_guid(guid),
                 full_name=full_name)
 
-            proto_timeserie = timeserie.to_proto_timeseries(
-                object_id=object_id,
-                interval=interval
-            )
+            proto_timeserie = timeserie.to_proto_timeseries(object_id=object_id, start_time=start_time, end_time=end_time)
 
             self.mesh_service.WriteTimeseries(
                 mesh_pb2.WriteTimeseriesRequest(

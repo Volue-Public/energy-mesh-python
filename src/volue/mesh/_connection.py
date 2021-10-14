@@ -1,8 +1,9 @@
+import datetime
 import grpc
 import uuid
 from typing import Optional
 from google import protobuf
-from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
+from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials, datetime_to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 
@@ -47,13 +48,17 @@ class Connection:
             self.mesh_service.EndSession(uuid_to_guid(self.session_id))
             self.session_id = None
 
-        def read_timeseries_points(
-                self,
-                interval: mesh_pb2.UtcInterval,
-                timskey: int = None,
-                guid: uuid.UUID = None,
-                full_name: str = None) -> Timeseries:
+        def read_timeseries_points(self,
+                                   start_time: datetime,
+                                   end_time: datetime,
+                                   timskey: int = None,
+                                   guid: uuid.UUID = None,
+                                   full_name: str = None) -> Timeseries:
             """
+            Args:
+                start_time:
+                end_time:
+
             Raises:
                 grpc.RpcError:
             """
@@ -66,7 +71,7 @@ class Connection:
                 mesh_pb2.ReadTimeseriesRequest(
                     session_id=uuid_to_guid(self.session_id),
                     object_id=object_id,
-                    interval=interval
+                    interval=datetime_to_protobuf_utcinterval(start_time, end_time)
                 )
             )
             # TODO: This need to handle more than 1 timeserie
@@ -74,7 +79,8 @@ class Connection:
 
         def write_timeseries_points(
                 self,
-                interval: mesh_pb2.UtcInterval,
+                start_time: datetime,
+                end_time: datetime,
                 timeserie: Timeseries,
                 timskey: int = None,
                 guid: uuid.UUID = None,
@@ -88,10 +94,7 @@ class Connection:
                 guid=uuid_to_guid(guid),
                 full_name=full_name)
 
-            proto_timeserie = timeserie.to_proto_timeseries(
-                object_id=object_id,
-                interval=interval
-            )
+            proto_timeserie = timeserie.to_proto_timeseries(object_id=object_id, start_time=start_time, end_time=end_time)
 
             self.mesh_service.WriteTimeseries(
                 mesh_pb2.WriteTimeseriesRequest(
