@@ -30,7 +30,7 @@ def impl_test_get_and_edit_timeseries_points(
     write_reply = await_if_async(session.open())
     assert write_reply is not None
 
-    # Preapare the request
+    # Prepare the request
     # TODO: When possible, check for existence and create this timeseries
     start = dot_net_ticks_to_protobuf_timestamp(635976576000000000)
     end = dot_net_ticks_to_protobuf_timestamp(635987808000000000)
