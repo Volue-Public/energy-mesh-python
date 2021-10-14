@@ -18,7 +18,7 @@ def start_and_end_session(session):
 
 
 def main(address, port, secure_connection):
-    """Showing how to connect to a server and running two tasks sequentially."""
+    """Showing how to connect to a server and run two tasks sequentially."""
     connection = Connection(address, port, secure_connection)
     get_version(connection)
     start_and_end_session(connection.create_session())

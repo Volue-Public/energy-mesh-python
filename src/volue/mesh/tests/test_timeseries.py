@@ -19,6 +19,7 @@ def test_can_convert_between_win32ticks_and_timestamp():
     ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
     assert original_ts.ToNanoseconds() == ts.ToNanoseconds()
 
+
 @pytest.mark.unittest
 def test_can_convert_between_datetime_and_timestamp():
     """Check that conversion between datetime and protobuf.timestamp works"""
@@ -65,7 +66,8 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     timeserie_original = Timeseries(table)
     assert timeserie_original is not None
 
-    proto_timeserie_original = timeserie_original.to_proto_timeseries(object_id_original, start_time=start, end_time=end)
+    proto_timeserie_original = timeserie_original.to_proto_timeseries(object_id_original, start_time=start,
+                                                                      end_time=end)
     session_id_original = uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
     request_original = WriteTimeseriesRequest(
@@ -98,7 +100,8 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
 def test_read_timeseries_points_using_timskey():
     """Check that timeseries can be retrieved using timskey."""
 
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION)
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
 
         try:
@@ -111,13 +114,13 @@ def test_read_timeseries_points_using_timskey():
             pytest.fail("Could not read timeseries points")
 
 
-
 @pytest.mark.database
 def test_write_timeseries_points_using_timskey():
     """Check that timeseries can be written to the server using timskey."""
     timskey = 201503
 
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION)
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
         arrays = [
             pa.array([1462060800, 1462064400, 1462068000]),
@@ -135,7 +138,6 @@ def test_write_timeseries_points_using_timskey():
             )
         except grpc.RpcError:
             pytest.fail("Could not write timeseries points")
-
 
 
 @pytest.mark.asyncio

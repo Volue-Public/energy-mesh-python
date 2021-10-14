@@ -18,7 +18,7 @@ def is_port_responding(host: str, port: int):
 
 
 def run_example_script(path, address, port, secure_connection):
-    """Helper function to run a example script."""
+    """Helper function to run an example script."""
     p = subprocess.Popen(
         [sys.executable, path, address, str(port), str(secure_connection)],
         stdout=subprocess.PIPE,

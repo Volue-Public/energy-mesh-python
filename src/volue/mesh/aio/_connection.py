@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 from google import protobuf
 from typing import Optional
-from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials
+from volue.mesh import Timeseries, guid_to_uuid, uuid_to_guid, Credentials, datetime_to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 
 
@@ -78,7 +78,7 @@ class Connection:
                 mesh_pb2.ReadTimeseriesRequest(
                     session_id=uuid_to_guid(self.session_id),
                     object_id=object_id,
-                    interval=UtcInterval(start_time, end_time)._to_protobuf_utcinterval()
+                    interval=datetime_to_protobuf_utcinterval(start_time, end_time)
                 )
             )
             # TODO: This need to handle more than 1 timeserie
