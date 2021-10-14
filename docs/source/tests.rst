@@ -24,7 +24,7 @@ Tests can be run from a python script and are grouped to indicate what they do. 
    :language: toml
    :lines: 35-40
 
-Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in `pytests documentation <https://docs.pytest.org/en/latest/how-to/output.html>`_
+Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in `pytests documentation <https://docs.pytest.org/en/latest/how-to/output.html>`_.
 
 .. literalinclude:: ../../src/volue/mesh/examples/run_tests.py
    :language: python
