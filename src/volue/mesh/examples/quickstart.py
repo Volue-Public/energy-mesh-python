@@ -3,7 +3,7 @@ from volue.mesh import Connection
 
 
 def main(address, port, secure_connection):
-    """Showing the quickes way to get started."""
+    """Showing the quickest way to get started."""
 
     # Configure the connection you want
     connection = Connection(address, port, secure_connection)
