@@ -20,7 +20,7 @@ Dependencies
 
 The Mesh Python SDK depends on the Python standard library, but also `gRPC <https://grpc.io/>`_ and `Apache Arrow <https://arrow.apache.org/>`_.
 
-These dependencies are managed, installed and referenced by the library using `Poetry <https://github.com/python-poetry/poetry>`_. So no additional dependencies should be needed after running the pip install, unless you wanna run the tests that come with the SDK, then see :ref:`Tests`.
+These dependencies are managed, installed and referenced by the library using `Poetry <https://github.com/python-poetry/poetry>`_. So no additional dependencies should be needed after running the pip install, unless you want to run the tests that come with the SDK, then see :ref:`Tests`.
 
 Virtual Environments
 ********************
