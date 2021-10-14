@@ -19,7 +19,7 @@ async def start_and_end_session(session):
 
 
 async def main(address, port, secure_connection):
-    """Showing how to connect to a server and running two tasks concurrently."""
+    """Showing how to connect to a server and run two tasks concurrently."""
     # Creating a connection, but not sending any requests yet
     connection = Connection(address, port, secure_connection)
     # Indicate that these two functions can be run concurrently
