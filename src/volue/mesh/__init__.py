@@ -1,27 +1,25 @@
 """
 Client library for Volue Energy's Mesh software.
-
 """
 
+from ._timeserie import Timeserie
+from ._common import uuid_to_guid, guid_to_uuid, dot_net_ticks_to_protobuf_timestamp
+from ._credentials import Credentials
+from ._connection import Connection
+from .tests import *
+from .examples import *
 
 __title__ = 'volue.mesh'
 __author__ = 'Volue AS'
 __version__ = "0.1.0"
 
-
-
-#---------
-#https://stackoverflow.com/questions/32420646/how-to-expose-every-name-in-sub-module-in-init-py-of-a-package
-import importlib
-import pkgutil
-
-for mod_info in pkgutil.walk_packages(__path__, __name__ + '.'):
-    mod = importlib.import_module(mod_info.name)
-
-    # Emulate `from mod import *`
-    try:
-        names = mod.__dict__['__all__']
-    except KeyError:
-        names = [k for k in mod.__dict__ if not k.startswith('_')]
-
-    globals().update({k: getattr(mod, k) for k in names})
+__all__ = [
+    'Connection',
+    'uuid_to_guid',
+    'guid_to_uuid',
+    'dot_net_ticks_to_protobuf_timestamp',
+    'Timeserie',
+    'Credentials',
+    'tests',
+    'examples'
+]

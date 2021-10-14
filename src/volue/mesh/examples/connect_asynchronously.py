@@ -1,29 +1,31 @@
-from volue.mesh.async_connection import AsyncConnection
-from volue.examples.utility.print import get_connection_info
 import asyncio
+from volue.mesh.aio import Connection
+from volue.mesh.examples.utility.print import get_connection_info
 
 
 async def get_version(connection):
-    # Sending a request to the server, want to know its version
+    """Showing how to get the server version."""
     print("1. Requesting server version")
     version = await connection.get_version()
     print(f"2. Server version is {version.version}")
 
 
-async def start_and_end_session(connection):
+async def start_and_end_session(session):
+    """Showing how to start and end a session."""
     print("A. Starting session")
-    await connection.start_session()
+    await session.open()
     print("B. Ending session")
-    await connection.end_session()
+    await session.close()
 
 
 async def main(address, port, secure_connection):
+    """Showing how to connect to a server and run two tasks concurrently."""
     # Creating a connection, but not sending any requests yet
-    connection = AsyncConnection(address, port, secure_connection)
+    connection = Connection(address, port, secure_connection)
     # Indicate that these two functions can be run concurrently
     await asyncio.gather(
         get_version(connection),
-        start_and_end_session(connection)
+        start_and_end_session(connection.create_session())
     )
 
 if __name__ == "__main__":

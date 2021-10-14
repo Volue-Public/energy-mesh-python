@@ -1,24 +1,23 @@
-from volue.mesh.async_connection import AsyncConnection
-from volue.mesh.timeserie import Timeserie
-from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
+from volue.mesh.aio import Connection
+from volue.mesh import Timeserie, dot_net_ticks_to_protobuf_timestamp
 from volue.mesh.proto.mesh_pb2 import UtcInterval
-import volue.examples.utility.test_data as td
-from volue.examples.utility.print import get_connection_info
-from volue.examples.utility.print import print_timeseries_points
+import volue.mesh.examples.utility.test_data as td
+from volue.mesh.examples.utility.print import get_connection_info, print_timeseries_points
 
 import asyncio
 
 
 async def main(address, port, secure_connection) -> None:
     # Prepare a connection
-    connection = AsyncConnection(address, port, secure_connection)
+    connection = Connection(address, port, secure_connection)
 
     # Print version info
     version_info = await connection.get_version()
     print(version_info.full_version)
 
     # Start session
-    await connection.start_session()
+    session = connection.create_session()
+    await session.open()
 
     start = dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.start_time_ticks)
     end = dot_net_ticks_to_protobuf_timestamp(td.eagle_wind.end_time_ticks)
@@ -28,7 +27,7 @@ async def main(address, port, secure_connection) -> None:
         end_time=end)
 
     # Send request, and wait for reply
-    timeseries_reply = await connection.read_timeseries_points(
+    timeseries_reply = await session.read_timeseries_points(
         timskey=timskey, interval=interval
     )
 
@@ -40,22 +39,22 @@ async def main(address, port, secure_connection) -> None:
     # TODO EDIT
 
     print("\nEdited timeseries points:")
-    await connection.write_timeseries_points(
+    await session.write_timeseries_points(
         timskey=timskey,
         interval=interval,
         timeserie=next(Timeserie.read_timeseries_reply(timeseries_reply)))
 
     # Let's have a look at the points again
-    timeseries_reply = await connection.read_timeseries_points(
+    timeseries_reply = await session.read_timeseries_points(
         timskey=timskey,
         interval=interval)
     print("\nTimeseries after editing:")
     print_timeseries_points(timeseries_reply, timskey)
 
     # Rollback
-    await connection.rollback()
+    await session.rollback()
     print("\nTimeseries after Rollback:")
-    timeseries = await connection.read_timeseries_points(
+    timeseries = await session.read_timeseries_points(
         timskey=timskey,
         interval=interval)
     print_timeseries_points(timeseries, timskey)
@@ -64,13 +63,13 @@ async def main(address, port, secure_connection) -> None:
     print(
         "\nEdit timeseries again, and commit. Run the example "
         "again, to verify that the changes have been stored in DB.")
-    await connection.write_timeseries_points(
+    await session.write_timeseries_points(
         timskey=timskey,
         interval=interval,
         timeserie=next(Timeserie.read_timeseries_reply(timeseries_reply)))
-    await connection.commit()
+    await session.commit()
 
-    await connection.end_session()
+    await session.close()
 
 
 if __name__ == "__main__":

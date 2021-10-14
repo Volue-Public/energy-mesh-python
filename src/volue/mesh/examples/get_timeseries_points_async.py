@@ -1,9 +1,8 @@
-from volue.mesh.async_connection import AsyncConnection
-from volue.mesh.common import dot_net_ticks_to_protobuf_timestamp
+from volue.mesh.aio import Connection
+from volue.mesh import dot_net_ticks_to_protobuf_timestamp
 from volue.mesh.proto.mesh_pb2 import UtcInterval
-from volue.examples.utility.print import print_timeseries_points
-from volue.examples.utility.print import get_connection_info
-import volue.examples.utility.test_data as td
+from volue.mesh.examples.utility.print import print_timeseries_points, get_connection_info
+import volue.mesh.examples.utility.test_data as td
 
 import asyncio
 
@@ -11,8 +10,9 @@ import asyncio
 async def main(address, port, secure_connection) -> None:
 
     # First, prepare the connection:
-    async_connection = AsyncConnection(address, port, secure_connection)
-    await async_connection.start_session()
+    async_connection = Connection(address, port, secure_connection)
+    session = async_connection.create_session()
+    await session.open()
 
     # Print version info
     version_info = await async_connection.get_version()
@@ -31,7 +31,7 @@ async def main(address, port, secure_connection) -> None:
     timskey_1 = td.eagle_wind.timskey
 
     print(f"Requesting timeseries points for timskey {timskey_1}")
-    timeseries_1_future = async_connection.read_timeseries_points(
+    timeseries_1_future = session.read_timeseries_points(
         timskey=timskey_1, interval=interval
     )
 
@@ -41,13 +41,13 @@ async def main(address, port, secure_connection) -> None:
     # Send some other requests
     timskey_2 = td.eagle_wind.timskey
     print(f"Requesting timeseries points for timskey {timskey_2}")
-    timeseries_2_future = async_connection.read_timeseries_points(
+    timeseries_2_future = session.read_timeseries_points(
         timskey=timskey_2, interval=interval
     )
 
     timskey_3 = td.eagle_wind.timskey
     print(f"Requesting timeseries points for timskey {timskey_3}")
-    timeseries_3_future = async_connection.read_timeseries_points(
+    timeseries_3_future = session.read_timeseries_points(
         timskey=timskey_3, interval=interval
     )
 
@@ -59,7 +59,7 @@ async def main(address, port, secure_connection) -> None:
     timeseries_3 = await timeseries_3_future
     print_timeseries_points(reply=timeseries_3, name=timskey_3)
 
-    await async_connection.end_session()
+    await session.close()
 
 
 if __name__ == "__main__":
