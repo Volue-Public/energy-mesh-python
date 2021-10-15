@@ -14,12 +14,14 @@ def read_timeseries_points(session: Connection.Session):
     # Send request to read timeseries based on timskey
     timskey = eagle_wind.timskey
     timeseries = session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey)
-    print(f"Read {timeseries.number_of_points} points")
+    for timeserie in timeseries:
+        print(f"Read {timeserie.number_of_points} points")
 
     # Send request to read timeseries based on guid
     guid = uuid.UUID(eagle_wind.guid)
     timeseries = session.read_timeseries_points(start_time=start, end_time=end, guid=guid)
-    print(f"Read {timeseries.number_of_points} points")
+    for timeserie in timeseries:
+        print(f"Read {timeserie.number_of_points} points")
 
 
 def main(address, port, secure_connection):

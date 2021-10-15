@@ -20,8 +20,10 @@ async def read_timeseries_points_async(session: Connection.Session):
         session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey),
         session.read_timeseries_points(start_time=start, end_time=end, guid=guid)
     )
-    print(f"Timskey timeseries contains {timskey_timeseries.number_of_points}.")
-    print(f"Guid timeseries contains {guid_timeseries.number_of_points}.")
+    for ts in timskey_timeseries:
+        print(f"Timskey timeseries contains {ts.number_of_points}.")
+    for ts in guid_timeseries:
+        print(f"Guid timeseries contains {ts.number_of_points}.")
 
 
 async def main(address, port, secure_connection):

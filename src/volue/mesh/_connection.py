@@ -77,17 +77,13 @@ class Connection:
             Raises:
                 grpc.RpcError:
             """
-            proto_timeseries = timeserie.to_proto_timeseries()
-            object_id = timeserie.to_proto_object_id()
-
-            for proto_timeserie in proto_timeseries:
-                self.mesh_service.WriteTimeseries(
-                    mesh_pb2.WriteTimeseriesRequest(
-                        session_id=uuid_to_guid(self.session_id),
-                        object_id=object_id,
-                        timeseries=proto_timeserie
-                    )
+            self.mesh_service.WriteTimeseries(
+                mesh_pb2.WriteTimeseriesRequest(
+                    session_id=uuid_to_guid(self.session_id),
+                    object_id=timeserie.to_proto_object_id(),
+                    timeseries=timeserie.to_proto_timeseries()
                 )
+            )
 
         def rollback(self) -> None:
             """

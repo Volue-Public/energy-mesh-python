@@ -42,8 +42,8 @@ def test_can_create_timeserie_from_existing_data():
     """Check that a timeserie can be created from existing data."""
     arrays = [pa.array(['one', 'two', 'three', 'four', 'five']), pa.array([1, 2, 3, 4, 5]), pa.array([6, 7, 8, 9, 10])]
     table = pa.Table.from_arrays(arrays, names=["name", "first_list", "second_list"])
-    ts = Timeseries([table])
-    assert ts.number_of_points == [5]
+    ts = Timeseries(table)
+    assert ts.number_of_points == 5
 
 
 @pytest.mark.unittest
@@ -60,14 +60,14 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
 
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
-    original_timeseries = Timeseries(tables=[table],
-                                    resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR),
-                                    start_time=start, end_time=end,
-                                    timskey=201503,
-                                    the_uuid=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
-                                    full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)")
+    original_timeseries = Timeseries(table=table,
+                                     resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR),
+                                     start_time=start, end_time=end,
+                                     timskey=201503,
+                                     the_uuid=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
+                                     full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)")
 
-    original_proto_timeserie = original_timeseries.to_proto_timeseries()[0]
+    original_proto_timeserie = original_timeseries.to_proto_timeseries()
     session_id_original = uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
     original_reply = WriteTimeseriesRequest(
@@ -88,10 +88,10 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
 
     reader = pa.ipc.open_stream(reply.timeseries.data)
     table = reader.read_all()
-    assert original_timeseries.arrow_tables[0] == table
-    assert original_timeseries.arrow_tables[0][0] == table[0]
-    assert original_timeseries.arrow_tables[0][1] == table[1]
-    assert original_timeseries.arrow_tables[0][2] == table[2]
+    assert original_timeseries.arrow_table == table
+    assert original_timeseries.arrow_table[0] == table[0]
+    assert original_timeseries.arrow_table[1] == table[1]
+    assert original_timeseries.arrow_table[2] == table[2]
 
 
 @pytest.mark.database
@@ -107,7 +107,8 @@ def test_read_timeseries_points_using_timskey():
                 start_time=datetime(2016, 5, 1),
                 end_time=datetime(2016, 5, 14),
                 timskey=201503)
-            assert timeseries.number_of_points == [312]
+            assert len(timeseries) == 1
+            assert timeseries[0].number_of_points == 312
         except grpc.RpcError:
             pytest.fail("Could not read timeseries points")
 
@@ -126,7 +127,7 @@ def test_write_timeseries_points_using_timskey():
     timskey = 201503
     start_time = datetime(2016, 5, 1)
     end_time = datetime(2016, 5, 14)
-    timeseries = Timeseries(tables=[table], start_time=start_time, end_time=end_time, timskey=timskey)
+    timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
 
     with connection.create_session() as session:
         try:
@@ -151,7 +152,7 @@ async def test_get_and_edit_timeseries_points_from_timskey_async():
     timskey = 201503
     start_time = datetime(2016, 5, 1)
     end_time = datetime(2016, 5, 14)
-    timeseries = Timeseries(tables=[table], start_time=start_time, end_time=end_time, timskey=timskey)
+    timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
 
     async with connection.create_session() as session:
         try:

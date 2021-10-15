@@ -19,7 +19,7 @@ async def write_timeseries_points(session: Connection.Session):
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timeseries = Timeseries(tables=[table], start_time=start, end_time=end, timskey=eagle_wind.timskey)
+    timeseries = Timeseries(table=table, start_time=start, end_time=end, timskey=eagle_wind.timskey)
 
     # Send request to write timeseries based on timskey
     await session.write_timeseries_points(

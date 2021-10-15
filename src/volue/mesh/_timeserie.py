@@ -24,7 +24,7 @@ class Timeseries:
     ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?
 
     def __init__(self,
-                 tables: [pyarrow.Table] = None,
+                 table: pyarrow.Table = None,
                  resolution: mesh_pb2.Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,
@@ -38,16 +38,13 @@ class Timeseries:
         self.timskey = timskey
         self.end_time = end_time
         self.start_time = start_time
-        self.arrow_tables = tables
+        self.arrow_table = table
         self.resolution = resolution
 
     @property
-    def number_of_points(self) -> [int]:
+    def number_of_points(self) -> int:
         """Number of point inside the timeseries"""
-        number_of_points = []
-        for table in self.arrow_tables:
-            number_of_points.append(0 if table is None else table.num_rows)
-        return number_of_points
+        return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
     def to_proto_object_id(self) -> mesh_pb2.ObjectId:
         """ """
@@ -57,43 +54,39 @@ class Timeseries:
             full_name=self.full_name
         )
 
-    def to_proto_timeseries(self) -> [mesh_pb2.Timeseries]:
+    def to_proto_timeseries(self) -> mesh_pb2.Timeseries:
         """ """
         stream = pa.BufferOutputStream()
 
         writer = pa.ipc.RecordBatchStreamWriter(
             sink=stream,
-            schema=self.arrow_tables[0].schema
+            schema=self.arrow_table.schema
         )
 
-        proto_timeseries = []
-        for table in self.arrow_tables:
-            writer.write_table(table)
-            buffer = stream.getvalue()
+        writer.write_table(self.arrow_table)
+        buffer = stream.getvalue()
 
-            proto_timeserie = mesh_pb2.Timeseries(
-                object_id=self.to_proto_object_id(),
-                resolution=self.resolution,
-                interval=datetime_to_protobuf_utcinterval(start_time=self.start_time, end_time=self.end_time),
-                data=buffer.to_pybytes()
-            )
-            proto_timeseries.append(proto_timeserie)
-        return proto_timeseries
+        proto_timeserie = mesh_pb2.Timeseries(
+            object_id=self.to_proto_object_id(),
+            resolution=self.resolution,
+            interval=datetime_to_protobuf_utcinterval(start_time=self.start_time, end_time=self.end_time),
+            data=buffer.to_pybytes()
+        )
+
+        return proto_timeserie
 
     @staticmethod
     def _read_timeseries_reply(reply: mesh_pb2.ReadTimeseriesResponse):
         """Converts a timeseries reply into a Timeseries """
-        tables = []
-        resolution = None
-        object_id = None
-        interval = None
+        timeseries = []
         for timeserie in reply.timeseries:
             resolution = timeserie.resolution
             object_id = timeserie.object_id
             interval = timeserie.interval
             reader = pa.ipc.open_stream(timeserie.data)
             table = reader.read_all()
-            tables.append(table)
-        return Timeseries(tables, resolution,
+            ts = Timeseries(table, resolution,
                           interval.start_time, interval.end_time,
                           object_id.timskey, object_id.guid, object_id.full_name)
+            timeseries.append(ts)
+        return timeseries
