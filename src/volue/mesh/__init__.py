@@ -23,7 +23,5 @@ __all__ = [
     'TimeseriesTestdata',
     'eagle_wind',
     'Timeseries',
-    'Credentials',
-    'tests',
-    'examples'
+    'Credentials'
 ]

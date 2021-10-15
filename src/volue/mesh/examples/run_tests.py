@@ -2,7 +2,7 @@ import pytest
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.tests import test_timeseries
 
-def main(address, port, secure_connection):
+def main():
     """Showing how to run tests."""
 
     # Change to fit your server
@@ -25,4 +25,4 @@ def main(address, port, secure_connection):
 
 
 if __name__ == "__main__":
-    main("not_used", "not_used", "not_used")
+    main()
