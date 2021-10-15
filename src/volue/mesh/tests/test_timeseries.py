@@ -1,14 +1,15 @@
-import uuid
-import grpc
-import pyarrow as pa
-import pytest
-from datetime import datetime
-from google.protobuf.timestamp_pb2 import Timestamp
-from volue.mesh import Connection, Timeseries, uuid_to_guid, dot_net_ticks_to_protobuf_timestamp
+from volue.mesh._common import *
+from volue.mesh import Connection, Timeseries, to_proto_guid, to_protobuf_timestamp
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
 import volue.mesh.tests.test_utilities.server_config as sc
+from google.protobuf.timestamp_pb2 import Timestamp
+from datetime import datetime
+import pyarrow as pa
+import uuid
+import grpc
+import pytest
 
 
 @pytest.mark.unittest
@@ -17,7 +18,7 @@ def test_can_convert_between_win32ticks_and_timestamp():
     original_ts = Timestamp()
     original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
     original_ticks = 637649280000000000  # "2021-08-19T00:00:00Z"
-    ts = dot_net_ticks_to_protobuf_timestamp(original_ticks)
+    ts = to_protobuf_timestamp(original_ticks)
     assert original_ts.ToNanoseconds() == ts.ToNanoseconds()
 
 
@@ -26,7 +27,7 @@ def test_can_convert_between_datetime_and_timestamp():
     """Check that conversion between datetime and protobuf.timestamp works"""
     ts = Timestamp()
     ts.FromDatetime(datetime(2016, 5, 1))
-    converted_ts = dot_net_ticks_to_protobuf_timestamp(635976576000000000)
+    converted_ts = to_protobuf_timestamp(635976576000000000)
     assert ts.ToNanoseconds() == converted_ts.ToNanoseconds()
 
 
@@ -64,15 +65,15 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
                                      resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR),
                                      start_time=start, end_time=end,
                                      timskey=201503,
-                                     the_uuid=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
+                                     uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
                                      full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)")
 
-    original_proto_timeserie = original_timeseries.to_proto_timeseries()
-    session_id_original = uuid_to_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
+    original_proto_timeserie = to_proto_timeseries(original_timeseries)
+    session_id_original = to_proto_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
     original_reply = WriteTimeseriesRequest(
         session_id=session_id_original,
-        object_id=original_timeseries.to_proto_object_id(),
+        object_id=to_proto_object_id(original_timeseries),
         timeseries=original_proto_timeserie
     )
 
@@ -83,7 +84,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     reply.ParseFromString(binary_data)
     assert original_reply == reply
     assert session_id_original == reply.session_id
-    assert original_timeseries.to_proto_object_id() == reply.object_id
+    assert to_proto_object_id(original_timeseries) == reply.object_id
     assert original_proto_timeserie == reply.timeseries
 
     reader = pa.ipc.open_stream(reply.timeseries.data)
@@ -94,6 +95,19 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[2] == table[2]
 
 
+def get_test_data():
+    arrays = [
+        pa.array([1462060800, 1462064400, 1462068000]),
+        pa.array([0, 0, 0]),
+        pa.array([0.0, 10.0, 1000.0])]
+    table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
+    timskey = 201503
+    uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
+    start_time = datetime(2016, 5, 1)
+    end_time = datetime(2016, 5, 14)
+    return end_time, start_time, table, timskey, uuid_id
+
+
 @pytest.mark.database
 def test_read_timeseries_points_using_timskey():
     """Check that timeseries can be retrieved using timskey."""
@@ -101,12 +115,12 @@ def test_read_timeseries_points_using_timskey():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
-
+        end_time, start_time, table, timskey, uuid_id = get_test_data()
         try:
             timeseries = session.read_timeseries_points(
-                start_time=datetime(2016, 5, 1),
-                end_time=datetime(2016, 5, 14),
-                timskey=201503)
+                start_time=start_time,
+                end_time=end_time,
+                timskey=timskey)
             assert len(timeseries) == 1
             assert timeseries[0].number_of_points == 312
         except grpc.RpcError:
@@ -119,14 +133,7 @@ def test_write_timeseries_points_using_timskey():
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
-    arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
-        pa.array([0, 0, 0]),
-        pa.array([0.0, 10.0, 1000.0])]
-    table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timskey = 201503
-    start_time = datetime(2016, 5, 1)
-    end_time = datetime(2016, 5, 14)
+    end_time, start_time, table, timskey, uuid_id = get_test_data()
     timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
 
     with connection.create_session() as session:
@@ -137,21 +144,33 @@ def test_write_timeseries_points_using_timskey():
         except grpc.RpcError:
             pytest.fail("Could not write timeseries points")
 
+@pytest.mark.database
+def test_read_timeseries_points_using_timskey():
+    """Check that timeseries can be retrieved using timskey."""
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+    with connection.create_session() as session:
+        end_time, start_time, table, timskey, uuid_id = get_test_data()
+        try:
+            timeseries = session.read_timeseries_points(
+                start_time=start_time,
+                end_time=end_time,
+                timskey=timskey)
+            assert len(timeseries) == 1
+            assert timeseries[0].number_of_points == 312
+        except grpc.RpcError:
+            pytest.fail("Could not read timeseries points")
+
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_get_and_edit_timeseries_points_from_timskey_async():
+async def test_write_timeseries_points_using_timskey_async():
+    """Check that timeseries can be written to the server using timskey."""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
-    arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
-        pa.array([0, 0, 0]),
-        pa.array([0.0, 10.0, 1000.0])]
-    table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timskey = 201503
-    start_time = datetime(2016, 5, 1)
-    end_time = datetime(2016, 5, 14)
+    end_time, start_time, table, timskey, uuid_id = get_test_data()
     timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
 
     async with connection.create_session() as session:
@@ -163,18 +182,24 @@ async def test_get_and_edit_timeseries_points_from_timskey_async():
             pytest.fail("Could not write timeseries points")
 
 
-@pytest.mark.database
-def test_get_and_edit_timeseries_points_from_uuid():
-    """Check that a timeserie can be retreived using UUID."""
-    uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-    # impl_test_get_and_edit_timeseries_points(Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION), None, uuid_id)
-
-
 @pytest.mark.asyncio
 @pytest.mark.database
-def test_get_and_edit_timeseries_points_from_uuid_async():
-    uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-    # impl_test_get_and_edit_timeseries_points(AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION), None, uuid_id)
+async def test_read_timeseries_points_using_timskey_async():
+    """Check that timeseries can be retrieved using timskey."""
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+    async with connection.create_session() as session:
+        end_time, start_time, table, timskey, uuid_id = get_test_data()
+        try:
+            timeseries = await session.read_timeseries_points(
+                start_time=start_time,
+                end_time=end_time,
+                timskey=timskey)
+            assert len(timeseries) == 1
+            assert timeseries[0].number_of_points == 312
+        except grpc.RpcError:
+            pytest.fail("Could not read timeseries points")
 
 
 if __name__ == '__main__':
