@@ -11,7 +11,7 @@ def uuid_to_guid(uuid: uuid.UUID) -> ProtoGuid:
     :param uuid: UUID
     :return: GUID
     """
-    if (uuid is None):
+    if uuid is None:
         return None
     return ProtoGuid(bytes_le=uuid.bytes_le)
 
@@ -22,7 +22,7 @@ def guid_to_uuid(guid: ProtoGuid) -> uuid.UUID:
     :param guid: GUID to be converted
     :return: UUID
     """
-    if (guid is None):
+    if guid is None:
         return None
     return uuid.UUID(bytes_le=guid)
 
@@ -48,7 +48,7 @@ def dot_net_ticks_to_protobuf_timestamp(ticks: int) -> Timestamp:
     :param ticks: windows ticks
     :return: Timestamp
     """
-    if (ticks is None):
+    if ticks is None:
         return None
     date = datetime.datetime(1, 1, 1) + \
            datetime.timedelta(microseconds=ticks // 10)

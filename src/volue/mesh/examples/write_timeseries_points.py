@@ -17,13 +17,10 @@ def write_timeseries_points(session: Connection.Session):
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timeseries = Timeseries(table=table)
+    timeseries = Timeseries(tables=[table], start_time=start, end_time=end, timskey=eagle_wind.timskey)
 
     # Send request to write timeseries based on timskey
     session.write_timeseries_points(
-        start_time=start,
-        end_time=end,
-        timskey=eagle_wind.timskey,
         timeserie=timeseries
     )
 
