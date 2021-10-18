@@ -1,3 +1,5 @@
+from time import sleep
+import grpc
 import pytest
 from volue.mesh import Connection
 from volue.mesh.aio import Connection as AsyncConnection
@@ -42,6 +44,27 @@ async def test_open_and_close_session():
     await session.close()
     assert session.session_id is None
 
+
+@pytest.mark.server
+def test_can_connect_to_existing_session():
+    """Check if it is possible to connect to a existing session. |test|
+    1. Create a session.
+    2. Connect to the session using a new object.
+    3. Close using the new session object.
+    4. Try to close the old session object, which should no longer be alive on the server."""
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION)
+    session = connection.create_session()
+    session.open()
+    assert session.session_id is not None
+    same_session = connection.connect_to_session(session.session_id)
+    assert session.session_id == same_session.session_id
+    assert session.mesh_service == same_session.mesh_service
+    same_session.close()
+    sleep(1)  # Closing a session on the server is not a blocking call, so there is not telling how long closing a session will take.
+    with pytest.raises(grpc.RpcError) as info:
+        session.close()
+    assert info.type == grpc._channel._InactiveRpcError
+    assert info.value.details() == ('Session with id {} not found.'.format({str(session.session_id).upper()})).replace("'", "")
 
 @pytest.mark.server
 def test_sessions_using_contextmanager():

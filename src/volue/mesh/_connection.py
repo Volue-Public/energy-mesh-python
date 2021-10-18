@@ -16,9 +16,9 @@ class Connection:
         This class supports the with statement, because it's a contextmanager.
         """
 
-        def __init__(self, mesh_service):
-            self.session_id = None
-            self.mesh_service = mesh_service
+        def __init__(self, mesh_service: mesh_pb2_grpc.MeshServiceStub, session_id: uuid = None):
+            self.session_id: uuid = session_id
+            self.mesh_service: mesh_pb2_grpc.MeshServiceStub = mesh_service
 
         def __enter__(self):
             """
@@ -145,12 +145,9 @@ class Connection:
         Raises:
             grpc.RpcError:
         """
-        # TODO  save it somewhere...?
-        return self.Session(self.mesh_service)
+        return self.connect_to_session(session_id=None)
 
-    def delete_session(self) -> None:
+    def connect_to_session(self, session_id: uuid):
         """
-        Raises:
-            grpc.RpcError:
         """
-        # TODO how about it gets autodeleted as soon as an EVENT says the session is closed?
+        return self.Session(self.mesh_service, session_id)
