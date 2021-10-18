@@ -217,9 +217,9 @@ $ source my-venv/bin/activate (Linux, Mac)
 <div class="section" id="basic-concepts">
 <h2>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h2>
 <p>The Mesh Python SDK communicates with a Mesh server using gRPC which is a way of sending requests and responses over a network. The request is serialized and packaged then sent to the server which processes the request and sends back a response.</p>
-<p>Depending on the request it may take a long time to process by the server. For such cases the client may use package :ref:volue.mesh.aio which is implemented using the asyncio &lt;https://docs.python.org/3/library/asyncio.html&gt;_ library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
+<p>Depending on the request it may take a long time to process by the server. For such cases the client may use package <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a> which is implemented using the asyncio &lt;<a class="reference external" href="https://docs.python.org/3/library/asyncio.html">https://docs.python.org/3/library/asyncio.html</a>&gt;_ library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
 <p>This concept of concurrency can be demonstrated using the following examples.</p>
-<p>Using :ref:volue.mesh`.Connection:</p>
+<p>Using <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
 
