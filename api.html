@@ -179,7 +179,7 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_service</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mesh_service:</span> <span class="pre">volue.mesh.proto.mesh_pb2_grpc.MeshServiceStub</span></em>, <em class="sig-param"><span class="pre">session_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class supports the with statement, because it’s a contextmanager.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.close">
@@ -244,18 +244,13 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Connection.create_session">
-<span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.create_session" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
-</dd>
-</dl>
-</dd></dl>
+<dt class="sig sig-object py" id="volue.mesh.Connection.connect_to_session">
+<span class="sig-name descname"><span class="pre">connect_to_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">session_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.connect_to_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.connect_to_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Connection.delete_session">
-<span class="sig-name descname"><span class="pre">delete_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.delete_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.delete_session" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="volue.mesh.Connection.create_session">
+<span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.create_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
@@ -578,6 +573,16 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 <dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_async_get_version">
 <em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_async_get_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_async_get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_async_get_version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the server can respond with its version. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest-asyncio"><em>pytest-asyncio</em></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_can_connect_to_existing_session">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_can_connect_to_existing_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_can_connect_to_existing_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_can_connect_to_existing_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if it is possible to connect to a existing session. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest"><em>pytest</em></a>.
+1. Create a session.
+2. Connect to the session using a new object.
+3. Close using the new session object.
+4. Try to close the old session object, which should no longer be alive on the server.</p>
 </dd></dl>
 
 <dl class="py function">
