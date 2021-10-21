@@ -14,7 +14,7 @@ Installation:
 Examples:
 
 ```
-> python examples/mesh/1_get_version.py
+> python src/volue/mesh/examples/get_version.py
 Server: Volue Mesh Server 1.12.5.0-dev (2021-04-26 ae939aef)
 Client: 0.0.0
 ```
@@ -40,7 +40,7 @@ or use `poetry shell` to drop into a shell with the dependencies available.
 For example to run the GetVersion example you'd run:
 
 ```
-poetry run python examples/mesh/1_get_version.py
+poetry run python src/volue/mesh/examples/get_version.py
 ```
 
 [Poetry]: https://python-poetry.org/docs/
