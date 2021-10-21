@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
-package volue.mesh.protobuf;
+package volue.mesh.v1alpha;
 
 // The greeting service definition.
 service MeshService {
