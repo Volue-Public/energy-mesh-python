@@ -1,6 +1,5 @@
 import subprocess
 import sys
-import asyncio
 import socket
 
 
@@ -28,11 +27,3 @@ def run_example_script(path, address, port, secure_connection):
     stdoutdata, stderrdata = p.communicate()
     exit_code = p.returncode
     assert exit_code == 0, f"{stderrdata} {stdoutdata}"
-
-
-def await_if_async(coroutine):
-    """Helper function to allow us to use same test for async and sync connection"""
-    if asyncio.iscoroutine(coroutine):
-        loop = asyncio.get_event_loop()
-        return loop.run_until_complete(coroutine)
-    return coroutine

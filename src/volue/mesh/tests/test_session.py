@@ -47,7 +47,7 @@ async def test_open_and_close_session():
 
 @pytest.mark.server
 def test_can_connect_to_existing_session():
-    """Check if it is possible to connect to a existing session. |test|
+    """Check if it is possible to connect to an existing session. |test|
     1. Create a session.
     2. Connect to the session using a new object.
     3. Close using the new session object.
