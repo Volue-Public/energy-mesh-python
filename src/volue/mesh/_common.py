@@ -97,7 +97,7 @@ def to_protobuf_timestamp(dot_net_ticks: int) -> timestamp_pb2.Timestamp:
 
 
 def to_proto_object_id(timeseries: Timeseries) -> mesh_pb2.ObjectId:
-    """ onvert a Timeseries to corresponding protobuf ObjectId"""
+    """Convert a Timeseries to corresponding protobuf ObjectId"""
     return mesh_pb2.ObjectId(
         timskey=timeseries.timskey,
         guid=to_proto_guid(timeseries.uuid),

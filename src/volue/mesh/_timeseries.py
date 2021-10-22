@@ -9,7 +9,7 @@ from volue.mesh.proto import mesh_pb2
 class Timeseries:
     """Represents a mesh timeserie.
 
-    Contains a arrow table with a schema of 3 fields (utc_time, flags, value.)
+    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
     Utc_time is the timestamps of the points.
     Flags are ??? <TODO>
     Value is the actual data for the given timestamp.
@@ -51,6 +51,6 @@ class Timeseries:
 
     @property
     def number_of_points(self) -> int:
-        """Number of point inside the timeseries"""
+        """Number of points inside the timeseries"""
         return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
