@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>volue.mesh.examples.connect_asynchronously &mdash; volue.mesh 0.1.0 documentation</title>
+  <title>volue.mesh.examples.read_timeseries_points_async &mdash; volue.mesh 0.1.0 documentation</title>
   
 
   
@@ -144,7 +144,7 @@
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
-      <li>volue.mesh.examples.connect_asynchronously</li>
+      <li>volue.mesh.examples.read_timeseries_points_async</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -159,48 +159,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for volue.mesh.examples.connect_asynchronously</h1><div class="highlight"><pre>
+  <h1>Source code for volue.mesh.examples.read_timeseries_points_async</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">eagle_wind</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 
-<div class="viewcode-block" id="get_version"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.connect_asynchronously.get_version">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to get the server version.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="read_timeseries_points_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.read_timeseries_points_async.read_timeseries_points_async">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points_async</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to read timeseries points.&quot;&quot;&quot;</span>
 
+    <span class="c1"># Defining a time interval to read timeseries from</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
 
-<div class="viewcode-block" id="start_and_end_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.connect_asynchronously.start_and_end_session">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.connect_asynchronously.main">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks concurrently.&quot;&quot;&quot;</span>
-    <span class="c1"># Creating a connection, but not sending any requests yet</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
-    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-        <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span>
-        <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
-    <span class="p">)</span></div>
+    <span class="n">timskey</span> <span class="o">=</span> <span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
+    <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+    <span class="n">timskey_timeseries</span><span class="p">,</span> <span class="n">guid_timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">),</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">timskey_timeseries</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timskey timeseries contains </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">guid_timeseries</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Guid timeseries contains </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.read_timeseries_points_async.main">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to get timeseries points asynchronously.&quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">read_timeseries_points_async</span><span class="p">(</span><span class="n">session</span><span class="p">)</span></div>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
-
-<span class="c1"># Outputs:</span>
-<span class="c1"># 1. Requesting server version</span>
-<span class="c1"># A. Starting session</span>
-<span class="c1"># 2. Server version is 1.12.5.0-dev</span>
-<span class="c1"># B. Ending session</span>
-<span class="c1"># Done</span>
 </pre></div>
 
            </div>

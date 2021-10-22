@@ -91,10 +91,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#running-examples">Running examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-version">Get version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-timeseries">Get timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-timeseries-asynchronously">Get timeseries, asynchronously</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#edit-timeseries">Edit timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#edit-timeseries-asynchronously">Edit timeseries, asynchronously</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#read-timeseries">Read timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#read-timeseries-asynchronously">Read timeseries, asynchronously</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#write-timeseries">Write timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#write-timeseries-asynchronously">Write timeseries, asynchronously</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
@@ -176,8 +176,7 @@
 <p>This section contains code examples. These examples are packaged with the Mesh Python SDK and can be accessed when the package is installed.</p>
 <div class="section" id="running-examples">
 <h2>Running examples<a class="headerlink" href="#running-examples" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">quickstart</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">quickstart</span><span class="p">,</span> <span class="n">_get_connection_info</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
@@ -188,7 +187,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -197,10 +196,9 @@
 <h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
-
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Showing how to send get the server version both sequentially and concurrently.&quot;&quot;&quot;</span>
@@ -221,285 +219,189 @@
     <span class="c1"># If some sensible version info is printed, you have successfully</span>
     <span class="c1"># communicated with the server.</span>
 
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-    
+
 </pre></div>
 </div>
 </div>
-<div class="section" id="get-timeseries">
-<h2>Get timeseries<a class="headerlink" href="#get-timeseries" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span><span class="p">,</span> <span class="n">get_connection_info</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
+<div class="section" id="read-timeseries">
+<h2>Read timeseries<a class="headerlink" href="#read-timeseries" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">eagle_wind</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
-<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to read timeseries points.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Defining a time interval to read timeseries from</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+
+    <span class="c1"># Send request to read timeseries based on timskey</span>
+    <span class="n">timskey</span> <span class="o">=</span> <span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeserie</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Send request to read timeseries based on guid</span>
+    <span class="n">uuid_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">uuid_id</span><span class="o">=</span><span class="n">uuid_id</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeserie</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
-
-    <span class="c1"># Prepare a connection</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to get timeseries points.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-    <span class="c1"># Print version info</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
-    <span class="c1"># Start session</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="c1"># Preapare the request</span>
-    <span class="n">timskey</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-        <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
-    <span class="p">)</span>
-    <span class="c1"># Send request, and wait for reply</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-    <span class="p">)</span>
-    <span class="c1"># Lets have a look at what we got</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">timskey</span><span class="p">))</span>
-    <span class="c1"># Lets try with a guid instead</span>
-    <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-    <span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">guid</span><span class="p">))</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="get-timeseries-asynchronously">
-<h2>Get timeseries, asynchronously<a class="headerlink" href="#get-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span><span class="p">,</span> <span class="n">get_connection_info</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
+<div class="section" id="read-timeseries-asynchronously">
+<h2>Read timeseries, asynchronously<a class="headerlink" href="#read-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">eagle_wind</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
 
+<span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points_async</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to read timeseries points.&quot;&quot;&quot;</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Defining a time interval to read timeseries from</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
 
-    <span class="c1"># First, prepare the connection:</span>
-    <span class="n">async_connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-
-    <span class="c1"># Print version info</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
-
-    <span class="c1"># Let&#39;s request some timeseries.</span>
-    <span class="c1"># While we wait for the response, we can</span>
-    <span class="c1"># and do other stuff (like send new requests).</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-        <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+    <span class="c1"># Indicate that these two functions can be run concurrently</span>
+    <span class="n">timskey</span> <span class="o">=</span> <span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
+    <span class="n">guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">guid</span><span class="p">)</span>
+    <span class="n">timskey_timeseries</span><span class="p">,</span> <span class="n">guid_timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">),</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">guid</span><span class="o">=</span><span class="n">guid</span><span class="p">)</span>
     <span class="p">)</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">timskey_timeseries</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timskey timeseries contains </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">guid_timeseries</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Guid timeseries contains </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-    <span class="n">timskey_1</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requesting timeseries points for timskey </span><span class="si">{</span><span class="n">timskey_1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">timeseries_1_future</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey_1</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-    <span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to get timeseries points asynchronously.&quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 
-    <span class="c1"># Do some other work</span>
-    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="c1"># Send some other requests</span>
-    <span class="n">timskey_2</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requesting timeseries points for timskey </span><span class="si">{</span><span class="n">timskey_2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">timeseries_2_future</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey_2</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-    <span class="p">)</span>
-
-    <span class="n">timskey_3</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Requesting timeseries points for timskey </span><span class="si">{</span><span class="n">timskey_3</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">timeseries_3_future</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey_3</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-    <span class="p">)</span>
-
-    <span class="c1"># Now we actually need the points, so lets make sure we have them:</span>
-    <span class="n">timeseries_1</span> <span class="o">=</span> <span class="k">await</span> <span class="n">timeseries_1_future</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">reply</span><span class="o">=</span><span class="n">timeseries_1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">timskey_1</span><span class="p">)</span>
-    <span class="n">timeseries_2</span> <span class="o">=</span> <span class="k">await</span> <span class="n">timeseries_2_future</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">reply</span><span class="o">=</span><span class="n">timeseries_2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">timskey_2</span><span class="p">)</span>
-    <span class="n">timeseries_3</span> <span class="o">=</span> <span class="k">await</span> <span class="n">timeseries_3_future</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">reply</span><span class="o">=</span><span class="n">timeseries_3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">timskey_3</span><span class="p">)</span>
-
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">read_timeseries_points_async</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="edit-timeseries">
-<h2>Edit timeseries<a class="headerlink" href="#edit-timeseries" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeserie</span><span class="p">,</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">print_timeseries_points</span><span class="p">,</span> <span class="n">get_connection_info</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
+<div class="section" id="write-timeseries">
+<h2>Write timeseries<a class="headerlink" href="#write-timeseries" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">eagle_wind</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Defining a time interval to write timeseries to</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+
+    <span class="c1"># Defining the data we want to write</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1462060800</span><span class="p">,</span> <span class="mi">1462064400</span><span class="p">,</span> <span class="mi">1462068000</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])]</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span><span class="p">)</span>
+
+    <span class="c1"># Send request to write timeseries based on timskey</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
+        <span class="n">timeserie</span><span class="o">=</span><span class="n">timeseries</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Commit the changes to the database</span>
+    <span class="c1"># session.commit()</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
-
-    <span class="c1"># Prepare a connection</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
-    <span class="c1"># Print version info</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
-    <span class="c1"># Start session</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="c1"># Preapare the request</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
-    <span class="n">timskey</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-        <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
-    <span class="c1"># Send request, and wait for reply</span>
-    <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-    <span class="p">)</span>
-    <span class="c1"># Lets edit some points:</span>
-    <span class="c1"># TODO EDIT</span>
-    <span class="c1"># Lets have a look at what we got</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original timeseries:&quot;</span><span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Edited timeseries points:&quot;</span><span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
-    <span class="c1"># Let&#39;s have a look at the points again</span>
-    <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Timeseries after editing:&quot;</span><span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-    <span class="c1"># Rollback</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Timeseries after Rollback:&quot;</span><span class="p">)</span>
-    <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-    <span class="c1"># Edit again, and commit. Now the changes will be stored in database:</span>
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Edit timeseries again, and commit. Run the example &quot;</span>
-        <span class="s2">&quot;again, to verify that the changes have been stored in DB.&quot;</span><span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
-
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+
 </pre></div>
 </div>
 </div>
-<div class="section" id="edit-timeseries-asynchronously">
-<h2>Edit timeseries, asynchronously<a class="headerlink" href="#edit-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeserie</span><span class="p">,</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">UtcInterval</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.examples.utility.test_data</span> <span class="k">as</span> <span class="nn">td</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples.utility.print</span> <span class="kn">import</span> <span class="n">get_connection_info</span><span class="p">,</span> <span class="n">print_timeseries_points</span>
+<div class="section" id="write-timeseries-asynchronously">
+<h2>Write timeseries, asynchronously<a class="headerlink" href="#write-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">eagle_wind</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
 
+<span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># Prepare a connection</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+    <span class="c1"># Defining a time interval to write timeseries to</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
 
-    <span class="c1"># Print version info</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span><span class="p">)</span>
+    <span class="c1"># Defining the data we want to write</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1462060800</span><span class="p">,</span> <span class="mi">1462064400</span><span class="p">,</span> <span class="mi">1462068000</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])]</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span><span class="p">)</span>
 
-    <span class="c1"># Start session</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-
-    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">start_time_ticks</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">end_time_ticks</span><span class="p">)</span>
-    <span class="n">timskey</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">eagle_wind</span><span class="o">.</span><span class="n">timskey</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-        <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
-
-    <span class="c1"># Send request, and wait for reply</span>
-    <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
+    <span class="c1"># Send request to write timeseries based on timskey</span>
+    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
+        <span class="n">timeserie</span><span class="o">=</span><span class="n">timeseries</span>
     <span class="p">)</span>
 
-    <span class="c1"># Lets have a look at what we got</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Original timeseries:&quot;</span><span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
+    <span class="c1"># Commit the changes to the database</span>
+    <span class="c1"># await session.commit()</span>
 
-    <span class="c1"># Lets edit some points:</span>
-    <span class="c1"># TODO EDIT</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Edited timeseries points:&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
 
-    <span class="c1"># Let&#39;s have a look at the points again</span>
-    <span class="n">timeseries_reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Timeseries after editing:&quot;</span><span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-
-    <span class="c1"># Rollback</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Timeseries after Rollback:&quot;</span><span class="p">)</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
-    <span class="n">print_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">,</span> <span class="n">timskey</span><span class="p">)</span>
-
-    <span class="c1"># Edit again, and commit. Now the changes will be stored in database:</span>
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Edit timeseries again, and commit. Run the example &quot;</span>
-        <span class="s2">&quot;again, to verify that the changes have been stored in DB.&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-        <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">timeseries_reply</span><span class="p">)))</span>
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">))</span>
 </pre></div>
 </div>

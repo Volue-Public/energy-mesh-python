@@ -15,25 +15,25 @@ Get version
    :language: python
 
 
-Get timeseries
+Read timeseries
 ***************
-.. literalinclude:: /../../src/volue/mesh/examples/get_timeseries_points.py
+.. literalinclude:: /../../src/volue/mesh/examples/read_timeseries_points.py
    :language: python
 
 
-Get timeseries, asynchronously
+Read timeseries, asynchronously
 *******************************
-.. literalinclude:: /../../src/volue/mesh/examples/get_timeseries_points_async.py
+.. literalinclude:: /../../src/volue/mesh/examples/read_timeseries_points_async.py
    :language: python
 
 
-Edit timeseries
+Write timeseries
 *****************
-.. literalinclude:: /../../src/volue/mesh/examples/edit_timeseries_points.py
+.. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points.py
    :language: python
 
 
-Edit timeseries, asynchronously
+Write timeseries, asynchronously
 ********************************
-.. literalinclude:: /../../src/volue/mesh/examples/edit_timeseries_points_async.py
+.. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points_async.py
    :language: python

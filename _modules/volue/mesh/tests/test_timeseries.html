@@ -160,94 +160,18 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh.tests.test_timeseries</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">string</span>
+<span></span><span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">to_protobuf_timestamp</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">WriteTimeseriesRequest</span>
+<span class="kn">import</span> <span class="nn">volue.mesh.tests.test_utilities.server_config</span> <span class="k">as</span> <span class="nn">sc</span>
+<span class="kn">from</span> <span class="nn">google.protobuf.timestamp_pb2</span> <span class="kn">import</span> <span class="n">Timestamp</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">import</span> <span class="nn">grpc</span>
-<span class="kn">import</span> <span class="nn">pyarrow</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">from</span> <span class="nn">google.protobuf.timestamp_pb2</span> <span class="kn">import</span> <span class="n">Timestamp</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeserie</span><span class="p">,</span> <span class="n">uuid_to_guid</span><span class="p">,</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.mesh_pb2</span> <span class="kn">import</span> <span class="n">ObjectId</span><span class="p">,</span> <span class="n">UtcInterval</span><span class="p">,</span> <span class="n">WriteTimeseriesRequest</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.tests.test_utilities.server_config</span> <span class="k">as</span> <span class="nn">sc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.tests.test_utilities.utilities</span> <span class="kn">import</span> <span class="n">await_if_async</span>
-
-
-<div class="viewcode-block" id="compare_segments"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.compare_segments">[docs]</a><span class="k">def</span> <span class="nf">compare_segments</span><span class="p">(</span><span class="n">seg_1</span><span class="p">,</span> <span class="n">seg_2</span><span class="p">):</span>
-    <span class="n">n_1</span> <span class="o">=</span> <span class="n">seg_1</span><span class="o">.</span><span class="n">number_of_points</span>
-    <span class="n">n_2</span> <span class="o">=</span> <span class="n">seg_2</span><span class="o">.</span><span class="n">number_of_points</span>
-    <span class="k">assert</span> <span class="n">n_1</span> <span class="o">==</span> <span class="n">n_2</span></div>
-
-
-<span class="c1"># These should be run with a mesh server</span>
-<div class="viewcode-block" id="impl_test_get_and_edit_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.impl_test_get_and_edit_timeseries_points">[docs]</a><span class="k">def</span> <span class="nf">impl_test_get_and_edit_timeseries_points</span><span class="p">(</span>
-        <span class="n">connection</span><span class="p">,</span>
-        <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">full_name</span><span class="p">:</span> <span class="n">string</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="c1"># 1. Start session</span>
-    <span class="c1"># 2. Edit timeseries with random numbers</span>
-    <span class="c1"># 3. Read timeseries, compare with step 2.</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">write_reply</span> <span class="o">=</span> <span class="n">await_if_async</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">())</span>
-    <span class="k">assert</span> <span class="n">write_reply</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-
-    <span class="c1"># Prepare the request</span>
-    <span class="c1"># TODO: When possible, check for existence and create this timeseries</span>
-    <span class="n">start</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="mi">635976576000000000</span><span class="p">)</span>
-    <span class="n">end</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="mi">635987808000000000</span><span class="p">)</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-        <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
-    <span class="p">)</span>
-
-    <span class="n">read_reply_1</span> <span class="o">=</span> <span class="n">await_if_async</span><span class="p">(</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-            <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-            <span class="n">guid</span><span class="o">=</span><span class="n">uuid</span><span class="p">,</span>
-            <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span>
-            <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">))</span>
-
-    <span class="c1"># Send request</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">await_if_async</span><span class="p">(</span>
-            <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
-                <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-                <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">),</span>
-                <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span>
-                <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
-                <span class="n">timeserie</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">read_reply_1</span><span class="p">))))</span>
-    <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
-        <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not write timeseries points&quot;</span><span class="p">)</span>
-
-    <span class="k">assert</span> <span class="n">write_reply</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">await_if_async</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">())</span>
-    <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
-        <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not commit changes.&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Read the timeseries we just edited</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">read_reply_2</span> <span class="o">=</span> <span class="n">await_if_async</span><span class="p">(</span>
-            <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-                <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-                <span class="n">guid</span><span class="o">=</span><span class="n">uuid</span><span class="p">,</span>
-                <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span>
-                <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">))</span>
-    <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
-        <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not read timeseries points&quot;</span><span class="p">)</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">read_reply_2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-
-    <span class="c1"># Check that the values are the same as we just wrote</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">read_reply_2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="n">compare_segments</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">read_reply_1</span><span class="p">)),</span>
-                     <span class="nb">next</span><span class="p">(</span><span class="n">Timeserie</span><span class="o">.</span><span class="n">read_timeseries_reply</span><span class="p">(</span><span class="n">read_reply_2</span><span class="p">))</span>
-                     <span class="p">)</span>
-
-    <span class="c1"># Done! Close session.</span>
-    <span class="n">await_if_async</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="test_can_convert_between_win32ticks_and_timestamp"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_can_convert_between_win32ticks_and_timestamp">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">unittest</span>
@@ -256,93 +180,171 @@
     <span class="n">original_ts</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="p">()</span>
     <span class="n">original_ts</span><span class="o">.</span><span class="n">FromJsonString</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;2021-08-19T00:00:00Z&quot;</span><span class="p">)</span>
     <span class="n">original_ticks</span> <span class="o">=</span> <span class="mi">637649280000000000</span>  <span class="c1"># &quot;2021-08-19T00:00:00Z&quot;</span>
-    <span class="n">ts</span> <span class="o">=</span> <span class="n">dot_net_ticks_to_protobuf_timestamp</span><span class="p">(</span><span class="n">original_ticks</span><span class="p">)</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">to_protobuf_timestamp</span><span class="p">(</span><span class="n">original_ticks</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">original_ts</span><span class="o">.</span><span class="n">ToNanoseconds</span><span class="p">()</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">ToNanoseconds</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="test_can_convert_between_datetime_and_timestamp"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_can_convert_between_datetime_and_timestamp">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">unittest</span>
+<span class="k">def</span> <span class="nf">test_can_convert_between_datetime_and_timestamp</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that conversion between datetime and protobuf.timestamp works&quot;&quot;&quot;</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="p">()</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">converted_ts</span> <span class="o">=</span> <span class="n">to_protobuf_timestamp</span><span class="p">(</span><span class="mi">635976576000000000</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">ToNanoseconds</span><span class="p">()</span> <span class="o">==</span> <span class="n">converted_ts</span><span class="o">.</span><span class="n">ToNanoseconds</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="test_can_create_empty_timeserie"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_can_create_empty_timeserie">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">unittest</span>
 <span class="k">def</span> <span class="nf">test_can_create_empty_timeserie</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Check that an empty timeserie can be created.&quot;&quot;&quot;</span>
-    <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeserie</span><span class="p">()</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">ts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="test_can_add_point_to_timeserie"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_can_add_point_to_timeserie">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">unittest</span>
-<span class="k">def</span> <span class="nf">test_can_add_point_to_timeserie</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;|deprecated| :issue:`53` Check that a point can be added to a timeserie.&quot;&quot;&quot;</span>
-    <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeserie</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">0</span>
-    <span class="n">ts</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="mi">123</span><span class="p">,</span> <span class="mi">123</span><span class="p">,</span> <span class="mf">0.123</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">1</span>
-    <span class="n">ts</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="mi">345</span><span class="p">,</span> <span class="mi">345</span><span class="p">,</span> <span class="mf">0.234</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">2</span></div>
+<div class="viewcode-block" id="test_can_create_timeserie_from_existing_data"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_can_create_timeserie_from_existing_data">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">unittest</span>
+<span class="k">def</span> <span class="nf">test_can_create_timeserie_from_existing_data</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that a timeserie can be created from existing data.&quot;&quot;&quot;</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;one&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">,</span> <span class="s1">&#39;four&#39;</span><span class="p">,</span> <span class="s1">&#39;five&#39;</span><span class="p">]),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])]</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;first_list&quot;</span><span class="p">,</span> <span class="s2">&quot;second_list&quot;</span><span class="p">])</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">5</span></div>
 
 
 <div class="viewcode-block" id="test_can_serialize_and_deserialize_write_timeserie_request"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_can_serialize_and_deserialize_write_timeserie_request">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">unittest</span>
 <span class="k">def</span> <span class="nf">test_can_serialize_and_deserialize_write_timeserie_request</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Check that timeseries can be de-/serialized.&quot;&quot;&quot;</span>
-    <span class="n">object_id_original</span> <span class="o">=</span> <span class="n">ObjectId</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="mi">201503</span><span class="p">,</span>
-        <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;3f1afdd7-5f7e-45f9-824f-a7adc09cff8e&quot;</span><span class="p">)),</span>
-        <span class="n">full_name</span><span class="o">=</span><span class="s2">&quot;Resource/Wind Power/WindPower/WPModel/WindProdForec(0)&quot;</span>
-    <span class="p">)</span>
 
-    <span class="n">ts_start</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">ts_end</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="n">UtcInterval</span><span class="p">(</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">ts_start</span><span class="p">,</span>
-        <span class="n">end_time</span><span class="o">=</span><span class="n">ts_end</span>
-    <span class="p">)</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2013</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># 25/07/2013 00:00:00</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2016</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># 25/12/2016 00:00:00</span>
 
-    <span class="n">timeserie_original</span> <span class="o">=</span> <span class="n">Timeserie</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="n">timeserie_original</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-    <span class="n">timeserie_original</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-    <span class="n">timeserie_original</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">timeserie_original</span><span class="o">.</span><span class="n">add_point</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">timeserie_original</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1462060800</span><span class="p">,</span> <span class="mi">1462064400</span><span class="p">,</span> <span class="mi">1462068000</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])]</span>
 
-    <span class="n">proto_timeserie_original</span> <span class="o">=</span> <span class="n">timeserie_original</span><span class="o">.</span><span class="n">to_proto_timeseries</span><span class="p">(</span><span class="n">object_id_original</span><span class="p">,</span> <span class="n">interval</span><span class="p">)</span>
-    <span class="n">session_id_original</span> <span class="o">=</span> <span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;3f1afdd7-1111-45f9-824f-a7adc09cff8e&quot;</span><span class="p">))</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 
-    <span class="n">request_original</span> <span class="o">=</span> <span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
+    <span class="n">original_timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span>
+                                     <span class="n">resolution</span><span class="o">=</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span><span class="p">),</span>
+                                     <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+                                     <span class="n">timskey</span><span class="o">=</span><span class="mi">201503</span><span class="p">,</span>
+                                     <span class="n">uuid_id</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;3f1afdd7-5f7e-45f9-824f-a7adc09cff8e&quot;</span><span class="p">),</span>
+                                     <span class="n">full_name</span><span class="o">=</span><span class="s2">&quot;Resource/Wind Power/WindPower/WPModel/WindProdForec(0)&quot;</span><span class="p">)</span>
+
+    <span class="n">original_proto_timeserie</span> <span class="o">=</span> <span class="n">to_proto_timeseries</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">)</span>
+    <span class="n">session_id_original</span> <span class="o">=</span> <span class="n">to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;3f1afdd7-1111-45f9-824f-a7adc09cff8e&quot;</span><span class="p">))</span>
+
+    <span class="n">original_reply</span> <span class="o">=</span> <span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
         <span class="n">session_id</span><span class="o">=</span><span class="n">session_id_original</span><span class="p">,</span>
-        <span class="n">object_id</span><span class="o">=</span><span class="n">object_id_original</span><span class="p">,</span>
-        <span class="n">timeseries</span><span class="o">=</span><span class="n">proto_timeserie_original</span>
+        <span class="n">object_id</span><span class="o">=</span><span class="n">to_proto_object_id</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">),</span>
+        <span class="n">timeseries</span><span class="o">=</span><span class="n">original_proto_timeserie</span>
     <span class="p">)</span>
 
-    <span class="n">binary_data</span> <span class="o">=</span> <span class="n">request_original</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
+    <span class="n">binary_data</span> <span class="o">=</span> <span class="n">original_reply</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">binary_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
-    <span class="n">request</span> <span class="o">=</span> <span class="n">WriteTimeseriesRequest</span><span class="p">()</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="n">WriteTimeseriesRequest</span><span class="p">()</span>
+    <span class="n">reply</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">binary_data</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">original_reply</span> <span class="o">==</span> <span class="n">reply</span>
+    <span class="k">assert</span> <span class="n">session_id_original</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">session_id</span>
+    <span class="k">assert</span> <span class="n">to_proto_object_id</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">)</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">object_id</span>
+    <span class="k">assert</span> <span class="n">original_proto_timeserie</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">binary_data</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">request_original</span> <span class="o">==</span> <span class="n">request</span>
-    <span class="k">assert</span> <span class="n">session_id_original</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">session_id</span>
-    <span class="k">assert</span> <span class="n">object_id_original</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">object_id</span>
-    <span class="k">assert</span> <span class="n">proto_timeserie_original</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">timeseries</span>
-
-    <span class="n">reader</span> <span class="o">=</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="n">timeserie_original</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">==</span> <span class="n">table</span>
-    <span class="k">assert</span> <span class="n">timeserie_original</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">assert</span> <span class="n">timeserie_original</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">assert</span> <span class="n">timeserie_original</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
+    <span class="k">assert</span> <span class="n">original_timeseries</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">==</span> <span class="n">table</span>
+    <span class="k">assert</span> <span class="n">original_timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">original_timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">original_timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">table</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="test_get_and_edit_timeseries_points_from_timskey"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_get_and_edit_timeseries_points_from_timskey">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_get_and_edit_timeseries_points_from_timskey</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check that a timeserie can be retrieved using timskey.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_test_data"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.get_test_data">[docs]</a><span class="k">def</span> <span class="nf">get_test_data</span><span class="p">():</span>
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1462060800</span><span class="p">,</span> <span class="mi">1462064400</span><span class="p">,</span> <span class="mi">1462068000</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])]</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
     <span class="n">timskey</span> <span class="o">=</span> <span class="mi">201503</span>
-    <span class="n">impl_test_get_and_edit_timeseries_points</span><span class="p">(</span><span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">),</span> <span class="n">timskey</span><span class="p">)</span>
-    <span class="n">impl_test_get_and_edit_timeseries_points</span><span class="p">(</span><span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">),</span> <span class="n">timskey</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="test_get_and_edit_timeseries_points_from_uuid"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_get_and_edit_timeseries_points_from_uuid">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_get_and_edit_timeseries_points_from_uuid</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check that a timeserie can be retreived using UUID.&quot;&quot;&quot;</span>
     <span class="n">uuid_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;3f1afdd7-5f7e-45f9-824f-a7adc09cff8e&quot;</span><span class="p">)</span>
-    <span class="n">impl_test_get_and_edit_timeseries_points</span><span class="p">(</span><span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">uuid_id</span><span class="p">)</span>
-    <span class="n">impl_test_get_and_edit_timeseries_points</span><span class="p">(</span><span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">uuid_id</span><span class="p">)</span></div>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">timskey</span><span class="p">,</span> <span class="n">uuid_id</span></div>
+
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_read_timeseries_points_using_timskey</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that timeseries can be retrieved using timskey.&quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">end_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">timskey</span><span class="p">,</span> <span class="n">uuid_id</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+                <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">312</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not read timeseries points&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="test_read_timeseries_points_using_timskey"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_read_timeseries_points_using_timskey">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_read_timeseries_points_using_timskey</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that timeseries can be retrieved using timskey.&quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">end_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">timskey</span><span class="p">,</span> <span class="n">uuid_id</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+                <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">312</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not read timeseries points&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_write_timeseries_points_using_timskey_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_write_timeseries_points_using_timskey_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_write_timeseries_points_using_timskey_async</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that timeseries can be written to the server using timskey.&quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">)</span>
+    <span class="n">end_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">timskey</span><span class="p">,</span> <span class="n">uuid_id</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
+                <span class="n">timeserie</span><span class="o">=</span><span class="n">timeseries</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not write timeseries points&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_read_timeseries_points_using_timskey_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_timeseries.test_read_timeseries_points_using_timskey_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_read_timeseries_points_using_timskey_async</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that timeseries can be retrieved using timskey.&quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">end_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">timskey</span><span class="p">,</span> <span class="n">uuid_id</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+                <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">312</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not read timeseries points&quot;</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

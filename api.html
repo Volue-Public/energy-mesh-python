@@ -203,7 +203,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
@@ -213,7 +213,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.read_timeseries_points">
-<span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.UtcInterval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">start_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></em>, <em class="sig-param"><span class="pre">end_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></em>, <em class="sig-param"><span class="pre">timskey:</span> <span class="pre">Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">uuid_id:</span> <span class="pre">Optional[uuid.UUID]</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">full_name:</span> <span class="pre">Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
@@ -233,7 +233,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.write_timeseries_points">
-<span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.UtcInterval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.Timeserie" title="volue.mesh._timeserie.Timeserie"><span class="pre">volue.mesh._timeserie.Timeserie</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
@@ -272,104 +272,24 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.Timeserie">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Timeserie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">table=None</span></em>, <em class="sig-param"><span class="pre">resolution=type:</span> <span class="pre">HOUR</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeserie.html#Timeserie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeserie" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="volue.mesh.Timeseries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">table:</span> <span class="pre">pyarrow.lib.Table</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">resolution:</span> <span class="pre">volue.mesh.proto.mesh_pb2.Resolution</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">start_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">end_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">timskey:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">uuid_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">full_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a mesh timeserie.</p>
-<p>Contains a arrow table with a schema of 3 fields (ticks, flags, value.)
-Ticks are the timestamps represented as windows ticks.
-Note: A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
+<p>Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
+Utc_time is the timestamps of the points.
 Flags are ??? &lt;TODO&gt;
 Value is the actual data for the given timestamp.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Timeserie.add_point">
-<span class="sig-name descname"><span class="pre">add_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_timeserie.html#Timeserie.add_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeserie.add_point" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ticks</strong> – </p></li>
-<li><p><strong>flags</strong> – </p></li>
-<li><p><strong>value</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns:</p>
-</dd></dl>
-
 <dl class="py property">
-<dt class="sig sig-object py" id="volue.mesh.Timeserie.number_of_points">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">number_of_points</span></span><a class="headerlink" href="#volue.mesh.Timeserie.number_of_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of point inside the time series</p>
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.number_of_points">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">number_of_points</span></span><em class="property"><span class="pre">:</span> <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#volue.mesh.Timeseries.number_of_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of points inside the timeseries</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Timeserie.read_timeseries_reply">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">read_timeseries_reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reply</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.ReadTimeseriesResponse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeserie.html#Timeserie.read_timeseries_reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeserie.read_timeseries_reply" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>reply</strong> – </p>
-</dd>
-</dl>
-<p>Returns:</p>
-</dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.schema">
+<span class="sig-name descname"><span class="pre">schema</span></span><em class="property"> <span class="pre">=</span> <span class="pre">utc_time:</span> <span class="pre">uint64</span> <span class="pre">flags:</span> <span class="pre">uint32</span> <span class="pre">value:</span> <span class="pre">double</span></em><a class="headerlink" href="#volue.mesh.Timeseries.schema" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Timeserie.to_proto_timeseries">
-<span class="sig-name descname"><span class="pre">to_proto_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">volue.mesh.proto.mesh_pb2.Timeseries</span></span></span><a class="reference internal" href="_modules/volue/mesh/_timeserie.html#Timeserie.to_proto_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeserie.to_proto_timeseries" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>object_id</strong> – </p></li>
-<li><p><strong>interval</strong> – </p></li>
-</ul>
-</dd>
-</dl>
-<p>Returns:</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.dot_net_ticks_to_protobuf_timestamp">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">dot_net_ticks_to_protobuf_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ticks</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">google.protobuf.timestamp_pb2.Timestamp</span></span></span><a class="reference internal" href="_modules/volue/mesh/_common.html#dot_net_ticks_to_protobuf_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.dot_net_ticks_to_protobuf_timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert .NET ticks to protobuf timestamp.
-Note: A .NET tick is 100 nanoseconds which started at 0001-01-01T00:00:00Z
-Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotnet/api/system.datetime.ticks?view=net-5.0#remarks">https://docs.microsoft.com/en-us/dotnet/api/system.datetime.ticks?view=net-5.0#remarks</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ticks</strong> – windows ticks</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Timestamp</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.guid_to_uuid">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">guid_to_uuid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.Guid</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_common.html#guid_to_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.guid_to_uuid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert from Microsoft’s GUID format to UUID format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>guid</strong> – GUID to be converted</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>UUID</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.uuid_to_guid">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">uuid_to_guid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">volue.mesh.proto.mesh_pb2.Guid</span></span></span><a class="reference internal" href="_modules/volue/mesh/_common.html#uuid_to_guid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.uuid_to_guid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert from UUID format to Microsoft’s GUID format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>uuid</strong> – UUID</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>GUID</p>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
@@ -381,7 +301,7 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.aio.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh_service</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">Session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">mesh_service:</span> <span class="pre">volue.mesh.proto.mesh_pb2_grpc.MeshServiceStub</span></em>, <em class="sig-param"><span class="pre">session_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class supports the async with statement, because it’s a async contextmanager.
 <a class="reference external" href="https://docs.python.org/3/reference/datamodel.html#asynchronous-context-managers">https://docs.python.org/3/reference/datamodel.html#asynchronous-context-managers</a>
 <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#async-with">https://docs.python.org/3/reference/compound_stmts.html#async-with</a></p>
@@ -420,7 +340,7 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.read_timeseries_points">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.UtcInterval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -442,30 +362,21 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.write_timeseries_points">
-<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">volue.mesh.proto.mesh_pb2.UtcInterval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.Timeserie" title="volue.mesh._timeserie.Timeserie"><span class="pre">volue.mesh._timeserie.Timeserie</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guid</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
-</dd>
-</dl>
+<em class="property"><span class="pre">async</span> </em><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.
+:raises grpc.RpcError:</p>
 </dd></dl>
 
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.connect_to_session">
+<span class="sig-name descname"><span class="pre">connect_to_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">session_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.connect_to_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.connect_to_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.create_session">
 <span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.aio.Connection.Session" title="volue.mesh.aio._connection.Connection.Session"><span class="pre">volue.mesh.aio._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.create_session" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.aio.Connection.delete_session">
-<span class="sig-name descname"><span class="pre">delete_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.delete_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.delete_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.41.0)"><strong>grpc.RpcError</strong></a> – </p>
@@ -521,25 +432,53 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 <dd><p>Showing how to start and end a session.</p>
 </dd></dl>
 
-<span class="target" id="module-volue.mesh.examples.edit_timeseries_points"></span><dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.examples.edit_timeseries_points.main">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.edit_timeseries_points.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/edit_timeseries_points.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.edit_timeseries_points.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="target" id="module-volue.mesh.examples.write_timeseries_points"></span><dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.write_timeseries_points.main">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.write_timeseries_points.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/write_timeseries_points.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.write_timeseries_points.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to write timeseries points.</p>
+</dd></dl>
 
-<span class="target" id="module-volue.mesh.examples.edit_timeseries_points_async"></span><dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.examples.edit_timeseries_points_async.main">
-<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.edit_timeseries_points_async.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/examples/edit_timeseries_points_async.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.edit_timeseries_points_async.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.write_timeseries_points.write_timeseries_points">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.write_timeseries_points.</span></span><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/write_timeseries_points.html#write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.write_timeseries_points.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to write timeseries points.</p>
+</dd></dl>
 
-<span class="target" id="module-volue.mesh.examples.get_timeseries_points"></span><dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.examples.get_timeseries_points.main">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.get_timeseries_points.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/get_timeseries_points.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.get_timeseries_points.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="target" id="module-volue.mesh.examples.write_timeseries_points_async"></span><dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.write_timeseries_points_async.main">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.write_timeseries_points_async.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/write_timeseries_points_async.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.write_timeseries_points_async.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to write timeseries points.</p>
+</dd></dl>
 
-<span class="target" id="module-volue.mesh.examples.get_timeseries_points_async"></span><dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.examples.get_timeseries_points_async.main">
-<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.get_timeseries_points_async.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/examples/get_timeseries_points_async.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.get_timeseries_points_async.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.write_timeseries_points_async.write_timeseries_points">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.write_timeseries_points_async.</span></span><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.aio.Connection.Session" title="volue.mesh.aio._connection.Connection.Session"><span class="pre">volue.mesh.aio._connection.Connection.Session</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/write_timeseries_points_async.html#write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.write_timeseries_points_async.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to write timeseries points.</p>
+</dd></dl>
+
+<span class="target" id="module-volue.mesh.examples.read_timeseries_points"></span><dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.read_timeseries_points.main">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.read_timeseries_points.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/read_timeseries_points.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.read_timeseries_points.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to get timeseries points.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.read_timeseries_points.read_timeseries_points">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.read_timeseries_points.</span></span><span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/read_timeseries_points.html#read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.read_timeseries_points.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to read timeseries points.</p>
+</dd></dl>
+
+<span class="target" id="module-volue.mesh.examples.read_timeseries_points_async"></span><dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.read_timeseries_points_async.main">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.read_timeseries_points_async.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/read_timeseries_points_async.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.read_timeseries_points_async.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to get timeseries points asynchronously.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.examples.read_timeseries_points_async.read_timeseries_points_async">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.examples.read_timeseries_points_async.</span></span><span class="sig-name descname"><span class="pre">read_timeseries_points_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#volue.mesh.aio.Connection.Session" title="volue.mesh.aio._connection.Connection.Session"><span class="pre">volue.mesh.aio._connection.Connection.Session</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/examples/read_timeseries_points_async.html#read_timeseries_points_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.examples.read_timeseries_points_async.read_timeseries_points_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Showing how to read timeseries points.</p>
+</dd></dl>
 
 <span class="target" id="module-volue.mesh.examples.get_version"></span><dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.examples.get_version.main">
@@ -578,7 +517,7 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 <dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_can_connect_to_existing_session">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_can_connect_to_existing_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_can_connect_to_existing_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_can_connect_to_existing_session" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if it is possible to connect to a existing session. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest"><em>pytest</em></a>.
+<dd><p>Check if it is possible to connect to an existing session. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest"><em>pytest</em></a>.
 1. Create a session.
 2. Connect to the session using a new object.
 3. Close using the new session object.
@@ -610,19 +549,14 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 </dd></dl>
 
 <span class="target" id="module-volue.mesh.tests.test_timeseries"></span><dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.compare_segments">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">compare_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seg_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg_2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#compare_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.compare_segments" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.get_test_data">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">get_test_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#get_test_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.get_test_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.impl_test_get_and_edit_timeseries_points">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">impl_test_get_and_edit_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">connection</span></em>, <em class="sig-param"><span class="pre">timskey:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">uuid:</span> <span class="pre">uuid.UUID</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">full_name:</span> <span class="pre">&lt;module</span> <span class="pre">'string'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/string.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#impl_test_get_and_edit_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.impl_test_get_and_edit_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_add_point_to_timeserie">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_add_point_to_timeserie</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_add_point_to_timeserie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_add_point_to_timeserie" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>Deprecated</strong>. <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/issues/53">issue 53</a> Check that a point can be added to a timeserie.</p>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_convert_between_datetime_and_timestamp">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_convert_between_datetime_and_timestamp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_convert_between_datetime_and_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_convert_between_datetime_and_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that conversion between datetime and protobuf.timestamp works</p>
 </dd></dl>
 
 <dl class="py function">
@@ -638,21 +572,33 @@ Note: <a class="reference external" href="https://docs.microsoft.com/en-us/dotne
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_create_timeserie_from_existing_data">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_create_timeserie_from_existing_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_create_timeserie_from_existing_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_create_timeserie_from_existing_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a timeserie can be created from existing data.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_serialize_and_deserialize_write_timeserie_request">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_serialize_and_deserialize_write_timeserie_request</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_serialize_and_deserialize_write_timeserie_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_serialize_and_deserialize_write_timeserie_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that timeseries can be de-/serialized.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_get_and_edit_timeseries_points_from_timskey">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_get_and_edit_timeseries_points_from_timskey</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_get_and_edit_timeseries_points_from_timskey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_get_and_edit_timeseries_points_from_timskey" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that a timeserie can be retrieved using timskey.</p>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_read_timeseries_points_using_timskey">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_read_timeseries_points_using_timskey</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_read_timeseries_points_using_timskey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_read_timeseries_points_using_timskey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that timeseries can be retrieved using timskey.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_get_and_edit_timeseries_points_from_uuid">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_get_and_edit_timeseries_points_from_uuid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_get_and_edit_timeseries_points_from_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_get_and_edit_timeseries_points_from_uuid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that a timeserie can be retreived using UUID.</p>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_read_timeseries_points_using_timskey_async">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_read_timeseries_points_using_timskey_async</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_read_timeseries_points_using_timskey_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_read_timeseries_points_using_timskey_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that timeseries can be retrieved using timskey.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_write_timeseries_points_using_timskey_async">
+<em class="property"><span class="pre">async</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_write_timeseries_points_using_timskey_async</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_write_timeseries_points_using_timskey_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_write_timeseries_points_using_timskey_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that timeseries can be written to the server using timskey.</p>
 </dd></dl>
 
 </div>

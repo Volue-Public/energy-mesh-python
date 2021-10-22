@@ -160,14 +160,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._connection</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeserie</span><span class="p">,</span> <span class="n">guid_to_uuid</span><span class="p">,</span> <span class="n">uuid_to_guid</span><span class="p">,</span> <span class="n">Credentials</span>
+<span></span><span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">from_proto_guid</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">Credentials</span><span class="p">,</span> <span class="n">to_protobuf_utcinterval</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2_grpc</span>
-
-<span class="kn">import</span> <span class="nn">grpc</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 
 
 <div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">:</span>
@@ -193,74 +194,57 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Connection.Session.open"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.open">[docs]</a>        <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Connection.Session.open"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.open">[docs]</a>        <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">guid_to_uuid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">reply</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.close"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.close">[docs]</a>        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">EndSession</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">EndSession</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Connection.Session.read_timeseries_points"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.read_timeseries_points">[docs]</a>        <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span>
-                <span class="n">interval</span><span class="p">:</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">,</span>
-                <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Connection.Session.read_timeseries_points"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.read_timeseries_points">[docs]</a>        <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                   <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                                   <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                                   <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
                 <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-                <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
+                <span class="n">guid</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="n">uuid_id</span><span class="p">),</span>
                 <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
 
             <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">ReadTimeseries</span><span class="p">(</span>
                 <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
-                    <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                    <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
-                    <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
+                    <span class="n">interval</span><span class="o">=</span><span class="n">to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">return</span> <span class="n">reply</span></div>
+            <span class="k">return</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span>
-                <span class="n">interval</span><span class="p">:</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">,</span>
-                <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeserie</span><span class="p">,</span>
-                <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
-                <span class="n">timskey</span><span class="o">=</span><span class="n">timskey</span><span class="p">,</span>
-                <span class="n">guid</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">),</span>
-                <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-
-            <span class="n">proto_timeserie</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">to_proto_timeseries</span><span class="p">(</span>
-                <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
-                <span class="n">interval</span><span class="o">=</span><span class="n">interval</span>
-            <span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">WriteTimeseries</span><span class="p">(</span>
                 <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
-                    <span class="n">session_id</span><span class="o">=</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                    <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
-                    <span class="n">timeseries</span><span class="o">=</span><span class="n">proto_timeserie</span>
+                    <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                    <span class="n">object_id</span><span class="o">=</span><span class="n">to_proto_object_id</span><span class="p">(</span><span class="n">timeserie</span><span class="p">),</span>
+                    <span class="n">timeseries</span><span class="o">=</span><span class="n">to_proto_timeseries</span><span class="p">(</span><span class="n">timeserie</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
@@ -269,14 +253,14 @@
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Connection.Session.commit"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.commit">[docs]</a>        <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">uuid_to_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
