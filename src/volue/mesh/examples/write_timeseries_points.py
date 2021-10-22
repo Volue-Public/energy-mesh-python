@@ -24,7 +24,8 @@ def write_timeseries_points(session: Connection.Session):
         timeserie=timeseries
     )
 
-    # TODO read? commit?
+    # Commit the changes to the database
+    # session.commit()
 
 
 def main(address, port, secure_connection):

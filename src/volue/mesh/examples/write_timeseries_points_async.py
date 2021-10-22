@@ -26,6 +26,9 @@ async def write_timeseries_points(session: Connection.Session):
         timeserie=timeseries
     )
 
+    # Commit the changes to the database
+    # await session.commit()
+
 
 async def main(address, port, secure_connection):
     """Showing how to write timeseries points."""
