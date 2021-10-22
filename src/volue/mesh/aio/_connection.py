@@ -50,7 +50,7 @@ class Connection:
 
             """
             reply = await self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
-            self.session_id = from_proto_guid(reply.bytes_le)
+            self.session_id = from_proto_guid(reply)
             return reply
 
         async def close(self) -> None:

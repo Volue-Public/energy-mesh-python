@@ -18,8 +18,8 @@ def read_timeseries_points(session: Connection.Session):
         print(f"Read {timeserie.number_of_points} points")
 
     # Send request to read timeseries based on guid
-    guid = uuid.UUID(eagle_wind.guid)
-    timeseries = session.read_timeseries_points(start_time=start, end_time=end, guid=guid)
+    uuid_id = uuid.UUID(eagle_wind.guid)
+    timeseries = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=uuid_id)
     for timeserie in timeseries:
         print(f"Read {timeserie.number_of_points} points")
 

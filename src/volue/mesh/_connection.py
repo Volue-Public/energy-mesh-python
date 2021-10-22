@@ -39,7 +39,7 @@ class Connection:
 
             """
             reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
-            self.session_id = from_proto_guid(reply.bytes_le)
+            self.session_id = from_proto_guid(reply)
 
         def close(self) -> None:
             """
@@ -53,7 +53,7 @@ class Connection:
                                    start_time: datetime,
                                    end_time: datetime,
                                    timskey: int = None,
-                                   guid: uuid.UUID = None,
+                                   uuid_id: uuid.UUID = None,
                                    full_name: str = None) -> Timeseries:
             """
             Raises:
@@ -61,7 +61,7 @@ class Connection:
             """
             object_id = mesh_pb2.ObjectId(
                 timskey=timskey,
-                guid=to_proto_guid(guid),
+                guid=to_proto_guid(uuid_id),
                 full_name=full_name)
 
             reply = self.mesh_service.ReadTimeseries(

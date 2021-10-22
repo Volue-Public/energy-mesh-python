@@ -128,23 +128,6 @@ def test_read_timeseries_points_using_timskey():
 
 
 @pytest.mark.database
-def test_write_timeseries_points_using_timskey():
-    """Check that timeseries can be written to the server using timskey."""
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    end_time, start_time, table, timskey, uuid_id = get_test_data()
-    timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
-
-    with connection.create_session() as session:
-        try:
-            session.write_timeseries_points(
-                timeserie=timeseries
-            )
-        except grpc.RpcError:
-            pytest.fail("Could not write timeseries points")
-
-@pytest.mark.database
 def test_read_timeseries_points_using_timskey():
     """Check that timeseries can be retrieved using timskey."""
 

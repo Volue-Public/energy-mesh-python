@@ -62,7 +62,7 @@ def from_proto_guid(guid: mesh_pb2.Guid) -> uuid.UUID:
     """
     if guid is None:
         return None
-    return uuid.UUID(bytes_le=guid)
+    return uuid.UUID(bytes_le=guid.bytes_le)
 
 
 def to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> mesh_pb2.UtcInterval:
@@ -136,6 +136,6 @@ def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> [Timeseries]:
         table = reader.read_all()
         ts = Timeseries(table, resolution,
                         interval.start_time, interval.end_time,
-                        object_id.timskey, object_id.guid, object_id.full_name)
+                        object_id.timskey, from_proto_guid(object_id.guid), object_id.full_name)
         timeseries.append(ts)
     return timeseries
