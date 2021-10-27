@@ -4,7 +4,7 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-package volue.mesh.protobuf;
+package volue.mesh.v1alpha;
 
 
 // Authentication

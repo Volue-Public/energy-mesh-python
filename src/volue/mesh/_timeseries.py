@@ -10,13 +10,13 @@ class Timeseries:
     """Represents a mesh timeserie.
 
     Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
-    Utc_time is the timestamps of the points.
+    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
     Flags are ??? <TODO>
     Value is the actual data for the given timestamp.
     """
 
     schema = pa.schema([
-        pa.field('utc_time', pa.uint64()),
+        pa.field('utc_time', pa.date64()),
         pa.field('flags', pa.uint32()),
         pa.field('value', pa.float64()),
     ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?

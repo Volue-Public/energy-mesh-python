@@ -4,6 +4,7 @@ from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
 import volue.mesh.tests.test_utilities.server_config as sc
+from volue.mesh.tests.test_utilities.utilities import get_test_data
 from google.protobuf.timestamp_pb2 import Timestamp
 from datetime import datetime
 import pyarrow as pa
@@ -95,19 +96,6 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[2] == table[2]
 
 
-def get_test_data():
-    arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
-        pa.array([0, 0, 0]),
-        pa.array([0.0, 10.0, 1000.0])]
-    table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timskey = 201503
-    uuid_id = uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e")
-    start_time = datetime(2016, 5, 1)
-    end_time = datetime(2016, 5, 14)
-    return end_time, start_time, table, timskey, uuid_id
-
-
 @pytest.mark.database
 def test_read_timeseries_points_using_timskey():
     """Check that timeseries can be retrieved using timskey."""
@@ -152,7 +140,7 @@ async def test_write_timeseries_points_using_timskey_async():
     """Check that timeseries can be written to the server using timskey."""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
     end_time, start_time, table, timskey, uuid_id = get_test_data()
     timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
 
@@ -171,7 +159,7 @@ async def test_read_timeseries_points_using_timskey_async():
     """Check that timeseries can be retrieved using timskey."""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
     async with connection.create_session() as session:
         end_time, start_time, table, timskey, uuid_id = get_test_data()
         try:
@@ -183,6 +171,7 @@ async def test_read_timeseries_points_using_timskey_async():
             assert timeseries[0].number_of_points == 312
         except grpc.RpcError:
             pytest.fail("Could not read timeseries points")
+
 
 
 if __name__ == '__main__':
