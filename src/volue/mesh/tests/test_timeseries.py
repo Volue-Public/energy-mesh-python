@@ -1,11 +1,10 @@
 from volue.mesh._common import *
-from volue.mesh import Connection, Timeseries, to_proto_guid# , to_protobuf_timestamp
+from volue.mesh import Connection, Timeseries, to_proto_guid
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.tests.test_utilities.utilities import get_test_data
-from google.protobuf.timestamp_pb2 import Timestamp
 from datetime import datetime
 import pyarrow as pa
 import uuid

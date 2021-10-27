@@ -2,7 +2,7 @@ import asyncio
 import uuid
 from datetime import datetime
 from volue.mesh.aio import Connection
-from volue.mesh import eagle_wind
+from volue.mesh.tests.test_utilities.utilities import eagle_wind
 from volue.mesh.examples import _get_connection_info
 
 

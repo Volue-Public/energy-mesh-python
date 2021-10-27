@@ -7,33 +7,6 @@ from volue.mesh import Timeseries
 from volue.mesh.proto import mesh_pb2
 from google.protobuf import timestamp_pb2
 
-
-# ------------------------------------------------------------------------------
-
-class TimeseriesTestdata:
-    """Tests data structure."""
-
-    def __init__(self, full_name, guid, timskey, start_time, end_time, database):
-        self.full_name = full_name
-        self.guid = guid
-        self.timskey = timskey
-        self.start_time = start_time
-        self.end_time = end_time
-        self.database = database
-
-
-eagle_wind = TimeseriesTestdata(
-    "Resource/Wind Power/WindPower/WPModel/WindProdForec(0)",
-    "3f1afdd7-5f7e-45f9-824f-a7adc09cff8e",
-    201503,
-    datetime.datetime(year=2016, month=5, day=1, hour=0, minute=0),
-    datetime.datetime(year=2016, month=5, day=14, hour=0, minute=0),
-    "eagle"
-)
-
-
-# ------------------------------------------------------------------------------
-
 def to_proto_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
     """Convert from UUID format to Microsoft's GUID format.
 

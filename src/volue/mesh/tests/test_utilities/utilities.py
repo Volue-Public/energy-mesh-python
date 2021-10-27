@@ -6,6 +6,32 @@ import subprocess
 import sys
 import socket
 
+# ------------------------------------------------------------------------------
+
+class TimeseriesTestdata:
+    """Tests data structure."""
+
+    def __init__(self, full_name, guid, timskey, start_time, end_time, database):
+        self.full_name = full_name
+        self.guid = guid
+        self.timskey = timskey
+        self.start_time = start_time
+        self.end_time = end_time
+        self.database = database
+
+
+eagle_wind = TimeseriesTestdata(
+    "Resource/Wind Power/WindPower/WPModel/WindProdForec(0)",
+    "3f1afdd7-5f7e-45f9-824f-a7adc09cff8e",
+    201503,
+    datetime(year=2016, month=5, day=1, hour=0, minute=0),
+    datetime(year=2016, month=5, day=14, hour=0, minute=0),
+    "eagle"
+)
+
+
+# ------------------------------------------------------------------------------
+
 
 def is_port_responding(host: str, port: int):
     """Helper function to check if a socket will respond to a connect."""
