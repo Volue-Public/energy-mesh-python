@@ -1,5 +1,5 @@
 from volue.mesh._common import *
-from volue.mesh import Connection, Timeseries, to_proto_guid, to_protobuf_timestamp
+from volue.mesh import Connection, Timeseries, to_proto_guid# , to_protobuf_timestamp
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
@@ -11,25 +11,6 @@ import pyarrow as pa
 import uuid
 import grpc
 import pytest
-
-
-@pytest.mark.unittest
-def test_can_convert_between_win32ticks_and_timestamp():
-    """Check that conversion between win32ticks and timestamp works."""
-    original_ts = Timestamp()
-    original_ts.FromJsonString(value="2021-08-19T00:00:00Z")
-    original_ticks = 637649280000000000  # "2021-08-19T00:00:00Z"
-    ts = to_protobuf_timestamp(original_ticks)
-    assert original_ts.ToNanoseconds() == ts.ToNanoseconds()
-
-
-@pytest.mark.unittest
-def test_can_convert_between_datetime_and_timestamp():
-    """Check that conversion between datetime and protobuf.timestamp works"""
-    ts = Timestamp()
-    ts.FromDatetime(datetime(2016, 5, 1))
-    converted_ts = to_protobuf_timestamp(635976576000000000)
-    assert ts.ToNanoseconds() == converted_ts.ToNanoseconds()
 
 
 @pytest.mark.unittest

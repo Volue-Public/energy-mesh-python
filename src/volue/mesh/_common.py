@@ -13,30 +13,21 @@ from google.protobuf import timestamp_pb2
 class TimeseriesTestdata:
     """Tests data structure."""
 
-    def __init__(self, full_name, guid, timskey, start_time_ticks, start_time_json, end_time_ticks, end_time_json,
-                 database):
+    def __init__(self, full_name, guid, timskey, start_time, end_time, database):
         self.full_name = full_name
         self.guid = guid
         self.timskey = timskey
-        self.start_time_ticks = start_time_ticks
-        self.start_time_json = start_time_json
-        self.end_time_ticks = end_time_ticks
-        self.end_time_json = end_time_json
+        self.start_time = start_time
+        self.end_time = end_time
         self.database = database
 
-
-# A smaller segment
-# 01.05.2016 : 635976576000000000
-# 14.05.2016 : 635987808000000000
 
 eagle_wind = TimeseriesTestdata(
     "Resource/Wind Power/WindPower/WPModel/WindProdForec(0)",
     "3f1afdd7-5f7e-45f9-824f-a7adc09cff8e",
     201503,
-    635103072000000000,  # 25/07/2013 00:00:00
-    "2013-07-25T00:00:00Z",
-    636182208000000000,  # 25/12/2016 00:00:00
-    "2016-12-25T00:00:00Z",
+    datetime.datetime(year=2016, month=5, day=1, hour=0, minute=0),
+    datetime.datetime(year=2016, month=5, day=14, hour=0, minute=0),
     "eagle"
 )
 
@@ -76,24 +67,6 @@ def to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> mesh_pb
         end_time=end
     )
     return interval
-
-
-def to_protobuf_timestamp(dot_net_ticks: int) -> timestamp_pb2.Timestamp:
-    """Convert .NET ticks to protobuf timestamp.
-    Note: A .NET tick is 100 nanoseconds which started at 0001-01-01T00:00:00Z
-    Note: https://docs.microsoft.com/en-us/dotnet/api/system.datetime.ticks?view=net-5.0#remarks
-
-    :param dot_net_ticks: windows ticks
-    :return: Timestamp
-    """
-    if dot_net_ticks is None:
-        return None
-    date = datetime.datetime(1, 1, 1) + datetime.timedelta(microseconds=dot_net_ticks // 10)
-    if date.year < 1900:  # strftime() requires year >= 1900
-        date = date.replace(year=date.year + 1900)
-    ts = timestamp_pb2.Timestamp()
-    ts.FromJsonString(date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"))
-    return ts
 
 
 def to_proto_object_id(timeseries: Timeseries) -> mesh_pb2.ObjectId:
