@@ -2,6 +2,7 @@
 Client library for Volue Energy's Mesh software.
 """
 
+from ._authentication import Authentication
 from ._timeseries import Timeseries
 from ._common import *
 from ._credentials import Credentials
@@ -14,7 +15,8 @@ __author__ = 'Volue AS'
 __version__ = "0.1.0"
 
 __all__ = [
+    'Authentication',
+    'Credentials',
     'Connection',
-    'Timeseries',
-    'Credentials'
+    'Timeseries'
 ]
