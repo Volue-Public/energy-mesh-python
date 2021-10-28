@@ -114,7 +114,10 @@ class Authentication:
 
             # shorten the token expiration time by 1 minute to
             # have some margin for transport duration, etc.
-            adjusted_token_expiration_in_seconds = mesh_response.expiration_time.seconds - 60
+            expiration_margin_in_seconds = 60
+            if mesh_response.expiration_time.seconds <= expiration_margin_in_seconds:
+                raise RuntimeError('Invalid Mesh token expiration time')
+            adjusted_token_expiration_in_seconds = mesh_response.expiration_time.seconds - expiration_margin_in_seconds
             self.token_expiration_date = datetime.now(timezone.utc) + timedelta(seconds = adjusted_token_expiration_in_seconds)
 
             mesh_token = 'Bearer ' + mesh_response.bearer_token
