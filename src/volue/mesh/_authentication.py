@@ -1,4 +1,5 @@
 import base64
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
 from google import protobuf
@@ -9,8 +10,6 @@ if platform.startswith('win32'):
     import winkerberos as kerberos
 elif platform.startswith('linux'):
     import kerberos
-
-# To-do: raises errors
 
 
 class Authentication:
@@ -25,9 +24,17 @@ class Authentication:
             b. Token to be used in subsequent calls to Mesh that required authentication.
                Token expiration (in seconds) - tokens are valid for 1 hour.
                                                After this time a new token needs to be aquired.
-               Kerberos ticket - checked by client for mutual authentication
+               Kerberos ticket - optionally can be checked by client for mutual authentication.
+                                 In this case it is skipped as server authentication is
+                                 ensured by gRPC TLS connection.
                This step is the final step of authentication from server side.
     """
+
+    @dataclass
+    class Parameters:  
+        service_principal: str
+        user_principal: str = None
+
 
     # Decorator
     @staticmethod
@@ -37,7 +44,7 @@ class Authentication:
         If authorization is enabled it checks if current token is still valid and
         generates a new one if previous expired.
         """
-        def wrapper(*args):
+        def wrapper(*args, **kwargs):
             self = args[0]  # Connection (regular or aio) and Session
 
             if self.auth is not None:
@@ -46,19 +53,18 @@ class Authentication:
                         ('authorization', self.auth.get_token()),
                     )
 
-            return grpc_call(*args)
+            return grpc_call(*args, **kwargs)
         return wrapper
 
 
     def __init__(
         self,
         mesh_service: mesh_pb2_grpc.MeshServiceStub,
-        service_principal: str,
-        user_principal: str = None):
+        parameters: Parameters):
 
         self.mesh_service: mesh_pb2_grpc.MeshServiceStub = mesh_service
-        self.service_principal: str = service_principal
-        self.user_principal: str = user_principal
+        self.service_principal: str = parameters.service_principal
+        self.user_principal: str = parameters.user_principal
         self.token_expiration_date: datetime = None
 
     def is_token_valid(self) -> bool:
@@ -66,10 +72,10 @@ class Authentication:
         Checks if current token is still valid.
 
         Raises:
-            SystemError: No token was generated
+            RuntimeError: No token was generated
         """
         if self.token_expiration_date is None:
-            return SystemError("Failed to check if token is valid: no token was generated.")
+            raise RuntimeError("Failed to check if token is valid: no token was generated.")
 
         # use UTC to avoid corner cases with Daylight Saving Time
         return self.token_expiration_date > datetime.now(timezone.utc)
@@ -80,10 +86,11 @@ class Authentication:
 
         Raises:
             grpc.RpcError:
+            RuntimeError: invalid token expiration time
         """
         # there is no need to check status for failures as
         # kerberos module converts failures to exceptions
-        _, krb_context = kerberos.authGSSClientInit(self.service_principal, self.user_principal)
+        _, krb_context = kerberos.authGSSClientInit(self.service_principal, self.user_principal, gssflags = 0)
         # in first step do not provide server challenge
         _ = kerberos.authGSSClientStep(krb_context, '')
 
@@ -94,31 +101,23 @@ class Authentication:
         binary_response = base64.b64decode(base64_response)
         ticket = protobuf.wrappers_pb2.BytesValue(value = binary_response)
 
-        # for now support only Mesh server running as LocalSystem service:
+        # for now support only Mesh server running as a service user,
+        # for example LocalSystem, NetworkService or a user account
+        # with a registered service principal name.
         # (flow: server -> client -> server)
         mesh_responses = self.mesh_service.AuthenticateKerberos(iter((ticket, )))
 
         for mesh_response in mesh_responses:
-            # Authenticate server
-            # Mesh returns kerberos token in binary form
-            # kerberos.authGSSClientStep expects it in base64 format
-            server_kerberos_token = base64.b64encode(mesh_response.kerberos_token).decode('ascii')  # all base64 characters are ASCII characters
-            auth_status = kerberos.authGSSClientStep(krb_context, server_kerberos_token)
-
-            if auth_status is kerberos.AUTH_GSS_CONTINUE:
+            if mesh_response.bearer_token is None or mesh_response.expiration_time is None:
                 raise RuntimeError(
-                    'Client side authentication of Mesh server could not be completed in one step.')
+                        'Client side authentication by Mesh server was not completed in one step.')
 
-            if auth_status is kerberos.AUTH_GSS_COMPLETE:
-                # sanity check
-                if mesh_response.bearer_token is None:
-                    raise RuntimeError(
-                        'Client side authentication of Mesh server is completed, but Mesh did not return bearer token.')
+            # shorten the token expiration time by 1 minute to
+            # have some margin for transport duration, etc.
+            adjusted_token_expiration_in_seconds = mesh_response.expiration_time.seconds - 60
+            self.token_expiration_date = datetime.now(timezone.utc) + timedelta(seconds = adjusted_token_expiration_in_seconds)
 
-                token_expiration_in_seconds = mesh_response.expiration_time.seconds
-                self.token_expiration_date = datetime.now(timezone.utc) + timedelta(seconds = token_expiration_in_seconds)
-
-                mesh_token = 'Bearer ' + mesh_response.bearer_token
+            mesh_token = 'Bearer ' + mesh_response.bearer_token
 
         return mesh_token
 

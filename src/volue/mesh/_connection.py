@@ -121,7 +121,7 @@ class Connection:
 
 
     def __init__(self, host, port, secure_connection: bool,
-        authentication: bool = False, authentication_spn: str = None, authentication_upn: str = None):  # this will be refactored to have less params
+                 authentication_parameteres: Authentication.Parameters = None):
         """
         """
         target = f'{host}:{port}'
@@ -138,8 +138,8 @@ class Connection:
 
         self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
 
-        if authentication:
-            self.auth = Authentication(self.mesh_service, authentication_spn, authentication_upn)
+        if authentication_parameteres:
+            self.auth = Authentication(self.mesh_service, authentication_parameteres)
             self.grpc_metadata = (
                 ('authorization', self.auth.get_token()),
             )
@@ -170,4 +170,4 @@ class Connection:
     def connect_to_session(self, session_id: uuid):
         """
         """
-        return self.Session(self.mesh_service, session_id)
+        return self.Session(self.mesh_service, session_id, self.auth, self.grpc_metadata)
