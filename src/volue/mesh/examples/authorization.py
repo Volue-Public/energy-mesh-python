@@ -5,7 +5,7 @@ from volue.mesh.examples import _get_connection_info
 def main(address, port, secure_connection):
     """Showing how to authorize to gRPC Mesh server."""
 
-    authentication_parameters = Authentication.Parameters('HOST/tdtrhsmgTrunkA3.voluead.volue.com')
+    authentication_parameters = Authentication.Parameters('HOST/example.companyad.company.com')
     connection = Connection(address, port, secure_connection, authentication_parameters)
 
     user_identity = connection.get_user_identity()
