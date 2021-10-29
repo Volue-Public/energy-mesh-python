@@ -1,5 +1,5 @@
 from volue.mesh._common import *
-from volue.mesh import  Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
+from volue.mesh import Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
 from typing import Optional
