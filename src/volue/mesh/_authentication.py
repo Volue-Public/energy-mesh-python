@@ -108,7 +108,7 @@ class Authentication:
         mesh_responses = self.mesh_service.AuthenticateKerberos(iter((ticket, )))
 
         for mesh_response in mesh_responses:
-            if mesh_response.bearer_token is None or mesh_response.expiration_time is None:
+            if not mesh_response.bearer_token:
                 raise RuntimeError(
                         'Client side authentication by Mesh server was not completed in one step.')
 
