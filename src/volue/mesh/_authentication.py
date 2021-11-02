@@ -78,7 +78,7 @@ class Authentication:
             raise RuntimeError("Failed to check if token is valid: no token was generated.")
 
         # use UTC to avoid corner cases with Daylight Saving Time
-        return self.token_expiration_date > datetime.utcnow()
+        return self.token_expiration_date > datetime.now(timezone.utc)
 
     def get_token(self) -> str:
         """
@@ -115,9 +115,13 @@ class Authentication:
             # shorten the token expiration time by 1 minute to
             # have some margin for transport duration, etc.
             expiration_margin = timedelta(seconds = 60)
-            self.token_expiration_date = mesh_response.expiration_time.ToDatetime() - expiration_margin
-            if self.token_expiration_date <= datetime.utcnow():
+            token_duration = mesh_response.token_duration.ToTimedelta()
+
+            if token_duration <= expiration_margin:
                 raise RuntimeError('Invalid Mesh token expiration time')
+
+            adjusted_token_duration = token_duration - expiration_margin
+            self.token_expiration_date = datetime.now(timezone.utc) + adjusted_token_duration
 
             mesh_token = 'Bearer ' + mesh_response.bearer_token
 
