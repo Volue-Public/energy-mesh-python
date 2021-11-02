@@ -18,7 +18,10 @@ class Connection:
         https://docs.python.org/3/reference/compound_stmts.html#async-with
         """
 
-        def __init__(self, mesh_service: mesh_pb2_grpc.MeshServiceStub, session_id: uuid = None):
+        def __init__(
+            self,
+            mesh_service: mesh_pb2_grpc.MeshServiceStub,
+            session_id: uuid = None):
             """
 
             Args:
@@ -91,7 +94,7 @@ class Connection:
             return read_proto_reply(reply)
 
 
-        async def write_timeseries_points(  self, timeserie: Timeseries) -> None:
+        async def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
             |coro|
             Raises:
@@ -126,7 +129,6 @@ class Connection:
     def __init__(self, host, port, secure_connection: bool):
         """
         """
-
         target = f'{host}:{port}'
         if not secure_connection:
             channel = grpc.aio.insecure_channel(
@@ -147,6 +149,12 @@ class Connection:
         """
         response = await self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
         return response
+
+    async def get_user_identity(self):
+        """
+        |coro|
+        """
+        await self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
 
     def create_session(self) -> Optional[Session]:
         """
