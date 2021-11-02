@@ -22,8 +22,8 @@ class Authentication:
                In this case the authentication is not yet completed and client should respond with
                next ticket (Kerberos generated) and send it to Mesh (using AuthenticateKerberos).
             b. Token to be used in subsequent calls to Mesh that required authentication.
-               Token expiration (in seconds) - tokens are valid for 1 hour.
-                                               After this time a new token needs to be aquired.
+               Token duration - tokens are valid for 1 hour.
+                                After this time a new token needs to be aquired.
                Kerberos ticket - optionally can be checked by client for mutual authentication.
                                  In this case it is skipped as server authentication is
                                  ensured by gRPC TLS connection.
@@ -86,7 +86,7 @@ class Authentication:
 
         Raises:
             grpc.RpcError:
-            RuntimeError: invalid token expiration time
+            RuntimeError: invalid token duration
         """
         # there is no need to check status for failures as
         # kerberos module converts failures to exceptions
@@ -112,15 +112,15 @@ class Authentication:
                 raise RuntimeError(
                         'Client side authentication by Mesh server was not completed in one step.')
 
-            # shorten the token expiration time by 1 minute to
+            # shorten the token duration time by 1 minute to
             # have some margin for transport duration, etc.
-            expiration_margin = timedelta(seconds = 60)
+            duration_margin = timedelta(seconds = 60)
             token_duration = mesh_response.token_duration.ToTimedelta()
 
-            if token_duration <= expiration_margin:
-                raise RuntimeError('Invalid Mesh token expiration time')
+            if token_duration <= duration_margin:
+                raise RuntimeError('Invalid Mesh token duration')
 
-            adjusted_token_duration = token_duration - expiration_margin
+            adjusted_token_duration = token_duration - duration_margin
             self.token_expiration_date = datetime.now(timezone.utc) + adjusted_token_duration
 
             mesh_token = 'Bearer ' + mesh_response.bearer_token
