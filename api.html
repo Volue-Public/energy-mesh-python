@@ -276,7 +276,7 @@
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">table:</span> <span class="pre">pyarrow.lib.Table</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">resolution:</span> <span class="pre">volue.mesh.proto.mesh_pb2.Resolution</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">start_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">end_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">timskey:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">uuid_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></em>, <em class="sig-param"><span class="pre">full_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a mesh timeserie.</p>
 <p>Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
-Utc_time is the timestamps of the points.
+Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
 Flags are ??? &lt;TODO&gt;
 Value is the actual data for the given timestamp.</p>
 <dl class="py property">
@@ -287,7 +287,7 @@ Value is the actual data for the given timestamp.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.schema">
-<span class="sig-name descname"><span class="pre">schema</span></span><em class="property"> <span class="pre">=</span> <span class="pre">utc_time:</span> <span class="pre">uint64</span> <span class="pre">flags:</span> <span class="pre">uint32</span> <span class="pre">value:</span> <span class="pre">double</span></em><a class="headerlink" href="#volue.mesh.Timeseries.schema" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">schema</span></span><em class="property"> <span class="pre">=</span> <span class="pre">utc_time:</span> <span class="pre">date64[ms]</span> <span class="pre">flags:</span> <span class="pre">uint32</span> <span class="pre">value:</span> <span class="pre">double</span></em><a class="headerlink" href="#volue.mesh.Timeseries.schema" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -549,23 +549,6 @@ Value is the actual data for the given timestamp.</p>
 </dd></dl>
 
 <span class="target" id="module-volue.mesh.tests.test_timeseries"></span><dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.get_test_data">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">get_test_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#get_test_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.get_test_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_convert_between_datetime_and_timestamp">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_convert_between_datetime_and_timestamp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_convert_between_datetime_and_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_convert_between_datetime_and_timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that conversion between datetime and protobuf.timestamp works</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_convert_between_win32ticks_and_timestamp">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_convert_between_win32ticks_and_timestamp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_convert_between_win32ticks_and_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_convert_between_win32ticks_and_timestamp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that conversion between win32ticks and timestamp works.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_create_empty_timeserie">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_create_empty_timeserie</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_create_empty_timeserie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_create_empty_timeserie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that an empty timeserie can be created.</p>

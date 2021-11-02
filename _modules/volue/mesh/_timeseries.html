@@ -172,13 +172,13 @@
     <span class="sd">&quot;&quot;&quot;Represents a mesh timeserie.</span>
 
 <span class="sd">    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)</span>
-<span class="sd">    Utc_time is the timestamps of the points.</span>
+<span class="sd">    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)</span>
 <span class="sd">    Flags are ??? &lt;TODO&gt;</span>
 <span class="sd">    Value is the actual data for the given timestamp.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">([</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;utc_time&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint64</span><span class="p">()),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;utc_time&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">date64</span><span class="p">()),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint32</span><span class="p">()),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
     <span class="p">])</span>  <span class="c1"># The pyarrow schema used for timeseries points. TODO how to get this into documentation?</span>
