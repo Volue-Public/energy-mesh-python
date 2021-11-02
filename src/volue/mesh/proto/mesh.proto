@@ -2,15 +2,55 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 package volue.mesh.v1alpha;
 
-// The greeting service definition.
+
+// Authentication
+//
+// When Mesh is configured to require authentication an access token is
+// necessary for most calls. You can acquire an access token through Kerberos
+// authentication as described above the `AuthenticateKerberos` method. Access
+// tokens are passed in the `Authorization` metadata field of each RPC with the
+// format `Bearer <access token>`.
+//
+// Many gRPC libraries provide call credential types that correctly pass the
+// access token to the server, for example `grpc::AccessTokenCredentials` in C++.
+// These mechanisms will generally take the bare access token (without `Bearer`),
+// and create the `Bearer <access token>` string internally.
+//
+// Access tokens expire after an hour and should be refreshed before then.
+// Getting a new token early, for example after half the expiration time, is
+// recommended.
+
+package volue.mesh.v1alpha;
+
 service MeshService {
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
-  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}  
-  rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}  
+  // Authenticate using Kerberos
+  //
+  // Perform a potentially multi-leg Kerberos authentication where the client
+  // and the server sends Kerberos tickets back and forth until a complete
+  // security context is established or an error occurs.
+  //
+  // On success the final response from the server will contain a bearer token
+  // that should be used as a token in calls that require authorization, as
+  // well as the expiration time for that token.
+  rpc AuthenticateKerberos(stream google.protobuf.BytesValue) returns (stream AuthenticateKerberosResponse) {}
+
+  // Revoke an access token received from `AuthenticateKerberos`, causing
+  // it to become immediately unusable. If the RPC returns without error
+  // the operation succeeded *or* the token does not exist.
+  rpc RevokeAccessToken(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
+
+  // Returns the identity that was used to create the access token authorizing
+  // this call.
+  rpc GetUserIdentity(google.protobuf.Empty) returns (UserIdentity) {}
+
+  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
+  rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}
 
   // Start a Mesh session, return the id of the session
   rpc StartSession(google.protobuf.Empty) returns (Guid) {}
@@ -18,6 +58,34 @@ service MeshService {
   rpc EndSession(Guid) returns (google.protobuf.Empty) {}
   rpc Commit(Guid) returns (google.protobuf.Empty) {}
   rpc Rollback(Guid) returns (google.protobuf.Empty) {}
+}
+
+
+message AuthenticateKerberosResponse {
+  // The Kerberos ticket returned by the server's AcceptSecurityContext call.
+  bytes kerberos_token = 1;
+
+  // A base64 encoded access token.
+  string bearer_token = 2;
+
+  // The access token will become invalid at this time.
+  google.protobuf.Timestamp expiration_time = 3;
+}
+
+message UserIdentity {
+  // A human readable name identifying this user. This name should not be
+  // used as an unique identifier for the user as it may be identical
+  // between users and change over time.
+  string display_name = 1;
+
+  // Where the user identity came from. Can be used together with the identifier
+  // as a unique key.
+  string source = 2;
+
+  // An identifier that uniquely identifies the user within `source`, but
+  // not necessarily globally. Combining `source` and `identifier` should
+  // result in a globally unique identifier for the user.
+  string identifier = 3;
 }
 
 message Guid {
@@ -63,7 +131,7 @@ message Timeseries {
 
   Resolution resolution = 2;
 
-  // source_delta_t denotes which resolution this 
+  // source_delta_t denotes which resolution this
   // timeseries has in storage. If delta_t and source_delta_t
   // doesn't match, then you are not allowed to write.
   // optional uint64 source_resolution = 2;
@@ -87,14 +155,14 @@ message Timeseries {
 message Transformation {
   Resolution resolution = 1;
   enum TransformationType {
-	SUM = 0;
-	SUMI = 1;
-	AVG = 2;
-	AVGI = 3;
-	FIRST = 4;
-	LAST = 5;
-	MIN = 6;
-	MAX = 7;
+    SUM = 0;
+    SUMI = 1;
+    AVG = 2;
+    AVGI = 3;
+    FIRST = 4;
+    LAST = 5;
+    MIN = 6;
+    MAX = 7;
   }
   TransformationType type = 2;
 

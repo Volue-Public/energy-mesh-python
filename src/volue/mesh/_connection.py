@@ -1,11 +1,12 @@
-from volue.mesh import Timeserie, guid_to_uuid, uuid_to_guid, Credentials
+from volue.mesh._common import *
+from volue.mesh import Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
-
-import grpc
-import uuid
 from typing import Optional
 from google import protobuf
+import datetime
+import grpc
+import uuid
 
 
 class Connection:
@@ -31,74 +32,57 @@ class Connection:
             """
             self.close()
 
-        def open(self):
+        def open(self) -> None:
             """
             Raises:
                 grpc.RpcError:
 
             """
             reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
-            self.session_id = guid_to_uuid(reply.bytes_le)
-            return reply
+            self.session_id = from_proto_guid(reply)
 
         def close(self) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            self.mesh_service.EndSession(uuid_to_guid(self.session_id))
+            self.mesh_service.EndSession(to_proto_guid(self.session_id))
             self.session_id = None
 
-        def read_timeseries_points(
-                self,
-                interval: mesh_pb2.UtcInterval,
-                timskey: int = None,
-                guid: uuid.UUID = None,
-                full_name: str = None):
+        def read_timeseries_points(self,
+                                   start_time: datetime,
+                                   end_time: datetime,
+                                   timskey: int = None,
+                                   uuid_id: uuid.UUID = None,
+                                   full_name: str = None) -> Timeseries:
             """
             Raises:
                 grpc.RpcError:
             """
             object_id = mesh_pb2.ObjectId(
                 timskey=timskey,
-                guid=uuid_to_guid(guid),
+                guid=to_proto_guid(uuid_id),
                 full_name=full_name)
 
             reply = self.mesh_service.ReadTimeseries(
                 mesh_pb2.ReadTimeseriesRequest(
-                    session_id=uuid_to_guid(self.session_id),
+                    session_id=to_proto_guid(self.session_id),
                     object_id=object_id,
-                    interval=interval
+                    interval=to_protobuf_utcinterval(start_time, end_time)
                 )
             )
-            return reply
+            return read_proto_reply(reply)
 
-        def write_timeseries_points(
-                self,
-                interval: mesh_pb2.UtcInterval,
-                timeserie: Timeserie,
-                timskey: int = None,
-                guid: uuid.UUID = None,
-                full_name: str = None) -> None:
+        def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            object_id = mesh_pb2.ObjectId(
-                timskey=timskey,
-                guid=uuid_to_guid(guid),
-                full_name=full_name)
-
-            proto_timeserie = timeserie.to_proto_timeseries(
-                object_id=object_id,
-                interval=interval
-            )
-
             self.mesh_service.WriteTimeseries(
                 mesh_pb2.WriteTimeseriesRequest(
-                    session_id=uuid_to_guid(self.session_id),
-                    object_id=object_id,
-                    timeseries=proto_timeserie
+                    session_id=to_proto_guid(self.session_id),
+                    object_id=to_proto_object_id(timeserie),
+                    timeseries=to_proto_timeseries(timeserie)
                 )
             )
 
@@ -107,14 +91,14 @@ class Connection:
             Raises:
                 grpc.RpcError:
             """
-            self.mesh_service.Rollback(uuid_to_guid(self.session_id))
+            self.mesh_service.Rollback(to_proto_guid(self.session_id))
 
         def commit(self) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            self.mesh_service.Commit(uuid_to_guid(self.session_id))
+            self.mesh_service.Commit(to_proto_guid(self.session_id))
 
     def __init__(self, host, port, secure_connection: bool):
         """

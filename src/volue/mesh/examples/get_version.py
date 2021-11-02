@@ -1,9 +1,8 @@
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Connection
-from volue.mesh.examples.utility.print import get_connection_info
+from volue.mesh.examples import _get_connection_info
 
 import asyncio
-
 
 def main(address, port, secure_connection):
     """Showing how to send get the server version both sequentially and concurrently."""
@@ -24,6 +23,6 @@ if __name__ == "__main__":
     # If some sensible version info is printed, you have successfully
     # communicated with the server.
 
-    address, port, secure_connection = get_connection_info()
+    address, port, secure_connection = _get_connection_info()
     main(address, port, secure_connection)
-    
+
