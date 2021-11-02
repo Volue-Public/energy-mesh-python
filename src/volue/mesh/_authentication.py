@@ -41,8 +41,8 @@ class Authentication:
     def check_token_for_renewal(grpc_call):
         """
         Decorator to be used in functions calling gRPCs requiring authorization.
-        If authorization is enabled it checks if current token is still valid and
-        generates a new one if previous expired.
+        If authorization is enabled it checks if the current token has expired and
+        generates a new one if it has.
         """
         def wrapper(*args, **kwargs):
             self = args[0]  # Connection (regular or aio) and Session
