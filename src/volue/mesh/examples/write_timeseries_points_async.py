@@ -2,7 +2,8 @@ import asyncio
 import pyarrow as pa
 from datetime import datetime
 from volue.mesh.aio import Connection
-from volue.mesh import Timeseries, eagle_wind
+from volue.mesh import Timeseries
+from volue.mesh.tests.test_utilities.utilities import eagle_wind
 from volue.mesh.examples import _get_connection_info
 
 

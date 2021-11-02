@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime
-from volue.mesh import Connection, eagle_wind
+from volue.mesh import Connection
 from volue.mesh.examples import _get_connection_info
+from volue.mesh.tests.test_utilities.utilities import eagle_wind
 
 
 def read_timeseries_points(session: Connection.Session):
