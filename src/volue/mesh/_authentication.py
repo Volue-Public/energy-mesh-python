@@ -101,6 +101,9 @@ class Authentication:
         binary_response = base64.b64decode(base64_response)
         ticket = protobuf.wrappers_pb2.BytesValue(value = binary_response)
 
+        # save current time - will be used to compute token expiration date
+        auth_request_call_timestamp = datetime.now(timezone.utc)
+
         # for now support only Mesh server running as a service user,
         # for example LocalSystem, NetworkService or a user account
         # with a registered service principal name.
@@ -121,7 +124,7 @@ class Authentication:
                 raise RuntimeError('Invalid Mesh token duration')
 
             adjusted_token_duration = token_duration - duration_margin
-            self.token_expiration_date = datetime.now(timezone.utc) + adjusted_token_duration
+            self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
 
             mesh_token = 'Bearer ' + mesh_response.bearer_token
 
