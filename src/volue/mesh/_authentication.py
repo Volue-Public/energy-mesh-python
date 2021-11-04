@@ -22,8 +22,8 @@ class Authentication:
                In this case the authentication is not yet completed and client should respond with
                next ticket (Kerberos generated) and send it to Mesh (using AuthenticateKerberos).
             b. Token to be used in subsequent calls to Mesh that required authentication.
-               Token expiration (in seconds) - tokens are valid for 1 hour.
-                                               After this time a new token needs to be aquired.
+               Token duration - tokens are valid for 1 hour.
+                                After this time a new token needs to be aquired.
                Kerberos ticket - optionally can be checked by client for mutual authentication.
                                  In this case it is skipped as server authentication is
                                  ensured by gRPC TLS connection.
@@ -86,7 +86,7 @@ class Authentication:
 
         Raises:
             grpc.RpcError:
-            RuntimeError: invalid token expiration time
+            RuntimeError: invalid token duration
         """
         # there is no need to check status for failures as
         # kerberos module converts failures to exceptions
@@ -101,6 +101,9 @@ class Authentication:
         binary_response = base64.b64decode(base64_response)
         ticket = protobuf.wrappers_pb2.BytesValue(value = binary_response)
 
+        # save current time - will be used to compute token expiration date
+        auth_request_call_timestamp = datetime.now(timezone.utc)
+
         # for now support only Mesh server running as a service user,
         # for example LocalSystem, NetworkService or a user account
         # with a registered service principal name.
@@ -112,13 +115,16 @@ class Authentication:
                 raise RuntimeError(
                         'Client side authentication by Mesh server was not completed in one step.')
 
-            # shorten the token expiration time by 1 minute to
+            # shorten the token duration time by 1 minute to
             # have some margin for transport duration, etc.
-            expiration_margin_in_seconds = 60
-            if mesh_response.expiration_time.seconds <= expiration_margin_in_seconds:
-                raise RuntimeError('Invalid Mesh token expiration time')
-            adjusted_token_expiration_in_seconds = mesh_response.expiration_time.seconds - expiration_margin_in_seconds
-            self.token_expiration_date = datetime.now(timezone.utc) + timedelta(seconds = adjusted_token_expiration_in_seconds)
+            duration_margin = timedelta(seconds = 60)
+            token_duration = mesh_response.token_duration.ToTimedelta()
+
+            if token_duration <= duration_margin:
+                raise RuntimeError('Invalid Mesh token duration')
+
+            adjusted_token_duration = token_duration - duration_margin
+            self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
 
             mesh_token = 'Bearer ' + mesh_response.bearer_token
 
