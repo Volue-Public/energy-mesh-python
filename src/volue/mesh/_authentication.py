@@ -1,9 +1,10 @@
 import base64
-import grpc
 import threading
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
+
+import grpc
 from google import protobuf
 
 from volue.mesh.proto import mesh_pb2_grpc
@@ -174,7 +175,7 @@ class Authentication:
                 else:
                     # shorten the token duration time by 1 minute to
                     # have some margin for transport duration, etc.
-                    duration_margin = timedelta(seconds = 4)
+                    duration_margin = timedelta(seconds = 60)
                     token_duration = mesh_response.token_duration.ToTimedelta()
 
                     if token_duration <= duration_margin:
@@ -188,9 +189,8 @@ class Authentication:
                 # replace vague RpcError with more detailed exception
                 # that happened in request iterator
                 raise kerberos_ticket_iterator.exception
-            else:
-                # the exception happend elsewhere re-throw it
-                raise ex
+            # otherwise the exception happend elsewhere re-throw it
+            raise ex
 
         return mesh_token
 
