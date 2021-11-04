@@ -1,4 +1,6 @@
 import base64
+import logging
+import threading
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
@@ -15,7 +17,8 @@ elif platform.startswith('linux'):
 class Authentication:
     """ Authentication services for authentication and authorization to Mesh server.
         The flow is as follows:
-        1. Obtain ticket from Kerberos to access specified service (SPN) with Mesh server running on it.
+        1. Obtain ticket from Kerberos to access specified service (SPN) with Mesh server
+           running on it.
         2. Send this ticket to Mesh (using AuthenticateKerberos).
         3. In return Mesh may respond with:
             a. Server challenge to be verified and processed by client (using Kerberos)
@@ -23,7 +26,7 @@ class Authentication:
                next ticket (Kerberos generated) and send it to Mesh (using AuthenticateKerberos).
             b. Token to be used in subsequent calls to Mesh that required authentication.
                Token duration - tokens are valid for 1 hour.
-                                After this time a new token needs to be aquired.
+                                After this time a new token needs to be acquired.
                Kerberos ticket - optionally can be checked by client for mutual authentication.
                                  In this case it is skipped as server authentication is
                                  ensured by gRPC TLS connection.
@@ -31,9 +34,73 @@ class Authentication:
     """
 
     @dataclass
-    class Parameters:  
+    class Parameters:
+        """
+        Authentication parameters.
+        """
         service_principal: str
         user_principal: str = None
+
+
+    class KerberosTicketIterator():
+        """
+        Kerberos ticket/challenge iterator to be used with AuthenticateKerberos streaming gRPC.
+        Sends tickets to be processed by Mesh server and validates from client perspective
+        tokens send by server.
+        """
+        def __init__(self, service_principal: str, user_principal: str):
+            self.krb_context = None
+            self.first_iteration: bool = True
+            self.respone_received = threading.Condition()
+            self.server_kerberos_token: bytes = None
+            self.service_principal: str = service_principal
+            self.user_principal: str = user_principal
+
+            # there is no need to check status for failures as
+            # kerberos module converts failures to exceptions
+            _, self.krb_context = kerberos.authGSSClientInit(
+                self.service_principal, self.user_principal, gssflags = 0)
+
+        def __iter__(self):
+            return self
+
+        def __next__(self) -> protobuf.wrappers_pb2.BytesValue:
+            try:
+                if self.first_iteration:
+                    _ = kerberos.authGSSClientStep(self.krb_context, '')
+                else:
+                    with self.respone_received:
+                        self.respone_received.wait()
+                        # server kerberos token is in binary form, convert it to base64 string
+                        # Note: all base64 characters are ASCII characters,
+                        # so it is safe to decode using ASCII
+                        base64_server_kerberos_token = base64.b64encode(
+                            self.server_kerberos_token).decode('ascii')
+                        _ = kerberos.authGSSClientStep(
+                            self.krb_context, base64_server_kerberos_token)
+
+                # response is base64 encoded
+                base64_response = kerberos.authGSSClientResponse(self.krb_context)
+
+                # Mesh expects it in binary form, so decode it
+                binary_response = base64.b64decode(base64_response)
+                ticket = protobuf.wrappers_pb2.BytesValue(value = binary_response)
+            except Exception as ex:
+                # catch all exceptions, log error message and re-throw
+                # otherwise we will get vague gRPC "Exception iterating requests" message
+                logging.error('Authentication: %s', ex)
+                raise ex
+
+            self.first_iteration = False
+            return ticket
+
+        def process_response(self, server_kerberos_token: bytes):
+            """
+            Sets new response from Mesh with kerberos token to be processed by client.
+            """
+            with self.respone_received:
+                self.server_kerberos_token = server_kerberos_token
+                self.respone_received.notify()
 
 
     # Decorator
@@ -67,6 +134,7 @@ class Authentication:
         self.user_principal: str = parameters.user_principal
         self.token_expiration_date: datetime = None
 
+
     def is_token_valid(self) -> bool:
         """
         Checks if current token is still valid.
@@ -80,6 +148,7 @@ class Authentication:
         # use UTC to avoid corner cases with Daylight Saving Time
         return self.token_expiration_date > datetime.now(timezone.utc)
 
+
     def get_token(self) -> str:
         """
         Gets Mesh token used for authorization in other calls to Mesh server.
@@ -88,45 +157,28 @@ class Authentication:
             grpc.RpcError:
             RuntimeError: invalid token duration
         """
-        # there is no need to check status for failures as
-        # kerberos module converts failures to exceptions
-        _, krb_context = kerberos.authGSSClientInit(self.service_principal, self.user_principal, gssflags = 0)
-        # in first step do not provide server challenge
-        _ = kerberos.authGSSClientStep(krb_context, '')
-
-        # response is base64 encoded
-        base64_response = kerberos.authGSSClientResponse(krb_context)
-
-        # Mesh expects it in binary form, so decode it
-        binary_response = base64.b64decode(base64_response)
-        ticket = protobuf.wrappers_pb2.BytesValue(value = binary_response)
 
         # save current time - will be used to compute token expiration date
         auth_request_call_timestamp = datetime.now(timezone.utc)
 
-        # for now support only Mesh server running as a service user,
-        # for example LocalSystem, NetworkService or a user account
-        # with a registered service principal name.
-        # (flow: server -> client -> server)
-        mesh_responses = self.mesh_service.AuthenticateKerberos(iter((ticket, )))
-
+        ticket_reuqest_iterator = self.KerberosTicketIterator(
+            self.service_principal, self.user_principal)
+        mesh_responses = self.mesh_service.AuthenticateKerberos(ticket_reuqest_iterator)
         for mesh_response in mesh_responses:
             if not mesh_response.bearer_token:
-                raise RuntimeError(
-                        'Client side authentication by Mesh server was not completed in one step.')
+                ticket_reuqest_iterator.process_response(mesh_response.kerberos_token)
+            else:
+                # shorten the token duration time by 1 minute to
+                # have some margin for transport duration, etc.
+                duration_margin = timedelta(seconds = 60)
+                token_duration = mesh_response.token_duration.ToTimedelta()
 
-            # shorten the token duration time by 1 minute to
-            # have some margin for transport duration, etc.
-            duration_margin = timedelta(seconds = 60)
-            token_duration = mesh_response.token_duration.ToTimedelta()
+                if token_duration <= duration_margin:
+                    raise RuntimeError('Invalid Mesh token duration')
 
-            if token_duration <= duration_margin:
-                raise RuntimeError('Invalid Mesh token duration')
-
-            adjusted_token_duration = token_duration - duration_margin
-            self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
-
-            mesh_token = 'Bearer ' + mesh_response.bearer_token
+                adjusted_token_duration = token_duration - duration_margin
+                self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
+                mesh_token = 'Bearer ' + mesh_response.bearer_token
 
         return mesh_token
 
