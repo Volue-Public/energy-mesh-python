@@ -1,5 +1,5 @@
 import base64
-import logging
+import grpc
 import threading
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -45,16 +45,17 @@ class Authentication:
     class KerberosTicketIterator():
         """
         Kerberos ticket/challenge iterator to be used with AuthenticateKerberos streaming gRPC.
-        Sends tickets to be processed by Mesh server and validates from client perspective
-        tokens send by server.
+        Sends tickets to be processed by the Mesh server and processes tickets
+        received from the server.
         """
         def __init__(self, service_principal: str, user_principal: str):
             self.krb_context = None
             self.first_iteration: bool = True
-            self.respone_received = threading.Condition()
+            self.response_received = threading.Condition()
             self.server_kerberos_token: bytes = None
             self.service_principal: str = service_principal
             self.user_principal: str = user_principal
+            self.exception: Exception = None
 
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
@@ -69,8 +70,8 @@ class Authentication:
                 if self.first_iteration:
                     _ = kerberos.authGSSClientStep(self.krb_context, '')
                 else:
-                    with self.respone_received:
-                        self.respone_received.wait()
+                    with self.response_received:
+                        self.response_received.wait()
                         # server kerberos token is in binary form, convert it to base64 string
                         # Note: all base64 characters are ASCII characters,
                         # so it is safe to decode using ASCII
@@ -80,27 +81,28 @@ class Authentication:
                             self.krb_context, base64_server_kerberos_token)
 
                 # response is base64 encoded
-                base64_response = kerberos.authGSSClientResponse(self.krb_context)
+                base64_client_kerberos_token = kerberos.authGSSClientResponse(self.krb_context)
 
                 # Mesh expects it in binary form, so decode it
-                binary_response = base64.b64decode(base64_response)
-                ticket = protobuf.wrappers_pb2.BytesValue(value = binary_response)
+                client_token = protobuf.wrappers_pb2.BytesValue(
+                    value = base64.b64decode(base64_client_kerberos_token))
             except Exception as ex:
-                # catch all exceptions, log error message and re-throw
-                # otherwise we will get vague gRPC "Exception iterating requests" message
-                logging.error('Authentication: %s', ex)
+                # store exception and re-throw
+                # gRPC will raise its own RpcError with vague "Exception iterating requests"
+                # message, but we will replace it with this detailed exception in 'get_token'
+                self.exception = ex
                 raise ex
 
             self.first_iteration = False
-            return ticket
+            return client_token
 
         def process_response(self, server_kerberos_token: bytes):
             """
             Sets new response from Mesh with kerberos token to be processed by client.
             """
-            with self.respone_received:
+            with self.response_received:
                 self.server_kerberos_token = server_kerberos_token
-                self.respone_received.notify()
+                self.response_received.notify()
 
 
     # Decorator
@@ -155,30 +157,40 @@ class Authentication:
 
         Raises:
             grpc.RpcError:
+            (win)kerberos.GSSError:
             RuntimeError: invalid token duration
         """
 
         # save current time - will be used to compute token expiration date
         auth_request_call_timestamp = datetime.now(timezone.utc)
 
-        ticket_reuqest_iterator = self.KerberosTicketIterator(
-            self.service_principal, self.user_principal)
-        mesh_responses = self.mesh_service.AuthenticateKerberos(ticket_reuqest_iterator)
-        for mesh_response in mesh_responses:
-            if not mesh_response.bearer_token:
-                ticket_reuqest_iterator.process_response(mesh_response.kerberos_token)
+        try:
+            kerberos_ticket_iterator = self.KerberosTicketIterator(
+                self.service_principal, self.user_principal)
+            mesh_responses = self.mesh_service.AuthenticateKerberos(kerberos_ticket_iterator)
+            for mesh_response in mesh_responses:
+                if not mesh_response.bearer_token:
+                    kerberos_ticket_iterator.process_response(mesh_response.kerberos_token)
+                else:
+                    # shorten the token duration time by 1 minute to
+                    # have some margin for transport duration, etc.
+                    duration_margin = timedelta(seconds = 4)
+                    token_duration = mesh_response.token_duration.ToTimedelta()
+
+                    if token_duration <= duration_margin:
+                        raise RuntimeError('Invalid Mesh token duration')
+
+                    adjusted_token_duration = token_duration - duration_margin
+                    self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
+                    mesh_token = 'Bearer ' + mesh_response.bearer_token
+        except grpc.RpcError as ex:
+            if kerberos_ticket_iterator.exception is not None:
+                # replace vague RpcError with more detailed exception
+                # that happened in request iterator
+                raise kerberos_ticket_iterator.exception
             else:
-                # shorten the token duration time by 1 minute to
-                # have some margin for transport duration, etc.
-                duration_margin = timedelta(seconds = 60)
-                token_duration = mesh_response.token_duration.ToTimedelta()
-
-                if token_duration <= duration_margin:
-                    raise RuntimeError('Invalid Mesh token duration')
-
-                adjusted_token_duration = token_duration - duration_margin
-                self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
-                mesh_token = 'Bearer ' + mesh_response.bearer_token
+                # the exception happend elsewhere re-throw it
+                raise ex
 
         return mesh_token
 
