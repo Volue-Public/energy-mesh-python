@@ -189,7 +189,7 @@ class Authentication:
                 # replace vague RpcError with more detailed exception
                 # that happened in request iterator
                 raise kerberos_ticket_iterator.exception
-            # otherwise the exception happend elsewhere re-throw it
+            # otherwise the exception happened elsewhere, re-throw it
             raise ex
 
         return mesh_token
