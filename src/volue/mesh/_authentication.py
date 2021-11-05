@@ -18,19 +18,19 @@ elif platform.startswith('linux'):
 class Authentication:
     """ Authentication services for authentication and authorization to Mesh server.
         The flow is as follows:
-        1. Obtain ticket from Kerberos to access specified service (SPN) with Mesh server
+        1. Obtain token from Kerberos to access specified service (SPN) with Mesh server
            running on it.
-        2. Send this ticket to Mesh (using AuthenticateKerberos).
+        2. Send this token to Mesh (using AuthenticateKerberos).
         3. In return Mesh may respond with:
             a. Server challenge to be verified and processed by client (using Kerberos)
                In this case the authentication is not yet completed and client should respond with
-               next ticket (Kerberos generated) and send it to Mesh (using AuthenticateKerberos).
+               next token (Kerberos generated) and send it to Mesh (using AuthenticateKerberos).
             b. Token to be used in subsequent calls to Mesh that required authentication.
                Token duration - tokens are valid for 1 hour.
                                 After this time a new token needs to be acquired.
-               Kerberos ticket - optionally can be checked by client for mutual authentication.
-                                 In this case it is skipped as server authentication is
-                                 ensured by gRPC TLS connection.
+               Kerberos token - optionally can be checked by client for mutual authentication.
+                                In this case it is skipped as server authentication is
+                                ensured by gRPC TLS connection.
                This step is the final step of authentication from server side.
     """
 
@@ -43,16 +43,17 @@ class Authentication:
         user_principal: str = None
 
 
-    class KerberosTicketIterator():
+    class KerberosTokenIterator():
         """
-        Kerberos ticket/challenge iterator to be used with AuthenticateKerberos streaming gRPC.
-        Sends tickets to be processed by the Mesh server and processes tickets
+        Kerberos token iterator to be used with AuthenticateKerberos streaming gRPC.
+        Sends tokens to be processed by the Mesh server and processes tokens
         received from the server.
         """
         def __init__(self, service_principal: str, user_principal: str):
             self.krb_context = None
             self.first_iteration: bool = True
-            self.response_received = threading.Condition()
+            self.final_response_received: bool = False
+            self.response_received = threading.Event()
             self.server_kerberos_token: bytes = None
             self.service_principal: str = service_principal
             self.user_principal: str = user_principal
@@ -71,15 +72,21 @@ class Authentication:
                 if self.first_iteration:
                     _ = kerberos.authGSSClientStep(self.krb_context, '')
                 else:
-                    with self.response_received:
-                        self.response_received.wait()
-                        # server kerberos token is in binary form, convert it to base64 string
-                        # Note: all base64 characters are ASCII characters,
-                        # so it is safe to decode using ASCII
-                        base64_server_kerberos_token = base64.b64encode(
-                            self.server_kerberos_token).decode('ascii')
-                        _ = kerberos.authGSSClientStep(
-                            self.krb_context, base64_server_kerberos_token)
+                    self.response_received.wait()
+                    self.response_received.clear()
+                    # no need to guard server's kerberos token as it is accessed sequentially
+
+                    if self.final_response_received:
+                        # return None, it will be ignored by server
+                        return None
+
+                    # server kerberos token is in binary form, convert it to base64 string
+                    # Note: all base64 characters are ASCII characters,
+                    # so it is safe to decode using ASCII
+                    base64_server_kerberos_token = base64.b64encode(
+                        self.server_kerberos_token).decode('ascii')
+                    _ = kerberos.authGSSClientStep(
+                        self.krb_context, base64_server_kerberos_token)
 
                 # response is base64 encoded
                 base64_client_kerberos_token = kerberos.authGSSClientResponse(self.krb_context)
@@ -101,9 +108,16 @@ class Authentication:
             """
             Sets new response from Mesh with kerberos token to be processed by client.
             """
-            with self.response_received:
-                self.server_kerberos_token = server_kerberos_token
-                self.response_received.notify()
+            self.server_kerberos_token = server_kerberos_token
+            self.response_received.set()
+
+        def signal_final_response_received(self):
+            """
+            Signals to the iterator that final response from server was received.
+            Cancel any preparation (meaning exit wait) as there is no need to prepare next request.
+            """
+            self.final_response_received = True
+            self.response_received.set()
 
 
     # Decorator
@@ -166,13 +180,15 @@ class Authentication:
         auth_request_call_timestamp = datetime.now(timezone.utc)
 
         try:
-            kerberos_ticket_iterator = self.KerberosTicketIterator(
+            kerberos_token_iterator = self.KerberosTokenIterator(
                 self.service_principal, self.user_principal)
-            mesh_responses = self.mesh_service.AuthenticateKerberos(kerberos_ticket_iterator)
+            mesh_responses = self.mesh_service.AuthenticateKerberos(kerberos_token_iterator)
             for mesh_response in mesh_responses:
                 if not mesh_response.bearer_token:
-                    kerberos_ticket_iterator.process_response(mesh_response.kerberos_token)
+                    kerberos_token_iterator.process_response(mesh_response.kerberos_token)
                 else:
+                    kerberos_token_iterator.signal_final_response_received()
+
                     # shorten the token duration time by 1 minute to
                     # have some margin for transport duration, etc.
                     duration_margin = timedelta(seconds = 60)
@@ -185,10 +201,10 @@ class Authentication:
                     self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
                     mesh_token = 'Bearer ' + mesh_response.bearer_token
         except grpc.RpcError as ex:
-            if kerberos_ticket_iterator.exception is not None:
+            if kerberos_token_iterator.exception is not None:
                 # replace vague RpcError with more detailed exception
                 # that happened in request iterator
-                raise kerberos_ticket_iterator.exception
+                raise kerberos_token_iterator.exception
             # otherwise the exception happened elsewhere, re-throw it
             raise ex
 
