@@ -5,7 +5,23 @@ from volue.mesh.examples import _get_connection_info
 def main(address, port, secure_connection):
     """Showing how to authorize to gRPC Mesh server."""
 
-    authentication_parameters = Authentication.Parameters('HOST/example.companyad.company.com')
+    # If Mesh gRPC server is running as a service user,
+    # for example LocalSystem, NetworkService or a user account
+    # with a registered service principal name then it is enough
+    # to provide hostname as service principal, e.g.:
+    #   'HOST/hostname.ad.examplecompany.com'
+    # If Mesh gRPC server is running as a user account without
+    # registered service principal name then it is enough to provide
+    # user account name running Mesh server as service principal, e.g.:
+    #   'ad\\user.name' or r'ad\user.name'
+    # Note: winkerberos converts service principal name if provided in
+    #       RFC-2078 format. '@' is converted to '/' if there is no '/'
+    #       character in the service principal name. E.g.:
+    #           service@hostname
+    #       Would be converted to:
+    #           service/hostname
+    authentication_parameters = Authentication.Parameters(
+        'HOST/example.companyad.company.com')
     connection = Connection(address, port, secure_connection, authentication_parameters)
 
     user_identity = connection.get_user_identity()
