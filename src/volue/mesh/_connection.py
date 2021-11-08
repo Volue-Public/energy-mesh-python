@@ -20,14 +20,10 @@ class Connection:
         def __init__(
             self,
             mesh_service: mesh_pb2_grpc.MeshServiceStub,
-            session_id: uuid = None,
-            auth: Authentication = None,
-            grpc_metadata: tuple = ()):
+            session_id: uuid = None):
 
             self.session_id: uuid = session_id
             self.mesh_service: mesh_pb2_grpc.MeshServiceStub = mesh_service
-            self.auth = auth
-            self.grpc_metadata = grpc_metadata
 
         def __enter__(self):
             """
@@ -40,27 +36,22 @@ class Connection:
             """
             self.close()
 
-        @Authentication.check_token_for_renewal
         def open(self) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty(),
-                metadata = self.grpc_metadata)
+            reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = from_proto_guid(reply)
 
-        @Authentication.check_token_for_renewal
         def close(self) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            self.mesh_service.EndSession(to_proto_guid(self.session_id),
-                metadata = self.grpc_metadata)
+            self.mesh_service.EndSession(to_proto_guid(self.session_id))
             self.session_id = None
 
-        @Authentication.check_token_for_renewal
         def read_timeseries_points(self,
                                    start_time: datetime,
                                    end_time: datetime,
@@ -81,12 +72,9 @@ class Connection:
                     session_id=to_proto_guid(self.session_id),
                     object_id=object_id,
                     interval=to_protobuf_utcinterval(start_time, end_time)
-                ),
-                metadata = self.grpc_metadata
-            )
+                ))
             return read_proto_reply(reply)
 
-        @Authentication.check_token_for_renewal
         def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
             Raises:
@@ -97,31 +85,25 @@ class Connection:
                     session_id=to_proto_guid(self.session_id),
                     object_id=to_proto_object_id(timeserie),
                     timeseries=to_proto_timeseries(timeserie)
-                ),
-                metadata = self.grpc_metadata
-            )
+                ))
 
-        @Authentication.check_token_for_renewal
         def rollback(self) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            self.mesh_service.Rollback(to_proto_guid(self.session_id),
-                metadata = self.grpc_metadata)
+            self.mesh_service.Rollback(to_proto_guid(self.session_id))
 
-        @Authentication.check_token_for_renewal
         def commit(self) -> None:
             """
             Raises:
                 grpc.RpcError:
             """
-            self.mesh_service.Commit(to_proto_guid(self.session_id),
-                metadata = self.grpc_metadata)
+            self.mesh_service.Commit(to_proto_guid(self.session_id))
 
 
     def __init__(self, host, port, secure_connection: bool,
-                 authentication_parameteres: Authentication.Parameters = None):
+                 authentication_parameters: Authentication.Parameters = None):
         """
         """
         target = f'{host}:{port}'
@@ -131,21 +113,28 @@ class Connection:
             )
         else:
             credentials: Credentials = Credentials()
-            channel = grpc.secure_channel(
-                target=target,
-                credentials=credentials.channel_creds
-            )
+
+            # authentication requires TLS
+            if authentication_parameters:
+                auth_metadata_plugin = Authentication(
+                    authentication_parameters, target, credentials.channel_creds)
+                call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
+
+                composite_credentials = grpc.composite_channel_credentials(
+                    credentials.channel_creds,
+                    call_credentials,
+                )
+                channel = grpc.secure_channel(
+                    target=target,
+                    credentials=composite_credentials
+                )
+            else:
+                channel = grpc.secure_channel(
+                    target=target,
+                    credentials=credentials.channel_creds
+                )
 
         self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
-
-        if authentication_parameteres:
-            self.auth = Authentication(self.mesh_service, authentication_parameteres)
-            self.grpc_metadata = (
-                ('authorization', self.auth.get_token()),
-            )
-        else:
-            self.auth: Authentication = None
-            self.grpc_metadata = ()
 
     def get_version(self):
         """
@@ -153,12 +142,11 @@ class Connection:
         response = self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
         return response
 
-    @Authentication.check_token_for_renewal
     def get_user_identity(self):
         """
         """
-        return self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty(),
-            metadata = self.grpc_metadata)
+        response = self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
+        return response
 
     def create_session(self) -> Optional[Session]:
         """
@@ -170,4 +158,4 @@ class Connection:
     def connect_to_session(self, session_id: uuid):
         """
         """
-        return self.Session(self.mesh_service, session_id, self.auth, self.grpc_metadata)
+        return self.Session(self.mesh_service, session_id)

@@ -1,3 +1,6 @@
+import asyncio
+
+from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Authentication, Connection
 from volue.mesh.examples import _get_connection_info
 
@@ -22,9 +25,15 @@ def main(address, port, secure_connection):
     #           service/hostname
     authentication_parameters = Authentication.Parameters(
         'HOST/example.companyad.company.com')
-    connection = Connection(address, port, secure_connection, authentication_parameters)
 
+    print("Synchronous authentication example: ")
+    connection = Connection(address, port, secure_connection, authentication_parameters)
     user_identity = connection.get_user_identity()
+    print(user_identity)
+
+    print("Asynchronous authentication example: ")
+    aconnection = AsyncConnection(address, port, secure_connection, authentication_parameters)
+    user_identity = asyncio.get_event_loop().run_until_complete(aconnection.get_user_identity())
     print(user_identity)
 
 

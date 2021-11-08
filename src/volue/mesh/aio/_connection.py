@@ -1,5 +1,5 @@
 from volue.mesh._common import *
-from volue.mesh import Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
+from volue.mesh import Authentication, Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
 from typing import Optional
@@ -89,10 +89,8 @@ class Connection:
                     session_id=to_proto_guid(self.session_id),
                     object_id=object_id,
                     interval=to_protobuf_utcinterval(start_time, end_time)
-                )
-            )
+                ))
             return read_proto_reply(reply)
-
 
         async def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
@@ -105,8 +103,7 @@ class Connection:
                     session_id=to_proto_guid(self.session_id),
                     object_id=to_proto_object_id(timeserie),
                     timeseries=to_proto_timeseries(timeserie)
-                )
-            )
+                ))
 
         async def rollback(self) -> None:
             """
@@ -126,7 +123,8 @@ class Connection:
             """
             await self.mesh_service.Commit(to_proto_guid(self.session_id))
 
-    def __init__(self, host, port, secure_connection: bool):
+    def __init__(self, host, port, secure_connection: bool,
+                 authentication_parameters: Authentication.Parameters = None):
         """
         """
         target = f'{host}:{port}'
@@ -136,10 +134,26 @@ class Connection:
             )
         else:
             credentials: Credentials = Credentials()
-            channel = grpc.aio.secure_channel(
-                target=target,
-                credentials=credentials.channel_creds
-            )
+
+            # authentication requires TLS
+            if authentication_parameters:
+                auth_metadata_plugin = Authentication(
+                    authentication_parameters, target, credentials.channel_creds)
+                call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
+
+                composite_credentials = grpc.composite_channel_credentials(
+                    credentials.channel_creds,
+                    call_credentials,
+                )
+                channel = grpc.aio.secure_channel(
+                    target=target,
+                    credentials=composite_credentials
+                )
+            else:
+                channel = grpc.aio.secure_channel(
+                    target=target,
+                    credentials=credentials.channel_creds
+                )
 
         self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
 
@@ -154,7 +168,8 @@ class Connection:
         """
         |coro|
         """
-        await self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
+        response = await self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
+        return response
 
     def create_session(self) -> Optional[Session]:
         """
