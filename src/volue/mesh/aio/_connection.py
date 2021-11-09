@@ -128,7 +128,14 @@ class Connection:
         """
         """
         target = f'{host}:{port}'
+
+        # There are 3 possible async connection types:
+        # - insecure (without TLS)
+        # - with TLS
+        # - with TLS and Kerberos authentication
+        #   (authentication requires TLS for encrypting auth tokens)
         if not secure_connection:
+            # insecure connection (without TLS)
             channel = grpc.aio.insecure_channel(
                 target=target
             )
@@ -145,11 +152,14 @@ class Connection:
                     credentials.channel_creds,
                     call_credentials,
                 )
+
+                # connection using TLS and Kerberos authentication
                 channel = grpc.aio.secure_channel(
                     target=target,
                     credentials=composite_credentials
                 )
             else:
+                # connection using TLS (no Kerberos authentication)
                 channel = grpc.aio.secure_channel(
                     target=target,
                     credentials=credentials.channel_creds
