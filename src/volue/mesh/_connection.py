@@ -163,9 +163,9 @@ class Connection:
         """
         Revokes Mesh token if no longer needed.
         """
-        self.auth_metadata_plugin.revoke_access_token()
-        token = protobuf.wrappers_pb2.StringValue(value = self.auth_metadata_plugin.token)
-        self.mesh_service.RevokeAccessToken(token)
+        token_to_revoke = self.auth_metadata_plugin.revoke_access_token()
+        self.mesh_service.RevokeAccessToken(
+            protobuf.wrappers_pb2.StringValue(value = token_to_revoke))
 
     def create_session(self) -> Optional[Session]:
         """
