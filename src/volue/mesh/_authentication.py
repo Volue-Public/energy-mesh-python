@@ -77,8 +77,7 @@ class Authentication(grpc.AuthMetadataPlugin):
                     # no need to guard server's kerberos token as it is accessed sequentially
 
                     if self.final_response_received:
-                        # return 'empty', it will be properly serialized but ignored by server
-                        return protobuf.empty_pb2.Empty()
+                        raise StopIteration()
 
                     # server kerberos token is in binary form, convert it to base64 string
                     # Note: all base64 characters are ASCII characters,
