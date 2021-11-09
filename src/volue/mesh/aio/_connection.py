@@ -128,6 +128,7 @@ class Connection:
         """
         """
         target = f'{host}:{port}'
+        self.auth_metadata_plugin = None
 
         # There are 3 possible async connection types:
         # - insecure (without TLS)
@@ -144,9 +145,9 @@ class Connection:
 
             # authentication requires TLS
             if authentication_parameters:
-                auth_metadata_plugin = Authentication(
+                self.auth_metadata_plugin = Authentication(
                     authentication_parameters, target, credentials.channel_creds)
-                call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
+                call_credentials = grpc.metadata_call_credentials(self.auth_metadata_plugin)
 
                 composite_credentials = grpc.composite_channel_credentials(
                     credentials.channel_creds,
@@ -180,6 +181,14 @@ class Connection:
         """
         response = await self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         return response
+
+    async def revoke_access_token(self):
+        """
+        Revokes Mesh token if no longer needed.
+        """
+        self.auth_metadata_plugin.revoke_access_token()
+        token = protobuf.wrappers_pb2.StringValue(value = self.auth_metadata_plugin.token)
+        await self.mesh_service.RevokeAccessToken(token)
 
     def create_session(self) -> Optional[Session]:
         """
