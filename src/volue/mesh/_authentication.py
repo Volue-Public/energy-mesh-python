@@ -15,7 +15,7 @@ elif platform.startswith('linux'):
     import kerberos
 
 
-class Authentication:
+class Authentication(grpc.AuthMetadataPlugin):
     """ Authentication services for authentication and authorization to Mesh server.
         The flow is as follows:
         1. Obtain token from Kerberos to access specified service (SPN) with Mesh server
@@ -77,8 +77,7 @@ class Authentication:
                     # no need to guard server's kerberos token as it is accessed sequentially
 
                     if self.final_response_received:
-                        # return None, it will be ignored by server
-                        return None
+                        raise StopIteration()
 
                     # server kerberos token is in binary form, convert it to base64 string
                     # Note: all base64 characters are ASCII characters,
@@ -120,36 +119,32 @@ class Authentication:
             self.response_received.set()
 
 
-    # Decorator
-    @staticmethod
-    def check_token_for_renewal(grpc_call):
-        """
-        Decorator to be used in functions calling gRPCs requiring authorization.
-        If authorization is enabled it checks if the current token has expired and
-        generates a new one if it has.
-        """
-        def wrapper(*args, **kwargs):
-            self = args[0]  # Connection (regular or aio) and Session
-
-            if self.auth is not None:
-                if not self.auth.is_token_valid():
-                    self.grpc_metadata = (
-                        ('authorization', self.auth.get_token()),
-                    )
-
-            return grpc_call(*args, **kwargs)
-        return wrapper
-
-
     def __init__(
         self,
-        mesh_service: mesh_pb2_grpc.MeshServiceStub,
-        parameters: Parameters):
+        parameters: Parameters,
+        target: str,
+        channel_credentials: grpc.ChannelCredentials):
 
-        self.mesh_service: mesh_pb2_grpc.MeshServiceStub = mesh_service
         self.service_principal: str = parameters.service_principal
         self.user_principal: str = parameters.user_principal
         self.token_expiration_date: datetime = None
+
+        # create separate channel for getting and refreshing Mesh token
+        channel = grpc.secure_channel(
+            target=target,
+            credentials=channel_credentials
+        )
+        self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
+
+        # get token in initialization to avoid spending
+        # extra time while executing first call to Mesh
+        self.token: str = self.get_token()
+
+
+    def __call__(self, context, callback):
+        if not self.is_token_valid():
+            self.token = self.get_token()
+        callback((('authorization', self.token),), None)
 
 
     def is_token_valid(self) -> bool:
