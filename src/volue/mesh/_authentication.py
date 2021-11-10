@@ -144,18 +144,15 @@ class Authentication(grpc.AuthMetadataPlugin):
     def __call__(self, context, callback):
         if not self.is_token_valid():
             self.token = self.get_token()
-        callback((('authorization', self.token),), None)
+        callback((('authorization', 'Bearer ' + self.token),), None)
 
 
     def is_token_valid(self) -> bool:
         """
         Checks if current token is still valid.
-
-        Raises:
-            RuntimeError: No token was generated
         """
         if self.token_expiration_date is None:
-            raise RuntimeError("Failed to check if token is valid: no token was generated.")
+            return False
 
         # use UTC to avoid corner cases with Daylight Saving Time
         return self.token_expiration_date > datetime.now(timezone.utc)
@@ -194,7 +191,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
                     adjusted_token_duration = token_duration - duration_margin
                     self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
-                    mesh_token = 'Bearer ' + mesh_response.bearer_token
+                    mesh_token = mesh_response.bearer_token
         except grpc.RpcError as ex:
             if kerberos_token_iterator.exception is not None:
                 # replace vague RpcError with more detailed exception
@@ -205,9 +202,12 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         return mesh_token
 
-    def revoke_access_token(self):
+    def delete_access_token(self) -> str:
         """
-        Revokes Mesh token if no longer needed.
+        Deletes (resets) current Mesh token if no longer needed and returns it to be revoked.
+        mesh_service.RevokeAccessToken call is made in Connection classes.
         """
-        # To-do: TBD
-        pass
+        previous_token = self.token
+        self.token = None
+        self.token_expiration_date = None
+        return previous_token

@@ -31,10 +31,16 @@ def main(address, port, secure_connection):
     user_identity = connection.get_user_identity()
     print(user_identity)
 
+    # revoke no longer used token
+    connection.revoke_access_token()
+
     print("Asynchronous authentication example: ")
     aconnection = AsyncConnection(address, port, secure_connection, authentication_parameters)
     user_identity = asyncio.get_event_loop().run_until_complete(aconnection.get_user_identity())
     print(user_identity)
+
+    # revoke no longer used token
+    asyncio.get_event_loop().run_until_complete(aconnection.revoke_access_token())
 
 
 if __name__ == "__main__":
