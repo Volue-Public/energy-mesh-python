@@ -202,9 +202,9 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         return mesh_token
 
-    def revoke_access_token(self) -> str:
+    def delete_access_token(self) -> str:
         """
-        Revokes Mesh token if no longer needed.
+        Deletes (resets) current Mesh token if no longer needed and returns it to be revoked.
         mesh_service.RevokeAccessToken call is made in Connection classes.
         """
         previous_token = self.token

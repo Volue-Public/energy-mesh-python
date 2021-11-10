@@ -185,8 +185,14 @@ class Connection:
     async def revoke_access_token(self):
         """
         Revokes Mesh token if no longer needed.
+
+        Raises:
+            RuntimeError: authentication not configured
         """
-        token_to_revoke = self.auth_metadata_plugin.revoke_access_token()
+        if self.auth_metadata_plugin is None:
+            raise RuntimeError('Authentication not configured for this connection')
+
+        token_to_revoke = self.auth_metadata_plugin.delete_access_token()
         await self.mesh_service.RevokeAccessToken(
             protobuf.wrappers_pb2.StringValue(value = token_to_revoke))
 
