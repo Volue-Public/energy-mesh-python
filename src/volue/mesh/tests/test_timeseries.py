@@ -113,6 +113,29 @@ def test_read_timeseries_points_using_timskey():
         except grpc.RpcError:
             pytest.fail("Could not read timeseries points")
 
+@pytest.mark.database
+def test_read_timeseries_entry():
+    """Check that timeseries entry data can be retreived"""
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+    with connection.create_session() as session:
+        try:
+            # entry = session.get_timeseries_entry(timskey=timskey)
+            entry = session.get_timeseries_entry(uuid_id=uuid.UUID("231830f5-333e-4b45-bf42-c3f9b1f6ca87"))
+            # assert entry.id is "\3650\030#>3EK\277B\303\371\261\366\312\207"
+            assert entry.timeseries_key == 201507
+            assert entry.path == '/Wind Power/WindPower/WPModel/'
+            assert not entry.temporary
+            # assert entry.curveType == Curve.STAIRCASESTARTOFSTEP
+            assert entry.delta_t == '0:01:00:00:0000000\x00'
+            assert entry.unit_of_measurement == '{E1D86C98-064D-43F4-9154-53A1B007AE00}'
+            print(f"Entry id: {entry.timeseries_key}")
+        except grpc.RpcError:
+            pytest.fail("Could not read timeseries points")
+
+
+
 
 @pytest.mark.asyncio
 @pytest.mark.database

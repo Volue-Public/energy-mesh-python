@@ -18,10 +18,9 @@ class Connection:
         """
 
         def __init__(
-            self,
-            mesh_service: mesh_pb2_grpc.MeshServiceStub,
-            session_id: uuid = None):
-
+                self,
+                mesh_service: mesh_pb2_grpc.MeshServiceStub,
+                session_id: uuid = None):
             self.session_id: uuid = session_id
             self.mesh_service: mesh_pb2_grpc.MeshServiceStub = mesh_service
 
@@ -87,6 +86,22 @@ class Connection:
                     timeseries=to_proto_timeseries(timeserie)
                 ))
 
+        def get_timeseries_entry(self,
+                                 uuid_id=None,
+                                 path: str = None,
+                                 timskey: int = None,
+                                 ):
+            """ """
+            entry_id = mesh_pb2.TimeseriesEntryId(
+                guid=to_proto_guid(uuid_id)
+            )
+            reply = self.mesh_service.GetTimeseriesEntry(
+                mesh_pb2.GetTimeseriesEntryRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    entry_id=entry_id
+                ))
+            return reply
+
         def rollback(self) -> None:
             """
             Raises:
@@ -100,7 +115,6 @@ class Connection:
                 grpc.RpcError:
             """
             self.mesh_service.Commit(to_proto_guid(self.session_id))
-
 
     def __init__(self, host, port, secure_connection: bool,
                  authentication_parameters: Authentication.Parameters = None):
@@ -171,7 +185,7 @@ class Connection:
 
         token_to_revoke = self.auth_metadata_plugin.delete_access_token()
         self.mesh_service.RevokeAccessToken(
-            protobuf.wrappers_pb2.StringValue(value = token_to_revoke))
+            protobuf.wrappers_pb2.StringValue(value=token_to_revoke))
 
     def create_session(self) -> Optional[Session]:
         """
