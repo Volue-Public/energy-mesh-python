@@ -19,7 +19,7 @@ Only two methods can be called by without authentication:
 Usage
 *****************
 
-To use authentication user has to provide authentication parameters when creating :ref:`volue.mesh`.Connection or :ref:`volue.mesh.aio`.Connection: object.
+To use authentication the user has to provide authentication parameters when creating a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection:.
 Authentication parameters consist of:
 
 * Service Principal Name (SPN)
