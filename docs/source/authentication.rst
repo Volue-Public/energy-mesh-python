@@ -70,7 +70,7 @@ The user may optionally revoke the Mesh access token. This may useful when a use
 Requirements
 *****************
 
-#. Configure Mesh server to use authentication and TLS:
+#. Configure the Mesh server to use authentication and TLS:
 
    .. code-block:: javascript
 
