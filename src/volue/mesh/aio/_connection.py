@@ -192,9 +192,9 @@ class Connection:
         if self.auth_metadata_plugin is None:
             raise RuntimeError('Authentication not configured for this connection')
 
-        token_to_revoke = self.auth_metadata_plugin.delete_access_token()
         await self.mesh_service.RevokeAccessToken(
-            protobuf.wrappers_pb2.StringValue(value = token_to_revoke))
+            protobuf.wrappers_pb2.StringValue(value = self.auth_metadata_plugin.token))
+        self.auth_metadata_plugin.delete_access_token()
 
     def create_session(self) -> Optional[Session]:
         """

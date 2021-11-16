@@ -127,6 +127,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         self.service_principal: str = parameters.service_principal
         self.user_principal: str = parameters.user_principal
+        self.token: str = None
         self.token_expiration_date: datetime = None
 
         # create separate channel for getting and refreshing Mesh token
@@ -138,12 +139,12 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         # get token in initialization to avoid spending
         # extra time while executing first call to Mesh
-        self.token: str = self.get_token()
+        self.get_token()
 
 
     def __call__(self, context, callback):
         if not self.is_token_valid():
-            self.token = self.get_token()
+            self.get_token()
         callback((('authorization', 'Bearer ' + self.token),), None)
 
 
@@ -158,7 +159,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         return self.token_expiration_date > datetime.now(timezone.utc)
 
 
-    def get_token(self) -> str:
+    def get_token(self) -> None:
         """
         Gets Mesh token used for authorization in other calls to Mesh server.
 
@@ -190,8 +191,8 @@ class Authentication(grpc.AuthMetadataPlugin):
                         raise RuntimeError('Invalid Mesh token duration')
 
                     adjusted_token_duration = token_duration - duration_margin
-                    self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
-                    mesh_token = mesh_response.bearer_token
+                    self.token_expiration_date: datetime = auth_request_call_timestamp + adjusted_token_duration
+                    self.token: str = mesh_response.bearer_token
         except grpc.RpcError as ex:
             if kerberos_token_iterator.exception is not None:
                 # replace vague RpcError with more detailed exception
@@ -200,14 +201,11 @@ class Authentication(grpc.AuthMetadataPlugin):
             # otherwise the exception happened elsewhere, re-throw it
             raise ex
 
-        return mesh_token
 
     def delete_access_token(self) -> str:
         """
-        Deletes (resets) current Mesh token if no longer needed and returns it to be revoked.
+        Deletes (resets) current Mesh token if no longer needed.
         mesh_service.RevokeAccessToken call is made in Connection classes.
         """
-        previous_token = self.token
         self.token = None
         self.token_expiration_date = None
-        return previous_token
