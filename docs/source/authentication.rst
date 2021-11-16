@@ -62,7 +62,7 @@ If Mesh gRPC server is running as a user account without registered service prin
 Mesh token
 *****************
 
-Mesh token is valid for 1 hour, after this time it will expire and a new token needs to be obtained from Mesh server. This is done automatically and user does not need to take any additional action.
+The Mesh access token is valid for 1 hour, after this time it will expire and a new token needs to be obtained from the Mesh server. This is done automatically and the user does not need to take any additional action.
 
 User may optionally revoke Mesh access token. This may useful when a user finishes working with Mesh and wants to make sure it will not be used by anyone else for the time until it expires.
 
