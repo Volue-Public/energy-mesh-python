@@ -79,7 +79,7 @@ Requirements
       Configuration.Network.GRPC.EnableTLS(true);
 
 #. Find out correct *service principal* for Mesh server you want to connect to.
-#. Create :ref:`volue.mesh`.Connection or :ref:`volue.mesh.aio`.Connection: object with authentication parameters.
+#. Create a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection: object with authentication parameters.
 
 
 Example
