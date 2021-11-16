@@ -27,7 +27,7 @@ Authentication parameters consist of:
 
 Depending on the system configuration providing only *service principal* may be enough for successful authentication. This is usually the case when authenticating as the currently logged in Windows user.
 
-Instantiation of Connection object with authentication parameters will perform authentication process and obtain Mesh token that will be used for each subsequent call to Mesh server.
+Instantiation of a Connection object with authentication parameters will perform the authentication process and obtain a Mesh token that will be used for each subsequent call to the Mesh server.
 
 
 Service Principal
