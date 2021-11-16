@@ -18,19 +18,19 @@ elif platform.startswith('linux'):
 class Authentication(grpc.AuthMetadataPlugin):
     """ Authentication services for authentication and authorization to Mesh server.
         The flow is as follows:
-        1. Obtain token from Kerberos to access specified service (SPN) with Mesh server
-           running on it.
-        2. Send this token to Mesh (using AuthenticateKerberos).
+
+        1. Obtain token from Kerberos to access specified service (SPN)
+           with Mesh server running on it.
+        2. Send this token to Mesh gRPC server (using AuthenticateKerberos).
         3. In return Mesh may respond with:
-            a. Server challenge to be verified and processed by client (using Kerberos)
-               In this case the authentication is not yet completed and client should respond with
-               next token (Kerberos generated) and send it to Mesh (using AuthenticateKerberos).
-            b. Token to be used in subsequent calls to Mesh that required authentication.
-               Token duration - tokens are valid for 1 hour.
-                                After this time a new token needs to be acquired.
-               Kerberos token - optionally can be checked by client for mutual authentication.
-                                In this case it is skipped as server authentication is
-                                ensured by gRPC TLS connection.
+
+            a. Server challenge to be verified and processed by client (using Kerberos).
+               In this case the authentication is not yet completed and client should respond
+               to the server with next Kerberos generated token.
+            b. Mesh token - to be used in subsequent calls to Mesh that require authentication.
+               Token duration - tokens are valid for 1 hour. After this time a new token
+               needs to be acquired.
+
                This step is the final step of authentication from server side.
     """
 
