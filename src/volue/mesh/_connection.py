@@ -86,12 +86,29 @@ class Connection:
                     timeseries=to_proto_timeseries(timeserie)
                 ))
 
+        def search_for_timeseries_points(self,
+                                         start_object_path: str,
+                                         query: str,
+                                         start_time: datetime,
+                                         end_time: datetime
+                                         ):
+            respons = self.mesh_service.SearchTimeseriesEntity(
+                mesh_pb2.SearchTimeseriesEntryRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    start_object_path=start_object_path,
+                    query=query,
+                    interval=to_protobuf_utcinterval(start_time, end_time)
+                )
+            )
+            return respons
+
         def get_timeseries_entry(self,
-                                 uuid_id=None,
+                                 uuid_id: uuid.UUID = None,
                                  path: str = None,
                                  timskey: int = None,
                                  ):
             """ """
+            # TODO path and timskey!!!
             entry_id = mesh_pb2.TimeseriesEntryId(
                 guid=to_proto_guid(uuid_id)
             )
@@ -101,6 +118,38 @@ class Connection:
                     entry_id=entry_id
                 ))
             return reply
+
+        def update_timeseries_entry(self):
+            pass
+
+        def search_for_timeseries_entry(self):
+            pass
+
+        def get_timeseries_attribute(self,
+                                     uuid_id: uuid.UUID = None,
+                                     model: str = None,
+                                     path: str = None
+                                     ):
+            """ """
+
+            # TODO oneof...
+            attribute_id = mesh_pb2.AttributeId(
+                id=to_proto_guid(uuid_id)
+            )
+            reply = self.mesh_service.GetTimeseriesAttribute(
+                mesh_pb2.GetTimeseriesAttributeRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    model=model,
+                    attribute_id=attribute_id
+                )
+            )
+            return reply
+
+        def update_timeseries_attribute(self):
+            pass
+
+        def search_for_timeseries_attribute(self):
+            pass
 
         def rollback(self) -> None:
             """

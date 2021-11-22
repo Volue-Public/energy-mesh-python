@@ -92,27 +92,30 @@ service MeshService {
   // Write a series of timestamps, flags and values.
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}
 
-  // When a timeseries, either calculated or not, is linked to a node in a Mesh model,
-  // some meta data associated with the Mesh model node can be retreived.
-  // This kind of metadata is called attribute data.
-  rpc GetTimeseriesAttribute(GetTimeseriesAttributeRequest) returns (TimeseriesAttribute) {}
+  // Search for a timeseries entry
+  rpc SearchTimeseriesEntity(SearchTimeseriesEntryRequest) returns (Timeseries) {}
 
   // Other timeseries might not be connected to a mesh model at all, but instead be organized
   // in some sort of catalog structure.
   // This kind of metadata is called entry data.
   rpc GetTimeseriesEntry(GetTimeseriesEntryRequest) returns (TimeseriesEntry) {}
 
-  // Update timeseries attribute meta data
-  rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (google.protobuf.Empty) {}
-
   // Update timeseries entry meta data
   rpc UpdateTimeseriesEntry(UpdateTimeseriesEntryRequest) returns (google.protobuf.Empty) {}
 
-  // Search for attribute meta data connected to a timeseries
-  rpc SearchTimeseriesAttributes(SearchTimeseriesAttributeRequest) returns (stream TimeseriesAttribute) {}
-
   // Search for entry meta data connected to a timeseries
   rpc SearchTimeseriesEntries(SearchTimeseriesEntriesRequest) returns (stream TimeseriesEntry) {}
+
+  // When a timeseries, either calculated or not, is linked to a node in a Mesh model,
+  // some meta data associated with the Mesh model node can be retreived.
+  // This kind of metadata is called attribute data.
+  rpc GetTimeseriesAttribute(GetTimeseriesAttributeRequest) returns (TimeseriesAttribute) {}
+
+  // Update timeseries attribute meta data
+  rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (google.protobuf.Empty) {}
+
+  // Search for attribute meta data connected to a timeseries
+  rpc SearchTimeseriesAttributes(SearchTimeseriesAttributeRequest) returns (stream TimeseriesAttribute) {}
 }
 
 
@@ -358,10 +361,17 @@ message UpdateTimeseriesAttributeRequest {
   string new_local_expression = 5;
 }
 
+message SearchTimeseriesEntryRequest {
+    Guid session_id = 1;
+    string start_object_path = 2;
+    string query = 3;
+    UtcInterval interval = 4;
+}
+
 message SearchTimeseriesAttributeRequest {
-    //TODO
+    Guid session_id = 1;
 }
 
 message SearchTimeseriesEntriesRequest {
-    // TODO
+    Guid session_id = 1;
 }

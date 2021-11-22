@@ -122,7 +122,9 @@ def test_read_timeseries_entry():
     with connection.create_session() as session:
         try:
             # entry = session.get_timeseries_entry(timskey=timskey)
-            entry = session.get_timeseries_entry(uuid_id=uuid.UUID("231830f5-333e-4b45-bf42-c3f9b1f6ca87"))
+            entry = session.get_timeseries_entry(
+                uuid_id=uuid.UUID("231830f5-333e-4b45-bf42-c3f9b1f6ca87")
+            )
             # assert entry.id is "\3650\030#>3EK\277B\303\371\261\366\312\207"
             assert entry.timeseries_key == 201507
             assert entry.path == '/Wind Power/WindPower/WPModel/'
@@ -132,9 +134,43 @@ def test_read_timeseries_entry():
             assert entry.unit_of_measurement == '{E1D86C98-064D-43F4-9154-53A1B007AE00}'
             print(f"Entry id: {entry.timeseries_key}")
         except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
+            pytest.fail("Could not read timeseries entry")
 
 
+@pytest.mark.database
+def test_read_timeseries_attribute():
+    """Check that timeseries attribute data can be retreived"""
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+    with connection.create_session() as session:
+        try:
+            attribute = session.get_timeseries_attribute(
+                uuid_id=uuid.UUID("f0755837-504d-4115-855c-df96f52c4189")
+            )
+            assert attribute is not None
+            assert attribute.path == "Model/PowerSystem/Mesh.MeshCountry/Norway.Income/Income"
+            assert not attribute.HasField('entry')
+            assert attribute.local_expression == ""
+            assert attribute.template_expression == "##=@t('CountryHydroPower.Income')\n"
+
+            attribute_with_entry = session.get_timeseries_attribute(
+                uuid_id=uuid.UUID("4d0d7f7c-f7af-4be3-844c-6bb3e15f50b7")
+            )
+            assert attribute_with_entry is not None
+            assert attribute_with_entry.path == "Model/POMAtest01/Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot.LastAuctionAvailable/LastAuctionAvailable"
+            assert attribute_with_entry.HasField('entry')
+            #assert attribute_with_entry.entry.id == "Z\033&Z\357\264 H\276\255\261\025wV.7"
+            assert attribute_with_entry.entry.timeseries_key == 377702
+            assert attribute_with_entry.entry.path == "/Customer_case/A2A/Market/IT_ElSpot/"
+            assert attribute_with_entry.entry.temporary is False
+            #assert attribute_with_entry.entry.curveType == Curve.STAIRCASESTARTOFSTEP
+            assert attribute_with_entry.entry.delta_t == "0:01:00:00:0000000\x00"
+            assert attribute_with_entry.entry.unit_of_measurement == "{8113E543-AFF9-40E5-BBB5-3A04C77B2819}"
+            assert attribute_with_entry.local_expression == ""
+            assert attribute_with_entry.template_expression == ""
+        except grpc.RpcError:
+            pytest.fail("Could not get timeseries attribute")
 
 
 @pytest.mark.asyncio
@@ -174,8 +210,6 @@ async def test_read_timeseries_points_using_timskey_async():
             assert timeseries[0].number_of_points == 312
         except grpc.RpcError:
             pytest.fail("Could not read timeseries points")
-
-
 
 if __name__ == '__main__':
     pytest.main()
