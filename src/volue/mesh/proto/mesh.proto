@@ -114,10 +114,25 @@ service MeshService {
   // Update timeseries attribute meta data
   rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (google.protobuf.Empty) {}
 
-  // Search for attribute meta data connected to a timeseries
-  rpc SearchTimeseriesAttributes(SearchTimeseriesAttributeRequest) returns (stream TimeseriesAttribute) {}
+  // Search for time series attributes in a given physical model
+  //
+  // The search uses Mesh's query language, which is the same language that's
+  // used in for example Nimbus.
+  //
+  // The result stream is not ordered in any particular way, and the caller
+  // should not expect the ordering of search results to be stable.
+  //
+  // Returns an error if:
+  //
+  // - the session doesn't exist,
+  // - the model doesn't exist,
+  // - the start object doesn't exist, or
+  // - the search query is invalid.
+  //
+  // If the search doesn't find any results an empty stream and an OK status
+  // is returned.
+  rpc SearchTimeseriesAttributes(SearchTimeseriesAttributesRequest) returns (stream TimeseriesAttribute) {}
 }
-
 
 message AuthenticateKerberosResponse {
   // The Kerberos ticket returned by the server's AcceptSecurityContext call.
@@ -317,7 +332,7 @@ message TimeseriesEntry {
   // Local session series if true
   bool temporary = 4;
   Curve curveType = 5;
-  string delta_t = 6;
+  Resolution delta_t = 6;
   string unit_of_measurement = 7;
 }
 
@@ -368,8 +383,19 @@ message SearchTimeseriesEntryRequest {
     UtcInterval interval = 4;
 }
 
-message SearchTimeseriesAttributeRequest {
+message SearchTimeseriesAttributesRequest {
     Guid session_id = 1;
+    // Name of the physical model in which to search.
+    string model_name = 2;
+    // Mesh searches always require a start point for the search.
+    oneof start_object_oneof {
+        // Where to start the search, in the form of a `name.attribute/name.attribute/name`
+        // path. For example `Norway.has_WaterCourse/Orkla`.
+        string start_object_path = 3;
+        // Where to start the search, in the form of a GUID.
+        Guid start_object_guid = 4;
+    }
+    string query = 5;
 }
 
 message SearchTimeseriesEntriesRequest {

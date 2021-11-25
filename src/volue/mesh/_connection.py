@@ -131,11 +131,14 @@ class Connection:
                                      path: str = None
                                      ):
             """ """
+            attribute_id = mesh_pb2.AttributeId()
 
-            # TODO oneof...
-            attribute_id = mesh_pb2.AttributeId(
-                id=to_proto_guid(uuid_id)
-            )
+            if uuid_id is not None:
+                attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
+
+            elif path is not None:
+                attribute_id.path = path
+
             reply = self.mesh_service.GetTimeseriesAttribute(
                 mesh_pb2.GetTimeseriesAttributeRequest(
                     session_id=to_proto_guid(self.session_id),
