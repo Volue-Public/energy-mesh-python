@@ -93,7 +93,8 @@ service MeshService {
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}
 
   // Search for a timeseries entry
-  rpc SearchTimeseriesEntity(SearchTimeseriesEntryRequest) returns (Timeseries) {}
+  // Not implementing right now
+  //rpc SearchTimeseriesEntity(SearchTimeseriesEntryRequest) returns (Timeseries) {}
 
   // Other timeseries might not be connected to a mesh model at all, but instead be organized
   // in some sort of catalog structure.
@@ -104,7 +105,8 @@ service MeshService {
   rpc UpdateTimeseriesEntry(UpdateTimeseriesEntryRequest) returns (google.protobuf.Empty) {}
 
   // Search for entry meta data connected to a timeseries
-  rpc SearchTimeseriesEntries(SearchTimeseriesEntriesRequest) returns (stream TimeseriesEntry) {}
+// Not implementing right now, query language does not cover resources right now, need to think some more on this
+//  rpc SearchTimeseriesEntries(SearchTimeseriesEntriesRequest) returns (stream TimeseriesEntry) {}
 
   // When a timeseries, either calculated or not, is linked to a node in a Mesh model,
   // some meta data associated with the Mesh model node can be retreived.
@@ -176,7 +178,7 @@ message UtcInterval {
 message ObjectId {
   optional int64 timskey = 1;
   optional Guid guid = 2;
-  optional string full_name = 3; // Not implemented yet
+  optional string full_name = 3;
 }
 
 // Version information for the mesh server

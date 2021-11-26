@@ -75,41 +75,24 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[1] == table[1]
     assert original_timeseries.arrow_table[2] == table[2]
 
-
 @pytest.mark.database
-def test_read_timeseries_points_using_timskey():
-    """Check that timeseries can be retrieved using timskey."""
+def test_read_timeseries_points():
+    """Check that timeseries can be retrieved"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
         end_time, start_time, table, timskey, uuid_id = get_test_data()
+        full_name = "Resource/Wind Power/WindPower/WPModel/WindProdForec(0)"
         try:
-            timeseries = session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=timskey)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 312
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
-
-
-@pytest.mark.database
-def test_read_timeseries_points_using_timskey():
-    """Check that timeseries can be retrieved using timskey."""
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    with connection.create_session() as session:
-        end_time, start_time, table, timskey, uuid_id = get_test_data()
-        try:
-            timeseries = session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=timskey)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 312
+            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timskey}
+            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": uuid_id}
+            test_case_3 = {"start_time": start_time, "end_time": end_time, "full_name": full_name}
+            test_cases = [test_case_1, test_case_2, test_case_3]
+            for test_case in test_cases:
+                timeseries = session.read_timeseries_points(**test_case)
+                assert len(timeseries) == 1
+                assert timeseries[0].number_of_points == 312
         except grpc.RpcError:
             pytest.fail("Could not read timeseries points")
 
@@ -117,47 +100,41 @@ def test_read_timeseries_points_using_timskey():
 def test_read_timeseries_entry():
     """Check that timeseries entry data can be retreived"""
 
+    timeseries_id = uuid.UUID("5a261b5a-b4ef-4820-bead-b11577562e37")
+    silo='Resource'
+    resource_path='/Customer_case/A2A/Market/IT_ElSpot/'
+    name='LastAuctionAvailable'
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
+
     with connection.create_session() as session:
         try:
-            # entry = session.get_timeseries_entry(timskey=timskey)
             entry = session.get_timeseries_entry(
-                uuid_id=uuid.UUID("231830f5-333e-4b45-bf42-c3f9b1f6ca87")
+                path=silo+resource_path+name
             )
-            # assert entry.id is "\3650\030#>3EK\277B\303\371\261\366\312\207"
-            assert entry.timeseries_key == 201507
-            assert entry.path == '/Wind Power/WindPower/WPModel/'
+
+            assert from_proto_guid(entry.id) == timeseries_id
+            assert entry.timeseries_key == 377702
+            assert entry.path == resource_path
             assert not entry.temporary
             assert entry.curveType.type == mesh_pb2.Curve.STAIRCASESTARTOFSTEP
-            assert entry.delta_t == '0:01:00:00:0000000\x00'
-            assert entry.unit_of_measurement == '{E1D86C98-064D-43F4-9154-53A1B007AE00}'
-            print(f"Entry id: {entry.timeseries_key}")
+            assert entry.delta_t.type == mesh_pb2.Resolution.HOUR
+            assert entry.unit_of_measurement == 'euro per mega watt hours'
+
+            entry = session.get_timeseries_entry(
+                uuid_id=timeseries_id
+            )
+
+            assert from_proto_guid(entry.id) == timeseries_id
+            assert entry.timeseries_key == 377702
+            assert entry.path == resource_path
+            assert not entry.temporary
+            assert entry.curveType.type == mesh_pb2.Curve.STAIRCASESTARTOFSTEP
+            assert entry.delta_t.type == mesh_pb2.Resolution.HOUR
+            assert entry.unit_of_measurement == 'euro per mega watt hours'
+
         except grpc.RpcError:
             pytest.fail("Could not read timeseries entry")
-
-@pytest.mark.database
-def test_search_timeseries_points():
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    with connection.create_session() as session:
-        try:
-            timeseries_points = session.search_for_timeseries_points(
-                start_object_path="POMAtest01",
-                query="LastAuctionAvailable", #"*[.Name=Markets].has_EnergyMarkets",
-                start_time=datetime(year=2020, month=7, day=1, hour=0, minute=0, second=0),
-                end_time=datetime(year=2020, month=7, day=30, hour=0, minute=0, second=0)
-            )
-            assert timeseries_points is not None
-            assert timeseries_points.HasField('object_id')
-            assert timeseries_points.object_id.HasField('guid')
-            assert timeseries_points.data == ""
-            assert timeseries_points.resolution == ""
-            assert timeseries_points.interval == ""
-
-        except grpc.RpcError:
-            pytest.fail("Could not get timeseries attribute")
 
 @pytest.mark.database
 def test_read_timeseries_attribute():
