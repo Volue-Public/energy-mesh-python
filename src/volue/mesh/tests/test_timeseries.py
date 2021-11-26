@@ -4,7 +4,7 @@ from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
 import volue.mesh.tests.test_utilities.server_config as sc
-from volue.mesh.tests.test_utilities.utilities import get_test_data
+from volue.mesh.tests.test_utilities.utilities import get_timeseries_data_2
 from datetime import datetime
 import pyarrow as pa
 import uuid
@@ -76,67 +76,6 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[2] == table[2]
 
 @pytest.mark.database
-def test_read_timeseries_points():
-    """Check that timeseries can be retrieved"""
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    with connection.create_session() as session:
-        end_time, start_time, table, timskey, uuid_id = get_test_data()
-        full_name = "Resource/Wind Power/WindPower/WPModel/WindProdForec(0)"
-        try:
-            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timskey}
-            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": uuid_id}
-            test_case_3 = {"start_time": start_time, "end_time": end_time, "full_name": full_name}
-            test_cases = [test_case_1, test_case_2, test_case_3]
-            for test_case in test_cases:
-                timeseries = session.read_timeseries_points(**test_case)
-                assert len(timeseries) == 1
-                assert timeseries[0].number_of_points == 312
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
-
-@pytest.mark.database
-def test_read_timeseries_entry():
-    """Check that timeseries entry data can be retreived"""
-
-    timeseries_id = uuid.UUID("5a261b5a-b4ef-4820-bead-b11577562e37")
-    silo='Resource'
-    resource_path='/Customer_case/A2A/Market/IT_ElSpot/'
-    name='LastAuctionAvailable'
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-
-    with connection.create_session() as session:
-        try:
-            entry = session.get_timeseries_entry(
-                path=silo+resource_path+name
-            )
-
-            assert from_proto_guid(entry.id) == timeseries_id
-            assert entry.timeseries_key == 377702
-            assert entry.path == resource_path
-            assert not entry.temporary
-            assert entry.curveType.type == mesh_pb2.Curve.STAIRCASESTARTOFSTEP
-            assert entry.delta_t.type == mesh_pb2.Resolution.HOUR
-            assert entry.unit_of_measurement == 'euro per mega watt hours'
-
-            entry = session.get_timeseries_entry(
-                uuid_id=timeseries_id
-            )
-
-            assert from_proto_guid(entry.id) == timeseries_id
-            assert entry.timeseries_key == 377702
-            assert entry.path == resource_path
-            assert not entry.temporary
-            assert entry.curveType.type == mesh_pb2.Curve.STAIRCASESTARTOFSTEP
-            assert entry.delta_t.type == mesh_pb2.Resolution.HOUR
-            assert entry.unit_of_measurement == 'euro per mega watt hours'
-
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries entry")
-
-@pytest.mark.database
 def test_read_timeseries_attribute():
     """Check that timeseries attribute data can be retreived"""
 
@@ -187,8 +126,8 @@ async def test_write_timeseries_points_using_timskey_async():
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.SECURE_CONNECTION)
-    end_time, start_time, table, timskey, uuid_id = get_test_data()
-    timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
+    ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
+    timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, timskey=ts_entry.timeseries_key)
 
     async with connection.create_session() as session:
         try:
@@ -207,12 +146,12 @@ async def test_read_timeseries_points_using_timskey_async():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.SECURE_CONNECTION)
     async with connection.create_session() as session:
-        end_time, start_time, table, timskey, uuid_id = get_test_data()
+        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
         try:
             timeseries = await session.read_timeseries_points(
                 start_time=start_time,
                 end_time=end_time,
-                timskey=timskey)
+                timskey=ts_entry.timeseries_key)
             assert len(timeseries) == 1
             assert timeseries[0].number_of_points == 312
         except grpc.RpcError:

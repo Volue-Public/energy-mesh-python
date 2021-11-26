@@ -86,15 +86,15 @@ class Connection:
                     timeseries=to_proto_timeseries(timeserie)
                 ))
 
-        def get_timeseries_entry(self,
-                                 uuid_id: uuid.UUID = None,
-                                 path: str = None,
-                                 timskey: int = None,
-                                 ):
+        def get_timeseries_resource_info(self,
+                                         uuid_id: uuid.UUID = None,
+                                         path: str = None,
+                                         timskey: int = None,
+                                         ):
             """ """
             entry_id = mesh_pb2.TimeseriesEntryId()
             if timskey is not None:
-                entry_id.timeseries_key.CopyFrom(timskey)
+                entry_id.timeseries_key = timskey
             elif uuid_id is not None:
                 entry_id.guid.CopyFrom(to_proto_guid(uuid_id))
             elif path is not None:
@@ -107,19 +107,39 @@ class Connection:
                 ))
             return reply
 
-        def update_timeseries_entry(self,
-                                    entry_id: mesh_pb2.TimeseriesEntryId,
-                                    ):
+        def update_timeseries_resource_info(self,
+                                            uuid_id: uuid.UUID = None,
+                                            path: str = None,
+                                            timskey: int = None,
+                                            new_path: str = None,
+                                            new_curve_type = None,
+                                            new_unit_of_measurement = None
+                                            ):
+            """
+            Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
 
-            request =mesh_pb2.UpdateTimeseriesEntryRequest(
+            Args:
+                uuid_id:
+                path:
+                timskey:
+
+            Returns:
+
+            """
+            entry_id = mesh_pb2.TimeseriesEntryId()
+            if timskey is not None:
+                entry_id.timeseries_key = timskey
+            elif uuid_id is not None:
+                entry_id.guid.CopyFrom(to_proto_guid(uuid_id))
+            elif path is not None:
+                entry_id.path = path
+
+            request = mesh_pb2.UpdateTimeseriesEntryRequest(
                 session_id=to_proto_guid(self.session_id),
                 entry_id=entry_id
             )
             reply = self.mesh_service.UpdateTimeseriesEntry(request)
             return reply
-
-        def search_for_timeseries_entry(self):
-            pass
 
         def get_timeseries_attribute(self,
                                      uuid_id: uuid.UUID = None,

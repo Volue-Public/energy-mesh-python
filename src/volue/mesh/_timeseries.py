@@ -4,9 +4,26 @@ import pyarrow
 import pyarrow as pa
 from datetime import datetime
 from volue.mesh.proto import mesh_pb2
+from enum import Enum
 
 
 class Timeseries:
+
+    class Curve(Enum):
+        UNKNOWN = 0
+        STAIRCASESTARTOFSTEP = 1
+        PIECEWISELINEAR = 2
+        STAIRCASE = 3
+
+    class Resolution(Enum):
+        BREAKPOINT = 0
+        MIN15 = 1
+        HOUR = 2
+        DAY = 3
+        WEEK = 4
+        MONTH = 5
+        YEAR = 6
+
     """Represents a mesh timeserie.
 
     Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)

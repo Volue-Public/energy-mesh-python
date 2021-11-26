@@ -2,7 +2,7 @@ import asyncio
 import uuid
 from datetime import datetime
 from volue.mesh.aio import Connection
-from volue.mesh.tests.test_utilities.utilities import eagle_wind
+from volue.mesh.tests.test_utilities.utilities import test_timeseries_entry
 from volue.mesh.examples import _get_connection_info
 
 
@@ -14,8 +14,8 @@ async def read_timeseries_points_async(session: Connection.Session):
     end = datetime(2016, 5, 14)
 
     # Indicate that these two functions can be run concurrently
-    timskey = eagle_wind.timskey
-    guid = uuid.UUID(eagle_wind.guid)
+    timskey = test_timeseries_entry.timskey
+    guid = uuid.UUID(test_timeseries_entry.guid)
     timskey_timeseries, guid_timeseries = await asyncio.gather(
         session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey),
         session.read_timeseries_points(start_time=start, end_time=end, guid=guid)
