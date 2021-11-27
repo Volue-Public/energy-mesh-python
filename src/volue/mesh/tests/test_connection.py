@@ -1,7 +1,7 @@
 from volue.mesh import Connection, Timeseries, from_proto_guid
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_data_2, get_timeseries_data_1, \
+from volue.mesh.tests.test_utilities.utilities import get_timeseries_entry_2, get_timeseries_entry_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2
 import grpc
 import pytest
@@ -14,7 +14,7 @@ def test_read_timeseries_points():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
+        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_entry_2()
         try:
             test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": ts_entry.timeseries_key}
             test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": ts_entry.id}
@@ -35,7 +35,7 @@ def test_write_timeseries_points():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
+        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_entry_2()
         timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, full_name=full_name)
         try:
             session.write_timeseries_points(timeseries)
@@ -51,7 +51,7 @@ def test_write_timeseries_points():
 def test_get_timeseries_entry():
     """Check that timeseries entry data can be retreived"""
 
-    ts_entry, full_name = get_timeseries_data_1()
+    ts_entry, full_name = get_timeseries_entry_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
@@ -79,7 +79,6 @@ def test_get_timeseries_entry():
 def test_update_timeseries_entry():
     """Check that timeseries entry data can be updated"""
 
-    ts_entry, full_name = get_timeseries_data_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
@@ -90,6 +89,8 @@ def test_update_timeseries_entry():
 
     with connection.create_session() as session:
         try:
+            ts_entry, full_name = get_timeseries_entry_1()
+
             test_ids = [{"path": full_name}, {"uuid_id": ts_entry.id}, {"timskey": ts_entry.timeseries_key}]
             test_new_path = {"new_path": new_path}
             test_new_curve_type = {"new_curve_type": new_curve_type}
@@ -165,3 +166,36 @@ def test_read_timeseries_attribute():
                 assert reply_entry.unit_of_measurement == expected_entry.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not get timeseries attribute {e}")
+
+
+@pytest.mark.database
+def test_update_timeseries_attribute():
+    """Check that timeseries attribute data can be updated"""
+
+    ts_attribute, full_name = get_timeseries_attribute_1()
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    # TODO: insert something here
+    new_local_expression = "something"
+    ts_entry, _ = get_timeseries_entry_1()
+    new_timeseries_entry_id = None #  mesh_pb2.TimeseriesEntryId(timeseries_key=ts_entry.timeseries_key)
+
+    with connection.create_session() as session:
+        try:
+            test_ids = [{"path": full_name}, {"uuid_id": ts_attribute.id}]
+            test_new_local_expression = {"new_local_expression": new_local_expression}
+            test_new_timeseries_entry_id = {"new_timeseries_entry_id": new_timeseries_entry_id}
+            test_cases = []
+            for test_id in test_ids:
+                test_cases.extend(
+                    [{**test_id, **test_new_local_expression},
+                     {**test_id, **test_new_timeseries_entry_id},
+                     {**test_id, **test_new_local_expression, **test_new_timeseries_entry_id}]
+                )
+            for test_case in test_cases:
+                session.update_timeseries_attribute(**test_case)
+                # TODO: assert something
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not update timeseries attribute: {e}")

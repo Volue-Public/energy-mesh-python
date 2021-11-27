@@ -107,6 +107,7 @@ class Connection:
                 ))
             return reply
 
+        # TODO: is this a good name???
         def update_timeseries_resource_info(self,
                                             uuid_id: uuid.UUID = None,
                                             path: str = None,
@@ -146,12 +147,12 @@ class Connection:
                                      uuid_id: uuid.UUID = None,
                                      path: str = None
                                      ) -> mesh_pb2.TimeseriesAttribute:
-            """ Specify mode and either uuid_id or path to a timeseries attribute. Only one or uuid_id and path is needed"""
+            """
+            Specify model and either uuid_id or path to a timeseries attribute. Only one or uuid_id and path is needed
+            """
             attribute_id = mesh_pb2.AttributeId()
-
             if uuid_id is not None:
                 attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
-
             elif path is not None:
                 attribute_id.path = path
 
@@ -164,9 +165,42 @@ class Connection:
             )
             return reply
 
-        def update_timeseries_attribute(self):
-            # TODO
-            pass
+        # TODO: Remove mesh_pb2 from interface
+        def update_timeseries_attribute(self,
+                                        uuid_id: uuid.UUID = None,
+                                        path: str = None,
+                                        new_local_expression: str = None,
+                                        new_timeseries_entry_id: mesh_pb2.TimeseriesEntryId = None,
+                                        ) -> None:
+            """
+            Specify either uuid_id or path to a timeseries attribute you want to update. Only one or uuid_id and path is needed
+
+            Specify a new entry and/or a new local expression for the attribute.
+            Raises:
+                grpc.RpcError:
+            """
+            attribute_id = mesh_pb2.AttributeId()
+            if uuid_id is not None:
+                attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
+            elif path is not None:
+                attribute_id.path = path
+
+            paths = []
+            if new_timeseries_entry_id is not None:
+                paths.append("new_timeseries_entry_id")
+            if new_local_expression is not None:
+                paths.append("new_local_expression")
+            field_mask = protobuf.field_mask_pb2.FieldMask(paths=paths)
+
+            self.mesh_service.UpdateTimeseriesAttribute(
+                mesh_pb2.UpdateTimeseriesAttributeRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    attribute_id=attribute_id,
+                    field_mask=field_mask,
+                    new_timeseries_entry_id=new_timeseries_entry_id,
+                    new_local_expression=new_local_expression
+                )
+            )
 
         def search_for_timeseries_attribute(self):
             # TODO

@@ -1,4 +1,4 @@
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_data_2
+from volue.mesh.tests.test_utilities.utilities import get_timeseries_entry_2
 from volue.mesh._common import *
 from volue.mesh import Connection, to_proto_guid
 from volue.mesh.proto import mesh_pb2
@@ -16,7 +16,7 @@ def test_read_timeseries_response_is_valid():
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
     with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
+        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_entry_2()
         try:
             reply = session.mesh_service.ReadTimeseries(
                 mesh_pb2.ReadTimeseriesRequest(

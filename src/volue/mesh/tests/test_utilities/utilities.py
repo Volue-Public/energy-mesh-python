@@ -101,7 +101,7 @@ def run_example_script(path, address, port, secure_connection):
     assert exit_code == 0, f"{stderrdata} {stdoutdata}"
 
 
-def get_timeseries_data_1():
+def get_timeseries_entry_1():
     """
     A resource.
     Kind: Timeseries
@@ -122,7 +122,7 @@ def get_timeseries_data_1():
     return timeseries_entry, full_name
 
 
-def get_timeseries_data_2():
+def get_timeseries_entry_2():
     """
     A resource.
     Kind: Timeseries
@@ -167,7 +167,7 @@ def get_timeseries_attribute_1():
 
 def get_timeseries_attribute_2():
     """Timeseries attribute with calculation expression and a timeseries entry"""
-    timeseries_entry, _ = get_timeseries_data_1()
+    timeseries_entry, _ = get_timeseries_entry_1()
     timeseries_attribute = TestTimeseriesAttribute(
         id=uuid.UUID("4001d450-61ec-4789-85cd-3d6d17d8f845"),
         path="/POMAtest01/Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot.LastAuctionAvailable",
