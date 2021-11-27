@@ -179,7 +179,7 @@ def test_update_timeseries_attribute():
     # TODO: insert something here
     new_local_expression = "something"
     ts_entry, _ = get_timeseries_entry_1()
-    new_timeseries_entry_id = None #  mesh_pb2.TimeseriesEntryId(timeseries_key=ts_entry.timeseries_key)
+    new_timeseries_entry_id = None  # mesh_pb2.TimeseriesEntryId(timeseries_key=ts_entry.timeseries_key)
 
     with connection.create_session() as session:
         try:

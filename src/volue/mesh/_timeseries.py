@@ -7,6 +7,11 @@ from volue.mesh.proto import mesh_pb2
 from enum import Enum
 
 
+# TODO: Add wrapper structure for TimeseriesEntry info
+# TODO: Add wrapper structure for TimeseriesAttribute info
+# TODO: Add wrapper for grpc.RpcError -> _error.py with defined errors???
+# TODO: clean up interface to not expose grpc or protobuf structures
+
 class Timeseries:
 
     class Curve(Enum):
@@ -38,8 +43,10 @@ class Timeseries:
         pa.field('value', pa.float64()),
     ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?
 
+    # TODO: is a pyarrow.Table the right structure to save the data in? Should we use batches???
     def __init__(self,
                  table: pyarrow.Table = None,
+                 # TODO change this to: Timeseries.Resolution
                  resolution: mesh_pb2.Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,

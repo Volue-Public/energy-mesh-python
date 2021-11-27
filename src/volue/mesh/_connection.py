@@ -86,6 +86,7 @@ class Connection:
                     timeseries=to_proto_timeseries(timeserie)
                 ))
 
+        # TODO: wrap mesh_pb2.TimeseriesEntry
         def get_timeseries_resource_info(self,
                                          uuid_id: uuid.UUID = None,
                                          path: str = None,
@@ -113,8 +114,8 @@ class Connection:
                                             path: str = None,
                                             timskey: int = None,
                                             new_path: str = None,
-                                            new_curve_type=None,
-                                            new_unit_of_measurement=None
+                                            new_curve_type: Timeseries.Curve = None,
+                                            new_unit_of_measurement: str = None
                                             ) -> None:
             """
             Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
@@ -142,6 +143,7 @@ class Connection:
 
             self.mesh_service.UpdateTimeseriesEntry(request)
 
+        # TODO: wrap  mesh_pb2.TimeseriesAttribute
         def get_timeseries_attribute(self,
                                      model: str = None,
                                      uuid_id: uuid.UUID = None,
@@ -203,7 +205,6 @@ class Connection:
             )
 
         def search_for_timeseries_attribute(self):
-            # TODO
             pass
 
         def rollback(self) -> None:
@@ -265,19 +266,21 @@ class Connection:
 
         self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
 
-    def get_version(self):
+    # TODO wrap mesh_pb2.VersionInfo
+    def get_version(self) -> mesh_pb2.VersionInfo:
         """
         """
         response = self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
         return response
 
-    def get_user_identity(self):
+    # TODO wrap mesh_pb2.UserIdentity
+    def get_user_identity(self) -> mesh_pb2.UserIdentity:
         """
         """
         response = self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         return response
 
-    def revoke_access_token(self):
+    def revoke_access_token(self) -> None:
         """
         Revokes Mesh token if no longer needed.
 
@@ -298,7 +301,7 @@ class Connection:
         """
         return self.connect_to_session(session_id=None)
 
-    def connect_to_session(self, session_id: uuid):
+    def connect_to_session(self, session_id: uuid) -> Optional[Session]:
         """
         """
         return self.Session(self.mesh_service, session_id)
