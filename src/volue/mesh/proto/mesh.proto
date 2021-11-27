@@ -11,7 +11,7 @@ package volue.mesh.v1alpha;
 
 // Mesh server service
 // -------------------------------
-// The Mesh service is a api for interacting with a running Mesh server, also called just Mesh.
+// The Mesh service is an API for interacting with a running Mesh server, also called just Mesh.
 //
 //
 // Authentication
@@ -33,7 +33,7 @@ package volue.mesh.v1alpha;
 //
 service MeshService {
 
-  // Get the mesh servers version information
+  // Get the Mesh server version information
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
   // Authenticate using Kerberos
@@ -58,33 +58,33 @@ service MeshService {
 
   // Sessions
   // -------------------------------
-  // To work with data inside a mesh server you need to create a workspace which
-  // is called a session. Here you can have changes and calcualtions pending which
-  // woun't be visible to other users of the mesh server until you commit them.
+  // To work with data inside a Mesh server you need to create a workspace which
+  // is called a session. Here you can have changes and calculations pending which
+  // won't be visible to other users of the Mesh server until you commit them.
   //
 
-  // Start a Mesh session on the server, return the id of the session
+  // Start a Mesh session on the server, return the id of the session.
   rpc StartSession(google.protobuf.Empty) returns (Guid) {}
 
-  // Close a session on the Mesh server
+  // Close a session on the Mesh server.
   rpc EndSession(Guid) returns (google.protobuf.Empty) {}
 
-  // Commit changes in a server session to permantent storage
+  // Commit changes in a server session to permanent storage.
   rpc Commit(Guid) returns (google.protobuf.Empty) {}
 
-  // Rollback changes that are in the servers session but not in the database yet
+  // Rollback changes that are in the server's session but not in the database yet.
   rpc Rollback(Guid) returns (google.protobuf.Empty) {}
 
   // Timeseries
   // -------------------------------
   // In its simplest form a timeseries is just a table of timestamps, flags and values.
   // Timeseries can be organized and generated in different ways.
-  // Some timeseries are retreived 'as is' from the database where they are stored, while others
-  // a generated using calculations which can be based on a arbitary set of data.
-  // Timeseries can be organized in a structure which resemples catalogs and thus can have a
+  // Some timeseries are retrieved 'as is' from the database where they are stored, while others
+  // are generated using calculations which can be based on an arbitrary set of data.
+  // Timeseries can be organized in a structure which resembles catalogs and thus can have a
   // path associated with it. They can also potentially be linked to a node in a Mesh model and with
   // that get a path that represents the nodes position in the Mesh model. More meta data like unit
-  // of meassurement, curve type and so on can also be linked to the timeseries.
+  // of measurement, curve type and so on can also be linked to the timeseries.
 
   // Get a series of timestamps, flags and values.
   rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
@@ -93,8 +93,8 @@ service MeshService {
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (google.protobuf.Empty) {}
 
   // Search for a timeseries entry
-  // Not implementing right now
-  //rpc SearchTimeseriesEntity(SearchTimeseriesEntryRequest) returns (Timeseries) {}
+  // NOT IMPLEMENTED
+  // rpc SearchTimeseriesEntity(SearchTimeseriesEntryRequest) returns (Timeseries) {}
 
   // Other timeseries might not be connected to a mesh model at all, but instead be organized
   // in some sort of catalog structure.
@@ -105,18 +105,18 @@ service MeshService {
   rpc UpdateTimeseriesEntry(UpdateTimeseriesEntryRequest) returns (google.protobuf.Empty) {}
 
   // Search for entry meta data connected to a timeseries
-// Not implementing right now, query language does not cover resources right now, need to think some more on this
-//  rpc SearchTimeseriesEntries(SearchTimeseriesEntriesRequest) returns (stream TimeseriesEntry) {}
+  // NOT IMPLEMENTED
+  // rpc SearchTimeseriesEntries(SearchTimeseriesEntriesRequest) returns (stream TimeseriesEntry) {}
 
   // When a timeseries, either calculated or not, is linked to a node in a Mesh model,
-  // some meta data associated with the Mesh model node can be retreived.
+  // some meta data associated with the Mesh model node can be retrieved.
   // This kind of metadata is called attribute data.
   rpc GetTimeseriesAttribute(GetTimeseriesAttributeRequest) returns (TimeseriesAttribute) {}
 
   // Update timeseries attribute meta data
   rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (google.protobuf.Empty) {}
 
-  // Search for time series attributes in a given physical model
+  // Search for timeseries attributes in a given physical model
   //
   // The search uses Mesh's query language, which is the same language that's
   // used in for example Nimbus.
@@ -168,20 +168,20 @@ message Guid {
   bytes bytes_le = 1;
 }
 
-// An time interval for specifying a section of a timeseries
+// Time interval for specifying a section of a timeseries.
 message UtcInterval {
   google.protobuf.Timestamp start_time = 1;
   google.protobuf.Timestamp end_time = 2;
 }
 
-// Contains one or more ways to uniquely identify an object
+// Contains one or more ways to uniquely identify an object.
 message ObjectId {
   optional int64 timskey = 1;
   optional Guid guid = 2;
   optional string full_name = 3;
 }
 
-// Version information for the mesh server
+// Version information for the Mesh server.
 message VersionInfo {
   string version = 1;
   string name = 2;
@@ -216,16 +216,16 @@ message Curve {
 }
 
 message Timeseries {
-  // Guid of the timeseries entry
+  // GUID of the timeseries entry.
   ObjectId object_id = 1;
 
-  // The spacing of the
+  // Resolution/spacing for this timeseries.
   Resolution resolution = 2;
 
-  // The time interval for this timeseries
+  // Time interval for this timeseries.
   UtcInterval interval = 3;
 
-  // Data contains an apache arrow byte representation of the timeseries points.
+  // Data contains an Apache Arrow byte representation of the timeseries points.
   // Stored in the following columns:
   // 0: (uint64) utc_time
   // 1: (uint32) flags
@@ -255,7 +255,7 @@ message Transformation {
 }
 
 message ReadTimeseriesRequest {
-  // The server session id (a guid)
+  // The server session id (GUID)
   Guid session_id = 1;
 
   // The search can return more than one valid object.
@@ -298,7 +298,7 @@ message AttributeId {
 }
 
 message GetTimeseriesAttributeRequest {
-  // Guid of the Mesh servers session in which changes should be applied
+  // GUID of the Mesh server's session in which changes should be applied.
   Guid session_id = 1;
   //
   string model = 2;
@@ -307,21 +307,21 @@ message GetTimeseriesAttributeRequest {
 }
 
 message TimeseriesEntryId {
-  // A timeseries entry can be uniquely identified by on the follwing
+  // A timeseries entry can be uniquely identified by one the following:
   oneof id_oneof {
-    // Guid of the timeseries entry
+    // GUID of the timeseries entry.
     Guid guid = 1;
-    // Path associated with the entry
+    // Path associated with the entry.
     string path = 2;
-    // The timeseries key (timskey) of the timeseries
+    // The timeseries key (timskey) of the timeseries.
     int64 timeseries_key = 3;
   }
 }
 
 message GetTimeseriesEntryRequest {
-  // Guid of the Mesh servers session in which changes should be applied
+  // GUID of the Mesh server's session in which changes should be applied.
   Guid session_id = 1;
-  // Object for idenityfying a timeseries entry
+  // Object for identifying a timeseries entry.
   TimeseriesEntryId entry_id = 2;
 }
 
@@ -340,44 +340,50 @@ message TimeseriesEntry {
 
 message TimeseriesAttribute {
   Guid id = 1;
-  // Model path
+  // Model path.
   string path = 2;
-  // A time series entry if the attribute refers to one.
+  // A timeseries entry if the attribute refers to one.
   TimeseriesEntry entry = 3;
-  // A local calculation expression if one is set on this physical node
+  // A local calculation expression if one is set on this physical node.
   string local_expression = 4;
-  // Template expression, inherited from the repo type if set
+  // Template expression, inherited from the repo type if set.
   string template_expression = 5;
 }
 
 message UpdateTimeseriesEntryRequest {
-  // Guid of the Mesh servers session in which changes should be applied
+  // GUID of the Mesh server's session in which changes should be applied.
   Guid session_id = 1;
   //
   TimeseriesEntryId entry_id = 2;
 
-  // All the following are optional
+  // Only paths set in the field mask are updated.
+  // (except complex types like Curve, those could be checked if are set)
+  google.protobuf.FieldMask field_mask = 3;
+
+  // All the following are optional.
   // -------
-  // New path for entry
-  string new_path = 3;
-  // New curve type of the tiemseries
-  Curve new_curve_type = 4;
-  // New unit of meassurement for the timeseries
-  string new_unit_of_measurement = 5;
+  // New path for entry.
+  string new_path = 4;
+  // New curve type of the timeseries.
+  Curve new_curve_type = 5;
+  // New unit of measurement for the timeseries.
+  string new_unit_of_measurement = 6;
 }
 
 message UpdateTimeseriesAttributeRequest {
-  // guid of the Mesh servers session in which changes should be applied
+  // GUID of the Mesh server's session in which changes should be applied.
   Guid session_id = 1;
 
   AttributeId attribute_id = 2;
 
   // Only paths set in the field mask are updated.
+  // (except complex types like TimeseriesEntryId, those could be checked if are set)
   google.protobuf.FieldMask field_mask = 3;
   TimeseriesEntryId new_timeseries_entry_id = 4;
   string new_local_expression = 5;
 }
 
+// NOT IMPLEMENTED/USED
 message SearchTimeseriesEntryRequest {
     Guid session_id = 1;
     string start_object_path = 2;
@@ -400,6 +406,7 @@ message SearchTimeseriesAttributesRequest {
     string query = 5;
 }
 
+// NOT IMPLEMENTED/USED
 message SearchTimeseriesEntriesRequest {
     Guid session_id = 1;
 }

@@ -1,14 +1,10 @@
 from volue.mesh._common import *
-from volue.mesh import Connection, Timeseries, to_proto_guid
-from volue.mesh.aio import Connection as AsyncConnection
+from volue.mesh import Timeseries, to_proto_guid
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
-import volue.mesh.tests.test_utilities.server_config as sc
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_data_2
 from datetime import datetime
 import pyarrow as pa
 import uuid
-import grpc
 import pytest
 
 
@@ -74,88 +70,6 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[0] == table[0]
     assert original_timeseries.arrow_table[1] == table[1]
     assert original_timeseries.arrow_table[2] == table[2]
-
-@pytest.mark.database
-def test_read_timeseries_attribute():
-    """Check that timeseries attribute data can be retreived"""
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    with connection.create_session() as session:
-        try:
-            attribute_uuid = uuid.UUID("6671cc8b-df4b-4b20-912e-103cce1bc3cf")
-            attribute = session.get_timeseries_attribute(
-                model='PowerSystem',
-                path="Model/PowerSystem/Mesh.MeshCountry/Norway.Income"
-                #uuid_id=attribute_uuid
-            )
-            assert attribute is not None
-            assert from_proto_guid(attribute.id) == attribute_uuid
-            assert attribute.path == "Model/PowerSystem/Mesh.MeshCountry/Norway.Income"
-            assert not attribute.HasField('entry')
-            assert attribute.local_expression == ""
-            assert attribute.template_expression == "##=@t('CountryHydroPower.Income')\n"
-
-            attribute_with_entry_id=uuid.UUID("4001d450-61ec-4789-85cd-3d6d17d8f845")
-            attribute_with_entry = session.get_timeseries_attribute(
-                model='PowerSystem',
-                path="Model/POMAtest01/Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot.LastAuctionAvailable"
-                #uuid_id=attribute_with_entry_id
-            )
-            assert attribute_with_entry is not None
-            assert from_proto_guid(attribute_with_entry.id) == attribute_with_entry_id
-            assert attribute_with_entry.path == "Model/POMAtest01/Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot.LastAuctionAvailable"
-            assert attribute_with_entry.HasField('entry')
-            assert from_proto_guid(attribute_with_entry.entry.id) == uuid.UUID("5a261b5a-b4ef-4820-bead-b11577562e37")
-            assert attribute_with_entry.entry.timeseries_key == 377702
-            assert attribute_with_entry.entry.path == "/Customer_case/A2A/Market/IT_ElSpot/"
-            assert attribute_with_entry.entry.temporary is False
-            assert attribute_with_entry.entry.curveType.type == mesh_pb2.Curve.STAIRCASESTARTOFSTEP
-            assert attribute_with_entry.entry.delta_t.type == mesh_pb2.Resolution.HOUR
-            assert attribute_with_entry.entry.unit_of_measurement == "euro per mega watt hours"
-            assert attribute_with_entry.local_expression == ""
-            assert attribute_with_entry.template_expression == ""
-        except grpc.RpcError:
-            pytest.fail("Could not get timeseries attribute")
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
-async def test_write_timeseries_points_using_timskey_async():
-    """Check that timeseries can be written to the server using timskey."""
-
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
-    ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
-    timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, timskey=ts_entry.timeseries_key)
-
-    async with connection.create_session() as session:
-        try:
-            await session.write_timeseries_points(
-                timeserie=timeseries
-            )
-        except grpc.RpcError:
-            pytest.fail("Could not write timeseries points")
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
-async def test_read_timeseries_points_using_timskey_async():
-    """Check that timeseries can be retrieved using timskey."""
-
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
-    async with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_data_2()
-        try:
-            timeseries = await session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=ts_entry.timeseries_key)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 312
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
 
 if __name__ == '__main__':
     pytest.main()

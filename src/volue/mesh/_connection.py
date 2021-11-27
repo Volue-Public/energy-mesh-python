@@ -90,7 +90,7 @@ class Connection:
                                          uuid_id: uuid.UUID = None,
                                          path: str = None,
                                          timskey: int = None,
-                                         ):
+                                         ) -> mesh_pb2.TimeseriesEntry:
             """ """
             entry_id = mesh_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -112,19 +112,13 @@ class Connection:
                                             path: str = None,
                                             timskey: int = None,
                                             new_path: str = None,
-                                            new_curve_type = None,
-                                            new_unit_of_measurement = None
-                                            ):
+                                            new_curve_type=None,
+                                            new_unit_of_measurement=None
+                                            ) -> None:
             """
             Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
 
-            Args:
-                uuid_id:
-                path:
-                timskey:
-
-            Returns:
-
+            Specify which ever of the new_ fields you want to update.
             """
             entry_id = mesh_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -138,15 +132,21 @@ class Connection:
                 session_id=to_proto_guid(self.session_id),
                 entry_id=entry_id
             )
-            reply = self.mesh_service.UpdateTimeseriesEntry(request)
-            return reply
+            if new_path is not None:
+                request.new_path = new_path
+            if new_curve_type is not None:
+                request.new_curve_type.CopyFrom(to_proto_curve_type(new_curve_type))
+            if new_unit_of_measurement is not None:
+                request.new_unit_of_measurement = new_unit_of_measurement
+
+            self.mesh_service.UpdateTimeseriesEntry(request)
 
         def get_timeseries_attribute(self,
-                                     uuid_id: uuid.UUID = None,
                                      model: str = None,
+                                     uuid_id: uuid.UUID = None,
                                      path: str = None
-                                     ):
-            """ """
+                                     ) -> mesh_pb2.TimeseriesAttribute:
+            """ Specify mode and either uuid_id or path to a timeseries attribute. Only one or uuid_id and path is needed"""
             attribute_id = mesh_pb2.AttributeId()
 
             if uuid_id is not None:
@@ -165,9 +165,11 @@ class Connection:
             return reply
 
         def update_timeseries_attribute(self):
+            # TODO
             pass
 
         def search_for_timeseries_attribute(self):
+            # TODO
             pass
 
         def rollback(self) -> None:

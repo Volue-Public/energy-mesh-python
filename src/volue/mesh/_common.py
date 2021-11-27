@@ -29,6 +29,20 @@ def from_proto_guid(guid: mesh_pb2.Guid) -> uuid.UUID:
     return uuid.UUID(bytes_le=guid.bytes_le)
 
 
+def to_proto_curve_type(curve: Timeseries.Curve) -> mesh_pb2.Curve:
+    proto_curve = mesh_pb2.Curve()
+    proto_curve.type = mesh_pb2.Curve.UNKNOWN
+    if curve == Timeseries.Curve.PIECEWISELINEAR:
+        proto_curve.type = mesh_pb2.Curve.PIECEWISELINEAR
+    elif curve == Timeseries.Curve.STAIRCASE:
+        proto_curve.type = mesh_pb2.Curve.STAIRCASE
+    elif curve == Timeseries.Curve.STAIRCASESTARTOFSTEP:
+        proto_curve.type = mesh_pb2.Curve.STAIRCASESTARTOFSTEP
+
+    return proto_curve
+
+
+
 def to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> mesh_pb2.UtcInterval:
     """Convert to protobuf UtcInterval."""
     start = timestamp_pb2.Timestamp()
