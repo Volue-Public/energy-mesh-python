@@ -174,7 +174,7 @@ def get_timeseries_attribute_2():
         entry=timeseries_entry,
         local_expression="",
         template_expression="",
-        model='PowerSystem',
+        model='POMAtest01',
         silo="Model"
     )
     full_path = timeseries_attribute.silo + timeseries_attribute.path

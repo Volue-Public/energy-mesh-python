@@ -100,6 +100,8 @@ class Connection:
                 entry_id.guid.CopyFrom(to_proto_guid(uuid_id))
             elif path is not None:
                 entry_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id, timeseries_key or path.")
 
             reply = self.mesh_service.GetTimeseriesEntry(
                 mesh_pb2.GetTimeseriesEntryRequest(
@@ -129,6 +131,8 @@ class Connection:
                 entry_id.guid.CopyFrom(to_proto_guid(uuid_id))
             elif path is not None:
                 entry_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id, timeseries_key or path.")
 
             request = mesh_pb2.UpdateTimeseriesEntryRequest(
                 session_id=to_proto_guid(self.session_id),
@@ -157,6 +161,8 @@ class Connection:
                 attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
             elif path is not None:
                 attribute_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id or path.")
 
             reply = self.mesh_service.GetTimeseriesAttribute(
                 mesh_pb2.GetTimeseriesAttributeRequest(
@@ -175,7 +181,7 @@ class Connection:
                                         new_timeseries_entry_id: mesh_pb2.TimeseriesEntryId = None,
                                         ) -> None:
             """
-            Specify either uuid_id or path to a timeseries attribute you want to update. Only one or uuid_id and path is needed
+            Specify either uuid_id or path to a timeseries attribute you want to update. Only one or uuid_id and path is needed.
 
             Specify a new entry and/or a new local expression for the attribute.
             Raises:
@@ -186,6 +192,8 @@ class Connection:
                 attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
             elif path is not None:
                 attribute_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id or path.")
 
             paths = []
             if new_timeseries_entry_id is not None:
@@ -204,8 +212,41 @@ class Connection:
                 )
             )
 
-        def search_for_timeseries_attribute(self):
-            pass
+        def search_for_timeseries_attribute(self,
+                                            model: str,
+                                            query: str,
+                                            start_object_path: str = None,
+                                            start_object_guid: uuid.UUID = None
+                                            ) -> [mesh_pb2.TimeseriesAttribute]:
+            """
+            Specify a model, a query using mesh query language and start object to start the search from,
+            using either a path or a guid.
+            Args:
+                model:
+                query:
+                start_object_path:
+                start_object_guid:
+
+            Returns:
+
+            """
+            request = mesh_pb2.SearchTimeseriesAttributesRequest(
+                session_id=to_proto_guid(self.session_id),
+                model_name=model,
+                query=query
+            )
+            if start_object_path is not None:
+                request.start_object_path = start_object_path
+            elif start_object_guid is not None:
+                request.start_object_guid.CopyFrom(to_proto_guid(start_object_guid))
+            else:
+                raise Exception("Need to specify either start_object_path or start_object_guid")
+
+            replies = self.mesh_service.SearchTimeseriesAttributes(request)
+            ret_val = []
+            for reply in replies:
+                ret_val.append(reply)
+            return ret_val
 
         def rollback(self) -> None:
             """

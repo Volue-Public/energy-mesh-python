@@ -1,4 +1,6 @@
-from volue.mesh import Connection, Timeseries, from_proto_guid
+import uuid
+
+from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_curve_type
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_entry_2, get_timeseries_entry_1, \
@@ -197,5 +199,49 @@ def test_update_timeseries_attribute():
                 session.update_timeseries_attribute(**test_case)
                 # TODO: assert something
 
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not update timeseries attribute: {e}")
+
+
+@pytest.mark.database
+def test_search_timeseries_attribute():
+    """Check that timeseries attribute data can be searched for"""
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    ts_attribute, full_name = get_timeseries_attribute_2()
+
+    query = "{*}.LastAuctionAvailable"
+    start_object_path = "Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot"
+    start_object_guid = uuid.UUID("0e9ec8da-31b6-4aec-a369-1ccb95e56df2")
+
+    with connection.create_session() as session:
+        try:
+            test_case_1 = {"model": ts_attribute.model,
+                           "query": query,
+                           "start_object_path": start_object_path}
+            test_case_2 = {"model": ts_attribute.model,
+                           "query": query,
+                           "start_object_guid": start_object_guid}
+            test_cases = [test_case_1, test_case_2]
+            for test_case in test_cases:
+                reply = session.search_for_timeseries_attribute(**test_case)
+                assert reply is not None
+                assert len(reply) == 1
+                for attribute in reply:
+                    assert from_proto_guid(attribute.id) == ts_attribute.id
+                    assert attribute.path == ts_attribute.silo+ts_attribute.path
+                    assert attribute.local_expression == ts_attribute.local_expression
+                    assert attribute.template_expression == ts_attribute.template_expression
+                    assert attribute.HasField('entry')
+                    entry = attribute.entry
+                    assert from_proto_guid(entry.id) == ts_attribute.entry.id
+                    assert entry.timeseries_key == ts_attribute.entry.timeseries_key
+                    assert entry.path == ts_attribute.entry.path
+                    assert entry.temporary == ts_attribute.entry.temporary
+                    assert entry.curveType == to_proto_curve_type(ts_attribute.entry.curve)
+                    assert entry.delta_t.type == ts_attribute.entry.resolution.value
+                    assert entry.unit_of_measurement == ts_attribute.entry.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")
