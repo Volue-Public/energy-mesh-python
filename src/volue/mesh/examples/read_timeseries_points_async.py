@@ -15,10 +15,10 @@ async def read_timeseries_points_async(session: Connection.Session):
 
     # Indicate that these two functions can be run concurrently
     timskey = test_timeseries_entry.timskey
-    guid = uuid.UUID(test_timeseries_entry.guid)
+    uuid_id = uuid.UUID(test_timeseries_entry.guid)
     timskey_timeseries, guid_timeseries = await asyncio.gather(
         session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey),
-        session.read_timeseries_points(start_time=start, end_time=end, guid=guid)
+        session.read_timeseries_points(start_time=start, end_time=end, uuid_id=uuid_id)
     )
     for ts in timskey_timeseries:
         print(f"Timskey timeseries contains {ts.number_of_points}.")

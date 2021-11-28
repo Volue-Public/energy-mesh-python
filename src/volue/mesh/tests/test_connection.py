@@ -245,3 +245,7 @@ def test_search_timeseries_attribute():
                     assert entry.unit_of_measurement == ts_attribute.entry.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")
+
+
+if __name__ == '__main__':
+    pytest.main()
