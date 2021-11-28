@@ -51,7 +51,7 @@ def test_write_timeseries_points():
 
 @pytest.mark.database
 def test_get_timeseries_entry():
-    """Check that timeseries entry data can be retreived"""
+    """Check that timeseries entry data can be retrieved"""
 
     ts_entry, full_name = get_timeseries_entry_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -118,7 +118,7 @@ def test_update_timeseries_entry():
 
 @pytest.mark.database
 def test_read_timeseries_attribute():
-    """Check that timeseries attribute data can be retreived"""
+    """Check that timeseries attribute data can be retrieved"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)

@@ -54,7 +54,7 @@ async def test_write_timeseries_points_async():
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_timeseries_entry_async():
-    """Check that timeseries entry data can be retreived"""
+    """Check that timeseries entry data can be retrieved"""
 
     ts_entry, full_name = get_timeseries_entry_1()
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -123,7 +123,7 @@ async def test_update_timeseries_entry_async():
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_read_timeseries_attribute_async():
-    """Check that timeseries attribute data can be retreived"""
+    """Check that timeseries attribute data can be retrieved"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
