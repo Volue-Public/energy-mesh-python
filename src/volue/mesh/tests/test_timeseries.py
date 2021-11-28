@@ -32,7 +32,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     end = datetime(year=2016, month=12, day=25, hour=0, minute=0, second=0)  # 25/12/2016 00:00:00
 
     arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
+        pa.array([1462060800000, 1462064400000, 1462068000000]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 0.0, 0.0])]
 

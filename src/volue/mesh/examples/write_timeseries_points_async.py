@@ -15,8 +15,12 @@ async def write_timeseries_points(session: Connection.Session):
     end = datetime(2016, 5, 14)
 
     # Defining the data we want to write
+    # Mesh data is organized as an Arrow table with the following schema:
+    # utc_time - [pa.date64] as a UTC Unix timestamp expressed in milliseconds
+    # flags - [pa.uint32]
+    # value - [pa.float64]
     arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
+        pa.array([1462060800000, 1462064400000, 1462068000000]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
