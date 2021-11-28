@@ -55,7 +55,7 @@ jobs:
         id: download-mesh-server
         with:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-          MESH_SERVICE_TAG: 'meshservice_v2.0.0'
+          MESH_SERVICE_TAG: 'meshservice_v2.2.0'
 
       - name: Run server dependent tests
         if: ${{ success() }}
