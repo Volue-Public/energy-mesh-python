@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
@@ -167,12 +168,15 @@
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
@@ -181,6 +185,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="glossary.html#term-API"><strong>API</strong></a>
+</li>
+      <li><a href="api.html#volue.mesh.Authentication">Authentication (class in volue.mesh)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.KerberosTokenIterator">Authentication.KerberosTokenIterator (class in volue.mesh)</a>
+</li>
+      <li><a href="api.html#volue.mesh.Authentication.Parameters">Authentication.Parameters (class in volue.mesh)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -237,10 +249,24 @@
       <li><a href="glossary.html#term-db"><strong>db</strong></a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.delete_access_token">delete_access_token() (volue.mesh.Authentication method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.get_token">get_token() (volue.mesh.Authentication method)</a>
+</li>
+      <li><a href="api.html#volue.mesh.aio.Connection.get_user_identity">get_user_identity() (volue.mesh.aio.Connection method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.Connection.get_user_identity">(volue.mesh.Connection method)</a>
+</li>
+      </ul></li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.examples.connect_asynchronously.get_version">get_version() (in module volue.mesh.examples.connect_asynchronously)</a>
 
@@ -252,6 +278,14 @@
         <li><a href="api.html#volue.mesh.Connection.get_version">(volue.mesh.Connection method)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.is_token_valid">is_token_valid() (volue.mesh.Authentication method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -336,6 +370,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.KerberosTokenIterator.process_response">process_response() (volue.mesh.Authentication.KerberosTokenIterator method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -347,10 +389,16 @@
         <li><a href="api.html#volue.mesh.Connection.Session.read_timeseries_points">(volue.mesh.Connection.Session method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.examples.read_timeseries_points_async.read_timeseries_points_async">read_timeseries_points_async() (in module volue.mesh.examples.read_timeseries_points_async)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.aio.Connection.revoke_access_token">revoke_access_token() (volue.mesh.aio.Connection method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.Connection.revoke_access_token">(volue.mesh.Connection method)</a>
+</li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.aio.Connection.Session.rollback">rollback() (volue.mesh.aio.Connection.Session method)</a>
 
       <ul>
@@ -367,8 +415,12 @@
 </li>
       <li><a href="glossary.html#term-SDK"><strong>SDK</strong></a>
 </li>
+      <li><a href="api.html#volue.mesh.Authentication.Parameters.service_principal">service_principal (volue.mesh.Authentication.Parameters attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received">signal_final_response_received() (volue.mesh.Authentication.KerberosTokenIterator method)</a>
+</li>
       <li><a href="api.html#volue.mesh.examples.connect_asynchronously.start_and_end_session">start_and_end_session() (in module volue.mesh.examples.connect_asynchronously)</a>
 
       <ul>
@@ -412,6 +464,14 @@
       <li><a href="api.html#volue.mesh.tests.test_timeseries.test_write_timeseries_points_using_timskey_async">test_write_timeseries_points_using_timskey_async() (in module volue.mesh.tests.test_timeseries)</a>
 </li>
       <li><a href="api.html#volue.mesh.Timeseries">Timeseries (class in volue.mesh)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Authentication.Parameters.user_principal">user_principal (volue.mesh.Authentication.Parameters attribute)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Authentication &mdash; volue.mesh 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="prev" title="Tests" href="tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#service-principal">Service Principal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mesh-token">Mesh token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Authentication</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/authentication.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="authentication">
+<h1>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h1>
+<p>The Mesh Python SDK supports user authentication/authorization feature. Because every user that is authenticated by Mesh server is also authorized to access all APIs exposed from Mesh gRPC, we will refer to it by just <strong>authentication</strong>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Authentication is done using the Kerberos protocol towards Active Directory. Client and server must be in <em>line of sight</em> of the Key Distribution Center (KDC).</p>
+</div>
+<p>If the Mesh server is configured to use authentication then only authenticated users may work with Mesh. Authenticated users obtain Mesh access tokens that are used for each call to Mesh server to prove the user’s identity.
+Only two methods can be called by without authentication:</p>
+<ul class="simple">
+<li><p>AuthenticateKerberos - used for getting authorization token</p></li>
+<li><p>GetVersion - for getting Mesh server version</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For security reasons authentication requires secure connection with Mesh server (using TLS). It is needed for encrypting tokens.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>To use authentication the user has to provide authentication parameters when creating a <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection or a <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection:.
+Authentication parameters consist of:</p>
+<ul class="simple">
+<li><p>Service Principal Name (SPN)</p></li>
+<li><p>User Principal Name (UPN)</p></li>
+</ul>
+<p>Depending on the system configuration providing only <em>service principal</em> may be enough for successful authentication. This is usually the case when authenticating as the currently logged in Windows user.</p>
+<p>Instantiation of a Connection object with authentication parameters will perform the authentication process and obtain a Mesh token that will be used for each subsequent call to the Mesh server.</p>
+</div>
+<div class="section" id="service-principal">
+<h2>Service Principal<a class="headerlink" href="#service-principal" title="Permalink to this headline">¶</a></h2>
+<p>If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;HOST/hostname.ad.examplecompany.com&#39;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;ad</span><span class="se">\\</span><span class="s1">user.name&#39;</span>
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sa">r</span><span class="s1">&#39;ad\user.name&#39;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Winkerberos converts service principal name if provided in RFC-2078 format. ‘&#64;’ is converted to ‘/’ if there is no ‘/’ character in the service principal name.</p>
+<p>E.g.: <strong>service&#64;hostname</strong></p>
+<p>Would be converted to: <strong>service/hostname</strong></p>
+</div>
+</div>
+<div class="section" id="mesh-token">
+<h2>Mesh token<a class="headerlink" href="#mesh-token" title="Permalink to this headline">¶</a></h2>
+<p>The Mesh access token is valid for 1 hour, after this time it will expire and a new token needs to be obtained from the Mesh server. This is done automatically and the user does not need to take any additional action.</p>
+<p>The user may optionally revoke the Mesh access token. This may useful when a user finishes working with Mesh and wants to make sure it will not be used by anyone else for the time until it expires.</p>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Configure the Mesh server to use authentication and TLS:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Configuration</span><span class="p">.</span><span class="nx">Network</span><span class="p">.</span><span class="nx">GRPC</span><span class="p">.</span><span class="nx">SetEnabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">Configuration</span><span class="p">.</span><span class="nx">Network</span><span class="p">.</span><span class="nx">GRPC</span><span class="p">.</span><span class="nx">EnableKerberos</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">Configuration</span><span class="p">.</span><span class="nx">Network</span><span class="p">.</span><span class="nx">GRPC</span><span class="p">.</span><span class="nx">EnableTLS</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p>Find out correct <em>service principal</em> for Mesh server you want to connect to.</p></li>
+<li><p>Create a <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection or a <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection: object with authentication parameters.</p></li>
+</ol>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Please refer to example <em>authorization.py</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
+
+    <span class="c1"># If Mesh gRPC server is running as a service user,</span>
+    <span class="c1"># for example LocalSystem, NetworkService or a user account</span>
+    <span class="c1"># with a registered service principal name then it is enough</span>
+    <span class="c1"># to provide hostname as service principal, e.g.:</span>
+    <span class="c1">#   &#39;HOST/hostname.ad.examplecompany.com&#39;</span>
+    <span class="c1"># If Mesh gRPC server is running as a user account without</span>
+    <span class="c1"># registered service principal name then it is enough to provide</span>
+    <span class="c1"># user account name running Mesh server as service principal, e.g.:</span>
+    <span class="c1">#   &#39;ad\\user.name&#39; or r&#39;ad\user.name&#39;</span>
+    <span class="c1"># Note: winkerberos converts service principal name if provided in</span>
+    <span class="c1">#       RFC-2078 format. &#39;@&#39; is converted to &#39;/&#39; if there is no &#39;/&#39;</span>
+    <span class="c1">#       character in the service principal name. E.g.:</span>
+    <span class="c1">#           service@hostname</span>
+    <span class="c1">#       Would be converted to:</span>
+    <span class="c1">#           service/hostname</span>
+    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="s1">&#39;HOST/example.companyad.company.com&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+    <span class="c1"># revoke no longer used token</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example: &quot;</span><span class="p">)</span>
+    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+    <span class="c1"># revoke no longer used token</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">())</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># This will authenticate Python client (receive authorization token from Mesh),</span>
+    <span class="c1"># then send gRPC request that requires authorization (e.g.: GetUserIdentity)</span>
+    <span class="c1"># and print the result. If your user name info is printed, you have successfully</span>
+    <span class="c1"># communicated with the server.</span>
+    <span class="c1">#</span>
+    <span class="c1"># This requires Mesh server to be running with enabled TLS and Kerberos options:</span>
+    <span class="c1"># GRPC.EnableTLS(true)</span>
+    <span class="c1"># GRPC.EnableKerberos(true)</span>
+
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tests.html" class="btn btn-neutral float-left" title="Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

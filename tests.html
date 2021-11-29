@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="next" title="Authentication" href="authentication.html" />
     <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
@@ -94,6 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#run-tests">Run tests</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
@@ -185,12 +186,11 @@
 <h2>Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
 <p>Pytest allows you to <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/usage.html#specifying-which-tests-to-run">specify</a> which tests to run.</p>
 <p>Tests can be run from a python script and are grouped to indicate what they do. Available marks are:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">&quot;database: Tests that require a running mesh server with a database cache with data. Warning: might read/write to db.&quot;</span><span class="p">,</span>
     <span class="s">&quot;server: Tests that require a running mesh server.&quot;</span><span class="p">,</span>
     <span class="s">&quot;examples: Tests that run the examples.&quot;</span><span class="p">,</span>
-    <span class="s">&quot;unittest: Tests that do NOT require a mesh server.&quot;</span><span class="p">,</span>
-<span class="p">]</span>
 </pre></div>
 </div>
 <p>Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/output.html">pytests documentation</a>.</p>
@@ -233,7 +233,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="authentication.html" class="btn btn-neutral float-right" title="Authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
 </ul>
@@ -161,7 +162,7 @@
             
   <h1>Source code for volue.mesh.aio._connection</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">from_proto_guid</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">Credentials</span><span class="p">,</span> <span class="n">to_protobuf_utcinterval</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">from_proto_guid</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">Credentials</span><span class="p">,</span> <span class="n">to_protobuf_utcinterval</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2</span><span class="p">,</span> <span class="n">mesh_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
@@ -180,7 +181,10 @@
 <span class="sd">        https://docs.python.org/3/reference/compound_stmts.html#async-with</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mesh_service</span><span class="p">:</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">mesh_service</span><span class="p">:</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span>
+            <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">            Args:</span>
@@ -248,12 +252,10 @@
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
                     <span class="n">interval</span><span class="o">=</span><span class="n">to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+                <span class="p">))</span>
             <span class="k">return</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span>  <span class="bp">self</span><span class="p">,</span> <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            |coro|</span>
 <span class="sd">            Raises:</span>
@@ -264,8 +266,7 @@
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">object_id</span><span class="o">=</span><span class="n">to_proto_object_id</span><span class="p">(</span><span class="n">timeserie</span><span class="p">),</span>
                     <span class="n">timeseries</span><span class="o">=</span><span class="n">to_proto_timeseries</span><span class="p">(</span><span class="n">timeserie</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">)</span></div>
+                <span class="p">))</span></div>
 
 <div class="viewcode-block" id="Connection.Session.rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.rollback">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -285,21 +286,48 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                 <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># There are 3 possible async connection types:</span>
+        <span class="c1"># - insecure (without TLS)</span>
+        <span class="c1"># - with TLS</span>
+        <span class="c1"># - with TLS and Kerberos authentication</span>
+        <span class="c1">#   (authentication requires TLS for encrypting auth tokens)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">secure_connection</span><span class="p">:</span>
+            <span class="c1"># insecure connection (without TLS)</span>
             <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span>
                 <span class="n">target</span><span class="o">=</span><span class="n">target</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">credentials</span><span class="p">:</span> <span class="n">Credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">()</span>
-            <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
-                <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span>
-            <span class="p">)</span>
+
+            <span class="c1"># authentication requires TLS</span>
+            <span class="k">if</span> <span class="n">authentication_parameters</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">Authentication</span><span class="p">(</span>
+                    <span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">)</span>
+                <span class="n">call_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">metadata_call_credentials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
+
+                <span class="n">composite_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
+                    <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">,</span>
+                    <span class="n">call_credentials</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="c1"># connection using TLS and Kerberos authentication</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                    <span class="n">credentials</span><span class="o">=</span><span class="n">composite_credentials</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># connection using TLS (no Kerberos authentication)</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                    <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span>
+                <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
@@ -309,6 +337,27 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Connection.get_user_identity"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.get_user_identity">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_user_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        |coro|</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetUserIdentity</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="Connection.revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.revoke_access_token">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Revokes Mesh token if no longer needed.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: authentication not configured</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Authentication not configured for this connection&#39;</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RevokeAccessToken</span><span class="p">(</span>
+            <span class="n">protobuf</span><span class="o">.</span><span class="n">wrappers_pb2</span><span class="o">.</span><span class="n">StringValue</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">delete_access_token</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Connection.create_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.create_session">[docs]</a>    <span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>

@@ -40,6 +40,7 @@ If you're having trouble, these resources might help.
    quickstart
    examples
    tests
+   authentication
    faq
    glossary
 
