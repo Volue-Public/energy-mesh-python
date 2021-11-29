@@ -8,7 +8,25 @@ def main():
     # Change to fit your server
     sc.DefaultServerConfig.ADDRESS = "localhost"
     sc.DefaultServerConfig.PORT = 50051
+    # Note: authentication tests require secure connection
     sc.DefaultServerConfig.SECURE_CONNECTION = False
+
+    # If Mesh gRPC server is running as a service user,
+    # for example LocalSystem, NetworkService or a user account
+    # with a registered service principal name then it is enough
+    # to provide hostname as service principal, e.g.:
+    #   'HOST/hostname.ad.examplecompany.com'
+    # If Mesh gRPC server is running as a user account without
+    # registered service principal name then it is enough to provide
+    # user account name running Mesh server as service principal, e.g.:
+    #   'ad\\user.name' or r'ad\user.name'
+    # Note: winkerberos converts service principal name if provided in
+    #       RFC-2078 format. '@' is converted to '/' if there is no '/'
+    #       character in the service principal name. E.g.:
+    #           service@hostname
+    #       Would be converted to:
+    #           service/hostname
+    sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME = 'HOST/example.companyad.company.com'
 
     # Run individual tests:
     test_timeseries.test_can_create_empty_timeserie()
