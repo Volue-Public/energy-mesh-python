@@ -33,7 +33,7 @@ class Timeseries:
 
     Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
     Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
-    Flags are ??? <TODO>
+    Flags
     Value is the actual data for the given timestamp.
     """
 
@@ -41,9 +41,8 @@ class Timeseries:
         pa.field('utc_time', pa.date64()),
         pa.field('flags', pa.uint32()),
         pa.field('value', pa.float64()),
-    ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?
+    ])  # The pyarrow schema used for timeseries points.
 
-    # TODO: is a pyarrow.Table the right structure to save the data in? Should we use batches???
     def __init__(self,
                  table: pyarrow.Table = None,
                  # TODO change this to: Timeseries.Resolution

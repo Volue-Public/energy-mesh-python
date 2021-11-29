@@ -126,7 +126,6 @@ class Connection:
                 ))
             return reply
 
-        # TODO: is this a good name???
         async def update_timeseries_resource_info(self,
                                                   uuid_id: uuid.UUID = None,
                                                   path: str = None,
