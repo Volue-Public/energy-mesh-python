@@ -24,7 +24,7 @@ jobs:
         path: gh-pages
 
     - name: Install Linux Kerberos dependency
-      run: apt-get libkrb5-dev
+      run: apt-get install -y libkrb5-dev
 
     - name: Install Poetry
       run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
