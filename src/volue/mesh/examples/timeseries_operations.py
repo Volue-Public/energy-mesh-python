@@ -22,6 +22,7 @@ def main(address, port, secure_connection):
             timeseries_attributes = session.search_for_timeseries_attribute(model_name, query, start_object_path)
         except grpc.RpcError as e:
             print(f"Could not find timeseries attribute: {e}")
+            return
 
         if timeseries_attributes is None:
             print("No such timeseries attribute in the given model/database")
