@@ -1,14 +1,10 @@
 from volue.mesh._common import *
-from volue.mesh import Connection, Timeseries, to_proto_guid
-from volue.mesh.aio import Connection as AsyncConnection
+from volue.mesh import Timeseries, to_proto_guid
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
-import volue.mesh.tests.test_utilities.server_config as sc
-from volue.mesh.tests.test_utilities.utilities import get_test_data
 from datetime import datetime
 import pyarrow as pa
 import uuid
-import grpc
 import pytest
 
 
@@ -36,7 +32,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     end = datetime(year=2016, month=12, day=25, hour=0, minute=0, second=0)  # 25/12/2016 00:00:00
 
     arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
+        pa.array([1462060800000, 1462064400000, 1462068000000]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 0.0, 0.0])]
 
@@ -74,85 +70,6 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[0] == table[0]
     assert original_timeseries.arrow_table[1] == table[1]
     assert original_timeseries.arrow_table[2] == table[2]
-
-
-@pytest.mark.database
-def test_read_timeseries_points_using_timskey():
-    """Check that timeseries can be retrieved using timskey."""
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    with connection.create_session() as session:
-        end_time, start_time, table, timskey, uuid_id = get_test_data()
-        try:
-            timeseries = session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=timskey)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 312
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
-
-
-@pytest.mark.database
-def test_read_timeseries_points_using_timskey():
-    """Check that timeseries can be retrieved using timskey."""
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-    with connection.create_session() as session:
-        end_time, start_time, table, timskey, uuid_id = get_test_data()
-        try:
-            timeseries = session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=timskey)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 312
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
-async def test_write_timeseries_points_using_timskey_async():
-    """Check that timeseries can be written to the server using timskey."""
-
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
-    end_time, start_time, table, timskey, uuid_id = get_test_data()
-    timeseries = Timeseries(table=table, start_time=start_time, end_time=end_time, timskey=timskey)
-
-    async with connection.create_session() as session:
-        try:
-            await session.write_timeseries_points(
-                timeserie=timeseries
-            )
-        except grpc.RpcError:
-            pytest.fail("Could not write timeseries points")
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
-async def test_read_timeseries_points_using_timskey_async():
-    """Check that timeseries can be retrieved using timskey."""
-
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
-    async with connection.create_session() as session:
-        end_time, start_time, table, timskey, uuid_id = get_test_data()
-        try:
-            timeseries = await session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=timskey)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 312
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
-
-
 
 if __name__ == '__main__':
     pytest.main()

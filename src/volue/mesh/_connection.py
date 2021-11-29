@@ -18,10 +18,9 @@ class Connection:
         """
 
         def __init__(
-            self,
-            mesh_service: mesh_pb2_grpc.MeshServiceStub,
-            session_id: uuid = None):
-
+                self,
+                mesh_service: mesh_pb2_grpc.MeshServiceStub,
+                session_id: uuid = None):
             self.session_id: uuid = session_id
             self.mesh_service: mesh_pb2_grpc.MeshServiceStub = mesh_service
 
@@ -87,6 +86,168 @@ class Connection:
                     timeseries=to_proto_timeseries(timeserie)
                 ))
 
+        # TODO: wrap mesh_pb2.TimeseriesEntry
+        def get_timeseries_resource_info(self,
+                                         uuid_id: uuid.UUID = None,
+                                         path: str = None,
+                                         timskey: int = None,
+                                         ) -> mesh_pb2.TimeseriesEntry:
+            """ """
+            entry_id = mesh_pb2.TimeseriesEntryId()
+            if timskey is not None:
+                entry_id.timeseries_key = timskey
+            elif uuid_id is not None:
+                entry_id.guid.CopyFrom(to_proto_guid(uuid_id))
+            elif path is not None:
+                entry_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id, timeseries_key or path.")
+
+            reply = self.mesh_service.GetTimeseriesEntry(
+                mesh_pb2.GetTimeseriesEntryRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    entry_id=entry_id
+                ))
+            return reply
+
+        # TODO: is this a good name???
+        def update_timeseries_resource_info(self,
+                                            uuid_id: uuid.UUID = None,
+                                            path: str = None,
+                                            timskey: int = None,
+                                            new_path: str = None,
+                                            new_curve_type: Timeseries.Curve = None,
+                                            new_unit_of_measurement: str = None
+                                            ) -> None:
+            """
+            Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
+
+            Specify which ever of the new_ fields you want to update.
+            """
+            entry_id = mesh_pb2.TimeseriesEntryId()
+            if timskey is not None:
+                entry_id.timeseries_key = timskey
+            elif uuid_id is not None:
+                entry_id.guid.CopyFrom(to_proto_guid(uuid_id))
+            elif path is not None:
+                entry_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id, timeseries_key or path.")
+
+            request = mesh_pb2.UpdateTimeseriesEntryRequest(
+                session_id=to_proto_guid(self.session_id),
+                entry_id=entry_id
+            )
+            if new_path is not None:
+                request.new_path = new_path
+            if new_curve_type is not None:
+                request.new_curve_type.CopyFrom(to_proto_curve_type(new_curve_type))
+            if new_unit_of_measurement is not None:
+                request.new_unit_of_measurement = new_unit_of_measurement
+
+            self.mesh_service.UpdateTimeseriesEntry(request)
+
+        # TODO: wrap  mesh_pb2.TimeseriesAttribute
+        def get_timeseries_attribute(self,
+                                     model: str = None,
+                                     uuid_id: uuid.UUID = None,
+                                     path: str = None
+                                     ) -> mesh_pb2.TimeseriesAttribute:
+            """
+            Specify model and either uuid_id or path to a timeseries attribute. Only one or uuid_id and path is needed
+            """
+            attribute_id = mesh_pb2.AttributeId()
+            if uuid_id is not None:
+                attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
+            elif path is not None:
+                attribute_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id or path.")
+
+            reply = self.mesh_service.GetTimeseriesAttribute(
+                mesh_pb2.GetTimeseriesAttributeRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    model=model,
+                    attribute_id=attribute_id
+                )
+            )
+            return reply
+
+        # TODO: Remove mesh_pb2 from interface
+        def update_timeseries_attribute(self,
+                                        uuid_id: uuid.UUID = None,
+                                        path: str = None,
+                                        new_local_expression: str = None,
+                                        new_timeseries_entry_id: mesh_pb2.TimeseriesEntryId = None,
+                                        ) -> None:
+            """
+            Specify either uuid_id or path to a timeseries attribute you want to update. Only one or uuid_id and path is needed.
+
+            Specify a new entry and/or a new local expression for the attribute.
+            Raises:
+                grpc.RpcError:
+            """
+            attribute_id = mesh_pb2.AttributeId()
+            if uuid_id is not None:
+                attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
+            elif path is not None:
+                attribute_id.path = path
+            else:
+                raise Exception("Need to specify either uuid_id or path.")
+
+            paths = []
+            if new_timeseries_entry_id is not None:
+                paths.append("new_timeseries_entry_id")
+            if new_local_expression is not None:
+                paths.append("new_local_expression")
+            field_mask = protobuf.field_mask_pb2.FieldMask(paths=paths)
+
+            self.mesh_service.UpdateTimeseriesAttribute(
+                mesh_pb2.UpdateTimeseriesAttributeRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    attribute_id=attribute_id,
+                    field_mask=field_mask,
+                    new_timeseries_entry_id=new_timeseries_entry_id,
+                    new_local_expression=new_local_expression
+                )
+            )
+
+        def search_for_timeseries_attribute(self,
+                                            model: str,
+                                            query: str,
+                                            start_object_path: str = None,
+                                            start_object_guid: uuid.UUID = None
+                                            ) -> [mesh_pb2.TimeseriesAttribute]:
+            """
+            Specify a model, a query using mesh query language and start object to start the search from,
+            using either a path or a guid.
+            Args:
+                model:
+                query:
+                start_object_path:
+                start_object_guid:
+
+            Returns:
+
+            """
+            request = mesh_pb2.SearchTimeseriesAttributesRequest(
+                session_id=to_proto_guid(self.session_id),
+                model_name=model,
+                query=query
+            )
+            if start_object_path is not None:
+                request.start_object_path = start_object_path
+            elif start_object_guid is not None:
+                request.start_object_guid.CopyFrom(to_proto_guid(start_object_guid))
+            else:
+                raise Exception("Need to specify either start_object_path or start_object_guid")
+
+            replies = self.mesh_service.SearchTimeseriesAttributes(request)
+            ret_val = []
+            for reply in replies:
+                ret_val.append(reply)
+            return ret_val
+
         def rollback(self) -> None:
             """
             Raises:
@@ -100,7 +261,6 @@ class Connection:
                 grpc.RpcError:
             """
             self.mesh_service.Commit(to_proto_guid(self.session_id))
-
 
     def __init__(self, host, port, secure_connection: bool,
                  authentication_parameters: Authentication.Parameters = None):
@@ -147,19 +307,21 @@ class Connection:
 
         self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
 
-    def get_version(self):
+    # TODO wrap mesh_pb2.VersionInfo
+    def get_version(self) -> mesh_pb2.VersionInfo:
         """
         """
         response = self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
         return response
 
-    def get_user_identity(self):
+    # TODO wrap mesh_pb2.UserIdentity
+    def get_user_identity(self) -> mesh_pb2.UserIdentity:
         """
         """
         response = self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         return response
 
-    def revoke_access_token(self):
+    def revoke_access_token(self) -> None:
         """
         Revokes Mesh token if no longer needed.
 
@@ -180,7 +342,7 @@ class Connection:
         """
         return self.connect_to_session(session_id=None)
 
-    def connect_to_session(self, session_id: uuid):
+    def connect_to_session(self, session_id: uuid) -> Optional[Session]:
         """
         """
         return self.Session(self.mesh_service, session_id)

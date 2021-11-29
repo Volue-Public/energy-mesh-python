@@ -4,14 +4,36 @@ import pyarrow
 import pyarrow as pa
 from datetime import datetime
 from volue.mesh.proto import mesh_pb2
+from enum import Enum
 
+
+# TODO: Add wrapper structure for TimeseriesEntry info
+# TODO: Add wrapper structure for TimeseriesAttribute info
+# TODO: Add wrapper for grpc.RpcError -> _error.py with defined errors???
+# TODO: clean up interface to not expose grpc or protobuf structures
 
 class Timeseries:
+
+    class Curve(Enum):
+        UNKNOWN = 0
+        STAIRCASESTARTOFSTEP = 1
+        PIECEWISELINEAR = 2
+        STAIRCASE = 3
+
+    class Resolution(Enum):
+        BREAKPOINT = 0
+        MIN15 = 1
+        HOUR = 2
+        DAY = 3
+        WEEK = 4
+        MONTH = 5
+        YEAR = 6
+
     """Represents a mesh timeserie.
 
     Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
     Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
-    Flags are ??? <TODO>
+    Flags
     Value is the actual data for the given timestamp.
     """
 
@@ -19,10 +41,11 @@ class Timeseries:
         pa.field('utc_time', pa.date64()),
         pa.field('flags', pa.uint32()),
         pa.field('value', pa.float64()),
-    ])  # The pyarrow schema used for timeseries points. TODO how to get this into documentation?
+    ])  # The pyarrow schema used for timeseries points.
 
     def __init__(self,
                  table: pyarrow.Table = None,
+                 # TODO change this to: Timeseries.Resolution
                  resolution: mesh_pb2.Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,

@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from volue.mesh import Connection
 from volue.mesh.examples import _get_connection_info
-from volue.mesh.tests.test_utilities.utilities import eagle_wind
+from volue.mesh.tests.test_utilities.utilities import test_timeseries_entry
 
 
 def read_timeseries_points(session: Connection.Session):
@@ -13,13 +13,13 @@ def read_timeseries_points(session: Connection.Session):
     end = datetime(2016, 5, 14)
 
     # Send request to read timeseries based on timskey
-    timskey = eagle_wind.timskey
+    timskey = test_timeseries_entry.timskey
     timeseries = session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey)
     for timeserie in timeseries:
         print(f"Read {timeserie.number_of_points} points")
 
     # Send request to read timeseries based on guid
-    uuid_id = uuid.UUID(eagle_wind.guid)
+    uuid_id = uuid.UUID(test_timeseries_entry.guid)
     timeseries = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=uuid_id)
     for timeserie in timeseries:
         print(f"Read {timeserie.number_of_points} points")

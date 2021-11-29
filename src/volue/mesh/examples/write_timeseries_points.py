@@ -1,7 +1,7 @@
 import pyarrow as pa
 from datetime import datetime
 from volue.mesh import Connection, Timeseries
-from volue.mesh.tests.test_utilities.utilities import eagle_wind
+from volue.mesh.tests.test_utilities.utilities import test_timeseries_entry
 from volue.mesh.examples import _get_connection_info
 
 
@@ -13,12 +13,16 @@ def write_timeseries_points(session: Connection.Session):
     end = datetime(2016, 5, 14)
 
     # Defining the data we want to write
+    # Mesh data is organized as an Arrow table with the following schema:
+    # utc_time - [pa.date64] as a UTC Unix timestamp expressed in milliseconds
+    # flags - [pa.uint32]
+    # value - [pa.float64]
     arrays = [
-        pa.array([1462060800, 1462064400, 1462068000]),
+        pa.array([1462060800000, 1462064400000, 1462068000000]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timeseries = Timeseries(table=table, start_time=start, end_time=end, timskey=eagle_wind.timskey)
+    timeseries = Timeseries(table=table, start_time=start, end_time=end, timskey=test_timeseries_entry.timskey)
 
     # Send request to write timeseries based on timskey
     session.write_timeseries_points(
