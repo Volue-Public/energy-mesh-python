@@ -186,13 +186,13 @@
 <h2>Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
 <p>Pytest allows you to <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/usage.html#specifying-which-tests-to-run">specify</a> which tests to run.</p>
 <p>Tests can be run from a python script and are grouped to indicate what they do. Available marks are:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">&quot;database: Tests that require a running mesh server with a database cache with data. Warning: might read/write to db.&quot;</span><span class="p">,</span>
     <span class="s">&quot;server: Tests that require a running mesh server.&quot;</span><span class="p">,</span>
     <span class="s">&quot;examples: Tests that run the examples.&quot;</span><span class="p">,</span>
     <span class="s">&quot;unittest: Tests that do NOT require a mesh server.&quot;</span><span class="p">,</span>
     <span class="s">&quot;authentication: Tests that require a running mesh server with Kerberos authentication.&quot;</span><span class="p">,</span>
-<span class="p">]</span>
 </pre></div>
 </div>
 <p>Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/output.html">pytests documentation</a>.</p>
