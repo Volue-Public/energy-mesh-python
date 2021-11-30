@@ -1,5 +1,3 @@
-import pandas as pd
-
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Connection, Timeseries
 from volue.mesh.examples import _get_connection_info
