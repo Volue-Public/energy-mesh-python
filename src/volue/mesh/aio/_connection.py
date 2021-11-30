@@ -2,7 +2,7 @@ from volue.mesh._common import *
 from volue.mesh import Authentication, Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 import grpc
 import uuid
