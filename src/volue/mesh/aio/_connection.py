@@ -2,7 +2,7 @@ from volue.mesh._common import *
 from volue.mesh import Authentication, Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 import grpc
 import uuid
@@ -137,7 +137,7 @@ class Connection:
             """
             Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
 
-            Specify which ever of the new_ fields you want to update.
+            Specify which ever of the new_* fields you want to update.
             """
             entry_id = mesh_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -232,7 +232,7 @@ class Connection:
                                                   query: str,
                                                   start_object_path: str = None,
                                                   start_object_guid: uuid.UUID = None
-                                                  ) -> [mesh_pb2.TimeseriesAttribute]:
+                                                  ) -> List[mesh_pb2.TimeseriesAttribute]:
             """
             Specify a model, a query using mesh query language and start object to start the search from,
             using either a path or a guid.
