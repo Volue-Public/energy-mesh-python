@@ -27,7 +27,7 @@ volue.mesh.examples
 .. automodule:: volue.mesh.examples.read_timeseries_points_async
 .. automodule:: volue.mesh.examples.get_version
 .. automodule:: volue.mesh.examples.quickstart
-.. automodule:: volue.mesh.examples.timeseries_with_numpy_and_pandas
+.. automodule:: volue.mesh.examples.timeseries_operations
 
 
 volue.mesh.tests

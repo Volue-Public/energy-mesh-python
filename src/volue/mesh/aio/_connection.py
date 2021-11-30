@@ -137,7 +137,7 @@ class Connection:
             """
             Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
 
-            Specify which ever of the new_ fields you want to update.
+            Specify which ever of the new_* fields you want to update.
             """
             entry_id = mesh_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -232,7 +232,7 @@ class Connection:
                                                   query: str,
                                                   start_object_path: str = None,
                                                   start_object_guid: uuid.UUID = None
-                                                  ) -> [mesh_pb2.TimeseriesAttribute]:
+                                                  ) -> []:
             """
             Specify a model, a query using mesh query language and start object to start the search from,
             using either a path or a guid.
