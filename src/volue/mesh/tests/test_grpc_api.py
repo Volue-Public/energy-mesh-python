@@ -7,8 +7,7 @@ from google.protobuf.pyext._message import RepeatedCompositeContainer
 import grpc
 import pytest
 
-
-@pytest.mark.server
+@pytest.mark.database
 def test_read_timeseries_response_is_valid():
     """Check that the read timeseries response is as expected."""
 
