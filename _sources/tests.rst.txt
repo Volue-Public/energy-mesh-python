@@ -22,7 +22,7 @@ Tests can be run from a python script and are grouped to indicate what they do. 
 
 .. literalinclude:: ../../pyproject.toml
    :language: toml
-   :lines: 35-40
+   :lines: 37-43
 
 Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in `pytests documentation <https://docs.pytest.org/en/latest/how-to/output.html>`_.
 

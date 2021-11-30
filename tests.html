@@ -186,11 +186,13 @@
 <h2>Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h2>
 <p>Pytest allows you to <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/usage.html#specifying-which-tests-to-run">specify</a> which tests to run.</p>
 <p>Tests can be run from a python script and are grouped to indicate what they do. Available marks are:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[tool.pytest.ini_options]</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">&quot;database: Tests that require a running mesh server with a database cache with data. Warning: might read/write to db.&quot;</span><span class="p">,</span>
     <span class="s">&quot;server: Tests that require a running mesh server.&quot;</span><span class="p">,</span>
     <span class="s">&quot;examples: Tests that run the examples.&quot;</span><span class="p">,</span>
+    <span class="s">&quot;unittest: Tests that do NOT require a mesh server.&quot;</span><span class="p">,</span>
+    <span class="s">&quot;authentication: Tests that require a running mesh server with Kerberos authentication.&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 </pre></div>
 </div>
 <p>Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/output.html">pytests documentation</a>.</p>
@@ -204,7 +206,25 @@
     <span class="c1"># Change to fit your server</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span> <span class="o">=</span> <span class="mi">50051</span>
+    <span class="c1"># Note: authentication tests require secure connection</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># If Mesh gRPC server is running as a service user,</span>
+    <span class="c1"># for example LocalSystem, NetworkService or a user account</span>
+    <span class="c1"># with a registered service principal name then it is enough</span>
+    <span class="c1"># to provide hostname as service principal, e.g.:</span>
+    <span class="c1">#   &#39;HOST/hostname.ad.examplecompany.com&#39;</span>
+    <span class="c1"># If Mesh gRPC server is running as a user account without</span>
+    <span class="c1"># registered service principal name then it is enough to provide</span>
+    <span class="c1"># user account name running Mesh server as service principal, e.g.:</span>
+    <span class="c1">#   &#39;ad\\user.name&#39; or r&#39;ad\user.name&#39;</span>
+    <span class="c1"># Note: winkerberos converts service principal name if provided in</span>
+    <span class="c1">#       RFC-2078 format. &#39;@&#39; is converted to &#39;/&#39; if there is no &#39;/&#39;</span>
+    <span class="c1">#       character in the service principal name. E.g.:</span>
+    <span class="c1">#           service@hostname</span>
+    <span class="c1">#       Would be converted to:</span>
+    <span class="c1">#           service/hostname</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span> <span class="o">=</span> <span class="s1">&#39;HOST/example.companyad.company.com&#39;</span>
 
     <span class="c1"># Run individual tests:</span>
     <span class="n">test_timeseries</span><span class="o">.</span><span class="n">test_can_create_empty_timeserie</span><span class="p">()</span>
