@@ -2,7 +2,7 @@ from volue.mesh._common import *
 from volue.mesh import Authentication, Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
-from typing import Optional
+from typing import Optional, List
 from google import protobuf
 import datetime
 import grpc
@@ -217,7 +217,7 @@ class Connection:
                                             query: str,
                                             start_object_path: str = None,
                                             start_object_guid: uuid.UUID = None
-                                            ) -> []:
+                                            ) -> List[mesh_pb2.TimeseriesAttribute]:
             """
             Specify a model, a query using mesh query language and start object to start the search from,
             using either a path or a guid.

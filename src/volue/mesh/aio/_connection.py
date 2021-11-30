@@ -232,7 +232,7 @@ class Connection:
                                                   query: str,
                                                   start_object_path: str = None,
                                                   start_object_guid: uuid.UUID = None
-                                                  ) -> []:
+                                                  ) -> List[mesh_pb2.TimeseriesAttribute]:
             """
             Specify a model, a query using mesh query language and start object to start the search from,
             using either a path or a guid.
