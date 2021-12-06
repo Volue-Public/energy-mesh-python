@@ -59,6 +59,7 @@ jobs:
           sudo apt-get install --yes python3-distutils
           sudo apt-get install --yes python3-pip
           sudo apt-get install --yes libkrb5-dev
+          sudo apt-get install --yes python3-dev
           python${{ matrix.python-version }} -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python
           python${{ matrix.python-version }} -m pip install pytest pytest-asyncio
           python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m "unittest or server"
