@@ -1,6 +1,10 @@
 # Python SDK for Mesh
 
-[![GitHub pages](https://github.com/PowelAS/sme-mesh-python/actions/workflows/pages.yml/badge.svg)](https://github.com/PowelAS/sme-mesh-python/actions/workflows/pages.yml)  
+[![Development](https://github.com/PowelAS/sme-mesh-python/actions/workflows/development.yml/badge.svg?branch=master)](https://github.com/PowelAS/sme-mesh-python/actions/workflows/development.yml) [![Usage](https://github.com/PowelAS/sme-mesh-python/actions/workflows/usage.yml/badge.svg?branch=master)](https://github.com/PowelAS/sme-mesh-python/actions/workflows/usage.yml) [![GitHub pages](https://github.com/PowelAS/sme-mesh-python/actions/workflows/pages.yml/badge.svg)](https://github.com/PowelAS/sme-mesh-python/actions/workflows/pages.yml)  
+
+:blue_book: [Documentation](https://vigilant-eureka-e3845ca2.pages.github.io/)
+
+## How to use it
 
 `volue.mesh` is a **work in progress** Python library that can be used to
 communicate with Volue Energy's Mesh server.
@@ -19,10 +23,8 @@ Server: Volue Mesh Server 1.12.5.0-dev (2021-04-26 ae939aef)
 Client: 0.0.0
 ```
 
-[Online documentation](https://vigilant-eureka-e3845ca2.pages.github.io/)
 
-
-## Developing
+## How to do development
 
 This library uses [Poetry][] for development, installation, and packaging. To
 work with the repository you should [install poetry][poetry-install].
