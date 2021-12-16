@@ -1,9 +1,9 @@
 import uuid
 
-from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_curve_type
+from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_entry_2, get_timeseries_entry_1, \
+from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2
 import grpc
 import pytest
@@ -16,16 +16,16 @@ def test_read_timeseries_points():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_entry_2()
+        timeseries, start_time, end_time, modified_table, full_name = get_timeseries_2()
         try:
-            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": ts_entry.timeseries_key}
-            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": ts_entry.id}
+            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
+            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": timeseries.id}
             test_case_3 = {"start_time": start_time, "end_time": end_time, "full_name": full_name}
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
-                timeseries = session.read_timeseries_points(**test_case)
-                assert len(timeseries) == 1
-                assert timeseries[0].number_of_points == 312
+                reply_timeseries = session.read_timeseries_points(**test_case)
+                assert len(reply_timeseries) == 1
+                assert reply_timeseries[0].number_of_points == 32
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -37,7 +37,7 @@ def test_write_timeseries_points():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_entry_2()
+        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_2()
         timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, full_name=full_name)
         try:
             session.write_timeseries_points(timeseries)
@@ -50,31 +50,31 @@ def test_write_timeseries_points():
 
 
 @pytest.mark.database
-def test_get_timeseries_entry():
-    """Check that timeseries entry data can be retrieved"""
+def test_get_timeseries():
+    """Check that timeseries with entry data can be retrieved"""
 
-    ts_entry, full_name = get_timeseries_entry_1()
+    timeseries, full_name = get_timeseries_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
     with connection.create_session() as session:
         try:
             test_case_1 = {"path": full_name}
-            test_case_2 = {"uuid_id": ts_entry.id}
-            test_case_3 = {"timskey": ts_entry.timeseries_key}
+            test_case_2 = {"uuid_id": timeseries.id}
+            test_case_3 = {"timskey": timeseries.timeseries_key}
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
-                entry = session.get_timeseries_resource_info(**test_case)
-                assert from_proto_guid(entry.id) == ts_entry.id
-                assert entry.timeseries_key == ts_entry.timeseries_key
-                assert entry.path == ts_entry.path
-                assert not entry.temporary
-                assert entry.curveType.type == mesh_pb2.Curve.STAIRCASESTARTOFSTEP
-                assert entry.delta_t.type == mesh_pb2.Resolution.HOUR
-                assert entry.unit_of_measurement == ts_entry.unit_of_measurement
+                timeseries_info = session.get_timeseries_resource_info(**test_case)
+                assert from_proto_guid(timeseries_info.id) == timeseries.id
+                assert timeseries_info.timeseries_key == timeseries.timeseries_key
+                assert timeseries_info.path == timeseries.path
+                assert timeseries_info.temporary == timeseries.temporary
+                assert timeseries_info.curveType == to_proto_curve_type(timeseries.curve)
+                assert timeseries_info.delta_t.type == timeseries.resolution.value
+                assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
 
         except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries entry: {e}")
+            pytest.fail(f"Could not read timeseries: {e}")
 
 
 @pytest.mark.database
@@ -91,7 +91,7 @@ def test_update_timeseries_entry():
 
     with connection.create_session() as session:
         try:
-            ts_entry, full_name = get_timeseries_entry_1()
+            ts_entry, full_name = get_timeseries_1()
 
             test_ids = [{"path": full_name}, {"uuid_id": ts_entry.id}, {"timskey": ts_entry.timeseries_key}]
             test_new_path = {"new_path": new_path}
@@ -125,79 +125,128 @@ def test_read_timeseries_attribute():
 
     with connection.create_session() as session:
         try:
+            # Calculation
             # Testing attribute without an entry connected to it
             attribute_without_entry, full_path = get_timeseries_attribute_1()
             test_case_1 = {"model": attribute_without_entry.model,
                            "path": attribute_without_entry.silo + attribute_without_entry.path}
             test_case_2 = {"model": attribute_without_entry.model,
-                           "uuid_id": attribute_without_entry.id}
+                           "uuid_id": None}  # since it is generated we find it through the first test case
             test_cases = [test_case_1, test_case_2]
             for test_case in test_cases:
-                attribute_uuid = attribute_without_entry.id
                 reply = session.get_timeseries_attribute(**test_case)
                 assert reply is not None
-                assert from_proto_guid(reply.id) == attribute_uuid
+                assert from_proto_guid(reply.id) is not None
+                if "path" in test_case:
+                    test_case_2["uuid_id"] = reply.id
+                    attribute_without_entry.id = reply.id
                 assert reply.path == full_path
                 assert not reply.HasField('entry')
                 assert reply.local_expression == attribute_without_entry.local_expression
                 assert reply.template_expression == attribute_without_entry.template_expression
 
+            # Reference
             # Testing attribute with an entry connected to it
             attribute_with_entry, full_name = get_timeseries_attribute_2()
             test_case_1 = {"model": attribute_with_entry.model,
-                           "path": attribute_with_entry.silo + attribute_with_entry.path}
+                           "path": full_name}
             test_case_2 = {"model": attribute_with_entry.model,
-                           "uuid_id": attribute_with_entry.id}
+                           "uuid_id": None}  # since it is generated we find it through the first test case
             test_cases = [test_case_1, test_case_2]
             for test_case in test_cases:
                 reply = session.get_timeseries_attribute(**test_case)
                 assert reply is not None
-                assert from_proto_guid(reply.id) == attribute_with_entry.id
+                assert from_proto_guid(reply.id) is not None
+                if "path" in test_case:
+                    test_case_2["uuid_id"] = reply.id
+                    attribute_with_entry.id = reply.id
                 assert reply.path == full_name
                 assert reply.local_expression == attribute_with_entry.local_expression
                 assert reply.template_expression == attribute_with_entry.template_expression
                 assert reply.HasField('entry')
-                reply_entry = reply.entry
-                expected_entry = attribute_with_entry.entry
-                assert from_proto_guid(reply_entry.id) == expected_entry.id
-                assert reply_entry.timeseries_key == expected_entry.timeseries_key
-                assert reply_entry.path == expected_entry.path
-                assert reply_entry.temporary == expected_entry.temporary
-                assert reply_entry.curveType.type == expected_entry.curve.value
-                assert reply_entry.delta_t.type == expected_entry.resolution.value
-                assert reply_entry.unit_of_measurement == expected_entry.unit_of_measurement
+                reply_timeseries = reply.entry
+                expected_timeseries = attribute_with_entry.timeseries
+                assert from_proto_guid(reply_timeseries.id) == expected_timeseries.id
+                assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
+                assert reply_timeseries.path == expected_timeseries.path
+                assert reply_timeseries.temporary == expected_timeseries.temporary
+                assert reply_timeseries.curveType.type == expected_timeseries.curve.value
+                assert reply_timeseries.delta_t.type == expected_timeseries.resolution.value
+                assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not get timeseries attribute {e}")
 
 
 @pytest.mark.database
-def test_update_timeseries_attribute():
-    """Check that timeseries attribute data can be updated"""
+def test_update_timeseries_attribute_with_timeseriescalculation():
+    """Check that timeseries attribute data with a calculation can be updated"""
 
-    ts_attribute, full_name = get_timeseries_attribute_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
-    # TODO: insert something here
+    attribute, full_name = get_timeseries_attribute_1()
     new_local_expression = "something"
-    ts_entry, _ = get_timeseries_entry_1()
-    new_timeseries_entry_id = None  # mesh_pb2.TimeseriesEntryId(timeseries_key=ts_entry.timeseries_key)
 
     with connection.create_session() as session:
         try:
-            test_ids = [{"path": full_name}, {"uuid_id": ts_attribute.id}]
             test_new_local_expression = {"new_local_expression": new_local_expression}
-            test_new_timeseries_entry_id = {"new_timeseries_entry_id": new_timeseries_entry_id}
-            test_cases = []
-            for test_id in test_ids:
-                test_cases.extend(
-                    [{**test_id, **test_new_local_expression},
-                     {**test_id, **test_new_timeseries_entry_id},
-                     {**test_id, **test_new_local_expression, **test_new_timeseries_entry_id}]
-                )
+            test_case_1 = {"path": full_name, **test_new_local_expression}
+            test_case_2 = {"uuid_id": None,
+                           **test_new_local_expression}  # since it is generated we find it through the first test case
+            test_cases = [test_case_1, test_case_2]
+
             for test_case in test_cases:
+
                 session.update_timeseries_attribute(**test_case)
-                # TODO: assert something
+
+                updated_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
+                assert updated_attribute.path == full_name
+                assert updated_attribute.local_expression == new_local_expression
+
+                if "path" in test_case:
+                    test_case_2["uuid_id"] = updated_attribute.id
+
+                session.rollback()
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not update timeseries attribute: {e}")
+
+
+@pytest.mark.skip # Not working until server is updated
+@pytest.mark.database
+def test_update_timeseries_attribute_with_timeseriesreference():
+    """Check that timeseries attribute data with a reference can be updated"""
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    attribute, full_name = get_timeseries_attribute_2()
+    new_timeseries, _ = get_timeseries_1()
+    new_timeseries_entry = new_timeseries.entries[0]
+    new_timeseries_entry_id = mesh_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
+
+    with connection.create_session() as session:
+        try:
+            test_new_timeseries_entry_id = {"new_timeseries_entry_id": new_timeseries_entry_id}
+            test_case_1 = {"path": full_name, **test_new_timeseries_entry_id}
+            test_case_2 = {"uuid_id": None,
+                           **test_new_timeseries_entry_id}  # since it is generated we find it through the first test case
+            test_cases = [test_case_1, test_case_2]
+            for test_case in test_cases:
+                original_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
+                assert original_attribute.path == full_name
+                assert from_proto_guid(original_attribute.entry.id) == attribute.timeseries.entries[0].id
+
+                if "path" in test_case:
+                    test_case_2["uuid_id"] = original_attribute.id
+
+                session.update_timeseries_attribute(**test_case)
+
+                updated_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
+                assert updated_attribute.path == full_name
+                assert from_proto_guid(updated_attribute.entry.id) == new_timeseries_entry.id
+
+                session.rollback()
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")
@@ -212,9 +261,9 @@ def test_search_timeseries_attribute():
 
     ts_attribute, full_name = get_timeseries_attribute_2()
 
-    query = "{*}.LastAuctionAvailable"
-    start_object_path = "Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot"
-    start_object_guid = uuid.UUID("0e9ec8da-31b6-4aec-a369-1ccb95e56df2")
+    query = "{*}.TsRawAtt"
+    start_object_path = "ThermalComponent"
+    start_object_guid = uuid.UUID("0000000b-0001-0000-0000-000000000000")  # ThermalComponent
 
     with connection.create_session() as session:
         try:
@@ -228,21 +277,24 @@ def test_search_timeseries_attribute():
             for test_case in test_cases:
                 reply = session.search_for_timeseries_attribute(**test_case)
                 assert reply is not None
-                assert len(reply) == 1
-                for attribute in reply:
-                    assert from_proto_guid(attribute.id) == ts_attribute.id
-                    assert attribute.path == ts_attribute.silo+ts_attribute.path
-                    assert attribute.local_expression == ts_attribute.local_expression
-                    assert attribute.template_expression == ts_attribute.template_expression
-                    assert attribute.HasField('entry')
-                    entry = attribute.entry
-                    assert from_proto_guid(entry.id) == ts_attribute.entry.id
-                    assert entry.timeseries_key == ts_attribute.entry.timeseries_key
-                    assert entry.path == ts_attribute.entry.path
-                    assert entry.temporary == ts_attribute.entry.temporary
-                    assert entry.curveType == to_proto_curve_type(ts_attribute.entry.curve)
-                    assert entry.delta_t.type == ts_attribute.entry.resolution.value
-                    assert entry.unit_of_measurement == ts_attribute.entry.unit_of_measurement
+                assert len(reply) == 3
+                # One the results should be the one we are looking for
+                assert any(attribute.path == full_name for attribute in reply)
+                match = next((x for x in reply if x.path == full_name), None)
+                assert match is not None
+                assert from_proto_guid(match.id) is not None
+                assert match.local_expression == ts_attribute.local_expression
+                assert match.template_expression == ts_attribute.template_expression
+                assert match.HasField('entry')
+                reply_timeseries = match.entry
+                expected_timeseries = ts_attribute.timeseries
+                assert from_proto_guid(reply_timeseries.id) == expected_timeseries.id
+                assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
+                assert reply_timeseries.path == expected_timeseries.path
+                assert reply_timeseries.temporary == expected_timeseries.temporary
+                assert reply_timeseries.curveType == to_proto_curve_type(expected_timeseries.curve)
+                assert reply_timeseries.delta_t.type == expected_timeseries.resolution.value
+                assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")
 

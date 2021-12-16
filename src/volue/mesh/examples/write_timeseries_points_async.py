@@ -1,14 +1,16 @@
 import asyncio
 import pyarrow as pa
-from datetime import datetime
+from datetime import datetime, timezone
 from volue.mesh.aio import Connection
 from volue.mesh import Timeseries
-from volue.mesh.tests.test_utilities.utilities import test_timeseries_entry
 from volue.mesh.examples import _get_connection_info
 
 
 async def write_timeseries_points(session: Connection.Session):
     """Showing how to write timeseries points."""
+
+    # Define the timeseries identifiers
+    timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
 
     # Defining a time interval to write timeseries to
     start = datetime(2016, 5, 1)
@@ -20,19 +22,23 @@ async def write_timeseries_points(session: Connection.Session):
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
-        pa.array([1462060800000, 1462064400000, 1462068000000]),
+        pa.array([int(datetime(2016, 1, 1, 1, 0, 0, tzinfo=timezone.utc).timestamp() * 1000),
+                  int(datetime(2016, 1, 1, 2, 0, 0, tzinfo=timezone.utc).timestamp() * 1000),
+                  int(datetime(2016, 1, 1, 3, 0, 0,  tzinfo=timezone.utc).timestamp() * 1000)]
+                 ),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    timeseries = Timeseries(table=table, start_time=start, end_time=end, timskey=test_timeseries_entry.timskey)
+    timeseries = Timeseries(table=table, start_time=start, end_time=end, full_name=timeseries_full_name)
 
     # Send request to write timeseries based on timskey
-    await session.write_timeseries_points(
-        timeserie=timeseries
-    )
+    await session.write_timeseries_points(timeserie=timeseries)
 
     # Commit the changes to the database
     # await session.commit()
+
+    # Or discard changes
+    session.rollback()
 
 
 async def main(address, port, secure_connection):

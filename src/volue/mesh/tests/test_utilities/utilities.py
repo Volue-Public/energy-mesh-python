@@ -14,6 +14,11 @@ class TestOwnedObject:
 
 
 @dataclass()
+class TestTimeseriesEntry(TestOwnedObject):
+    """Class for containing timeseries data points"""
+
+
+@dataclass()
 class TestTimeseries(TestOwnedObject):
     """Class for representing a meta information about timeseries points in the resource layer of mesh.
     Inside Mesh this is referred to as Timeseries.
@@ -25,6 +30,7 @@ class TestTimeseries(TestOwnedObject):
     temporary: bool
     curve: Timeseries.Curve
     resolution: Timeseries.Resolution
+    entries: []
     silo: str = "Resource"
     kind = "Timeseries"
 
@@ -33,46 +39,21 @@ class TestTimeseries(TestOwnedObject):
 class TestTimeseriesAttribute(TestOwnedObject):
     """Class for representing a meta information about timeseries points in a physical mesh model.
         Inside Mesh this is referred to as TimeseriesAttribute.
+        A timeseries attribute has a definition and either a calculation or a reference.
+        A calculation has expression(s) that calculates the timeseries data points.
+        A reference is a pointer to a timeseries entry which contains the data points.
+
+        Note: id's for the attribute are generated at model generation
     """
     path: str
-    entry: TestTimeseries  # timeseriesEntry_ in PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
+    # if refrence:
+    timeseries: TestTimeseries  # timeseriesEntry_ in PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
+    # if calculation:
     local_expression: str  # source_ in PDCTimeseriesCalculationData->PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
     template_expression: str
     model: str
     silo: str = "Model"
     kind = "TimeseriesAttribute"
-
-
-# ------------------------------------------------------------------------------
-
-# TODO convert this into  get_timeseries_data_2()
-class TestTimeseriesEntry:
-    """
-    A resource.
-    Kind: TimeseriesEntry
-    Database: Eagle
-    """
-
-    def __init__(self, full_name, guid, timskey, start_time, end_time, database):
-        self.full_name = full_name
-        self.guid = guid
-        self.timskey = timskey
-        self.start_time = start_time
-        self.end_time = end_time
-        self.database = database
-
-
-test_timeseries_entry = TestTimeseriesEntry(
-    "Resource/Wind Power/WindPower/WPModel/WindProdForec(0)",
-    "3f1afdd7-5f7e-45f9-824f-a7adc09cff8e",
-    201503,
-    datetime(year=2016, month=5, day=1, hour=0, minute=0),
-    datetime(year=2016, month=5, day=14, hour=0, minute=0),
-    "eagle"
-)
-
-
-# ------------------------------------------------------------------------------
 
 
 def is_port_responding(host: str, port: int):
@@ -101,42 +82,76 @@ def run_example_script(path, address, port, secure_connection):
     assert exit_code == 0, f"{stderrdata} {stdoutdata}"
 
 
-def get_timeseries_entry_1():
+def get_timeseries_0():
     """
-    A resource.
-    Kind: Timeseries
-    Database: Eagle
+    Timeseries with timeseries key.
+    StorageType: Mesh
+    Kind: Timeseries with 1 TimeseriesEntry
     """
-    timeseries_entry = TestTimeseries(
-        id=uuid.UUID("5a261b5a-b4ef-4820-bead-b11577562e37"),
-        timeseries_key=377702,
+    timeseries_entry_1 = TestTimeseriesEntry(
+        id=uuid.UUID("00000004-0001-0000-0000-000000000000")
+    )
+    timeseries = TestTimeseries(
+        id=uuid.UUID("00000003-0001-0000-0000-000000000000"),
+        timeseries_key=0,  # mesh timeseries does not have timeseries_key
         temporary=False,
-        curve=Timeseries.Curve.STAIRCASESTARTOFSTEP,
+        curve=Timeseries.Curve.PIECEWISELINEAR,
         resolution=Timeseries.Resolution.HOUR,
-        unit_of_measurement="euro per mega watt hours",
-        path='/Customer_case/A2A/Market/IT_ElSpot/',
-        name="LastAuctionAvailable"
+        unit_of_measurement="",
+        path='/SimpleThermalTestResourceCatalog/',
+        name="plantTimeSeriesRaw",
+        entries=[timeseries_entry_1]
     )
 
-    full_name = timeseries_entry.silo + timeseries_entry.path + timeseries_entry.name
-    return timeseries_entry, full_name
+    full_name = timeseries.silo + timeseries.path + timeseries.name
+    return timeseries, full_name
 
 
-def get_timeseries_entry_2():
+def get_timeseries_1():
     """
-    A resource.
-    Kind: Timeseries
-    Database: Eagle
+    Timeseries with timeseries key.
+    StorageType: Classic
+    Kind: Timeseries with 1 TimeseriesEntry
     """
-    timeseries_entry = TestTimeseries(
-        id=uuid.UUID("c34cbee8-ff43-43e8-86ae-170786a30eec"),
-        timeseries_key=201503,
+    timeseries_entry_1 = TestTimeseriesEntry(
+        id=uuid.UUID("00000004-0002-0000-0000-000000000000")
+    )
+    timeseries = TestTimeseries(
+        id=uuid.UUID("00000003-0002-0000-0000-000000000000"),
+        timeseries_key=2,
         temporary=False,
-        curve=Timeseries.Curve.STAIRCASESTARTOFSTEP,
+        curve=Timeseries.Curve.UNKNOWN,
         resolution=Timeseries.Resolution.HOUR,
-        unit_of_measurement="mega watt hours per hour",
-        path="/Wind Power/WindPower/WPModel/",
-        name="WindProdForec"
+        unit_of_measurement="SomeUnit1",
+        path='/SimpleThermalTestResourceCatalog/',
+        name="chimney1TimeSeriesRaw",
+        entries=[timeseries_entry_1]
+    )
+
+    full_name = timeseries.silo + timeseries.path + timeseries.name
+    return timeseries, full_name
+
+
+def get_timeseries_2():
+    """
+    Timeseries with timeseries key.
+    StorageType: Classic
+    Kind: Timeseries with 1 TimeseriesEntry
+    # TODO: make this one have 2 entries?
+    """
+    timeseries_entry_1 = TestTimeseriesEntry(
+        id=uuid.UUID("00000004-0003-0000-0000-000000000000")
+    )
+    timeseries = TestTimeseries(
+        id=uuid.UUID("00000003-0003-0000-0000-000000000000"),
+        timeseries_key=3,
+        temporary=False,
+        curve=Timeseries.Curve.PIECEWISELINEAR,
+        resolution=Timeseries.Resolution.HOUR,
+        unit_of_measurement="SomeUnit1",
+        path='/SimpleThermalTestResourceCatalog/',
+        name="chimney2TimeSeriesRaw",
+        entries=[timeseries_entry_1]
     )
 
     # Mesh data is organized as an Arrow table with the following schema:
@@ -148,20 +163,28 @@ def get_timeseries_entry_2():
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    full_name = timeseries_entry.silo + timeseries_entry.path + timeseries_entry.name
-    start_time = datetime(2016, 5, 1)
-    end_time = datetime(2016, 5, 14)
-    return timeseries_entry, start_time, end_time, modified_table, full_name
+    full_name = timeseries.silo + timeseries.path + timeseries.name
+    start_time = datetime(2016, 1, 1, 1, 0, 0)
+    end_time = datetime(2016, 1, 2, 9, 0, 0)
+    return timeseries, start_time, end_time, modified_table, full_name
 
 
 def get_timeseries_attribute_1():
-    """Timeseries attribute with calculation expression but no timeseries entry"""
+    """
+    Timeseries attribute with calculation expression but no timeseries entry.
+    Attribute: TsCalcAtt (generated guid)
+    Entry: None
+    Kind: TimeseriesAttribute with a TimeseriesCalculation.
+    """
     timeseries_attribute = TestTimeseriesAttribute(
-        id=uuid.UUID("6671cc8b-df4b-4b20-912e-103cce1bc3cf"),
-        path="/PowerSystem/Mesh.MeshCountry/Norway.Income",
-        entry=None,
+        id=None,  # Unknown because it's generated when the test model is generated
+        path="/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsCalcAtt",
+        timeseries=None,
         local_expression="",
-        template_expression="##=@t('CountryHydroPower.Income')\n",
+        template_expression=r"""@PDLOG(12004, 'TEST') 
+##= @d('.DblAtt') + @t('.TsRawAtt') + @SUM(@D('PlantToPlantRef.DblAtt'))
+
+""",
         model='PowerSystem',
         silo="Model"
     )
@@ -170,17 +193,23 @@ def get_timeseries_attribute_1():
 
 
 def get_timeseries_attribute_2():
-    """Timeseries attribute with calculation expression and a timeseries entry"""
-    timeseries_entry, _ = get_timeseries_entry_1()
+    """
+    Timeseries attribute with timeseries entry.
+    Attribute: TsRawAtt (generated guid)
+    Entry: planTimeseriesRaw(0) (00000004-0001-0000-0000-000000000000)
+    Kind: TimeseriesAttribute with a TimeseriesReference.
+    """
+    timeseries, _ = get_timeseries_0()
     timeseries_attribute = TestTimeseriesAttribute(
-        id=uuid.UUID("4001d450-61ec-4789-85cd-3d6d17d8f845"),
-        path="/POMAtest01/Mesh.has_Market/Markets.has_EnergyMarkets/IT_ElSpot.LastAuctionAvailable",
-        entry=timeseries_entry,
+        id=None,  # Unknown because it's generated when the test model is generated
+        path='/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsRawAtt',
+        timeseries=timeseries,
         local_expression="",
         template_expression="",
-        model='POMAtest01',
+        model='SimpleThermalTestModel',
         silo="Model"
     )
     full_path = timeseries_attribute.silo + timeseries_attribute.path
     return timeseries_attribute, full_path
+
 

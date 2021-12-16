@@ -1,4 +1,3 @@
-from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Connection, Timeseries
 from volue.mesh.examples import _get_connection_info
 
@@ -9,7 +8,7 @@ import pyarrow as pa
 def main(address, port, secure_connection):
     """Showing how find timeseries, write, read points from it and convert them to pandas format."""
 
-    model_name = "TimeSeriesConsistencyTestsModel"
+    model_name = "SimpleThermalTestModel"
     query = "{*}.TsRawAtt"
     start_object_path = "ThermalComponent"
 
@@ -28,6 +27,7 @@ def main(address, port, secure_connection):
 
         # pick the first timeseries and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
+        print('Working on timeseries with path: '+timeseries_attribute.path)
 
         # check for example the unit of measurement or curve type
         print('Unit of measurement: ' + timeseries_attribute.entry.unit_of_measurement)
@@ -39,12 +39,12 @@ def main(address, port, secure_connection):
             # utc_time - [pa.date64] as a UTC Unix timestamp expressed in milliseconds
             # flags - [pa.uint32]
             # value - [pa.float64]
-            interval_1 = int(datetime(2016, 5, 1, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
-            interval_2 = int(datetime(2016, 5, 2, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
-            interval_3 = int(datetime(2016, 5, 3, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
+            timestamp_1 = int(datetime(2016, 5, 1, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
+            timestamp_2 = int(datetime(2016, 5, 2, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
+            timestamp_3 = int(datetime(2016, 5, 3, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
 
             arrays = [
-                pa.array([interval_1, interval_2, interval_3]),
+                pa.array([timestamp_1, timestamp_2, timestamp_3]),
                 pa.array([0, 0, 0]),
                 pa.array([1.1, 2.2, 3.3])]
             arrow_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
@@ -73,6 +73,7 @@ def main(address, port, secure_connection):
             print(pandas_series)
 
             # do some further processing
+            session.rollback()
 
         except grpc.RpcError as e:
             print(f"Could not read timeseries points {e}")
