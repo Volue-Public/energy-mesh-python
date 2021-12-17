@@ -1,5 +1,5 @@
 import uuid, math
-from datetime import date
+from datetime import date, datetime
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 import volue.mesh.tests.test_utilities.server_config as sc
@@ -16,7 +16,7 @@ async def test_read_timeseries_points_async():
     """Check that timeseries points can be read"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
     async with connection.create_session() as session:
         timeseries, start_time, end_time, modified_table, full_name = get_timeseries_2()
         try:
@@ -43,7 +43,7 @@ async def test_read_timeseries_points_async():
                 values[3].as_py()
                 assert math.isnan(values[3].as_py())
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert values[number].as_py() == (number+1)*100
+                    assert values[number].as_py() == (number + 1) * 100
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -60,9 +60,22 @@ async def test_write_timeseries_points_async():
         timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, full_name=full_name)
         try:
             await session.write_timeseries_points(timeseries)
-            session.rollback()
-            # TODO: Should we try to commit and read back the data also? Kind of don't want to change the db
-            # We should have gotten an error if the write did not succeed, so I think this is ok.
+            written_ts = await session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
+                                                              end_time=datetime(2016, 1, 1, 4, 0, 0),
+                                                              uuid_id=ts_entry.id)
+            assert written_ts[0].number_of_points == 3
+            utc_time = written_ts[0].arrow_table[0]
+            assert utc_time[0].as_py() == date(2016, 1, 1)  # datetime(2016, 1, 1, 1, 0, 0)
+            assert utc_time[1].as_py() == date(2016, 1, 1)  # datetime(2016, 1, 1, 2, 0, 0)
+            assert utc_time[2].as_py() == date(2016, 1, 1)  # datetime(2016, 1, 1, 3, 0, 0)
+            flags = written_ts[0].arrow_table[1]
+            assert flags[0].as_py() == 0
+            assert flags[1].as_py() == 0
+            assert flags[2].as_py() == 0
+            values = lags = written_ts[0].arrow_table[2]
+            assert values[0].as_py() == 0
+            assert values[1].as_py() == 10
+            assert values[2].as_py() == 1000
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not write timeseries points {e}")

@@ -1,6 +1,6 @@
 from volue.mesh import Timeseries
 import pyarrow as pa
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 import subprocess
 import sys
@@ -159,7 +159,10 @@ def get_timeseries_2():
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
-        pa.array([1462060800000, 1462064400000, 1462068000000]),
+        pa.array([int(datetime(2016, 1, 1, 2, 0, 0, tzinfo=timezone.utc).timestamp() * 1000),
+                 int(datetime(2016, 1, 1, 3, 0, 0, tzinfo=timezone.utc).timestamp() * 1000),
+                 int(datetime(2016, 1, 1, 4, 0, 0, tzinfo=timezone.utc).timestamp() * 1000)
+                  ]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
