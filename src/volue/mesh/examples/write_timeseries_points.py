@@ -12,8 +12,8 @@ def write_timeseries_points(session: Connection.Session):
     timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
 
     # Defining a time interval to write timeseries to
-    start = datetime(2016, 1, 1, 6, 0, 0)
-    end = datetime(2016, 1, 1, 8, 0, 0)
+    start = datetime(2016, 1, 1, 1, 0, 0)
+    end = datetime(2016, 1, 1, 3, 0, 0)
 
     # Defining the data we want to write
     # Mesh data is organized as an Arrow table with the following schema:
