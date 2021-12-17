@@ -1,4 +1,6 @@
+import math
 import uuid
+from datetime import date
 
 from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 import volue.mesh.tests.test_utilities.server_config as sc
@@ -25,7 +27,23 @@ def test_read_timeseries_points():
             for test_case in test_cases:
                 reply_timeseries = session.read_timeseries_points(**test_case)
                 assert len(reply_timeseries) == 1
-                assert reply_timeseries[0].number_of_points == 32
+                ts = reply_timeseries[0]
+                assert ts.number_of_points == 9
+                # check timestamps
+                utc_date = ts.arrow_table[0]
+                for item in utc_date:
+                    assert item.as_py() == date(2016, 1, 1)
+                # check flags
+                flags = ts.arrow_table[1]
+                assert flags[3].as_py() == 1140850688
+                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+                    assert flags[number].as_py() == 0
+                # check values
+                values = ts.arrow_table[2]
+                values[3].as_py()
+                assert math.isnan(values[3].as_py())
+                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+                    assert values[number].as_py() == (number+1)*100
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 

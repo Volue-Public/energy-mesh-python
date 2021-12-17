@@ -1,4 +1,5 @@
-import uuid
+import uuid, math
+from datetime import date
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 import volue.mesh.tests.test_utilities.server_config as sc
@@ -15,18 +16,34 @@ async def test_read_timeseries_points_async():
     """Check that timeseries points can be read"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
     async with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_2()
+        timeseries, start_time, end_time, modified_table, full_name = get_timeseries_2()
         try:
-            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": ts_entry.timeseries_key}
-            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": ts_entry.id}
+            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
+            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": timeseries.id}
             test_case_3 = {"start_time": start_time, "end_time": end_time, "full_name": full_name}
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
-                timeseries = await session.read_timeseries_points(**test_case)
-                assert len(timeseries) == 1
-                assert timeseries[0].number_of_points == 32
+                reply_timeseries = await session.read_timeseries_points(**test_case)
+                assert len(reply_timeseries) == 1
+                ts = reply_timeseries[0]
+                assert ts.number_of_points == 9
+                # check timestamps
+                utc_date = ts.arrow_table[0]
+                for item in utc_date:
+                    assert item.as_py() == date(2016, 1, 1)
+                # check flags
+                flags = ts.arrow_table[1]
+                assert flags[3].as_py() == 1140850688
+                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+                    assert flags[number].as_py() == 0
+                # check values
+                values = ts.arrow_table[2]
+                values[3].as_py()
+                assert math.isnan(values[3].as_py())
+                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+                    assert values[number].as_py() == (number+1)*100
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -323,26 +340,6 @@ async def test_write_timeseries_points_using_timskey_async():
             )
         except grpc.RpcError:
             pytest.fail("Could not write timeseries points")
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
-async def test_read_timeseries_points_using_timskey_async():
-    """Check that timeseries can be retrieved using timskey."""
-
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
-    async with connection.create_session() as session:
-        ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_2()
-        try:
-            timeseries = await session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                timskey=ts_entry.timeseries_key)
-            assert len(timeseries) == 1
-            assert timeseries[0].number_of_points == 32
-        except grpc.RpcError:
-            pytest.fail("Could not read timeseries points")
 
 
 if __name__ == '__main__':
