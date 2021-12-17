@@ -73,6 +73,8 @@ def main(address, port, secure_connection):
             print(pandas_series)
 
             # do some further processing
+            
+            # optionally discard changes
             session.rollback()
 
         except grpc.RpcError as e:
