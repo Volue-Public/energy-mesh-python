@@ -27,7 +27,7 @@ def main(address, port, secure_connection):
 
         # pick the first timeseries and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
-        print('Working on timeseries with path: '+timeseries_attribute.path)
+        print('Working on timeseries with path: ' + timeseries_attribute.path)
 
         # check for example the unit of measurement or curve type
         print('Unit of measurement: ' + timeseries_attribute.entry.unit_of_measurement)
