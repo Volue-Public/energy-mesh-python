@@ -165,7 +165,7 @@ def get_timeseries_2():
     modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
     full_name = timeseries.silo + timeseries.path + timeseries.name
     start_time = datetime(2016, 1, 1, 1, 0, 0)
-    end_time = datetime(2016, 1, 2, 9, 0, 0)
+    end_time = datetime(2016, 1, 1, 9, 0, 0)
     return timeseries, start_time, end_time, modified_table, full_name
 
 
