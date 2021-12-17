@@ -46,7 +46,7 @@ class TestTimeseriesAttribute(TestOwnedObject):
         Note: id's for the attribute are generated at model generation
     """
     path: str
-    # if refrence:
+    # if reference:
     timeseries: TestTimeseries  # timeseriesEntry_ in PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
     # if calculation:
     local_expression: str  # source_ in PDCTimeseriesCalculationData->PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
