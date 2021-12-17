@@ -11,7 +11,7 @@ def write_timeseries_points(session: Connection.Session):
     # Define the timeseries identifiers
     timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
 
-    # Defining a time interval to wrire timeseries to
+    # Defining a time interval to write timeseries to
     start = datetime(2016, 1, 1, 6, 0, 0)
     end = datetime(2016, 1, 1, 8, 0, 0)
 
