@@ -7,9 +7,9 @@ import grpc
 import pyarrow as pa
 
 def main(address, port, secure_connection):
-    """Showing how find timeseries, write, read points from it and convert them to pandas format."""
+    """Showing how to find timeseries, write, read points from it and convert them to pandas format."""
 
-    model_name = "TimeSeriesConsistencyTestsModel"
+    model_name = "SimpleThermalTestModel"
     query = "{*}.TsRawAtt"
     start_object_path = "ThermalComponent"
 
@@ -36,20 +36,20 @@ def main(address, port, secure_connection):
         # now lets write some data to it
         try:
             # Mesh data is organized as an Arrow table with the following schema:
-            # utc_time - [pa.date64] as a UTC Unix timestamp expressed in milliseconds
+            # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
             # flags - [pa.uint32]
             # value - [pa.float64]
-            interval_1 = int(datetime(2016, 5, 1, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
-            interval_2 = int(datetime(2016, 5, 2, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
-            interval_3 = int(datetime(2016, 5, 3, tzinfo=timezone.utc).timestamp() * 1000)  # to get milliseconds
+            timestamp_1 = datetime(2016, 5, 1, 2)  # timezone provided in timeseries timestamps will be discarded, it will be treated as UTC
+            timestamp_2 = datetime(2016, 5, 2, 4)
+            timestamp_3 = datetime(2016, 5, 3, 18)
 
             arrays = [
-                pa.array([interval_1, interval_2, interval_3]),
+                pa.array([timestamp_1, timestamp_2, timestamp_3]),
                 pa.array([0, 0, 0]),
                 pa.array([1.1, 2.2, 3.3])]
             arrow_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-            start_time = datetime(2016, 5, 1, tzinfo=timezone.utc)
-            end_time = datetime(2016, 5, 4, tzinfo=timezone.utc)  # end time must be greater than last point to be read
+            start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
+            end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be read/written
 
             timeseries = Timeseries(table=arrow_table, start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
             session.write_timeseries_points(timeseries)
@@ -59,8 +59,8 @@ def main(address, port, secure_connection):
 
         # now lets read from it
         try:
-            start_time = datetime(2016, 5, 1, tzinfo=timezone.utc)
-            end_time = datetime(2016, 5, 4, tzinfo=timezone.utc)  # end time must be greater than last point to be read
+            start_time = datetime(2016, 5, 2)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
+            end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be read/written
 
             timeseries_read = session.read_timeseries_points(start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
             # there should be exactly one timeseries read

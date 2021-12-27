@@ -140,11 +140,11 @@ def get_timeseries_entry_2():
     )
 
     # Mesh data is organized as an Arrow table with the following schema:
-    # utc_time - [pa.date64] as a UTC Unix timestamp expressed in milliseconds
+    # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
-        pa.array([1462060800000, 1462064400000, 1462068000000]),
+        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1),  datetime(2016, 5, 1, 2)]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)

@@ -38,7 +38,7 @@ class Timeseries:
     """
 
     schema = pa.schema([
-        pa.field('utc_time', pa.date64()),
+        pa.field('utc_time', pa.timestamp('ms')),
         pa.field('flags', pa.uint32()),
         pa.field('value', pa.float64()),
     ])  # The pyarrow schema used for timeseries points.
