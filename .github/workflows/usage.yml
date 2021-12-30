@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-          
+
       - name: Checkout GitHub action
         uses: actions/checkout@v2
         with:
@@ -48,14 +48,14 @@ jobs:
           python -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python@${{ steps.get_branch_name.outputs.branch_name }}
           python -m pip install pytest pytest-asyncio
           python -m pytest --pyargs volue.mesh.tests -m "unittest or server"
-      
+
       - name: Install Ubuntu 20.04 (wsl1)
         uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
           set-as-default: 'true'
           update: 'false'
-        
+
       - name: Install and test Python SDK (Ubuntu 20.04)
         shell: wsl-bash {0}
         run: |
