@@ -3,7 +3,6 @@ from volue.mesh._common import *
 from volue.mesh import Connection, to_proto_guid
 from volue.mesh.proto import mesh_pb2
 import volue.mesh.tests.test_utilities.server_config as sc
-from google.protobuf.pyext._message import RepeatedCompositeContainer
 import grpc
 import pytest
 
@@ -28,7 +27,6 @@ def test_read_timeseries_response_is_valid():
             pytest.fail("Could not read timeseries points.")
         finally:
             assert isinstance(reply, mesh_pb2.ReadTimeseriesResponse)
-            assert isinstance(reply.timeseries, RepeatedCompositeContainer)
             assert len(reply.timeseries) == 1
             assert isinstance(reply.timeseries[0].data, bytes)
             assert len(reply.timeseries[0].data) == 6712
