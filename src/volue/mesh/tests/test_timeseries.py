@@ -12,7 +12,7 @@ import pytest
 def test_can_create_empty_timeserie():
     """Check that an empty timeserie can be created."""
     ts = Timeseries()
-    assert ts is not None
+    assert ts is None
 
 
 @pytest.mark.unittest
