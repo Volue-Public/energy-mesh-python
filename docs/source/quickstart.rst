@@ -1,17 +1,63 @@
 Quickstart
 -----------------
 
-Here is a quick start guide to setup your first project using the library. It assumes you have installed the library and that you have a running Volue Mesh server with gRPC enabled.
+Here is a quick start guide to setup your first project using the library.
 
-Lets connect to the server, get its version, create a session and get some data.
+Prerequisites
+**************************
+
+- Supported Python version (3.7.1, 3.8 or 3.9)
+- Running Volue Mesh server with gRPC enabled (either locally or on a different machine within your network).
+
+See :ref:`Mesh server gRPC configuration`.
+
+
+Installation quickstart
+**************************
+
+Using pip::
+
+    python -m pip install git+https://github.com/PowelAS/sme-mesh-python
+
+Recommended way is to use pip with a virtual environment. For more information refer to :doc:`installation`.
+
+First call to Mesh server
+**************************
+
+Lets connect to the server, get its version and create a session for getting data.
 
 .. literalinclude:: /../../src/volue/mesh/examples/quickstart.py
    :language: python
 
 Name this file quickstart.py.
 
-Now that you made you first script to contact the Volue Mesh server, we have to run the script.::
+.. warning::
+   It assumes Volue Mesh server is running locally with gRPC enabled on default port *50051*.
+   If you are using a remote server or a non-default port for gRPC communication please change the *address* and *port* variables.
+
+
+Now that you made your first script to contact the Volue Mesh server, we have to run the script.::
 
     $ python quickstart.py
 
-If everything is set up right you should be getting some output. If there are some problems with this code check out :doc:`faq`.
+If everything is set up right you should be getting output like the following:
+
+.. highlight:: none
+
+::
+
+    The connected Volue Mesh Server is version: "99.0.0+0"
+    name: "Volue Mesh Server"
+    build_date: "ToDo"
+    commit: "ToDo"
+    full_version: "Volue Mesh Server 99.0.0+0 (ToDo ToDo)"
+
+    You have now an open session and can request timeseries
+
+If there are some problems with this code check out :doc:`faq`.
+
+
+Next steps
+**************************
+
+For more examples refer to :doc:`examples`.
