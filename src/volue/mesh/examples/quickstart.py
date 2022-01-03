@@ -10,7 +10,7 @@ def main(address, port, secure_connection):
 
     # Which version is the server running
     mesh_server_version = connection.get_version()
-    print(f"The connected Volue Mesh Server version is {mesh_server_version}")
+    print(f"The connected Volue Mesh Server is {mesh_server_version}")
 
     # Create a remote session on the Volue Mesh server
     session = connection.create_session()

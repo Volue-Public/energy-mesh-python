@@ -34,6 +34,21 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
+
+Mesh server gRPC configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+List of the Mesh server gRPC configuration options with its default values:
+::
+
+    Configuration.Network.GRPC.SetEnabled(false);
+    Configuration.Network.GRPC.EnableKerberos(false);
+    Configuration.Network.GRPC.EnableTLS(false);
+    Configuration.Network.GRPC.SetPort(50051);
+    Configuration.Network.GRPC.SetTlsCertificateFile('server_self_signed_crt.pem');
+    Configuration.Network.GRPC.SetTlsCertificateKeyFile('erver_privatekey.pem');
+
+
 Other
 *****
 
@@ -42,17 +57,17 @@ If neither of the above suggestions helped.
 I ran the tests and one or more of them failed.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you ran the :ref:`Tests` and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in :ref:`Run tests`
+If you ran the :ref:`Tests` and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in :ref:`Run tests`.
 
 
 I think I found a bug or I have a feature request.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the `discussion board <https://github.com/PowelAS/sme-mesh-python/discussions>`_ and if that does not resolve you problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_
+If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the `discussion board <https://github.com/PowelAS/sme-mesh-python/discussions>`_ and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_.
 
 
 I need more help.
 ~~~~~~~~~~~~~~~~~~~~~~
 
-If you have a more pressing issue or if your issue includes confidential information you should contact Volue's customer service.
+If you have a more pressing issue or if your issue includes confidential information, you should contact Volue's customer service.
 
