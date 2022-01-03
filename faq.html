@@ -89,15 +89,17 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#connection-errors">Connection errors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#i-get-a-grpc-error">I get a gRPC error.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong">I get a SSL_ERROR_SSL. What am I doing wrong?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mesh-server-grpc-configuration">Mesh server gRPC configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a><ul>
@@ -189,13 +191,14 @@
 <ul>
 <li><p><a class="reference internal" href="#i-get-a-grpc-error" id="id2">I get a gRPC error.</a></p></li>
 <li><p><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" id="id3">I get a SSL_ERROR_SSL. What am I doing wrong?</a></p></li>
+<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id4">Mesh server gRPC configuration</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#other" id="id4">Other</a></p>
+<li><p><a class="reference internal" href="#other" id="id5">Other</a></p>
 <ul>
-<li><p><a class="reference internal" href="#i-ran-the-tests-and-one-or-more-of-them-failed" id="id5">I ran the tests and one or more of them failed.</a></p></li>
-<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id6">I think I found a bug or I have a feature request.</a></p></li>
-<li><p><a class="reference internal" href="#i-need-more-help" id="id7">I need more help.</a></p></li>
+<li><p><a class="reference internal" href="#i-ran-the-tests-and-one-or-more-of-them-failed" id="id6">I ran the tests and one or more of them failed.</a></p></li>
+<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id7">I think I found a bug or I have a feature request.</a></p></li>
+<li><p><a class="reference internal" href="#i-need-more-help" id="id8">I need more help.</a></p></li>
 </ul>
 </li>
 </ul>
@@ -223,21 +226,33 @@
 </div>
 <p>If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.</p>
 </div>
+<div class="section" id="mesh-server-grpc-configuration">
+<h3><a class="toc-backref" href="#id4">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this headline">¶</a></h3>
+<p>List of the Mesh server gRPC configuration options with its default values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Configuration</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">GRPC</span><span class="o">.</span><span class="n">SetEnabled</span><span class="p">(</span><span class="n">false</span><span class="p">);</span>
+<span class="n">Configuration</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">GRPC</span><span class="o">.</span><span class="n">EnableKerberos</span><span class="p">(</span><span class="n">false</span><span class="p">);</span>
+<span class="n">Configuration</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">GRPC</span><span class="o">.</span><span class="n">EnableTLS</span><span class="p">(</span><span class="n">false</span><span class="p">);</span>
+<span class="n">Configuration</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">GRPC</span><span class="o">.</span><span class="n">SetPort</span><span class="p">(</span><span class="mi">50051</span><span class="p">);</span>
+<span class="n">Configuration</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">GRPC</span><span class="o">.</span><span class="n">SetTlsCertificateFile</span><span class="p">(</span><span class="s1">&#39;server_self_signed_crt.pem&#39;</span><span class="p">);</span>
+<span class="n">Configuration</span><span class="o">.</span><span class="n">Network</span><span class="o">.</span><span class="n">GRPC</span><span class="o">.</span><span class="n">SetTlsCertificateKeyFile</span><span class="p">(</span><span class="s1">&#39;erver_privatekey.pem&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="other">
-<h2><a class="toc-backref" href="#id4">Other</a><a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Other</a><a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
 <p>If neither of the above suggestions helped.</p>
 <div class="section" id="i-ran-the-tests-and-one-or-more-of-them-failed">
-<h3><a class="toc-backref" href="#id5">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this headline">¶</a></h3>
-<p>If you ran the <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a> and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in <a class="reference internal" href="tests.html#run-tests"><span class="std std-ref">Run tests</span></a></p>
+<h3><a class="toc-backref" href="#id6">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this headline">¶</a></h3>
+<p>If you ran the <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a> and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in <a class="reference internal" href="tests.html#run-tests"><span class="std std-ref">Run tests</span></a>.</p>
 </div>
 <div class="section" id="i-think-i-found-a-bug-or-i-have-a-feature-request">
-<h3><a class="toc-backref" href="#id6">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this headline">¶</a></h3>
-<p>If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/discussions">discussion board</a> and if that does not resolve you problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/issues">issue tracker</a></p>
+<h3><a class="toc-backref" href="#id7">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this headline">¶</a></h3>
+<p>If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/discussions">discussion board</a> and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python/issues">issue tracker</a>.</p>
 </div>
 <div class="section" id="i-need-more-help">
-<h3><a class="toc-backref" href="#id7">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this headline">¶</a></h3>
-<p>If you have a more pressing issue or if your issue includes confidential information you should contact Volue’s customer service.</p>
+<h3><a class="toc-backref" href="#id8">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this headline">¶</a></h3>
+<p>If you have a more pressing issue or if your issue includes confidential information, you should contact Volue’s customer service.</p>
 </div>
 </div>
 </div>
@@ -256,7 +271,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Volue AS.
+        &#169; Copyright 2022, Volue AS.
 
     </p>
   </div>

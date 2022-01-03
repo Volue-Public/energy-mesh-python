@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction" href="intro.html" /> 
+    <link rel="next" title="Quickstart" href="quickstart.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,9 +88,10 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
@@ -168,14 +169,16 @@
             
   <div class="section" id="welcome-to-mesh-python-sdk">
 <h1>Welcome to Mesh Python SDK<a class="headerlink" href="#welcome-to-mesh-python-sdk" title="Permalink to this headline">¶</a></h1>
-<p>Mesh Python SDK that can be used to
+<p>Mesh Python SDK is a client library used to
 communicate with Volue Energy’s Mesh server.</p>
 <div class="section" id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
-<p>If this is you first time using this library, here are some resources to help you get started.</p>
+<p>If this is your first time using this library, here are some resources to help you get started.</p>
 <ul class="simple">
-<li><p><strong>First steps:</strong> <a class="reference internal" href="intro.html"><span class="doc">Introduction</span></a> | <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a></p></li>
+<li><p><strong>Quickstart:</strong> <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a></p></li>
+<li><p><strong>Installation:</strong> <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a></p></li>
 <li><p><strong>Examples:</strong> <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> | <a class="reference internal" href="tests.html"><span class="doc">Tests</span></a></p></li>
+<li><p><strong>How to do development</strong> <a class="reference internal" href="installation.html#from-source"><span class="std std-ref">Install Mesh Python library from source</span></a></p></li>
 </ul>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
@@ -203,14 +206,24 @@ communicate with Volue Energy’s Mesh server.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#installing">Installing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#dependencies">Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#virtual-environments">Virtual Environments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="intro.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#prerequisites-quickstart">Prerequisites quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation-quickstart">Installation quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#first-call-to-mesh-server">First call to Mesh server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-steps">Next steps</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#python-environment">Python environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#virtual-environments">Virtual Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#mesh-python-library-installation">Mesh Python library installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#using-pip">Using pip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#dependencies">Dependencies</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#running-examples">Running examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#get-version">Get version</a></li>
@@ -218,6 +231,10 @@ communicate with Volue Energy’s Mesh server.</p>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#read-timeseries-asynchronously">Read timeseries, asynchronously</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#write-timeseries">Write timeseries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#write-timeseries-asynchronously">Write timeseries, asynchronously</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#basic-concepts">Basic Concepts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a><ul>
@@ -237,6 +254,7 @@ communicate with Volue Energy’s Mesh server.</p>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#connection-errors">Connection errors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="faq.html#i-get-a-grpc-error">I get a gRPC error.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="faq.html#i-get-a-ssl-error-ssl-what-am-i-doing-wrong">I get a SSL_ERROR_SSL. What am I doing wrong?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="faq.html#mesh-server-grpc-configuration">Mesh server gRPC configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#other">Other</a><ul>
@@ -278,14 +296,14 @@ communicate with Volue Energy’s Mesh server.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="intro.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Volue AS.
+        &#169; Copyright 2022, Volue AS.
 
     </p>
   </div>

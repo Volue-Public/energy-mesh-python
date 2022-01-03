@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="examples.html" />
-    <link rel="prev" title="Introduction" href="intro.html" /> 
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Welcome to Mesh Python SDK" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,9 +89,16 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites-quickstart">Prerequisites quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-quickstart">Installation quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-call-to-mesh-server">First call to Mesh server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
@@ -169,8 +176,26 @@
             
   <div class="section" id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
-<p>Here is a quick start guide to setup your first project using the library. It assumes you have installed the library and that you have a running Volue Mesh server with gRPC enabled.</p>
-<p>Lets connect to the server, get its version, create a session and get some data.</p>
+<p>Here is a quick start guide to setup your first project using the library.</p>
+<div class="section" id="prerequisites-quickstart">
+<h2>Prerequisites quickstart<a class="headerlink" href="#prerequisites-quickstart" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Supported Python version [3.7.1, 3.8 or 3.9].</p></li>
+<li><p>Running Volue Mesh server with gRPC enabled (either locally or on a different machine within your network).</p></li>
+</ul>
+<p>See <a class="reference internal" href="faq.html#mesh-server-grpc-configuration"><span class="std std-ref">Mesh server gRPC configuration</span></a> for all Mesh gRPC configuration options.</p>
+</div>
+<div class="section" id="installation-quickstart">
+<h2>Installation quickstart<a class="headerlink" href="#installation-quickstart" title="Permalink to this headline">¶</a></h2>
+<p>Using pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PowelAS</span><span class="o">/</span><span class="n">sme</span><span class="o">-</span><span class="n">mesh</span><span class="o">-</span><span class="n">python</span>
+</pre></div>
+</div>
+<p>Recommended way is to use pip with a virtual environment. For more information refer to <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>.</p>
+</div>
+<div class="section" id="first-call-to-mesh-server">
+<h2>First call to Mesh server<a class="headerlink" href="#first-call-to-mesh-server" title="Permalink to this headline">¶</a></h2>
+<p>Lets connect to the server, get its version and create a session for getting data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
@@ -183,7 +208,7 @@
 
     <span class="c1"># Which version is the server running</span>
     <span class="n">mesh_server_version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The connected Volue Mesh Server version is </span><span class="si">{</span><span class="n">mesh_server_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The connected Volue Mesh Server is </span><span class="si">{</span><span class="n">mesh_server_version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Create a remote session on the Volue Mesh server</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
@@ -200,11 +225,31 @@
 </pre></div>
 </div>
 <p>Name this file quickstart.py.</p>
-<p>Now that you made you first script to contact the Volue Mesh server, we have to run the script.:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It assumes Volue Mesh server is running locally with gRPC enabled on default port <em>50051</em>.
+If you are using a remote server or a non-default port for gRPC communication please change the <em>address</em> and <em>port</em> variables.</p>
+</div>
+<p>Now that you made your first script to contact the Volue Mesh server, we have to run the script.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python quickstart.py
 </pre></div>
 </div>
-<p>If everything is set up right you should be getting some output. If there are some problems with this code check out <a class="reference internal" href="faq.html"><span class="doc">Frequently Asked Questions</span></a>.</p>
+<p>If everything is set up right you should be getting output like the following:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>The connected Volue Mesh Server is version: &quot;99.0.0+0&quot;
+name: &quot;Volue Mesh Server&quot;
+build_date: &quot;ToDo&quot;
+commit: &quot;ToDo&quot;
+full_version: &quot;Volue Mesh Server 99.0.0+0 (ToDo ToDo)&quot;
+
+You have now an open session and can request timeseries
+</pre></div>
+</div>
+<p>If there are some problems with this code check out <a class="reference internal" href="faq.html"><span class="doc">Frequently Asked Questions</span></a>.</p>
+</div>
+<div class="section" id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>For more examples refer to <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a>.</p>
+</div>
 </div>
 
 
@@ -213,15 +258,15 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Mesh Python SDK" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Volue AS.
+        &#169; Copyright 2022, Volue AS.
 
     </p>
   </div>
