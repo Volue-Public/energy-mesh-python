@@ -42,7 +42,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.coverage'
+    'sphinx.ext.coverage',
+    'sphinx_copybutton'
 ]
 
 # Options for: sphinx.ext.napoleon
