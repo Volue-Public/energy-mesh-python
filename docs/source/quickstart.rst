@@ -3,13 +3,13 @@ Quickstart
 
 Here is a quick start guide to setup your first project using the library.
 
-Prerequisites
+Prerequisites quickstart
 **************************
 
-- Supported Python version (3.7.1, 3.8 or 3.9)
+- Supported Python version [3.7.1, 3.8 or 3.9].
 - Running Volue Mesh server with gRPC enabled (either locally or on a different machine within your network).
 
-See :ref:`Mesh server gRPC configuration`.
+See :ref:`Mesh server gRPC configuration` for all Mesh gRPC configuration options.
 
 
 Installation quickstart

@@ -18,7 +18,7 @@ In-depth information can be found under Pythons official documentation for the `
 
 Here is a quick way:
 
-#. Create a directory for you project::
+#. Create a directory for your project::
 
     $ mkdir MyProject
     $ cd MyProject
