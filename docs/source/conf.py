@@ -20,7 +20,7 @@ sys.path.insert(0, TESTS_FOLDER)
 # -- Project information -----------------------------------------------------
 
 project = 'volue.mesh'
-copyright = '2021, Volue AS'
+copyright = '2022, Volue AS'
 author = 'Volue AS'
 
 import re
@@ -42,7 +42,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.coverage'
+    'sphinx.ext.coverage',
+    'sphinx_copybutton'
 ]
 
 # Options for: sphinx.ext.napoleon
