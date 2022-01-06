@@ -31,8 +31,8 @@ async def test_read_timeseries_points_async():
                 assert ts.number_of_points == 9
                 # check timestamps
                 utc_date = ts.arrow_table[0]
-                for item in utc_date:
-                    assert item.as_py() == date(2016, 1, 1)
+                for count, item in enumerate(utc_date):
+                    assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
                 # check flags
                 flags = ts.arrow_table[1]
                 assert flags[3].as_py() == 1140850688
@@ -65,9 +65,9 @@ async def test_write_timeseries_points_async():
                                                               uuid_id=ts_entry.id)
             assert written_ts[0].number_of_points == 3
             utc_time = written_ts[0].arrow_table[0]
-            assert utc_time[0].as_py() == date(2016, 1, 1)  # datetime(2016, 1, 1, 1, 0, 0)
-            assert utc_time[1].as_py() == date(2016, 1, 1)  # datetime(2016, 1, 1, 2, 0, 0)
-            assert utc_time[2].as_py() == date(2016, 1, 1)  # datetime(2016, 1, 1, 3, 0, 0)
+            assert utc_time[0].as_py() == datetime(2016, 1, 1, 2, 0, 0)
+            assert utc_time[1].as_py() == datetime(2016, 1, 1, 3, 0, 0)
+            assert utc_time[2].as_py() == datetime(2016, 1, 1, 4, 0, 0)
             flags = written_ts[0].arrow_table[1]
             assert flags[0].as_py() == 0
             assert flags[1].as_py() == 0
