@@ -143,7 +143,15 @@ async def test_update_timeseries_entry_async():
                 )
             for test_case in test_cases:
                 await session.update_timeseries_resource_info(**test_case)
-                # TODO: assert something
+                timeseries_info = await session.get_timeseries_resource_info(**test_id)
+
+                if "new_path" in test_case:
+                    assert timeseries_info.path == new_path
+                if "new_curve_type" in test_case:
+                    assert timeseries_info.curveType.type == mesh_pb2.Curve.UNKNOWN
+                if "new_unit_of_measurement" in test_case:
+                    assert timeseries_info.unit_of_measurement == new_unit_of_measurement
+
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries entry: {e}")
