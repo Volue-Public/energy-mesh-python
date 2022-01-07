@@ -340,5 +340,37 @@ def test_search_timeseries_attribute():
             pytest.fail(f"Could not update timeseries attribute: {e}")
 
 
+def test_rollback():
+    """Check that rollback discards changes made in the current session."""
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    with connection.create_session() as session:
+        try:
+            ts_entry, full_name = get_timeseries_1()
+            new_path = "/new_path"
+
+            # check base line
+            timeseries_info0 = session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info0.path != new_path
+
+            # change something
+            session.update_timeseries_resource_info(path=full_name, new_path=new_path)
+
+            # check that the change is in the session
+            timeseries_info1 = session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info1.path == new_path
+
+            # rollback
+            session.rollback()
+
+            # check that changes have been discarded
+            timeseries_info2 = session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info2.path != new_path
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not rollback changes.")
+
+
 if __name__ == '__main__':
     pytest.main()

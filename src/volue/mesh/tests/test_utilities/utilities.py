@@ -120,7 +120,7 @@ def get_timeseries_1():
         id=uuid.UUID("00000003-0002-0000-0000-000000000000"),
         timeseries_key=2,
         temporary=False,
-        curve=Timeseries.Curve.UNKNOWN,
+        curve=Timeseries.Curve.PIECEWISELINEAR,
         resolution=Timeseries.Resolution.HOUR,
         unit_of_measurement="SomeUnit1",
         path='/SimpleThermalTestResourceCatalog/',
