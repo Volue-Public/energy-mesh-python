@@ -117,10 +117,9 @@ def test_update_timeseries_entry():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
-    # TODO: insert something here
-    new_path = ""
-    new_curve_type = ""
-    new_unit_of_measurement = ""
+    new_path = "/test"
+    new_curve_type = "curvy"  # -> UNKNOWN
+    new_unit_of_measurement = "mega watt"
 
     with connection.create_session() as session:
         try:
@@ -143,7 +142,16 @@ def test_update_timeseries_entry():
                 )
             for test_case in test_cases:
                 session.update_timeseries_resource_info(**test_case)
-                # TODO: assert something
+                timeseries_info = session.get_timeseries_resource_info(**test_id)
+
+                if "new_path" in test_case:
+                    assert timeseries_info.path == new_path
+                if "new_curve_type" in test_case:
+                    assert timeseries_info.curveType.type == mesh_pb2.Curve.UNKNOWN
+                if "new_unit_of_measurement" in test_case:
+                    assert timeseries_info.unit_of_measurement == new_unit_of_measurement
+
+                session.rollback()
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries entry: {e}")
