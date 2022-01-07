@@ -199,6 +199,7 @@ def get_timeseries_attribute_2():
     """
     Timeseries attribute with timeseries entry.
     Attribute: TsRawAtt (generated guid)
+    Timeseries: plantTimeseriesRaw (00000003-0001-0000-0000-000000000000)
     Entry: planTimeseriesRaw(0) (00000004-0001-0000-0000-000000000000)
     Kind: TimeseriesAttribute with a TimeseriesReference.
     """

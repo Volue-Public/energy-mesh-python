@@ -245,7 +245,6 @@ def test_update_timeseries_attribute_with_timeseriescalculation():
             pytest.fail(f"Could not update timeseries attribute: {e}")
 
 
-@pytest.mark.skip # Not working until server is updated
 @pytest.mark.database
 def test_update_timeseries_attribute_with_timeseriesreference():
     """Check that timeseries attribute data with a reference can be updated"""
@@ -254,6 +253,7 @@ def test_update_timeseries_attribute_with_timeseriesreference():
                             sc.DefaultServerConfig.SECURE_CONNECTION)
 
     attribute, full_name = get_timeseries_attribute_2()
+
     new_timeseries, _ = get_timeseries_1()
     new_timeseries_entry = new_timeseries.entries[0]
     new_timeseries_entry_id = mesh_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
@@ -268,7 +268,7 @@ def test_update_timeseries_attribute_with_timeseriesreference():
             for test_case in test_cases:
                 original_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
                 assert original_attribute.path == full_name
-                assert from_proto_guid(original_attribute.entry.id) == attribute.timeseries.entries[0].id
+                assert from_proto_guid(original_attribute.entry.id) == attribute.timeseries.id
 
                 if "path" in test_case:
                     test_case_2["uuid_id"] = original_attribute.id
@@ -277,7 +277,7 @@ def test_update_timeseries_attribute_with_timeseriesreference():
 
                 updated_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
                 assert updated_attribute.path == full_name
-                assert from_proto_guid(updated_attribute.entry.id) == new_timeseries_entry.id
+                assert from_proto_guid(updated_attribute.entry.id) == new_timeseries.id
 
                 session.rollback()
 

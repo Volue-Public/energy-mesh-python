@@ -246,7 +246,6 @@ async def test_update_timeseries_attribute_with_timeseriescalculation_async():
             pytest.fail(f"Could not update timeseries attribute: {e}")
 
 
-@pytest.mark.skip  # Not working until server is updated
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_update_timeseries_attribute_with_timeseriesreference_async():
@@ -270,7 +269,7 @@ async def test_update_timeseries_attribute_with_timeseriesreference_async():
             for test_case in test_cases:
                 original_attribute = await session.get_timeseries_attribute(model=attribute.model, path=full_name)
                 assert original_attribute.path == full_name
-                assert from_proto_guid(original_attribute.entry.id) == attribute.timeseries.entries[0].id
+                assert from_proto_guid(original_attribute.entry.id) == attribute.timeseries.id
 
                 if "path" in test_case:
                     test_case_2["uuid_id"] = original_attribute.id
@@ -279,9 +278,9 @@ async def test_update_timeseries_attribute_with_timeseriesreference_async():
 
                 updated_attribute = await session.get_timeseries_attribute(model=attribute.model, path=full_name)
                 assert updated_attribute.path == full_name
-                assert from_proto_guid(updated_attribute.entry.id) == new_timeseries_entry.id
+                assert from_proto_guid(updated_attribute.entry.id) == new_timeseries.id
 
-                session.rollback()
+                await session.rollback()
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")
