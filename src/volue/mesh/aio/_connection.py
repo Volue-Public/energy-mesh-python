@@ -153,12 +153,19 @@ class Connection:
                 session_id=to_proto_guid(self.session_id),
                 entry_id=entry_id
             )
+
+            paths = []
             if new_path is not None:
                 request.new_path = new_path
+                paths.append("new_path")
             if new_curve_type is not None:
                 request.new_curve_type.CopyFrom(to_proto_curve_type(new_curve_type))
+                paths.append("new_curve_type")
             if new_unit_of_measurement is not None:
                 request.new_unit_of_measurement = new_unit_of_measurement
+                paths.append("new_unit_of_measurement")
+
+            request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=paths))
 
             await self.mesh_service.UpdateTimeseriesEntry(request)
 

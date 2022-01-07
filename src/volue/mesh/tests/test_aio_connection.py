@@ -118,10 +118,9 @@ async def test_update_timeseries_entry_async():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.SECURE_CONNECTION)
 
-    # TODO: insert something here
-    new_path = ""
-    new_curve_type = ""
-    new_unit_of_measurement = ""
+    new_path = "/test"
+    new_curve_type = "curvy"  # -> UNKNOWN
+    new_unit_of_measurement = "mega watt"
 
     async with connection.create_session() as session:
         try:
