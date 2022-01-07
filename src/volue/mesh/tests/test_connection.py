@@ -372,5 +372,61 @@ def test_rollback():
             pytest.fail(f"Could not rollback changes.")
 
 
+def test_commit():
+    """Check that commit keeps changes between sessions"""
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    attribute, full_name = get_timeseries_attribute_1()
+    new_local_expression = "something"
+    old_local_expression = attribute.local_expression
+
+    with connection.create_session() as session1:
+        try:
+            # check base line
+            attribute1 = session1.get_timeseries_attribute(model=attribute.model, path=full_name)
+            old_local_expression = attribute1.local_expression
+            assert attribute1.local_expression != new_local_expression
+
+            # change something
+            session1.update_timeseries_attribute(path=full_name, new_local_expression=new_local_expression)
+
+            # commit
+            session1.commit()
+
+            # check that the change is in the session
+            attribute2 = session1.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute2.local_expression == new_local_expression
+
+            # rollback
+            session1.rollback()
+
+            # check that changes are still there
+            attribute3 = session1.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute3.local_expression == new_local_expression
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not commit changes.")
+
+    with connection.create_session() as session2:
+        try:
+            # check that the change is still there
+            attribute4 = session2.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute4.local_expression == new_local_expression
+
+            # change it back to what is was originally
+            session2.update_timeseries_attribute(path=full_name, new_local_expression=old_local_expression)
+
+            # commit
+            session2.commit()
+
+            # check that status has been restored (important to keep db clean)
+            attribute5 = session2.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute5.local_expression == old_local_expression
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not restore commited changes.")
+
+
 if __name__ == '__main__':
     pytest.main()
