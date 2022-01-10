@@ -14,18 +14,15 @@ async def write_timeseries_points(session: Connection.Session):
 
     # Defining a time interval to write timeseries to
     start = datetime(2016, 1, 1, 1, 0, 0)
-    end = datetime(2016, 1, 1, 3, 0, 0)
+    end = datetime(2016, 1, 1, 3, 0, 0) # end time must be greater than last point to be read/written
 
     # Defining the data we want to write
     # Mesh data is organized as an Arrow table with the following schema:
-    # utc_time - [pa.date64] as a UTC Unix timestamp expressed in milliseconds
+    # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
-        pa.array([int(datetime(2016, 1, 1, 1, 0, 0, tzinfo=timezone.utc).timestamp() * 1000),
-                  int(datetime(2016, 1, 1, 2, 0, 0, tzinfo=timezone.utc).timestamp() * 1000),
-                  int(datetime(2016, 1, 1, 3, 0, 0,  tzinfo=timezone.utc).timestamp() * 1000)]
-                 ),
+        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1),  datetime(2016, 5, 1, 2)]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
