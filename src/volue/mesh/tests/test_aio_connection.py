@@ -72,7 +72,7 @@ async def test_write_timeseries_points_async():
             assert flags[0].as_py() == 0
             assert flags[1].as_py() == 0
             assert flags[2].as_py() == 0
-            values = lags = written_ts[0].arrow_table[2]
+            values = written_ts[0].arrow_table[2]
             assert values[0].as_py() == 0
             assert values[1].as_py() == 10
             assert values[2].as_py() == 1000
@@ -320,7 +320,7 @@ async def test_search_timeseries_attribute_async():
                 reply = await session.search_for_timeseries_attribute(**test_case)
                 assert reply is not None
                 assert len(reply) == 3
-                # One the results should be the one we are looking for
+                # The results should be the one we are looking for
                 assert any(attribute.path == full_name for attribute in reply)
                 match = next((x for x in reply if x.path == full_name), None)
                 assert match is not None
@@ -361,6 +361,8 @@ async def test_write_timeseries_points_using_timskey_async():
             pytest.fail("Could not write timeseries points")
 
 
+@pytest.mark.asyncio
+@pytest.mark.database
 async def test_commit():
     """Check that commit keeps changes between sessions"""
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -395,9 +397,9 @@ async def test_commit():
             assert attribute3.local_expression == new_local_expression
 
         except grpc.RpcError as e:
-            pytest.fail(f"Could not commit changes.")
+            pytest.fail("Could not commit changes.")
 
-    with connection.create_session() as session2:
+    async with connection.create_session() as session2:
         try:
             # check that the change is still there
             attribute4 = await session2.get_timeseries_attribute(model=attribute.model, path=full_name)
@@ -414,7 +416,41 @@ async def test_commit():
             assert attribute5.local_expression == old_local_expression
 
         except grpc.RpcError as e:
-            pytest.fail(f"Could not restore commited changes.")
+            pytest.fail("Could not restore commited changes.")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_rollback():
+    """Check that rollback discards changes made in the current session."""
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        try:
+            _, full_name = get_timeseries_1()
+            new_path = "/new_path"
+
+            # check base line
+            timeseries_info0 = await session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info0.path != new_path
+
+            # change something
+            await session.update_timeseries_resource_info(path=full_name, new_path=new_path)
+
+            # check that the change is in the session
+            timeseries_info1 = await session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info1.path == new_path
+
+            # rollback
+            await session.rollback()
+
+            # check that changes have been discarded
+            timeseries_info2 = await session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info2.path != new_path
+
+        except grpc.RpcError as e:
+            pytest.fail("Could not rollback changes.")
 
 if __name__ == '__main__':
     pytest.main()

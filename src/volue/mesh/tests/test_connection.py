@@ -319,7 +319,7 @@ def test_search_timeseries_attribute():
                 reply = session.search_for_timeseries_attribute(**test_case)
                 assert reply is not None
                 assert len(reply) == 3
-                # One the results should be the one we are looking for
+                # The results should be the one we are looking for
                 assert any(attribute.path == full_name for attribute in reply)
                 match = next((x for x in reply if x.path == full_name), None)
                 assert match is not None
