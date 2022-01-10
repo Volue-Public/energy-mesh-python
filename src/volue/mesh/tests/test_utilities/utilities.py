@@ -159,7 +159,7 @@ def get_timeseries_2():
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
-        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1),  datetime(2016, 5, 1, 2)]),
+        pa.array([datetime(2016, 1, 1, 1, 0, 0), datetime(2016, 1, 1, 2, 0, 0),  datetime(2016, 1, 1, 3, 0, 0)]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)

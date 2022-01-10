@@ -61,13 +61,13 @@ async def test_write_timeseries_points_async():
         try:
             await session.write_timeseries_points(timeseries)
             written_ts = await session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
-                                                              end_time=datetime(2016, 1, 1, 4, 0, 0),
+                                                              end_time=datetime(2016, 1, 1, 3, 0, 0),
                                                               uuid_id=ts_entry.id)
             assert written_ts[0].number_of_points == 3
             utc_time = written_ts[0].arrow_table[0]
-            assert utc_time[0].as_py() == datetime(2016, 1, 1, 2, 0, 0)
-            assert utc_time[1].as_py() == datetime(2016, 1, 1, 3, 0, 0)
-            assert utc_time[2].as_py() == datetime(2016, 1, 1, 4, 0, 0)
+            assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
+            assert utc_time[1].as_py() == datetime(2016, 1, 1, 2, 0, 0)
+            assert utc_time[2].as_py() == datetime(2016, 1, 1, 3, 0, 0)
             flags = written_ts[0].arrow_table[1]
             assert flags[0].as_py() == 0
             assert flags[1].as_py() == 0
