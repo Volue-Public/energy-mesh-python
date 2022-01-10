@@ -18,7 +18,7 @@ async def test_read_timeseries_points_async():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.SECURE_CONNECTION)
     async with connection.create_session() as session:
-        timeseries, start_time, end_time, modified_table, full_name = get_timeseries_2()
+        timeseries, start_time, end_time, _, full_name = get_timeseries_2()
         try:
             test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
             test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": timeseries.id}
@@ -35,9 +35,9 @@ async def test_read_timeseries_points_async():
                     assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
                 # check flags
                 flags = ts.arrow_table[1]
-                assert flags[3].as_py() == 1140850688
+                assert flags[3].as_py() == 1140850688  # Common::TimeseriesPointFlags::NotOk
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert flags[number].as_py() == 0
+                    assert flags[number].as_py() == 0  # Common::TimeseriesPointFlags::Ok
                 # check values
                 values = ts.arrow_table[2]
                 values[3].as_py()
@@ -348,7 +348,7 @@ async def test_write_timeseries_points_using_timskey_async():
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.SECURE_CONNECTION)
-    ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_2()
+    ts_entry, start_time, end_time, modified_table, _ = get_timeseries_2()
     timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time,
                             timskey=ts_entry.timeseries_key)
 
@@ -360,6 +360,61 @@ async def test_write_timeseries_points_using_timskey_async():
         except grpc.RpcError:
             pytest.fail("Could not write timeseries points")
 
+
+async def test_commit():
+    """Check that commit keeps changes between sessions"""
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    attribute, full_name = get_timeseries_attribute_1()
+    new_local_expression = "something"
+    old_local_expression = attribute.local_expression
+
+    async with connection.create_session() as session1:
+        try:
+            # check base line
+            attribute1 = await session1.get_timeseries_attribute(model=attribute.model, path=full_name)
+            old_local_expression = attribute1.local_expression
+            assert attribute1.local_expression != new_local_expression
+
+            # change something
+            await session1.update_timeseries_attribute(path=full_name, new_local_expression=new_local_expression)
+
+            # commit
+            await session1.commit()
+
+            # check that the change is in the session
+            attribute2 = await session1.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute2.local_expression == new_local_expression
+
+            # rollback
+            await session1.rollback()
+
+            # check that changes are still there
+            attribute3 = await session1.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute3.local_expression == new_local_expression
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not commit changes.")
+
+    with connection.create_session() as session2:
+        try:
+            # check that the change is still there
+            attribute4 = await session2.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute4.local_expression == new_local_expression
+
+            # change it back to what is was originally
+            await session2.update_timeseries_attribute(path=full_name, new_local_expression=old_local_expression)
+
+            # commit
+            await session2.commit()
+
+            # check that status has been restored (important to keep db clean)
+            attribute5 = await session2.get_timeseries_attribute(model=attribute.model, path=full_name)
+            assert attribute5.local_expression == old_local_expression
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not restore commited changes.")
 
 if __name__ == '__main__':
     pytest.main()

@@ -35,9 +35,9 @@ def test_read_timeseries_points():
                     assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
                 # check flags
                 flags = ts.arrow_table[1]
-                assert flags[3].as_py() == 1140850688
+                assert flags[3].as_py() == 1140850688  # Common::TimeseriesPointFlags::NotOk
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert flags[number].as_py() == 0
+                    assert flags[number].as_py() == 0  # Common::TimeseriesPointFlags::Ok
                 # check values
                 values = ts.arrow_table[2]
                 values[3].as_py()
@@ -71,7 +71,7 @@ def test_write_timeseries_points():
             assert flags[0].as_py() == 0
             assert flags[1].as_py() == 0
             assert flags[2].as_py() == 0
-            values = lags = written_ts[0].arrow_table[2]
+            values = written_ts[0].arrow_table[2]
             assert values[0].as_py() == 0
             assert values[1].as_py() == 10
             assert values[2].as_py() == 1000
@@ -347,7 +347,7 @@ def test_rollback():
 
     with connection.create_session() as session:
         try:
-            ts_entry, full_name = get_timeseries_1()
+            _, full_name = get_timeseries_1()
             new_path = "/new_path"
 
             # check base line
@@ -369,7 +369,7 @@ def test_rollback():
             assert timeseries_info2.path != new_path
 
         except grpc.RpcError as e:
-            pytest.fail(f"Could not rollback changes.")
+            pytest.fail("Could not rollback changes.")
 
 
 def test_commit():
@@ -406,7 +406,7 @@ def test_commit():
             assert attribute3.local_expression == new_local_expression
 
         except grpc.RpcError as e:
-            pytest.fail(f"Could not commit changes.")
+            pytest.fail("Could not commit changes.")
 
     with connection.create_session() as session2:
         try:
@@ -425,7 +425,7 @@ def test_commit():
             assert attribute5.local_expression == old_local_expression
 
         except grpc.RpcError as e:
-            pytest.fail(f"Could not restore commited changes.")
+            pytest.fail("Could not restore commited changes.")
 
 
 if __name__ == '__main__':
