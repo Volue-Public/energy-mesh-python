@@ -1,4 +1,3 @@
-from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Connection, Timeseries
 from volue.mesh.examples import _get_connection_info
 
@@ -28,6 +27,7 @@ def main(address, port, secure_connection):
 
         # pick the first timeseries and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
+        print('Working on timeseries with path: ' + timeseries_attribute.path)
 
         # check for example the unit of measurement or curve type
         print('Unit of measurement: ' + timeseries_attribute.entry.unit_of_measurement)
@@ -39,6 +39,7 @@ def main(address, port, secure_connection):
             # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
             # flags - [pa.uint32]
             # value - [pa.float64]
+
             timestamp_1 = datetime(2016, 5, 1, 2)  # timezone provided in timeseries timestamps will be discarded, it will be treated as UTC
             timestamp_2 = datetime(2016, 5, 2, 4)
             timestamp_3 = datetime(2016, 5, 3, 18)
@@ -73,6 +74,9 @@ def main(address, port, secure_connection):
             print(pandas_series)
 
             # do some further processing
+            
+            # optionally discard changes
+            session.rollback()
 
         except grpc.RpcError as e:
             print(f"Could not read timeseries points {e}")

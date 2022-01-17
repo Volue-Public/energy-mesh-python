@@ -37,6 +37,9 @@ volue.mesh.tests
 .. automodule:: volue.mesh.tests.test_examples
 .. automodule:: volue.mesh.tests.test_session
 .. automodule:: volue.mesh.tests.test_timeseries
+.. automodule:: volue.mesh.tests.test_connection
+.. automodule:: volue.mesh.tests.test_aio_connection
+.. automodule:: volue.mesh.tests.test_authentication
 
 
 
