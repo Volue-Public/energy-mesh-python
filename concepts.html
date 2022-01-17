@@ -89,7 +89,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Concepts</a><ul>
@@ -264,8 +264,7 @@
 </div>
 <p>The primary data retrieved from the Mesh server is timeseries. Depending on the request, the size of this data can be quite large. A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another. This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python SDK uses <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> to store the data. Several data processing libraries are now supported for this format, including <a class="reference external" href="https://arrow.apache.org/docs/python/numpy.html">numpy</a> and <a class="reference external" href="https://arrow.apache.org/docs/python/pandas.html">pandas</a>.</p>
 <p>Using <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Timeseries in a more complete example</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
@@ -294,6 +293,7 @@
 
         <span class="c1"># pick the first timeseries and do some operations with it</span>
         <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Working on timeseries with path: &#39;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
         <span class="c1"># check for example the unit of measurement or curve type</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unit of measurement: &#39;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="p">)</span>
@@ -305,6 +305,7 @@
             <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
             <span class="c1"># flags - [pa.uint32]</span>
             <span class="c1"># value - [pa.float64]</span>
+
             <span class="n">timestamp_1</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># timezone provided in timeseries timestamps will be discarded, it will be treated as UTC</span>
             <span class="n">timestamp_2</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
             <span class="n">timestamp_3</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">18</span><span class="p">)</span>
@@ -339,6 +340,9 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># do some further processing</span>
+            
+            <span class="c1"># optionally discard changes</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

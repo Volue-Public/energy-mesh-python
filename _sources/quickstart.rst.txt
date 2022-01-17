@@ -1,4 +1,4 @@
-Quickstart
+Quickstart guide
 -----------------
 
 Here is a quick start guide to setup your first project using the library.

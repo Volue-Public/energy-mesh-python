@@ -87,7 +87,7 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
@@ -305,12 +305,19 @@
                 <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                 <span class="n">entry_id</span><span class="o">=</span><span class="n">entry_id</span>
             <span class="p">)</span>
+
+            <span class="n">paths</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">if</span> <span class="n">new_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">request</span><span class="o">.</span><span class="n">new_path</span> <span class="o">=</span> <span class="n">new_path</span>
+                <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_path&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">new_curve_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">request</span><span class="o">.</span><span class="n">new_curve_type</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">to_proto_curve_type</span><span class="p">(</span><span class="n">new_curve_type</span><span class="p">))</span>
+                <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_curve_type&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">new_unit_of_measurement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">request</span><span class="o">.</span><span class="n">new_unit_of_measurement</span> <span class="o">=</span> <span class="n">new_unit_of_measurement</span>
+                <span class="n">paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_unit_of_measurement&quot;</span><span class="p">)</span>
+
+            <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">paths</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateTimeseriesEntry</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 

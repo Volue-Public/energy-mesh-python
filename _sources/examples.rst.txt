@@ -8,6 +8,30 @@ Running examples
 .. literalinclude:: /../../src/volue/mesh/examples/run_examples.py
    :language: python
 
+Quickstart
+*****************
+.. literalinclude:: /../../src/volue/mesh/examples/quickstart.py
+   :language: python
+
+Using timeseries with pandas
+********************************
+.. literalinclude:: /../../src/volue/mesh/examples/timeseries_operations.py
+   :language: python
+
+Authorization
+*****************
+.. literalinclude:: /../../src/volue/mesh/examples/authorization.py
+   :language: python
+
+Connect
+*****************
+.. literalinclude:: /../../src/volue/mesh/examples/connect_synchronously.py
+   :language: python
+
+Connect, asynchronously
+*************************
+.. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
+   :language: python
 
 Get version
 ************
@@ -36,4 +60,9 @@ Write timeseries
 Write timeseries, asynchronously
 ********************************
 .. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points_async.py
+   :language: python
+
+Running tests
+********************************
+.. literalinclude:: /../../src/volue/mesh/examples/run_tests.py
    :language: python

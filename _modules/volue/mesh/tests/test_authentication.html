@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>volue.mesh.tests.test_authentication &mdash; volue.mesh 0.1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>volue.mesh.tests.test_authentication</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for volue.mesh.tests.test_authentication</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Credentials</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
+<span class="kn">import</span> <span class="nn">volue.mesh.tests.test_utilities.server_config</span> <span class="k">as</span> <span class="nn">sc</span>
+
+
+<div class="viewcode-block" id="auth_metadata_plugin"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.auth_metadata_plugin">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">auth_metadata_plugin</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Yields Authentication object. No clean-up is done (it requires Connection object)</span>
+<span class="sd">    Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server.&quot;&quot;&quot;</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">()</span>
+    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Authentication</span><span class="p">(</span><span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="connection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.connection">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span> <span class="nf">connection</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Yields Connection object and revokes access token in clean-up.&quot;&quot;&quot;</span>
+    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
+                      <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                      <span class="kc">True</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
+                      <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">conn</span>
+
+    <span class="c1"># clean-up</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="aconnection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.aconnection">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">aconnection</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Yields AsyncConnection object and revokes access token in clean-up.&quot;&quot;&quot;</span>
+    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
+    <span class="n">aconn</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="kc">True</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
+                            <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="k">yield</span> <span class="n">aconn</span>
+
+    <span class="c1"># clean-up</span>
+    <span class="k">await</span> <span class="n">aconn</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="test_auth_metadata_plugin_obtains_valid_token_in_init"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_auth_metadata_plugin_obtains_valid_token_in_init">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">def</span> <span class="nf">test_auth_metadata_plugin_obtains_valid_token_in_init</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if newly created Authentication object has obtained valid Mesh token.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="test_delete_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_delete_access_token">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">def</span> <span class="nf">test_delete_access_token</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if deleting access token correctly resets token class members.&quot;&quot;&quot;</span>
+    <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">delete_access_token</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="ow">is</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="test_is_valid_token_returns_false_for_deleted_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_is_valid_token_returns_false_for_deleted_access_token">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">def</span> <span class="nf">test_is_valid_token_returns_false_for_deleted_access_token</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if after deleting access token the validation method will return False.&quot;&quot;&quot;</span>
+    <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">delete_access_token</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="test_auth_metadata_plugin_obtains_correctly_new_token_after_delete"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_auth_metadata_plugin_obtains_correctly_new_token_after_delete">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">def</span> <span class="nf">test_auth_metadata_plugin_obtains_correctly_new_token_after_delete</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if after deleting access token a new one is correctly obtained.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
+    <span class="n">previous_token</span> <span class="o">=</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span>
+    <span class="n">previous_token_expiration_date</span> <span class="o">=</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token_expiration_date</span>
+
+    <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">delete_access_token</span><span class="p">()</span>
+    <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
+    <span class="n">new_token</span> <span class="o">=</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span>
+    <span class="n">new_token_expiration_date</span> <span class="o">=</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token_expiration_date</span>
+
+    <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">new_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">new_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">previous_token</span>
+    <span class="k">assert</span> <span class="n">previous_token_expiration_date</span> <span class="o">&lt;</span> <span class="n">new_token_expiration_date</span></div>
+
+
+<div class="viewcode-block" id="test_connection_revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_connection_revoke_access_token">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">def</span> <span class="nf">test_connection_revoke_access_token</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if revoking access token from Connection class correctly invalidates it.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">connection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">connection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="test_async_connection_revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_async_connection_revoke_access_token">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_connection_revoke_access_token</span><span class="p">(</span><span class="n">aconnection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if revoking access token from AsyncConnection class correctly invalidates it.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="test_connection_get_user_identity"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_connection_get_user_identity">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">def</span> <span class="nf">test_connection_get_user_identity</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if getting user identity from Connection class returns something.&quot;&quot;&quot;</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="test_async_connection_get_user_identity"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_async_connection_get_user_identity">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_connection_get_user_identity</span><span class="p">(</span><span class="n">aconnection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if getting user identity from AsyncConnection class returns something.&quot;&quot;&quot;</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

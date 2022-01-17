@@ -4,7 +4,7 @@ Tests
 The Mesh Python SDK is shipped with tests that are used to verify its functionality.
 
 .. warning::
-   Some tests are written to read or write data to or from the Mesh servers database. These tests are marked with database. See :issue:`61` for a discussion around this.
+   Some tests are written to read or write data to or from the Mesh servers database. These tests are marked with database.
 
 Preparations
 *****************
