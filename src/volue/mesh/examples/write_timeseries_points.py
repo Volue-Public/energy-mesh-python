@@ -12,8 +12,8 @@ def write_timeseries_points(session: Connection.Session):
     timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
 
     # Defining a time interval to write timeseries to
-    start = datetime(2016, 1, 1, 1, 0, 0)
-    end = datetime(2016, 1, 1, 3, 0, 0) # end time must be greater than last point to be read/written
+    start = datetime(2016, 1, 1, 1)
+    end = datetime(2016, 1, 1, 4)  # end time must be greater than last point to be read/written
 
     # Defining the data we want to write
     # Mesh data is organized as an Arrow table with the following schema:
@@ -21,7 +21,7 @@ def write_timeseries_points(session: Connection.Session):
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
-        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1),  datetime(2016, 5, 1, 2)]),
+        pa.array([datetime(2016, 1, 1, 1), datetime(2016, 1, 1, 2),  datetime(2016, 1, 1, 3)]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
