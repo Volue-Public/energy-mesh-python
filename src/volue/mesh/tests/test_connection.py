@@ -18,7 +18,7 @@ def test_read_timeseries_points():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
     with connection.create_session() as session:
-        timeseries, start_time, end_time, modified_table, full_name = get_timeseries_2()
+        timeseries, start_time, end_time, _, full_name = get_timeseries_2()
         try:
             test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
             test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": timeseries.id}
@@ -340,6 +340,7 @@ def test_search_timeseries_attribute():
             pytest.fail(f"Could not update timeseries attribute: {e}")
 
 
+@pytest.mark.database
 def test_rollback():
     """Check that rollback discards changes made in the current session."""
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -372,6 +373,7 @@ def test_rollback():
             pytest.fail("Could not rollback changes.")
 
 
+@pytest.mark.database
 def test_commit():
     """Check that commit keeps changes between sessions"""
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
