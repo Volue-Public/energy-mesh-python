@@ -29,6 +29,11 @@ class Timeseries:
         MONTH = 5
         YEAR = 6
 
+    class PointFlags(Enum):
+        OK = 0
+        MISSING = 0x04000000
+        NOT_OK = 0x40000000
+
     """Represents a mesh timeserie.
 
     Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)

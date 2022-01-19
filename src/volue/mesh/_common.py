@@ -1,11 +1,42 @@
 import uuid
 import datetime
+from enum import Enum
+from typing import List
 
 import pyarrow as pa
 
 from volue.mesh import Timeseries
 from volue.mesh.proto import mesh_pb2
 from google.protobuf import timestamp_pb2
+
+class CalendarType(Enum):
+    LOCAL    = 0
+    DATABASE = 1
+    UTC      = 2
+    UNKNOWN  = 3  # TODO: should we expose it? Is it used in some scenario?
+
+
+# TODO: there is already a Resolution enum in Timeseries, but it contains 'BREAKPOINT' and is missing 'MIN', 'MIN5' and 'MIN10'
+class TransformationResolution(Enum):
+    MIN   = 0
+    MIN5  = 1
+    MIN10 = 2
+    MIN15 = 3
+    HOUR  = 4
+    DAY   = 5
+    WEEK  = 6
+    MONTH = 7
+    YEAR  = 8
+
+class TransformationMethod(Enum):
+    SUM   = 0
+    SUMI  = 1
+    AVG   = 2  # equivalent to MEAN
+    AVGI  = 3
+    FIRST = 5
+    LAST  = 6
+    MIN   = 7
+    MAX   = 8
 
 def to_proto_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
     """Convert from UUID format to Microsoft's GUID format.
@@ -85,21 +116,27 @@ def to_proto_timeseries(timeseries: Timeseries) -> mesh_pb2.Timeseries:
     return proto_timeserie
 
 
-def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> [Timeseries]:
-    """Converts a timeseries reply into a Timeseries 
+def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
+    """Converts a timeseries reply into a Timeseries
 
     Returns:
-        object: 
+        object:
     """
     timeseries = []
     for timeserie in reply.timeseries:
         resolution = timeserie.resolution
-        object_id = timeserie.object_id
         interval = timeserie.interval
         reader = pa.ipc.open_stream(timeserie.data)
         table = reader.read_all()
-        ts = Timeseries(table, resolution,
-                        interval.start_time, interval.end_time,
-                        object_id.timskey, from_proto_guid(object_id.guid), object_id.full_name)
+
+        if timeserie.HasField("object_id"):
+            object_id = timeserie.object_id
+            ts = Timeseries(table, resolution,
+                            interval.start_time, interval.end_time,
+                            object_id.timskey, from_proto_guid(object_id.guid), object_id.full_name)
+        else:
+            ts = Timeseries(table, resolution,
+                            interval.start_time, interval.end_time)
+
         timeseries.append(ts)
     return timeseries

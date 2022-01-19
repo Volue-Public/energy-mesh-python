@@ -2,6 +2,7 @@ import uuid, math
 from datetime import date, datetime
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
+from volue.mesh._common import CalendarType, TransformationMethod, TransformationResolution
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
@@ -35,9 +36,9 @@ async def test_read_timeseries_points_async():
                     assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
                 # check flags
                 flags = ts.arrow_table[1]
-                assert flags[3].as_py() == 1140850688  # Common::TimeseriesPointFlags::NotOk
+                assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert flags[number].as_py() == 0  # Common::TimeseriesPointFlags::Ok
+                    assert flags[number].as_py() == Timeseries.PointFlags.OK.value
                 # check values
                 values = ts.arrow_table[2]
                 values[3].as_py()
@@ -451,6 +452,61 @@ async def test_rollback():
 
         except grpc.RpcError as e:
             pytest.fail("Could not rollback changes.")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_read_transformed_timeseries_points():
+    """Check that transformed timeseries points can be read"""
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        resolution = TransformationResolution.MIN15
+        method=TransformationMethod.SUM
+        calendar_type=CalendarType.LOCAL
+        _, full_name = get_timeseries_attribute_2()
+
+        try:
+            test_case_1 = {"start_time": start_time, "end_time": end_time, "resolution": resolution, "method": method, "full_name": full_name}
+            test_case_2 = {"start_time": start_time, "end_time": end_time, "resolution": resolution, "method": method, "calendar_type": calendar_type, "full_name": full_name}
+            test_cases = [test_case_1, test_case_2]
+            for test_case in test_cases:
+                reply_timeseries = await session.read_transformed_timeseries_points(**test_case)
+
+                assert len(reply_timeseries) == 1
+                ts = reply_timeseries[0]
+                assert ts.number_of_points == 33
+                # check timestamps
+                utc_date = ts.arrow_table[0]
+                for index, date in enumerate(utc_date):
+                    hours = int(index / 4) + 1
+                    minutes = (index % 4) * 15
+                    assert date.as_py() == datetime(2016, 1, 1, hours, minutes)
+
+                # check flags
+                flags = ts.arrow_table[1]
+                for index, flag in enumerate(flags):
+                    if 9 <= index <= 11:
+                        assert flag.as_py() == Timeseries.PointFlags.MISSING.value
+                    elif 12 <= index <= 15:
+                        assert flag.as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
+                    else:
+                        assert flag.as_py() == Timeseries.PointFlags.OK.value
+
+                # check values
+                values = ts.arrow_table[2]
+                for index, value in enumerate(values):
+                    if 9 <= index <= 15:
+                        assert math.isnan(value.as_py())
+                    else:
+                        assert value.as_py() == 0.25 + index * 0.0625
+
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
 
 if __name__ == '__main__':
     pytest.main()

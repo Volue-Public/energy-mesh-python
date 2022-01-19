@@ -89,6 +89,53 @@ class Connection:
                 ))
             return read_proto_reply(reply)
 
+        async def read_transformed_timeseries_points(self,
+                                               start_time: datetime,
+                                               end_time: datetime,
+                                               resolution: TransformationResolution = None,
+                                               method: TransformationMethod = None,
+                                               calendar_type: CalendarType = None,
+                                               uuid_id: uuid.UUID = None,
+                                               full_name: str = None,
+                                               ) -> List[Timeseries]:
+            """
+            |coro|
+
+            The returned timeseries does not have set the following fields:
+            - timskey
+            - uuid_id
+            - full_name
+
+            Raises:
+                grpc.RpcError:
+                TypeError:
+            """
+            attribute_id = mesh_pb2.AttributeId()
+            if uuid_id is not None:
+                attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
+            elif full_name is not None:
+                attribute_id.path = full_name
+            else:
+                raise TypeError("need to specify either uuid_id or full_name.")
+
+            expression = f"## = @TRANSFORM(@t(), '{resolution.name}', '{method.name}'"
+            if calendar_type is not None:
+                expression = f"{expression}, '{calendar_type.name}'"
+            expression = f"{expression})\n"
+
+            reply = await self.mesh_service.RunCalculation(
+                mesh_pb2.CalculationRequest(
+                    session_id=to_proto_guid(self.session_id),
+                    expression=expression,
+                    interval=to_protobuf_utcinterval(start_time, end_time),
+                    relative_to=attribute_id
+                ))
+
+            if not reply.HasField("timeseries_results"):
+                raise RuntimeError("invalid transformation result")
+
+            return read_proto_reply(reply.timeseries_results)
+
         async def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
             |coro|
