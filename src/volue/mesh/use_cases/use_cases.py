@@ -1,138 +1,220 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import uuid
 import pandas as pd
+import pyarrow as pa
 import matplotlib.pyplot as plt
 import grpc
 import sys
-from volue.mesh import Connection, from_proto_guid
+from volue.mesh import Connection, Timeseries, from_proto_guid
 
-HOST = "localhost"
+"""
+These use cases was designed to work with a real customer database (TEKICC_ST@MULLIGAN)
+"""
+
+# Ip address for the mesh server
+HOST = "localhost"  # "tdtrhsmg125b2"
+# Port open for gRPC
 PORT = 50051
+# Use matplotlib to visualize results
 SHOW_PLOT = True
+# Save timeseries to cvs file
 SAVE_TO_CVS = True
 
 
-def plot_timeseries(timeseries_pandas, title=''):
-    print(timeseries_pandas)
-    timeseries_pandas.plot(kind='line', x='utc_time', y='value', color='red', figsize=(14, 7), title=title)
-    plt.show()
+def plot_timeseries(identifier_and_pandas_dataframes: [], title: str):
+    """
+    Plots a list of pandas dataframes in a figure.
+    """
+    # TODO: move legend
+    if SHOW_PLOT:
+        legends = []
+        for a_pair in identifier_and_pandas_dataframes:
+            timeseries_identifier = a_pair[0]
+            timeseries_pandas_dataframe = a_pair[1]
+            legends.append(timeseries_identifier)
+            plt.plot(timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value'])
+        plt.ylabel('value')
+        plt.xlabel('utc time')
+        plt.legend(legends)
+        plt.title(title)
+        figure_manager = plt.get_current_fig_manager()
+        figure_manager.window.state('zoomed')  # Fullscreen
+        plt.show()
 
 
-def save_timeseries_to_csv(timeseries_pandas, timeseries_path, file_prefix):
-    filename = timeseries_path.split('/')[-1]
-    timeseries_pandas.to_csv(file_prefix + '_' + filename + '.csv', index=False)
+def save_timeseries_to_csv(identifier_and_pandas_dataframes: [], file_prefix):
+    """
+    Saves a pandas dataframe to a cvs file.
+    """
+    if SAVE_TO_CVS:
+        for a_pair in identifier_and_pandas_dataframes:
+            timeseries_identifier = str(a_pair[0]).replace('/', '.')
+            timeseries_pandas_dataframe = a_pair[1]
+            timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
 
 
 def use_case_1():
     """
-    Søk1:
-    *[.Type=HydroPlant].Production_operative
-    Startpunkt = 801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Scenario:
+    We want to find all timeseries which show the production of a hydro plant.
+
+    Start point:        Model/MeshTEK/Mesh which has guid 801896b0-d448-4299-874a-3ecf8ab0e2d4
+    Search expression:  *[.Type=HydroPlant].Production_operative
+    Time interval:      1.9.2021 - 1.10.2021
+
     """
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
+            use_case_name = "Use case 1"
             model = "MeshTEK"
             start_object_guid = uuid.UUID("801896b0-d448-4299-874a-3ecf8ab0e2d4")  # Model/MeshTEK/Mesh
-            start = datetime(2021, 9, 1, tzinfo=timezone.utc)
-            end = datetime(2021, 10, 1, tzinfo=timezone.utc)
+            search_query = "*[.Type=HydroPlant].Production_operative"
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
 
-            # Søk1
-            first = session.search_for_timeseries_attribute(model=model, start_object_guid=start_object_guid,
-                                                            query="*[.Type=HydroPlant].Production_operative")
-            print(f"Søk1: Search resulted in {len(first)} items, ids are:")
-            for item in first:
-                print(f"id: {from_proto_guid(item.id)}")
-                print(f"path: {item.path}")
-                ts = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=item.id)
-                print("")
-                ts_pd = ts[0].arrow_table.to_pandas()
-                plot_timeseries(ts_pd, item.path)
-                save_timeseries_to_csv(ts_pd, item.path, 'use_case_1')
+            # Search for mesh objects
+            search_matches = session.search_for_timeseries_attribute(model=model,
+                                                                     start_object_guid=start_object_guid,
+                                                                     query=search_query)
+            print(f"{use_case_name}:\n"
+                  f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            for number, mesh_object in enumerate(search_matches):
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=mesh_object.id)
+                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
+                      f"path: {mesh_object.path} "
+                      f"and {len(timeseries)} timeseries connected to it.")
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: {search_query}")
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_1')
 
         except grpc.RpcError as e:
-            print(f"{e}")
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 def use_case_2():
     """
-    Søk2:
-    *[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative
-    Startpunkt = 801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Scenario:
+    We want to find timeseries which contain reservoir volume for all reservoirs in a Norway (Norge).
+
+    Start point:        Model/MeshTEK/Mesh which has guid 801896b0-d448-4299-874a-3ecf8ab0e2d4
+    Search expression:  *[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative
+    Time interval:      1.9.2021 - 1.10.2021
+
     """
 
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
+            use_case_name = "Use case 2"
             model = "MeshTEK"
             start_object_guid = uuid.UUID("801896b0-d448-4299-874a-3ecf8ab0e2d4")  # Model/MeshTEK/Mesh
-            start = datetime(2021, 9, 1, tzinfo=timezone.utc)
-            end = datetime(2021, 10, 1, tzinfo=timezone.utc)
+            search_query = "*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative"
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
 
-            # Søk2
-            second = session.search_for_timeseries_attribute(model=model, start_object_guid=start_object_guid,
-                                                             query="*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative")
-            print(f"\nSøk2: Search resulted in {len(second)} items, ids are:")
-            for item in second:
-                print(f"path: {item.path}")
-                ts = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=from_proto_guid(item.id))
-                ts_pd = ts[0].arrow_table.to_pandas()
-                plot_timeseries(ts_pd, item.path)
-                save_timeseries_to_csv(ts_pd, item.path, 'use_case_2')
+            # Search for mesh objects
+            search_matches = session.search_for_timeseries_attribute(model=model,
+                                                                     start_object_guid=start_object_guid,
+                                                                     query=search_query)
+            print(f"{use_case_name}:\n"
+                  f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            for number, mesh_object in enumerate(search_matches):
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=mesh_object.id)
+                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
+                      f"path: {mesh_object.path} "
+                      f"and {len(timeseries)} timeseries connected to it.")
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: {search_query}")
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_2')
 
         except grpc.RpcError as e:
-            print(f"{e}")
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 def use_case_3():
     """
-    Søk3:
-    TimsKey=530,536,537,543,556
-    Startpunkt = 801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Scenario:
+    We want to find timeseries which has a known timskey.
+
+    Timskeys:           [530, 536, 537, 543, 556]
+    Time interval:      1.9.2021 - 1.10.2021
+
     """
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
-            start = datetime(2021, 9, 1, tzinfo=timezone.utc)
-            end = datetime(2021, 10, 1, tzinfo=timezone.utc)
-
-            # Søk3:
-            print("\nSøk3:")
+            use_case_name = "Use case 3"
+            model = "MeshTEK"
             timskeys = [530, 536, 537, 543, 556]
-            for timskey in timskeys:
-                entry = session.get_timeseries_resource_info(timskey=timskey)
-                print(f"Guid for timeseries entry with timskey: {timskey} is {entry.id}")
-                ts = session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey)
-                ts_pd = ts[0].arrow_table.to_pandas()
-                plot_timeseries(ts_pd, str(timskey))
-                save_timeseries_to_csv(ts_pd, str(timskey), 'use_case_3')
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
 
+            timskey_and_pandas_dataframe = []
+            for timskey in timskeys:
+
+                # Get information about the timeseries
+                mesh_object = session.get_timeseries_resource_info(timskey=timskey)
+                print(f"Guid for timeseries entry with timskey: {timskey} is {mesh_object.id}")
+
+                # Retrieve the timeseries values in a given interval
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            timskey=timskey)
+                print(f"Object with timskey: {timskey} has id: {from_proto_guid(mesh_object.id)}, "
+                      f"path: {mesh_object.path} "
+                      f"and {len(timeseries)} timeseries connected to it.")
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(timskey_and_pandas_dataframe, f"{use_case_name}: Timskeys: {timskeys}")
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_3')
 
         except grpc.RpcError as e:
-            print(f"{e}")
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 def use_case_4():
     """
-    Søk4:
-    GUID=
-    3fd4ed37-2114-4d95-af90-02b96bd993ed,
-    80ea68d4-2859-49a3-ae41-abe6a8b50b30,
-    d314151b-2014-4326-95e5-e65b3f72c897,
-    867f8b45-5a5c-4ddb-97f4-4ea823ad7b3f,
-    840f891c-8850-4af8-8297-774585eace1e
-    Startpunkt = 801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Scenario:
+    We want to find timeseries, and its related information, which is connected to an object with a known guid.
+
+    Guids:              [
+                        "3fd4ed37-2114-4d95-af90-02b96bd993ed",
+                        "80ea68d4-2859-49a3-ae41-abe6a8b50b30",
+                        "d314151b-2014-4326-95e5-e65b3f72c897",
+                        "867f8b45-5a5c-4ddb-97f4-4ea823ad7b3f",
+                        "840f891c-8850-4af8-8297-774585eace1e"
+                        ]
+    Time interval:      1.9.2021 - 1.10.2021
+
     """
 
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
+            use_case_name = "Use case 4"
             model = "MeshTEK"
-            start = datetime(2021, 9, 1, tzinfo=timezone.utc)
-            end = datetime(2021, 10, 1, tzinfo=timezone.utc)
-
-            # Søk4:
-            print("\nSøk4:")
             guids = [
                 "3fd4ed37-2114-4d95-af90-02b96bd993ed",
                 "80ea68d4-2859-49a3-ae41-abe6a8b50b30",
@@ -140,128 +222,191 @@ def use_case_4():
                 "867f8b45-5a5c-4ddb-97f4-4ea823ad7b3f",
                 "840f891c-8850-4af8-8297-774585eace1e"
             ]
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
+
+            timskey_and_pandas_dataframe = []
             for guid in guids:
-                entry = session.get_timeseries_attribute(model=model, uuid_id=uuid.UUID(guid))
-                #print(f"Timeseries attribute GUID for timeseries entry with GUID: {guid} is {from_proto_guid(entry.id)}")
-                ts = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=from_proto_guid(entry.id))
-                ts_pd = ts[0].arrow_table.to_pandas()
-                plot_timeseries(ts_pd, entry.path)
-                save_timeseries_to_csv(ts_pd, entry.path, 'use_case_4')
+
+                # Retrieve the timeseries values in a given interval
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=uuid.UUID(guid))
+
+                # Retrieve information connected to the timeseries
+                mesh_information = session.get_timeseries_attribute(model=model,
+                                                                    uuid_id=uuid.UUID(guid))
+
+                print(f"Object with guid: {guid} has path: {mesh_information.path} and "
+                      f"is connected to a timeseries with guid: {from_proto_guid(mesh_information.entry.id)}, "
+                      f"which has the timeseries key: {mesh_information.entry.timeseries_key}")
+
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(timskey_and_pandas_dataframe, f"{use_case_name}: {len(guids)} known guids")
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4')
 
         except grpc.RpcError as e:
-            print(f"{e}")
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 def use_case_5():
     """
-    Startpunkt: 6a55d0e7-6011-41db-8700-f2aba92e945b
-    Model: MeshTEK
-    Type:Cases
-    Name:Cases
+    Scenario:
+    We want to find timeseries, and its related information, which is connected to an object with a known guid.
 
-    GUID 1: ff1db73f-8c8a-42f8-a44a-4bbb420874c1
-    GUID 2: 801896b0-d448-4299-874a-3ecf8ab0e2d4
+    Guids:              [
+                        "ff1db73f-8c8a-42f8-a44a-4bbb420874c1",  # (TimeseriesCalculation) Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1960.ReservoirVolume/ReservoirVolume
+                        "801896b0-d448-4299-874a-3ecf8ab0e2d4"  # (Component) Model/MeshTEK/Mesh - this won't work
+                        ]
+    Time interval:      1.9.2021 - 1.10.2021
+
     """
 
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
-    start = datetime(2021, 10, 1)
-    end = datetime(2021, 11, 1)
 
     with connection.create_session() as session:
         try:
-            # Not working:
+            use_case_name = "Use case 5"
             model = "MeshTEK"
-            print("\nSøk5:")
             guids = [
-                "ff1db73f-8c8a-42f8-a44a-4bbb420874c1",  # (TimeseriesCalculation) Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1960.ReservoirVolume/ReservoirVolume
+                "ff1db73f-8c8a-42f8-a44a-4bbb420874c1",
                 # "801896b0-d448-4299-874a-3ecf8ab0e2d4"  # (Component) Model/MeshTEK/Mesh - this won't work
-                ]
+            ]
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
+
+            # Find information and timeseries values for known guids.
+            timskey_and_pandas_dataframe = []
             for guid in guids:
-                entry = session.get_timeseries_attribute(model=model, uuid_id=uuid.UUID(guid))
-                # print(f"Timeseries attribute GUID for timeseries entry with GUID: {guid} is {from_proto_guid(entry.id)}")
-                ts = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=from_proto_guid(entry.id))
-                ts_pd = ts[0].arrow_table.to_pandas()
-                plot_timeseries(ts_pd, entry.path)
-                save_timeseries_to_csv(ts_pd, entry.path, 'use_case_5')
+                entry = session.get_timeseries_attribute(model=model,
+                                                         uuid_id=uuid.UUID(guid))
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=from_proto_guid(entry.id))
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    timskey_and_pandas_dataframe.append((entry.path, pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(timskey_and_pandas_dataframe,
+                            f"{use_case_name}: {len(guids)} known guids")
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
 
         except grpc.RpcError as e:
-            print(f"{e}")
+            print(f"{use_case_name} resulted in an error: {e}")
+
 
 def use_case_6():
-
     """
-    Startpunkt: 6a55d0e7-6011-41db-8700-f2aba92e945b
-    Model: MeshTEK
-    Type:Cases
-    Name:Cases
+    Scenario:
+    We want to find a timeseries which does not have any values and is not connected to anything in
+    the mesh model, all we have is a timeseries key.
 
-    TimsKey: 265831
-    (denne tidsserien er ikke knyttet inn i Mesh finnes kun i db,
-    men slik jeg har forstått det skal det være mulig å hente ut dette.
-    Usikker på hva som skal være startpunkt for dette)
+    Timeseries key:     [265831]  # /X/Test/Powel/bsae/, does not contain any values...
+
     """
 
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
-    start = datetime(2021, 9, 1)
-    end = datetime(2021, 10, 1)
 
     with connection.create_session() as session:
         try:
-            # Not working:
-            print("\nSøk6:")
-            timskeys = [265831]  # this timeskey does not have values
-            for timskey in timskeys:
-                #entry = session.get_timeseries_resource_info(timskey=timskey)
-                #print(f"Guid for timeseries entry with timskey: {timskey} is {from_proto_guid(entry.id)}")
-                ts = session.read_timeseries_points(start_time=start, end_time=end, timskey=timskey)
-                ts_pd = ts[0].arrow_table.to_pandas()
-                plot_timeseries(ts_pd, str(timskey))
-                save_timeseries_to_csv(ts_pd, str(timskey), 'use_case_6')
+            use_case_name = "Use case 6"
+            model = "MeshTEK"
+            timskey = 265831
+
+            # Find information about the timeseries with timskey 265831
+            timeseries_not_in_mesh_info = session.get_timeseries_resource_info(timskey=timskey)
+            print(f"Timeseries with timeseries key: {timskey} does not contain any values, "
+                  f"but it has path: {timeseries_not_in_mesh_info.path}, "
+                  f"guid: {from_proto_guid(timeseries_not_in_mesh_info.id)}, "
+                  f"curve {str(timeseries_not_in_mesh_info.curveType).strip()}, "
+                  f"resolution {str(timeseries_not_in_mesh_info.delta_t).strip()} and "
+                  f"unit of measurement: {timeseries_not_in_mesh_info.unit_of_measurement}")
+
         except grpc.RpcError as e:
-            print(f"{e}")
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 def use_case_7():
     """
-    Ny use case for drop 2 - skriving til tidsserie. Samme startpunkt i modellen som tidligere (use case 1)
+    Scenario:
+    We want to write some values to an existing timeseries with a known guid.
 
-    Tidsserien det skal skrives til: bruk GUID'en
+    Guid:              ['3fd4ed37-2114-4d95-af90-02b96bd993ed']  # Model/MeshTEK/Mesh.To_Areas/Norge.To_HydroProduction/Vannkraft.To_WaterCourses/Mørre.To_HydroPlants/Mørre.To_Units/Morre G1.Production_raw
+    Time interval:      28.9.2021, kl 01 - 28.10.2021, kl 24
+    Values:             [11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
+                        9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00]
 
-    !Model: MeshTEK Type: Unit Name:Morre G1 Attribute: Production_raw
-    !@MeshRead('MeshTEK', '*[.Type=Unit&&.Name=Morre G1].Production_raw')
-    ## = @MeshRead('3fd4ed37-2114-4d95-af90-02b96bd993ed')
-
-    Verdier som skal skrives:
-    28/09/21 01	11.50
-    Hour 02	11.91
-    Hour 03	11.88
-    Hour 04	11.86
-    Hour 05	11.66
-    Hour 06	11.73
-    Hour 07	11.80
-    Hour 08	11.88
-    Hour 09	11.97
-    Hour 10	9.87
-    Hour 11	9.47
-    Hour 12	9.05
-    Hour 13	9.20
-    Hour 14	9.00
-    Hour 15	8.91
-    Hour 16	10.62
-    Hour 17	12.00
-    Hour 18	12.07
-    Hour 19	12.00
-    Hour 20	11.78
-    Hour 21	5.08
-    Hour 22	0.00
-    Hour 23	0.00
-    Hour 24	0.00
     """
-    pass
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 7"
+            model = "MeshTEK"
+            guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
+            start = datetime(2021, 9, 28, 0, 0, 0)
+            end = datetime(2021, 9, 29, 1, 0, 0)
+            resolution = timedelta(hours=1.0)
+            timskey_and_pandas_dataframe = []
+
+            # Get timeseries data before write
+            timeseries_before = session.read_timeseries_points(start_time=start,
+                                                               end_time=end,
+                                                               uuid_id=guid)
+            for timeserie in timeseries_before:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
+
+            # Defining the data we want to write
+            # Mesh data is organized as an Arrow table with the following schema:
+            # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
+            # flags - [pa.uint32]
+            # value - [pa.float64]
+            timestamps = []
+            for i in range(1, 24 + 1):
+                timestamps.append(start + resolution * i)
+
+            utc_time = pa.array(timestamps)
+            flags = pa.array([0] * 24)
+            values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
+                               9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
+            arrays = [
+                utc_time,
+                flags,
+                values
+            ]
+            table = pa.Table.from_arrays(arrays=arrays, schema=Timeseries.schema)
+            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
+
+            # Send request to write timeseries based on timskey
+            session.write_timeseries_points(timeserie=timeseries)
+
+            # Get timeseries data before write
+            timeseries_after = session.read_timeseries_points(start_time=start,
+                                                              end_time=end,
+                                                              uuid_id=guid)
+            for timeserie in timeseries_after:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
+
+            # Discard changes
+            session.rollback()
+
+            # Post process data
+            plot_timeseries(timskey_and_pandas_dataframe,
+                            f"{use_case_name}: Before and after writing")
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_7')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 if __name__ == "__main__":
-    # Alle use cases kan vises for perioden 01.9.2021 - 01.10.2021
 
     if len(sys.argv) <= 1:
         usecase = '1'
