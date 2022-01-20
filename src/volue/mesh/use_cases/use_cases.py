@@ -1,4 +1,4 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 import uuid
 import pandas as pd
 import pyarrow as pa
