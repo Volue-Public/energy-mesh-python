@@ -12,7 +12,8 @@ These use cases was designed to work with a real customer database (TEKICC_ST@MU
 """
 
 # Ip address for the mesh server
-HOST = "localhost"  # "tdtrhsmg125b2"
+HOST = "localhost"
+# HOST = "tdtrhsmg125b2"
 # Port open for gRPC
 PORT = 50051
 # Use matplotlib to visualize results
@@ -199,11 +200,7 @@ def use_case_4():
     We want to find timeseries, and its related information, which is connected to an object with a known guid.
 
     Guids:              [
-                        "3fd4ed37-2114-4d95-af90-02b96bd993ed",
-                        "80ea68d4-2859-49a3-ae41-abe6a8b50b30",
-                        "d314151b-2014-4326-95e5-e65b3f72c897",
-                        "867f8b45-5a5c-4ddb-97f4-4ea823ad7b3f",
-                        "840f891c-8850-4af8-8297-774585eace1e"
+                        "ff1db73f-8c8a-42f8-a44a-4bbb420874c1"
                         ]
     Time interval:      1.9.2021 - 1.10.2021
 
@@ -215,11 +212,7 @@ def use_case_4():
             use_case_name = "Use case 4"
             model = "MeshTEK"
             guids = [
-                "3fd4ed37-2114-4d95-af90-02b96bd993ed",
-                "80ea68d4-2859-49a3-ae41-abe6a8b50b30",
-                "d314151b-2014-4326-95e5-e65b3f72c897",
-                "867f8b45-5a5c-4ddb-97f4-4ea823ad7b3f",
-                "840f891c-8850-4af8-8297-774585eace1e"
+                "ff1db73f-8c8a-42f8-a44a-4bbb420874c1"
             ]
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
@@ -247,84 +240,6 @@ def use_case_4():
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe, f"{use_case_name}: {len(guids)} known guids")
             save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4')
-
-        except grpc.RpcError as e:
-            print(f"{use_case_name} resulted in an error: {e}")
-
-
-def use_case_5():
-    """
-    Scenario:
-    We want to find timeseries, and its related information, which is connected to an object with a known guid.
-
-    Guids:              [
-                        "ff1db73f-8c8a-42f8-a44a-4bbb420874c1",  # (TimeseriesCalculation) Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1960.ReservoirVolume/ReservoirVolume
-                        "801896b0-d448-4299-874a-3ecf8ab0e2d4"  # (Component) Model/MeshTEK/Mesh - this won't work
-                        ]
-    Time interval:      1.9.2021 - 1.10.2021
-
-    """
-
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
-
-    with connection.create_session() as session:
-        try:
-            use_case_name = "Use case 5"
-            model = "MeshTEK"
-            guids = [
-                "ff1db73f-8c8a-42f8-a44a-4bbb420874c1",
-                # "801896b0-d448-4299-874a-3ecf8ab0e2d4"  # (Component) Model/MeshTEK/Mesh - this won't work
-            ]
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
-
-            # Find information and timeseries values for known guids.
-            timskey_and_pandas_dataframe = []
-            for guid in guids:
-                entry = session.get_timeseries_attribute(model=model,
-                                                         uuid_id=uuid.UUID(guid))
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            uuid_id=from_proto_guid(entry.id))
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    timskey_and_pandas_dataframe.append((entry.path, pandas_dataframe))
-
-            # Post process data
-            plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: {len(guids)} known guids")
-            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
-
-        except grpc.RpcError as e:
-            print(f"{use_case_name} resulted in an error: {e}")
-
-
-def use_case_6():
-    """
-    Scenario:
-    We want to find a timeseries which does not have any values and is not connected to anything in
-    the mesh model, all we have is a timeseries key.
-
-    Timeseries key:     [265831]  # /X/Test/Powel/bsae/, does not contain any values...
-
-    """
-
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
-
-    with connection.create_session() as session:
-        try:
-            use_case_name = "Use case 6"
-            model = "MeshTEK"
-            timskey = 265831
-
-            # Find information about the timeseries with timskey 265831
-            timeseries_not_in_mesh_info = session.get_timeseries_resource_info(timskey=timskey)
-            print(f"Timeseries with timeseries key: {timskey} does not contain any values, "
-                  f"but it has path: {timeseries_not_in_mesh_info.path}, "
-                  f"guid: {from_proto_guid(timeseries_not_in_mesh_info.id)}, "
-                  f"curve {str(timeseries_not_in_mesh_info.curveType).strip()}, "
-                  f"resolution {str(timeseries_not_in_mesh_info.delta_t).strip()} and "
-                  f"unit of measurement: {timeseries_not_in_mesh_info.unit_of_measurement}")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -570,10 +485,6 @@ if __name__ == "__main__":
         use_case_3()
     elif usecase == '4':
         use_case_4()
-    elif usecase == '5':
-        use_case_5()
-    elif usecase == '6':
-        use_case_6()
     elif usecase == '7':
         use_case_7()
     elif usecase == '8':
