@@ -25,7 +25,6 @@ def plot_timeseries(identifier_and_pandas_dataframes: [], title: str):
     """
     Plots a list of pandas dataframes in a figure.
     """
-    # TODO: move legend
     if SHOW_PLOT:
         legends = []
         for a_pair in identifier_and_pandas_dataframes:
@@ -35,7 +34,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: [], title: str):
             plt.plot(timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value'])
         plt.ylabel('value')
         plt.xlabel('utc time')
-        plt.legend(legends)
+        plt.legend(legends, ncol=2, fontsize=6)
         plt.title(title)
         figure_manager = plt.get_current_fig_manager()
         figure_manager.window.state('zoomed')  # Fullscreen
