@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import grpc
 import sys
 from volue.mesh import Connection, Timeseries, from_proto_guid
+from volue.mesh.proto import mesh_pb2
 
 """
 These use cases was designed to work with a real customer database (TEKICC_ST@MULLIGAN)
@@ -22,7 +23,7 @@ SHOW_PLOT = True
 SAVE_TO_CVS = True
 
 
-def plot_timeseries(identifier_and_pandas_dataframes: [], title: str):
+def plot_timeseries(identifier_and_pandas_dataframes: [], title: str, style: str = 'plot'):
     """
     Plots a list of pandas dataframes in a figure.
     """
@@ -32,7 +33,15 @@ def plot_timeseries(identifier_and_pandas_dataframes: [], title: str):
             timeseries_identifier = a_pair[0]
             timeseries_pandas_dataframe = a_pair[1]
             legends.append(timeseries_identifier)
-            plt.plot(timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value'])
+            data = [timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value']]
+            arguments = {'linestyle': '--',
+                         'marker': 'o'
+                         }
+            if style == 'plot':
+                plt.plot(*data)
+            elif style == 'step':
+                plt.step(*data, **arguments)
+
         plt.ylabel('value')
         plt.xlabel('utc time')
         plt.legend(legends, ncol=2, fontsize=6)
@@ -51,6 +60,33 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: [], file_prefix):
             timeseries_identifier = str(a_pair[0]).replace('/', '.')
             timeseries_pandas_dataframe = a_pair[1]
             timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
+
+
+def get_resource_information(resource_object: mesh_pb2.TimeseriesEntry):
+    """
+    Create a printable message from a resource object
+    """
+    message = f"Timeseries with with timskey: '{resource_object.timeseries_key}' \n"\
+              f"has guid: '{from_proto_guid(resource_object.id)}', \n"\
+              f"path set in the resource silo is: '{resource_object.path}', \n"\
+              f"it's curve '{resource_object.curveType}', \n"\
+              f"resolution '{resource_object.delta_t}' \n"\
+              f"and unit of measurement is: '{resource_object.unit_of_measurement}'\n"
+    return message
+
+
+def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
+    """
+    Create a printable message from a mesh object
+    """
+    message = f"Mesh object with path: '{mesh_object.path}'  \n"\
+              f"has guid: '{from_proto_guid(mesh_object.id)}', \n"\
+              f"its local expresssion is set to: '{mesh_object.local_expression}' \n"\
+              f"and its template expression is: '{mesh_object.template_expression}' \n"
+    if hasattr(mesh_object, 'entry') and (mesh_object.entry.timeseries_key != 0):
+        message += "It has a timeseries entry connected to it: \n"
+        message += get_resource_information(mesh_object.entry)
+    return message
 
 
 def use_case_1():
@@ -72,13 +108,14 @@ def use_case_1():
             search_query = "*[.Type=HydroPlant].Production_operative"
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             # Search for mesh objects
             search_matches = session.search_for_timeseries_attribute(model=model,
                                                                      start_object_guid=start_object_guid,
                                                                      query=search_query)
-            print(f"{use_case_name}:\n"
-                  f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
+            print(f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
 
             # Retrieve timeseries connected to the mesh objects found
             path_and_pandas_dataframe = []
@@ -86,9 +123,9 @@ def use_case_1():
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             uuid_id=mesh_object.id)
-                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
-                      f"path: {mesh_object.path} "
-                      f"and {len(timeseries)} timeseries connected to it.")
+                print(f"{number + 1}. \n"
+                      f"-----\n"
+                      f"" + get_mesh_object_information(mesh_object) + f"")
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
@@ -111,7 +148,6 @@ def use_case_2():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
@@ -121,13 +157,14 @@ def use_case_2():
             search_query = "*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative"
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             # Search for mesh objects
             search_matches = session.search_for_timeseries_attribute(model=model,
                                                                      start_object_guid=start_object_guid,
                                                                      query=search_query)
-            print(f"{use_case_name}:\n"
-                  f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
+            print(f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
 
             # Retrieve timeseries connected to the mesh objects found
             path_and_pandas_dataframe = []
@@ -135,9 +172,9 @@ def use_case_2():
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             uuid_id=mesh_object.id)
-                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
-                      f"path: {mesh_object.path} "
-                      f"and {len(timeseries)} timeseries connected to it.")
+                print(f"{number + 1}. \n"
+                      f"-----\n"
+                      f"" + get_mesh_object_information(mesh_object) + f"")
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
@@ -167,21 +204,22 @@ def use_case_3():
             timskeys = [530, 536, 537, 543, 556]
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             timskey_and_pandas_dataframe = []
             for timskey in timskeys:
 
                 # Get information about the timeseries
-                mesh_object = session.get_timeseries_resource_info(timskey=timskey)
-                print(f"Guid for timeseries entry with timskey: {timskey} is {mesh_object.id}")
+                resource_object = session.get_timeseries_resource_info(timskey=timskey)
+                print(f"[{timskey}]: \n"
+                      f"-----\n"
+                      f"" + get_resource_information(resource_object) + f"")
 
                 # Retrieve the timeseries values in a given interval
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             timskey=timskey)
-                print(f"Object with timskey: {timskey} has id: {from_proto_guid(mesh_object.id)}, "
-                      f"path: {mesh_object.path} "
-                      f"and {len(timeseries)} timeseries connected to it.")
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
@@ -205,7 +243,6 @@ def use_case_4():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
@@ -216,6 +253,8 @@ def use_case_4():
             ]
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             timskey_and_pandas_dataframe = []
             for guid in guids:
@@ -226,19 +265,21 @@ def use_case_4():
                                                             uuid_id=uuid.UUID(guid))
 
                 # Retrieve information connected to the timeseries
-                mesh_information = session.get_timeseries_attribute(model=model,
+                mesh_object = session.get_timeseries_attribute(model=model,
                                                                     uuid_id=uuid.UUID(guid))
 
-                print(f"Object with guid: {guid} has path: {mesh_information.path} and "
-                      f"is connected to a timeseries with guid: {from_proto_guid(mesh_information.entry.id)}, "
-                      f"which has the timeseries key: {mesh_information.entry.timeseries_key}")
+                print(f"[{guid}]: \n"
+                      f"-----\n"
+                      f"" + get_mesh_object_information(mesh_object) + f"")
 
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
 
             # Post process data
-            plot_timeseries(timskey_and_pandas_dataframe, f"{use_case_name}: {len(guids)} known guids")
+            plot_timeseries(timskey_and_pandas_dataframe,
+                            f"{use_case_name}: {len(guids)} known guids",
+                            style='step')
             save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4')
 
         except grpc.RpcError as e:
@@ -267,6 +308,8 @@ def use_case_7():
             end = datetime(2021, 9, 29, 1, 0, 0)
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             # Get timeseries data before write
             timeseries_before = session.read_timeseries_points(start_time=start,
@@ -340,6 +383,8 @@ def use_case_8():
             search_query = '*.Production'
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             # Search for timeseries
             search_matches = session.search_for_timeseries_attribute(model=model,
@@ -352,9 +397,9 @@ def use_case_8():
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             uuid_id=mesh_object.id)
-                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
-                      f"path: {mesh_object.path} "
-                      f"and {len(timeseries)} timeseries connected to it.")
+                print(f"{number + 1}: \n"
+                      f"-----\n"
+                      f"" + get_mesh_object_information(mesh_object) + f"")
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     path_and_pandas_dataframe.append((mesh_object.entry.delta_t, pandas_dataframe))
@@ -391,6 +436,8 @@ def use_case_9():
             search_query = '*[.Type=HydroPlant&&.Name=Mørre].Production_operative'
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             # Search for timeseries
             search_matches = session.search_for_timeseries_attribute(model=model,
@@ -403,9 +450,9 @@ def use_case_9():
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             uuid_id=mesh_object.id)
-                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
-                      f"path: {mesh_object.path} "
-                      f"and {len(timeseries)} timeseries connected to it.")
+                print(f"{number + 1}: \n"
+                      f"-----\n"
+                      f"" + get_mesh_object_information(mesh_object) + f"")
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     path_and_pandas_dataframe.append((mesh_object.entry.delta_t, pandas_dataframe))
@@ -440,6 +487,8 @@ def use_case_10():
             search_query = '*[.Type=Reservoir].ReservoirVolume_operative'
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 1)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
 
             # Search for timeseries
             search_matches = session.search_for_timeseries_attribute(model=model,
@@ -452,9 +501,9 @@ def use_case_10():
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             uuid_id=mesh_object.id)
-                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
-                      f"path: {mesh_object.path} "
-                      f"and {len(timeseries)} timeseries connected to it.")
+                print(f"{number + 1}: \n"
+                      f"-----\n"
+                      f"" + get_mesh_object_information(mesh_object) + f"")
                 for timeserie in timeseries:
                     pandas_dataframe = timeserie.arrow_table.to_pandas()
                     path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
