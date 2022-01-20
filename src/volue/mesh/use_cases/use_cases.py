@@ -406,6 +406,156 @@ def use_case_7():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
+def use_case_8():
+    """
+    Scenario:
+    We want to transform existing timeseries from break point resolution to hourly.
+
+    Start point:                430df600-f35f-4606-bd5c-2597ed930ab2 # 'Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1961'
+    Search expression:          ProductionSource = @t('.Production')
+    Transformation expression:  ##=@TRANSFORM(ProductionSource,'HOUR','AVGI')
+    Time interval:              1.9.2021 - 1.10.2021
+
+    """
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 8"
+            model = "MeshTEK"
+            start_object_guid = '430df600-f35f-4606-bd5c-2597ed930ab2'
+            search_query = '*.Production'
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
+
+            # Search for timeseries
+            search_matches = session.search_for_timeseries_attribute(model=model,
+                                                                     start_object_guid=uuid.UUID(start_object_guid),
+                                                                     query=search_query)
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            for number, mesh_object in enumerate(search_matches):
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=mesh_object.id)
+                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
+                      f"path: {mesh_object.path} "
+                      f"and {len(timeseries)} timeseries connected to it.")
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    path_and_pandas_dataframe.append((mesh_object.entry.delta_t, pandas_dataframe))
+                    timeseries_information = session.get_timeseries_resource_info(timskey=timeserie.timskey)
+                    print("")
+
+                # TODO: transform from breakpoint to hourly
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_9():
+    """
+    Scenario:
+    We want to transform existing timeseries from hourly time series to daily resolution.
+
+    Start point:                801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Search expression:          *[.Type=HydroPlant&&.Name=Mørre].Production_operative
+    Transformation expression:  ##= @TRANSFORM("Timeseries",'DAY','AVG')
+    Time interval:              1.9.2021 - 1.10.2021
+
+    """
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 9"
+            model = "MeshTEK"
+            start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
+            search_query = '*[.Type=HydroPlant&&.Name=Mørre].Production_operative'
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
+
+            # Search for timeseries
+            search_matches = session.search_for_timeseries_attribute(model=model,
+                                                                     start_object_guid=uuid.UUID(start_object_guid),
+                                                                     query=search_query)
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            for number, mesh_object in enumerate(search_matches):
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=mesh_object.id)
+                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
+                      f"path: {mesh_object.path} "
+                      f"and {len(timeseries)} timeseries connected to it.")
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    path_and_pandas_dataframe.append((mesh_object.entry.delta_t, pandas_dataframe))
+
+                # TODO: transform from hourly to daily
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case9')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_10():
+    """
+    Scenario:
+    We want to summarize an array of timeseries
+
+    Start point:                801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Search expression:          *[.Type=Reservoir].ReservoirVolume_operative
+    Transformation expression:  ##= @SUM("Time series array")
+    Time interval:              1.9.2021 - 1.10.2021
+
+    """
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 10"
+            model = "MeshTEK"
+            start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
+            search_query = '*[.Type=Reservoir].ReservoirVolume_operative'
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 10, 1)
+
+            # Search for timeseries
+            search_matches = session.search_for_timeseries_attribute(model=model,
+                                                                     start_object_guid=uuid.UUID(start_object_guid),
+                                                                     query=search_query)
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            for number, mesh_object in enumerate(search_matches):
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            uuid_id=mesh_object.id)
+                print(f"{number + 1}. object has id: {from_proto_guid(mesh_object.id)}, "
+                      f"path: {mesh_object.path} "
+                      f"and {len(timeseries)} timeseries connected to it.")
+                for timeserie in timeseries:
+                    pandas_dataframe = timeserie.arrow_table.to_pandas()
+                    path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+
+                # TODO: summarize all retrieved timeseries, finds 20
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case10')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) <= 1:
@@ -427,5 +577,11 @@ if __name__ == "__main__":
         use_case_6()
     elif usecase == '7':
         use_case_7()
+    elif usecase == '8':
+        use_case_8()
+    elif usecase == '9':
+        use_case_9()
+    elif usecase == '10':
+        use_case_10()
     else:
         use_case_1()
