@@ -15,7 +15,7 @@ These use cases were designed to work with a real customer database (TEKICC_ST@M
 # Ip address for the mesh server
 HOST = "localhost"
 # HOST = "tdtrhsmg125b2"
-# Port open for gRPC
+# Mesh server port for gRPC communication
 PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
