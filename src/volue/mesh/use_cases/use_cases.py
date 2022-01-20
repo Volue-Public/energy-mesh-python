@@ -473,11 +473,20 @@ def use_case_10():
 if __name__ == "__main__":
 
     if len(sys.argv) <= 1:
-        usecase = '1'
+        usecase = 'all'
     else:
         usecase = sys.argv[1]
 
-    if usecase == '1':
+    if usecase == 'all':
+        use_case_1()
+        use_case_2()
+        use_case_3()
+        use_case_4()
+        use_case_7()
+        use_case_8()
+        use_case_9()
+        use_case_10()
+    elif usecase == '1':
         use_case_1()
     elif usecase == '2':
         use_case_2()
