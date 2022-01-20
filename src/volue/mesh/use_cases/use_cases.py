@@ -53,7 +53,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: [], title: str, style: str
 
 def save_timeseries_to_csv(identifier_and_pandas_dataframes: [], file_prefix):
     """
-    Saves a pandas dataframe to a cvs file.
+    Saves a pandas dataframe to a CSV file.
     """
     if SAVE_TO_CVS:
         for a_pair in identifier_and_pandas_dataframes:
