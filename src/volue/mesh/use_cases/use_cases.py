@@ -9,7 +9,7 @@ from volue.mesh import Connection, Timeseries, from_proto_guid
 from volue.mesh.proto import mesh_pb2
 
 """
-These use cases was designed to work with a real customer database (TEKICC_ST@MULLIGAN)
+These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
 """
 
 # Ip address for the mesh server
