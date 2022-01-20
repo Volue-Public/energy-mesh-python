@@ -46,7 +46,7 @@ List of the Mesh server gRPC configuration options with its default values:
     Configuration.Network.GRPC.EnableTLS(false);
     Configuration.Network.GRPC.SetPort(50051);
     Configuration.Network.GRPC.SetTlsCertificateFile('server_self_signed_crt.pem');
-    Configuration.Network.GRPC.SetTlsCertificateKeyFile('erver_privatekey.pem');
+    Configuration.Network.GRPC.SetTlsCertificateKeyFile('server_privatekey.pem');
 
 
 Other
