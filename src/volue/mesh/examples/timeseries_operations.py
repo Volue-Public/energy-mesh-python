@@ -10,7 +10,7 @@ def main(address, port, secure_connection):
     """Showing how to find timeseries, write, read points from it and convert them to pandas format."""
 
     model_name = "SimpleThermalTestModel"
-    query = "{*}.TsRawAtt"
+    query = "*[.Name=SomePowerPlantChimney2].TsRawAtt"  # make sure only 1 timeseries is returned
     start_object_path = "ThermalComponent"
 
     connection = Connection(address, port, secure_connection)
@@ -22,9 +22,11 @@ def main(address, port, secure_connection):
             print(f"Could not find timeseries attribute: {e}")
             return
 
-        if timeseries_attributes is None:
+        if len(timeseries_attributes) == 0:
             print("No such timeseries attribute in the given model/database")
             return
+
+        print(f'Number of timeseries: {len(timeseries_attributes)}')
 
         # pick the first timeseries and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
@@ -32,7 +34,6 @@ def main(address, port, secure_connection):
 
         # check for example the unit of measurement or curve type
         print('Unit of measurement: ' + timeseries_attribute.entry.unit_of_measurement)
-        print('Path: ' + timeseries_attribute.path)
         print('Curve ' + str(timeseries_attribute.entry.curveType))
 
         # now lets write some data to it
