@@ -52,7 +52,7 @@ def main(address, port, secure_connection):
                 timestamps.append(datetime(2016, 5, days, hours))
                 values.append(days * 10)
 
-            flags = [Timeseries.PointFlags.NOT_OK.value] * number_of_points
+            flags = [Timeseries.PointFlags.OK.value] * number_of_points
 
             arrays = [
                 pa.array(timestamps),
