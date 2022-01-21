@@ -66,7 +66,7 @@ def get_resource_information(resource_object: mesh_pb2.TimeseriesEntry):
     """
     Create a printable message from a resource object
     """
-    message = f"Timeseries with with timskey: '{resource_object.timeseries_key}' \n"\
+    message = f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"\
               f"has guid: '{from_proto_guid(resource_object.id)}', \n"\
               f"path set in the resource silo is: '{resource_object.path}', \n"\
               f"it's curve '{resource_object.curveType}', \n"\
