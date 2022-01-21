@@ -440,7 +440,7 @@ def test_read_transformed_timeseries_points():
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         resolution = TransformationResolution.MIN15
-        method=TransformationMethod.SUM
+        method=TransformationMethod.AVG
         calendar_type=CalendarType.LOCAL
         _, full_name = get_timeseries_attribute_2()
 
@@ -475,7 +475,10 @@ def test_read_transformed_timeseries_points():
                     if 9 <= index <= 15:
                         assert math.isnan(value.as_py())
                     else:
-                        assert value.as_py() == 0.25 + index * 0.0625
+                        # the original TS data is in hourly resolution,
+                        # starts with 1 and the value is incremented with each hour
+                        # here we are using 15 min resolution, so the delta between each 15 min point is 0.25
+                        assert value.as_py() == 1 + index * 0.25
 
                 assert reply_timeseries.is_calculation_expression_result
 
