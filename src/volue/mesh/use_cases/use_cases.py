@@ -94,6 +94,23 @@ def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
     return message
 
 
+def get_timeseries_information(timeseries: Timeseries):
+    """
+    Create a printable message from a timeseries
+    """
+    message = f"Timeseries full name: '{timeseries.full_name}', " \
+              f"uuid: '{timeseries.uuid}', " \
+              f"timeskey: '{timeseries.timskey}', " \
+              f"start time: '{str(timeseries.start_time)}', " \
+              f"end time: '{str(timeseries.end_time)}', " \
+              f"resolution: '{timeseries.resolution}', " \
+              f" it has '{timeseries.number_of_points}' number of points " \
+              f"and this is some of them: \n" \
+              f"{timeseries.arrow_table.to_pandas()}"
+
+    return message
+
+
 def use_case_1():
     """
     Scenario:
@@ -291,7 +308,7 @@ def use_case_4():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
-def use_case_7():
+def use_case_5():
     """
     Scenario:
     We want to write some values to an existing timeseries with a known guid.
@@ -306,7 +323,7 @@ def use_case_7():
 
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 7"
+            use_case_name = "Use case 5"
             model = "MeshTEK"
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
             start = datetime(2021, 9, 28, 0, 0, 0)
@@ -320,6 +337,11 @@ def use_case_7():
             timeseries_before = session.read_timeseries_points(start_time=start,
                                                                end_time=end,
                                                                uuid_id=guid)
+            print(f"Before writing points: \n"
+                  f"-----\n"
+                  f"" + get_timeseries_information(timeseries=timeseries_before[0])
+                  )
+
             for timeserie in timeseries_before:
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
                 timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
@@ -352,6 +374,11 @@ def use_case_7():
             timeseries_after = session.read_timeseries_points(start_time=start,
                                                               end_time=end,
                                                               uuid_id=guid)
+            print(f"After writing points: \n"
+                  f"-----\n"
+                  f"" + get_timeseries_information(timeseries=timeseries_after[0])
+                  )
+
             for timeserie in timeseries_after:
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
                 timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
@@ -362,13 +389,13 @@ def use_case_7():
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe,
                             f"{use_case_name}: Before and after writing")
-            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_7')
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
 
 
-def use_case_8():
+def use_case_6():
     """
     Scenario:
     We want to transform existing timeseries from breakpoint resolution to hourly.
@@ -382,7 +409,7 @@ def use_case_8():
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 8"
+            use_case_name = "Use case 6"
             model = "MeshTEK"
             start_object_guid = '430df600-f35f-4606-bd5c-2597ed930ab2'
             search_query = '*.Production'
@@ -415,13 +442,13 @@ def use_case_8():
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_6')
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
 
 
-def use_case_9():
+def use_case_7():
     """
     Scenario:
     We want to transform existing timeseries from hourly time series to daily resolution.
@@ -435,7 +462,7 @@ def use_case_9():
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 9"
+            use_case_name = "Use case 7"
             model = "MeshTEK"
             start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
             search_query = '*[.Type=HydroPlant&&.Name=Mørre].Production_operative'
@@ -466,13 +493,13 @@ def use_case_9():
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case9')
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_7')
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
 
 
-def use_case_10():
+def use_case_8():
     """
     Scenario:
     We want to summarize an array of timeseries
@@ -486,7 +513,7 @@ def use_case_10():
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 10"
+            use_case_name = "Use case 8"
             model = "MeshTEK"
             start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
             search_query = '*[.Type=Reservoir].ReservoirVolume_operative'
@@ -517,7 +544,7 @@ def use_case_10():
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case10')
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -526,7 +553,7 @@ def use_case_10():
 if __name__ == "__main__":
 
     if len(sys.argv) <= 1:
-        usecase = 'all'
+        usecase = '5'
     else:
         usecase = sys.argv[1]
 
@@ -535,10 +562,10 @@ if __name__ == "__main__":
         use_case_2()
         use_case_3()
         use_case_4()
+        use_case_5()
+        use_case_6()
         use_case_7()
         use_case_8()
-        use_case_9()
-        use_case_10()
     elif usecase == '1':
         use_case_1()
     elif usecase == '2':
@@ -547,14 +574,14 @@ if __name__ == "__main__":
         use_case_3()
     elif usecase == '4':
         use_case_4()
+    elif usecase == '5':
+        use_case_5()
+    elif usecase == '6':
+        use_case_6()
     elif usecase == '7':
         use_case_7()
     elif usecase == '8':
         use_case_8()
-    elif usecase == '9':
-        use_case_9()
-    elif usecase == '10':
-        use_case_10()
     else:
         print(f"Invalid use case selected: {usecase}, selecting default use case 1")
         use_case_1()
