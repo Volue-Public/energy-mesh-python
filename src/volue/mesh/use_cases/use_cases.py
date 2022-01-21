@@ -10,13 +10,13 @@ from volue.mesh import Connection, Timeseries, from_proto_guid
 from volue.mesh.proto import mesh_pb2
 
 """
-These use cases was designed to work with a real customer database (TEKICC_ST@MULLIGAN)
+These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
 """
 
 # Ip address for the mesh server
 HOST = "localhost"
 # HOST = "tdtrhsmg125b2"
-# Port open for gRPC
+# Mesh server port for gRPC communication
 PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
@@ -57,7 +57,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
 def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
                            file_prefix: str) -> None:
     """
-    Saves a pandas dataframe to a cvs file.
+    Saves a pandas dataframe to a CSV file.
     """
     if SAVE_TO_CVS:
         for a_pair in identifier_and_pandas_dataframes:
