@@ -80,10 +80,10 @@ class Connection:
                                                resolution: TransformationResolution = None,
                                                method: TransformationMethod = None,
                                                calendar_type: CalendarType = None,
-                                               timeseries_key: int = None,
+                                               timskey: int = None,
                                                uuid_id: uuid.UUID = None,
                                                full_name: str = None,
-                                               ) -> List[Timeseries]:
+                                               ) -> Timeseries:
             """
             The returned timeseries does not have set the following fields:
             - timskey
@@ -93,17 +93,18 @@ class Connection:
             Raises:
                 grpc.RpcError:
                 TypeError:
+                RuntimeError:
             """
             #TODO: think of how to get rid of the redundancy async vs regular connection
             object_id = mesh_pb2.ObjectId()
-            if timeseries_key is not None:
-                object_id.timskey = timeseries_key
+            if timskey is not None:
+                object_id.timskey = timskey
             elif uuid_id is not None:
                 object_id.guid.CopyFrom(to_proto_guid(uuid_id))
             elif full_name is not None:
                 object_id.full_name = full_name
             else:
-                raise TypeError("need to specify either timeseries_key, uuid_id or full_name.")
+                raise TypeError("need to specify either timskey, uuid_id or full_name.")
 
             expression = f"## = @TRANSFORM(@t(), '{resolution.name}', '{method.name}'"
             if calendar_type is not None:
@@ -118,10 +119,10 @@ class Connection:
                     relative_to=object_id
                 ))
 
-            if not reply.HasField("timeseries_results"):
-                raise RuntimeError("invalid transformation result")
-
-            return read_proto_reply(reply.timeseries_results)
+            transformed_timeseries = read_proto_reply(reply.timeseries_results)
+            if len(transformed_timeseries) != 1:
+                raise RuntimeError(f"invalid transformation result, expected 1 timeseries, bot got {len(transformed_timeseries)}")
+            return transformed_timeseries[0]
 
         def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """

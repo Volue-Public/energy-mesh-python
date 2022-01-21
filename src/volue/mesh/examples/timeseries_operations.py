@@ -52,7 +52,7 @@ def main(address, port, secure_connection):
                 timestamps.append(datetime(2016, 5, days, hours))
                 values.append(days * 10)
 
-            flags = [0] * number_of_points
+            flags = [Timeseries.PointFlags.NOT_OK.value] * number_of_points
 
             arrays = [
                 pa.array(timestamps),
@@ -65,7 +65,7 @@ def main(address, port, secure_connection):
             timeseries = Timeseries(table=arrow_table, start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
             session.write_timeseries_points(timeseries)
 
-        except Exception as e:
+        except grpc.RpcError as e:
             print(f"Could not write timeseries points: {e}")
 
         # now lets read from it
@@ -85,7 +85,7 @@ def main(address, port, secure_connection):
 
             # do some further processing
 
-        except Exception as e:
+        except grpc.RpcError as e:
             print(f"Could not read timeseries points: {e}")
 
         # now lets read transformations from it (transform to days)
@@ -101,13 +101,8 @@ def main(address, port, secure_connection):
                 calendar_type=CalendarType.UTC,
                 uuid_id=timeseries_attribute.id)
 
-            # there should be exactly one timeseries read
-            if len(timeseries_read) != 1:
-                print("Invalid timeseries")
-                return
-
             # convert to pandas format
-            pandas_series = timeseries_read[0].arrow_table.to_pandas()
+            pandas_series = timeseries_read.arrow_table.to_pandas()
             print(pandas_series)
 
             # do some further processing

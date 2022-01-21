@@ -451,18 +451,16 @@ def test_read_transformed_timeseries_points():
             for test_case in test_cases:
                 reply_timeseries = session.read_transformed_timeseries_points(**test_case)
 
-                assert len(reply_timeseries) == 1
-                ts = reply_timeseries[0]
-                assert ts.number_of_points == 33
+                assert reply_timeseries.number_of_points == 33
                 # check timestamps
-                utc_date = ts.arrow_table[0]
+                utc_date = reply_timeseries.arrow_table[0]
                 for index, date in enumerate(utc_date):
                     hours = int(index / 4) + 1
                     minutes = (index % 4) * 15
                     assert date.as_py() == datetime(2016, 1, 1, hours, minutes)
 
                 # check flags
-                flags = ts.arrow_table[1]
+                flags = reply_timeseries.arrow_table[1]
                 for index, flag in enumerate(flags):
                     if 9 <= index <= 11:
                         assert flag.as_py() == Timeseries.PointFlags.MISSING.value
@@ -472,12 +470,14 @@ def test_read_transformed_timeseries_points():
                         assert flag.as_py() == Timeseries.PointFlags.OK.value
 
                 # check values
-                values = ts.arrow_table[2]
+                values = reply_timeseries.arrow_table[2]
                 for index, value in enumerate(values):
                     if 9 <= index <= 15:
                         assert math.isnan(value.as_py())
                     else:
                         assert value.as_py() == 0.25 + index * 0.0625
+
+                assert reply_timeseries.is_calculation_expression_result
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")

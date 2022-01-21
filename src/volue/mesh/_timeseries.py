@@ -82,3 +82,11 @@ class Timeseries:
         """Number of points inside the timeseries"""
         return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
+    @property
+    def is_calculation_expression_result(self) -> bool:
+        """
+        If timeseries does not have timskey, uuid or full_name set then it is a
+        calculation expression result (like e.g.: timeseries transformations).
+        Refer to documentation 'Concepts' for more information.
+        """
+        return self.timskey is None and self.uuid is None and self.full_name is None
