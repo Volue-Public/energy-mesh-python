@@ -19,8 +19,8 @@ HOST = "localhost"
 PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
-# Save timeseries to cvs file
-SAVE_TO_CVS = True
+# Save timeseries to CSV file
+SAVE_TO_CSV = True
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: [], title: str, style: str = 'plot'):
