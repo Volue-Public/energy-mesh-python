@@ -20,8 +20,8 @@ HOST = "localhost"
 PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
-# Save timeseries to cvs file
-SAVE_TO_CVS = True
+# Save timeseries to CSV file
+SAVE_TO_CSV = True
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
@@ -59,7 +59,7 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
     """
     Saves a pandas dataframe to a CSV file.
     """
-    if SAVE_TO_CVS:
+    if SAVE_TO_CSV:
         for a_pair in identifier_and_pandas_dataframes:
             timeseries_identifier = str(a_pair[0]).replace('/', '.')
             timeseries_pandas_dataframe = a_pair[1]
@@ -83,9 +83,10 @@ def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
     """
     Create a printable message from a mesh object
     """
-    message = f"Mesh object with path: '{mesh_object.path}'  \n" \
-              f"has guid: '{from_proto_guid(mesh_object.id)}', \n" \
-              f"its local expresssion is set to: '{mesh_object.local_expression}' \n" \
+
+    message = f"Mesh object with path: '{mesh_object.path}'  \n"\
+              f"has guid: '{from_proto_guid(mesh_object.id)}', \n"\
+              f"its local expression is set to: '{mesh_object.local_expression}' \n"\
               f"and its template expression is: '{mesh_object.template_expression}' \n"
     if hasattr(mesh_object, 'entry') and (mesh_object.entry.timeseries_key != 0):
         message += "It has a timeseries entry connected to it: \n"
@@ -168,7 +169,7 @@ def use_case_2():
             search_matches = session.search_for_timeseries_attribute(model=model,
                                                                      start_object_guid=start_object_guid,
                                                                      query=search_query)
-            print(f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
+            print(f"Search resulted in {len(search_matches)} object(s) that match(es) the search criteria: {search_query}")
 
             # Retrieve timeseries connected to the mesh objects found
             path_and_pandas_dataframe = []
