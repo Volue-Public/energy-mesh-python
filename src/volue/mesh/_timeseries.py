@@ -22,13 +22,15 @@ class Timeseries:
 
     class Resolution(Enum):
         BREAKPOINT = 0
-        MIN15 = 1
-        HOUR = 2
-        DAY = 3
-        WEEK = 4
-        MONTH = 5
-        YEAR = 6
-
+        MIN15      = 1
+        HOUR       = 2
+        DAY        = 3
+        WEEK       = 4
+        MONTH      = 5
+        YEAR       = 6
+        MIN        = 7
+        MIN5       = 8
+        MIN10      = 9
     class PointFlags(Enum):
         OK = 0
         MISSING = 0x04000000

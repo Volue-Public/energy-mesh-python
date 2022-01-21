@@ -77,7 +77,7 @@ class Connection:
         def read_transformed_timeseries_points(self,
                                                start_time: datetime,
                                                end_time: datetime,
-                                               resolution: TransformationResolution = None,
+                                               resolution: Timeseries.Resolution = None,
                                                method: TransformationMethod = None,
                                                calendar_type: CalendarType = None,
                                                timskey: int = None,
@@ -104,7 +104,10 @@ class Connection:
             elif full_name is not None:
                 object_id.full_name = full_name
             else:
-                raise TypeError("need to specify either timskey, uuid_id or full_name.")
+                raise TypeError("need to specify either timskey, uuid_id or full_name")
+
+            if resolution is Timeseries.Resolution.BREAKPOINT:
+                raise TypeError("unsupported resolution for transformation")
 
             expression = f"## = @TRANSFORM(@t(), '{resolution.name}', '{method.name}'"
             if calendar_type is not None:

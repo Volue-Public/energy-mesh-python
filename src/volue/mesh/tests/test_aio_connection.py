@@ -2,7 +2,7 @@ import uuid, math
 from datetime import date, datetime
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
-from volue.mesh._common import CalendarType, TransformationMethod, TransformationResolution
+from volue.mesh._common import CalendarType, TransformationMethod
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
@@ -465,7 +465,7 @@ async def test_read_transformed_timeseries_points():
     async with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        resolution = TransformationResolution.MIN15
+        resolution = Timeseries.Resolution.MIN15
         method=TransformationMethod.AVG
         calendar_type=CalendarType.LOCAL
         _, full_name = get_timeseries_attribute_2()

@@ -15,19 +15,6 @@ class CalendarType(Enum):
     UTC      = 2
     UNKNOWN  = 3  # TODO: should we expose it? Is it used in some scenario?
 
-
-# TODO: there is already a Resolution enum in Timeseries, but it contains 'BREAKPOINT' and is missing 'MIN', 'MIN5' and 'MIN10'
-class TransformationResolution(Enum):
-    MIN   = 0
-    MIN5  = 1
-    MIN10 = 2
-    MIN15 = 3
-    HOUR  = 4
-    DAY   = 5
-    WEEK  = 6
-    MONTH = 7
-    YEAR  = 8
-
 class TransformationMethod(Enum):
     SUM   = 0
     SUMI  = 1
