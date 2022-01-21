@@ -554,8 +554,7 @@ message CalculationRequest {
     Guid session_id = 1;
     string expression = 2;
     UtcInterval interval = 3;
-    // planning to rename AttributeId to something like Element, will see during overall proto refactoring
-    AttributeId relative_to = 4;
+    ObjectId relative_to = 4;
 }
 
 message NumericResults {

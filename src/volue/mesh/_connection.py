@@ -80,6 +80,7 @@ class Connection:
                                                resolution: TransformationResolution = None,
                                                method: TransformationMethod = None,
                                                calendar_type: CalendarType = None,
+                                               timeseries_key: int = None,
                                                uuid_id: uuid.UUID = None,
                                                full_name: str = None,
                                                ) -> List[Timeseries]:
@@ -94,13 +95,15 @@ class Connection:
                 TypeError:
             """
             #TODO: think of how to get rid of the redundancy async vs regular connection
-            attribute_id = mesh_pb2.AttributeId()
-            if uuid_id is not None:
-                attribute_id.id.CopyFrom(to_proto_guid(uuid_id))
+            object_id = mesh_pb2.ObjectId()
+            if timeseries_key is not None:
+                object_id.timskey = timeseries_key
+            elif uuid_id is not None:
+                object_id.guid.CopyFrom(to_proto_guid(uuid_id))
             elif full_name is not None:
-                attribute_id.path = full_name
+                object_id.full_name = full_name
             else:
-                raise TypeError("need to specify either uuid_id or full_name.")
+                raise TypeError("need to specify either timeseries_key, uuid_id or full_name.")
 
             expression = f"## = @TRANSFORM(@t(), '{resolution.name}', '{method.name}'"
             if calendar_type is not None:
@@ -112,7 +115,7 @@ class Connection:
                     session_id=to_proto_guid(self.session_id),
                     expression=expression,
                     interval=to_protobuf_utcinterval(start_time, end_time),
-                    relative_to=attribute_id
+                    relative_to=object_id
                 ))
 
             if not reply.HasField("timeseries_results"):

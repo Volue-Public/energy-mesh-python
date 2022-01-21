@@ -99,7 +99,7 @@ def main(address, port, secure_connection):
                 resolution=TransformationResolution.DAY,
                 method=TransformationMethod.SUM,
                 calendar_type=CalendarType.UTC,
-                full_name=timeseries_attribute.path)
+                uuid_id=timeseries_attribute.id)
 
             # there should be exactly one timeseries read
             if len(timeseries_read) != 1:
