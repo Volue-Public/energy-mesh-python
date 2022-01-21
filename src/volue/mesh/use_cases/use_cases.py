@@ -55,7 +55,7 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: [], file_prefix):
     """
     Saves a pandas dataframe to a CSV file.
     """
-    if SAVE_TO_CVS:
+    if SAVE_TO_CSV:
         for a_pair in identifier_and_pandas_dataframes:
             timeseries_identifier = str(a_pair[0]).replace('/', '.')
             timeseries_pandas_dataframe = a_pair[1]
