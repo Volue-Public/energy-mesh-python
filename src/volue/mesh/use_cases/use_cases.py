@@ -164,7 +164,7 @@ def use_case_2():
             search_matches = session.search_for_timeseries_attribute(model=model,
                                                                      start_object_guid=start_object_guid,
                                                                      query=search_query)
-            print(f"Search resulted in {len(search_matches)} object that matches the search criteria: {search_query}")
+            print(f"Search resulted in {len(search_matches)} object(s) that match(es) the search criteria: {search_query}")
 
             # Retrieve timeseries connected to the mesh objects found
             path_and_pandas_dataframe = []
