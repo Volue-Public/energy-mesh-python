@@ -1,5 +1,6 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta
 import uuid
+from typing import List, Any, Tuple
 import pandas as pd
 import pyarrow as pa
 import matplotlib.pyplot as plt
@@ -23,7 +24,9 @@ SHOW_PLOT = True
 SAVE_TO_CVS = True
 
 
-def plot_timeseries(identifier_and_pandas_dataframes: [], title: str, style: str = 'plot'):
+def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
+                    title: str,
+                    style: str = 'plot') -> None:
     """
     Plots a list of pandas dataframes in a figure.
     """
@@ -51,7 +54,8 @@ def plot_timeseries(identifier_and_pandas_dataframes: [], title: str, style: str
         plt.show()
 
 
-def save_timeseries_to_csv(identifier_and_pandas_dataframes: [], file_prefix):
+def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
+                           file_prefix: str) -> None:
     """
     Saves a pandas dataframe to a cvs file.
     """
@@ -66,11 +70,11 @@ def get_resource_information(resource_object: mesh_pb2.TimeseriesEntry):
     """
     Create a printable message from a resource object
     """
-    message = f"Timeseries with with timskey: '{resource_object.timeseries_key}' \n"\
-              f"has guid: '{from_proto_guid(resource_object.id)}', \n"\
-              f"path set in the resource silo is: '{resource_object.path}', \n"\
-              f"it's curve '{resource_object.curveType}', \n"\
-              f"resolution '{resource_object.delta_t}' \n"\
+    message = f"Timeseries with with timskey: '{resource_object.timeseries_key}' \n" \
+              f"has guid: '{from_proto_guid(resource_object.id)}', \n" \
+              f"path set in the resource silo is: '{resource_object.path}', \n" \
+              f"it's curve '{resource_object.curveType}', \n" \
+              f"resolution '{resource_object.delta_t}' \n" \
               f"and unit of measurement is: '{resource_object.unit_of_measurement}'\n"
     return message
 
@@ -79,9 +83,9 @@ def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
     """
     Create a printable message from a mesh object
     """
-    message = f"Mesh object with path: '{mesh_object.path}'  \n"\
-              f"has guid: '{from_proto_guid(mesh_object.id)}', \n"\
-              f"its local expresssion is set to: '{mesh_object.local_expression}' \n"\
+    message = f"Mesh object with path: '{mesh_object.path}'  \n" \
+              f"has guid: '{from_proto_guid(mesh_object.id)}', \n" \
+              f"its local expresssion is set to: '{mesh_object.local_expression}' \n" \
               f"and its template expression is: '{mesh_object.template_expression}' \n"
     if hasattr(mesh_object, 'entry') and (mesh_object.entry.timeseries_key != 0):
         message += "It has a timeseries entry connected to it: \n"
@@ -266,7 +270,7 @@ def use_case_4():
 
                 # Retrieve information connected to the timeseries
                 mesh_object = session.get_timeseries_attribute(model=model,
-                                                                    uuid_id=uuid.UUID(guid))
+                                                               uuid_id=uuid.UUID(guid))
 
                 print(f"[{guid}]: \n"
                       f"-----\n"
@@ -329,7 +333,7 @@ def use_case_7():
                 timestamps.append(start + resolution * i)
 
             utc_time = pa.array(timestamps)
-            flags = pa.array([0] * 24)
+            flags = pa.array([0] * 24)  # flag 0 -> Common::TimeseriesPointFlags::Ok
             values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
                                9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
             arrays = [
@@ -366,7 +370,7 @@ def use_case_7():
 def use_case_8():
     """
     Scenario:
-    We want to transform existing timeseries from break point resolution to hourly.
+    We want to transform existing timeseries from breakpoint resolution to hourly.
 
     Start point:                430df600-f35f-4606-bd5c-2597ed930ab2 # 'Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1961'
     Search expression:          ProductionSource = @t('.Production')
@@ -516,7 +520,6 @@ def use_case_10():
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
-
 
 
 if __name__ == "__main__":
