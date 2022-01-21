@@ -81,7 +81,7 @@ def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
     """
     message = f"Mesh object with path: '{mesh_object.path}'  \n"\
               f"has guid: '{from_proto_guid(mesh_object.id)}', \n"\
-              f"its local expresssion is set to: '{mesh_object.local_expression}' \n"\
+              f"its local expression is set to: '{mesh_object.local_expression}' \n"\
               f"and its template expression is: '{mesh_object.template_expression}' \n"
     if hasattr(mesh_object, 'entry') and (mesh_object.entry.timeseries_key != 0):
         message += "It has a timeseries entry connected to it: \n"
