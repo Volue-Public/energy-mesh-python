@@ -556,4 +556,6 @@ if __name__ == "__main__":
     elif usecase == '10':
         use_case_10()
     else:
+        print(f"Invalid use case selected: {usecase}, selecting default use case 1")
         use_case_1()
+
