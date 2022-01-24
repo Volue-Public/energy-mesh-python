@@ -1,6 +1,6 @@
 from volue.mesh import Connection, Timeseries
+from volue.mesh.calc.transform import Transform
 from volue.mesh.examples import _get_connection_info
-from volue.mesh._common import CalendarType, TransformationMethod
 
 from datetime import datetime
 import grpc
@@ -93,13 +93,16 @@ def main(address, port, secure_connection):
             start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
             end_time = datetime(2016, 5, 3)
 
-            timeseries_read = session.read_transformed_timeseries_points(
+            transform_parameters = Transform.Parameters(
+                resolution = Timeseries.Resolution.DAY,
+                method = Transform.Method.SUM,
+                calendar = Transform.Calendar.UTC)
+
+            timeseries_read = session.read_timeseries_points(
                 start_time=start_time,
                 end_time=end_time,
-                resolution=Timeseries.Resolution.DAY,
-                method=TransformationMethod.SUM,
-                calendar_type=CalendarType.UTC,
-                uuid_id=timeseries_attribute.id)
+                uuid_id=timeseries_attribute.id,
+                transformation=transform_parameters)
 
             # convert to pandas format
             pandas_series = timeseries_read.arrow_table.to_pandas()

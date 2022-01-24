@@ -1,5 +1,6 @@
 from volue.mesh._common import *
-from volue.mesh import Authentication, Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
+from volue.mesh import Authentication, Credentials, Timeseries
+from volue.mesh.calc.transform import Transform
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
 from typing import Optional, List
@@ -71,38 +72,13 @@ class Connection:
                                          end_time: datetime,
                                          timskey: int = None,
                                          uuid_id: uuid.UUID = None,
-                                         full_name: str = None) -> Timeseries:
-            """
-            Raises:
-                grpc.RpcError:
-            """
-            object_id = mesh_pb2.ObjectId(
-                timskey=timskey,
-                guid=to_proto_guid(uuid_id),
-                full_name=full_name)
-
-            reply = await self.mesh_service.ReadTimeseries(
-                mesh_pb2.ReadTimeseriesRequest(
-                    session_id=to_proto_guid(self.session_id),
-                    object_id=object_id,
-                    interval=to_protobuf_utcinterval(start_time, end_time)
-                ))
-            return read_proto_reply(reply)
-
-        async def read_transformed_timeseries_points(self,
-                                               start_time: datetime,
-                                               end_time: datetime,
-                                               resolution: Timeseries.Resolution = None,
-                                               method: TransformationMethod = None,
-                                               calendar_type: CalendarType = None,
-                                               timskey: int = None,
-                                               uuid_id: uuid.UUID = None,
-                                               full_name: str = None,
-                                               ) -> Timeseries:
+                                         full_name: str = None,
+                                         transformation: Transform.Parameters = None) -> Timeseries:
             """
             |coro|
 
-            The returned timeseries does not have set the following fields:
+            Transformed timeseries (returned when `transformation` argument is provided)
+            does not have set the following fields:
             - timskey
             - uuid_id
             - full_name
@@ -110,7 +86,6 @@ class Connection:
             Raises:
                 grpc.RpcError:
                 TypeError:
-                RuntimeError:
             """
             object_id = mesh_pb2.ObjectId()
             if timskey is not None:
@@ -122,26 +97,19 @@ class Connection:
             else:
                 raise TypeError("need to specify either timskey, uuid_id or full_name")
 
-            if resolution is Timeseries.Resolution.BREAKPOINT:
-                raise TypeError("unsupported resolution for transformation")
+            if transformation is not None:
+                request = Transform.prepare_request(
+                    self.session_id, start_time, end_time, object_id, transformation)
+                response = await self.mesh_service.RunCalculation(request)
+                return Transform.parse_response(response)
 
-            expression = f"## = @TRANSFORM(@t(), '{resolution.name}', '{method.name}'"
-            if calendar_type is not None:
-                expression = f"{expression}, '{calendar_type.name}'"
-            expression = f"{expression})\n"
-
-            reply = await self.mesh_service.RunCalculation(
-                mesh_pb2.CalculationRequest(
+            response = await self.mesh_service.ReadTimeseries(
+                mesh_pb2.ReadTimeseriesRequest(
                     session_id=to_proto_guid(self.session_id),
-                    expression=expression,
-                    interval=to_protobuf_utcinterval(start_time, end_time),
-                    relative_to=object_id
+                    object_id=object_id,
+                    interval=to_protobuf_utcinterval(start_time, end_time)
                 ))
-
-            transformed_timeseries = read_proto_reply(reply.timeseries_results)
-            if len(transformed_timeseries) != 1:
-                raise RuntimeError(f"invalid transformation result, expected 1 timeseries, bot got {len(transformed_timeseries)}")
-            return transformed_timeseries[0]
+            return read_proto_reply(response)
 
         async def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """

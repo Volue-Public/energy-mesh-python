@@ -1,14 +1,16 @@
-import uuid, math
-from datetime import date, datetime
+from datetime import datetime
+import grpc
+import math
+import pytest
+import uuid
+
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
-from volue.mesh._common import CalendarType, TransformationMethod
+from volue.mesh.calc.transform import Transform
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2
-import grpc
-import pytest
 
 
 @pytest.mark.asyncio
@@ -465,17 +467,24 @@ async def test_read_transformed_timeseries_points():
     async with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        resolution = Timeseries.Resolution.MIN15
-        method=TransformationMethod.AVG
-        calendar_type=CalendarType.LOCAL
+
+        transform_parameters_1 = Transform.Parameters(
+            resolution = Timeseries.Resolution.MIN15,
+            method = Transform.Method.AVG)
+
+        transform_parameters_2 = Transform.Parameters(
+            resolution = Timeseries.Resolution.MIN15,
+            method = Transform.Method.AVG,
+            calendar = Transform.Calendar.LOCAL)
+
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            test_case_1 = {"start_time": start_time, "end_time": end_time, "resolution": resolution, "method": method, "full_name": full_name}
-            test_case_2 = {"start_time": start_time, "end_time": end_time, "resolution": resolution, "method": method, "calendar_type": calendar_type, "full_name": full_name}
+            test_case_1 = {"start_time": start_time, "end_time": end_time, "full_name": full_name, "transformation": transform_parameters_1}
+            test_case_2 = {"start_time": start_time, "end_time": end_time, "full_name": full_name, "transformation": transform_parameters_2}
             test_cases = [test_case_1, test_case_2]
             for test_case in test_cases:
-                reply_timeseries = await session.read_transformed_timeseries_points(**test_case)
+                reply_timeseries = await session.read_timeseries_points(**test_case)
 
                 assert reply_timeseries.number_of_points == 33
                 # check timestamps

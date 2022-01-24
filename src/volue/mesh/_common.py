@@ -1,6 +1,5 @@
 import uuid
 import datetime
-from enum import Enum
 from typing import List
 
 import pyarrow as pa
@@ -9,21 +8,6 @@ from volue.mesh import Timeseries
 from volue.mesh.proto import mesh_pb2
 from google.protobuf import timestamp_pb2
 
-class CalendarType(Enum):
-    LOCAL    = 0
-    DATABASE = 1
-    UTC      = 2
-    UNKNOWN  = 3  # TODO: should we expose it? Is it used in some scenario?
-
-class TransformationMethod(Enum):
-    SUM   = 0
-    SUMI  = 1
-    AVG   = 2  # equivalent to MEAN
-    AVGI  = 3
-    FIRST = 5
-    LAST  = 6
-    MIN   = 7
-    MAX   = 8
 
 def to_proto_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
     """Convert from UUID format to Microsoft's GUID format.
