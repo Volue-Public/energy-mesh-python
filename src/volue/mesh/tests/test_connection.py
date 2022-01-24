@@ -450,14 +450,14 @@ def test_commit():
      Transform.Method.LAST,
      Transform.Method.MIN,
      Transform.Method.MAX])
-@pytest.mark.parametrize('calendar',
+@pytest.mark.parametrize('timezone',
     [None,
-     Transform.Calendar.LOCAL,
-     Transform.Calendar.DATABASE,
-     Transform.Calendar.UTC,
-     Transform.Calendar.UNKNOWN])
+     Transform.Timezone.LOCAL,
+     Transform.Timezone.DATABASE,
+     Transform.Timezone.UTC,
+     Transform.Timezone.UNKNOWN])
 def test_read_transformed_timeseries_points(
-    resolution, method, calendar,
+    resolution, method, timezone,
     expected_number_of_points: int):
     """Check that transformed timeseries points can be read"""
 
@@ -467,7 +467,7 @@ def test_read_transformed_timeseries_points(
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        transform_parameters = Transform.Parameters(resolution, method, calendar)
+        transform_parameters = Transform.Parameters(resolution, method, timezone)
         _, full_name = get_timeseries_attribute_2()
 
         try:

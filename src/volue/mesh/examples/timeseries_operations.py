@@ -96,7 +96,7 @@ def main(address, port, secure_connection):
             transform_parameters = Transform.Parameters(
                 resolution = Timeseries.Resolution.DAY,
                 method = Transform.Method.SUM,
-                calendar = Transform.Calendar.UTC)
+                timezone = Transform.Timezone.UTC)
 
             timeseries_read = session.read_timeseries_points(
                 start_time=start_time,

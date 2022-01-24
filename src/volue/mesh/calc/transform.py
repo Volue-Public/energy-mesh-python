@@ -13,9 +13,9 @@ class Transform:
     Mesh calculation function: TRANSFORM
     """
 
-    class Calendar(Enum):
+    class Timezone(Enum):
         """
-        Calendar parameter
+        Timezone parameter
         """
         LOCAL    = 0
         DATABASE = 1
@@ -42,7 +42,7 @@ class Transform:
         """
         resolution: 'Timeseries.Resolution'
         method: 'Transform.Method'
-        calendar: 'Transform.Calendar' = None
+        timezone: 'Transform.Timezone' = None
 
     @staticmethod
     def prepare_request(session_id: uuid,
@@ -61,8 +61,8 @@ class Transform:
             raise TypeError("unsupported resolution for transformation")
 
         expression = f"## = @TRANSFORM(@t(), '{params.resolution.name}', '{params.method.name}'"
-        if params.calendar is not None:
-            expression = f"{expression}, '{params.calendar.name}'"
+        if params.timezone is not None:
+            expression = f"{expression}, '{params.timezone.name}'"
         expression = f"{expression})\n"
 
         request = mesh_pb2.CalculationRequest(
