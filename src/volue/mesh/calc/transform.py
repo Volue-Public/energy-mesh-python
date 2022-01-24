@@ -53,6 +53,9 @@ class Transform:
         """
         Validates transformaton specific input parameters, computes calculation expression and
         returns gRPC calculation request to be send to Mesh server.
+
+        Raises:
+            TypeError:
         """
         if params.resolution is Timeseries.Resolution.BREAKPOINT:
             raise TypeError("unsupported resolution for transformation")

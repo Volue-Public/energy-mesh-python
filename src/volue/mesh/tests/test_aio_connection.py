@@ -369,7 +369,7 @@ async def test_write_timeseries_points_using_timskey_async():
 async def test_commit():
     """Check that commit keeps changes between sessions"""
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
 
     attribute, full_name = get_timeseries_attribute_1()
     new_local_expression = "something"
@@ -427,7 +427,7 @@ async def test_commit():
 async def test_rollback():
     """Check that rollback discards changes made in the current session."""
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
 
     async with connection.create_session() as session:
         try:
@@ -458,7 +458,34 @@ async def test_rollback():
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_read_transformed_timeseries_points():
+@pytest.mark.parametrize('resolution, expected_number_of_points',
+    [(Timeseries.Resolution.MIN, 481),
+     (Timeseries.Resolution.MIN5, 97),
+     (Timeseries.Resolution.MIN10, 49),
+     (Timeseries.Resolution.MIN15, 33),
+     (Timeseries.Resolution.HOUR, 9),
+     (Timeseries.Resolution.DAY, 1),
+     (Timeseries.Resolution.WEEK, 1),
+     (Timeseries.Resolution.MONTH, 2),
+     (Timeseries.Resolution.YEAR, 2)])
+@pytest.mark.parametrize('method',
+    [Transform.Method.SUM,
+     Transform.Method.SUMI,
+     Transform.Method.AVG,
+     Transform.Method.AVGI,
+     Transform.Method.FIRST,
+     Transform.Method.LAST,
+     Transform.Method.MIN,
+     Transform.Method.MAX])
+@pytest.mark.parametrize('calendar',
+    [None,
+     Transform.Calendar.LOCAL,
+     Transform.Calendar.DATABASE,
+     Transform.Calendar.UTC,
+     Transform.Calendar.UNKNOWN])
+async def test_read_transformed_timeseries_points(
+    resolution, method, calendar,
+    expected_number_of_points: int):
     """Check that transformed timeseries points can be read"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -467,58 +494,142 @@ async def test_read_transformed_timeseries_points():
     async with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-
-        transform_parameters_1 = Transform.Parameters(
-            resolution = Timeseries.Resolution.MIN15,
-            method = Transform.Method.AVG)
-
-        transform_parameters_2 = Transform.Parameters(
-            resolution = Timeseries.Resolution.MIN15,
-            method = Transform.Method.AVG,
-            calendar = Transform.Calendar.LOCAL)
-
+        transform_parameters = Transform.Parameters(resolution, method, calendar)
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            test_case_1 = {"start_time": start_time, "end_time": end_time, "full_name": full_name, "transformation": transform_parameters_1}
-            test_case_2 = {"start_time": start_time, "end_time": end_time, "full_name": full_name, "transformation": transform_parameters_2}
-            test_cases = [test_case_1, test_case_2]
-            for test_case in test_cases:
-                reply_timeseries = await session.read_timeseries_points(**test_case)
+            reply_timeseries = await session.read_timeseries_points(
+                start_time, end_time, full_name=full_name, transformation=transform_parameters)
 
-                assert reply_timeseries.number_of_points == 33
+            assert reply_timeseries.is_calculation_expression_result
+
+            if resolution in [Timeseries.Resolution.HOUR,
+                              Timeseries.Resolution.DAY,
+                              Timeseries.Resolution.WEEK,
+                              Timeseries.Resolution.MONTH,
+                              Timeseries.Resolution.YEAR]:
+                # logic for those resolutions is complex and depends on other parameters
+                # make sure the result has at least 1 point and no error is thrown
+                assert reply_timeseries.number_of_points >= 1
+                return
+
+            assert reply_timeseries.number_of_points == expected_number_of_points
+
+            expected_date = start_time
+            delta = 1 if expected_number_of_points == 1 else (end_time - start_time) / (expected_number_of_points - 1)
+            index = 0
+            d = reply_timeseries.arrow_table.to_pydict()
+
+            for utc_time, flags, value in zip(d['utc_time'], d['flags'], d['value']):
                 # check timestamps
-                utc_date = reply_timeseries.arrow_table[0]
-                for index, date in enumerate(utc_date):
-                    hours = int(index / 4) + 1
-                    minutes = (index % 4) * 15
-                    assert date.as_py() == datetime(2016, 1, 1, hours, minutes)
+                assert utc_time == expected_date
 
-                # check flags
-                flags = reply_timeseries.arrow_table[1]
-                for index, flag in enumerate(flags):
-                    if 9 <= index <= 11:
-                        assert flag.as_py() == Timeseries.PointFlags.MISSING.value
-                    elif 12 <= index <= 15:
-                        assert flag.as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
-                    else:
-                        assert flag.as_py() == Timeseries.PointFlags.OK.value
-
-                # check values
-                values = reply_timeseries.arrow_table[2]
-                for index, value in enumerate(values):
-                    if 9 <= index <= 15:
-                        assert math.isnan(value.as_py())
-                    else:
-                        # the original TS data is in hourly resolution,
-                        # starts with 1 and the value is incremented with each hour
+                # check flags and values
+                # hours, flags
+                # <1, 3> - OK
+                # (3, 4) - MISSING
+                # <4, 5) - NOT_OK | MISSING
+                # <5, 10) - OK
+                if expected_date > datetime(2016, 1, 1, 3) and expected_date < datetime(2016, 1, 1, 4):
+                    assert flags == Timeseries.PointFlags.MISSING.value
+                    assert math.isnan(value)
+                elif expected_date >= datetime(2016, 1, 1, 4) and expected_date < datetime(2016, 1, 1, 5):
+                    expected_flags = Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
+                    assert flags == expected_flags
+                    assert math.isnan(value)
+                else:
+                    assert flags == Timeseries.PointFlags.OK.value
+                    # check values for one some combinations (method AVG and resolution MIN15)
+                    if method is Transform.Method.AVG and resolution is Timeseries.Resolution.MIN15:
+                        # the original timeseries data is in hourly resolution,
+                        # starts with 1 and the value is incremented with each hour up to 9
                         # here we are using 15 min resolution, so the delta between each 15 min point is 0.25
-                        assert value.as_py() == 1 + index * 0.25
+                        assert value == 1 + index * 0.25
 
-                assert reply_timeseries.is_calculation_expression_result
+                expected_date += delta
+                index += 1
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_read_transformed_timeseries_points_with_breakpoint_resolution_should_throw():
+    """
+    Check that expected exception is thrown when trying to
+    read transfromed timeseries with unsupported resolution.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        transform_parameters = Transform.Parameters(
+            Timeseries.Resolution.BREAKPOINT, Transform.Method.SUM)
+        _, full_name = get_timeseries_attribute_2()
+
+        with pytest.raises(TypeError, match=".*unsupported resolution.*"):
+            await session.read_timeseries_points(
+                start_time, end_time, full_name=full_name, transformation=transform_parameters)
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_read_transformed_timeseries_points_with_uuid():
+    """
+    Check that transformed timeseries read by full_name or UUUID
+    (both pointing to the same object) return the same data.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        # set interval where there are no NaNs to comfortably use `assert ==``
+        start_time = datetime(2016, 1, 1, 5, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        transform_parameters = Transform.Parameters(
+            Timeseries.Resolution.MIN15, Transform.Method.AVG)
+        _, full_name = get_timeseries_attribute_2()
+
+        # first read timeseries UUID (it is set dynamically)
+        timeseries = await session.read_timeseries_points(
+            start_time, end_time, full_name=full_name)
+        ts_uuid = timeseries[0].uuid
+
+        reply_timeseries_full_name = await session.read_timeseries_points(
+            start_time, end_time, full_name=full_name, transformation=transform_parameters)
+
+        reply_timeseries_uuid = await session.read_timeseries_points(
+            start_time, end_time, uuid_id=ts_uuid, transformation=transform_parameters)
+
+        assert reply_timeseries_full_name.is_calculation_expression_result == reply_timeseries_uuid.is_calculation_expression_result
+        assert len(reply_timeseries_full_name.arrow_table) == len(reply_timeseries_uuid.arrow_table)
+
+        for column_index in range(0, 3):
+            assert reply_timeseries_full_name.arrow_table[column_index] == reply_timeseries_uuid.arrow_table[column_index]
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_read_timeseries_points_without_specifying_timeseries_should_throw():
+    """
+    Check that expected exception is thrown when trying to
+    read timeseries without specifying timeseries (by full_name, timskey or uuid_id).
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+ 
+    async with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+
+        with pytest.raises(TypeError, match=".*need to specify either timskey, uuid_id or full_name.*"):
+            await session.read_timeseries_points(start_time, end_time)
 
 if __name__ == '__main__':
     pytest.main()

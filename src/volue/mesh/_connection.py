@@ -60,6 +60,7 @@ class Connection:
                                    full_name: str = None,
                                    transformation: Transform.Parameters = None) -> Timeseries:
             """
+            Reads timeseries points for the specified timeseries in the given interval.
             Transformed timeseries (returned when `transformation` argument is provided)
             does not have set the following fields:
             - timskey

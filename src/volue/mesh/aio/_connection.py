@@ -77,6 +77,7 @@ class Connection:
             """
             |coro|
 
+            Reads timeseries points for the specified timeseries in the given interval.
             Transformed timeseries (returned when `transformation` argument is provided)
             does not have set the following fields:
             - timskey
