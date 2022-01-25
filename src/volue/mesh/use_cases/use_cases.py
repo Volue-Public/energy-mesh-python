@@ -22,6 +22,9 @@ PORT = 50051
 SHOW_PLOT = True
 # Save timeseries to CSV file
 SAVE_TO_CSV = True
+# Which use case to run
+# ['all', '1' - '8']
+RUN_USE_CASE = 'all'
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
@@ -552,12 +555,10 @@ def use_case_8():
 
 if __name__ == "__main__":
 
-    if len(sys.argv) <= 1:
-        usecase = '5'
-    else:
-        usecase = sys.argv[1]
+    if len(sys.argv) > 1:
+        RUN_USE_CASE = sys.argv[1]
 
-    if usecase == 'all':
+    if RUN_USE_CASE == 'all':
         use_case_1()
         use_case_2()
         use_case_3()
@@ -566,23 +567,23 @@ if __name__ == "__main__":
         use_case_6()
         use_case_7()
         use_case_8()
-    elif usecase == '1':
+    elif RUN_USE_CASE == '1':
         use_case_1()
-    elif usecase == '2':
+    elif RUN_USE_CASE == '2':
         use_case_2()
-    elif usecase == '3':
+    elif RUN_USE_CASE == '3':
         use_case_3()
-    elif usecase == '4':
+    elif RUN_USE_CASE == '4':
         use_case_4()
-    elif usecase == '5':
+    elif RUN_USE_CASE == '5':
         use_case_5()
-    elif usecase == '6':
+    elif RUN_USE_CASE == '6':
         use_case_6()
-    elif usecase == '7':
+    elif RUN_USE_CASE == '7':
         use_case_7()
-    elif usecase == '8':
+    elif RUN_USE_CASE == '8':
         use_case_8()
     else:
-        print(f"Invalid use case selected: {usecase}, selecting default use case 1")
+        print(f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case 1")
         use_case_1()
 
