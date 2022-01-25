@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import uuid
 from typing import List, Any, Tuple
 import pandas as pd
@@ -329,8 +329,8 @@ def use_case_5():
             use_case_name = "Use case 5"
             model = "MeshTEK"
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
-            start = datetime(2021, 9, 28, 0, 0, 0)
-            end = datetime(2021, 9, 29, 1, 0, 0)
+            start = datetime(2021, 9, 28, 0, 0, 0, tzinfo=timezone.utc)
+            end = datetime(2021, 9, 30, 1, 0, 0, tzinfo=timezone.utc)
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
             print(f"{use_case_name}:")
@@ -360,14 +360,17 @@ def use_case_5():
 
             utc_time = pa.array(timestamps)
             flags = pa.array([0] * 24)  # flag 0 -> Common::TimeseriesPointFlags::Ok
-            values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
-                               9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
-            arrays = [
+            old_values = pa.array([0.0] * 24)
+            new_values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
+                                   9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
+
+            # Write new values
+            old_arrays = [
                 utc_time,
                 flags,
-                values
+                new_values
             ]
-            table = pa.Table.from_arrays(arrays=arrays, schema=Timeseries.schema)
+            table = pa.Table.from_arrays(arrays=old_arrays, schema=Timeseries.schema)
             timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
 
             # Send request to write timeseries based on timskey
@@ -386,8 +389,23 @@ def use_case_5():
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
                 timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
 
-            # Discard changes
-            session.rollback()
+            # Commit changes
+            session.commit()
+
+            # Reset to old values
+            old_arrays = [
+                utc_time,
+                flags,
+                old_values
+            ]
+            table = pa.Table.from_arrays(arrays=old_arrays, schema=Timeseries.schema)
+            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
+
+            # Send request to write timeseries based on timskey
+            session.write_timeseries_points(timeserie=timeseries)
+
+            # Commit changes
+            session.commit()
 
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe,
