@@ -591,7 +591,7 @@ async def test_read_transformed_timeseries_points_with_uuid():
 
 
 @pytest.mark.asyncio
-@pytest.mark.unittest
+@pytest.mark.database
 async def test_read_timeseries_points_without_specifying_timeseries_should_throw():
     """
     Check that expected exception is thrown when trying to

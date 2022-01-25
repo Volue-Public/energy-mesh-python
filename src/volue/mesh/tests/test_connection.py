@@ -561,7 +561,7 @@ def test_read_transformed_timeseries_points_with_uuid():
             assert reply_timeseries_full_name.arrow_table[column_index] == reply_timeseries_uuid.arrow_table[column_index]
 
 
-@pytest.mark.unittest
+@pytest.mark.database
 def test_read_timeseries_points_without_specifying_timeseries_should_throw():
     """
     Check that expected exception is thrown when trying to
