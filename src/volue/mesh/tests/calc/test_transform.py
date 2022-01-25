@@ -2,7 +2,7 @@ from datetime import datetime
 import uuid
 import pytest
 
-from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
+from volue.mesh import Timeseries
 from volue.mesh.calc.transform import Transform
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import  get_timeseries_attribute_2
@@ -59,7 +59,7 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
         Timeseries.Resolution.MIN15, Transform.Method.SUM)
     transform_parameters_with_timezone = Transform.Parameters(
         Timeseries.Resolution.MIN15, Transform.Method.SUM, timzeone)
-    
+
     _, full_name = get_timeseries_attribute_2()
 
     relative_to = mesh_pb2.ObjectId()

@@ -1,10 +1,12 @@
+from datetime import datetime
+
+import grpc
+import pyarrow as pa
+
 from volue.mesh import Connection, Timeseries
 from volue.mesh.calc.transform import Transform
 from volue.mesh.examples import _get_connection_info
 
-from datetime import datetime
-import grpc
-import pyarrow as pa
 
 def main(address, port, secure_connection):
     """Showing how to find timeseries, write, read points from it and convert them to pandas format."""
