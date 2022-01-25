@@ -555,29 +555,6 @@ async def test_read_transformed_timeseries_points(
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_read_transformed_timeseries_points_with_breakpoint_resolution_should_throw():
-    """
-    Check that expected exception is thrown when trying to
-    read transfromed timeseries with unsupported resolution.
-    """
-
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.SECURE_CONNECTION)
-
-    async with connection.create_session() as session:
-        start_time = datetime(2016, 1, 1, 1, 0, 0)
-        end_time = datetime(2016, 1, 1, 9, 0, 0)
-        transform_parameters = Transform.Parameters(
-            Timeseries.Resolution.BREAKPOINT, Transform.Method.SUM)
-        _, full_name = get_timeseries_attribute_2()
-
-        with pytest.raises(TypeError, match=".*unsupported resolution.*"):
-            await session.read_timeseries_points(
-                start_time, end_time, full_name=full_name, transformation=transform_parameters)
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
 async def test_read_transformed_timeseries_points_with_uuid():
     """
     Check that transformed timeseries read by full_name or UUUID
@@ -614,7 +591,7 @@ async def test_read_transformed_timeseries_points_with_uuid():
 
 
 @pytest.mark.asyncio
-@pytest.mark.database
+@pytest.mark.unittest
 async def test_read_timeseries_points_without_specifying_timeseries_should_throw():
     """
     Check that expected exception is thrown when trying to
@@ -630,6 +607,7 @@ async def test_read_timeseries_points_without_specifying_timeseries_should_throw
 
         with pytest.raises(TypeError, match=".*need to specify either timskey, uuid_id or full_name.*"):
             await session.read_timeseries_points(start_time, end_time)
+
 
 if __name__ == '__main__':
     pytest.main()

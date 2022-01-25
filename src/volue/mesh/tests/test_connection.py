@@ -526,28 +526,6 @@ def test_read_transformed_timeseries_points(
 
 
 @pytest.mark.database
-def test_read_transformed_timeseries_points_with_breakpoint_resolution_should_throw():
-    """
-    Check that expected exception is thrown when trying to
-    read transfromed timeseries with unsupported resolution.
-    """
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
-
-    with connection.create_session() as session:
-        start_time = datetime(2016, 1, 1, 1, 0, 0)
-        end_time = datetime(2016, 1, 1, 9, 0, 0)
-        transform_parameters = Transform.Parameters(
-            Timeseries.Resolution.BREAKPOINT, Transform.Method.SUM)
-        _, full_name = get_timeseries_attribute_2()
-
-        with pytest.raises(TypeError, match=".*unsupported resolution.*"):
-            session.read_timeseries_points(
-                start_time, end_time, full_name=full_name, transformation=transform_parameters)
-
-
-@pytest.mark.database
 def test_read_transformed_timeseries_points_with_uuid():
     """
     Check that transformed timeseries read by full_name or UUUID
@@ -583,7 +561,7 @@ def test_read_transformed_timeseries_points_with_uuid():
             assert reply_timeseries_full_name.arrow_table[column_index] == reply_timeseries_uuid.arrow_table[column_index]
 
 
-@pytest.mark.database
+@pytest.mark.unittest
 def test_read_timeseries_points_without_specifying_timeseries_should_throw():
     """
     Check that expected exception is thrown when trying to
@@ -592,7 +570,7 @@ def test_read_timeseries_points_without_specifying_timeseries_should_throw():
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.SECURE_CONNECTION)
- 
+
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
