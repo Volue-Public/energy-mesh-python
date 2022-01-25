@@ -1,8 +1,8 @@
 from datetime import datetime
-import grpc
 import math
-import pytest
 import uuid
+import grpc
+import pytest
 
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
@@ -623,7 +623,7 @@ async def test_read_timeseries_points_without_specifying_timeseries_should_throw
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.SECURE_CONNECTION)
- 
+
     async with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)

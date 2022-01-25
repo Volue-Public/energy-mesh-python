@@ -1,9 +1,8 @@
-from bdb import Breakpoint
 from datetime import datetime
-import grpc
 import math
-import pytest
 import uuid
+import grpc
+import pytest
 
 from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 from volue.mesh.calc.transform import Transform
