@@ -181,7 +181,7 @@
 <p>Client library for Volue Energy’s Mesh software.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Authentication">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.42.0)"><span class="pre">grpc.ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.43.1)"><span class="pre">grpc.ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authentication services for authentication and authorization to Mesh server.
 The flow is as follows:</p>
 <ol class="arabic">
@@ -254,7 +254,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p></li>
 <li><p><strong>(</strong><strong>win</strong><strong>)</strong><strong>kerberos.GSSError</strong> – </p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – invalid token duration</p></li>
 </ul>
@@ -282,7 +282,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.close" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -292,7 +292,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.commit" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -313,17 +313,26 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.read_timeseries_points">
-<span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id:</span> <span class="pre">typing.Optional[uuid.UUID]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id:</span> <span class="pre">typing.Optional[uuid.UUID]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformation:</span> <span class="pre">typing.Optional[volue.mesh.calc.transform.Parameters]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads timeseries points for the specified timeseries in the given interval.
+Transformed timeseries (returned when a <cite>transformation</cite> argument is provided)
+does not have the following fields set:
+- timskey
+- uuid_id
+- full_name</p>
+<dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -333,7 +342,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.rollback" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,7 +379,7 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -387,7 +396,7 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.create_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -451,6 +460,27 @@ using either a path or a guid.
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PointFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries.PointFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags" title="Permalink to this definition">¶</a></dt>
+<dd><p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags.MISSING">
+<span class="sig-name descname"><span class="pre">MISSING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67108864</span></em><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags.MISSING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags.NOT_OK">
+<span class="sig-name descname"><span class="pre">NOT_OK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1073741824</span></em><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags.NOT_OK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags.OK">
+<span class="sig-name descname"><span class="pre">OK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags.OK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries.Resolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries.Resolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>An enumeration.</p>
@@ -470,8 +500,23 @@ using either a path or a guid.
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN">
+<span class="sig-name descname"><span class="pre">MIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN10">
+<span class="sig-name descname"><span class="pre">MIN10</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN10" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN15">
 <span class="sig-name descname"><span class="pre">MIN15</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN15" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN5">
+<span class="sig-name descname"><span class="pre">MIN5</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN5" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -489,6 +534,14 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">YEAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.YEAR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.is_calculation_expression_result">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_calculation_expression_result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#volue.mesh.Timeseries.is_calculation_expression_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>If timeseries does not have timskey, uuid and full_name set then it is an
+ad-hoc calculation expression result (like e.g.: timeseries transformations).
+Refer to documentation ‘Concepts’ for more information.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -523,7 +576,7 @@ using either a path or a guid.
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -534,7 +587,7 @@ using either a path or a guid.
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -556,17 +609,27 @@ using either a path or a guid.
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.read_timeseries_points">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">volue.mesh.calc.transform.Parameters</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<p>Reads timeseries points for the specified timeseries in the given interval.
+Transformed timeseries (returned when a <cite>transformation</cite> argument is provided)
+does not have the following fields set:
+- timskey
+- uuid_id
+- full_name</p>
+<dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -577,7 +640,7 @@ using either a path or a guid.
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -628,7 +691,7 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.aio.Connection.Session" title="volue.mesh.aio._connection.Connection.Session"><span class="pre">volue.mesh.aio._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.create_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.42.0)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -863,6 +926,26 @@ using either a path or a guid.
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_read_timeseries_points_without_specifying_timeseries_should_throw">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_timeseries_points_without_specifying_timeseries_should_throw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_read_timeseries_points_without_specifying_timeseries_should_throw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_read_timeseries_points_without_specifying_timeseries_should_throw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that expected exception is thrown when trying to
+read timeseries without specifying timeseries (by full_name, timskey or uuid_id).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_read_transformed_timeseries_points">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_transformed_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_number_of_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_read_transformed_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_read_transformed_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that transformed timeseries points can be read</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_read_transformed_timeseries_points_with_uuid">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_transformed_timeseries_points_with_uuid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_read_transformed_timeseries_points_with_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_read_transformed_timeseries_points_with_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that transformed timeseries read by full_name or UUUID
+(both pointing to the same object) return the same data.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_rollback">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_rollback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that rollback discards changes made in the current session.</p>
@@ -920,6 +1003,26 @@ using either a path or a guid.
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_read_timeseries_points_async">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_timeseries_points_async</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_read_timeseries_points_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_read_timeseries_points_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that timeseries points can be read</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_read_timeseries_points_without_specifying_timeseries_should_throw">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_timeseries_points_without_specifying_timeseries_should_throw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_read_timeseries_points_without_specifying_timeseries_should_throw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_read_timeseries_points_without_specifying_timeseries_should_throw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that expected exception is thrown when trying to
+read timeseries without specifying timeseries (by full_name, timskey or uuid_id).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_read_transformed_timeseries_points">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_transformed_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timezone</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected_number_of_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_read_transformed_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_read_transformed_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that transformed timeseries points can be read</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_read_transformed_timeseries_points_with_uuid">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_read_transformed_timeseries_points_with_uuid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_read_transformed_timeseries_points_with_uuid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_read_transformed_timeseries_points_with_uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that transformed timeseries read by full_name or UUUID
+(both pointing to the same object) return the same data.</p>
 </dd></dl>
 
 <dl class="py function">

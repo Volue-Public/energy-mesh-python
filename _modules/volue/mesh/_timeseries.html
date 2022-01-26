@@ -189,12 +189,19 @@
 
 <div class="viewcode-block" id="Timeseries.Resolution"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Resolution">[docs]</a>    <span class="k">class</span> <span class="nc">Resolution</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
         <span class="n">BREAKPOINT</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">MIN15</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">HOUR</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="n">DAY</span> <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">WEEK</span> <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">MONTH</span> <span class="o">=</span> <span class="mi">5</span>
-        <span class="n">YEAR</span> <span class="o">=</span> <span class="mi">6</span></div>
+        <span class="n">MIN15</span>      <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">HOUR</span>       <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">DAY</span>        <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">WEEK</span>       <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">MONTH</span>      <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">YEAR</span>       <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">MIN</span>        <span class="o">=</span> <span class="mi">7</span>
+        <span class="n">MIN5</span>       <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">MIN10</span>      <span class="o">=</span> <span class="mi">9</span></div>
+<div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span> <span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="n">OK</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">MISSING</span> <span class="o">=</span> <span class="mh">0x04000000</span>
+        <span class="n">NOT_OK</span> <span class="o">=</span> <span class="mh">0x40000000</span></div>
 
     <span class="sd">&quot;&quot;&quot;Represents a mesh timeserie.</span>
 
@@ -242,8 +249,16 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Number of points inside the timeseries&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span></div>
+        <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_calculation_expression_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If timeseries does not have timskey, uuid and full_name set then it is an</span>
+<span class="sd">        ad-hoc calculation expression result (like e.g.: timeseries transformations).</span>
+<span class="sd">        Refer to documentation &#39;Concepts&#39; for more information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">is</span> <span class="kc">None</span></div>
 </pre></div>
 
            </div>
