@@ -1,6 +1,6 @@
 from volue.mesh._common import *
 from volue.mesh import Authentication, Credentials, Timeseries
-from volue.mesh.calc.transform import Transform
+from volue.mesh.calc import transform as Transform
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
 from typing import Optional, List
@@ -78,8 +78,8 @@ class Connection:
             |coro|
 
             Reads timeseries points for the specified timeseries in the given interval.
-            Transformed timeseries (returned when `transformation` argument is provided)
-            does not have set the following fields:
+            Transformed timeseries (returned when a `transformation` argument is provided)
+            does not have the following fields set:
             - timskey
             - uuid_id
             - full_name

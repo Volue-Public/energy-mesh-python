@@ -4,7 +4,7 @@ import grpc
 import pyarrow as pa
 
 from volue.mesh import Connection, Timeseries
-from volue.mesh.calc.transform import Transform
+from volue.mesh.calc import transform as Transform
 from volue.mesh.examples import _get_connection_info
 
 

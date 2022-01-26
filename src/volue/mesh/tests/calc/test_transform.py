@@ -3,7 +3,7 @@ import uuid
 import pytest
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.transform import Transform
+from volue.mesh.calc import transform as Transform
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import  get_timeseries_attribute_2
 
@@ -26,7 +26,7 @@ def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
     relative_to = mesh_pb2.ObjectId()
     relative_to.full_name = full_name
 
-    with pytest.raises(TypeError, match=".*unsupported resolution.*"):
+    with pytest.raises(ValueError, match=".*'BREAKPOINT' resolution is unsupported.*"):
         Transform.prepare_request(
             session_id, start_time, end_time, relative_to, transform_parameters)
 

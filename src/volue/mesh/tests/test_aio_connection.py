@@ -6,7 +6,7 @@ import pytest
 
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
-from volue.mesh.calc.transform import Transform
+from volue.mesh.calc import transform as Transform
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
