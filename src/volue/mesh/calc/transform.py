@@ -16,9 +16,8 @@ class Timezone(Enum):
     Timezone parameter
     """
     LOCAL    = 0
-    DATABASE = 1
+    STANDARD = 1
     UTC      = 2
-    UNKNOWN  = 3  # TODO: should we expose it? Is it used in some scenario?
 
 class Method(Enum):
     """

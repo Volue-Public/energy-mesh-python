@@ -480,9 +480,8 @@ async def test_rollback():
 @pytest.mark.parametrize('timezone',
     [None,
      Transform.Timezone.LOCAL,
-     Transform.Timezone.DATABASE,
-     Transform.Timezone.UTC,
-     Transform.Timezone.UNKNOWN])
+     Transform.Timezone.STANDARD,
+     Transform.Timezone.UTC])
 async def test_read_transformed_timeseries_points(
     resolution, method, timezone,
     expected_number_of_points: int):
