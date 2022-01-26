@@ -22,12 +22,19 @@ class Timeseries:
 
     class Resolution(Enum):
         BREAKPOINT = 0
-        MIN15 = 1
-        HOUR = 2
-        DAY = 3
-        WEEK = 4
-        MONTH = 5
-        YEAR = 6
+        MIN15      = 1
+        HOUR       = 2
+        DAY        = 3
+        WEEK       = 4
+        MONTH      = 5
+        YEAR       = 6
+        MIN        = 7
+        MIN5       = 8
+        MIN10      = 9
+    class PointFlags(Enum):
+        OK = 0
+        MISSING = 0x04000000
+        NOT_OK = 0x40000000
 
     """Represents a mesh timeserie.
 
@@ -77,3 +84,11 @@ class Timeseries:
         """Number of points inside the timeseries"""
         return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
+    @property
+    def is_calculation_expression_result(self) -> bool:
+        """
+        If timeseries does not have timskey, uuid and full_name set then it is an
+        ad-hoc calculation expression result (like e.g.: timeseries transformations).
+        Refer to documentation 'Concepts' for more information.
+        """
+        return self.timskey is None and self.uuid is None and self.full_name is None
