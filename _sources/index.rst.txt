@@ -4,6 +4,11 @@ Welcome to Mesh Python SDK
 Mesh Python SDK is a client library used to
 communicate with Volue Energy's Mesh server.
 
+To learn what's new and noteworthy head on over to our :doc:`news` section.
+
+.. note::
+    The Python SDK is currently in `alpha <https://en.wikipedia.org/wiki/Software_release_life_cycle#Alpha>`_
+
 Getting started
 ----------------
 
@@ -38,6 +43,7 @@ If you're having trouble, these resources might help.
 .. toctree::
    :caption: Welcome
 
+   news
    quickstart
    installation
    examples
