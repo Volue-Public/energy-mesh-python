@@ -2,7 +2,7 @@ News
 --------
 
 
-`Mesh Python SDK version 2.2 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.2>`_
+`Mesh Python SDK version 0.0.2 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.2>`_
 *************************************************************************************************************************
 
 ------------
