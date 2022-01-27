@@ -15,8 +15,8 @@ New features:
 - Read and write timeseries points using full name, GUID or timskey.
 - Get and update metadata about physical Oracle timeseries.
 - Get and update metadata about timeseries objects connected in the mesh model.
-- Search for timeseries objects in the mesh model using the model, a query and either a start path or start guid.
-- Rollback and/or commit changes made to a mesh session.
+- Search for timeseries objects in the Mesh model using the model, a query and either a start path or start GUID.
+- Rollback and/or commit changes made to a Mesh session.
 - Documentation, guides and examples.
 - Automatic testing.
 
