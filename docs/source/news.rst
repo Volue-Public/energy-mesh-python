@@ -33,6 +33,7 @@ Known issues:
 - **Major:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
 - **Minor:** "Visual bug when displaying results for use cases" :issue:`122`
 
+
 Compatible with:
 ~~~~~~~~~~~~~~~~~~
 
