@@ -11,7 +11,7 @@ New features:
 ~~~~~~~~~~~~~~~~~~
 
 - Authenticate with Mesh using the Kerberos protocol towards Active Directory.
-- Create and/or connect to session on running mesh server using both secure and insecure connection.
+- Create and/or connect to a session on a running mesh server using both secure and insecure connection.
 - Read and write timeseries points using full name, guid or timskey.
 - Get and update meta data about timeseries in the resource silo.
 - Get and update meta data about timeseries objects connected in the mesh model.
