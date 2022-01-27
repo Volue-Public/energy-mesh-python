@@ -23,7 +23,7 @@ New features:
 Changes:
 ~~~~~~~~~~~~~~~~~~
 
-- First alfa version.
+- First alpha version.
 
 Known issues:
 ~~~~~~~~~~~~~~~~~~
