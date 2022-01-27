@@ -62,7 +62,7 @@ autodoc_default_options = {
 
 # Options for: sphinx.ext.extlinks
 extlinks = {
-    'issue': ('https://github.com/PowelAS/sme-mesh-python/issues/%s', 'issue %s'),
+    'issue': ('https://github.com/PowelAS/sme-mesh-python/issues/%s', '[%s]'),
 }
 
 # Options for: sphinx.ext.intersphinx
