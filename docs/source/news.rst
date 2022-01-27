@@ -31,6 +31,7 @@ Known issues:
 - **Critical**: "update_timeseries_resource_info(...) is not working as intended" :issue:`116`
 - **Major/Minor:** "Writing to a timeseries does not behave as expected" :issue:`115`
 - **Major:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
+- **Minor:** "Visual bug when displaying results for use cases" :issue:`122`
 
 Compatible with:
 ~~~~~~~~~~~~~~~~~~
