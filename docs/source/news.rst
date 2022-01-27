@@ -17,6 +17,8 @@ New features:
 - Get and update metadata about timeseries objects connected in the mesh model.
 - Search for timeseries objects in the mesh model using the model, a query and either a start path or start guid.
 - Rollback and/or commit changes made to a mesh session.
+- Search for timeseries objects in the Mesh model using the model, a query and either a start path or start GUID.
+- Rollback and/or commit changes made to a Mesh session.
 - Documentation, guides and examples.
 - Automatic testing.
 
@@ -32,6 +34,7 @@ Known issues:
 - **Major/Minor:** "Writing to a timeseries does not behave as expected" :issue:`115`
 - **Major:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
 - **Minor:** "Visual bug when displaying results for use cases" :issue:`122`
+
 
 Compatible with:
 ~~~~~~~~~~~~~~~~~~
