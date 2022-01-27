@@ -75,6 +75,12 @@ service MeshService {
   // Rollback changes that are in the server's session but not in the database yet.
   rpc Rollback(Guid) returns (google.protobuf.Empty) {}
 
+  rpc ImportTimeseries(ImportTimeseriesRequest) returns (ImportResponse) {}
+  rpc ExportTimeseries(ExportTimeseriesRequest) returns (ExportTimeseriesResponse) {}
+
+  rpc ImportAvailabilityEvents(ImportAvailabilityEventsRequest) returns (ImportResponse) {}
+  rpc ExportAvailabilityEvents(ExportAvailabilityEventsRequest) returns (ExportAvailabilityEventsResponse) {}
+
   // Timeseries
   // -------------------------------
   // In its simplest form a timeseries is just a table of timestamps, flags and values.
@@ -134,6 +140,8 @@ service MeshService {
   // If the search doesn't find any results an empty stream and an OK status
   // is returned.
   rpc SearchTimeseriesAttributes(SearchTimeseriesAttributesRequest) returns (stream TimeseriesAttribute) {}
+
+  rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
 }
 
 message AuthenticateKerberosResponse {
@@ -252,6 +260,137 @@ message Transformation {
   // to know when exactly the local day begins. Thus we need
   // to include some time zone info, to be able to do the transform:
   // TODO: optional string timezone = 3;
+}
+
+message ExportTimeseriesRequest {
+    Guid session_id = 1;
+    repeated Guid ids = 2;
+    repeated UtcInterval intervals = 3;
+    string sender = 4;
+    string receiver = 5;
+}
+
+message Segment {
+  UtcInterval interval = 1;
+  repeated google.protobuf.Timestamp timestamps = 2;
+  repeated double values = 3;
+  repeated fixed32 flags = 4;
+}
+
+message ImportTimeseriesRequest {
+  message Timeseries {
+    string start_object_path = 1;
+    string search_expression = 2;
+    repeated Segment segments = 3;
+  }
+  Guid session_id = 1;
+  string sender = 2;
+  string receiver = 3;
+  repeated Timeseries timeseries = 4;
+}
+
+message ExportTimeseriesResponse {
+  message Timeseries {
+    string path = 1;
+    Guid id = 2;
+    Curve curve_type = 3;
+    Resolution delta_t = 4;
+    string unit_of_measurement = 5;
+    repeated Segment segments = 6;
+  }
+  repeated Timeseries timeseries = 1;
+}
+
+message ImportAvailabilityEventsRequest {
+  Guid session_id = 1;
+  string sender = 2;
+  string receiver = 3;
+  repeated AvailabilityEvent availability_events = 4;
+}
+
+message ExportAvailabilityEventsRequest {
+  Guid session_id = 1;
+  Guid parent_guid = 2;  // GUID of entity having Availability Events
+  string category = 3;  // e.g.: Revision, ProductionMax[MW/h], etc.
+  string event_id = 4;  // unique ID provided by client
+  UtcInterval interval = 5;
+  google.protobuf.Timestamp changed_since = 6;
+  string sender = 7;
+  string receiver = 8;
+}
+
+message ExportAvailabilityEventsResponse {
+  repeated AvailabilityEvent availability_events = 1;
+}
+
+message AvailabilityEvent {
+    enum OperationType {
+        CREATE = 0;
+        UPDATE = 1;
+        FORCE_UPDATE = 2;  // try to update, if not existing create it
+        REMOVE = 3;
+    }
+    string event_id = 1;  // unique ID provided by client
+    string start_object_path = 2;
+    string search_expression = 3;
+    string category = 4;  // e.g.: Revision, ProductionMax[MW/h], etc.
+    OperationType operation_type = 5;
+    repeated AvailabilitySubEvent sub_events = 6;
+    string local_id = 7;
+    Guid parent_guid = 8;
+    string created_by = 9;
+    string last_changed_by = 10;
+    google.protobuf.Timestamp created_time = 11;
+    google.protobuf.Timestamp last_change_time = 12;
+    google.protobuf.Timestamp changed_since = 13;
+    UtcInterval from_to = 14;
+}
+
+message AvailabilitySubEvent {
+    message Frequency {
+      enum Type {
+        BASIC = 0;
+        COMPLEX = 1;
+      }
+      enum RecurrenceType {
+        NONE = 0;
+        DAILY = 1;
+        WEEKLY = 2;
+        MONTHLY = 3;
+        YEARLY = 4;
+      }
+      message TimePoints {
+        repeated google.protobuf.Timestamp timestamps = 1;
+        repeated double values = 2;
+      }
+      Type type = 1;
+      RecurrenceType recurrence_type = 2;
+      fixed32 recur_every = 3;  // used for complex types, e.g.: recur every 2 weeks
+      google.protobuf.Timestamp recur_until = 4;  // used for complex types, shows until when recur events
+      UtcInterval interval = 5;
+      TimePoints points = 6;
+    }
+
+    message Occurrences {
+        repeated UtcInterval interval = 1;
+        repeated double value = 2;
+    }
+
+    string description = 1;
+    string status = 2;  // e.g.: Recommended, Proposed
+    Frequency frequency = 3;
+    double value = 4;
+    Occurrences occurrences = 5;
+}
+
+
+message ImportResponse {
+  enum StatusType {
+    SUCCESS = 0;
+    PARTIAL = 1;
+    FAILURE = 2;
+  }
+  StatusType status = 1;
 }
 
 message ReadTimeseriesRequest {
@@ -409,4 +548,27 @@ message SearchTimeseriesAttributesRequest {
 // NOT IMPLEMENTED/USED
 message SearchTimeseriesEntriesRequest {
     Guid session_id = 1;
+}
+
+message CalculationRequest {
+    Guid session_id = 1;
+    string expression = 2;
+    UtcInterval interval = 3;
+    ObjectId relative_to = 4;
+}
+
+message NumericResults {
+    repeated double value = 1;
+}
+
+message StringResults {
+    repeated string value = 1;
+}
+
+message CalculationResponse {
+    oneof calculation_result_oneof {
+        ReadTimeseriesResponse timeseries_results = 1;  // not all fields in Timeseries result will be set (e.g. full_name, or timskey)
+        NumericResults numeric_results = 2;
+        StringResults string_results = 3;
+    }
 }

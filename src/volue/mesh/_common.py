@@ -1,11 +1,13 @@
 import uuid
 import datetime
+from typing import List
 
 import pyarrow as pa
 
 from volue.mesh import Timeseries
 from volue.mesh.proto import mesh_pb2
 from google.protobuf import timestamp_pb2
+
 
 def to_proto_guid(uuid: uuid.UUID) -> mesh_pb2.Guid:
     """Convert from UUID format to Microsoft's GUID format.
@@ -85,19 +87,24 @@ def to_proto_timeseries(timeseries: Timeseries) -> mesh_pb2.Timeseries:
     return proto_timeserie
 
 
-def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> [Timeseries]:
-    """Converts a timeseries reply into a Timeseries 
-
+def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
+    """Converts a timeseries reply into a Timeseries
     """
     timeseries = []
     for timeserie in reply.timeseries:
         resolution = timeserie.resolution
-        object_id = timeserie.object_id
         interval = timeserie.interval
         reader = pa.ipc.open_stream(timeserie.data)
         table = reader.read_all()
-        ts = Timeseries(table, resolution,
-                        interval.start_time, interval.end_time,
-                        object_id.timskey, from_proto_guid(object_id.guid), object_id.full_name)
+
+        if timeserie.HasField("object_id"):
+            object_id = timeserie.object_id
+            ts = Timeseries(table, resolution,
+                            interval.start_time, interval.end_time,
+                            object_id.timskey, from_proto_guid(object_id.guid), object_id.full_name)
+        else:
+            ts = Timeseries(table, resolution,
+                            interval.start_time, interval.end_time)
+
         timeseries.append(ts)
     return timeseries

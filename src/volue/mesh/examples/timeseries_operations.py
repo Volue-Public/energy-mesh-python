@@ -1,15 +1,18 @@
-from volue.mesh import Connection, Timeseries
-from volue.mesh.examples import _get_connection_info
+from datetime import datetime
 
-from datetime import datetime, timezone
 import grpc
 import pyarrow as pa
+
+from volue.mesh import Connection, Timeseries
+from volue.mesh.calc import transform as Transform
+from volue.mesh.examples import _get_connection_info
+
 
 def main(address, port, secure_connection):
     """Showing how to find timeseries, write, read points from it and convert them to pandas format."""
 
     model_name = "SimpleThermalTestModel"
-    query = "{*}.TsRawAtt"
+    query = "*[.Name=SomePowerPlantChimney2].TsRawAtt"  # make sure only 1 timeseries is returned
     start_object_path = "ThermalComponent"
 
     connection = Connection(address, port, secure_connection)
@@ -21,9 +24,11 @@ def main(address, port, secure_connection):
             print(f"Could not find timeseries attribute: {e}")
             return
 
-        if timeseries_attributes is None:
+        if len(timeseries_attributes) == 0:
             print("No such timeseries attribute in the given model/database")
             return
+
+        print(f'Number of timeseries: {len(timeseries_attributes)}')
 
         # pick the first timeseries and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
@@ -40,28 +45,35 @@ def main(address, port, secure_connection):
             # flags - [pa.uint32]
             # value - [pa.float64]
 
-            timestamp_1 = datetime(2016, 5, 1, 2)  # timezone provided in timeseries timestamps will be discarded, it will be treated as UTC
-            timestamp_2 = datetime(2016, 5, 2, 4)
-            timestamp_3 = datetime(2016, 5, 3, 18)
+            number_of_points = 72
+            timestamps = []
+            values = []
+            for i in range(0, number_of_points):
+                hours = i % 24
+                days = int(i / 24) + 1
+                timestamps.append(datetime(2016, 5, days, hours))
+                values.append(days * 10)
+
+            flags = [Timeseries.PointFlags.OK.value] * number_of_points
 
             arrays = [
-                pa.array([timestamp_1, timestamp_2, timestamp_3]),
-                pa.array([0, 0, 0]),
-                pa.array([1.1, 2.2, 3.3])]
+                pa.array(timestamps),
+                pa.array(flags),
+                pa.array(values)]
             arrow_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
             start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
-            end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be read/written
+            end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be written
 
             timeseries = Timeseries(table=arrow_table, start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
             session.write_timeseries_points(timeseries)
 
         except grpc.RpcError as e:
-            print(f"Could not write timeseries points {e}")
+            print(f"Could not write timeseries points: {e}")
 
         # now lets read from it
         try:
-            start_time = datetime(2016, 5, 2)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
-            end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be read/written
+            start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
+            end_time = datetime(2016, 5, 4)
 
             timeseries_read = session.read_timeseries_points(start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
             # there should be exactly one timeseries read
@@ -74,12 +86,37 @@ def main(address, port, secure_connection):
             print(pandas_series)
 
             # do some further processing
-            
-            # optionally discard changes
-            session.rollback()
 
         except grpc.RpcError as e:
-            print(f"Could not read timeseries points {e}")
+            print(f"Could not read timeseries points: {e}")
+
+        # now lets read transformations from it (transform to days)
+        try:
+            start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
+            end_time = datetime(2016, 5, 3)
+
+            transform_parameters = Transform.Parameters(
+                resolution = Timeseries.Resolution.DAY,
+                method = Transform.Method.SUM,
+                timezone = Transform.Timezone.UTC)
+
+            timeseries_read = session.read_timeseries_points(
+                start_time=start_time,
+                end_time=end_time,
+                uuid_id=timeseries_attribute.id,
+                transformation=transform_parameters)
+
+            # convert to pandas format
+            pandas_series = timeseries_read.arrow_table.to_pandas()
+            print(pandas_series)
+
+            # do some further processing
+
+        except Exception as e:
+            print(f"Could not read transformed timeseries points: {e}")
+
+        # optionally discard changes
+        session.rollback()
 
 
 if __name__ == "__main__":

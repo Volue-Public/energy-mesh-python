@@ -1,5 +1,6 @@
 from volue.mesh._common import *
-from volue.mesh import Authentication, Timeseries, from_proto_guid, to_proto_guid, Credentials, to_protobuf_utcinterval
+from volue.mesh import Authentication, Credentials, Timeseries
+from volue.mesh.calc import transform as Transform
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.proto import mesh_pb2_grpc
 from typing import Optional, List
@@ -56,23 +57,43 @@ class Connection:
                                    end_time: datetime,
                                    timskey: int = None,
                                    uuid_id: uuid.UUID = None,
-                                   full_name: str = None) -> Timeseries:
+                                   full_name: str = None,
+                                   transformation: Transform.Parameters = None) -> Timeseries:
             """
+            Reads timeseries points for the specified timeseries in the given interval.
+            Transformed timeseries (returned when a `transformation` argument is provided)
+            does not have the following fields set:
+            - timskey
+            - uuid_id
+            - full_name
+
             Raises:
                 grpc.RpcError:
+                TypeError:
             """
-            object_id = mesh_pb2.ObjectId(
-                timskey=timskey,
-                guid=to_proto_guid(uuid_id),
-                full_name=full_name)
+            object_id = mesh_pb2.ObjectId()
+            if timskey is not None:
+                object_id.timskey = timskey
+            elif uuid_id is not None:
+                object_id.guid.CopyFrom(to_proto_guid(uuid_id))
+            elif full_name is not None:
+                object_id.full_name = full_name
+            else:
+                raise TypeError("need to specify either timskey, uuid_id or full_name")
 
-            reply = self.mesh_service.ReadTimeseries(
+            if transformation is not None:
+                request = Transform.prepare_request(
+                    self.session_id, start_time, end_time, object_id, transformation)
+                response = self.mesh_service.RunCalculation(request)
+                return Transform.parse_response(response)
+
+            response = self.mesh_service.ReadTimeseries(
                 mesh_pb2.ReadTimeseriesRequest(
                     session_id=to_proto_guid(self.session_id),
                     object_id=object_id,
                     interval=to_protobuf_utcinterval(start_time, end_time)
                 ))
-            return read_proto_reply(reply)
+            return read_proto_reply(response)
 
         def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
