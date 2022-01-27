@@ -10,7 +10,7 @@ News
 New features:
 ~~~~~~~~~~~~~~~~~~
 
-- Authentication/authorization: Authentication is done using the Kerberos protocol towards Active Directory.
+- Authenticate with Mesh using the Kerberos protocol towards Active Directory.
 - Create and/or connect to session on running mesh server using both secure and insecure connection.
 - Read and write timeseries points using full name, guid or timskey.
 - Get and update meta data about timeseries in the resource silo.
