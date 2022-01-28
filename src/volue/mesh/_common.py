@@ -44,7 +44,6 @@ def to_proto_curve_type(curve: Timeseries.Curve) -> mesh_pb2.Curve:
     return proto_curve
 
 
-
 def to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> mesh_pb2.UtcInterval:
     """Convert to protobuf UtcInterval."""
     start = timestamp_pb2.Timestamp()

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import grpc
 import sys
 from volue.mesh import Connection, Timeseries, from_proto_guid
+from volue.mesh.calc import transform as Transform
 from volue.mesh.proto import mesh_pb2
 
 """
@@ -21,10 +22,10 @@ PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
 # Save timeseries to CSV file
-SAVE_TO_CSV = False
+SAVE_TO_CSV = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', '1' - '9']
-RUN_USE_CASE = '9'
+RUN_USE_CASE = 'all'
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
@@ -41,7 +42,8 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
             legends.append(timeseries_identifier)
             data = [timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value']]
             arguments = {'linestyle': '--',
-                         'marker': 'o'
+                         'marker': 'o',
+                         'where': 'post'  # making sure line continues to the right of the value until new value
                          }
             if style == 'plot':
                 plt.plot(*data)
@@ -421,10 +423,9 @@ def use_case_6():
     Scenario:
     We want to transform existing timeseries from breakpoint resolution to hourly.
 
-    Start point:                430df600-f35f-4606-bd5c-2597ed930ab2 # 'Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1961'
-    Search expression:          ProductionSource = @t('.Production')
-    Transformation expression:  ##=@TRANSFORM(ProductionSource,'HOUR','AVGI')
-    Time interval:              1.9.2021 - 1.10.2021
+    Object guid:                '012d70e3-8f40-40af-9c0a-5d84fc239776'
+    Transformation expression:  ##=@TRANSFORM(Object guid,'HOUR','AVGI')
+    Time interval:              5.9.2021 - 1.10.2021
 
     """
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
@@ -432,37 +433,50 @@ def use_case_6():
         try:
             use_case_name = "Use case 6"
             model = "MeshTEK"
-            start_object_guid = '430df600-f35f-4606-bd5c-2597ed930ab2'
-            search_query = '*.Production'
-            start = datetime(2021, 9, 1)
+            object_guid = '012d70e3-8f40-40af-9c0a-5d84fc239776'
+            start = datetime(2021, 9, 5)
             end = datetime(2021, 10, 1)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            # Search for timeseries
-            search_matches = session.search_for_timeseries_attribute(model=model,
-                                                                     start_object_guid=uuid.UUID(start_object_guid),
-                                                                     query=search_query)
+            # Retrieve information connected to the timeseries
+            mesh_object = session.get_timeseries_attribute(model=model,
+                                                           uuid_id=uuid.UUID(object_guid))
 
-            # Retrieve timeseries connected to the mesh objects found
+            # Retrieve timeseries connected to the mesh object
             path_and_pandas_dataframe = []
-            for number, mesh_object in enumerate(search_matches):
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            uuid_id=mesh_object.id)
-                print(f"{number + 1}: \n"
-                      f"-----\n"
-                      f"" + get_mesh_object_information(mesh_object) + f"")
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    path_and_pandas_dataframe.append((mesh_object.entry.delta_t, pandas_dataframe))
-                    timeseries_information = session.get_timeseries_resource_info(timskey=timeserie.timskey)
-                    print("")
+            timeseries_original = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id)
+            print(f"{object_guid}: \n"
+                  f"-----\n"
+                  f"" + get_mesh_object_information(mesh_object) + f"")
+            for timeserie in timeseries_original:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((f"original ({str(mesh_object.entry.delta_t.type)})", pandas_dataframe))
+                print(pandas_dataframe)
+                timeseries_information = session.get_timeseries_resource_info(timskey=timeserie.timskey)
 
-                # TODO: transform from breakpoint to hourly
+            # Transform timeseries from breakpoint to hourly
+            from_breakpoint_to_hourly = Transform.Parameters(
+                resolution=Timeseries.Resolution.HOUR,
+                method=Transform.Method.AVGI,
+                timezone=Transform.Timezone.UTC
+            )
+
+            timeserie_transformed = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id,
+                                                        transformation=from_breakpoint_to_hourly)
+
+            pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
+            print(pandas_dataframe)
+            path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
+            plot_timeseries(path_and_pandas_dataframe,
+                            f"{use_case_name}: transforming resolution",
+                            style='step')
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_6')
 
         except grpc.RpcError as e:
@@ -595,7 +609,7 @@ def use_case_9():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            # Retrieve information about the objecr
+            # Retrieve information about the object
             mesh_object = session.get_timeseries_attribute(model=model,
                                                            uuid_id=uuid.UUID(object_guid))
 
