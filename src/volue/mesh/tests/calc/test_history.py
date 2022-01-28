@@ -1,10 +1,7 @@
 from datetime import datetime
 import uuid
-from matplotlib.style import available
-from pandas import date_range
 import pytest
 
-from volue.mesh import Timeseries
 from volue.mesh.calc import history as History
 from volue.mesh.calc.common import Timezone
 from volue.mesh.proto import mesh_pb2
@@ -37,13 +34,13 @@ def test_preparing_history_request_with_timezone_should_add_this_parameter_to_ca
     start_time = datetime(2016, 1, 1, 1, 0, 0)
     end_time = datetime(2016, 1, 1, 9, 0, 0)
 
-    resolution = Timeseries.Resolution.MIN15
+    function = History.Function.FORECAST
     available_at_timepoint = datetime.now()
 
     history_parameters_no_timezone = History.Parameters(
-        resolution, available_at_timepoint)
+        function, available_at_timepoint)
     history_parameters_with_timezone = History.Parameters(
-        resolution, available_at_timepoint, timezone)
+        function, available_at_timepoint, timezone)
 
     _, full_name = get_timeseries_attribute_2()
 
