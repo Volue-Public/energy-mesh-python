@@ -21,10 +21,10 @@ PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
 # Save timeseries to CSV file
-SAVE_TO_CSV = True
+SAVE_TO_CSV = False
 # Which use case to run
-# ['all', '1' - '8']
-RUN_USE_CASE = 'all'
+# ['all', 'flow_drop_2', 'flow_drop_3', '1' - '9']
+RUN_USE_CASE = '9'
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
@@ -571,6 +571,58 @@ def use_case_8():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
+def use_case_9():
+    """
+    Scenario:
+    We want to get the historical data for a timeseries on a specific date.
+
+    Mesh object:                7fd23545-a8b6-4614-90fd-0e3b65f61403
+    Time interval:              15.11.2021 - 15.02.2022
+    Historical date:            17.09.2021
+    Transformation expression:  ## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')
+
+    """
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 9"
+            model = "MeshTEK"
+            object_guid = '7fd23545-a8b6-4614-90fd-0e3b65f61403'
+            start = datetime(2021, 11, 15)
+            end = datetime(2022, 2, 15)
+            transform_expression = "## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')"
+            historical_date = datetime(2021, 9, 17)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Retrieve information about the objecr
+            mesh_object = session.get_timeseries_attribute(model=model,
+                                                           uuid_id=uuid.UUID(object_guid))
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            timeseries = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id)
+            print(f"{object_guid}: \n"
+                  f"-----\n"
+                  f"" + get_mesh_object_information(mesh_object) + f"")
+            for timeserie in timeseries:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+
+            # TODO: get historical version
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe,
+                            f"{use_case_name}: transforming resolution",
+                            style='step'
+                            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_9')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 1:
@@ -585,6 +637,18 @@ if __name__ == "__main__":
         use_case_6()
         use_case_7()
         use_case_8()
+        use_case_9()
+    elif RUN_USE_CASE == 'flow_drop_2':
+        use_case_1()
+        use_case_2()
+        use_case_3()
+        use_case_4()
+        use_case_5()
+    elif RUN_USE_CASE == 'flow_drop_3':
+        use_case_6()
+        use_case_7()
+        use_case_8()
+        use_case_9()
     elif RUN_USE_CASE == '1':
         use_case_1()
     elif RUN_USE_CASE == '2':
@@ -601,6 +665,8 @@ if __name__ == "__main__":
         use_case_7()
     elif RUN_USE_CASE == '8':
         use_case_8()
+    elif RUN_USE_CASE == '9':
+        use_case_9()
     else:
         print(f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case 1")
         use_case_1()
