@@ -47,6 +47,9 @@ Recommended way for clients:
 
     python -m pip install git+https://github.com/PowelAS/sme-mesh-python
 
+.. note::
+    See :doc:`news` if you need a specific Mesh version.
+
 
 From source
 ===========
