@@ -1,5 +1,6 @@
 from volue.mesh._common import *
 from volue.mesh import Authentication, Credentials, Timeseries
+from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
 from volue.mesh.proto import mesh_pb2, mesh_pb2_grpc
 from google import protobuf
@@ -73,12 +74,13 @@ class Connection:
                                          timskey: int = None,
                                          uuid_id: uuid.UUID = None,
                                          full_name: str = None,
+                                         history: History.Parameters = None,
                                          transformation: Transform.Parameters = None) -> Timeseries:
             """
             |coro|
 
             Reads timeseries points for the specified timeseries in the given interval.
-            Transformed timeseries (returned when a `transformation` argument is provided)
+            Transformed timeseries (returned when a `transformation` or `history` argument is provided)
             does not have the following fields set:
             - timskey
             - uuid_id
@@ -97,6 +99,15 @@ class Connection:
                 object_id.full_name = full_name
             else:
                 raise TypeError("need to specify either timskey, uuid_id or full_name")
+
+            if history is not None and transformation is not None:
+                raise TypeError("you cannot specify 'history' and 'transformation' at the same time")
+
+            if history is not None:
+                request = History.prepare_request(
+                    self.session_id, start_time, end_time, object_id, history)
+                response = await self.mesh_service.RunCalculation(request)
+                return History.parse_response(response)
 
             if transformation is not None:
                 request = Transform.prepare_request(

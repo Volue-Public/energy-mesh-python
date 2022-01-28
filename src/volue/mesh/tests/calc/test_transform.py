@@ -4,6 +4,7 @@ import pytest
 
 from volue.mesh import Timeseries
 from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.common import Timezone
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import  get_timeseries_attribute_2
 
@@ -43,7 +44,11 @@ def test_parsing_invalid_transform_result_should_throw():
 
 
 @pytest.mark.unittest
-def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_calculation_expression():
+@pytest.mark.parametrize('timezone',
+    [Timezone.LOCAL,
+     Timezone.STANDARD,
+     Timezone.UTC])
+def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_calculation_expression(timezone):
     """
     Check that providing optional `timezone` parameter is
     reflected in generated calculation expression.
@@ -53,12 +58,13 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
     start_time = datetime(2016, 1, 1, 1, 0, 0)
     end_time = datetime(2016, 1, 1, 9, 0, 0)
 
-    timzeone = Transform.Timezone.UTC
+    resolution = Timeseries.Resolution.MIN15
+    method = Transform.Method.SUM
 
     transform_parameters_no_timezone = Transform.Parameters(
-        Timeseries.Resolution.MIN15, Transform.Method.SUM)
+        resolution, method)
     transform_parameters_with_timezone = Transform.Parameters(
-        Timeseries.Resolution.MIN15, Transform.Method.SUM, timzeone)
+        resolution, method, timezone)
 
     _, full_name = get_timeseries_attribute_2()
 
@@ -66,15 +72,15 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
     relative_to.full_name = full_name
 
     # first check that if `timezone` is not provided then
-    #  it is not present in generated calculation expression
+    # it is not present in generated calculation expression
     request = Transform.prepare_request(
         session_id, start_time, end_time, relative_to, transform_parameters_no_timezone)
-    assert f"'{timzeone.name}'" not in str(request.expression)
+    assert f"'{timezone.name}'" not in str(request.expression)
 
     # now it should be in generated calculation expression
     request = Transform.prepare_request(
         session_id, start_time, end_time, relative_to, transform_parameters_with_timezone)
-    assert f"'{timzeone.name}'" in str(request.expression)  # 'UTC'
+    assert f"'{timezone.name}'" in str(request.expression)
 
 
 if __name__ == '__main__':

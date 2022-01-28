@@ -5,6 +5,7 @@ import pyarrow as pa
 
 from volue.mesh import Connection, Timeseries
 from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.common import Timezone
 from volue.mesh.examples import _get_connection_info
 
 
@@ -91,6 +92,7 @@ def main(address, port, secure_connection):
             print(f"Could not read timeseries points: {e}")
 
         # now lets read transformations from it (transform to days)
+        print("Transform resolution to days:")
         try:
             start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
             end_time = datetime(2016, 5, 3)
@@ -98,7 +100,7 @@ def main(address, port, secure_connection):
             transform_parameters = Transform.Parameters(
                 resolution = Timeseries.Resolution.DAY,
                 method = Transform.Method.SUM,
-                timezone = Transform.Timezone.UTC)
+                timezone = Timezone.UTC)
 
             timeseries_read = session.read_timeseries_points(
                 start_time=start_time,
