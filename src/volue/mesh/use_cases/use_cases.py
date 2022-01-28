@@ -453,9 +453,7 @@ def use_case_6():
                   f"" + get_mesh_object_information(mesh_object) + f"")
             for timeserie in timeseries_original:
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append((f"original ({str(mesh_object.entry.delta_t.type)})", pandas_dataframe))
-                print(pandas_dataframe)
-                timeseries_information = session.get_timeseries_resource_info(timskey=timeserie.timskey)
+                path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from breakpoint to hourly
             from_breakpoint_to_hourly = Transform.Parameters(
@@ -470,7 +468,6 @@ def use_case_6():
                                                         transformation=from_breakpoint_to_hourly)
 
             pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
-            print(pandas_dataframe)
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
@@ -486,12 +483,12 @@ def use_case_6():
 def use_case_7():
     """
     Scenario:
-    We want to transform existing timeseries from hourly time series to daily resolution.
+    We want to transform existing timeseries from hourly resolution to daily.
 
-    Start point:                801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
-    Search expression:          *[.Type=HydroPlant&&.Name=Mørre].Production_operative
-    Transformation expression:  ##= @TRANSFORM("Timeseries",'DAY','AVG')
-    Time interval:              1.9.2021 - 1.10.2021
+    Object guid:                '7608c9e2-c4fc-4570-b5b2-069f29a34f22'
+    Transformation expression:  ##=@TRANSFORM(Object guid,'DAY','AVG')
+    Time interval:              5.09.2021 - 15.09.2021
+
 
     """
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
@@ -499,35 +496,47 @@ def use_case_7():
         try:
             use_case_name = "Use case 7"
             model = "MeshTEK"
-            start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
-            search_query = '*[.Type=HydroPlant&&.Name=Mørre].Production_operative'
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
+            object_guid = '7608c9e2-c4fc-4570-b5b2-069f29a34f22'
+            start = datetime(2021, 9, 5)
+            end = datetime(2021, 9, 15)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            # Search for timeseries
-            search_matches = session.search_for_timeseries_attribute(model=model,
-                                                                     start_object_guid=uuid.UUID(start_object_guid),
-                                                                     query=search_query)
+            # Retrieve information connected to the timeseries
+            mesh_object = session.get_timeseries_attribute(model=model,
+                                                           uuid_id=uuid.UUID(object_guid))
 
-            # Retrieve timeseries connected to the mesh objects found
+            # Retrieve timeseries connected to the mesh object
             path_and_pandas_dataframe = []
-            for number, mesh_object in enumerate(search_matches):
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            uuid_id=mesh_object.id)
-                print(f"{number + 1}: \n"
-                      f"-----\n"
-                      f"" + get_mesh_object_information(mesh_object) + f"")
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    path_and_pandas_dataframe.append((mesh_object.entry.delta_t, pandas_dataframe))
+            timeseries_original = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id)
+            print(f"{object_guid}: \n"
+                  f"-----\n"
+                  f"" + get_mesh_object_information(mesh_object) + f"")
+            for timeserie in timeseries_original:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
-                # TODO: transform from hourly to daily
+            # Transform timeseries from breakpoint to hourly
+            from_breakpoint_to_hourly = Transform.Parameters(
+                resolution=Timeseries.Resolution.DAY,
+                method=Transform.Method.AVG,
+                timezone=Transform.Timezone.UTC
+            )
+
+            timeserie_transformed = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id,
+                                                        transformation=from_breakpoint_to_hourly)
+
+            pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
+            plot_timeseries(path_and_pandas_dataframe,
+                            f"{use_case_name}: transforming resolution",
+                            style='step')
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_7')
 
         except grpc.RpcError as e:
