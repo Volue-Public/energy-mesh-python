@@ -6,7 +6,7 @@ import pyarrow as pa
 import matplotlib.pyplot as plt
 import grpc
 import sys
-from volue.mesh import Connection, Timeseries, from_proto_guid
+from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_guid, to_protobuf_utcinterval, read_proto_reply
 from volue.mesh.calc import transform as Transform
 from volue.mesh.proto import mesh_pb2
 
@@ -550,8 +550,8 @@ def use_case_8():
 
     Start point:                801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
     Search expression:          *[.Type=Reservoir].ReservoirVolume_operative
-    Transformation expression:  ##= @SUM("Time series array")
-    Time interval:              1.9.2021 - 1.10.2021
+    Transformation expression:  ## = @SUM(@T('*[.Type=Reservoir].ReservoirVolume_operative'))
+    Time interval:              5.9.2021 - 15.9.2021
 
     """
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
@@ -561,33 +561,33 @@ def use_case_8():
             model = "MeshTEK"
             start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
             search_query = '*[.Type=Reservoir].ReservoirVolume_operative'
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
+            start = datetime(2021, 9, 5)
+            end = datetime(2021, 9, 15)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            # Search for timeseries
-            search_matches = session.search_for_timeseries_attribute(model=model,
-                                                                     start_object_guid=uuid.UUID(start_object_guid),
-                                                                     query=search_query)
+            # Summarize timeseries
+            start_object = mesh_pb2.ObjectId(
+                guid=to_proto_guid(uuid.UUID('801896b0-d448-4299-874a-3ecf8ab0e2d4'))
+            )
+            search_query = "'*[.Type=Reservoir].ReservoirVolume_operative'"
+            expression = f"## = @SUM(@T({search_query}))\n"
+            request = mesh_pb2.CalculationRequest(
+                session_id=to_proto_guid(session.session_id),
+                expression=expression,
+                interval=to_protobuf_utcinterval(start, end),
+                relative_to=start_object
+            )
+            response = session.mesh_service.RunCalculation(request)
+            summarized_timeseries = read_proto_reply(response.timeseries_results)
 
-            # Retrieve timeseries connected to the mesh objects found
             path_and_pandas_dataframe = []
-            for number, mesh_object in enumerate(search_matches):
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            uuid_id=mesh_object.id)
-                print(f"{number + 1}: \n"
-                      f"-----\n"
-                      f"" + get_mesh_object_information(mesh_object) + f"")
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
-
-                # TODO: summarize all retrieved timeseries, finds 20
+            pandas_dataframe = summarized_timeseries[0].arrow_table.to_pandas()
+            path_and_pandas_dataframe.append(("Sum", pandas_dataframe))
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: transforming resolution")
+            plot_timeseries(path_and_pandas_dataframe,
+                            f"{use_case_name}: summarize {expression}")
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
 
         except grpc.RpcError as e:

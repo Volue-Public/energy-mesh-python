@@ -11,6 +11,7 @@ from volue.mesh import Timeseries
 from volue.mesh._common import read_proto_reply, to_proto_guid, to_protobuf_utcinterval
 from volue.mesh.proto import mesh_pb2
 
+
 class Timezone(Enum):
     """
     Timezone parameter
@@ -19,18 +20,20 @@ class Timezone(Enum):
     STANDARD = 1
     UTC      = 2
 
+
 class Method(Enum):
     """
     Transformation method
     """
     SUM   = 0
-    SUMI  = 1
+    SUMI  = 1  # I -> weighted sum, only for breakpoint timeseries
     AVG   = 2  # equivalent to MEAN
     AVGI  = 3
     FIRST = 5
     LAST  = 6
     MIN   = 7
     MAX   = 8
+
 
 @dataclass
 class Parameters:
@@ -40,6 +43,7 @@ class Parameters:
     resolution: Timeseries.Resolution
     method: Method
     timezone: Timezone = None
+
 
 def prepare_request(session_id: uuid,
                     start_time: datetime,
@@ -69,6 +73,7 @@ def prepare_request(session_id: uuid,
         )
 
     return request
+
 
 def parse_response(response: mesh_pb2.CalculationResponse) -> Timeseries:
     """
