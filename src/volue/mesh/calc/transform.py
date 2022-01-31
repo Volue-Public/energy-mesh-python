@@ -40,7 +40,7 @@ def prepare_request(session_id: uuid,
                     relative_to: mesh_pb2.ObjectId,
                     params: Parameters) -> mesh_pb2.CalculationRequest:
     """
-    Validates transformaton specific input parameters, computes calculation expression and
+    Validates transformation specific input parameters, computes calculation expression and
     returns a gRPC calculation request to be sent to the Mesh server.
 
     Raises:
