@@ -88,10 +88,7 @@ def to_proto_timeseries(timeseries: Timeseries) -> mesh_pb2.Timeseries:
 
 
 def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
-    """Converts a timeseries reply into a Timeseries
-
-    Returns:
-        object:
+    """Converts a protobuf timeseries reply from Mesh server into Timeseries
     """
     timeseries = []
     for timeserie in reply.timeseries:
