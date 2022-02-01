@@ -115,7 +115,7 @@ class Connection:
             timeseries = read_proto_reply(response)
             if len(timeseries) != 1:
                 raise RuntimeError(
-                    f"invalid result, expected 1 timeseries, bot got {len(timeseries)}")
+                    f"invalid result from 'read_timeseries_points', expected 1 timeseries, but got {len(timeseries)}")
 
             return timeseries[0]
 
