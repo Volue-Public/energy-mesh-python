@@ -797,8 +797,72 @@ def use_case_11():
 
 
 def use_case_12():
-    print(12)
-    pass
+    """
+    Scenario:
+    We want to get all specific forecasts for an object
+
+    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
+    Time interval:              01.09.2021 - 12.10.2021
+    Calculation expression:     ## = @GetForecast(@t('.Inflow'),'20210831000000000','20210902000000000','20210901090000000')
+
+    """
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 12"
+            model = "MeshTEK"
+            object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
+            start = datetime(2021, 9, 1, tzinfo=timezone.utc)
+            end = datetime(2021, 10, 12, tzinfo=timezone.utc)
+            search_query = "'.Inflow'"
+            forcast_date_1 = datetime(2021, 8, 31, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
+            forcast_date_2 = datetime(2021, 9, 2, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
+            forcast_date_3 = datetime(2021, 9, 1, 9, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
+            expression = f"## = @GetForecast(@t({search_query}),'{forcast_date_1}','{forcast_date_2}','{forcast_date_3}')\n"
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Retrieve information about the object
+            mesh_object = session.get_timeseries_attribute(model=model,
+                                                           uuid_id=uuid.UUID(object_guid))
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            timeseries = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id)
+            print(f"{object_guid}: \n"
+                  f"-----\n"
+                  f"" + get_mesh_object_information(mesh_object) + f"")
+            for timeserie in timeseries:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+
+            # Get historical timeseries
+            start_object = mesh_pb2.ObjectId(
+                guid=to_proto_guid(uuid.UUID(object_guid))
+            )
+            request = mesh_pb2.CalculationRequest(
+                session_id=to_proto_guid(session.session_id),
+                expression=expression,
+                interval=to_protobuf_utcinterval(start, end),
+                relative_to=start_object
+            )
+            response = session.mesh_service.RunCalculation(request)
+            timeseries_versions = read_proto_reply(response.timeseries_results)
+
+            for number, timeserie in enumerate(timeseries_versions):
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe,
+                            f"{use_case_name}: get all forecasts"
+                            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_12')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 if __name__ == "__main__":
