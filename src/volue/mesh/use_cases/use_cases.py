@@ -875,7 +875,7 @@ if __name__ == "__main__":
     if RUN_USE_CASE.isnumeric() and (RUN_USE_CASE in ALL_USE_CASE_FUNCTIONS.keys()):
         ALL_USE_CASE_FUNCTIONS[RUN_USE_CASE]()
     elif RUN_USE_CASE == 'all':
-        for _, use_case in ALL_USE_CASE_FUNCTIONS:
+        for _, use_case in ALL_USE_CASE_FUNCTIONS.items():
             use_case()
     elif RUN_USE_CASE == 'flow_drop_2':
         flow_drop_2_use_cases = [1, 2, 3, 4, 5]
