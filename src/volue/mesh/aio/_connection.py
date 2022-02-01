@@ -86,6 +86,7 @@ class Connection:
 
             Raises:
                 grpc.RpcError:
+                RuntimeError:
                 TypeError:
             """
             object_id = mesh_pb2.ObjectId()
@@ -110,7 +111,13 @@ class Connection:
                     object_id=object_id,
                     interval=to_protobuf_utcinterval(start_time, end_time)
                 ))
-            return read_proto_reply(response)
+
+            timeseries = read_proto_reply(response)
+            if len(timeseries) != 1:
+                raise RuntimeError(
+                    f"invalid result from 'read_timeseries_points', expected 1 timeseries, but got {len(timeseries)}")
+
+            return timeseries[0]
 
         async def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """

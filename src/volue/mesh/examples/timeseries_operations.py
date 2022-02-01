@@ -75,14 +75,11 @@ def main(address, port, secure_connection):
             start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
             end_time = datetime(2016, 5, 4)
 
-            timeseries_read = session.read_timeseries_points(start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
-            # there should be exactly one timeseries read
-            if len(timeseries_read) != 1:
-                print("Invalid timeseries")
-                return
+            timeseries_read = session.read_timeseries_points(
+                start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
 
             # convert to pandas format
-            pandas_series = timeseries_read[0].arrow_table.to_pandas()
+            pandas_series = timeseries_read.arrow_table.to_pandas()
             print(pandas_series)
 
             # do some further processing

@@ -29,20 +29,19 @@ async def test_read_timeseries_points_async():
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
                 reply_timeseries = await session.read_timeseries_points(**test_case)
-                assert len(reply_timeseries) == 1
-                ts = reply_timeseries[0]
-                assert ts.number_of_points == 9
+                assert type(reply_timeseries) is Timeseries
+                assert reply_timeseries.number_of_points == 9
                 # check timestamps
-                utc_date = ts.arrow_table[0]
+                utc_date = reply_timeseries.arrow_table[0]
                 for count, item in enumerate(utc_date):
                     assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
                 # check flags
-                flags = ts.arrow_table[1]
+                flags = reply_timeseries.arrow_table[1]
                 assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
                     assert flags[number].as_py() == Timeseries.PointFlags.OK.value
                 # check values
-                values = ts.arrow_table[2]
+                values = reply_timeseries.arrow_table[2]
                 values[3].as_py()
                 assert math.isnan(values[3].as_py())
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
@@ -66,16 +65,16 @@ async def test_write_timeseries_points_async():
             written_ts = await session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
                                                               end_time=datetime(2016, 1, 1, 3, 0, 0),
                                                               uuid_id=ts_entry.id)
-            assert written_ts[0].number_of_points == 3
-            utc_time = written_ts[0].arrow_table[0]
+            assert written_ts.number_of_points == 3
+            utc_time = written_ts.arrow_table[0]
             assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
             assert utc_time[1].as_py() == datetime(2016, 1, 1, 2, 0, 0)
             assert utc_time[2].as_py() == datetime(2016, 1, 1, 3, 0, 0)
-            flags = written_ts[0].arrow_table[1]
+            flags = written_ts.arrow_table[1]
             assert flags[0].as_py() == 0
             assert flags[1].as_py() == 0
             assert flags[2].as_py() == 0
-            values = written_ts[0].arrow_table[2]
+            values = written_ts.arrow_table[2]
             assert values[0].as_py() == 0
             assert values[1].as_py() == 10
             assert values[2].as_py() == 1000
@@ -556,7 +555,7 @@ async def test_read_transformed_timeseries_points(
 @pytest.mark.database
 async def test_read_transformed_timeseries_points_with_uuid():
     """
-    Check that transformed timeseries read by full_name or UUUID
+    Check that transformed timeseries read by full_name or UUID
     (both pointing to the same object) return the same data.
     """
 
@@ -574,7 +573,7 @@ async def test_read_transformed_timeseries_points_with_uuid():
         # first read timeseries UUID (it is set dynamically)
         timeseries = await session.read_timeseries_points(
             start_time, end_time, full_name=full_name)
-        ts_uuid = timeseries[0].uuid
+        ts_uuid = timeseries.uuid
 
         reply_timeseries_full_name = await session.read_timeseries_points(
             start_time, end_time, full_name=full_name, transformation=transform_parameters)

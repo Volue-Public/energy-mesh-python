@@ -17,15 +17,13 @@ def read_timeseries_points(session: Connection.Session):
 
     # Send request to read timeseries based on path
     timeseries = session.read_timeseries_points(start_time=start, end_time=end, full_name=timeseries_full_name)
-    for timeserie in timeseries:
-        print(f"Read {timeserie.number_of_points} points")
+    print(f"Read {timeseries.number_of_points} points")
 
     # OR
 
     # Send request to read timeseries based on guid
     timeseries = session.read_timeseries_points(start_time=start, end_time=end, uuid_id=timeseries_id)
-    for timeserie in timeseries:
-        print(f"Read {timeserie.number_of_points} points")
+    print(f"Read {timeseries.number_of_points} points")
 
 
 def main(address, port, secure_connection):
