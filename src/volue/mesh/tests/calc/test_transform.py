@@ -24,12 +24,12 @@ def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
         Timeseries.Resolution.BREAKPOINT, Transform.Method.SUM)
     _, full_name = get_timeseries_attribute_2()
 
-    start_object = mesh_pb2.ObjectId()
-    start_object.full_name = full_name
+    timeseries_attribute = mesh_pb2.ObjectId()
+    timeseries_attribute.full_name = full_name
 
     with pytest.raises(ValueError, match=".*'BREAKPOINT' resolution is unsupported.*"):
         Transform.prepare_request(
-            session_id, start_time, end_time, start_object, transform_parameters)
+            session_id, start_time, end_time, timeseries_attribute, transform_parameters)
 
 
 @pytest.mark.unittest
@@ -68,18 +68,18 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
 
     _, full_name = get_timeseries_attribute_2()
 
-    start_object = mesh_pb2.ObjectId()
-    start_object.full_name = full_name
+    timeseries_attribute = mesh_pb2.ObjectId()
+    timeseries_attribute.full_name = full_name
 
     # first check that if `timezone` is not provided then
     # it is not present in generated calculation expression
     request = Transform.prepare_request(
-        session_id, start_time, end_time, start_object, transform_parameters_no_timezone)
+        session_id, start_time, end_time, timeseries_attribute, transform_parameters_no_timezone)
     assert f"'{timezone.name}'" not in str(request.expression)
 
     # now it should be in generated calculation expression
     request = Transform.prepare_request(
-        session_id, start_time, end_time, start_object, transform_parameters_with_timezone)
+        session_id, start_time, end_time, timeseries_attribute, transform_parameters_with_timezone)
     assert f"'{timezone.name}'" in str(request.expression)
 
 
