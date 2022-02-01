@@ -24,7 +24,7 @@ SHOW_PLOT = True
 # Save timeseries to CSV file
 SAVE_TO_CSV = True
 # Which use case to run
-# ['all', 'flow_drop_2', 'flow_drop_3', '1' - '9']
+# ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
 
 
@@ -651,46 +651,26 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         RUN_USE_CASE = sys.argv[1]
 
-    if RUN_USE_CASE == 'all':
-        use_case_1()
-        use_case_2()
-        use_case_3()
-        use_case_4()
-        use_case_5()
-        use_case_6()
-        use_case_7()
-        use_case_8()
-        use_case_9()
+    ALL_USE_CASE_FUNCTIONS = {key.strip('use_case_'): value for key, value in locals().items() if 'use_case_' in key}
+
+    if RUN_USE_CASE.isnumeric() and (RUN_USE_CASE in ALL_USE_CASE_FUNCTIONS.keys()):
+        ALL_USE_CASE_FUNCTIONS[RUN_USE_CASE]()
+    elif RUN_USE_CASE == 'all':
+        for _, use_case in ALL_USE_CASE_FUNCTIONS:
+            use_case()
     elif RUN_USE_CASE == 'flow_drop_2':
-        use_case_1()
-        use_case_2()
-        use_case_3()
-        use_case_4()
-        use_case_5()
+        flow_drop_2_use_cases = [1, 2, 3, 4, 5]
+        for number, use_case in ALL_USE_CASE_FUNCTIONS.items():
+            if int(number) in flow_drop_2_use_cases:
+                use_case()
     elif RUN_USE_CASE == 'flow_drop_3':
-        use_case_6()
-        use_case_7()
-        use_case_8()
-        use_case_9()
-    elif RUN_USE_CASE == '1':
-        use_case_1()
-    elif RUN_USE_CASE == '2':
-        use_case_2()
-    elif RUN_USE_CASE == '3':
-        use_case_3()
-    elif RUN_USE_CASE == '4':
-        use_case_4()
-    elif RUN_USE_CASE == '5':
-        use_case_5()
-    elif RUN_USE_CASE == '6':
-        use_case_6()
-    elif RUN_USE_CASE == '7':
-        use_case_7()
-    elif RUN_USE_CASE == '8':
-        use_case_8()
-    elif RUN_USE_CASE == '9':
-        use_case_9()
+        flow_drop_2_use_cases = [6, 7, 8, 9, 10, 11]
+        for number, use_case in ALL_USE_CASE_FUNCTIONS.items():
+            if int(number) in flow_drop_2_use_cases:
+                use_case()
     else:
-        print(f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case 1")
-        use_case_1()
+        default_use_case = ALL_USE_CASE_FUNCTIONS['1']
+        print(f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case {default_use_case.__name__}")
+        default_use_case()
+
 
