@@ -37,7 +37,7 @@ class Parameters:
 def prepare_request(session_id: uuid,
                     start_time: datetime,
                     end_time: datetime,
-                    relative_to: mesh_pb2.ObjectId,
+                    start_object: mesh_pb2.ObjectId,
                     params: Parameters) -> mesh_pb2.CalculationRequest:
     """
     Validates transformation specific input parameters, computes calculation expression and
@@ -58,7 +58,7 @@ def prepare_request(session_id: uuid,
         session_id=to_proto_guid(session_id),
         expression=expression,
         interval=to_protobuf_utcinterval(start_time, end_time),
-        relative_to=relative_to
+        relative_to=start_object
         )
 
     return request

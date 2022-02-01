@@ -44,18 +44,18 @@ def test_preparing_history_request_with_timezone_should_add_this_parameter_to_ca
 
     _, full_name = get_timeseries_attribute_2()
 
-    relative_to = mesh_pb2.ObjectId()
-    relative_to.full_name = full_name
+    start_object = mesh_pb2.ObjectId()
+    start_object.full_name = full_name
 
     # first check that if `timezone` is not provided then
     # it is not present in generated calculation expression
     request = History.prepare_request(
-        session_id, start_time, end_time, relative_to, history_parameters_no_timezone)
+        session_id, start_time, end_time, start_object, history_parameters_no_timezone)
     assert f"'{timezone.name}" not in str(request.expression)
 
     # now it should be in generated calculation expression
     request = History.prepare_request(
-        session_id, start_time, end_time, relative_to, history_parameters_with_timezone)
+        session_id, start_time, end_time, start_object, history_parameters_with_timezone)
     assert f"'{timezone.name}" in str(request.expression)
 
 
@@ -80,11 +80,11 @@ def test_preparing_history_request_converts_datetime_to_correct_format_in_calcul
 
     _, full_name = get_timeseries_attribute_2()
 
-    relative_to = mesh_pb2.ObjectId()
-    relative_to.full_name = full_name
+    start_object = mesh_pb2.ObjectId()
+    start_object.full_name = full_name
 
     request = History.prepare_request(
-        session_id, start_time, end_time, relative_to, history_parameters_no_timezone)
+        session_id, start_time, end_time, start_object, history_parameters_no_timezone)
     assert f"'{expected_datetime_format}'" in str(request.expression)
 
 if __name__ == '__main__':
