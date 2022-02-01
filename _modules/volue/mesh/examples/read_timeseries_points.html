@@ -185,15 +185,13 @@
 
     <span class="c1"># Send request to read timeseries based on path</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeserie</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
     <span class="c1"># OR</span>
 
     <span class="c1"># Send request to read timeseries based on guid</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeserie</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.read_timeseries_points.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>

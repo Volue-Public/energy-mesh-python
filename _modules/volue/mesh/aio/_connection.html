@@ -254,6 +254,7 @@
 
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
+<span class="sd">                RuntimeError:</span>
 <span class="sd">                TypeError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">()</span>
@@ -278,7 +279,13 @@
                     <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
                     <span class="n">interval</span><span class="o">=</span><span class="n">to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
                 <span class="p">))</span>
-            <span class="k">return</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;invalid result from &#39;read_timeseries_points&#39;, expected 1 timeseries, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>

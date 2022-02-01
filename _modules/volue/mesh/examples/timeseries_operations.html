@@ -243,14 +243,11 @@
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># timezone provided in start and end datetimes will be discarded, it will be treated as UTC</span>
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
-            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-            <span class="c1"># there should be exactly one timeseries read</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_read</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid timeseries&quot;</span><span class="p">)</span>
-                <span class="k">return</span>
+            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
-            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># do some further processing</span>

@@ -314,14 +314,11 @@
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># timezone provided in start and end datetimes will be discarded, it will be treated as UTC</span>
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 
-            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-            <span class="c1"># there should be exactly one timeseries read</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_read</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid timeseries&quot;</span><span class="p">)</span>
-                <span class="k">return</span>
+            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
-            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># do some further processing</span>
@@ -571,15 +568,13 @@
 
     <span class="c1"># Send request to read timeseries based on path</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeserie</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
     <span class="c1"># OR</span>
 
     <span class="c1"># Send request to read timeseries based on guid</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeserie</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
@@ -621,10 +616,8 @@
         <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">),</span>
         <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">full_name_timeseries</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using id contains </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">id_timeseries</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using full name contains </span><span class="si">{</span><span class="n">ts</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using id contains </span><span class="si">{</span><span class="n">full_name_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using full name contains </span><span class="si">{</span><span class="n">id_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
