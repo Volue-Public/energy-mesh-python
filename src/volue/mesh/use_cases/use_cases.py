@@ -153,9 +153,8 @@ def use_case_1():
                 print(f"{number + 1}. \n"
                       f"-----\n"
                       f"" + get_mesh_object_information(mesh_object) + f"")
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+                pandas_dataframe = timeseries.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: {search_query}")
@@ -202,9 +201,8 @@ def use_case_2():
                 print(f"{number + 1}. \n"
                       f"-----\n"
                       f"" + get_mesh_object_information(mesh_object) + f"")
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+                pandas_dataframe = timeseries.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: {search_query}")
@@ -247,9 +245,8 @@ def use_case_3():
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
                                                             timskey=timskey)
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
+                pandas_dataframe = timeseries.arrow_table.to_pandas()
+                timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
 
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe, f"{use_case_name}: Timskeys: {timskeys}")
@@ -299,9 +296,8 @@ def use_case_4():
                       f"-----\n"
                       f"" + get_mesh_object_information(mesh_object) + f"")
 
-                for timeserie in timeseries:
-                    pandas_dataframe = timeserie.arrow_table.to_pandas()
-                    timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
+                pandas_dataframe = timeseries.arrow_table.to_pandas()
+                timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
 
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe,
@@ -344,12 +340,11 @@ def use_case_5():
                                                                uuid_id=guid)
             print(f"Before writing points: \n"
                   f"-----\n"
-                  f"" + get_timeseries_information(timeseries=timeseries_before[0])
+                  f"" + get_timeseries_information(timeseries=timeseries_before)
                   )
 
-            for timeserie in timeseries_before:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
+            pandas_dataframe = timeseries_before.arrow_table.to_pandas()
+            timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
 
             # Defining the data we want to write
             # Mesh data is organized as an Arrow table with the following schema:
@@ -384,12 +379,11 @@ def use_case_5():
                                                               uuid_id=guid)
             print(f"After writing points: \n"
                   f"-----\n"
-                  f"" + get_timeseries_information(timeseries=timeseries_after[0])
+                  f"" + get_timeseries_information(timeseries=timeseries_after)
                   )
 
-            for timeserie in timeseries_after:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
+            pandas_dataframe = timeseries_after.arrow_table.to_pandas()
+            timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
 
             # Commit changes
             session.commit()
@@ -451,9 +445,9 @@ def use_case_6():
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"" + get_mesh_object_information(mesh_object) + f"")
-            for timeserie in timeseries_original:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append((f"original", pandas_dataframe))
+
+            pandas_dataframe = timeseries_original.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from breakpoint to hourly
             from_breakpoint_to_hourly = Transform.Parameters(
@@ -514,9 +508,9 @@ def use_case_7():
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"" + get_mesh_object_information(mesh_object) + f"")
-            for timeserie in timeseries_original:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append((f"original", pandas_dataframe))
+
+            pandas_dataframe = timeseries_original.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from breakpoint to hourly
             from_breakpoint_to_hourly = Transform.Parameters(
@@ -630,9 +624,9 @@ def use_case_9():
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"" + get_mesh_object_information(mesh_object) + f"")
-            for timeserie in timeseries:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+
+            pandas_dataframe = timeseries.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
             start_object = mesh_pb2.ObjectId(
@@ -698,9 +692,8 @@ def use_case_10():
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"" + get_mesh_object_information(mesh_object) + f"")
-            for timeserie in timeseries:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe = timeseries.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
             start_object = mesh_pb2.ObjectId(
@@ -765,9 +758,8 @@ def use_case_11():
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"" + get_mesh_object_information(mesh_object) + f"")
-            for timeserie in timeseries:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe = timeseries.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
             start_object = mesh_pb2.ObjectId(
@@ -799,7 +791,7 @@ def use_case_11():
 def use_case_12():
     """
     Scenario:
-    We want to get all specific forecasts for an object
+    We want to get some specific forecasts for an object
 
     Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
     Time interval:              01.09.2021 - 12.10.2021
@@ -834,9 +826,8 @@ def use_case_12():
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"" + get_mesh_object_information(mesh_object) + f"")
-            for timeserie in timeseries:
-                pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe = timeseries.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
             start_object = mesh_pb2.ObjectId(
@@ -857,7 +848,7 @@ def use_case_12():
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: get all forecasts"
+                            f"{use_case_name}: get some forecasts"
                             )
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_12')
 
