@@ -660,6 +660,86 @@ def use_case_9():
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
 
+
+def use_case_10():
+    """
+    Scenario:
+    We want to get the last 5 historical versions of a known timeseries
+
+    Mesh object:                6e602d3e-1fb6-49de-9c00-4cb78ace9459
+    Time interval:              15.11.2021 - 15.02.2022
+    Number of versions to get:  5
+    Transformation expression:  ## = @GetTsHistoricalVersions(@t('Production'),5)
+
+    """
+    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 10"
+            model = "MeshTEK"
+            object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'
+            start = datetime(2021, 11, 15, tzinfo=timezone.utc)
+            end = datetime(2022, 2, 15, tzinfo=timezone.utc)
+            search_query = "'.Production'"
+            number_of_versions_to_get = 5
+            expression = f"## = @GetTsHistoricalVersions(@t({search_query}),{number_of_versions_to_get})\n"
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Retrieve information about the object
+            mesh_object = session.get_timeseries_attribute(model=model,
+                                                           uuid_id=uuid.UUID(object_guid))
+
+            # Retrieve timeseries connected to the mesh objects found
+            path_and_pandas_dataframe = []
+            timeseries = session.read_timeseries_points(start_time=start,
+                                                        end_time=end,
+                                                        uuid_id=mesh_object.id)
+            print(f"{object_guid}: \n"
+                  f"-----\n"
+                  f"" + get_mesh_object_information(mesh_object) + f"")
+            for timeserie in timeseries:
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+
+            # Get historical timeseries
+            start_object = mesh_pb2.ObjectId(
+                guid=to_proto_guid(uuid.UUID(object_guid))
+            )
+            request = mesh_pb2.CalculationRequest(
+                session_id=to_proto_guid(session.session_id),
+                expression=expression,
+                interval=to_protobuf_utcinterval(start, end),
+                relative_to=start_object
+            )
+            response = session.mesh_service.RunCalculation(request)
+            timeseries_versions = read_proto_reply(response.timeseries_results)
+
+            for number, timeserie in enumerate(timeseries_versions):
+                pandas_dataframe = timeserie.arrow_table.to_pandas()
+                path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(path_and_pandas_dataframe,
+                            f"{use_case_name}: historical versions",
+                            style='step'
+                            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_10')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_11():
+    print(11)
+    pass
+
+
+def use_case_12():
+    print(12)
+    pass
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 1:
@@ -678,7 +758,7 @@ if __name__ == "__main__":
             if int(number) in flow_drop_2_use_cases:
                 use_case()
     elif RUN_USE_CASE == 'flow_drop_3':
-        flow_drop_2_use_cases = [6, 7, 8, 9, 10, 11]
+        flow_drop_2_use_cases = [6, 7, 8, 9, 10, 11, 12]
         for number, use_case in ALL_USE_CASE_FUNCTIONS.items():
             if int(number) in flow_drop_2_use_cases:
                 use_case()
