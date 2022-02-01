@@ -560,7 +560,8 @@ def use_case_8():
             use_case_name = "Use case 8"
             model = "MeshTEK"
             start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
-            search_query = '*[.Type=Reservoir].ReservoirVolume_operative'
+            search_query = "'*[.Type=Reservoir].ReservoirVolume_operative'"
+            expression = f"## = @SUM(@T({search_query}))\n"
             start = datetime(2021, 9, 5)
             end = datetime(2021, 9, 15)
             print(f"{use_case_name}:")
@@ -568,10 +569,8 @@ def use_case_8():
 
             # Summarize timeseries
             start_object = mesh_pb2.ObjectId(
-                guid=to_proto_guid(uuid.UUID('801896b0-d448-4299-874a-3ecf8ab0e2d4'))
+                guid=to_proto_guid(uuid.UUID(start_object_guid))
             )
-            search_query = "'*[.Type=Reservoir].ReservoirVolume_operative'"
-            expression = f"## = @SUM(@T({search_query}))\n"
             request = mesh_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
@@ -599,7 +598,7 @@ def use_case_9():
     Scenario:
     We want to get the historical data for a timeseries on a specific date.
 
-    Mesh object:                7fd23545-a8b6-4614-90fd-0e3b65f61403
+    Mesh object:                6e602d3e-1fb6-49de-9c00-4cb78ace9459
     Time interval:              15.11.2021 - 15.02.2022
     Historical date:            17.09.2021
     Transformation expression:  ## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')
@@ -610,11 +609,12 @@ def use_case_9():
         try:
             use_case_name = "Use case 9"
             model = "MeshTEK"
-            object_guid = '7fd23545-a8b6-4614-90fd-0e3b65f61403'
-            start = datetime(2021, 11, 15)
-            end = datetime(2022, 2, 15)
-            transform_expression = "## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')"
-            historical_date = datetime(2021, 9, 17)
+            object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'
+            start = datetime(2021, 11, 15, tzinfo=timezone.utc)
+            end = datetime(2022, 2, 15, tzinfo=timezone.utc)
+            search_query = "'.ReservoirVolume'"
+            historical_date = datetime(2021, 9, 17, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")
+            expression = f"## = @GetTsAsOfTime(@t({search_query}),'{historical_date}')\n"
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -632,13 +632,27 @@ def use_case_9():
                   f"" + get_mesh_object_information(mesh_object) + f"")
             for timeserie in timeseries:
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
-                path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
+                path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
-            # TODO: get historical version
+            # Get historical timeseries
+            start_object = mesh_pb2.ObjectId(
+                guid=to_proto_guid(uuid.UUID(object_guid))
+            )
+            request = mesh_pb2.CalculationRequest(
+                session_id=to_proto_guid(session.session_id),
+                expression=expression,
+                interval=to_protobuf_utcinterval(start, end),
+                relative_to=start_object
+            )
+            response = session.mesh_service.RunCalculation(request)
+            historical_timeseries = read_proto_reply(response.timeseries_results)
+
+            pandas_dataframe = historical_timeseries[0].arrow_table.to_pandas()
+            path_and_pandas_dataframe.append((f'History on {historical_date}', pandas_dataframe))
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: transforming resolution",
+                            f"{use_case_name}: historical data",
                             style='step'
                             )
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_9')
