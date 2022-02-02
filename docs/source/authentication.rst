@@ -19,7 +19,7 @@ Only two methods can be called by without authentication:
 Usage
 *****************
 
-To use authentication the user has to provide authentication parameters when creating a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection:.
+To use authentication the user has to provide authentication parameters when creating a :ref:`api:volue.mesh`.Connection or a :ref:`api:volue.mesh.aio`.Connection:.
 Authentication parameters consist of:
 
 * Service Principal Name (SPN)
@@ -79,7 +79,7 @@ Requirements
       Configuration.Network.GRPC.EnableTLS(true);
 
 #. Find out correct *service principal* for Mesh server you want to connect to.
-#. Create a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection: object with authentication parameters.
+#. Create a :ref:`api:volue.mesh`.Connection or a :ref:`api:volue.mesh.aio`.Connection: object with authentication parameters.
 
 
 Example

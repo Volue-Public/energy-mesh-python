@@ -1,11 +1,18 @@
-News
+Versions
 --------
 
+The version needed of the Mesh Python SDK depends on the Mesh Server version you intend to communicate with.
 
 `Mesh Python SDK version 0.0.2 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.2>`_
 *************************************************************************************************************************
 
 ------------
+
+Compatible with:
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version 2.2.*
+- Python [3.7.1, 3.8 and 3.9]
 
 New features:
 ~~~~~~~~~~~~~~~~~~
@@ -33,18 +40,10 @@ Known issues:
 - **Major:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
 - **Minor:** "Visual bug when displaying results for use cases" :issue:`122`
 
-
-Compatible with:
-~~~~~~~~~~~~~~~~~~
-
-- Mesh server version 2.2.*
-- Python [3.7.1, 3.8 and 3.9]
-
-
 Install instructions:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-See instructions in :doc:`installation` and use the following:
+See instructions at :ref:`Setup for users` and use the following:
 
 ::
 

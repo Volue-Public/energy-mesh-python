@@ -46,6 +46,13 @@ extensions = [
     'sphinx_copybutton'
 ]
 
+# Options for: sphinx.ext.autosectionlabel
+# all auto labels need to be prefixed with doc name:
+autosectionlabel_prefix_document = True
+# auto generate labels down 2 levels,
+# anything from level 3 needs to be manually referenced:
+autosectionlabel_maxdepth = 2
+
 # Options for: sphinx.ext.napoleon
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True

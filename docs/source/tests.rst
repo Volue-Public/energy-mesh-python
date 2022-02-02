@@ -9,7 +9,7 @@ The Mesh Python SDK is shipped with tests that are used to verify its functional
 Preparations
 *****************
 
-To be able to run the tests there you need `pytest <https://github.com/pytest-dev/pytest>`_ and `pytest-asyncio <https://github.com/pytest-dev/pytest-asyncio>`_. If you followed the instructions in :ref:`Installation` all you need to do is: ::
+To be able to run the tests there you need `pytest <https://github.com/pytest-dev/pytest>`_ and `pytest-asyncio <https://github.com/pytest-dev/pytest-asyncio>`_. If you followed the instructions in :doc:`installation` all you need to do is: ::
 
     python -m pip install pytest pytest-asyncio
 

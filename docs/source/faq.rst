@@ -35,8 +35,10 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
 
+.. _Mesh server gRPC configuration:
+
 Mesh server gRPC configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 List of the Mesh server gRPC configuration options with its default values:
 ::
@@ -57,7 +59,7 @@ If neither of the above suggestions helped.
 I ran the tests and one or more of them failed.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you ran the :ref:`Tests` and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in :ref:`Run tests`.
+If you ran the :ref:`tests:Tests` and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in :ref:`tests:Run tests`.
 
 
 I think I found a bug or I have a feature request.
