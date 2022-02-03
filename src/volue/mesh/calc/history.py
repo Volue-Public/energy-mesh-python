@@ -1,5 +1,5 @@
 """"
-Mesh calculation function: TRANSFORM
+Mesh calculation history functions
 """
 
 from dataclasses import dataclass
@@ -12,26 +12,20 @@ from volue.mesh._common import read_proto_reply, to_proto_guid, to_protobuf_utci
 from volue.mesh.calc.common import Timezone
 from volue.mesh.proto import mesh_pb2
 
-class Method(Enum):
+class Function(Enum):
     """
-    Transformation method
+    History function
     """
-    SUM   = 0
-    SUMI  = 1
-    AVG   = 2  # equivalent to MEAN
-    AVGI  = 3
-    FIRST = 5
-    LAST  = 6
-    MIN   = 7
-    MAX   = 8
+    FORECAST   = 'GetForecast'
+    AS_OF_TIME = 'GetTsAsOfTime'
 
 @dataclass
 class Parameters:
     """
-    Transformation parameters
+    Timeseries history parameters
     """
-    resolution: Timeseries.Resolution
-    method: Method
+    function: Function
+    available_at_timepoint: datetime
     timezone: Timezone = None
 
 def prepare_request(session_id: uuid,
@@ -40,19 +34,18 @@ def prepare_request(session_id: uuid,
                     relative_to: mesh_pb2.ObjectId,
                     params: Parameters) -> mesh_pb2.CalculationRequest:
     """
-    Validates transformation specific input parameters, computes calculation expression and
+    Validates timeseries history specific input parameters, computes calculation expression and
     returns a gRPC calculation request to be sent to the Mesh server.
-
-    Raises:
-        ValueError:
     """
-    if params.resolution is Timeseries.Resolution.BREAKPOINT:
-        raise ValueError("'BREAKPOINT' resolution is unsupported for timeseries transformation")
 
-    expression = f"## = @TRANSFORM(@t(), '{params.resolution.name}', '{params.method.name}'"
+    # convert to format '20210917000000000'
+    # %f returns microseconds, we need milliseconds so remove last 3 digits
+    available_at_timepoint_str = params.available_at_timepoint.strftime("%Y%m%d%H%M%S%f")[:-3]
+
+    expression = f"## = @{params.function.value}(@t(), '"
     if params.timezone is not None:
-        expression = f"{expression}, '{params.timezone.name}'"
-    expression = f"{expression})\n"
+        expression = f"{expression}{params.timezone.name}"
+    expression = f"{expression}{available_at_timepoint_str}')\n"
 
     request = mesh_pb2.CalculationRequest(
         session_id=to_proto_guid(session_id),
@@ -73,5 +66,5 @@ def parse_response(response: mesh_pb2.CalculationResponse) -> Timeseries:
     timeseries = read_proto_reply(response.timeseries_results)
     if len(timeseries) != 1:
         raise RuntimeError(
-            f"invalid transformation result, expected 1 timeseries, bot got {len(timeseries)}")
+            f"invalid history result, expected 1 timeseries, bot got {len(timeseries)}")
     return timeseries[0]
