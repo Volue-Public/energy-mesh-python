@@ -301,7 +301,7 @@ def use_case_4():
 
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: {len(guids)} known guids",
+                            f"{use_case_name}: {len(guids)} known guid(s)",
                             style='step')
             save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4')
 
