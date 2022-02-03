@@ -5,7 +5,9 @@ import grpc
 import pytest
 
 from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
+from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto import mesh_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
@@ -452,9 +454,9 @@ def test_commit():
      Transform.Method.MAX])
 @pytest.mark.parametrize('timezone',
     [None,
-     Transform.Timezone.LOCAL,
-     Transform.Timezone.STANDARD,
-     Transform.Timezone.UTC])
+     Timezone.LOCAL,
+     Timezone.STANDARD,
+     Timezone.UTC])
 def test_read_transformed_timeseries_points(
     resolution, method, timezone,
     expected_number_of_points: int):
@@ -577,6 +579,70 @@ def test_read_timeseries_points_without_specifying_timeseries_should_throw():
 
         with pytest.raises(TypeError, match=".*need to specify either timskey, uuid_id or full_name.*"):
             session.read_timeseries_points(start_time, end_time)
+
+
+@pytest.mark.database
+def test_read_timeseries_points_with_specifying_both_history_and_transform_parameters_should_throw():
+    """
+    Check that expected exception is thrown when trying to
+    read timeseries with specifying both transformation and history parameters.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        full_name = 'somename'
+
+        function = History.Function.AS_OF_TIME
+        available_at_timepoint = datetime(2016, 1, 5, 17, 48, 11, 123456)
+        history_parameters = History.Parameters(function, available_at_timepoint)
+
+        resolution = Timeseries.Resolution.MIN15
+        method = Transform.Method.SUM
+        transform_parameters = Transform.Parameters(resolution, method)
+
+        with pytest.raises(TypeError, match=".*you cannot specify 'history' and 'transformation' at the same time.*"):
+            session.read_timeseries_points(
+                start_time, end_time,
+                full_name=full_name,
+                history=history_parameters,
+                transformation=transform_parameters)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize('function',
+    [History.Function.AS_OF_TIME,
+     History.Function.FORECAST])
+@pytest.mark.parametrize('timezone',
+    [None,
+     Timezone.LOCAL,
+     Timezone.STANDARD,
+     Timezone.UTC])
+def test_read_history_timeseries_points(function, timezone):
+    """
+    Check that reading timeseries history does not throw exception for any combination of parameters.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        available_at_timepoint = datetime(2016, 1, 5, 17, 48, 11, 123456)
+        history_parameters = History.Parameters(function, available_at_timepoint, timezone)
+        _, full_name = get_timeseries_attribute_2()
+
+        try:
+            reply_timeseries = session.read_timeseries_points(
+                start_time, end_time, full_name=full_name, history=history_parameters)
+
+            assert reply_timeseries.is_calculation_expression_result
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
 
 
 if __name__ == '__main__':
