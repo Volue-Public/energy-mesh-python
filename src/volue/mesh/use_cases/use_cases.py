@@ -152,7 +152,7 @@ def use_case_1():
                                                             uuid_id=mesh_object.id)
                 print(f"{number + 1}. \n"
                       f"-----\n"
-                      f"" + get_mesh_object_information(mesh_object) + f"")
+                      f"{get_mesh_object_information(mesh_object)}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
 
