@@ -1,7 +1,7 @@
 Versions
 --------
 
-The version needed of the Mesh Python SDK depends on the Mesh Server version you intend to communicate with.
+Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
 `Mesh Python SDK version 0.0.2 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.2>`_
 *************************************************************************************************************************
