@@ -129,7 +129,7 @@ Setup for developers
 
       poetry build
 
-    This will also (re)generate our grpc/protobuf sources, and should be ran after making changes to grpc/proto files.
+    This will also (re)generate our grpc/protobuf sources, and should be ran after making changes to proto file(s).
 
     To run arbitrary commands in the Poetry environment run::
 
