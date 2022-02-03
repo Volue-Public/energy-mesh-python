@@ -80,7 +80,7 @@ If you intend to use it to communicate with a Mesh Server you are a user. If you
 Setup for users (recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As a user you can install the Mesh Python SDK using Pythons standard package manager system `pip <https://packaging.python.org/en/latest/tutorials/installing-packages/>`_::
+As a user you can install the Mesh Python SDK using Python's standard package manager system `pip <https://packaging.python.org/en/latest/tutorials/installing-packages/>`_::
 
     python -m pip install git+https://github.com/PowelAS/sme-mesh-python
 
