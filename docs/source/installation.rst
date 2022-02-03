@@ -31,6 +31,7 @@ To be able to access the code you will need a GitHub user and that user needs to
 
 If you don't have a GitHub user you can `join here <https://github.com/join>`_.
 
+
 Python
 **********
 
@@ -38,34 +39,52 @@ Mesh Python SDK works with Python 3.7.1, 3.8 and 3.9. Support for earlier and la
 
 #. Download and install (Windows):
 
-    #. Go `here <https://www.python.org/downloads/windows/>`_ and download   the latest 3.9 release.
+    #. Go to `python.org <https://www.python.org/downloads/windows/>`_ and download the latest 3.9 release.
 
     #. Follow installation instructions. Select "Add Python 3.9 to PATH" for easy access on the command line.
 
     #. For Python installation help refer to official `Python documentation <https://www.python.org/about/gettingstarted/>`_.
 
-#. Create virtual environment (venv):
 
-    When working with multiple python projects they may depend on different python versions and/or versions of external libraries. For this purpose, the standard library comes with a concept called `Virtual Environments and Packages <https://docs.python.org/3/tutorial/venv.html>`_ to help maintain these separate versions.
+Development environment
+***************************
 
-    Here is a quick way to set up an virtual environment using the command line:
+To be able to use the Mesh Python SDK to communicate with a Mesh Server or to do development you will need to write Python code that uses the functionality in the Mesh Python package.
 
-    #. Create a directory for your project and setup an virtual environment::
+There are many ways to do this, but here we present one of them.
 
-        $ mkdir MyProject
-        $ cd MyProject
-        $ python3 -m venv my-venv
+PyCharm
+~~~~~~~~~~~~~~
 
-    #. Activate the virtual environment::
+PyCharm is an IDE designed to write and execute Python code.
 
-        $ my-venv\Scripts\activate.bat (Windows)
-        or
-        $ source my-venv/bin/activate (Linux, Mac)
+When working with multiple python projects they may depend on different python versions and/or versions of external libraries. For this purpose, the standard library comes with a concept called `Virtual Environments and Packages <https://docs.python.org/3/tutorial/venv.html>`_ to help maintain these separate versions.
 
-    Your virtual environment is now active from the command line.
+#. Download and install:
 
-.. note::
-    If you want to use an IDE, like PyCharm, you will need to active the virtual environment for that.
+    #. Go `here <https://www.jetbrains.com/pycharm/download/#section=windows>`_ and download the installer.
+
+    #. Run the installer and follow the steps in the installation wizard.
+
+#. Create a new project:
+
+    #. Open PyCharm
+    #. Select 'Project' -> 'New Project'
+    #. Select a location and name for you project
+    #. Select 'New environment using' -> Virtualenv
+    #. Make sure the 'Base interpreter' is one of the supported Python versions, for example 3.9
+    #. 'Create'
+
+#. PyCharm Terminal:
+
+    #. 'View' -> 'Tool Windows' -> 'Terminal' will bring up a command line where the virtual environment is activated.
+
+    .. note::
+        This is the command line where you should run commands for installing new packages. Example: 'python -m pip install <some_python_package>'.
+
+#. Execute a script:
+
+    #. Right click on the <your_python_script>.py in the Project view to the right in PyCharm and select 'Run'.
 
 
 Mesh Python SDK
@@ -134,19 +153,3 @@ These dependencies are managed, installed and referenced by the library using `P
 
 .. _Poetry: https://python-poetry.org/docs/
 
-
-Development environment (IDE)
-********************************
-
-To be able to use the Mesh Python SDK to communicate with a Mesh Server or to do development you will need to write Python code that uses the functionality in the Mesh Python package.
-
-There are many ways to do this, but here we present one of them.
-
-.. warning::
-    TODO
-
-PyCharm
-~~~~~~~~~~~~~~
-
-.. warning::
-    TODO

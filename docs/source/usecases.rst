@@ -1,4 +1,5 @@
 Use cases
 ------------
 
-<TODO>
+.. note::
+    TODO
