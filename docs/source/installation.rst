@@ -140,7 +140,7 @@ Development environment (IDE)
 
 To be able to use the Mesh Python SDK to communicate with a Mesh Server or to do development you will need to write Python code that uses the functionality in the Mesh Python package.
 
-There are many ways to do this, but here we present one way to do this.
+There are many ways to do this, but here we present one of them.
 
 .. warning::
     TODO
