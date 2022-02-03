@@ -807,10 +807,10 @@ def use_case_12():
             start = datetime(2021, 9, 1, tzinfo=timezone.utc)
             end = datetime(2021, 10, 12, tzinfo=timezone.utc)
             search_query = "'.Inflow'"
-            forcast_date_1 = datetime(2021, 8, 31, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
-            forcast_date_2 = datetime(2021, 9, 2, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
-            forcast_date_3 = datetime(2021, 9, 1, 9, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
-            expression = f"## = @GetForecast(@t({search_query}),'{forcast_date_1}','{forcast_date_2}','{forcast_date_3}')\n"
+            forecast_date_1 = datetime(2021, 8, 31, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
+            forecast_date_2 = datetime(2021, 9, 2, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
+            forecast_date_3 = datetime(2021, 9, 1, 9, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")[:-3]
+            expression = f"## = @GetForecast(@t({search_query}),'{forecast_date_1}','{forecast_date_2}','{forecast_date_3}')\n"
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
