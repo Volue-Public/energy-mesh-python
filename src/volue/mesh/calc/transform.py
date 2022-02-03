@@ -17,13 +17,14 @@ class Method(Enum):
     Transformation method
     """
     SUM   = 0
-    SUMI  = 1
+    SUMI  = 1  # I -> weighted sum, only for breakpoint timeseries
     AVG   = 2  # equivalent to MEAN
-    AVGI  = 3
+    AVGI  = 3  # I -> weighted average, only for breakpoint timeseries
     FIRST = 5
     LAST  = 6
     MIN   = 7
     MAX   = 8
+
 
 @dataclass
 class Parameters:
@@ -33,6 +34,7 @@ class Parameters:
     resolution: Timeseries.Resolution
     method: Method
     timezone: Timezone = None
+
 
 def prepare_request(session_id: uuid,
                     start_time: datetime,
@@ -62,6 +64,7 @@ def prepare_request(session_id: uuid,
         )
 
     return request
+
 
 def parse_response(response: mesh_pb2.CalculationResponse) -> Timeseries:
     """

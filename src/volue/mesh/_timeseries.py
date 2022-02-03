@@ -31,6 +31,7 @@ class Timeseries:
         MIN        = 7
         MIN5       = 8
         MIN10      = 9
+
     class PointFlags(Enum):
         OK = 0
         MISSING = 0x04000000

@@ -44,7 +44,6 @@ def to_proto_curve_type(curve: Timeseries.Curve) -> mesh_pb2.Curve:
     return proto_curve
 
 
-
 def to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> mesh_pb2.UtcInterval:
     """Convert to protobuf UtcInterval."""
     start = timestamp_pb2.Timestamp()
@@ -68,7 +67,7 @@ def to_proto_object_id(timeseries: Timeseries) -> mesh_pb2.ObjectId:
 
 
 def to_proto_timeseries(timeseries: Timeseries) -> mesh_pb2.Timeseries:
-    """Convert a Timeseries to corresponding protobuf Timeseries"""
+    """Converts a protobuf timeseries reply from Mesh server into Timeseries"""
     stream = pa.BufferOutputStream()
     writer = pa.ipc.RecordBatchStreamWriter(
         sink=stream,
@@ -88,7 +87,7 @@ def to_proto_timeseries(timeseries: Timeseries) -> mesh_pb2.Timeseries:
 
 
 def read_proto_reply(reply: mesh_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
-    """Converts a protobuf timeseries reply from Mesh server into Timeseries
+    """Converts a timeseries reply into a Timeseries
     """
     timeseries = []
     for timeserie in reply.timeseries:
