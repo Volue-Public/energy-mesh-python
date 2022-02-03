@@ -66,25 +66,22 @@ When working with multiple python projects they may depend on different python v
 
     #. Run the installer and follow the steps in the installation wizard.
 
-#. Create a new project:
+#. Create a `new project <https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html#creating-simple-project>`_.
 
-    #. Open PyCharm
-    #. Select 'Project' -> 'New Project'
-    #. Select a location and name for you project
-    #. Select 'New environment using' -> Virtualenv
-    #. Make sure the 'Base interpreter' is one of the supported Python versions, for example 3.9
-    #. 'Create'
+#. Create a `python file <https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html#create-file>`_ for your code.
 
-#. PyCharm Terminal:
+#. Good to know:
 
-    #. 'View' -> 'Tool Windows' -> 'Terminal' will bring up a command line where the virtual environment is activated.
+    #. PyCharm Terminal:
 
-    .. note::
-        This is the command line where you should run commands for installing new packages. Example: 'python -m pip install <some_python_package>'.
+        #. 'View' -> 'Tool Windows' -> 'Terminal' will bring up a command line where the virtual environment is activated.
 
-#. Execute a script:
+        .. note::
+            This is the command line where you should run commands for installing new packages. Example: 'python -m pip install <some_python_package>'.
 
-    #. Right click on the <your_python_script>.py in the Project view to the right in PyCharm and select 'Run'.
+    #. Execute a script:
+
+        #. Right click on the <your_python_script>.py in the Project view to the right in PyCharm and select 'Run'.
 
 
 Mesh Python SDK
