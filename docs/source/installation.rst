@@ -27,7 +27,7 @@ GitHub
 
 GitHub is a cloud based storage for git repositories. The Mesh Python SDK is hosted on `GitHub <https://github.com/PowelAS/sme-mesh-python>`_.
 
-To be able to access the code you will need an GitHub user and that user needs to be given access by Volue.
+To be able to access the code you will need a GitHub user and that user needs to be given access by Volue.
 
 If you don't have a GitHub user you can `join here <https://github.com/join>`_.
 
