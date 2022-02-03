@@ -73,7 +73,7 @@ Mesh Python SDK
 
 Depending on how you intend to use the Mesh Python SDK there are two ways to install it.
 
-If you intend to use it to communicate with a Mesh Server you are a user. If you intend to help development of the SDK you are a developer.
+If you intend to use it to communicate with a Mesh Server you are a user. If you intend to contribute to development of the SDK you are a developer.
 
 .. _Setup for users:
 
