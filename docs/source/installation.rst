@@ -118,7 +118,7 @@ Setup for developers
 
 #. Install Poetry:
 
-    This library uses `Poetry`_ for development, installation, and packaging. To
+    This library uses `Poetry`_ for development, installation and packaging. To
     work with the repository you should `install poetry <https://python-poetry.org/docs/#installation>`_.
 
     To install all our development and runtime dependencies to a virtual environment run::
