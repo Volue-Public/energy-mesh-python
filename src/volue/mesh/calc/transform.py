@@ -19,7 +19,7 @@ class Method(Enum):
     SUM   = 0
     SUMI  = 1  # I -> weighted sum, only for breakpoint timeseries
     AVG   = 2  # equivalent to MEAN
-    AVGI  = 3
+    AVGI  = 3  # I -> weighted average, only for breakpoint timeseries
     FIRST = 5
     LAST  = 6
     MIN   = 7

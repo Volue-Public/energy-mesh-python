@@ -67,7 +67,7 @@ def to_proto_object_id(timeseries: Timeseries) -> mesh_pb2.ObjectId:
 
 
 def to_proto_timeseries(timeseries: Timeseries) -> mesh_pb2.Timeseries:
-    """Convert a Timeseries to corresponding protobuf Timeseries"""
+    """Converts a protobuf timeseries reply from Mesh server into Timeseries"""
     stream = pa.BufferOutputStream()
     writer = pa.ipc.RecordBatchStreamWriter(
         sink=stream,
