@@ -6,7 +6,7 @@ To be able to communicate with a Mesh server using the Mesh Python SDK some init
 Git
 **********
 
-Git is a version control system. To be able to follow along using this guide you will need git to be able to install the Mesh Python SKD.
+Git is a version control system. To be able to follow along using this guide you will need git to be able to install the Mesh Python SDK.
 
 #. Download and install (Windows):
 
