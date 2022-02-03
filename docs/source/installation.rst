@@ -115,7 +115,7 @@ Setup for developers
 
 #. Install Poetry:
 
-    This library uses `Poetry`_ for development, installation, and packaging. To
+    This library uses `Poetry`_ for development, installation and packaging. To
     work with the repository you should `install poetry <https://python-poetry.org/docs/#installation>`_.
 
     To install all our development and runtime dependencies to a virtual environment run::
@@ -126,7 +126,7 @@ Setup for developers
 
       poetry build
 
-    This will also (re)generate our grpc/protobuf sources, and should be ran after making changes to grpc/proto files.
+    This will also (re)generate our grpc/protobuf sources, and should be ran after making changes to proto file(s).
 
     To run arbitrary commands in the Poetry environment run::
 
