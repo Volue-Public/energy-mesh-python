@@ -8,9 +8,9 @@ Git
 
 Git is a version control system. To be able to follow along using this guide you will need git to be able to install the Mesh Python SDK.
 
-#. Download and install (Windows):
+#. Download and install:
 
-    * Go to `gitforwindows.org <https://gitforwindows.org/>`_ and download the installer.
+    * Go to `git-scm.com <https://git-scm.com/downloads>`_ and download the installer.
 
     * Installation with default settings should suffice.
 
