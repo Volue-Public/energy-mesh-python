@@ -14,9 +14,8 @@ from volue.mesh.proto import mesh_pb2
 These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
 """
 
-# Ip address for the mesh server
+# Ip address for the Mesh server
 HOST = "localhost"
-# HOST = "tdtrhsmg125b2"
 # Mesh server port for gRPC communication
 PORT = 50051
 # Use matplotlib to visualize results
