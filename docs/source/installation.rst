@@ -62,7 +62,7 @@ When working with multiple python projects they may depend on different python v
 
 #. Download and install:
 
-    #. Go `here <https://www.jetbrains.com/pycharm/download/#section=windows>`_ and download the installer.
+    a. Go `here <https://www.jetbrains.com/pycharm/download/#section=windows>`_ and download the installer.
 
     #. Run the installer and follow the steps in the installation wizard.
 
@@ -72,16 +72,16 @@ When working with multiple python projects they may depend on different python v
 
 #. Good to know:
 
-    #. PyCharm Terminal:
+    a. PyCharm Terminal:
 
-        #. 'View' -> 'Tool Windows' -> 'Terminal' will bring up a command line where the virtual environment is activated.
+        'View' -> 'Tool Windows' -> 'Terminal' will bring up a command line where the virtual environment is activated.
 
         .. note::
             This is the command line where you should run commands for installing new packages. Example: 'python -m pip install <some_python_package>'.
 
     #. Execute a script:
 
-        #. Right click on the <your_python_script>.py in the Project view to the right in PyCharm and select 'Run'.
+        Right click on the <your_python_script>.py in the 'Project' view to the right in PyCharm and select 'Run'.
 
 
 Mesh Python SDK
