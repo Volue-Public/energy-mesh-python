@@ -35,7 +35,7 @@ jobs:
         id: download-mesh-server
         with:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-          MESH_SERVICE_TAG: 'MeshService_v2.3.0.7'
+          MESH_SERVICE_TAG: 'v2.3.0.7'
 
       # because the ref name (either branch name or pull request number)
       # will be used in different steps (using different shells)
