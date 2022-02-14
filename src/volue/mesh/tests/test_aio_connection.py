@@ -10,7 +10,8 @@ from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto.type import resources_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2
 
@@ -106,8 +107,8 @@ async def test_get_timeseries_async():
                 assert timeseries_info.timeseries_key == timeseries.timeseries_key
                 assert timeseries_info.path == timeseries.path
                 assert timeseries_info.temporary == timeseries.temporary
-                assert timeseries_info.curveType.type == timeseries.curve.value
-                assert timeseries_info.delta_t.type == timeseries.resolution.value
+                assert timeseries_info.curve_type.type == timeseries.curve.value
+                assert timeseries_info.resolution.type == timeseries.resolution.value
                 assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
 
         except grpc.RpcError as e:
@@ -152,7 +153,7 @@ async def test_update_timeseries_entry_async():
                 if "new_path" in test_case:
                     assert timeseries_info.path == new_path
                 if "new_curve_type" in test_case:
-                    assert timeseries_info.curveType.type == mesh_pb2.Curve.UNKNOWN
+                    assert timeseries_info.curve_type.type == resources_pb2.Curve.UNKNOWN
                 if "new_unit_of_measurement" in test_case:
                     assert timeseries_info.unit_of_measurement == new_unit_of_measurement
 
@@ -216,8 +217,8 @@ async def test_read_timeseries_attribute_async():
                 assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
                 assert reply_timeseries.path == expected_timeseries.path
                 assert reply_timeseries.temporary == expected_timeseries.temporary
-                assert reply_timeseries.curveType.type == expected_timeseries.curve.value
-                assert reply_timeseries.delta_t.type == expected_timeseries.resolution.value
+                assert reply_timeseries.curve_type.type == expected_timeseries.curve.value
+                assert reply_timeseries.resolution.type == expected_timeseries.resolution.value
                 assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not get timeseries attribute {e}")
@@ -268,7 +269,7 @@ async def test_update_timeseries_attribute_with_timeseriesreference_async():
     attribute, full_name = get_timeseries_attribute_2()
     new_timeseries, _ = get_timeseries_1()
     new_timeseries_entry = new_timeseries.entries[0]
-    new_timeseries_entry_id = mesh_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
+    new_timeseries_entry_id = core_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
 
     async with connection.create_session() as session:
         try:
@@ -338,8 +339,8 @@ async def test_search_timeseries_attribute_async():
                 assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
                 assert reply_timeseries.path == expected_timeseries.path
                 assert reply_timeseries.temporary == expected_timeseries.temporary
-                assert reply_timeseries.curveType == to_proto_curve_type(expected_timeseries.curve)
-                assert reply_timeseries.delta_t.type == expected_timeseries.resolution.value
+                assert reply_timeseries.curve_type == to_proto_curve_type(expected_timeseries.curve)
+                assert reply_timeseries.resolution.type == expected_timeseries.resolution.value
                 assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")

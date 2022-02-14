@@ -37,7 +37,7 @@ def main(address, port, secure_connection):
 
         # check for example the unit of measurement or curve type
         print('Unit of measurement: ' + timeseries_attribute.entry.unit_of_measurement)
-        print('Curve ' + str(timeseries_attribute.entry.curveType))
+        #print('Curve ' + str(timeseries_attribute.entry.curve_type))
 
         # now lets write some data to it
         try:

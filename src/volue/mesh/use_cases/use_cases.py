@@ -12,7 +12,7 @@ from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_guid, t
 from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.core.v1alpha import core_pb2
 
 """
 These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
@@ -75,20 +75,20 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
             timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
 
 
-def get_resource_information(resource_object: mesh_pb2.TimeseriesEntry):
+def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
     """
     Create a printable message from a resource object
     """
     message = f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"\
               f"has guid: '{from_proto_guid(resource_object.id)}', \n"\
               f"path set in the resource silo is: '{resource_object.path}', \n"\
-              f"it's curve '{resource_object.curveType}', \n"\
-              f"resolution '{resource_object.delta_t}' \n"\
+              f"it's curve '{resource_object.curve_type}', \n"\
+              f"resolution '{resource_object.resolution}' \n"\
               f"and unit of measurement is: '{resource_object.unit_of_measurement}'\n"
     return message
 
 
-def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
+def get_mesh_object_information(mesh_object: core_pb2.TimeseriesAttribute):
     """
     Create a printable message from a mesh object
     """
@@ -564,10 +564,10 @@ def use_case_8():
             print("--------------------------------------------------------------")
 
             # Summarize timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(start_object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
@@ -695,10 +695,10 @@ def use_case_10():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
@@ -761,10 +761,10 @@ def use_case_11():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
@@ -829,10 +829,10 @@ def use_case_12():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
