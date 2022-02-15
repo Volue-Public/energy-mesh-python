@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.type;
+
+import "google/protobuf/timestamp.proto";
+
+message Guid {
+  // Bytes in LITTLE ENDIAN format
+  bytes bytes_le = 1;
+}
+
+// Time interval for specifying a section of a timeseries.
+message UtcInterval {
+  google.protobuf.Timestamp start_time = 1;
+  google.protobuf.Timestamp end_time = 2;
+}
+
+// Timeseries resolution
+message Resolution {
+  enum ResolutionType {
+    RESOLUTION_UNSPECIFIED = 0;
+    BREAKPOINT             = 1;
+    MIN15                  = 2;
+    HOUR                   = 3;
+    DAY                    = 4;
+    WEEK                   = 5;
+    MONTH                  = 6;
+    YEAR                   = 7;
+  }
+  ResolutionType type = 1;
+}
+
+// Timeseries curve type
+message Curve {
+  enum CurveType {
+    UNKNOWN              = 0;
+    STAIRCASESTARTOFSTEP = 1;
+    PIECEWISELINEAR      = 2;
+    STAIRCASE            = 3;
+  }
+  CurveType type = 1;
+}

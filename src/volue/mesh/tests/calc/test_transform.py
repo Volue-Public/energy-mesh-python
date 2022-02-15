@@ -5,7 +5,7 @@ import pytest
 from volue.mesh import Timeseries
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.tests.test_utilities.utilities import  get_timeseries_attribute_2
 
 
@@ -24,7 +24,7 @@ def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
         Timeseries.Resolution.BREAKPOINT, Transform.Method.SUM)
     _, full_name = get_timeseries_attribute_2()
 
-    timeseries_attribute = mesh_pb2.ObjectId()
+    timeseries_attribute = core_pb2.ObjectId()
     timeseries_attribute.full_name = full_name
 
     with pytest.raises(ValueError, match=".*'BREAKPOINT' resolution is unsupported.*"):
@@ -37,7 +37,7 @@ def test_parsing_invalid_transform_result_should_throw():
     """
     Check that expected exception is thrown when transformation result is not a single timeseries.
     """
-    response = mesh_pb2.CalculationResponse()
+    response = core_pb2.CalculationResponse()
     # no timeseries at all
     with pytest.raises(RuntimeError, match=".*invalid transformation result*"):
         Transform.parse_response(response)
@@ -68,7 +68,7 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
 
     _, full_name = get_timeseries_attribute_2()
 
-    timeseries_attribute = mesh_pb2.ObjectId()
+    timeseries_attribute = core_pb2.ObjectId()
     timeseries_attribute.full_name = full_name
 
     # first check that if `timezone` is not provided then
