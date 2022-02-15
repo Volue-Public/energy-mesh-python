@@ -70,14 +70,7 @@ The user may optionally revoke the Mesh access token. This may useful when a use
 Requirements
 *****************
 
-#. Configure the Mesh server to use authentication and TLS:
-
-   .. code-block:: javascript
-
-      Configuration.Network.GRPC.SetEnabled(true);
-      Configuration.Network.GRPC.EnableKerberos(true);
-      Configuration.Network.GRPC.EnableTLS(true);
-
+#. Mesh server configured to use authentication and TLS. Please contact Volue consultant to confirm your server configuration.
 #. Find out correct *service principal* for Mesh server you want to connect to.
 #. Create a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection: object with authentication parameters.
 
