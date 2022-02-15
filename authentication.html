@@ -236,14 +236,8 @@ Authentication parameters consist of:</p>
 </div>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic">
-<li><p>Configure the Mesh server to use authentication and TLS:</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">Configuration</span><span class="p">.</span><span class="nx">Network</span><span class="p">.</span><span class="nx">GRPC</span><span class="p">.</span><span class="nx">SetEnabled</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-<span class="nx">Configuration</span><span class="p">.</span><span class="nx">Network</span><span class="p">.</span><span class="nx">GRPC</span><span class="p">.</span><span class="nx">EnableKerberos</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-<span class="nx">Configuration</span><span class="p">.</span><span class="nx">Network</span><span class="p">.</span><span class="nx">GRPC</span><span class="p">.</span><span class="nx">EnableTLS</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
-</pre></div>
-</div>
-</li>
+<ol class="arabic simple">
+<li><p>Mesh server configured to use authentication and TLS. Please contact Volue consultant to confirm your server configuration.</p></li>
 <li><p>Find out correct <em>service principal</em> for Mesh server you want to connect to.</p></li>
 <li><p>Create a <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection or a <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection: object with authentication parameters.</p></li>
 </ol>
