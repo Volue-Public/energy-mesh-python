@@ -170,7 +170,7 @@
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Credentials</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">history</span> <span class="k">as</span> <span class="n">History</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">mesh_pb2</span><span class="p">,</span> <span class="n">mesh_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -190,7 +190,7 @@
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
-                <span class="n">mesh_service</span><span class="p">:</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span>
+                <span class="n">mesh_service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span>
                 <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 
@@ -199,7 +199,7 @@
 <span class="sd">                session_id:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span> <span class="o">=</span> <span class="n">session_id</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">:</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span> <span class="o">=</span> <span class="n">mesh_service</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span> <span class="o">=</span> <span class="n">mesh_service</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -259,7 +259,7 @@
 <span class="sd">                RuntimeError:</span>
 <span class="sd">                TypeError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">object_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">()</span>
+            <span class="n">object_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">timskey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">object_id</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">timskey</span>
             <span class="k">elif</span> <span class="n">uuid_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -285,7 +285,7 @@
                 <span class="k">return</span> <span class="n">Transform</span><span class="o">.</span><span class="n">parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
             <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">ReadTimeseries</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">object_id</span><span class="o">=</span><span class="n">object_id</span><span class="p">,</span>
                     <span class="n">interval</span><span class="o">=</span><span class="n">to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
@@ -305,20 +305,20 @@
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">WriteTimeseries</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">core_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">object_id</span><span class="o">=</span><span class="n">to_proto_object_id</span><span class="p">(</span><span class="n">timeserie</span><span class="p">),</span>
                     <span class="n">timeseries</span><span class="o">=</span><span class="n">to_proto_timeseries</span><span class="p">(</span><span class="n">timeserie</span><span class="p">)</span>
                 <span class="p">))</span></div>
 
-        <span class="c1"># TODO: wrap mesh_pb2.TimeseriesEntry</span>
+        <span class="c1"># TODO: wrap core_pb2.TimeseriesEntry</span>
 <div class="viewcode-block" id="Connection.Session.get_timeseries_resource_info"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_timeseries_resource_info">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_timeseries_resource_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                                <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                                <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                                <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">TimeseriesEntry</span><span class="p">:</span>
+                                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntry</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
-            <span class="n">entry_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">()</span>
+            <span class="n">entry_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">timskey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">entry_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">timskey</span>
             <span class="k">elif</span> <span class="n">uuid_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -329,7 +329,7 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to specify either uuid_id, timeseries_key or path.&quot;</span><span class="p">)</span>
 
             <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetTimeseriesEntry</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">GetTimeseriesEntryRequest</span><span class="p">(</span>
+                <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetTimeseriesEntryRequest</span><span class="p">(</span>
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">entry_id</span><span class="o">=</span><span class="n">entry_id</span>
                 <span class="p">))</span>
@@ -348,7 +348,7 @@
 
 <span class="sd">            Specify which ever of the new_* fields you want to update.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">entry_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">()</span>
+            <span class="n">entry_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">timskey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">entry_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">timskey</span>
             <span class="k">elif</span> <span class="n">uuid_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -358,7 +358,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to specify either uuid_id, timeseries_key or path.&quot;</span><span class="p">)</span>
 
-            <span class="n">request</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesEntryRequest</span><span class="p">(</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesEntryRequest</span><span class="p">(</span>
                 <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                 <span class="n">entry_id</span><span class="o">=</span><span class="n">entry_id</span>
             <span class="p">)</span>
@@ -378,16 +378,16 @@
 
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateTimeseriesEntry</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
-        <span class="c1"># TODO: wrap  mesh_pb2.TimeseriesAttribute</span>
+        <span class="c1"># TODO: wrap  core_pb2.TimeseriesAttribute</span>
 <div class="viewcode-block" id="Connection.Session.get_timeseries_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_timeseries_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_timeseries_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                            <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                            <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                            <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-                                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">:</span>
+                                           <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Specify model and either uuid_id or path to a timeseries attribute. Only one or uuid_id and path is needed</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">attribute_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">AttributeId</span><span class="p">()</span>
+            <span class="n">attribute_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeId</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">uuid_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">attribute_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="n">uuid_id</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -396,7 +396,7 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to specify either uuid_id or path.&quot;</span><span class="p">)</span>
 
             <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetTimeseriesAttribute</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">GetTimeseriesAttributeRequest</span><span class="p">(</span>
+                <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetTimeseriesAttributeRequest</span><span class="p">(</span>
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                     <span class="n">attribute_id</span><span class="o">=</span><span class="n">attribute_id</span>
@@ -404,12 +404,12 @@
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">reply</span></div>
 
-        <span class="c1"># TODO: Remove mesh_pb2 from interface</span>
+        <span class="c1"># TODO: Remove core_pb2 from interface</span>
 <div class="viewcode-block" id="Connection.Session.update_timeseries_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.update_timeseries_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">update_timeseries_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                               <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                               <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                               <span class="n">new_local_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                              <span class="n">new_timeseries_entry_id</span><span class="p">:</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                              <span class="n">new_timeseries_entry_id</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                               <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Specify either uuid_id or path to a timeseries attribute you want to update. Only one or uuid_id and path is needed.</span>
@@ -418,7 +418,7 @@
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">attribute_id</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">AttributeId</span><span class="p">()</span>
+            <span class="n">attribute_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeId</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">uuid_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">attribute_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="n">uuid_id</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -434,7 +434,7 @@
             <span class="n">field_mask</span> <span class="o">=</span> <span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">paths</span><span class="p">)</span>
 
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateTimeseriesAttribute</span><span class="p">(</span>
-                <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeRequest</span><span class="p">(</span>
+                <span class="n">core_pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeRequest</span><span class="p">(</span>
                     <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                     <span class="n">attribute_id</span><span class="o">=</span><span class="n">attribute_id</span><span class="p">,</span>
                     <span class="n">field_mask</span><span class="o">=</span><span class="n">field_mask</span><span class="p">,</span>
@@ -448,7 +448,7 @@
                                                   <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                                                   <span class="n">start_object_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                                   <span class="n">start_object_guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span>
-                                                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">mesh_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
+                                                  <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Specify a model, a query using mesh query language and start object to start the search from,</span>
 <span class="sd">            using either a path or a guid.</span>
@@ -461,7 +461,7 @@
 <span class="sd">            Returns:</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">request</span> <span class="o">=</span> <span class="n">mesh_pb2</span><span class="o">.</span><span class="n">SearchTimeseriesAttributesRequest</span><span class="p">(</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchTimeseriesAttributesRequest</span><span class="p">(</span>
                 <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
                 <span class="n">model_name</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                 <span class="n">query</span><span class="o">=</span><span class="n">query</span>
@@ -539,7 +539,7 @@
                     <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span>
                 <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">mesh_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Connection.get_version"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.get_version">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
