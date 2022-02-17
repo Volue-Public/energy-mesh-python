@@ -10,7 +10,7 @@ def auth_metadata_plugin():
     """Yields Authentication object. No clean-up is done (it requires Connection object)
     Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server."""
     target = f'{sc.DefaultServerConfig.ADDRESS}:{sc.DefaultServerConfig.PORT}'
-    credentials = Credentials()
+    credentials = Credentials(sc.VALID_ROOT_CERTIFICATE_PATH)
     authentication_parameters = Authentication.Parameters(
         sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
     return Authentication(authentication_parameters, target, credentials.channel_creds)
@@ -23,7 +23,7 @@ def connection():
         sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
     conn = Connection(sc.DefaultServerConfig.ADDRESS,
                       sc.DefaultServerConfig.PORT,
-                      True,  # authentication requires TLS (to make sure tokens are encrypted)
+                      sc.VALID_ROOT_CERTIFICATE_PATH,  # authentication requires TLS (to make sure tokens are encrypted)
                       authentication_parameters)
     yield conn
 
@@ -38,7 +38,7 @@ async def aconnection():
         sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
     aconn = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
                             sc.DefaultServerConfig.PORT,
-                            True,  # authentication requires TLS (to make sure tokens are encrypted)
+                            sc.VALID_ROOT_CERTIFICATE_PATH,  # authentication requires TLS (to make sure tokens are encrypted)
                             authentication_parameters)
     yield aconn
 

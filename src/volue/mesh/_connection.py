@@ -307,9 +307,22 @@ class Connection:
             """
             self.mesh_service.Commit(to_proto_guid(self.session_id))
 
-    def __init__(self, host, port, secure_connection: bool,
+    def __init__(self, host, port, root_certificate_path: str = None,
                  authentication_parameters: Authentication.Parameters = None):
-        """
+        """Create a synchronous connection for communication with Mesh server.
+
+        Args:
+            host: Mesh gRPC server host name.
+            port: Mesh gRPC server port.
+            root_certificate_paths: Path to root certificate(s).
+                In case multiple root certificates are needed they
+                should be combined into a single file.
+                If this argument is set then a secured connection will be created,
+                otherwise it will be an insecure connection.
+            authentication_parameters: Authentication parameters.
+
+        Returns:
+            A synchronous connection object.
         """
         target = f'{host}:{port}'
         self.auth_metadata_plugin = None
@@ -319,13 +332,13 @@ class Connection:
         # - with TLS
         # - with TLS and Kerberos authentication
         #   (authentication requires TLS for encrypting auth tokens)
-        if not secure_connection:
+        if not root_certificate_path:
             # insecure connection (without TLS)
             channel = grpc.insecure_channel(
                 target=target
             )
         else:
-            credentials: Credentials = Credentials()
+            credentials: Credentials = Credentials(root_certificate_path)
 
             # authentication requires TLS
             if authentication_parameters:

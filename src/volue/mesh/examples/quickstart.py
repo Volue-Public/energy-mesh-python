@@ -2,11 +2,11 @@ from volue.mesh.examples import _get_connection_info
 from volue.mesh import Connection
 
 
-def main(address, port, secure_connection):
+def main(address, port, root_certificate_path):
     """Showing the quickest way to get started."""
 
     # Configure the connection you want
-    connection = Connection(address, port, secure_connection)
+    connection = Connection(address, port, root_certificate_path)
 
     # Which version is the server running
     mesh_server_version = connection.get_version()
@@ -22,5 +22,5 @@ def main(address, port, secure_connection):
 
 
 if __name__ == "__main__":
-    address, port, secure_connection = _get_connection_info()
-    main(address, port, secure_connection)
+    address, port, root_certificate_path = _get_connection_info()
+    main(address, port, root_certificate_path)

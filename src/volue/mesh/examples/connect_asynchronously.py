@@ -18,10 +18,10 @@ async def start_and_end_session(session):
     await session.close()
 
 
-async def main(address, port, secure_connection):
+async def main(address, port, root_certificate_path):
     """Showing how to connect to a server and run two tasks concurrently."""
     # Creating a connection, but not sending any requests yet
-    connection = Connection(address, port, secure_connection)
+    connection = Connection(address, port, root_certificate_path)
     # Indicate that these two functions can be run concurrently
     await asyncio.gather(
         get_version(connection),
@@ -29,8 +29,8 @@ async def main(address, port, secure_connection):
     )
 
 if __name__ == "__main__":
-    address, port, secure_connection = _get_connection_info()
-    asyncio.run(main(address, port, secure_connection))
+    address, port, root_certificate_path = _get_connection_info()
+    asyncio.run(main(address, port, root_certificate_path))
     print("Done")
 
 # Outputs:

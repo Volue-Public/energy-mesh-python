@@ -8,8 +8,9 @@ def main():
     # Change to fit your server
     sc.DefaultServerConfig.ADDRESS = "localhost"
     sc.DefaultServerConfig.PORT = 50051
-    # Note: authentication tests require secure connection
-    sc.DefaultServerConfig.SECURE_CONNECTION = False
+    # Note: authentication tests require secure connection,
+    # so providing root certificate is required for them.
+    sc.DefaultServerConfig.ROOT_CERTIFICATE_PATH = None
 
     # If Mesh gRPC server is running as a service user,
     # for example LocalSystem, NetworkService or a user account

@@ -38,14 +38,14 @@ async def write_timeseries_points(session: Connection.Session):
     await session.rollback()
 
 
-async def main(address, port, secure_connection):
+async def main(address, port, root_certificate_path):
     """Showing how to write timeseries points."""
-    connection = Connection(address, port, secure_connection)
+    connection = Connection(address, port, root_certificate_path)
 
     async with connection.create_session() as session:
         await write_timeseries_points(session)
 
 
 if __name__ == "__main__":
-    address, port, secure_connection = _get_connection_info()
-    asyncio.run(main(address, port, secure_connection))
+    address, port, root_certificate_path = _get_connection_info()
+    asyncio.run(main(address, port, root_certificate_path))

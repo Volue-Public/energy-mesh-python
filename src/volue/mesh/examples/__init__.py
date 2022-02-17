@@ -9,11 +9,13 @@ def _get_connection_info():
     """Helper function to set hand over connection info to examples."""
     address = "localhost"
     port = 50051
-    secure_connection = False
+    root_certificate_path = ''
 
     if len(sys.argv) > 1:
         address = sys.argv[1]
+    if len(sys.argv) > 2:
         port = int(sys.argv[2])
-        secure_connection = sys.argv[3] == "True"
+    if len(sys.argv) > 3:
+        root_certificate_path = sys.argv[3]
 
-    return address, port, secure_connection
+    return address, port, root_certificate_path
