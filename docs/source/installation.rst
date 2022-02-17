@@ -14,7 +14,7 @@ Virtual Environments
 
 When working with multiple python projects they may depend on different python versions or versions of external libraries. For this purpose, the standard library comes with a concept called "Virtual Environments" to help maintain these separate versions.
 
-In-depth information can be found under Pythons official documentation for the `Virtual Environments and Packages <https://docs.python.org/3/tutorial/venv.html>`_.
+In-depth information can be found under Python's official documentation for the `Virtual Environments and Packages <https://docs.python.org/3/tutorial/venv.html>`_.
 
 Here is a quick way:
 
@@ -60,9 +60,10 @@ First clone the repository::
 
 
 This library uses `Poetry`_ for development, installation, and packaging. To
-work with the repository you should `install poetry <https://python-poetry.org/docs/#installation>`_.
+work with the repository you should `install poetry <https://github.com/python-poetry/poetry#installation>`_.
+The steps below assume Poetry binary is added to your PATH.
 
-To install all our development and runtime dependencies to a virtual environment run::
+To install all our development and runtime dependencies to a virtual environment go to the Mesh Python SDK repository directory and run::
 
   poetry install
 
