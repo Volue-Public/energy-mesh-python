@@ -9,10 +9,8 @@ from dataclasses import dataclass
 class ServerConfig:
     ADDRESS: str = 'localhost'
     PORT: int = 50051
-    ROOT_CERTIFICATE_PATH: str = ''
+    # PEM-encoded root certificate(s) as a byte string.
+    ROOT_PEM_CERTIFICATE: str = ''
     KERBEROS_SERVICE_PRINCIPAL_NAME: str = 'HOST/example.companyad.company.com'
-
-# change to path with your certificate
-VALID_ROOT_CERTIFICATE_PATH: str = 'C:\\certs\\server_self_signed_certificate.crt'
 
 DefaultServerConfig: ServerConfig = ServerConfig()

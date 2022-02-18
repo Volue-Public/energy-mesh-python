@@ -5,7 +5,7 @@ from volue.mesh import Authentication, Connection
 from volue.mesh.examples import _get_connection_info
 
 
-def main(address, port, root_certificate_path):
+def main(address, port, root_pem_certificate):
     """Showing how to authorize to gRPC Mesh server."""
 
     # If Mesh gRPC server is running as a service user,
@@ -27,7 +27,7 @@ def main(address, port, root_certificate_path):
         'HOST/example.companyad.company.com')
 
     print("Synchronous authentication example: ")
-    connection = Connection(address, port, root_certificate_path, authentication_parameters)
+    connection = Connection(address, port, root_pem_certificate, authentication_parameters)
     user_identity = connection.get_user_identity()
     print(user_identity)
 
@@ -35,7 +35,7 @@ def main(address, port, root_certificate_path):
     connection.revoke_access_token()
 
     print("Asynchronous authentication example: ")
-    aconnection = AsyncConnection(address, port, root_certificate_path, authentication_parameters)
+    aconnection = AsyncConnection(address, port, root_pem_certificate, authentication_parameters)
     user_identity = asyncio.get_event_loop().run_until_complete(aconnection.get_user_identity())
     print(user_identity)
 
@@ -51,5 +51,5 @@ if __name__ == "__main__":
     #
     # This requires Mesh server to be running with enabled TLS and Kerberos options.
 
-    address, port, root_certificate_path = _get_connection_info()
-#    main(address, port, root_certificate_path)
+    address, port, root_pem_certificate = _get_connection_info()
+#    main(address, port, root_pem_certificate)

@@ -25,14 +25,14 @@ async def read_timeseries_points_async(session: Connection.Session):
     print(f"Timeseries found using full name contains {id_timeseries.number_of_points}.")
 
 
-async def main(address, port, root_certificate_path):
+async def main(address, port, root_pem_certificate):
     """Showing how to get timeseries points asynchronously."""
-    connection = Connection(address, port, root_certificate_path)
+    connection = Connection(address, port, root_pem_certificate)
 
     async with connection.create_session() as session:
         await read_timeseries_points_async(session)
 
 
 if __name__ == "__main__":
-    address, port, root_certificate_path = _get_connection_info()
-    asyncio.run(main(address, port, root_certificate_path))
+    address, port, root_pem_certificate = _get_connection_info()
+    asyncio.run(main(address, port, root_pem_certificate))

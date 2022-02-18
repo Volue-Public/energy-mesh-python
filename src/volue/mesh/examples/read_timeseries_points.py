@@ -26,14 +26,14 @@ def read_timeseries_points(session: Connection.Session):
     print(f"Read {timeseries.number_of_points} points")
 
 
-def main(address, port, root_certificate_path):
+def main(address, port, root_pem_certificate):
     """Showing how to get timeseries points."""
-    connection = Connection(address, port, root_certificate_path)
+    connection = Connection(address, port, root_pem_certificate)
 
     with connection.create_session() as session:
         read_timeseries_points(session)
 
 
 if __name__ == "__main__":
-    address, port, root_certificate_path = _get_connection_info()
-    main(address, port, root_certificate_path)
+    address, port, root_pem_certificate = _get_connection_info()
+    main(address, port, root_pem_certificate)

@@ -70,10 +70,10 @@ def is_port_responding(host: str, port: int):
             return True
 
 
-def run_example_script(path, address, port, root_certificate_path):
+def run_example_script(path, address, port, root_pem_certificate):
     """Helper function to run an example script."""
     p = subprocess.Popen(
-        [sys.executable, path, address, str(port), root_certificate_path],
+        [sys.executable, path, address, str(port), root_pem_certificate],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
 

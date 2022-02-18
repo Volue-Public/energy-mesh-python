@@ -328,16 +328,14 @@ class Connection:
             """
             await self.mesh_service.Commit(to_proto_guid(self.session_id))
 
-    def __init__(self, host, port, root_certificate_path: str = None,
+    def __init__(self, host, port, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):
         """Create an asynchronous connection for communication with Mesh server.
 
         Args:
             host: Mesh gRPC server host name.
             port: Mesh gRPC server port.
-            root_certificate_paths: Path to root certificate(s).
-                In case multiple root certificates are needed they
-                should be combined into a single file.
+            root_pem_certificates: PEM-encoded root certificate(s) as a byte string.
                 If this argument is set then a secured connection will be created,
                 otherwise it will be an insecure connection.
             authentication_parameters: Authentication parameters.
@@ -353,13 +351,13 @@ class Connection:
         # - with TLS
         # - with TLS and Kerberos authentication
         #   (authentication requires TLS for encrypting auth tokens)
-        if not root_certificate_path:
+        if not root_pem_certificate:
             # insecure connection (without TLS)
             channel = grpc.aio.insecure_channel(
                 target=target
             )
         else:
-            credentials: Credentials = Credentials(root_certificate_path)
+            credentials: Credentials = Credentials(root_pem_certificate)
 
             # authentication requires TLS
             if authentication_parameters:

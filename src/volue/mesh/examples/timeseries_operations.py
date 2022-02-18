@@ -9,14 +9,14 @@ from volue.mesh.calc.common import Timezone
 from volue.mesh.examples import _get_connection_info
 
 
-def main(address, port, root_certificate_path):
+def main(address, port, root_pem_certificate):
     """Showing how to find timeseries, write, read points from it and convert them to pandas format."""
 
     model_name = "SimpleThermalTestModel"
     query = "*[.Name=SomePowerPlantChimney2].TsRawAtt"  # make sure only 1 timeseries is returned
     start_object_path = "ThermalComponent"
 
-    connection = Connection(address, port, root_certificate_path)
+    connection = Connection(address, port, root_pem_certificate)
     with connection.create_session() as session:
         # first lets find a timeseries in our model
         try:
@@ -122,5 +122,5 @@ if __name__ == "__main__":
     # This will search for a given timeseries, write some data,
     # read it and convert to pandas format.
 
-    address, port, root_certificate_path = _get_connection_info()
-    main(address, port, root_certificate_path)
+    address, port, root_pem_certificate = _get_connection_info()
+    main(address, port, root_pem_certificate)
