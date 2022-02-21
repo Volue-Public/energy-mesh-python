@@ -461,10 +461,7 @@ async def test_rollback():
 @pytest.mark.asyncio
 @pytest.mark.database
 @pytest.mark.parametrize('resolution, expected_number_of_points',
-    [(Timeseries.Resolution.MIN, 481),
-     (Timeseries.Resolution.MIN5, 97),
-     (Timeseries.Resolution.MIN10, 49),
-     (Timeseries.Resolution.MIN15, 33),
+    [(Timeseries.Resolution.MIN15, 33),
      (Timeseries.Resolution.HOUR, 9),
      (Timeseries.Resolution.DAY, 1),
      (Timeseries.Resolution.WEEK, 1),
