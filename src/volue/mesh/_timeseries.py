@@ -29,9 +29,6 @@ class Timeseries:
         WEEK        = 5
         MONTH       = 6
         YEAR        = 7
-        MIN         = 9
-        MIN5        = 10
-        MIN10       = 11
 
     class PointFlags(Enum):
         OK = 0
