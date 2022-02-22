@@ -252,7 +252,7 @@ Authentication parameters consist of:</p>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
 
     <span class="c1"># If Mesh gRPC server is running as a service user,</span>
@@ -274,7 +274,7 @@ Authentication parameters consist of:</p>
         <span class="s1">&#39;HOST/example.companyad.company.com&#39;</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
     <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
 
@@ -282,7 +282,7 @@ Authentication parameters consist of:</p>
     <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
     <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
 
@@ -296,12 +296,10 @@ Authentication parameters consist of:</p>
     <span class="c1"># and print the result. If your user name info is printed, you have successfully</span>
     <span class="c1"># communicated with the server.</span>
     <span class="c1">#</span>
-    <span class="c1"># This requires Mesh server to be running with enabled TLS and Kerberos options:</span>
-    <span class="c1"># GRPC.EnableTLS(true)</span>
-    <span class="c1"># GRPC.EnableKerberos(true)</span>
+    <span class="c1"># This requires Mesh server to be running with enabled TLS and Kerberos options.</span>
 
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
-<span class="c1">#    main(address, port, secure_connection)</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+<span class="c1">#    main(address, port, root_pem_certificate)</span>
 </pre></div>
 </div>
 </div>

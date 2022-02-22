@@ -211,8 +211,13 @@
     <span class="c1"># Change to fit your server</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
     <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span> <span class="o">=</span> <span class="mi">50051</span>
-    <span class="c1"># Note: authentication tests require secure connection</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">SECURE_CONNECTION</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># PEM-encoded root certificate(s) as a byte string.</span>
+    <span class="c1"># Note: Authentication tests require secure connection,</span>
+    <span class="c1">#       so providing root certificate is required for them.</span>
+    <span class="c1">#       Change to path with your certificate.</span>
+    <span class="c1"># with open(&#39;C:\\certs\\self_signed_certificate.crt&#39;, &#39;rb&#39;) as file:</span>
+    <span class="c1">#     sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE = file.read()</span>
+    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
     <span class="c1"># If Mesh gRPC server is running as a service user,</span>
     <span class="c1"># for example LocalSystem, NetworkService or a user account</span>

@@ -496,9 +496,20 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">secure_connection</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create an asynchronous connection for communication with Mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host: Mesh gRPC server host name.</span>
+<span class="sd">            port: Mesh gRPC server port.</span>
+<span class="sd">            root_pem_certificates: PEM-encoded root certificate(s) as a byte string.</span>
+<span class="sd">                If this argument is set then a secured connection will be created,</span>
+<span class="sd">                otherwise it will be an insecure connection.</span>
+<span class="sd">            authentication_parameters: Authentication parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An asynchronous connection object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="kc">None</span>
@@ -508,13 +519,13 @@
         <span class="c1"># - with TLS</span>
         <span class="c1"># - with TLS and Kerberos authentication</span>
         <span class="c1">#   (authentication requires TLS for encrypting auth tokens)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">secure_connection</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">root_pem_certificate</span><span class="p">:</span>
             <span class="c1"># insecure connection (without TLS)</span>
             <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span>
                 <span class="n">target</span><span class="o">=</span><span class="n">target</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">credentials</span><span class="p">:</span> <span class="n">Credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">()</span>
+            <span class="n">credentials</span><span class="p">:</span> <span class="n">Credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">(</span><span class="n">root_pem_certificate</span><span class="p">)</span>
 
             <span class="c1"># authentication requires TLS</span>
             <span class="k">if</span> <span class="n">authentication_parameters</span><span class="p">:</span>

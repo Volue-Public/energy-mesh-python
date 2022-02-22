@@ -178,7 +178,7 @@
     <span class="sd">&quot;&quot;&quot;Yields Authentication object. No clean-up is done (it requires Connection object)</span>
 <span class="sd">    Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server.&quot;&quot;&quot;</span>
     <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="si">}</span><span class="s1">&#39;</span>
-    <span class="n">credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">()</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
     <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
         <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Authentication</span><span class="p">(</span><span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">)</span></div>
@@ -191,7 +191,7 @@
         <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
     <span class="n">conn</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
                       <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
-                      <span class="kc">True</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
+                      <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
                       <span class="n">authentication_parameters</span><span class="p">)</span>
     <span class="k">yield</span> <span class="n">conn</span>
 
@@ -206,7 +206,7 @@
         <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
     <span class="n">aconn</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
-                            <span class="kc">True</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
                             <span class="n">authentication_parameters</span><span class="p">)</span>
     <span class="k">yield</span> <span class="n">aconn</span>
 
