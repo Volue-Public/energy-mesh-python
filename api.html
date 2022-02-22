@@ -182,7 +182,7 @@
 <p>Client library for Volue Energy’s Mesh software.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Authentication">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.43.1)"><span class="pre">grpc.ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.44.0)"><span class="pre">grpc.ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication" title="Permalink to this definition">¶</a></dt>
 <dd><p>Authentication services for authentication and authorization to Mesh server.
 The flow is as follows:</p>
 <ol class="arabic">
@@ -255,7 +255,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p></li>
 <li><p><strong>(</strong><strong>win</strong><strong>)</strong><strong>kerberos.GSSError</strong> – </p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – invalid token duration</p></li>
 </ul>
@@ -283,7 +283,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.close" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -293,7 +293,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.commit" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -314,7 +314,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -331,7 +331,7 @@ does not have the following fields set:
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – </p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – </p></li>
 </ul>
@@ -344,7 +344,7 @@ does not have the following fields set:
 <span class="sig-name descname"><span class="pre">rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.rollback" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -381,7 +381,7 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -398,7 +398,7 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.create_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -502,23 +502,8 @@ using either a path or a guid.
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN">
-<span class="sig-name descname"><span class="pre">MIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN10">
-<span class="sig-name descname"><span class="pre">MIN10</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">11</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN10" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN15">
 <span class="sig-name descname"><span class="pre">MIN15</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN15" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.Timeseries.Resolution.MIN5">
-<span class="sig-name descname"><span class="pre">MIN5</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#volue.mesh.Timeseries.Resolution.MIN5" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -583,7 +568,7 @@ Refer to documentation ‘Concepts’ for more information.</p>
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -594,7 +579,7 @@ Refer to documentation ‘Concepts’ for more information.</p>
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -616,7 +601,7 @@ Refer to documentation ‘Concepts’ for more information.</p>
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -634,7 +619,7 @@ does not have the following fields set:
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – </p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – </p></li>
 </ul>
@@ -648,7 +633,7 @@ does not have the following fields set:
 <dd><p>This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -699,7 +684,7 @@ using either a path or a guid.
 <span class="sig-name descname"><span class="pre">create_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.aio.Connection.Session" title="volue.mesh.aio._connection.Connection.Session"><span class="pre">volue.mesh.aio._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.create_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.create_session" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.43.1)"><strong>grpc.RpcError</strong></a> – </p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.44.0)"><strong>grpc.RpcError</strong></a> – </p>
 </dd>
 </dl>
 </dd></dl>
