@@ -8,8 +8,13 @@ def main():
     # Change to fit your server
     sc.DefaultServerConfig.ADDRESS = "localhost"
     sc.DefaultServerConfig.PORT = 50051
-    # Note: authentication tests require secure connection
-    sc.DefaultServerConfig.SECURE_CONNECTION = False
+    # PEM-encoded root certificate(s) as a byte string.
+    # Note: Authentication tests require secure connection,
+    #       so providing root certificate is required for them.
+    #       Change to path with your certificate.
+    # with open('C:\\certs\\self_signed_certificate.crt', 'rb') as file:
+    #     sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE = file.read()
+    sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE = ''
 
     # If Mesh gRPC server is running as a service user,
     # for example LocalSystem, NetworkService or a user account

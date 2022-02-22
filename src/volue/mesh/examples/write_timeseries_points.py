@@ -37,15 +37,15 @@ def write_timeseries_points(session: Connection.Session):
     session.rollback()
 
 
-def main(address, port, secure_connection):
+def main(address, port, root_pem_certificate):
     """Showing how to write timeseries points."""
-    connection = Connection(address, port, secure_connection)
+    connection = Connection(address, port, root_pem_certificate)
 
     with connection.create_session() as session:
         write_timeseries_points(session)
 
 
 if __name__ == "__main__":
-    address, port, secure_connection = _get_connection_info()
-    main(address, port, secure_connection)
+    address, port, root_pem_certificate = _get_connection_info()
+    main(address, port, root_pem_certificate)
 
