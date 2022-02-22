@@ -189,7 +189,7 @@
 <div class="section" id="virtual-environments">
 <h2>Virtual Environments<a class="headerlink" href="#virtual-environments" title="Permalink to this headline">¶</a></h2>
 <p>When working with multiple python projects they may depend on different python versions or versions of external libraries. For this purpose, the standard library comes with a concept called “Virtual Environments” to help maintain these separate versions.</p>
-<p>In-depth information can be found under Pythons official documentation for the <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">Virtual Environments and Packages</a>.</p>
+<p>In-depth information can be found under Python’s official documentation for the <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">Virtual Environments and Packages</a>.</p>
 <p>Here is a quick way:</p>
 <ol class="arabic">
 <li><p>Create a directory for your project:</p>
@@ -230,8 +230,9 @@ $ source my-venv/bin/activate (Linux, Mac)
 </pre></div>
 </div>
 <p>This library uses <a class="reference external" href="https://python-poetry.org/docs/">Poetry</a> for development, installation, and packaging. To
-work with the repository you should <a class="reference external" href="https://python-poetry.org/docs/#installation">install poetry</a>.</p>
-<p>To install all our development and runtime dependencies to a virtual environment run:</p>
+work with the repository you should <a class="reference external" href="https://github.com/python-poetry/poetry#installation">install poetry</a>.
+The steps below assume Poetry binary is added to your PATH.</p>
+<p>To install all our development and runtime dependencies to a virtual environment go to the Mesh Python SDK repository directory and run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">install</span>
 </pre></div>
 </div>
