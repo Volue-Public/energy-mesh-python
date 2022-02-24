@@ -1,70 +1,158 @@
 """"
 Mesh calculation history functions
 """
-
-from dataclasses import dataclass
 import datetime
-from enum import Enum
-import uuid
+from typing import List
 
 from volue.mesh import Timeseries
-from volue.mesh._common import read_proto_reply, to_proto_guid, to_protobuf_utcinterval
-from volue.mesh.calc.common import Timezone
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.calc.common import Calculation, Timezone
 
-class Function(Enum):
-    """
-    History function
-    """
-    FORECAST   = 'GetForecast'
-    AS_OF_TIME = 'GetTsAsOfTime'
 
-@dataclass
-class Parameters:
-    """
-    Timeseries history parameters
-    """
-    function: Function
-    available_at_timepoint: datetime
-    timezone: Timezone = None
+class _HistoryBase(Calculation):
 
-def prepare_request(session_id: uuid,
-                    start_time: datetime,
-                    end_time: datetime,
-                    relative_to: core_pb2.ObjectId,
-                    params: Parameters) -> core_pb2.CalculationRequest:
-    """
-    Validates timeseries history specific input parameters, computes calculation expression and
-    returns a gRPC calculation request to be sent to the Mesh server.
-    """
+    def _get_all_forecasts_expression(self,
+                                      search_query: str) -> str:
+        expression = f"## = @GetAllForecasts(@t("
+        if search_query:
+             expression = f"{expression}'{search_query}'"
+        expression = f"{expression}))\n"
+        return expression
 
-    # convert to format '20210917000000000'
-    # %f returns microseconds, we need milliseconds so remove last 3 digits
-    available_at_timepoint_str = params.available_at_timepoint.strftime("%Y%m%d%H%M%S%f")[:-3]
+    def _get_forecast_expression(self,
+                                 t0_min: datetime,
+                                 t0_max: datetime,
+                                 available_at_timepoint: datetime,
+                                 timezone: Timezone,
+                                 search_query: str) -> str:
 
-    expression = f"## = @{params.function.value}(@t(), '"
-    if params.timezone is not None:
-        expression = f"{expression}{params.timezone.name}"
-    expression = f"{expression}{available_at_timepoint_str}')\n"
+        if t0_min is None or t0_max is None:
+            raise TypeError("parameters t0_min and t0_max are required")
 
-    request = core_pb2.CalculationRequest(
-        session_id=to_proto_guid(session_id),
-        expression=expression,
-        interval=to_protobuf_utcinterval(start_time, end_time),
-        relative_to=relative_to
-        )
+        expression = f"## = @GetForecast(@t("
+        if search_query:
+             expression = f"{expression}'{search_query}'"
+        expression = f"{expression})"
 
-    return request
+        converted_t0_min = super().convert_datetime_to_mesh_calc_format(t0_min, timezone)
+        expression = f"{expression},'{converted_t0_min}'"
 
-def parse_response(response: core_pb2.CalculationResponse) -> Timeseries:
-    """
-    Parses a gRPC response from the Mesh server and validates the result.
+        converted_t0_max = super().convert_datetime_to_mesh_calc_format(t0_max, timezone)
+        expression = f"{expression},'{converted_t0_max}'"
 
-    Raises:
-        RuntimeError:
-    """
-    timeseries = read_proto_reply(response.timeseries_results)
-    if len(timeseries) != 1:
-        raise RuntimeError(
-            f"invalid history result, expected 1 timeseries, bot got {len(timeseries)}")
-    return timeseries[0]
+        if available_at_timepoint is not None:
+            converted_available_at_timepoint = super().convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+            expression = f"{expression},'{converted_available_at_timepoint}'"
+        expression = f"{expression})\n"
+
+        return expression
+
+    def _get_ts_as_of_time(self,
+                           available_at_timepoint: datetime,
+                           timezone: Timezone,
+                           search_query: str) -> str:
+        converted_available_at_timepoint = super().convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+        expression = f"## = @GetTsAsOfTime(@t("
+        if search_query:
+             expression = f"{expression}'{search_query}'"
+        expression = f"{expression}),'{converted_available_at_timepoint}')\n"
+        return expression
+
+    def _get_ts_historical_versions_expression(self,
+                                               max_number_of_versions_to_get: int,
+                                               search_query: str) -> str:
+        expression = f"## = @GetTsHistoricalVersions(@t("
+        if search_query:
+             expression = f"{expression}'{search_query}'"
+        expression = f"{expression}),{max_number_of_versions_to_get})\n"
+        return expression
+
+#TODO: abstract class with pure history functions for History and HistoryAsync to override?
+class History(_HistoryBase):
+
+    def get_all_forecasts(self,
+                          search_query: str) -> List[Timeseries]:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_all_forecasts_expression(search_query)
+        response = super().run(expression)
+        return super().parse_timeseries_list_response(response)
+
+    def get_forecast(self,
+                     t0_min: datetime,
+                     t0_max: datetime,
+                     available_at_timepoint: datetime,
+                     timezone: Timezone,
+                     search_query: str) -> Timeseries:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_forecast_expression( t0_min, t0_max, available_at_timepoint, timezone, search_query)
+        response = super().run(expression)
+        return super().parse_single_timeseries_response(response)
+
+    def get_ts_as_of_time(self,
+                          available_at_timepoint: datetime,
+                          timezone: Timezone = None,
+                          search_query: str = None) -> Timeseries:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_ts_as_of_time(available_at_timepoint, timezone, search_query)
+        response = super().run(expression)
+        return super().parse_single_timeseries_response(response)
+
+    def get_ts_historical_versions(self,
+                                   max_number_of_versions_to_get: int,
+                                   search_query: str = None) -> List[Timeseries]:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
+        response = super().run(expression)
+        return super().parse_timeseries_list_response(response)
+
+class HistoryAsync(_HistoryBase):
+
+    async def get_all_forecasts(self,
+                                search_query: str = None) -> List[Timeseries]:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_all_forecasts_expression(search_query)
+        response = await super().run_async(expression)
+        return super().parse_timeseries_list_response(response)
+
+    async def get_forecast(self,
+                           t0_min: datetime,
+                           t0_max: datetime,
+                           available_at_timepoint: datetime = None,
+                           timezone: Timezone = None,
+                           search_query: str = None) -> Timeseries:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_forecast_expression(t0_min, t0_max, available_at_timepoint, timezone, search_query)
+        response = await super().run_async(expression)
+        return super().parse_single_timeseries_response(response)
+
+    async def get_ts_as_of_time(self,
+                                available_at_timepoint: datetime,
+                                timezone: Timezone = None,
+                                search_query: str = None) -> Timeseries:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_ts_as_of_time( available_at_timepoint, timezone, search_query)
+        response = await super().run_async(expression)
+        return super().parse_single_timeseries_response(response)
+
+    async def get_ts_historical_versions(self,
+                                         max_number_of_versions_to_get: int,
+                                         search_query: str = None) -> List[Timeseries]:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
+        response = await super().run_async(expression)
+        return super().parse_timeseries_list_response(response)

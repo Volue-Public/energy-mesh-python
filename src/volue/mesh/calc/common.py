@@ -2,7 +2,14 @@
 Common classes/enums/etc for calculation functions
 """
 
+import datetime
 from enum import Enum
+from typing import List
+
+from volue.mesh import MeshObjectId, Timeseries
+from volue.mesh._common import read_proto_reply, to_proto_guid, to_protobuf_utcinterval
+from volue.mesh.proto.core.v1alpha import core_pb2
+
 
 class Timezone(Enum):
     """
@@ -11,3 +18,81 @@ class Timezone(Enum):
     LOCAL    = 0
     STANDARD = 1
     UTC      = 2
+
+
+class Calculation:
+
+    def __init__(self,
+                 session,
+                 relative_to: MeshObjectId,
+                 start_time: datetime,
+                 end_time: datetime):
+        self.session = session
+        self.relative_to: MeshObjectId = relative_to
+        self.start_time: datetime = start_time
+        self.end_time: datetime = end_time
+
+    @staticmethod
+    def convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = None) -> str:
+        """
+        Converts input datetime to format expected by Mesh calculator, e.g. '20210917000000000'
+        Optional timezone parameter if set will append proper prefix to the coverted datetime, e.g.:
+        'UTC20210917000000000'
+        """
+        converted_date_str = input.strftime("%Y%m%d%H%M%S%f")[:-3]
+        if timezone is not None:
+            converted_date_str = f"{timezone.name}{converted_date_str}"
+        return converted_date_str
+
+    @staticmethod
+    def parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> List[Timeseries]:
+        timeseries = read_proto_reply(response.timeseries_results)
+        return timeseries
+
+    @staticmethod
+    def parse_single_timeseries_response(response: core_pb2.CalculationResponse) -> Timeseries:
+        timeseries = read_proto_reply(response.timeseries_results)
+        if len(timeseries) != 1:
+            raise RuntimeError(
+                f"invalid calculation result, expected 1 timeseries, bot got {len(timeseries)}")
+        return timeseries[0]
+
+    def prepare_request(self, expression: str) -> core_pb2.CalculationRequest:
+        relative_to = core_pb2.ObjectId()  # convert to gRPC object
+        if self.relative_to.timskey is not None:
+            relative_to.timskey = self.relative_to.timskey
+        elif self.relative_to.uuid_id is not None:
+            relative_to.guid.CopyFrom(to_proto_guid(self.relative_to.uuid_id))
+        elif self.relative_to.full_name is not None:
+            relative_to.full_name = self.relative_to.full_name
+        else:
+            raise TypeError("need to specify either timskey, uuid_id or full_name of 'relative_to' object")
+
+        #TODO: potentially it is worth to check here if more than one property of 'self.relative_to' is set
+        # it might indicate a misuse
+
+        request = core_pb2.CalculationRequest(
+            session_id=to_proto_guid(self.session.session_id),
+            expression=expression,
+            interval=to_protobuf_utcinterval(self.start_time, self.end_time),
+            relative_to=relative_to
+        )
+        return request
+
+    async def run_async(self, expression: str):
+        from volue.mesh.aio import Connection as AsyncConnection
+        if not isinstance(self.session, AsyncConnection.Session):
+            raise TypeError('async connection session is required to run async calculations, but got sync session')
+
+        request = self.prepare_request(expression)
+        response = await self.session.mesh_service.RunCalculation(request)
+        return response
+
+    def run(self, expression: str):
+        from volue.mesh import Connection
+        if not isinstance(self.session, Connection.Session):
+            raise TypeError('sync connection session is required to run sync calculations, but got async session')
+
+        request = self.prepare_request(expression)
+        response = self.session.mesh_service.RunCalculation(request)
+        return response

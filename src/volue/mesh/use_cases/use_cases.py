@@ -8,10 +8,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_guid, to_protobuf_utcinterval, read_proto_reply
-from volue.mesh.calc import history as History
+from volue.mesh import Connection, MeshObjectId, Timeseries, from_proto_guid, to_proto_guid, to_protobuf_utcinterval, read_proto_reply
+#from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
+from volue.mesh.calc.history import History
+from volue.mesh.calc.misc import Misc
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 """
@@ -556,33 +558,23 @@ def use_case_8():
             use_case_name = "Use case 8"
             model = "MeshTEK"
             start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
-            search_query = "'*[.Type=Reservoir].ReservoirVolume_operative'"
-            expression = f"## = @SUM(@T({search_query}))\n"
+            search_query = "*[.Type=Reservoir].ReservoirVolume_operative"
             start = datetime(2021, 9, 5)
             end = datetime(2021, 9, 15)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
             # Summarize timeseries
-            start_object = core_pb2.ObjectId(
-                guid=to_proto_guid(uuid.UUID(start_object_guid))
-            )
-            request = core_pb2.CalculationRequest(
-                session_id=to_proto_guid(session.session_id),
-                expression=expression,
-                interval=to_protobuf_utcinterval(start, end),
-                relative_to=start_object
-            )
-            response = session.mesh_service.RunCalculation(request)
-            summarized_timeseries = read_proto_reply(response.timeseries_results)
+            misc = Misc(session, MeshObjectId(uuid_id=uuid.UUID(start_object_guid)), start_time=start, end_time=end)
+            summarized_timeseries = misc.sum(search_query)
 
             path_and_pandas_dataframe = []
-            pandas_dataframe = summarized_timeseries[0].arrow_table.to_pandas()
+            pandas_dataframe = summarized_timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(("Sum", pandas_dataframe))
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: summarize {expression}")
+                            f"{use_case_name}: summarize {misc._sum_expression(search_query)}")
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
 
         except grpc.RpcError as e:
@@ -606,6 +598,7 @@ def use_case_9():
             use_case_name = "Use case 9"
             model = "MeshTEK"
             object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'  # ReservoirVolume (TimeseriesCalculation)
+            search_query = ".ReservoirVolume"
             start = datetime(2021, 11, 15, tzinfo=timezone.utc)
             end = datetime(2022, 2, 15, tzinfo=timezone.utc)
             historical_date = datetime(2021, 9, 17)
@@ -628,17 +621,8 @@ def use_case_9():
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
-            # Get historical timeseries
-            history_parameters = History.Parameters(
-                function = History.Function.AS_OF_TIME,
-                available_at_timepoint = historical_date,
-                timezone = Timezone.UTC
-            )
-
-            historical_timeseries = session.read_timeseries_points(start_time=start,
-                                                                   end_time=end,
-                                                                   uuid_id=mesh_object.id,
-                                                                   history=history_parameters)
+            history = History(session, MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end)
+            historical_timeseries = history.get_ts_as_of_time(search_query, historical_date)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f'History on {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
@@ -662,7 +646,7 @@ def use_case_10():
     Mesh object:                6e602d3e-1fb6-49de-9c00-4cb78ace9459
     Time interval:              15.11.2021 - 15.02.2022
     Number of versions to get:  5
-    Calculation expression:     ## = @GetTsHistoricalVersions(@t('Production'),5)
+    Calculation expression:     ## = @GetTsHistoricalVersions(@t('.Production'),5)
 
     """
     connection = Connection(host=HOST, port=PORT, secure_connection=False)
@@ -674,8 +658,8 @@ def use_case_10():
             start = datetime(2021, 11, 15, tzinfo=timezone.utc)
             end = datetime(2022, 2, 15, tzinfo=timezone.utc)
             search_query = "'.Production'"
-            number_of_versions_to_get = 5
-            expression = f"## = @GetTsHistoricalVersions(@t({search_query}),{number_of_versions_to_get})\n"
+            max_number_of_versions_to_get = 5
+            expression = f"## = @GetTsHistoricalVersions(@t({search_query}),{max_number_of_versions_to_get})\n"
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
