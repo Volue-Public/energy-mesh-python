@@ -9,8 +9,8 @@ import pytest
 from volue.mesh import Connection, MeshObjectId, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.calc.history import HistoryAsync as History
-from volue.mesh.calc.misc import MiscAsync as Misc
+from volue.mesh.calc.history import History
+from volue.mesh.calc.misc import Misc
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
@@ -583,7 +583,7 @@ def test_read_timeseries_points_without_specifying_timeseries_should_throw():
 
 
 @pytest.mark.database
-async def test_history_get_all_forecasts():
+def test_history_get_all_forecasts():
     """
     Check that running history `get_all_forecasts` does not throw exception for any combination of parameters.
     """
@@ -613,7 +613,7 @@ async def test_history_get_all_forecasts():
      Timezone.LOCAL,
      Timezone.STANDARD,
      Timezone.UTC])
-async def test_history_get_forecasts(available_at_timepoint, timezone):
+def test_history_get_forecasts(available_at_timepoint, timezone):
     """
     Check that running history `get_forecasts` does not throw exception for any combination of parameters.
     """
@@ -642,7 +642,7 @@ async def test_history_get_forecasts(available_at_timepoint, timezone):
      Timezone.LOCAL,
      Timezone.STANDARD,
      Timezone.UTC])
-async def test_history_get_ts_as_of_time(timezone):
+def test_history_get_ts_as_of_time(timezone):
     """
     Check that running history `get_ts_as_of_time` does not throw exception for any combination of parameters.
     """
@@ -667,7 +667,7 @@ async def test_history_get_ts_as_of_time(timezone):
 @pytest.mark.database
 @pytest.mark.parametrize('max_number_of_versions_to_get',
     [1, 2, 5])
-async def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
+def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
     """
     Check that running history `get_ts_historical_versions` does not throw exception for any combination of parameters.
     """
@@ -689,7 +689,7 @@ async def test_history_get_ts_historical_versions(max_number_of_versions_to_get)
 
 
 @pytest.mark.database
-async def test_misc_sum():
+def test_misc_sum():
     """
     Check that running misc `sum` does not throw exception for any combination of parameters.
     """
