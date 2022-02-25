@@ -70,7 +70,7 @@ class _HistoryBase(Calculation):
 class History(_HistoryBase):
 
     def get_all_forecasts(self,
-                          search_query: str) -> List[Timeseries]:
+                          search_query: str = None) -> List[Timeseries]:
         """
         Empty `seach_query` means self-reference to `relative_to`.
         """
@@ -81,9 +81,9 @@ class History(_HistoryBase):
     def get_forecast(self,
                      t0_min: datetime,
                      t0_max: datetime,
-                     available_at_timepoint: datetime,
-                     timezone: Timezone,
-                     search_query: str) -> Timeseries:
+                     available_at_timepoint: datetime = None,
+                     timezone: Timezone = None,
+                     search_query: str = None) -> Timeseries:
         """
         Empty `seach_query` means self-reference to `relative_to`.
         """
