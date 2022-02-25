@@ -1,6 +1,8 @@
 """"
 Mesh calculation history functions
 """
+
+from abc import ABC, abstractmethod
 import datetime
 from typing import List
 
@@ -66,14 +68,54 @@ class _HistoryBase(Calculation):
         expression = f"{expression}),{max_number_of_versions_to_get})\n"
         return expression
 
-#TODO: abstract class with pure history functions for History and HistoryAsync to override?
-class History(_HistoryBase):
 
+    # Interface
+    # abstractmethod does not take into account if method is async or not
+
+    @abstractmethod
     def get_all_forecasts(self,
                           search_query: str = None) -> List[Timeseries]:
         """
         Empty `seach_query` means self-reference to `relative_to`.
         """
+        pass
+
+    @abstractmethod
+    def get_forecast(self,
+                     t0_min: datetime,
+                     t0_max: datetime,
+                     available_at_timepoint: datetime = None,
+                     timezone: Timezone = None,
+                     search_query: str = None) -> Timeseries:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        pass
+
+    @abstractmethod
+    def get_ts_as_of_time(self,
+                          available_at_timepoint: datetime,
+                          timezone: Timezone = None,
+                          search_query: str = None) -> Timeseries:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        pass
+
+    @abstractmethod
+    def get_ts_historical_versions(self,
+                                   max_number_of_versions_to_get: int,
+                                   search_query: str = None) -> List[Timeseries]:
+        """
+        Empty `seach_query` means self-reference to `relative_to`.
+        """
+        pass
+
+
+class History(_HistoryBase):
+
+    def get_all_forecasts(self,
+                          search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = super().run(expression)
         return super().parse_timeseries_list_response(response)
@@ -84,9 +126,6 @@ class History(_HistoryBase):
                      available_at_timepoint: datetime = None,
                      timezone: Timezone = None,
                      search_query: str = None) -> Timeseries:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_forecast_expression( t0_min, t0_max, available_at_timepoint, timezone, search_query)
         response = super().run(expression)
         return super().parse_single_timeseries_response(response)
@@ -95,9 +134,6 @@ class History(_HistoryBase):
                           available_at_timepoint: datetime,
                           timezone: Timezone = None,
                           search_query: str = None) -> Timeseries:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_ts_as_of_time(available_at_timepoint, timezone, search_query)
         response = super().run(expression)
         return super().parse_single_timeseries_response(response)
@@ -105,9 +141,6 @@ class History(_HistoryBase):
     def get_ts_historical_versions(self,
                                    max_number_of_versions_to_get: int,
                                    search_query: str = None) -> List[Timeseries]:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
         response = super().run(expression)
         return super().parse_timeseries_list_response(response)
@@ -116,9 +149,6 @@ class HistoryAsync(_HistoryBase):
 
     async def get_all_forecasts(self,
                                 search_query: str = None) -> List[Timeseries]:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_all_forecasts_expression(search_query)
         response = await super().run_async(expression)
         return super().parse_timeseries_list_response(response)
@@ -129,9 +159,6 @@ class HistoryAsync(_HistoryBase):
                            available_at_timepoint: datetime = None,
                            timezone: Timezone = None,
                            search_query: str = None) -> Timeseries:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_forecast_expression(t0_min, t0_max, available_at_timepoint, timezone, search_query)
         response = await super().run_async(expression)
         return super().parse_single_timeseries_response(response)
@@ -140,9 +167,6 @@ class HistoryAsync(_HistoryBase):
                                 available_at_timepoint: datetime,
                                 timezone: Timezone = None,
                                 search_query: str = None) -> Timeseries:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_ts_as_of_time( available_at_timepoint, timezone, search_query)
         response = await super().run_async(expression)
         return super().parse_single_timeseries_response(response)
@@ -150,9 +174,6 @@ class HistoryAsync(_HistoryBase):
     async def get_ts_historical_versions(self,
                                          max_number_of_versions_to_get: int,
                                          search_query: str = None) -> List[Timeseries]:
-        """
-        Empty `seach_query` means self-reference to `relative_to`.
-        """
         expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
         response = await super().run_async(expression)
         return super().parse_timeseries_list_response(response)
