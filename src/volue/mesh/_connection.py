@@ -1,6 +1,8 @@
 from volue.mesh._common import *
 from volue.mesh import Authentication, Credentials, Timeseries
 from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.history import HistoryFunctions
+from volue.mesh.calc.statistical import StatisticalFunctions
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from typing import Optional, List
 from google import protobuf
@@ -295,6 +297,12 @@ class Connection:
                 grpc.RpcError:
             """
             self.mesh_service.Commit(to_proto_guid(self.session_id))
+
+        def history_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> HistoryFunctions:
+            return HistoryFunctions(self, relative_to, start_time, end_time)
+
+        def statistical_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> StatisticalFunctions:
+            return StatisticalFunctions(self, relative_to, start_time, end_time)
 
     def __init__(self, host, port, secure_connection: bool,
                  authentication_parameters: Authentication.Parameters = None):

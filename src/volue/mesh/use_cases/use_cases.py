@@ -11,8 +11,6 @@ import pyarrow as pa
 from volue.mesh import Connection, MeshObjectId, Timeseries, from_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.calc.history import History
-from volue.mesh.calc.misc import Misc
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 """
@@ -564,8 +562,9 @@ def use_case_8():
             print("--------------------------------------------------------------")
 
             # Summarize timeseries
-            misc = Misc(session, MeshObjectId(uuid_id=uuid.UUID(start_object_guid)), start_time=start, end_time=end)
-            summarized_timeseries = misc.sum(search_query)
+            summarized_timeseries = session.statistical_functions(
+                MeshObjectId(uuid_id=uuid.UUID(start_object_guid)), start_time=start, end_time=end).sum(
+                    search_query)
 
             path_and_pandas_dataframe = []
             pandas_dataframe = summarized_timeseries.arrow_table.to_pandas()
@@ -573,7 +572,7 @@ def use_case_8():
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: summarize {misc._sum_expression(search_query)}")
+                            f"{use_case_name}: summarize @SUM(@T('*[.Type=Reservoir].ReservoirVolume_operative'))")
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
 
         except grpc.RpcError as e:
@@ -620,8 +619,9 @@ def use_case_9():
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
-            history = History(session, MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end)
-            historical_timeseries = history.get_ts_as_of_time(available_at_timepoint=historical_date, search_query=search_query)
+            historical_timeseries = session.history_functions(
+                MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_ts_as_of_time(
+                    available_at_timepoint=historical_date, search_query=search_query)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f'History on {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
@@ -677,10 +677,11 @@ def use_case_10():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            history = History(session, MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end)
-            timeseries_versions = history.get_ts_historical_versions(max_number_of_versions_to_get, search_query)
+            historical_timeseries = session.history_functions(
+                MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_ts_historical_versions(
+                    max_number_of_versions_to_get, search_query)
 
-            for number, timeserie in enumerate(timeseries_versions):
+            for number, timeserie in enumerate(historical_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
                 path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
 
@@ -733,10 +734,11 @@ def use_case_11():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            history = History(session, MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end)
-            timeseries_versions = history.get_all_forecasts(search_query)
+            historical_timeseries = session.history_functions(
+                MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_all_forecasts(
+                    search_query)
 
-            for number, timeserie in enumerate(timeseries_versions):
+            for number, timeserie in enumerate(historical_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
                 path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
 
@@ -791,8 +793,9 @@ def use_case_12():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            history = History(session, MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end)
-            historical_timeseries = history.get_forecast(t0_min, t0_max, available_at_timepoint=historical_date, search_query=search_query)
+            historical_timeseries = session.history_functions(
+                MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_forecast(
+                    t0_min, t0_max, available_at_timepoint=historical_date, search_query=search_query)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f'Forecast for {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))

@@ -10,8 +10,8 @@ from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import MeshObjectId, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.calc.history import HistoryAsync as History
-from volue.mesh.calc.misc import MiscAsync as Misc
+from volue.mesh.calc.history import HistoryFunctionsAsync as History
+from volue.mesh.calc.statistical import StatisticalFunctionsAsync as Misc
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
@@ -626,8 +626,8 @@ async def test_history_get_all_forecasts():
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            history = History(session, MeshObjectId(full_name=full_name), start_time, end_time)
-            reply_timeseries = await history.get_all_forecasts('')
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
             assert isinstance(reply_timeseries, List) and len(reply_timeseries) is 0
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
@@ -659,8 +659,9 @@ async def test_history_get_forecasts(available_at_timepoint, timezone):
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            history = History(session, MeshObjectId(full_name=full_name), start_time, end_time)
-            reply_timeseries = await history.get_forecast(t0_min, t0_max, available_at_timepoint, timezone)
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
+                    t0_min, t0_max, available_at_timepoint, timezone)
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
@@ -688,8 +689,9 @@ async def test_history_get_ts_as_of_time(timezone):
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            history = History(session, MeshObjectId(full_name=full_name), start_time, end_time)
-            reply_timeseries = await history.get_ts_as_of_time(available_at_timepoint, timezone)
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
+                    available_at_timepoint, timezone)
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
@@ -713,8 +715,9 @@ async def test_history_get_ts_historical_versions(max_number_of_versions_to_get)
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            history = History(session, MeshObjectId(full_name=full_name), start_time, end_time)
-            reply_timeseries = await history.get_ts_historical_versions(max_number_of_versions_to_get)
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
+                    max_number_of_versions_to_get)
             assert isinstance(reply_timeseries, List) and len(reply_timeseries) is 0
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
@@ -722,7 +725,7 @@ async def test_history_get_ts_historical_versions(max_number_of_versions_to_get)
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_misc_sum():
+async def test_statistical_sum():
     """
     Check that running misc `sum` does not throw exception for any combination of parameters.
     """
@@ -736,8 +739,8 @@ async def test_misc_sum():
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            misc = Misc(session, MeshObjectId(full_name=full_name), start_time, end_time)
-            reply_timeseries = await misc.sum()
+            reply_timeseries = await session.statistical_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).sum()
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")

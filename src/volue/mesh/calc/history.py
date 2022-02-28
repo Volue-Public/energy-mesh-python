@@ -10,7 +10,7 @@ from volue.mesh import Timeseries
 from volue.mesh.calc.common import Calculation, Timezone
 
 
-class _HistoryBase(Calculation):
+class _HistoryFunctionsBase(Calculation, ABC):
 
     def _get_all_forecasts_expression(self,
                                       search_query: str) -> str:
@@ -112,7 +112,7 @@ class _HistoryBase(Calculation):
         pass
 
 
-class History(_HistoryBase):
+class HistoryFunctions(_HistoryFunctionsBase):
 
     def get_all_forecasts(self,
                           search_query: str = None) -> List[Timeseries]:
@@ -145,7 +145,7 @@ class History(_HistoryBase):
         response = super().run(expression)
         return super().parse_timeseries_list_response(response)
 
-class HistoryAsync(_HistoryBase):
+class HistoryFunctionsAsync(_HistoryFunctionsBase):
 
     async def get_all_forecasts(self,
                                 search_query: str = None) -> List[Timeseries]:

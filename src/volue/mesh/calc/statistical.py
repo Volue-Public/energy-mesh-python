@@ -1,16 +1,14 @@
 """"
-Mesh calculation miscellaneous functions
+Mesh calculation statistical functions
 """
 
 from abc import ABC, abstractmethod
 
 from volue.mesh import Timeseries
-from volue.mesh._common import read_proto_reply
 from volue.mesh.calc.common import Calculation
-from volue.mesh.proto.core.v1alpha import core_pb2
 
 
-class __MiscBase(Calculation, ABC):
+class _StatisticalFunctionsBase(Calculation, ABC):
 
     def _sum_expression(self, search_query) -> str:
         return f"## = @SUM(@T('{search_query}'))\n"
@@ -26,14 +24,14 @@ class __MiscBase(Calculation, ABC):
         """
         pass
 
-class Misc(__MiscBase):
+class StatisticalFunctions(_StatisticalFunctionsBase):
     def sum(self, search_query = None) -> Timeseries:
         expression = super()._sum_expression(search_query)
         response = super().run(expression)
         return super().parse_single_timeseries_response(response)
 
 
-class MiscAsync(__MiscBase):
+class StatisticalFunctionsAsync(_StatisticalFunctionsBase):
     async def sum(self, search_query = None) -> Timeseries:
         expression = super()._sum_expression(search_query)
         response = await super().run_async(expression)
