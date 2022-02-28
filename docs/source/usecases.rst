@@ -47,7 +47,7 @@ The use cases
 
 Each use case is tailored to do a specific task on some data from a Mesh server.
 
-All use cases follows this pattern:
+All use cases follow this pattern:
 First the scenario is explained and needed information is given. Then a connection to the server is established and a new session is created. The information from the scenario is passed into requests that are sent to the server and their response is received. Finally the data is plotted to a figure, saved to file and/or printed to the command line.
 
 An example:
