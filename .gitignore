@@ -2,8 +2,10 @@ __pycache__/
 /poetry.lock
 /dist
 /docs/build
-/src/volue/mesh/proto/mesh_pb2.py
-/src/volue/mesh/proto/mesh_pb2_grpc.py
+/src/volue/mesh/proto/core/v1alpha/core_pb2.py
+/src/volue/mesh/proto/core/v1alpha/core_pb2_grpc.py
+/src/volue/mesh/proto/type/resources_pb2.py
+/src/volue/mesh/proto/type/resources_pb2_grpc.py
 .idea/
 .vscode/
 src/volue/mesh/tests/.pytest_cache

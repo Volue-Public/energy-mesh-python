@@ -7,7 +7,7 @@ from sys import platform
 import grpc
 from google import protobuf
 
-from volue.mesh.proto import mesh_pb2_grpc
+from volue.mesh.proto.core.v1alpha import core_pb2_grpc
 
 if platform.startswith('win32'):
     import winkerberos as kerberos
@@ -135,7 +135,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             target=target,
             credentials=channel_credentials
         )
-        self.mesh_service = mesh_pb2_grpc.MeshServiceStub(channel)
+        self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
 
         # get token in initialization to avoid spending
         # extra time while executing first call to Mesh

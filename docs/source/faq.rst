@@ -22,7 +22,7 @@ This error can have multiple causes. Some things to check are:
 #. Is the server **address** correct?
 #. Is the server **port** correct?
 #. Can you ping the host address?
-#. Is the server set up to run with gRPC enabled?
+#. Is the server set up to run with gRPC enabled? For this please contact Volue consultant.
 
 
 I get a SSL_ERROR_SSL. What am I doing wrong?
@@ -35,22 +35,6 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
 
-.. _Mesh server gRPC configuration:
-
-Mesh server gRPC configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-List of the Mesh server gRPC configuration options with its default values:
-::
-
-    Configuration.Network.GRPC.SetEnabled(false);
-    Configuration.Network.GRPC.EnableKerberos(false);
-    Configuration.Network.GRPC.EnableTLS(false);
-    Configuration.Network.GRPC.SetPort(50051);
-    Configuration.Network.GRPC.SetTlsCertificateFile('server_self_signed_crt.pem');
-    Configuration.Network.GRPC.SetTlsCertificateKeyFile('server_privatekey.pem');
-
-
 Other
 *****
 
@@ -60,6 +44,12 @@ I ran the tests and one or more of them failed.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you ran the :ref:`tests:Tests` and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in :ref:`tests:Run tests`.
+
+
+Mesh server gRPC configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Mesh server is configured by Volue consultants. In case of any configuration problems or change requests (like turning on authentication) please contact your Volue consultant.
 
 
 I think I found a bug or I have a feature request.

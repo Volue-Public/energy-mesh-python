@@ -1,14 +1,18 @@
 from datetime import datetime, timedelta, timezone
-import uuid
+import sys
 from typing import List, Any, Tuple
+import uuid
+
+import grpc
+import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
-import matplotlib.pyplot as plt
-import grpc
-import sys
+
 from volue.mesh import Connection, Timeseries, from_proto_guid, to_proto_guid, to_protobuf_utcinterval, read_proto_reply
+from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.calc.common import Timezone
+from volue.mesh.proto.core.v1alpha import core_pb2
 
 """
 These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
@@ -70,20 +74,20 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
             timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
 
 
-def get_resource_information(resource_object: mesh_pb2.TimeseriesEntry):
+def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
     """
     Create a printable message from a resource object
     """
     message = f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"\
               f"has guid: '{from_proto_guid(resource_object.id)}', \n"\
               f"path set in the resource silo is: '{resource_object.path}', \n"\
-              f"it's curve '{resource_object.curveType}', \n"\
-              f"resolution '{resource_object.delta_t}' \n"\
+              f"it's curve '{resource_object.curve_type}', \n"\
+              f"resolution '{resource_object.resolution}' \n"\
               f"and unit of measurement is: '{resource_object.unit_of_measurement}'\n"
     return message
 
 
-def get_mesh_object_information(mesh_object: mesh_pb2.TimeseriesAttribute):
+def get_mesh_object_information(mesh_object: core_pb2.TimeseriesAttribute):
     """
     Create a printable message from a mesh object
     """
@@ -125,7 +129,7 @@ def use_case_1():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 1"
@@ -173,7 +177,7 @@ def use_case_2():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 2"
@@ -199,7 +203,7 @@ def use_case_2():
                                                             uuid_id=mesh_object.id)
                 print(f"{number + 1}. \n"
                       f"-----\n"
-                      f"" + get_mesh_object_information(mesh_object) + f"")
+                      f"{get_mesh_object_information(mesh_object)}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
 
@@ -220,7 +224,7 @@ def use_case_3():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 3"
@@ -238,7 +242,7 @@ def use_case_3():
                 resource_object = session.get_timeseries_resource_info(timskey=timskey)
                 print(f"[{timskey}]: \n"
                       f"-----\n"
-                      f"" + get_resource_information(resource_object) + f"")
+                      f"{get_resource_information(resource_object)}")
 
                 # Retrieve the timeseries values in a given interval
                 timeseries = session.read_timeseries_points(start_time=start,
@@ -266,7 +270,7 @@ def use_case_4():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 4"
@@ -293,7 +297,7 @@ def use_case_4():
 
                 print(f"[{guid}]: \n"
                       f"-----\n"
-                      f"" + get_mesh_object_information(mesh_object) + f"")
+                      f"{get_mesh_object_information(mesh_object)}")
 
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
@@ -319,7 +323,7 @@ def use_case_5():
                         9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00]
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
 
     with connection.create_session() as session:
         try:
@@ -339,8 +343,7 @@ def use_case_5():
                                                                uuid_id=guid)
             print(f"Before writing points: \n"
                   f"-----\n"
-                  f"" + get_timeseries_information(timeseries=timeseries_before)
-                  )
+                  f"{get_timeseries_information(timeseries=timeseries_before)}")
 
             pandas_dataframe = timeseries_before.arrow_table.to_pandas()
             timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
@@ -378,8 +381,7 @@ def use_case_5():
                                                               uuid_id=guid)
             print(f"After writing points: \n"
                   f"-----\n"
-                  f"" + get_timeseries_information(timeseries=timeseries_after)
-                  )
+                  f"{get_timeseries_information(timeseries=timeseries_after)}")
 
             pandas_dataframe = timeseries_after.arrow_table.to_pandas()
             timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
@@ -421,7 +423,7 @@ def use_case_6():
     Time interval:              5.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 6"
@@ -443,7 +445,7 @@ def use_case_6():
                                                         uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"" + get_mesh_object_information(mesh_object) + f"")
+                  f"{get_mesh_object_information(mesh_object)}")
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
@@ -452,7 +454,7 @@ def use_case_6():
             from_breakpoint_to_hourly = Transform.Parameters(
                 resolution=Timeseries.Resolution.HOUR,
                 method=Transform.Method.AVGI,
-                timezone=Transform.Timezone.UTC
+                timezone=Timezone.UTC
             )
 
             timeserie_transformed = session.read_timeseries_points(start_time=start,
@@ -484,7 +486,7 @@ def use_case_7():
 
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 7"
@@ -506,7 +508,7 @@ def use_case_7():
                                                         uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"" + get_mesh_object_information(mesh_object) + f"")
+                  f"{get_mesh_object_information(mesh_object)}")
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
@@ -515,7 +517,7 @@ def use_case_7():
             from_breakpoint_to_hourly = Transform.Parameters(
                 resolution=Timeseries.Resolution.DAY,
                 method=Transform.Method.AVG,
-                timezone=Transform.Timezone.UTC
+                timezone=Timezone.UTC
             )
 
             timeserie_transformed = session.read_timeseries_points(start_time=start,
@@ -547,7 +549,7 @@ def use_case_8():
     Time interval:              5.9.2021 - 15.9.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 8"
@@ -561,10 +563,10 @@ def use_case_8():
             print("--------------------------------------------------------------")
 
             # Summarize timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(start_object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
@@ -597,17 +599,15 @@ def use_case_9():
     Transformation expression:  ## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 9"
             model = "MeshTEK"
-            object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'
+            object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'  # ReservoirVolume (TimeseriesCalculation)
             start = datetime(2021, 11, 15, tzinfo=timezone.utc)
             end = datetime(2022, 2, 15, tzinfo=timezone.utc)
-            search_query = "'.ReservoirVolume'"
-            historical_date = datetime(2021, 9, 17, tzinfo=timezone.utc).strftime("%Y%m%d%H%M%S%f")
-            expression = f"## = @GetTsAsOfTime(@t({search_query}),'{historical_date}')\n"
+            historical_date = datetime(2021, 9, 17)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -622,26 +622,25 @@ def use_case_9():
                                                         uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"" + get_mesh_object_information(mesh_object) + f"")
+                  f"{get_mesh_object_information(mesh_object)}")
 
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
-                guid=to_proto_guid(uuid.UUID(object_guid))
+            history_parameters = History.Parameters(
+                function = History.Function.AS_OF_TIME,
+                available_at_timepoint = historical_date,
+                timezone = Timezone.UTC
             )
-            request = mesh_pb2.CalculationRequest(
-                session_id=to_proto_guid(session.session_id),
-                expression=expression,
-                interval=to_protobuf_utcinterval(start, end),
-                relative_to=start_object
-            )
-            response = session.mesh_service.RunCalculation(request)
-            historical_timeseries = read_proto_reply(response.timeseries_results)
 
-            pandas_dataframe = historical_timeseries[0].arrow_table.to_pandas()
-            path_and_pandas_dataframe.append((f'History on {historical_date}', pandas_dataframe))
+            historical_timeseries = session.read_timeseries_points(start_time=start,
+                                                                   end_time=end,
+                                                                   uuid_id=mesh_object.id,
+                                                                   history=history_parameters)
+
+            pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
+            path_and_pandas_dataframe.append((f'History on {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe,
@@ -665,7 +664,7 @@ def use_case_10():
     Calculation expression:     ## = @GetTsHistoricalVersions(@t('Production'),5)
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 10"
@@ -690,15 +689,15 @@ def use_case_10():
                                                         uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"" + get_mesh_object_information(mesh_object) + f"")
+                  f"{get_mesh_object_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
@@ -732,7 +731,7 @@ def use_case_11():
     Calculation expression:     ## = @GetAllForecasts(@t('.Inflow'))
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 11"
@@ -756,15 +755,15 @@ def use_case_11():
                                                         uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"" + get_mesh_object_information(mesh_object) + f"")
+                  f"{get_mesh_object_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),
@@ -797,7 +796,7 @@ def use_case_12():
     Calculation expression:     ## = @GetForecast(@t('.Inflow'),'20210831000000000','20210902000000000','20210901090000000')
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 12"
@@ -824,15 +823,15 @@ def use_case_12():
                                                         uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"" + get_mesh_object_information(mesh_object) + f"")
+                  f"{get_mesh_object_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
-            start_object = mesh_pb2.ObjectId(
+            start_object = core_pb2.ObjectId(
                 guid=to_proto_guid(uuid.UUID(object_guid))
             )
-            request = mesh_pb2.CalculationRequest(
+            request = core_pb2.CalculationRequest(
                 session_id=to_proto_guid(session.session_id),
                 expression=expression,
                 interval=to_protobuf_utcinterval(start, end),

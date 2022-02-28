@@ -3,7 +3,7 @@ import uuid
 import pyarrow
 import pyarrow as pa
 from datetime import datetime
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.type import resources_pb2
 from enum import Enum
 
 
@@ -21,16 +21,14 @@ class Timeseries:
         STAIRCASE = 3
 
     class Resolution(Enum):
-        BREAKPOINT = 0
-        MIN15      = 1
-        HOUR       = 2
-        DAY        = 3
-        WEEK       = 4
-        MONTH      = 5
-        YEAR       = 6
-        MIN        = 7
-        MIN5       = 8
-        MIN10      = 9
+        UNSPECIFIED = 0
+        BREAKPOINT  = 1
+        MIN15       = 2
+        HOUR        = 3
+        DAY         = 4
+        WEEK        = 5
+        MONTH       = 6
+        YEAR        = 7
 
     class PointFlags(Enum):
         OK = 0
@@ -54,7 +52,7 @@ class Timeseries:
     def __init__(self,
                  table: pyarrow.Table = None,
                  # TODO change this to: Timeseries.Resolution
-                 resolution: mesh_pb2.Resolution = None,
+                 resolution: resources_pb2.Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,
                  timskey: int = None,

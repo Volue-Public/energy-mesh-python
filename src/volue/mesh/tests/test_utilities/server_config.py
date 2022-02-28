@@ -9,8 +9,8 @@ from dataclasses import dataclass
 class ServerConfig:
     ADDRESS: str = 'localhost'
     PORT: int = 50051
-    SECURE_CONNECTION: bool = False
+    # PEM-encoded root certificate(s) as a byte string.
+    ROOT_PEM_CERTIFICATE: str = ''
     KERBEROS_SERVICE_PRINCIPAL_NAME: str = 'HOST/example.companyad.company.com'
-
 
 DefaultServerConfig: ServerConfig = ServerConfig()

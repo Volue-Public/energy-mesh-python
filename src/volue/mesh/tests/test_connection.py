@@ -9,7 +9,8 @@ from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto.type import resources_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2
 
@@ -19,7 +20,7 @@ def test_read_timeseries_points():
     """Check that timeseries points can be read"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     with connection.create_session() as session:
         timeseries, start_time, end_time, _, full_name = get_timeseries_2()
         try:
@@ -55,7 +56,7 @@ def test_write_timeseries_points():
     """Check that timeseries points can be written"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     with connection.create_session() as session:
         ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_2()
         timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, full_name=full_name)
@@ -90,7 +91,7 @@ def test_get_timeseries():
 
     timeseries, full_name = get_timeseries_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         try:
@@ -104,8 +105,8 @@ def test_get_timeseries():
                 assert timeseries_info.timeseries_key == timeseries.timeseries_key
                 assert timeseries_info.path == timeseries.path
                 assert timeseries_info.temporary == timeseries.temporary
-                assert timeseries_info.curveType == to_proto_curve_type(timeseries.curve)
-                assert timeseries_info.delta_t.type == timeseries.resolution.value
+                assert timeseries_info.curve_type == to_proto_curve_type(timeseries.curve)
+                assert timeseries_info.resolution.type == timeseries.resolution.value
                 assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
 
         except grpc.RpcError as e:
@@ -117,7 +118,7 @@ def test_update_timeseries_entry():
     """Check that timeseries entry data can be updated"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     new_path = "/test"
     new_curve_type = "curvy"  # -> UNKNOWN
@@ -149,7 +150,7 @@ def test_update_timeseries_entry():
                 if "new_path" in test_case:
                     assert timeseries_info.path == new_path
                 if "new_curve_type" in test_case:
-                    assert timeseries_info.curveType.type == mesh_pb2.Curve.UNKNOWN
+                    assert timeseries_info.curve_type.type == resources_pb2.Curve.UNKNOWN
                 if "new_unit_of_measurement" in test_case:
                     assert timeseries_info.unit_of_measurement == new_unit_of_measurement
 
@@ -164,7 +165,7 @@ def test_read_timeseries_attribute():
     """Check that timeseries attribute data can be retrieved"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         try:
@@ -213,8 +214,8 @@ def test_read_timeseries_attribute():
                 assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
                 assert reply_timeseries.path == expected_timeseries.path
                 assert reply_timeseries.temporary == expected_timeseries.temporary
-                assert reply_timeseries.curveType.type == expected_timeseries.curve.value
-                assert reply_timeseries.delta_t.type == expected_timeseries.resolution.value
+                assert reply_timeseries.curve_type.type == expected_timeseries.curve.value
+                assert reply_timeseries.resolution.type == expected_timeseries.resolution.value
                 assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not get timeseries attribute {e}")
@@ -225,7 +226,7 @@ def test_update_timeseries_attribute_with_timeseriescalculation():
     """Check that timeseries attribute data with a calculation can be updated"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute, full_name = get_timeseries_attribute_1()
     new_local_expression = "something"
@@ -260,13 +261,13 @@ def test_update_timeseries_attribute_with_timeseriesreference():
     """Check that timeseries attribute data with a reference can be updated"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute, full_name = get_timeseries_attribute_2()
 
     new_timeseries, _ = get_timeseries_1()
     new_timeseries_entry = new_timeseries.entries[0]
-    new_timeseries_entry_id = mesh_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
+    new_timeseries_entry_id = core_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
 
     with connection.create_session() as session:
         try:
@@ -300,7 +301,7 @@ def test_search_timeseries_attribute():
     """Check that timeseries attribute data can be searched for"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     ts_attribute, full_name = get_timeseries_attribute_2()
 
@@ -335,8 +336,8 @@ def test_search_timeseries_attribute():
                 assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
                 assert reply_timeseries.path == expected_timeseries.path
                 assert reply_timeseries.temporary == expected_timeseries.temporary
-                assert reply_timeseries.curveType == to_proto_curve_type(expected_timeseries.curve)
-                assert reply_timeseries.delta_t.type == expected_timeseries.resolution.value
+                assert reply_timeseries.curve_type == to_proto_curve_type(expected_timeseries.curve)
+                assert reply_timeseries.resolution.type == expected_timeseries.resolution.value
                 assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
         except grpc.RpcError as e:
             pytest.fail(f"Could not update timeseries attribute: {e}")
@@ -346,7 +347,7 @@ def test_search_timeseries_attribute():
 def test_rollback():
     """Check that rollback discards changes made in the current session."""
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         try:
@@ -379,7 +380,7 @@ def test_rollback():
 def test_commit():
     """Check that commit keeps changes between sessions"""
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute, full_name = get_timeseries_attribute_1()
     new_local_expression = "something"
@@ -434,10 +435,7 @@ def test_commit():
 
 @pytest.mark.database
 @pytest.mark.parametrize('resolution, expected_number_of_points',
-    [(Timeseries.Resolution.MIN, 481),
-     (Timeseries.Resolution.MIN5, 97),
-     (Timeseries.Resolution.MIN10, 49),
-     (Timeseries.Resolution.MIN15, 33),
+    [(Timeseries.Resolution.MIN15, 33),
      (Timeseries.Resolution.HOUR, 9),
      (Timeseries.Resolution.DAY, 1),
      (Timeseries.Resolution.WEEK, 1),
@@ -463,7 +461,7 @@ def test_read_transformed_timeseries_points(
     """Check that transformed timeseries points can be read"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
@@ -535,7 +533,7 @@ def test_read_transformed_timeseries_points_with_uuid():
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         # set interval where there are no NaNs to comfortably use `assert ==``
@@ -571,7 +569,7 @@ def test_read_timeseries_points_without_specifying_timeseries_should_throw():
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
@@ -589,7 +587,7 @@ def test_read_timeseries_points_with_specifying_both_history_and_transform_param
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
@@ -627,7 +625,7 @@ def test_read_history_timeseries_points(function, timezone):
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)

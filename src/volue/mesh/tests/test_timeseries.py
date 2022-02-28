@@ -1,11 +1,12 @@
-from volue.mesh._common import *
-from volue.mesh import Timeseries, to_proto_guid
-from volue.mesh.proto import mesh_pb2
-from volue.mesh.proto.mesh_pb2 import WriteTimeseriesRequest
 from datetime import datetime
-import pyarrow as pa
 import uuid
+
+import pyarrow as pa
 import pytest
+
+from volue.mesh import Timeseries, to_proto_guid, to_proto_object_id, to_proto_timeseries
+from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto.type import resources_pb2
 
 
 @pytest.mark.unittest
@@ -39,7 +40,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
     original_timeseries = Timeseries(table=table,
-                                     resolution=mesh_pb2.Resolution(type=mesh_pb2.Resolution.HOUR),
+                                     resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
                                      start_time=start, end_time=end,
                                      timskey=201503,
                                      uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
@@ -48,7 +49,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     original_proto_timeserie = to_proto_timeseries(original_timeseries)
     session_id_original = to_proto_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
-    original_reply = WriteTimeseriesRequest(
+    original_reply = core_pb2.WriteTimeseriesRequest(
         session_id=session_id_original,
         object_id=to_proto_object_id(original_timeseries),
         timeseries=original_proto_timeserie
@@ -57,7 +58,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     binary_data = original_reply.SerializeToString()
     assert binary_data is not None
 
-    reply = WriteTimeseriesRequest()
+    reply = core_pb2.WriteTimeseriesRequest()
     reply.ParseFromString(binary_data)
     assert original_reply == reply
     assert session_id_original == reply.session_id

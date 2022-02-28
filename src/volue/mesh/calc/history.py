@@ -10,7 +10,7 @@ import uuid
 from volue.mesh import Timeseries
 from volue.mesh._common import read_proto_reply, to_proto_guid, to_protobuf_utcinterval
 from volue.mesh.calc.common import Timezone
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.core.v1alpha import core_pb2
 
 class Function(Enum):
     """
@@ -31,8 +31,8 @@ class Parameters:
 def prepare_request(session_id: uuid,
                     start_time: datetime,
                     end_time: datetime,
-                    relative_to: mesh_pb2.ObjectId,
-                    params: Parameters) -> mesh_pb2.CalculationRequest:
+                    relative_to: core_pb2.ObjectId,
+                    params: Parameters) -> core_pb2.CalculationRequest:
     """
     Validates timeseries history specific input parameters, computes calculation expression and
     returns a gRPC calculation request to be sent to the Mesh server.
@@ -47,7 +47,7 @@ def prepare_request(session_id: uuid,
         expression = f"{expression}{params.timezone.name}"
     expression = f"{expression}{available_at_timepoint_str}')\n"
 
-    request = mesh_pb2.CalculationRequest(
+    request = core_pb2.CalculationRequest(
         session_id=to_proto_guid(session_id),
         expression=expression,
         interval=to_protobuf_utcinterval(start_time, end_time),
@@ -56,7 +56,7 @@ def prepare_request(session_id: uuid,
 
     return request
 
-def parse_response(response: mesh_pb2.CalculationResponse) -> Timeseries:
+def parse_response(response: core_pb2.CalculationResponse) -> Timeseries:
     """
     Parses a gRPC response from the Mesh server and validates the result.
 

@@ -9,9 +9,6 @@ Prerequisites quickstart
 - Supported Python version [3.7.1, 3.8 or 3.9].
 - Running Volue Mesh server with gRPC enabled (either locally or on a different machine within your network).
 
-See :ref:`Mesh server gRPC configuration` for all Mesh gRPC configuration options.
-
-
 Installation quickstart
 **************************
 
@@ -34,6 +31,7 @@ Name this file quickstart.py.
 .. warning::
    It assumes Volue Mesh server is running locally with gRPC enabled on default port *50051*.
    If you are using a remote server or a non-default port for gRPC communication please change the *address* and *port* variables.
+   In case of problems or questions regarding Mesh server configuration please contact Volue consultant.
 
 
 Now that you made your first script to contact the Volue Mesh server, we have to run the script.::

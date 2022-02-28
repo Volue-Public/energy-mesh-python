@@ -4,7 +4,7 @@ import pytest
 
 from volue.mesh.calc import history as History
 from volue.mesh.calc.common import Timezone
-from volue.mesh.proto import mesh_pb2
+from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.tests.test_utilities.utilities import  get_timeseries_attribute_2
 
 
@@ -13,7 +13,7 @@ def test_parsing_invalid_history_result_should_throw():
     """
     Check that expected exception is thrown when history result is not a single timeseries.
     """
-    response = mesh_pb2.CalculationResponse()
+    response = core_pb2.CalculationResponse()
     # no timeseries at all
     with pytest.raises(RuntimeError, match=".*invalid history result*"):
         History.parse_response(response)
@@ -44,7 +44,7 @@ def test_preparing_history_request_with_timezone_should_add_this_parameter_to_ca
 
     _, full_name = get_timeseries_attribute_2()
 
-    timeseries_attribute = mesh_pb2.ObjectId()
+    timeseries_attribute = core_pb2.ObjectId()
     timeseries_attribute.full_name = full_name
 
     # first check that if `timezone` is not provided then
@@ -80,7 +80,7 @@ def test_preparing_history_request_converts_datetime_to_correct_format_in_calcul
 
     _, full_name = get_timeseries_attribute_2()
 
-    timeseries_attribute = mesh_pb2.ObjectId()
+    timeseries_attribute = core_pb2.ObjectId()
     timeseries_attribute.full_name = full_name
 
     request = History.prepare_request(
