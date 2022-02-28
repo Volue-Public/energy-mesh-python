@@ -40,7 +40,7 @@ The first section of the file exposes some configuration options. Edit these to 
 Helper functions
 ~~~~~~~~~~~~~~~~~~~~
 
-The helper functions gets information about Mesh Python objects, plots or saves timeseries to file.
+The helper functions get information about Mesh Python objects, plot and save timeseries to file.
 
 The use cases
 ~~~~~~~~~~~~~~
