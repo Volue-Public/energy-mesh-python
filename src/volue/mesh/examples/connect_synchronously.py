@@ -17,16 +17,16 @@ def start_and_end_session(session):
     session.close()
 
 
-def main(address, port, secure_connection):
+def main(address, port, root_pem_certificate):
     """Showing how to connect to a server and run two tasks sequentially."""
-    connection = Connection(address, port, secure_connection)
+    connection = Connection(address, port, root_pem_certificate)
     get_version(connection)
     start_and_end_session(connection.create_session())
 
 
 if __name__ == "__main__":
-    address, port, secure_connection = _get_connection_info()
-    main(address, port, secure_connection)
+    address, port, root_pem_certificate = _get_connection_info()
+    main(address, port, root_pem_certificate)
     print("Done")
 
 # Outputs:

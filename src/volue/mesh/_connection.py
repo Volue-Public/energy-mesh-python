@@ -304,9 +304,20 @@ class Connection:
         def statistical_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> StatisticalFunctions:
             return StatisticalFunctions(self, relative_to, start_time, end_time)
 
-    def __init__(self, host, port, secure_connection: bool,
+    def __init__(self, host, port, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):
-        """
+        """Create a synchronous connection for communication with Mesh server.
+
+        Args:
+            host: Mesh gRPC server host name.
+            port: Mesh gRPC server port.
+            root_pem_certificates: PEM-encoded root certificate(s) as a byte string.
+                If this argument is set then a secured connection will be created,
+                otherwise it will be an insecure connection.
+            authentication_parameters: Authentication parameters.
+
+        Returns:
+            A synchronous connection object.
         """
         target = f'{host}:{port}'
         self.auth_metadata_plugin = None
@@ -316,13 +327,13 @@ class Connection:
         # - with TLS
         # - with TLS and Kerberos authentication
         #   (authentication requires TLS for encrypting auth tokens)
-        if not secure_connection:
+        if not root_pem_certificate:
             # insecure connection (without TLS)
             channel = grpc.insecure_channel(
                 target=target
             )
         else:
-            credentials: Credentials = Credentials()
+            credentials: Credentials = Credentials(root_pem_certificate)
 
             # authentication requires TLS
             if authentication_parameters:

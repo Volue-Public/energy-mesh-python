@@ -18,8 +18,8 @@ These use cases were designed to work with a real customer database (TEKICC_ST@M
 """
 
 # Ip address for the mesh server
-HOST = "localhost"
-# HOST = "tdtrhsmg125b2"
+#HOST = "localhost"
+HOST = "tdtrhsmg125ha2"
 # Mesh server port for gRPC communication
 PORT = 50051
 # Use matplotlib to visualize results
@@ -129,7 +129,7 @@ def use_case_1():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 1"
@@ -177,7 +177,7 @@ def use_case_2():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 2"
@@ -224,7 +224,7 @@ def use_case_3():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 3"
@@ -270,7 +270,7 @@ def use_case_4():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 4"
@@ -323,7 +323,7 @@ def use_case_5():
                         9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00]
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
 
     with connection.create_session() as session:
         try:
@@ -423,7 +423,7 @@ def use_case_6():
     Time interval:              5.9.2021 - 1.10.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 6"
@@ -486,7 +486,7 @@ def use_case_7():
 
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 7"
@@ -549,7 +549,7 @@ def use_case_8():
     Time interval:              5.9.2021 - 15.9.2021
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 8"
@@ -590,7 +590,7 @@ def use_case_9():
     Calculation expression:     ## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 9"
@@ -648,7 +648,7 @@ def use_case_10():
     Calculation expression:     ## = @GetTsHistoricalVersions(@t('.Production'),5)
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 10"
@@ -706,7 +706,7 @@ def use_case_11():
     Calculation expression:     ## = @GetAllForecasts(@t('.Inflow'))
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 11"
@@ -762,7 +762,7 @@ def use_case_12():
     Calculation expression:     ## = @GetForecast(@t('.Inflow'),'20210831000000000','20210902000000000','20210901090000000')
 
     """
-    connection = Connection(host=HOST, port=PORT, secure_connection=False)
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 12"

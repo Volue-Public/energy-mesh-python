@@ -20,7 +20,7 @@ def test_run_example_scripts():
     examples = os.path.join(os.path.dirname(volue.mesh.__file__), 'examples')
     os.chdir(examples)
     for file in glob.glob("*.py"):
-        run_example_script(file, sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.SECURE_CONNECTION)
+        run_example_script(file, sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
 
 if __name__ == '__main__':
