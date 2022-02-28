@@ -7,7 +7,7 @@ The Mesh Python SDK supports user authentication/authorization feature. Because 
    Authentication is done using the Kerberos protocol towards Active Directory. Client and server must be in *line of sight* of the Key Distribution Center (KDC).
 
 If the Mesh server is configured to use authentication then only authenticated users may work with Mesh. Authenticated users obtain Mesh access tokens that are used for each call to Mesh server to prove the user's identity.
-Only two methods can be called by without authentication:
+Only two methods can be called without access token:
 
 * AuthenticateKerberos - used for getting authorization token
 * GetVersion - for getting Mesh server version
