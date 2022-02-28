@@ -23,7 +23,7 @@ Get the use cases
 #. Download :download:`use_cases.py <../../src/volue/mesh/use_cases/use_cases.py>`
 #. Move the file into your project.
 
-Configurate
+Configure
 *************
 
 The use case contains a configuration section, some helper functions and the use cases.
