@@ -26,7 +26,7 @@ Get the use cases
 Configure
 *************
 
-The use case contains a configuration section, some helper functions and the use cases.
+The `use_cases.py` file contains a configuration section, some helper functions and the use cases.
 
 Preferences
 ~~~~~~~~~~~~~~
