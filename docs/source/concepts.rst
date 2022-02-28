@@ -46,7 +46,7 @@ Transformation
 History
 ~~~~~~~~~~~~~~
 
-Using :ref:`volue.mesh`.Timeseries in a more complete example:
+Using :ref:`api:volue.mesh`.Timeseries in a more complete example:
 
 .. literalinclude:: /../../src/volue/mesh/examples/timeseries_operations.py
    :language: python
