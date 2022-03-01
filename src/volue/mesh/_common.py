@@ -1,4 +1,5 @@
 import uuid
+from dataclasses import dataclass
 import datetime
 from typing import List
 
@@ -8,6 +9,15 @@ from volue.mesh import Timeseries
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 from google.protobuf import timestamp_pb2
+
+
+@dataclass
+class MeshObjectId:
+    """
+    """
+    timskey: int = None
+    uuid_id: uuid.UUID = None
+    full_name: str = None
 
 
 def to_proto_guid(uuid: uuid.UUID) -> resources_pb2.Guid:

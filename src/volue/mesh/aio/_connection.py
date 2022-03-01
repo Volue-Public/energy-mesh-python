@@ -1,7 +1,8 @@
 from volue.mesh._common import *
 from volue.mesh import Authentication, Credentials, Timeseries
-from volue.mesh.calc import history as History
 from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.history import HistoryFunctionsAsync
+from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from google import protobuf
 from typing import Optional, List
@@ -74,13 +75,12 @@ class Connection:
                                          timskey: int = None,
                                          uuid_id: uuid.UUID = None,
                                          full_name: str = None,
-                                         history: History.Parameters = None,
                                          transformation: Transform.Parameters = None) -> Timeseries:
             """
             |coro|
 
             Reads timeseries points for the specified timeseries in the given interval.
-            Transformed timeseries (returned when a `transformation` or `history` argument is provided)
+            Transformed timeseries (returned when a `transformation` argument is provided)
             does not have the following fields set:
             - timskey
             - uuid_id
@@ -100,15 +100,6 @@ class Connection:
                 object_id.full_name = full_name
             else:
                 raise TypeError("need to specify either timskey, uuid_id or full_name")
-
-            if history is not None and transformation is not None:
-                raise TypeError("you cannot specify 'history' and 'transformation' at the same time")
-
-            if history is not None:
-                request = History.prepare_request(
-                    self.session_id, start_time, end_time, object_id, history)
-                response = await self.mesh_service.RunCalculation(request)
-                return History.parse_response(response)
 
             if transformation is not None:
                 request = Transform.prepare_request(
@@ -327,6 +318,12 @@ class Connection:
                 grpc.RpcError:
             """
             await self.mesh_service.Commit(to_proto_guid(self.session_id))
+
+        def history_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> HistoryFunctionsAsync:
+            return HistoryFunctionsAsync(self, relative_to, start_time, end_time)
+
+        def statistical_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> StatisticalFunctionsAsync:
+            return StatisticalFunctionsAsync(self, relative_to, start_time, end_time)
 
     def __init__(self, host, port, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):

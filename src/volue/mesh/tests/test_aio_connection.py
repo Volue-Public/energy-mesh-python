@@ -1,14 +1,17 @@
 from datetime import datetime
 import math
+from typing import List
 import uuid
+
 import grpc
 import pytest
 
 from volue.mesh.aio import Connection as AsyncConnection
-from volue.mesh import Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
-from volue.mesh.calc import history as History
+from volue.mesh import MeshObjectId, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
+from volue.mesh.calc.history import HistoryFunctionsAsync as History
+from volue.mesh.calc.statistical import StatisticalFunctionsAsync as Misc
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
@@ -609,10 +612,9 @@ async def test_read_timeseries_points_without_specifying_timeseries_should_throw
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_read_timeseries_points_with_specifying_both_history_and_transform_parameters_should_throw():
+async def test_history_get_all_forecasts():
     """
-    Check that expected exception is thrown when trying to
-    read timeseries with specifying both transformation and history parameters.
+    Check that running history `get_all_forecasts` does not throw exception for any combination of parameters.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -621,37 +623,60 @@ async def test_read_timeseries_points_with_specifying_both_history_and_transform
     async with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        full_name = 'somename'
+        _, full_name = get_timeseries_attribute_2()
 
-        function = History.Function.AS_OF_TIME
-        available_at_timepoint = datetime(2016, 1, 5, 17, 48, 11, 123456)
-        history_parameters = History.Parameters(function, available_at_timepoint)
-
-        resolution = Timeseries.Resolution.MIN15
-        method = Transform.Method.SUM
-        transform_parameters = Transform.Parameters(resolution, method)
-
-        with pytest.raises(TypeError, match=".*you cannot specify 'history' and 'transformation' at the same time.*"):
-            await session.read_timeseries_points(
-                start_time, end_time,
-                full_name=full_name,
-                history=history_parameters,
-                transformation=transform_parameters)
+        try:
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
+            assert isinstance(reply_timeseries, List) and len(reply_timeseries) is 0
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
 
 
 @pytest.mark.asyncio
 @pytest.mark.database
-@pytest.mark.parametrize('function',
-    [History.Function.AS_OF_TIME,
-     History.Function.FORECAST])
+@pytest.mark.parametrize('available_at_timepoint',
+    [None,
+     datetime(2016, 1, 5, 17, 48, 11, 123456)])
 @pytest.mark.parametrize('timezone',
     [None,
      Timezone.LOCAL,
      Timezone.STANDARD,
      Timezone.UTC])
-async def test_read_history_timeseries_points(function, timezone):
+async def test_history_get_forecasts(available_at_timepoint, timezone):
     """
-    Check that reading timeseries history does not throw exception for any combination of parameters.
+    Check that running history `get_forecasts` does not throw exception for any combination of parameters.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        t0_min = datetime(2016, 1, 2)
+        t0_max = datetime(2016, 1, 8)
+        _, full_name = get_timeseries_attribute_2()
+
+        try:
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
+                    t0_min, t0_max, available_at_timepoint, timezone)
+            assert reply_timeseries.is_calculation_expression_result
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+@pytest.mark.parametrize('timezone',
+    [None,
+     Timezone.LOCAL,
+     Timezone.STANDARD,
+     Timezone.UTC])
+async def test_history_get_ts_as_of_time(timezone):
+    """
+    Check that running history `get_ts_as_of_time` does not throw exception for any combination of parameters.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -661,13 +686,61 @@ async def test_read_history_timeseries_points(function, timezone):
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         available_at_timepoint = datetime(2016, 1, 5, 17, 48, 11, 123456)
-        history_parameters = History.Parameters(function, available_at_timepoint, timezone)
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            reply_timeseries = await session.read_timeseries_points(
-                start_time, end_time, full_name=full_name, history=history_parameters)
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
+                    available_at_timepoint, timezone)
+            assert reply_timeseries.is_calculation_expression_result
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
 
+
+@pytest.mark.asyncio
+@pytest.mark.database
+@pytest.mark.parametrize('max_number_of_versions_to_get',
+    [1, 2, 5])
+async def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
+    """
+    Check that running history `get_ts_historical_versions` does not throw exception for any combination of parameters.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        _, full_name = get_timeseries_attribute_2()
+
+        try:
+            reply_timeseries = await session.history_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
+                    max_number_of_versions_to_get)
+            assert isinstance(reply_timeseries, List) and len(reply_timeseries) is 0
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_statistical_sum():
+    """
+    Check that running misc `sum` does not throw exception for any combination of parameters.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.SECURE_CONNECTION)
+
+    async with connection.create_session() as session:
+        start_time = datetime(2016, 1, 1, 1, 0, 0)
+        end_time = datetime(2016, 1, 1, 9, 0, 0)
+        _, full_name = get_timeseries_attribute_2()
+
+        try:
+            reply_timeseries = await session.statistical_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).sum()
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")

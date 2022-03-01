@@ -12,7 +12,6 @@ from .examples import *
 
 __title__ = 'volue.mesh'
 __author__ = 'Volue AS'
-__version__ = "0.1.0"
 
 __all__ = [
     'Authentication',
