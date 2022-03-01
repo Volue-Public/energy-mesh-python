@@ -168,8 +168,9 @@
   <h1>Source code for volue.mesh._connection</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Credentials</span><span class="p">,</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">history</span> <span class="k">as</span> <span class="n">History</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.history</span> <span class="kn">import</span> <span class="n">HistoryFunctions</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.statistical</span> <span class="kn">import</span> <span class="n">StatisticalFunctions</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
@@ -226,11 +227,10 @@
                                    <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                    <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                    <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                   <span class="n">history</span><span class="p">:</span> <span class="n">History</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                    <span class="n">transformation</span><span class="p">:</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Reads timeseries points for the specified timeseries in the given interval.</span>
-<span class="sd">            Transformed timeseries (returned when a `transformation` or `history` argument is provided)</span>
+<span class="sd">            Transformed timeseries (returned when a `transformation` argument is provided)</span>
 <span class="sd">            does not have the following fields set:</span>
 <span class="sd">            - timskey</span>
 <span class="sd">            - uuid_id</span>
@@ -250,15 +250,6 @@
                 <span class="n">object_id</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to specify either timskey, uuid_id or full_name&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">history</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;you cannot specify &#39;history&#39; and &#39;transformation&#39; at the same time&quot;</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">history</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">request</span> <span class="o">=</span> <span class="n">History</span><span class="o">.</span><span class="n">prepare_request</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">object_id</span><span class="p">,</span> <span class="n">history</span><span class="p">)</span>
-                <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RunCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">History</span><span class="o">.</span><span class="n">parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">transformation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">request</span> <span class="o">=</span> <span class="n">Transform</span><span class="o">.</span><span class="n">prepare_request</span><span class="p">(</span>
@@ -473,7 +464,13 @@
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:</span>
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Connection.Session.history_functions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.history_functions">[docs]</a>        <span class="k">def</span> <span class="nf">history_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryFunctions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HistoryFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.Session.statistical_functions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.statistical_functions">[docs]</a>        <span class="k">def</span> <span class="nf">statistical_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticalFunctions</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">StatisticalFunctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
