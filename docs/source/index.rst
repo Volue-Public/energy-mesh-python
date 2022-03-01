@@ -43,16 +43,19 @@ If you're having trouble, these resources might help.
 .. toctree::
    :caption: Welcome
 
-   versions
    quickstart
    installation
-   concepts
+   introduction_to_mesh
    usecases
    examples
    tests
-   authentication
    faq
    glossary
+
+.. toctree::
+   :caption: Versions
+
+   versions
 
 .. toctree::
    :caption: SDK Reference
