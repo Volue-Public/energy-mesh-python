@@ -599,7 +599,7 @@ def test_history_get_all_forecasts():
         try:
             reply_timeseries = session.history_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
-            assert isinstance(reply_timeseries, List) and len(reply_timeseries) is 0
+            assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -619,7 +619,7 @@ def test_history_get_forecasts(available_at_timepoint, timezone):
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
@@ -675,7 +675,7 @@ def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
@@ -686,7 +686,7 @@ def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
             reply_timeseries = session.history_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
                     max_number_of_versions_to_get)
-            assert isinstance(reply_timeseries, List) and len(reply_timeseries) is 0
+            assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -698,7 +698,7 @@ def test_statistical_sum():
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.SECURE_CONNECTION)
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
