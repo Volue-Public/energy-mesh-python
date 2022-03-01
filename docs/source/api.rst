@@ -15,6 +15,12 @@ volue.mesh.aio
 .. automodule:: volue.mesh.aio
 
 
+volue.mesh.calc
+~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh.calc
+
+
 volue.mesh.examples
 ~~~~~~~~~~~~~~~~~~~~
 
