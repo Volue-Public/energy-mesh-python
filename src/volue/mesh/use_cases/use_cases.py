@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import sys
 from typing import List, Any, Tuple
 import uuid
 
+from dateutil import tz
 import grpc
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -29,11 +30,12 @@ SAVE_TO_CSV = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
-
+UTC_TIME_ZONE = 'UTC'
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
                     title: str,
-                    style: str = 'plot') -> None:
+                    style: str = 'plot',
+                    convert_to_local: bool = False) -> None:
     """
     Plots a list of pandas dataframes in a figure.
     """
@@ -43,6 +45,13 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
             timeseries_identifier = a_pair[0]
             timeseries_pandas_dataframe = a_pair[1]
             legends.append(timeseries_identifier)
+
+            if convert_to_local:
+                # convert to UTC timezone-aware datetime object
+                timeseries_pandas_dataframe['utc_time'] = pd.to_datetime(timeseries_pandas_dataframe['utc_time'], utc=True)
+                # convert to local time zone (set in operating system)
+                timeseries_pandas_dataframe.utc_time = timeseries_pandas_dataframe.utc_time.dt.tz_convert(tz.tzlocal())
+
             data = [timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value']]
             arguments = {'linestyle': '--',
                          'marker': 'o',
@@ -54,7 +63,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
                 plt.step(*data, **arguments)
 
         plt.ylabel('value')
-        plt.xlabel('utc time')
+        plt.xlabel('local time') if convert_to_local else plt.xlabel('utc time')
         plt.legend(legends, ncol=2, fontsize=6)
         plt.title(title)
         figure_manager = plt.get_current_fig_manager()
@@ -330,16 +339,23 @@ def use_case_5():
             use_case_name = "Use case 5"
             model = "MeshTEK"
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
-            start = datetime(2021, 9, 28, 0, 0, 0, tzinfo=timezone.utc)
-            end = datetime(2021, 9, 30, 1, 0, 0, tzinfo=timezone.utc)
+
+            # All timestamps used in communication with Mesh must be using UTC.
+            # This use case shows how to use local time for user input and presentation (plot is using local time)
+            # and convert it to UTC when communicating with Mesh.
+            start_local = datetime(2021, 9, 28, tzinfo=tz.tzlocal())
+            end_local = datetime(2021, 9, 30, tzinfo=tz.tzlocal())
+            start_utc = start_local.astimezone(tz.gettz(UTC_TIME_ZONE))
+            end_utc = end_local.astimezone(tz.gettz(UTC_TIME_ZONE))
+
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
             # Get timeseries data before write
-            timeseries_before = session.read_timeseries_points(start_time=start,
-                                                               end_time=end,
+            timeseries_before = session.read_timeseries_points(start_time=start_utc,
+                                                               end_time=end_utc,
                                                                uuid_id=guid)
             print(f"Before writing points: \n"
                   f"-----\n"
@@ -355,29 +371,28 @@ def use_case_5():
             # value - [pa.float64]
             timestamps = []
             for i in range(1, 24 + 1):
-                timestamps.append(start + resolution * i)
+                timestamps.append(start_utc + resolution * i)
 
             utc_time = pa.array(timestamps)
             flags = pa.array([0] * 24)  # flag 0 -> Common::TimeseriesPointFlags::Ok
-            old_values = pa.array([0.0] * 24)
             new_values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
                                    9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
 
             # Write new values
-            old_arrays = [
+            new_arrays = [
                 utc_time,
                 flags,
                 new_values
             ]
-            table = pa.Table.from_arrays(arrays=old_arrays, schema=Timeseries.schema)
-            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
+            table = pa.Table.from_arrays(arrays=new_arrays, schema=Timeseries.schema)
+            timeseries = Timeseries(table=table, start_time=start_utc, end_time=end_utc, uuid_id=guid)
 
             # Send request to write timeseries based on timskey
             session.write_timeseries_points(timeserie=timeseries)
 
             # Get timeseries data before write
-            timeseries_after = session.read_timeseries_points(start_time=start,
-                                                              end_time=end,
+            timeseries_after = session.read_timeseries_points(start_time=start_utc,
+                                                              end_time=end_utc,
                                                               uuid_id=guid)
             print(f"After writing points: \n"
                   f"-----\n"
@@ -389,24 +404,9 @@ def use_case_5():
             # Commit changes
             session.commit()
 
-            # Reset to old values
-            old_arrays = [
-                utc_time,
-                flags,
-                old_values
-            ]
-            table = pa.Table.from_arrays(arrays=old_arrays, schema=Timeseries.schema)
-            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
-
-            # Send request to write timeseries based on timskey
-            session.write_timeseries_points(timeserie=timeseries)
-
-            # Commit changes
-            session.commit()
-
             # Post process data
             plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: Before and after writing")
+                            f"{use_case_name}: Before and after writing", convert_to_local=True)
             save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
 
         except grpc.RpcError as e:
