@@ -16,8 +16,11 @@ class Timezone(Enum):
     Timezone parameter
     """
     LOCAL    = 0
+    """Local time zone"""
     STANDARD = 1
+    """Local time zone without Daylight Saving Time (DST)"""
     UTC      = 2
+    """Universal Time Coordinated (UTC)"""
 
 def _convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = None) -> str:
     """

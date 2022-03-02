@@ -770,9 +770,9 @@ def use_case_12():
             start = datetime(2021, 9, 1)
             end = datetime(2021, 10, 12)
             search_query = '.Inflow'
-            t0_min = datetime(2021, 8, 31)
-            t0_max = datetime(2021, 9, 2)
-            historical_date = datetime(2021, 9, 1, 9)
+            forecast_start_min = datetime(2021, 8, 31)
+            forecast_start_max = datetime(2021, 9, 2)
+            available_at_timepoint = datetime(2021, 9, 1, 9)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -794,10 +794,10 @@ def use_case_12():
             # Get historical timeseries
             historical_timeseries = session.history_functions(
                 MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_forecast(
-                    t0_min, t0_max, available_at_timepoint=historical_date, search_query=search_query)
+                    forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint, search_query=search_query)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
-            path_and_pandas_dataframe.append((f'Forecast for {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
+            path_and_pandas_dataframe.append((f'Forecast for {available_at_timepoint.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
 
             # Post process data
             plot_timeseries(path_and_pandas_dataframe,
