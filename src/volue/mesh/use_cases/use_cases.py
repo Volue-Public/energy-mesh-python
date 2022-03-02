@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import sys
 from typing import List, Any, Tuple
 import uuid
 
+from dateutil import tz
 import grpc
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -18,8 +19,7 @@ These use cases were designed to work with a real customer database (TEKICC_ST@M
 """
 
 # Ip address for the mesh server
-#HOST = "localhost"
-HOST = "tdtrhsmg125ha2"
+HOST = "localhost"
 # Mesh server port for gRPC communication
 PORT = 50051
 # Use matplotlib to visualize results
@@ -33,7 +33,8 @@ RUN_USE_CASE = 'all'
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
                     title: str,
-                    style: str = 'plot') -> None:
+                    style: str = 'plot',
+                    is_local_time: bool = False) -> None:
     """
     Plots a list of pandas dataframes in a figure.
     """
@@ -43,6 +44,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
             timeseries_identifier = a_pair[0]
             timeseries_pandas_dataframe = a_pair[1]
             legends.append(timeseries_identifier)
+
             data = [timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value']]
             arguments = {'linestyle': '--',
                          'marker': 'o',
@@ -54,7 +56,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
                 plt.step(*data, **arguments)
 
         plt.ylabel('value')
-        plt.xlabel('utc time')
+        plt.xlabel('local time') if is_local_time else plt.xlabel('utc time')
         plt.legend(legends, ncol=2, fontsize=6)
         plt.title(title)
         figure_manager = plt.get_current_fig_manager()
@@ -66,6 +68,7 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
                            file_prefix: str) -> None:
     """
     Saves a pandas dataframe to a CSV file.
+    In case of local time the column name will still be called 'utc_time', but the timestamp will be timezone aware.
     """
     if SAVE_TO_CSV:
         for a_pair in identifier_and_pandas_dataframes:
@@ -267,7 +270,7 @@ def use_case_4():
     Guids:              [
                         "ff1db73f-8c8a-42f8-a44a-4bbb420874c1"
                         ]
-    Time interval:      1.9.2021 - 1.10.2021
+    Time interval:      10.01.2022 - 27.03.2022
 
     """
     connection = Connection(host=HOST, port=PORT)
@@ -278,8 +281,8 @@ def use_case_4():
             guids = [
                 "ff1db73f-8c8a-42f8-a44a-4bbb420874c1"
             ]
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
+            start = datetime(2022, 1, 10)
+            end = datetime(2022, 3, 27)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -330,16 +333,23 @@ def use_case_5():
             use_case_name = "Use case 5"
             model = "MeshTEK"
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
-            start = datetime(2021, 9, 28, 0, 0, 0, tzinfo=timezone.utc)
-            end = datetime(2021, 9, 30, 1, 0, 0, tzinfo=timezone.utc)
+
+            # All timestamps used in communication with Mesh must be using UTC.
+            # This use case shows how to use local time for user input and presentation (plot and CSV is using local time)
+            # and convert it to UTC when communicating with Mesh.
+            start_local = datetime(2021, 9, 28, tzinfo=tz.tzlocal())
+            end_local = datetime(2021, 9, 30, tzinfo=tz.tzlocal())
+            start_utc = start_local.astimezone(tz.gettz('UTC'))
+            end_utc = end_local.astimezone(tz.gettz('UTC'))
+
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
             # Get timeseries data before write
-            timeseries_before = session.read_timeseries_points(start_time=start,
-                                                               end_time=end,
+            timeseries_before = session.read_timeseries_points(start_time=start_utc,
+                                                               end_time=end_utc,
                                                                uuid_id=guid)
             print(f"Before writing points: \n"
                   f"-----\n"
@@ -354,30 +364,29 @@ def use_case_5():
             # flags - [pa.uint32]
             # value - [pa.float64]
             timestamps = []
-            for i in range(1, 24 + 1):
-                timestamps.append(start + resolution * i)
+            for i in range(0, 24):
+                timestamps.append(start_utc + resolution * i)
 
             utc_time = pa.array(timestamps)
             flags = pa.array([0] * 24)  # flag 0 -> Common::TimeseriesPointFlags::Ok
-            old_values = pa.array([0.0] * 24)
             new_values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
                                    9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
 
             # Write new values
-            old_arrays = [
+            new_arrays = [
                 utc_time,
                 flags,
                 new_values
             ]
-            table = pa.Table.from_arrays(arrays=old_arrays, schema=Timeseries.schema)
-            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
+            table = pa.Table.from_arrays(arrays=new_arrays, schema=Timeseries.schema)
+            timeseries = Timeseries(table=table, start_time=start_utc, end_time=end_utc, uuid_id=guid)
 
             # Send request to write timeseries based on timskey
             session.write_timeseries_points(timeserie=timeseries)
 
             # Get timeseries data before write
-            timeseries_after = session.read_timeseries_points(start_time=start,
-                                                              end_time=end,
+            timeseries_after = session.read_timeseries_points(start_time=start_utc,
+                                                              end_time=end_utc,
                                                               uuid_id=guid)
             print(f"After writing points: \n"
                   f"-----\n"
@@ -389,24 +398,14 @@ def use_case_5():
             # Commit changes
             session.commit()
 
-            # Reset to old values
-            old_arrays = [
-                utc_time,
-                flags,
-                old_values
-            ]
-            table = pa.Table.from_arrays(arrays=old_arrays, schema=Timeseries.schema)
-            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
-
-            # Send request to write timeseries based on timskey
-            session.write_timeseries_points(timeserie=timeseries)
-
-            # Commit changes
-            session.commit()
-
             # Post process data
+            for pair in timskey_and_pandas_dataframe:
+                timeseries_pandas_dataframe = pair[1]
+                # convert to UTC timezone-aware datetime object and then to local time zone (set in operating system)
+                timeseries_pandas_dataframe['utc_time'] = pd.to_datetime(timeseries_pandas_dataframe['utc_time'], utc=True).dt.tz_convert(tz.tzlocal())
+
             plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: Before and after writing")
+                            f"{use_case_name}: Before and after writing", is_local_time=True)
             save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
 
         except grpc.RpcError as e:
@@ -517,7 +516,7 @@ def use_case_7():
             from_breakpoint_to_hourly = Transform.Parameters(
                 resolution=Timeseries.Resolution.DAY,
                 method=Transform.Method.AVG,
-                timezone=Timezone.UTC
+                timezone=Timezone.STANDARD
             )
 
             timeserie_transformed = session.read_timeseries_points(start_time=start,
@@ -543,7 +542,7 @@ def use_case_8():
     Scenario:
     We want to summarize an array of timeseries
 
-    Start point:                801896b0-d448-4299-874a-3ecf8ab0e2d4 # Model/MeshTEK/Mesh
+    Start point:                36395abf-9a39-40ef-b29c-b1d59db855e3
     Search expression:          *[.Type=Reservoir].ReservoirVolume_operative
     Calculation expression:     ## = @SUM(@T('*[.Type=Reservoir].ReservoirVolume_operative'))
     Time interval:              5.9.2021 - 15.9.2021
@@ -554,7 +553,7 @@ def use_case_8():
         try:
             use_case_name = "Use case 8"
             model = "MeshTEK"
-            start_object_guid = '801896b0-d448-4299-874a-3ecf8ab0e2d4'
+            start_object_guid = '36395abf-9a39-40ef-b29c-b1d59db855e3'
             search_query = "*[.Type=Reservoir].ReservoirVolume_operative"
             start = datetime(2021, 9, 5)
             end = datetime(2021, 9, 15)
@@ -585,9 +584,9 @@ def use_case_9():
     We want to get the historical data for a timeseries on a specific date.
 
     Mesh object:                6e602d3e-1fb6-49de-9c00-4cb78ace9459
-    Time interval:              15.11.2021 - 15.02.2022
-    Historical date:            17.09.2021
-    Calculation expression:     ## = @GetTsAsOfTime(@t('.ReservoirVolume'),'20210917000000000')
+    Time interval:              01.09.2021 - 15.09.2021
+    Historical date:            07.09.2021
+    Calculation expression:     ## = @GetTsAsOfTime(@t('.Inflow'),'20210907000000000')
 
     """
     connection = Connection(host=HOST, port=PORT)
@@ -596,10 +595,10 @@ def use_case_9():
             use_case_name = "Use case 9"
             model = "MeshTEK"
             object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'  # ReservoirVolume (TimeseriesCalculation)
-            search_query = ".ReservoirVolume"
-            start = datetime(2021, 11, 15)
-            end = datetime(2022, 2, 15)
-            historical_date = datetime(2021, 9, 17)
+            search_query = ".Inflow"
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 9, 15)
+            historical_date = datetime(2021, 9, 7)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -642,10 +641,10 @@ def use_case_10():
     Scenario:
     We want to get the last 5 historical versions of a known timeseries
 
-    Mesh object:                6e602d3e-1fb6-49de-9c00-4cb78ace9459
-    Time interval:              15.11.2021 - 15.02.2022
+    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
+    Time interval:              01.09.2021 - 15.09.2021
     Number of versions to get:  5
-    Calculation expression:     ## = @GetTsHistoricalVersions(@t('.Production'),5)
+    Calculation expression:     ## = @GetTsHistoricalVersions(@t('.Inflow'),5)
 
     """
     connection = Connection(host=HOST, port=PORT)
@@ -653,10 +652,10 @@ def use_case_10():
         try:
             use_case_name = "Use case 10"
             model = "MeshTEK"
-            object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'
-            start = datetime(2021, 11, 15)
-            end = datetime(2022, 2, 15)
-            search_query = '.Production'
+            object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
+            start = datetime(2021, 9, 1)
+            end = datetime(2021, 9, 15)
+            search_query = '.Inflow'
             max_number_of_versions_to_get = 5
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -702,7 +701,7 @@ def use_case_11():
     We want to get all forecasts for a specific object
 
     Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
-    Time interval:              01.09.2021 - 12.10.2021
+    Time interval:              01.09.2021 - 28.09.2021
     Calculation expression:     ## = @GetAllForecasts(@t('.Inflow'))
 
     """
@@ -713,7 +712,7 @@ def use_case_11():
             model = "MeshTEK"
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
             start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 12)
+            end = datetime(2021, 9, 28)
             search_query = '.Inflow'
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
