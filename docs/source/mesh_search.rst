@@ -6,7 +6,7 @@ The mesh search language can be used to find mesh objects.
 To be able to search for a mesh object you need to specify which model to search in, where in the model the search should start and the query matching the criteria of the mesh object you are searching for.
 
 .. note::
-    To see what objects the current version of the Mesh Python API supports refer to the api documentation at :ref:`api:volue.mesh` for specific functions that can make use of the search language.
+    To see what objects the current version of the Mesh Python API supports searching for refer to the api documentation at :ref:`api:volue.mesh` for specific functions that can make use of the search language.
 
 
 Query syntax
