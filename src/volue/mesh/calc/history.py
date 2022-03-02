@@ -1,5 +1,5 @@
-""""
-Mesh calculation history functions
+"""
+Mesh calculation history functions.
 """
 
 from abc import ABC, abstractmethod
@@ -7,10 +7,10 @@ import datetime
 from typing import List
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import Calculation, Timezone
+from volue.mesh.calc.common import _Calculation, Timezone, _convert_datetime_to_mesh_calc_format, _parse_timeseries_list_response, _parse_single_timeseries_response
 
 
-class _HistoryFunctionsBase(Calculation, ABC):
+class _HistoryFunctionsBase(_Calculation, ABC):
 
     def _get_all_forecasts_expression(self,
                                       search_query: str) -> str:
@@ -35,14 +35,14 @@ class _HistoryFunctionsBase(Calculation, ABC):
              expression = f"{expression}'{search_query}'"
         expression = f"{expression})"
 
-        converted_t0_min = super().convert_datetime_to_mesh_calc_format(t0_min, timezone)
+        converted_t0_min = _convert_datetime_to_mesh_calc_format(t0_min, timezone)
         expression = f"{expression},'{converted_t0_min}'"
 
-        converted_t0_max = super().convert_datetime_to_mesh_calc_format(t0_max, timezone)
+        converted_t0_max = _convert_datetime_to_mesh_calc_format(t0_max, timezone)
         expression = f"{expression},'{converted_t0_max}'"
 
         if available_at_timepoint is not None:
-            converted_available_at_timepoint = super().convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+            converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
             expression = f"{expression},'{converted_available_at_timepoint}'"
         expression = f"{expression})\n"
 
@@ -52,7 +52,7 @@ class _HistoryFunctionsBase(Calculation, ABC):
                            available_at_timepoint: datetime,
                            timezone: Timezone,
                            search_query: str) -> str:
-        converted_available_at_timepoint = super().convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+        converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
         expression = f"## = @GetTsAsOfTime(@t("
         if search_query:
              expression = f"{expression}'{search_query}'"
@@ -118,7 +118,7 @@ class HistoryFunctions(_HistoryFunctionsBase):
                           search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = super().run(expression)
-        return super().parse_timeseries_list_response(response)
+        return _parse_timeseries_list_response(response)
 
     def get_forecast(self,
                      t0_min: datetime,
@@ -128,7 +128,7 @@ class HistoryFunctions(_HistoryFunctionsBase):
                      search_query: str = None) -> Timeseries:
         expression = super()._get_forecast_expression( t0_min, t0_max, available_at_timepoint, timezone, search_query)
         response = super().run(expression)
-        return super().parse_single_timeseries_response(response)
+        return _parse_single_timeseries_response(response)
 
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
@@ -136,14 +136,14 @@ class HistoryFunctions(_HistoryFunctionsBase):
                           search_query: str = None) -> Timeseries:
         expression = super()._get_ts_as_of_time(available_at_timepoint, timezone, search_query)
         response = super().run(expression)
-        return super().parse_single_timeseries_response(response)
+        return _parse_single_timeseries_response(response)
 
     def get_ts_historical_versions(self,
                                    max_number_of_versions_to_get: int,
                                    search_query: str = None) -> List[Timeseries]:
         expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
         response = super().run(expression)
-        return super().parse_timeseries_list_response(response)
+        return _parse_timeseries_list_response(response)
 
 class HistoryFunctionsAsync(_HistoryFunctionsBase):
 
@@ -151,7 +151,7 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
                                 search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = await super().run_async(expression)
-        return super().parse_timeseries_list_response(response)
+        return _parse_timeseries_list_response(response)
 
     async def get_forecast(self,
                            t0_min: datetime,
@@ -161,7 +161,7 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
                            search_query: str = None) -> Timeseries:
         expression = super()._get_forecast_expression(t0_min, t0_max, available_at_timepoint, timezone, search_query)
         response = await super().run_async(expression)
-        return super().parse_single_timeseries_response(response)
+        return _parse_single_timeseries_response(response)
 
     async def get_ts_as_of_time(self,
                                 available_at_timepoint: datetime,
@@ -169,11 +169,11 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
                                 search_query: str = None) -> Timeseries:
         expression = super()._get_ts_as_of_time( available_at_timepoint, timezone, search_query)
         response = await super().run_async(expression)
-        return super().parse_single_timeseries_response(response)
+        return _parse_single_timeseries_response(response)
 
     async def get_ts_historical_versions(self,
                                          max_number_of_versions_to_get: int,
                                          search_query: str = None) -> List[Timeseries]:
         expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
         response = await super().run_async(expression)
-        return super().parse_timeseries_list_response(response)
+        return _parse_timeseries_list_response(response)

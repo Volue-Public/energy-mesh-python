@@ -1,5 +1,5 @@
-""""
-Mesh calculation function: TRANSFORM
+"""
+Mesh calculation transformation functions.
 """
 
 from dataclasses import dataclass
@@ -36,7 +36,7 @@ class Parameters:
     timezone: Timezone = None
 
 
-def prepare_request(session_id: uuid,
+def _prepare_request(session_id: uuid,
                     start_time: datetime,
                     end_time: datetime,
                     relative_to: core_pb2.ObjectId,
@@ -66,7 +66,7 @@ def prepare_request(session_id: uuid,
     return request
 
 
-def parse_response(response: core_pb2.CalculationResponse) -> Timeseries:
+def _parse_response(response: core_pb2.CalculationResponse) -> Timeseries:
     """
     Parses a gRPC response from the Mesh server and validates the result.
 
