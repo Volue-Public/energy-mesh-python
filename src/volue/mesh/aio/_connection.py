@@ -102,10 +102,10 @@ class Connection:
                 raise TypeError("need to specify either timskey, uuid_id or full_name")
 
             if transformation is not None:
-                request = Transform.prepare_request(
+                request = Transform._prepare_request(
                     self.session_id, start_time, end_time, object_id, transformation)
                 response = await self.mesh_service.RunCalculation(request)
-                return Transform.parse_response(response)
+                return Transform._parse_response(response)
 
             response = await self.mesh_service.ReadTimeseries(
                 core_pb2.ReadTimeseriesRequest(

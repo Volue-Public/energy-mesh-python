@@ -1,5 +1,5 @@
-""""
-Common classes/enums/etc for calculation functions
+"""
+Common classes/enums/etc for Mesh calculation functions.
 """
 
 import datetime
@@ -19,8 +19,28 @@ class Timezone(Enum):
     STANDARD = 1
     UTC      = 2
 
+def _convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = None) -> str:
+    """
+    Converts input datetime to format expected by Mesh calculator, e.g. '20210917000000000'
+    Optional timezone parameter if set will append proper prefix to the coverted datetime, e.g.:
+    'UTC20210917000000000'
+    """
+    converted_date_str = input.strftime("%Y%m%d%H%M%S%f")[:-3]
+    if timezone is not None:
+        converted_date_str = f"{timezone.name}{converted_date_str}"
+    return converted_date_str
 
-class Calculation:
+def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> List[Timeseries]:
+    timeseries = read_proto_reply(response.timeseries_results)
+    return timeseries
+
+def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) -> Timeseries:
+    timeseries = read_proto_reply(response.timeseries_results)
+    if len(timeseries) != 1:
+        raise RuntimeError(
+            f"invalid calculation result, expected 1 timeseries, bot got {len(timeseries)}")
+    return timeseries[0]
+class _Calculation:
 
     def __init__(self,
                  session,
@@ -31,31 +51,6 @@ class Calculation:
         self.relative_to: MeshObjectId = relative_to
         self.start_time: datetime = start_time
         self.end_time: datetime = end_time
-
-    @staticmethod
-    def convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = None) -> str:
-        """
-        Converts input datetime to format expected by Mesh calculator, e.g. '20210917000000000'
-        Optional timezone parameter if set will append proper prefix to the coverted datetime, e.g.:
-        'UTC20210917000000000'
-        """
-        converted_date_str = input.strftime("%Y%m%d%H%M%S%f")[:-3]
-        if timezone is not None:
-            converted_date_str = f"{timezone.name}{converted_date_str}"
-        return converted_date_str
-
-    @staticmethod
-    def parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> List[Timeseries]:
-        timeseries = read_proto_reply(response.timeseries_results)
-        return timeseries
-
-    @staticmethod
-    def parse_single_timeseries_response(response: core_pb2.CalculationResponse) -> Timeseries:
-        timeseries = read_proto_reply(response.timeseries_results)
-        if len(timeseries) != 1:
-            raise RuntimeError(
-                f"invalid calculation result, expected 1 timeseries, bot got {len(timeseries)}")
-        return timeseries[0]
 
     def prepare_request(self, expression: str) -> core_pb2.CalculationRequest:
         relative_to = core_pb2.ObjectId()  # convert to gRPC object

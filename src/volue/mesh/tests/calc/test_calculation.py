@@ -2,7 +2,7 @@ from datetime import datetime
 import uuid
 import pytest
 
-from volue.mesh.calc.common import Calculation, Timezone
+from volue.mesh.calc.common import Timezone, _convert_datetime_to_mesh_calc_format, _parse_timeseries_list_response, _parse_single_timeseries_response
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.tests.test_utilities.utilities import  get_timeseries_attribute_2
 
@@ -15,7 +15,7 @@ def test_parsing_invalid_single_timeseries_response_should_throw():
     response = core_pb2.CalculationResponse()
     # no timeseries at all
     with pytest.raises(RuntimeError, match=".*invalid calculation result*"):
-        Calculation.parse_single_timeseries_response(response)
+        _parse_single_timeseries_response(response)
 
 
 @pytest.mark.unittest
@@ -32,11 +32,11 @@ def test_convert_datetime_to_mesh_calc_format_with_timezone_should_add_this_para
 
     # first check that if `timezone` is not provided then
     # it is not present in generated calculation expression
-    converted_datetime = Calculation.convert_datetime_to_mesh_calc_format(test_time)
+    converted_datetime = _convert_datetime_to_mesh_calc_format(test_time)
     assert f"{timezone.name}" not in converted_datetime
 
     # now it should be in generated calculation expression
-    converted_datetime = Calculation.convert_datetime_to_mesh_calc_format(test_time, timezone)
+    converted_datetime = _convert_datetime_to_mesh_calc_format(test_time, timezone)
     print(converted_datetime)
     assert f"{timezone.name}" in converted_datetime
 
@@ -51,7 +51,7 @@ def test_convert_datetime_to_mesh_calc_format_converts_datetime_to_correct_forma
     test_time = datetime(2016, 1, 5, 17, 48, 11, 123456)
     expected_datetime_format = '20160105174811123'
 
-    converted_datetime = Calculation.convert_datetime_to_mesh_calc_format(test_time)
+    converted_datetime = _convert_datetime_to_mesh_calc_format(test_time)
     assert f"{expected_datetime_format}" in converted_datetime
 
 if __name__ == '__main__':
