@@ -28,7 +28,7 @@ def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
     timeseries_attribute.full_name = full_name
 
     with pytest.raises(ValueError, match=".*'BREAKPOINT' resolution is unsupported.*"):
-        Transform.prepare_request(
+        Transform._prepare_request(
             session_id, start_time, end_time, timeseries_attribute, transform_parameters)
 
 
@@ -40,7 +40,7 @@ def test_parsing_invalid_transform_result_should_throw():
     response = core_pb2.CalculationResponse()
     # no timeseries at all
     with pytest.raises(RuntimeError, match=".*invalid transformation result*"):
-        Transform.parse_response(response)
+        Transform._parse_response(response)
 
 
 @pytest.mark.unittest
@@ -73,12 +73,12 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
 
     # first check that if `timezone` is not provided then
     # it is not present in generated calculation expression
-    request = Transform.prepare_request(
+    request = Transform._prepare_request(
         session_id, start_time, end_time, timeseries_attribute, transform_parameters_no_timezone)
     assert f"'{timezone.name}'" not in str(request.expression)
 
     # now it should be in generated calculation expression
-    request = Transform.prepare_request(
+    request = Transform._prepare_request(
         session_id, start_time, end_time, timeseries_attribute, transform_parameters_with_timezone)
     assert f"'{timezone.name}'" in str(request.expression)
 
