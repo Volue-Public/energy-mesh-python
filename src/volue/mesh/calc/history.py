@@ -53,10 +53,10 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         return expression
 
-    def _get_ts_as_of_time(self,
-                           available_at_timepoint: datetime,
-                           timezone: Timezone,
-                           search_query: str) -> str:
+    def _get_ts_as_of_time_expression(self,
+                                      available_at_timepoint: datetime,
+                                      timezone: Timezone,
+                                      search_query: str) -> str:
         converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
         expression = f"## = @GetTsAsOfTime(@t("
         if search_query:
@@ -81,11 +81,12 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     def get_all_forecasts(self,
                           search_query: str = None) -> List[Timeseries]:
         """
-        Returns an array of forecast series with values within the relevant period.
+        Returns an array of forecast time series with values within the relevant period.
         Values in forecast series outside the period are not included.
-        The function returns an empty array if no forecast series have values within the relevant period.
+        The function returns an empty array if no forecast time series have values within the relevant period.
 
-        Empty `search_query` means self-reference to `relative_to`.
+        The resulting objects from the `search_query` will be used in the `get_all_forecasts` function,
+        if `search_query` is not set the `relative_to` object will be used.
         """
         pass
 
@@ -101,7 +102,8 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         It requires that the forecast series' start is less than or equal to `forecast_start_max` and larger than `forecast_start_min`.
         If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.
 
-        Empty `search_query` means self-reference to `relative_to`.
+        The resulting objects from the `search_query` will be used in the `get_forecast` function,
+        if `search_query` is not set the `relative_to` object will be used.
         """
         pass
 
@@ -115,7 +117,8 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Returns a time series.
 
 
-        Empty `search_query` means self-reference to `relative_to`.
+        The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function,
+        if `search_query` is not set the `relative_to` object will be used.
         """
         pass
 
@@ -126,7 +129,8 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         """
         Returns an array of a given number of versions of a time series.
 
-        Empty `search_query` means self-reference to `relative_to`.
+        The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function,
+        if `search_query` is not set the `relative_to` object will be used.
         """
         pass
 
@@ -153,7 +157,7 @@ class HistoryFunctions(_HistoryFunctionsBase):
                           available_at_timepoint: datetime,
                           timezone: Timezone = None,
                           search_query: str = None) -> Timeseries:
-        expression = super()._get_ts_as_of_time(available_at_timepoint, timezone, search_query)
+        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, timezone, search_query)
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
@@ -186,7 +190,7 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
                                 available_at_timepoint: datetime,
                                 timezone: Timezone = None,
                                 search_query: str = None) -> Timeseries:
-        expression = super()._get_ts_as_of_time(available_at_timepoint, timezone, search_query)
+        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, timezone, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 
