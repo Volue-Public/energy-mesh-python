@@ -19,8 +19,7 @@ These use cases were designed to work with a real customer database (TEKICC_ST@M
 """
 
 # Ip address for the mesh server
-#HOST = "localhost"
-HOST = "tdtrhsmg125ha2.voluead.volue.com"
+HOST = "localhost"
 # Mesh server port for gRPC communication
 PORT = 50051
 # Use matplotlib to visualize results
@@ -30,7 +29,6 @@ SAVE_TO_CSV = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
-UTC_TIME_ZONE = 'UTC'
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
@@ -341,8 +339,8 @@ def use_case_5():
             # and convert it to UTC when communicating with Mesh.
             start_local = datetime(2021, 9, 28, tzinfo=tz.tzlocal())
             end_local = datetime(2021, 9, 30, tzinfo=tz.tzlocal())
-            start_utc = start_local.astimezone(tz.gettz(UTC_TIME_ZONE))
-            end_utc = end_local.astimezone(tz.gettz(UTC_TIME_ZONE))
+            start_utc = start_local.astimezone(tz.gettz('UTC'))
+            end_utc = end_local.astimezone(tz.gettz('UTC'))
 
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
