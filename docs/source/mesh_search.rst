@@ -5,7 +5,11 @@ The mesh search language can be used to find mesh objects.
 
 To be able to search for a mesh object you need to specify which model to search in, where in the model the search should start and the query matching the criteria of the mesh object you are searching for.
 
-Syntax
+.. note::
+    To see what objects the current version of the Mesh Python API supports refer to the api documentation at :ref:`api:volue.mesh` for specific functions that can make use of the search language.
+
+
+Query syntax
 ~~~~~~~~~~~~~~
 
 A search consists of a traversal, optionally followed by an :doc:`attribute <mesh_object_attributes>` access (".AttributeName"). A search takes an object (the start point) as input and produces a set of objects or attributes as output (the result). If the attribute access is specified, the result objects are all attributes (attribute search), otherwise they are all objects (object search). The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on critera (f.ex. [Critera] or \*[Criteria]).
