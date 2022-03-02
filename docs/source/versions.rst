@@ -14,6 +14,7 @@ Compatible with
 
 - Mesh server version 2.3.*
 - Python [3.7.1, 3.8 and 3.9]
+- Tested with Mesh server version 2.3.0.12
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -60,6 +61,7 @@ Compatible with
 
 - Mesh server version 2.2.*
 - Python [3.7.1, 3.8 and 3.9]
+- Tested with Mesh server version 2.2.0.9
 
 New features
 ~~~~~~~~~~~~~~~~~~
