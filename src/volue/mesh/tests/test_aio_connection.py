@@ -635,6 +635,9 @@ async def test_history_get_all_forecasts():
 
 @pytest.mark.asyncio
 @pytest.mark.database
+@pytest.mark.parametrize('forecast_start',
+    [(None, None),
+     (datetime(2016, 1, 2), datetime(2016, 1, 8))])
 @pytest.mark.parametrize('available_at_timepoint',
     [None,
      datetime(2016, 1, 5, 17, 48, 11, 123456)])
@@ -643,9 +646,9 @@ async def test_history_get_all_forecasts():
      Timezone.LOCAL,
      Timezone.STANDARD,
      Timezone.UTC])
-async def test_history_get_forecasts(available_at_timepoint, timezone):
+async def test_history_get_forecast(forecast_start, available_at_timepoint, timezone):
     """
-    Check that running history `get_forecasts` does not throw exception for any combination of parameters.
+    Check that running history `get_forecast` does not throw exception for any combination of parameters.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -654,14 +657,13 @@ async def test_history_get_forecasts(available_at_timepoint, timezone):
     async with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        t0_min = datetime(2016, 1, 2)
-        t0_max = datetime(2016, 1, 8)
+        forecast_start_min, forecast_start_max = forecast_start
         _, full_name = get_timeseries_attribute_2()
 
         try:
             reply_timeseries = await session.history_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
-                    t0_min, t0_max, available_at_timepoint, timezone)
+                    forecast_start_min, forecast_start_max, available_at_timepoint, timezone)
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
