@@ -37,7 +37,7 @@ Changes
 Known issues
 ~~~~~~~~~~~~~~~~~~
 
-- None
+- **Minor**: "History functions might return time series data in a different timezone than UTC" :issue:`146`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
