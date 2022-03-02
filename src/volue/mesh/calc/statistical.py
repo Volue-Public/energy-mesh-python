@@ -20,7 +20,10 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
     @abstractmethod
     def sum(self, search_query = None) -> Timeseries:
         """
-        Empty `seach_query` means self-reference to `relative_to`.
+        Calculates the sum of all of the series in an array of time series.
+        The resulting time series is equal to the sum of the values for each time interval in the expression.
+
+        Empty `search_query` means self-reference to `relative_to`.
         """
         pass
 
