@@ -17,5 +17,7 @@ __all__ = [
     'Authentication',
     'Credentials',
     'Connection',
-    'Timeseries'
+    'Timeseries',
+    'copydoc'
 ]
+

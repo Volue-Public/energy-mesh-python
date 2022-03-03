@@ -11,6 +11,23 @@ from volue.mesh.proto.type import resources_pb2
 from google.protobuf import timestamp_pb2
 
 
+def copydoc(fromfunc, sep="\n"):
+    """
+    Decorator: Copy the docstring of `fromfunc`
+    Can be used to decorate derived functions
+    """
+
+    def _decorator(func):
+        source_doc = fromfunc.__doc__
+        if func.__doc__ is None:
+            func.__doc__ = source_doc
+        else:
+            func.__doc__ = sep.join([source_doc, func.__doc__])
+        return func
+
+    return _decorator
+
+
 @dataclass
 class MeshObjectId:
     """

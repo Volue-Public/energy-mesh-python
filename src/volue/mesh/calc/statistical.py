@@ -4,7 +4,7 @@ Mesh calculation statistical functions.
 
 from abc import ABC, abstractmethod
 
-from volue.mesh import Timeseries
+from volue.mesh import Timeseries, copydoc
 from volue.mesh.calc.common import _Calculation, _parse_single_timeseries_response
 
 
@@ -13,10 +13,9 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
     def _sum_expression(self, search_query: str) -> str:
         expression = f"## = @SUM(@T("
         if search_query:
-             expression = f"{expression}'{search_query}'"
+            expression = f"{expression}'{search_query}'"
         expression = f"{expression}))\n"
         return expression
-
 
     # Interface
     # abstractmethod does not take into account if method is async or not
@@ -32,7 +31,10 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         """
         pass
 
+
 class StatisticalFunctions(_StatisticalFunctionsBase):
+
+    @copydoc(_StatisticalFunctionsBase.sum)
     def sum(self, search_query: str = None) -> Timeseries:
         expression = super()._sum_expression(search_query)
         response = super().run(expression)
@@ -40,6 +42,8 @@ class StatisticalFunctions(_StatisticalFunctionsBase):
 
 
 class StatisticalFunctionsAsync(_StatisticalFunctionsBase):
+
+    @copydoc(_StatisticalFunctionsBase.sum)
     async def sum(self, search_query: str = None) -> Timeseries:
         expression = super()._sum_expression(search_query)
         response = await super().run_async(expression)
