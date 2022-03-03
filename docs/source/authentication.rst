@@ -7,7 +7,7 @@ The Mesh Python SDK supports user authentication/authorization feature. Because 
    Authentication is done using the Kerberos protocol towards Active Directory. Client and server must be in *line of sight* of the Key Distribution Center (KDC).
 
 If the Mesh server is configured to use authentication then only authenticated users may work with Mesh. Authenticated users obtain Mesh access tokens that are used for each call to Mesh server to prove the user's identity.
-Only two methods can be called by without authentication:
+Only two methods can be called without access token:
 
 * AuthenticateKerberos - used for getting authorization token
 * GetVersion - for getting Mesh server version
@@ -19,7 +19,7 @@ Only two methods can be called by without authentication:
 Usage
 *****************
 
-To use authentication the user has to provide authentication parameters when creating a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection:.
+To use authentication the user has to provide authentication parameters when creating a :ref:`api:volue.mesh`.Connection or a :ref:`api:volue.mesh.aio`.Connection:.
 Authentication parameters consist of:
 
 * Service Principal Name (SPN)
@@ -72,7 +72,7 @@ Requirements
 
 #. Mesh server configured to use authentication and TLS. Please contact Volue consultant to confirm your server configuration.
 #. Find out correct *service principal* for Mesh server you want to connect to.
-#. Create a :ref:`volue.mesh`.Connection or a :ref:`volue.mesh.aio`.Connection: object with authentication parameters.
+#. Create a :ref:`api:volue.mesh`.Connection or a :ref:`api:volue.mesh.aio`.Connection: object with authentication parameters.
 
 
 Example

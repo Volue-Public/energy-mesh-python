@@ -18,7 +18,7 @@ from volue.mesh.proto.core.v1alpha import core_pb2
 These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
 """
 
-# Ip address for the mesh server
+# Ip address for the Mesh server
 HOST = "localhost"
 # Mesh server port for gRPC communication
 PORT = 50051
