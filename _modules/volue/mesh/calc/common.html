@@ -186,12 +186,13 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Timezone parameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">LOCAL</span>    <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="sd">&quot;&quot;&quot;Local time zone&quot;&quot;&quot;</span>
     <span class="n">STANDARD</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="sd">&quot;&quot;&quot;Local time zone without Daylight Saving Time (DST)&quot;&quot;&quot;</span>
-    <span class="n">UTC</span>      <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">UTC</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="sd">&quot;&quot;&quot;Universal Time Coordinated (UTC)&quot;&quot;&quot;</span></div>
+
 
 <span class="k">def</span> <span class="nf">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -204,9 +205,11 @@
         <span class="n">converted_date_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timezone</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">converted_date_str</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">converted_date_str</span>
 
+
 <span class="k">def</span> <span class="nf">_parse_timeseries_list_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">timeseries_results</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timeseries</span>
+
 
 <span class="k">def</span> <span class="nf">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">timeseries_results</span><span class="p">)</span>
@@ -214,6 +217,8 @@
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;invalid calculation result, expected 1 timeseries, bot got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
 <span class="k">class</span> <span class="nc">_Calculation</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -237,7 +242,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to specify either timskey, uuid_id or full_name of &#39;relative_to&#39; object&quot;</span><span class="p">)</span>
 
-        <span class="c1">#TODO: potentially it is worth to check here if more than one property of &#39;self.relative_to&#39; is set</span>
+        <span class="c1"># TODO: potentially it is worth to check here if more than one property of &#39;self.relative_to&#39; is set</span>
         <span class="c1"># it might indicate a misuse</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">(</span>

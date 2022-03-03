@@ -1,9 +1,9 @@
 Mesh functions
 ---------------
 
-**Expressions** can be used to access **functions** available in Mesh. The result of a calculation based on a function is a temporary time series, i.e. a time series which is not in the database. Every time the calculation expression is run, values are calculated for the temporary time series, which can then be displayed in a table. However, the result is only available when the Mesh session is open.
+**Expressions** can be used to access **functions** available in Mesh. The result of a calculation based on a function is a temporary time series, i.e. a time series which is not in the database. Every time the calculation expression is run, values are calculated for the temporary time series. However, the result is only available when the Mesh session is open.
 
-The Mesh :doc:`search language <mesh_search>` can be used inside functions to find specific objects to work on.
+The Mesh :doc:`search language <mesh_search>` can be used with functions to find specific objects to work on.
 
 Definition of a Mesh function
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,8 +35,7 @@ Valid result types from functions:
 Statistical
 ~~~~~~~~~~~~~~
 
-.. automodule:: volue.mesh.calc.statistical.StatisticalFunctions
-   :members:
+.. automodule:: volue.mesh.calc.statistical
    :noindex:
 
 Transformation
@@ -45,9 +44,15 @@ Transformation
 .. automodule:: volue.mesh.calc.transform
    :noindex:
 
+.. automethod:: volue.mesh._connection.Connection.Session.read_timeseries_points
+   :noindex:
+
+.. automethod:: volue.mesh.aio._connection.Connection.Session.read_timeseries_points
+   :noindex:
+
 History
 ~~~~~~~~~~~~~~
 
-.. autoclass:: volue.mesh.calc.history.HistoryFunctions
-   :members:
+.. automodule:: volue.mesh.calc.history
    :noindex:
+
