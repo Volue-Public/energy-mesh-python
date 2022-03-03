@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 import datetime
 from typing import List
 
-from volue.mesh import Timeseries, copydoc
+from volue.mesh import Timeseries
 from volue.mesh.calc.common import _Calculation, Timezone, _convert_datetime_to_mesh_calc_format, \
     _parse_timeseries_list_response, _parse_single_timeseries_response
 
@@ -139,14 +139,12 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
 class HistoryFunctions(_HistoryFunctionsBase):
 
-    @copydoc(_HistoryFunctionsBase.get_all_forecasts)
     def get_all_forecasts(self,
                           search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = super().run(expression)
         return _parse_timeseries_list_response(response)
 
-    @copydoc(_HistoryFunctionsBase.get_forecast)
     def get_forecast(self,
                      forecast_start_min: datetime = None,
                      forecast_start_max: datetime = None,
@@ -158,7 +156,6 @@ class HistoryFunctions(_HistoryFunctionsBase):
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
-    @copydoc(_HistoryFunctionsBase.get_ts_as_of_time)
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
                           timezone: Timezone = None,
@@ -167,7 +164,6 @@ class HistoryFunctions(_HistoryFunctionsBase):
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
-    @copydoc(_HistoryFunctionsBase.get_ts_historical_versions)
     def get_ts_historical_versions(self,
                                    max_number_of_versions_to_get: int,
                                    search_query: str = None) -> List[Timeseries]:
@@ -178,14 +174,12 @@ class HistoryFunctions(_HistoryFunctionsBase):
 
 class HistoryFunctionsAsync(_HistoryFunctionsBase):
 
-    @copydoc(_HistoryFunctionsBase.get_all_forecasts)
     async def get_all_forecasts(self,
                                 search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = await super().run_async(expression)
         return _parse_timeseries_list_response(response)
 
-    @copydoc(_HistoryFunctionsBase.get_forecast)
     async def get_forecast(self,
                            forecast_start_min: datetime = None,
                            forecast_start_max: datetime = None,
@@ -197,7 +191,6 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 
-    @copydoc(_HistoryFunctionsBase.get_ts_as_of_time)
     async def get_ts_as_of_time(self,
                                 available_at_timepoint: datetime,
                                 timezone: Timezone = None,
@@ -206,7 +199,6 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 
-    @copydoc(_HistoryFunctionsBase.get_ts_historical_versions)
     async def get_ts_historical_versions(self,
                                          max_number_of_versions_to_get: int,
                                          search_query: str = None) -> List[Timeseries]:

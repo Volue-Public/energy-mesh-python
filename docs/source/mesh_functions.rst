@@ -35,14 +35,14 @@ Valid result types from functions:
 Statistical
 ~~~~~~~~~~~~~~
 
-.. autoclass:: volue.mesh.calc.statistical.StatisticalFunctions
-   :noindex:
-
-.. autoclass:: volue.mesh.calc.statistical.StatisticalFunctionsAsync
+.. automodule:: volue.mesh.calc.statistical
    :noindex:
 
 Transformation
 ~~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh.calc.transform
+   :noindex:
 
 .. automethod:: volue.mesh._connection.Connection.Session.read_timeseries_points
    :noindex:
@@ -53,9 +53,6 @@ Transformation
 History
 ~~~~~~~~~~~~~~
 
-.. autoclass:: volue.mesh.calc.history.HistoryFunctions
-   :noindex:
-
-.. autoclass:: volue.mesh.calc.history.HistoryFunctionsAsync
+.. automodule:: volue.mesh.calc.history
    :noindex:
 
