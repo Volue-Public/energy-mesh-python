@@ -62,6 +62,11 @@ Write timeseries, asynchronously
 .. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points_async.py
    :language: python
 
+Search for timeseries attributes
+**********************************
+.. literalinclude:: /../../src/volue/mesh/examples/timeseries_search.py
+   :language: python
+
 Running tests
 ********************************
 .. literalinclude:: /../../src/volue/mesh/examples/run_tests.py

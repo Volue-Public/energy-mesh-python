@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="next" title="An introduction to Mesh" href="introduction_to_mesh.html" />
     <link rel="prev" title="Quickstart guide" href="quickstart.html" /> 
 </head>
 
@@ -89,25 +89,35 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="news.html">News</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#python-environment">Python environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#virtual-environments">Virtual Environments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#mesh-python-library-installation">Mesh Python library installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#using-pip">Using pip</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#from-source">From source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#git">Git</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#github">GitHub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#python">Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-environment">Development environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pycharm">PyCharm</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mesh-python-sdk">Mesh Python SDK</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setup-for-users-recommended">Setup for users (recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setup-for-developers">Setup for developers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
 <ul>
@@ -181,58 +191,121 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="python-environment">
-<h2>Python environment<a class="headerlink" href="#python-environment" title="Permalink to this headline">¶</a></h2>
-<p>Mesh Python SDK works with Python 3.7.1, 3.8 and 3.9. Support for earlier versions is not provided due to dependencies.</p>
-<p>For Python installation help refer to official <a class="reference external" href="https://www.python.org/about/gettingstarted/">Python documentation</a>.</p>
-</div>
-<div class="section" id="virtual-environments">
-<h2>Virtual Environments<a class="headerlink" href="#virtual-environments" title="Permalink to this headline">¶</a></h2>
-<p>When working with multiple python projects they may depend on different python versions or versions of external libraries. For this purpose, the standard library comes with a concept called “Virtual Environments” to help maintain these separate versions.</p>
-<p>In-depth information can be found under Python’s official documentation for the <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">Virtual Environments and Packages</a>.</p>
-<p>Here is a quick way:</p>
+<p>To be able to communicate with a Mesh server using the Mesh Python SDK some initial setup is needed. Here we suggest one possible setup.</p>
+<div class="section" id="git">
+<h2>Git<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h2>
+<p>Git is a version control system. To be able to follow along using this guide you will need git to be able to install the Mesh Python SDK.</p>
 <ol class="arabic">
-<li><p>Create a directory for your project:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir MyProject
-$ cd MyProject
-$ python3 -m venv my-venv
+<li><p>Download and install:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Go to <a class="reference external" href="https://git-scm.com/downloads">git-scm.com</a> and download the installer.</p></li>
+<li><p>Installation with default settings should suffice.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Configure:</p>
+<blockquote>
+<div><p>Git needs to be configured with your name and email address:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git config --global user.name &quot;name&quot;
+$ git config --global user.email &quot;email_address&quot;
 </pre></div>
 </div>
+</div></blockquote>
 </li>
-<li><p>Activate the virtual environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ my-venv\Scripts\activate.bat (Windows)
-or
-$ source my-venv/bin/activate (Linux, Mac)
-</pre></div>
-</div>
-</li>
-<li><p><a class="reference internal" href="#mesh-python-library-installation"><span class="std std-ref">Install Mesh Python library</span></a></p></li>
 </ol>
-<p>Your virtual environment is now up and running with the Mesh Python SDK and you can now develop your project.</p>
 </div>
-<div class="section" id="mesh-python-library-installation">
-<h2>Mesh Python library installation<a class="headerlink" href="#mesh-python-library-installation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="using-pip">
-<h3>Using pip<a class="headerlink" href="#using-pip" title="Permalink to this headline">¶</a></h3>
-<p>Recommended way for clients:</p>
+<div class="section" id="github">
+<h2>GitHub<a class="headerlink" href="#github" title="Permalink to this headline">¶</a></h2>
+<p>GitHub is a cloud based storage for git repositories. The Mesh Python SDK is hosted on <a class="reference external" href="https://github.com/PowelAS/sme-mesh-python">GitHub</a>.</p>
+<p>To be able to access the code you will need a GitHub user and that user needs to be given access by Volue.</p>
+<p>If you don’t have a GitHub user you can <a class="reference external" href="https://github.com/join">join here</a>.</p>
+</div>
+<div class="section" id="python">
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h2>
+<p>Mesh Python SDK works with Python 3.7.1, 3.8 and 3.9. Support for earlier and later versions is not provided due to dependencies.</p>
+<ol class="arabic">
+<li><p>Download and install (Windows):</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Go to <a class="reference external" href="https://www.python.org/downloads/windows/">python.org</a> and download the latest 3.9 release.</p></li>
+<li><p>Follow installation instructions. Select “Add Python 3.9 to PATH” for easy access on the command line.</p></li>
+<li><p>For Python installation help refer to official <a class="reference external" href="https://www.python.org/about/gettingstarted/">Python documentation</a>.</p></li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div>
+<div class="section" id="development-environment">
+<h2>Development environment<a class="headerlink" href="#development-environment" title="Permalink to this headline">¶</a></h2>
+<p>To be able to use the Mesh Python SDK to communicate with a Mesh Server or to do development you will need to write Python code that uses the functionality in the Mesh Python package.</p>
+<p>There are many ways to do this, but here we present one of them.</p>
+<div class="section" id="pycharm">
+<h3>PyCharm<a class="headerlink" href="#pycharm" title="Permalink to this headline">¶</a></h3>
+<p>PyCharm is an IDE designed to write and execute Python code.</p>
+<p>When working with multiple python projects they may depend on different python versions and/or versions of external libraries. For this purpose, the standard library comes with a concept called <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">Virtual Environments and Packages</a> to help maintain these separate versions.</p>
+<ol class="arabic">
+<li><p>Download and install:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Go <a class="reference external" href="https://www.jetbrains.com/pycharm/download/#section=windows">here</a> and download the installer.</p></li>
+<li><p>Run the installer and follow the steps in the installation wizard.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>Create a <a class="reference external" href="https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html#creating-simple-project">new project</a>.</p></li>
+<li><p>Create a <a class="reference external" href="https://www.jetbrains.com/help/pycharm/creating-and-running-your-first-python-project.html#create-file">python file</a> for your code.</p></li>
+<li><p>Good to know:</p>
+<blockquote>
+<div><ol class="loweralpha">
+<li><p>PyCharm Terminal:</p>
+<blockquote>
+<div><p>‘View’ -&gt; ‘Tool Windows’ -&gt; ‘Terminal’ will bring up a command line where the virtual environment is activated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is the command line where you should run commands for installing new packages. Example: ‘python -m pip install &lt;some_python_package&gt;’.</p>
+</div>
+</div></blockquote>
+</li>
+<li><p>Execute a script:</p>
+<blockquote>
+<div><p>Right click on the &lt;your_python_script&gt;.py in the ‘Project’ view to the right in PyCharm and select ‘Run’.</p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="mesh-python-sdk">
+<h2>Mesh Python SDK<a class="headerlink" href="#mesh-python-sdk" title="Permalink to this headline">¶</a></h2>
+<p>Depending on how you intend to use the Mesh Python SDK there are two ways to install it.</p>
+<p>If you intend to use it to communicate with a Mesh Server you are a user. If you intend to contribute to development of the SDK you are a developer.</p>
+<div class="section" id="setup-for-users-recommended">
+<span id="setup-for-users"></span><h3>Setup for users (recommended)<a class="headerlink" href="#setup-for-users-recommended" title="Permalink to this headline">¶</a></h3>
+<p>As a user you can install the Mesh Python SDK using Python’s standard package manager system <a class="reference external" href="https://packaging.python.org/en/latest/tutorials/installing-packages/">pip</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PowelAS</span><span class="o">/</span><span class="n">sme</span><span class="o">-</span><span class="n">mesh</span><span class="o">-</span><span class="n">python</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>See <a class="reference internal" href="news.html"><span class="doc">News</span></a> if you need a specific Mesh version.</p>
+<p>See <a class="reference internal" href="versions.html"><span class="doc">Versions</span></a> if you need a specific Mesh version.</p>
 </div>
 </div>
-<div class="section" id="from-source">
-<h3>From source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h3>
-<p>First clone the repository:</p>
+<div class="section" id="setup-for-developers">
+<span id="id2"></span><h3>Setup for developers<a class="headerlink" href="#setup-for-developers" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Clone the repository:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PowelAS</span><span class="o">/</span><span class="n">sme</span><span class="o">-</span><span class="n">mesh</span><span class="o">-</span><span class="n">python</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
-<p>This library uses <a class="reference external" href="https://python-poetry.org/docs/">Poetry</a> for development, installation, and packaging. To
-work with the repository you should <a class="reference external" href="https://github.com/python-poetry/poetry#installation">install poetry</a>.
-The steps below assume Poetry binary is added to your PATH.</p>
-<p>To install all our development and runtime dependencies to a virtual environment go to the Mesh Python SDK repository directory and run:</p>
+</li>
+<li><p>Install Poetry:</p>
+<blockquote>
+<div><p>This library uses <a class="reference external" href="https://python-poetry.org/docs/">Poetry</a> for development, installation and packaging. To
+work with the repository you should <a class="reference external" href="https://python-poetry.org/docs/#installation">install poetry</a>.</p>
+<p>To install all our development and runtime dependencies to a virtual environment run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">install</span>
 </pre></div>
 </div>
@@ -240,7 +313,7 @@ The steps below assume Poetry binary is added to your PATH.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">build</span>
 </pre></div>
 </div>
-<p>It will also (re)generate our grpc/protobuf sources, and should be ran after making changes to those.</p>
+<p>This will also (re)generate our grpc/protobuf sources, and should be ran after making changes to proto file(s).</p>
 <p>To run arbitrary commands in the Poetry environment run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="p">{</span><span class="n">command</span><span class="p">}</span>
 <span class="c1"># e.g.: poetry run python src\volue\mesh\examples\get_version.py</span>
@@ -252,12 +325,15 @@ The steps below assume Poetry binary is added to your PATH.</p>
 </pre></div>
 </div>
 <p>to drop into a shell with the dependencies available.</p>
-</div>
-</div>
+</div></blockquote>
+</li>
+</ol>
 <div class="section" id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<h4>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h4>
 <p>The Mesh Python SDK depends on the Python standard library, but also <a class="reference external" href="https://grpc.io/">gRPC</a> and <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a>.</p>
 <p>These dependencies are managed, installed and referenced by the library using <a class="reference external" href="https://python-poetry.org/docs/">Poetry</a>. So no additional dependencies should be needed after running the pip install, unless you want to run the tests that come with the SDK, then see <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a>.</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -267,7 +343,7 @@ The steps below assume Poetry binary is added to your PATH.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="introduction_to_mesh.html" class="btn btn-neutral float-right" title="An introduction to Mesh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

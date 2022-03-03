@@ -87,15 +87,18 @@
             
               <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="news.html">News</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
 <ul>
@@ -173,9 +176,11 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
@@ -198,13 +203,17 @@
 </li>
       <li><a href="api.html#volue.mesh.tests.test_authentication.auth_metadata_plugin">auth_metadata_plugin() (in module volue.mesh.tests.test_authentication)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.Authentication">Authentication (class in volue.mesh)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.Authentication.KerberosTokenIterator">Authentication.KerberosTokenIterator (class in volue.mesh)</a>
 </li>
       <li><a href="api.html#volue.mesh.Authentication.Parameters">Authentication.Parameters (class in volue.mesh)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.AVG">AVG (volue.mesh.calc.transform.Method attribute)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.AVGI">AVGI (volue.mesh.calc.transform.Method attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -279,9 +288,29 @@
   </ul></td>
 </tr></table>
 
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.FIRST">FIRST (volue.mesh.calc.transform.Method attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions.get_all_forecasts">get_all_forecasts() (volue.mesh.calc.history.HistoryFunctions method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_all_forecasts">(volue.mesh.calc.history.HistoryFunctionsAsync method)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions.get_forecast">get_forecast() (volue.mesh.calc.history.HistoryFunctions method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_forecast">(volue.mesh.calc.history.HistoryFunctionsAsync method)</a>
+</li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.aio.Connection.Session.get_timeseries_attribute">get_timeseries_attribute() (volue.mesh.aio.Connection.Session method)</a>
 
       <ul>
@@ -298,6 +327,18 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions.get_ts_as_of_time">get_ts_as_of_time() (volue.mesh.calc.history.HistoryFunctions method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_ts_as_of_time">(volue.mesh.calc.history.HistoryFunctionsAsync method)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions.get_ts_historical_versions">get_ts_historical_versions() (volue.mesh.calc.history.HistoryFunctions method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_ts_historical_versions">(volue.mesh.calc.history.HistoryFunctionsAsync method)</a>
+</li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.aio.Connection.get_user_identity">get_user_identity() (volue.mesh.aio.Connection method)</a>
 
       <ul>
@@ -328,6 +369,10 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions">HistoryFunctions (class in volue.mesh.calc.history)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync">HistoryFunctionsAsync (class in volue.mesh.calc.history)</a>
+</li>
       <li><a href="api.html#volue.mesh.Timeseries.Resolution.HOUR">HOUR (volue.mesh.Timeseries.Resolution attribute)</a>
 </li>
   </ul></td>
@@ -336,11 +381,25 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#volue.mesh.Timeseries.is_calculation_expression_result">is_calculation_expression_result (volue.mesh.Timeseries property)</a>
+      <li><a href="glossary.html#term-IDE"><strong>IDE</strong></a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Timeseries.is_calculation_expression_result">is_calculation_expression_result (volue.mesh.Timeseries property)</a>
+</li>
       <li><a href="api.html#volue.mesh.Authentication.is_token_valid">is_token_valid() (volue.mesh.Authentication method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.LAST">LAST (volue.mesh.calc.transform.Method attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.common.Timezone.LOCAL">LOCAL (volue.mesh.calc.common.Timezone attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -368,6 +427,20 @@
         <li><a href="api.html#volue.mesh.examples.write_timeseries_points_async.main">(in module volue.mesh.examples.write_timeseries_points_async)</a>
 </li>
       </ul></li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.MAX">MAX (volue.mesh.calc.transform.Method attribute)</a>
+</li>
+      <li><a href="glossary.html#term-Mesh-functions"><strong>Mesh functions</strong></a>
+</li>
+      <li><a href="glossary.html#term-Mesh-object-model"><strong>Mesh object model</strong></a>
+</li>
+      <li><a href="glossary.html#term-Mesh-search-language"><strong>Mesh search language</strong></a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method">Method (class in volue.mesh.calc.transform)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Parameters.method">method (volue.mesh.calc.transform.Parameters attribute)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.MIN">MIN (volue.mesh.calc.transform.Method attribute)</a>
+</li>
       <li><a href="api.html#volue.mesh.Timeseries.Resolution.MIN15">MIN15 (volue.mesh.Timeseries.Resolution attribute)</a>
 </li>
       <li><a href="api.html#volue.mesh.Timeseries.PointFlags.MISSING">MISSING (volue.mesh.Timeseries.PointFlags attribute)</a>
@@ -379,6 +452,16 @@
         <li><a href="api.html#module-volue.mesh">volue.mesh</a>
 </li>
         <li><a href="api.html#module-volue.mesh.aio">volue.mesh.aio</a>
+</li>
+        <li><a href="api.html#module-volue.mesh.calc">volue.mesh.calc</a>
+</li>
+        <li><a href="api.html#module-volue.mesh.calc.common">volue.mesh.calc.common</a>
+</li>
+        <li><a href="api.html#module-volue.mesh.calc.history">volue.mesh.calc.history</a>
+</li>
+        <li><a href="api.html#module-volue.mesh.calc.statistical">volue.mesh.calc.statistical</a>
+</li>
+        <li><a href="api.html#module-volue.mesh.calc.transform">volue.mesh.calc.transform</a>
 </li>
         <li><a href="api.html#module-volue.mesh.examples">volue.mesh.examples</a>
 </li>
@@ -453,10 +536,12 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#volue.mesh.Timeseries.Curve.PIECEWISELINEAR">PIECEWISELINEAR (volue.mesh.Timeseries.Curve attribute)</a>
+      <li><a href="api.html#volue.mesh.calc.transform.Parameters">Parameters (class in volue.mesh.calc.transform)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.Timeseries.Curve.PIECEWISELINEAR">PIECEWISELINEAR (volue.mesh.Timeseries.Curve attribute)</a>
+</li>
       <li><a href="api.html#volue.mesh.Authentication.KerberosTokenIterator.process_response">process_response() (volue.mesh.Authentication.KerberosTokenIterator method)</a>
 </li>
   </ul></td>
@@ -477,6 +562,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.transform.Parameters.resolution">resolution (volue.mesh.calc.transform.Parameters attribute)</a>
+</li>
       <li><a href="api.html#volue.mesh.aio.Connection.revoke_access_token">revoke_access_token() (volue.mesh.aio.Connection method)</a>
 
       <ul>
@@ -509,12 +596,14 @@
 </li>
       <li><a href="api.html#volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received">signal_final_response_received() (volue.mesh.Authentication.KerberosTokenIterator method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.Timeseries.Curve.STAIRCASE">STAIRCASE (volue.mesh.Timeseries.Curve attribute)</a>
 </li>
       <li><a href="api.html#volue.mesh.Timeseries.Curve.STAIRCASESTARTOFSTEP">STAIRCASESTARTOFSTEP (volue.mesh.Timeseries.Curve attribute)</a>
 </li>
+      <li><a href="api.html#volue.mesh.calc.common.Timezone.STANDARD">STANDARD (volue.mesh.calc.common.Timezone attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.examples.connect_asynchronously.start_and_end_session">start_and_end_session() (in module volue.mesh.examples.connect_asynchronously)</a>
 
       <ul>
@@ -527,6 +616,20 @@
         <li><a href="api.html#volue.mesh.Connection.Session.statistical_functions">(volue.mesh.Connection.Session method)</a>
 </li>
       </ul></li>
+      <li><a href="api.html#volue.mesh.calc.statistical.StatisticalFunctions">StatisticalFunctions (class in volue.mesh.calc.statistical)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync">StatisticalFunctionsAsync (class in volue.mesh.calc.statistical)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.SUM">SUM (volue.mesh.calc.transform.Method attribute)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">sum() (volue.mesh.calc.statistical.StatisticalFunctions method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">(volue.mesh.calc.statistical.StatisticalFunctionsAsync method)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.calc.transform.Method.SUMI">SUMI (volue.mesh.calc.transform.Method attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -603,10 +706,10 @@
 </li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_read_timeseries_attribute_async">test_read_timeseries_attribute_async() (in module volue.mesh.tests.test_aio_connection)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.tests.test_connection.test_read_timeseries_points">test_read_timeseries_points() (in module volue.mesh.tests.test_connection)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_read_timeseries_points_async">test_read_timeseries_points_async() (in module volue.mesh.tests.test_aio_connection)</a>
 </li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_read_timeseries_points_without_specifying_timeseries_should_throw">test_read_timeseries_points_without_specifying_timeseries_should_throw() (in module volue.mesh.tests.test_aio_connection)</a>
@@ -667,6 +770,8 @@
 </li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_write_timeseries_points_using_timskey_async">test_write_timeseries_points_using_timskey_async() (in module volue.mesh.tests.test_aio_connection)</a>
 </li>
+      <li><a href="glossary.html#term-Time-series"><strong>Time series</strong></a>
+</li>
       <li><a href="api.html#volue.mesh.Timeseries">Timeseries (class in volue.mesh)</a>
 </li>
       <li><a href="api.html#volue.mesh.Timeseries.Curve">Timeseries.Curve (class in volue.mesh)</a>
@@ -674,6 +779,10 @@
       <li><a href="api.html#volue.mesh.Timeseries.PointFlags">Timeseries.PointFlags (class in volue.mesh)</a>
 </li>
       <li><a href="api.html#volue.mesh.Timeseries.Resolution">Timeseries.Resolution (class in volue.mesh)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.common.Timezone">Timezone (class in volue.mesh.calc.common)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.transform.Parameters.timezone">timezone (volue.mesh.calc.transform.Parameters attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -701,12 +810,16 @@
       </ul></li>
       <li><a href="api.html#volue.mesh.Authentication.Parameters.user_principal">user_principal (volue.mesh.Authentication.Parameters attribute)</a>
 </li>
+      <li><a href="api.html#volue.mesh.calc.common.Timezone.UTC">UTC (volue.mesh.calc.common.Timezone attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="glossary.html#term-venv"><strong>venv</strong></a>
+</li>
       <li>
     volue.mesh
 
@@ -719,6 +832,41 @@
 
       <ul>
         <li><a href="api.html#module-volue.mesh.aio">module</a>
+</li>
+      </ul></li>
+      <li>
+    volue.mesh.calc
+
+      <ul>
+        <li><a href="api.html#module-volue.mesh.calc">module</a>
+</li>
+      </ul></li>
+      <li>
+    volue.mesh.calc.common
+
+      <ul>
+        <li><a href="api.html#module-volue.mesh.calc.common">module</a>
+</li>
+      </ul></li>
+      <li>
+    volue.mesh.calc.history
+
+      <ul>
+        <li><a href="api.html#module-volue.mesh.calc.history">module</a>
+</li>
+      </ul></li>
+      <li>
+    volue.mesh.calc.statistical
+
+      <ul>
+        <li><a href="api.html#module-volue.mesh.calc.statistical">module</a>
+</li>
+      </ul></li>
+      <li>
+    volue.mesh.calc.transform
+
+      <ul>
+        <li><a href="api.html#module-volue.mesh.calc.transform">module</a>
 </li>
       </ul></li>
       <li>
@@ -756,6 +904,8 @@
         <li><a href="api.html#module-volue.mesh.examples.quickstart">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     volue.mesh.examples.read_timeseries_points
 
@@ -777,8 +927,6 @@
         <li><a href="api.html#module-volue.mesh.examples.timeseries_operations">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     volue.mesh.examples.write_timeseries_points
 

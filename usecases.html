@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Use cases &mdash; volue.mesh 0.0.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Mesh functions" href="mesh_functions.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Use cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-dependencies">Add dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-the-use-cases">Get the use cases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure">Configure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#preferences">Preferences</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-functions">Helper functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-use-cases">The use cases</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#edit-and-run">Edit and run</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Use cases</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/usecases.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="use-cases">
+<h1>Use cases<a class="headerlink" href="#use-cases" title="Permalink to this headline">¶</a></h1>
+<p>The use cases are a set of practical tasks set up to show how to get data from a Mesh server connected to a customer database.</p>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>Follow the instructions for setting up a new project to work with the Mesh Python SDK in <a class="reference internal" href="installation.html#installation"><span class="std std-ref">Installation</span></a>.</p>
+</div>
+<div class="section" id="add-dependencies">
+<h2>Add dependencies<a class="headerlink" href="#add-dependencies" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p>Install additional Python packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m pip install pandas
+$ python -m pip install matplotlib
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="get-the-use-cases">
+<h2>Get the use cases<a class="headerlink" href="#get-the-use-cases" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Download <a class="reference download internal" download="" href="_downloads/3668d7c17a76fc0f7fce4bd93aae8059/use_cases.py"><code class="xref download docutils literal notranslate"><span class="pre">use_cases.py</span></code></a></p></li>
+<li><p>Move the file into your project.</p></li>
+</ol>
+</div>
+<div class="section" id="configure">
+<h2>Configure<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>use_cases.py</cite> file contains a configuration section, some helper functions and the use cases.</p>
+<div class="section" id="preferences">
+<h3>Preferences<a class="headerlink" href="#preferences" title="Permalink to this headline">¶</a></h3>
+<p>The first section of the file exposes some configuration options. Edit these to fit your Mesh server setup and preferences.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Ip address for the Mesh server</span>
+<span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+<span class="c1"># Mesh server port for gRPC communication</span>
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">50051</span>
+<span class="c1"># Use matplotlib to visualize results</span>
+<span class="n">SHOW_PLOT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Save timeseries to CSV file</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="helper-functions">
+<h3>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h3>
+<p>The helper functions get information about Mesh Python objects, plot and save timeseries to file.</p>
+</div>
+<div class="section" id="the-use-cases">
+<h3>The use cases<a class="headerlink" href="#the-use-cases" title="Permalink to this headline">¶</a></h3>
+<p>Each use case is tailored to do a specific task on some data from a Mesh server.</p>
+<p>All use cases follow this pattern:
+First the scenario is explained and needed information is given. Then a connection to the server is established and a new session is created. The information from the scenario is passed into requests that are sent to the server and their response is received. Finally the data is plotted to a figure, saved to file and/or printed to the command line.</p>
+<p>An example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">use_case_1</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scenario:</span>
+<span class="sd">    We want to find all timeseries which show the production of a hydro plant.</span>
+
+<span class="sd">    Start point:        Model/MeshTEK/Mesh which has guid 801896b0-d448-4299-874a-3ecf8ab0e2d4</span>
+<span class="sd">    Search expression:  *[.Type=HydroPlant].Production_operative</span>
+<span class="sd">    Time interval:      1.9.2021 - 1.10.2021</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">PORT</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">use_case_name</span> <span class="o">=</span> <span class="s2">&quot;Use case 1&quot;</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="s2">&quot;MeshTEK&quot;</span>
+            <span class="n">start_object_guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;801896b0-d448-4299-874a-3ecf8ab0e2d4&quot;</span><span class="p">)</span>  <span class="c1"># Model/MeshTEK/Mesh</span>
+            <span class="n">search_query</span> <span class="o">=</span> <span class="s2">&quot;*[.Type=HydroPlant].Production_operative&quot;</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">use_case_name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Search for mesh objects</span>
+            <span class="n">search_matches</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attribute</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+                                                                     <span class="n">start_object_guid</span><span class="o">=</span><span class="n">start_object_guid</span><span class="p">,</span>
+                                                                     <span class="n">query</span><span class="o">=</span><span class="n">search_query</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search resulted in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">search_matches</span><span class="p">)</span><span class="si">}</span><span class="s2"> object(s) that match(es) the search criteria: </span><span class="si">{</span><span class="n">search_query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Retrieve timeseries connected to the mesh objects found</span>
+            <span class="n">path_and_pandas_dataframe</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">mesh_object</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">search_matches</span><span class="p">):</span>
+                <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                                                            <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+                                                            <span class="n">uuid_id</span><span class="o">=</span><span class="n">mesh_object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="se">\n</span><span class="s2">&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;-----</span><span class="se">\n</span><span class="s2">&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_mesh_object_information</span><span class="p">(</span><span class="n">mesh_object</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">pandas_dataframe</span> <span class="o">=</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+                <span class="n">path_and_pandas_dataframe</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">mesh_object</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">pandas_dataframe</span><span class="p">))</span>
+
+            <span class="c1"># Post process data</span>
+            <span class="n">plot_timeseries</span><span class="p">(</span><span class="n">path_and_pandas_dataframe</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">use_case_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">search_query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">save_timeseries_to_csv</span><span class="p">(</span><span class="n">path_and_pandas_dataframe</span><span class="p">,</span> <span class="s1">&#39;use_case_1&#39;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">use_case_name</span><span class="si">}</span><span class="s2"> resulted in an error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="edit-and-run">
+<h2>Edit and run<a class="headerlink" href="#edit-and-run" title="Permalink to this headline">¶</a></h2>
+<p>To be able to test the use case you need to supply information that is in your own Mesh server.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mesh_functions.html" class="btn btn-neutral float-left" title="Mesh functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

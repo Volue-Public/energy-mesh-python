@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>volue.mesh.calc.transform &mdash; volue.mesh 0.0.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usecases.html">Use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>volue.mesh.calc.transform</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for volue.mesh.calc.transform</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Mesh calculation transformation functions.</span>
+<span class="sd">The functions in this category are used to calculate time series with a different time resolution than the source.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">read_proto_reply</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">to_protobuf_utcinterval</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
+
+<div class="viewcode-block" id="Method"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.Method">[docs]</a><span class="k">class</span> <span class="nc">Method</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transformation method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">SUM</span>   <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SUMI</span>  <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># I -&gt; weighted sum, only for breakpoint timeseries</span>
+    <span class="n">AVG</span>   <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># equivalent to MEAN</span>
+    <span class="n">AVGI</span>  <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># I -&gt; weighted average, only for breakpoint timeseries</span>
+    <span class="n">FIRST</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">LAST</span>  <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">MIN</span>   <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">MAX</span>   <span class="o">=</span> <span class="mi">8</span></div>
+
+
+<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.Parameters">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transformation parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Method</span>
+    <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<span class="k">def</span> <span class="nf">_prepare_request</span><span class="p">(</span><span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="p">,</span>
+                    <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                    <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                    <span class="n">relative_to</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">,</span>
+                    <span class="n">params</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates transformation specific input parameters, computes calculation expression and</span>
+<span class="sd">    returns a gRPC calculation request to be sent to the Mesh server.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">resolution</span> <span class="ow">is</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">BREAKPOINT</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;BREAKPOINT&#39; resolution is unsupported for timeseries transformation&quot;</span><span class="p">)</span>
+
+    <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## = @TRANSFORM(@t(), &#39;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;, &#39;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">timezone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">, &#39;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+    <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">(</span>
+        <span class="n">session_id</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="n">session_id</span><span class="p">),</span>
+        <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
+        <span class="n">relative_to</span><span class="o">=</span><span class="n">relative_to</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">request</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses a gRPC response from the Mesh server and validates the result.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">timeseries_results</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;invalid transformation result, expected 1 timeseries, bot got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
