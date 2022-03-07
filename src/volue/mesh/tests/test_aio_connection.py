@@ -742,7 +742,7 @@ async def test_statistical_sum():
 
         try:
             reply_timeseries = await session.statistical_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).sum()
+                MeshObjectId(full_name=full_name), start_time, end_time).sum('some_query')
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
