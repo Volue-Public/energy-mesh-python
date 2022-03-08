@@ -1,6 +1,7 @@
 from volue.mesh._common import *
 from volue.mesh import Authentication, Credentials, Timeseries
 from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
@@ -297,6 +298,9 @@ class Connection:
                 grpc.RpcError:
             """
             self.mesh_service.Commit(to_proto_guid(self.session_id))
+
+        def forecast_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> ForecastFunctions:
+            return ForecastFunctions(self, relative_to, start_time, end_time)
 
         def history_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> HistoryFunctions:
             return HistoryFunctions(self, relative_to, start_time, end_time)

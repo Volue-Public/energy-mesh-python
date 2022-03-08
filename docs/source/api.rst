@@ -20,6 +20,7 @@ volue.mesh.calc
 
 .. automodule:: volue.mesh.calc
 .. automodule:: volue.mesh.calc.common
+.. automodule:: volue.mesh.calc.forecast
 .. automodule:: volue.mesh.calc.history
 .. automodule:: volue.mesh.calc.statistical
 .. automodule:: volue.mesh.calc.transform

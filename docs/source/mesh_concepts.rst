@@ -33,6 +33,7 @@ Mesh provides :doc:`functions <mesh_functions>` used to perform tasks and calcul
         - search language
             - syntax
         - calculation functions
-            - statistical
+            - forecast
             - history
+            - statistical
 

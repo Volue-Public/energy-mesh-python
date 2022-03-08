@@ -10,8 +10,6 @@ from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import MeshObjectId, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.calc.history import HistoryFunctionsAsync as History
-from volue.mesh.calc.statistical import StatisticalFunctionsAsync as Misc
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
@@ -612,9 +610,9 @@ async def test_read_timeseries_points_without_specifying_timeseries_should_throw
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_history_get_all_forecasts():
+async def test_forecast_get_all_forecasts():
     """
-    Check that running history `get_all_forecasts` does not throw exception for any combination of parameters.
+    Check that running forecast `get_all_forecasts` does not throw exception for any combination of parameters.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -626,7 +624,7 @@ async def test_history_get_all_forecasts():
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            reply_timeseries = await session.history_functions(
+            reply_timeseries = await session.forecast_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
             assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
         except grpc.RpcError as e:
@@ -646,9 +644,9 @@ async def test_history_get_all_forecasts():
      Timezone.LOCAL,
      Timezone.STANDARD,
      Timezone.UTC])
-async def test_history_get_forecast(forecast_start, available_at_timepoint, timezone):
+async def test_forecast_get_forecast(forecast_start, available_at_timepoint, timezone):
     """
-    Check that running history `get_forecast` does not throw exception for any combination of parameters.
+    Check that running forecast `get_forecast` does not throw exception for any combination of parameters.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -661,7 +659,7 @@ async def test_history_get_forecast(forecast_start, available_at_timepoint, time
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            reply_timeseries = await session.history_functions(
+            reply_timeseries = await session.forecast_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
                     forecast_start_min, forecast_start_max, available_at_timepoint, timezone)
             assert reply_timeseries.is_calculation_expression_result
@@ -729,7 +727,7 @@ async def test_history_get_ts_historical_versions(max_number_of_versions_to_get)
 @pytest.mark.database
 async def test_statistical_sum():
     """
-    Check that running misc `sum` does not throw exception for any combination of parameters.
+    Check that running statistical `sum` does not throw exception for any combination of parameters.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
