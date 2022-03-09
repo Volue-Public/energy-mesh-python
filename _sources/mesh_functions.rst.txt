@@ -32,6 +32,18 @@ Valid result types from functions:
 .. note::
    Mesh Python SDK is providing wrappers for the calculation functions. See next sections.
 
+Forecast
+~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh.calc.forecast
+   :noindex:
+
+History
+~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh.calc.history
+   :noindex:
+
 Statistical
 ~~~~~~~~~~~~~~
 
@@ -48,11 +60,5 @@ Transformation
    :noindex:
 
 .. automethod:: volue.mesh.aio._connection.Connection.Session.read_timeseries_points
-   :noindex:
-
-History
-~~~~~~~~~~~~~~
-
-.. automodule:: volue.mesh.calc.history
    :noindex:
 

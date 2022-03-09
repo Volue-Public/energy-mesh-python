@@ -293,22 +293,34 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.calc.transform.Method.FIRST">FIRST (volue.mesh.calc.transform.Method attribute)</a>
 </li>
+      <li><a href="api.html#volue.mesh.aio.Connection.Session.forecast_functions">forecast_functions() (volue.mesh.aio.Connection.Session method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.Connection.Session.forecast_functions">(volue.mesh.Connection.Session method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctions">ForecastFunctions (class in volue.mesh.calc.forecast)</a>
+</li>
+      <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctionsAsync">ForecastFunctionsAsync (class in volue.mesh.calc.forecast)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions.get_all_forecasts">get_all_forecasts() (volue.mesh.calc.history.HistoryFunctions method)</a>
+      <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctions.get_all_forecasts">get_all_forecasts() (volue.mesh.calc.forecast.ForecastFunctions method)</a>
 
       <ul>
-        <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_all_forecasts">(volue.mesh.calc.history.HistoryFunctionsAsync method)</a>
+        <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctionsAsync.get_all_forecasts">(volue.mesh.calc.forecast.ForecastFunctionsAsync method)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#volue.mesh.calc.history.HistoryFunctions.get_forecast">get_forecast() (volue.mesh.calc.history.HistoryFunctions method)</a>
+      <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctions.get_forecast">get_forecast() (volue.mesh.calc.forecast.ForecastFunctions method)</a>
 
       <ul>
-        <li><a href="api.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_forecast">(volue.mesh.calc.history.HistoryFunctionsAsync method)</a>
+        <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctionsAsync.get_forecast">(volue.mesh.calc.forecast.ForecastFunctionsAsync method)</a>
 </li>
       </ul></li>
       <li><a href="api.html#volue.mesh.aio.Connection.Session.get_timeseries_attribute">get_timeseries_attribute() (volue.mesh.aio.Connection.Session method)</a>
@@ -456,6 +468,8 @@
         <li><a href="api.html#module-volue.mesh.calc">volue.mesh.calc</a>
 </li>
         <li><a href="api.html#module-volue.mesh.calc.common">volue.mesh.calc.common</a>
+</li>
+        <li><a href="api.html#module-volue.mesh.calc.forecast">volue.mesh.calc.forecast</a>
 </li>
         <li><a href="api.html#module-volue.mesh.calc.history">volue.mesh.calc.history</a>
 </li>
@@ -666,24 +680,24 @@
 </li>
       <li><a href="api.html#volue.mesh.tests.test_authentication.test_delete_access_token">test_delete_access_token() (in module volue.mesh.tests.test_authentication)</a>
 </li>
+      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_forecast_get_all_forecasts">test_forecast_get_all_forecasts() (in module volue.mesh.tests.test_aio_connection)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.tests.test_connection.test_forecast_get_all_forecasts">(in module volue.mesh.tests.test_connection)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_forecast_get_forecast">test_forecast_get_forecast() (in module volue.mesh.tests.test_aio_connection)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.tests.test_connection.test_forecast_get_forecast">(in module volue.mesh.tests.test_connection)</a>
+</li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.tests.test_connection.test_get_timeseries">test_get_timeseries() (in module volue.mesh.tests.test_connection)</a>
 </li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_get_timeseries_async">test_get_timeseries_async() (in module volue.mesh.tests.test_aio_connection)</a>
 </li>
       <li><a href="api.html#volue.mesh.tests.test_session.test_get_version">test_get_version() (in module volue.mesh.tests.test_session)</a>
 </li>
-      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_history_get_all_forecasts">test_history_get_all_forecasts() (in module volue.mesh.tests.test_aio_connection)</a>
-
-      <ul>
-        <li><a href="api.html#volue.mesh.tests.test_connection.test_history_get_all_forecasts">(in module volue.mesh.tests.test_connection)</a>
-</li>
-      </ul></li>
-      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_history_get_forecast">test_history_get_forecast() (in module volue.mesh.tests.test_aio_connection)</a>
-
-      <ul>
-        <li><a href="api.html#volue.mesh.tests.test_connection.test_history_get_forecast">(in module volue.mesh.tests.test_connection)</a>
-</li>
-      </ul></li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_history_get_ts_as_of_time">test_history_get_ts_as_of_time() (in module volue.mesh.tests.test_aio_connection)</a>
 
       <ul>
@@ -849,6 +863,13 @@
 </li>
       </ul></li>
       <li>
+    volue.mesh.calc.forecast
+
+      <ul>
+        <li><a href="api.html#module-volue.mesh.calc.forecast">module</a>
+</li>
+      </ul></li>
+      <li>
     volue.mesh.calc.history
 
       <ul>
@@ -897,6 +918,8 @@
         <li><a href="api.html#module-volue.mesh.examples.get_version">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     volue.mesh.examples.quickstart
 
@@ -904,8 +927,6 @@
         <li><a href="api.html#module-volue.mesh.examples.quickstart">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     volue.mesh.examples.read_timeseries_points
 
