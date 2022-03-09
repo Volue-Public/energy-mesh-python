@@ -80,7 +80,12 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                      timezone: Timezone = None,
                      search_query: str = None) -> Timeseries:
         """
-        The function uses `forecast_start_min` and `forecast_start_max` to find the relevant forecast instead of using the start of the requested period.
+        The function can take `available_at_timepoint` without specifying `forecast_start_min` and `forecast_start_min` to find a forecast
+        available at the timepoint defined in `available_at_timepoint` (y-axis) within the period requested in `forecast_functions`
+        interval parameters (`start_time` and `end_time`).
+
+        The function can take `forecast_start_min` and `forecast_start_min` with or without specifying `available_at_timepoint` to find
+        the relevant forecast instead of using the start of the requested period (defined in `forecast_functions`).
         It requires that the forecast series' start is less than or equal to `forecast_start_max` and larger than `forecast_start_min`.
         If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.
 
