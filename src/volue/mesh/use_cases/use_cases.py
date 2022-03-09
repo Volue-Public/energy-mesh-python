@@ -732,12 +732,12 @@ def use_case_11():
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
-            # Get historical timeseries
-            historical_timeseries = session.history_functions(
+            # Get forecast timeseries
+            forecast_timeseries = session.forecast_functions(
                 MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_all_forecasts(
                     search_query)
 
-            for number, timeserie in enumerate(historical_timeseries):
+            for number, timeserie in enumerate(forecast_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
                 path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
 
@@ -791,12 +791,12 @@ def use_case_12():
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
-            # Get historical timeseries
-            historical_timeseries = session.history_functions(
+            # Get forecast timeseries
+            forecast_timeseries = session.forecast_functions(
                 MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_forecast(
                     forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint, search_query=search_query)
 
-            pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
+            pandas_dataframe = forecast_timeseries.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f'Forecast for {available_at_timepoint.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
 
             # Post process data
