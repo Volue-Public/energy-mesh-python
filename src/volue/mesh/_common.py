@@ -104,6 +104,10 @@ def read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]
     for timeserie in reply.timeseries:
         resolution = timeserie.resolution
         interval = timeserie.interval
+
+        if not timeserie.data:
+            raise ValueError('No data in time series reply for given interval')
+
         reader = pa.ipc.open_stream(timeserie.data)
         table = reader.read_all()
 
