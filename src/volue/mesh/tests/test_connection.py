@@ -467,12 +467,12 @@ def test_read_transformed_timeseries_points(
     with connection.create_session() as session:
         start_time = datetime(2016, 1, 1, 1, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        transform_parameters = Transform.Parameters(resolution, method, timezone)
         _, full_name = get_timeseries_attribute_2()
 
         try:
-            reply_timeseries = session.read_timeseries_points(
-                start_time, end_time, full_name=full_name, transformation=transform_parameters)
+            reply_timeseries = session.transform_functions(
+                MeshObjectId(full_name=full_name), start_time, end_time).transform(
+                    resolution, method, timezone)
 
             assert reply_timeseries.is_calculation_expression_result
 
@@ -540,8 +540,6 @@ def test_read_transformed_timeseries_points_with_uuid():
         # set interval where there are no NaNs to comfortably use `assert ==``
         start_time = datetime(2016, 1, 1, 5, 0, 0)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
-        transform_parameters = Transform.Parameters(
-            Timeseries.Resolution.MIN15, Transform.Method.AVG)
         _, full_name = get_timeseries_attribute_2()
 
         # first read timeseries UUID (it is set dynamically)
@@ -549,11 +547,13 @@ def test_read_transformed_timeseries_points_with_uuid():
             start_time, end_time, full_name=full_name)
         ts_uuid = timeseries.uuid
 
-        reply_timeseries_full_name = session.read_timeseries_points(
-            start_time, end_time, full_name=full_name, transformation=transform_parameters)
+        reply_timeseries_full_name = session.transform_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).transform(
+                Timeseries.Resolution.MIN15, Transform.Method.SUM)
 
-        reply_timeseries_uuid = session.read_timeseries_points(
-            start_time, end_time, uuid_id=ts_uuid, transformation=transform_parameters)
+        reply_timeseries_uuid = session.transform_functions(
+            MeshObjectId(uuid_id=ts_uuid), start_time, end_time).transform(
+                Timeseries.Resolution.MIN15, Transform.Method.SUM)
 
         assert reply_timeseries_full_name.is_calculation_expression_result == reply_timeseries_uuid.is_calculation_expression_result
         assert len(reply_timeseries_full_name.arrow_table) == len(reply_timeseries_uuid.arrow_table)

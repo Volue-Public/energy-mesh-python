@@ -3,7 +3,7 @@ from datetime import datetime
 import grpc
 import pyarrow as pa
 
-from volue.mesh import Connection, Timeseries
+from volue.mesh import Connection, MeshObjectId, Timeseries
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.examples import _get_connection_info
@@ -94,19 +94,12 @@ def main(address, port, root_pem_certificate):
             start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
             end_time = datetime(2016, 5, 3)
 
-            transform_parameters = Transform.Parameters(
-                resolution = Timeseries.Resolution.DAY,
-                method = Transform.Method.SUM,
-                timezone = Timezone.UTC)
-
-            timeseries_read = session.read_timeseries_points(
-                start_time=start_time,
-                end_time=end_time,
-                uuid_id=timeseries_attribute.id,
-                transformation=transform_parameters)
+            transformed_timeseries = session.transform_functions(
+                MeshObjectId(uuid_id=timeseries_attribute.id), start_time, end_time).transform(
+                    Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.UTC)
 
             # convert to pandas format
-            pandas_series = timeseries_read.arrow_table.to_pandas()
+            pandas_series = transformed_timeseries.arrow_table.to_pandas()
             print(pandas_series)
 
             # do some further processing
