@@ -440,8 +440,8 @@ def use_case_6():
             # Retrieve timeseries connected to the mesh object
             path_and_pandas_dataframe = []
             timeseries_original = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        uuid_id=mesh_object.id)
+                                                                 end_time=end,
+                                                                 uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -450,16 +450,9 @@ def use_case_6():
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from breakpoint to hourly
-            from_breakpoint_to_hourly = Transform.Parameters(
-                resolution=Timeseries.Resolution.HOUR,
-                method=Transform.Method.AVGI,
-                timezone=Timezone.UTC
-            )
-
-            timeserie_transformed = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        uuid_id=mesh_object.id,
-                                                        transformation=from_breakpoint_to_hourly)
+            timeserie_transformed = session.transform_functions(
+                MeshObjectId(uuid_id=mesh_object.id), start_time=start, end_time=end).transform(
+                    Timeseries.Resolution.HOUR, Transform.Method.AVGI, Timezone.UTC)
 
             pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
@@ -503,8 +496,8 @@ def use_case_7():
             # Retrieve timeseries connected to the mesh object
             path_and_pandas_dataframe = []
             timeseries_original = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        uuid_id=mesh_object.id)
+                                                                 end_time=end,
+                                                                 uuid_id=mesh_object.id)
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -513,16 +506,9 @@ def use_case_7():
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from breakpoint to hourly
-            from_breakpoint_to_hourly = Transform.Parameters(
-                resolution=Timeseries.Resolution.DAY,
-                method=Transform.Method.AVG,
-                timezone=Timezone.STANDARD
-            )
-
-            timeserie_transformed = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        uuid_id=mesh_object.id,
-                                                        transformation=from_breakpoint_to_hourly)
+            timeserie_transformed = session.transform_functions(
+                MeshObjectId(uuid_id=mesh_object.id), start_time=start, end_time=end).transform(
+                    Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.STANDARD)
 
             pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
