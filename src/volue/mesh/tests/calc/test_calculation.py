@@ -2,7 +2,7 @@ from datetime import datetime
 import uuid
 import pytest
 
-from volue.mesh.calc.common import Timezone, _convert_datetime_to_mesh_calc_format, _parse_timeseries_list_response, _parse_single_timeseries_response
+from volue.mesh.calc.common import Timezone, _convert_datetime_to_mesh_calc_format, _parse_single_float_response, _parse_single_timeseries_response
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_attribute_2
 
@@ -64,6 +64,17 @@ def test_parsing_single_timeseries_response_with_invalid_calculation_result_shou
     # no timeseries at all
     with pytest.raises(RuntimeError, match=".*invalid calculation result*"):
         _parse_single_timeseries_response(response)
+
+
+@pytest.mark.unittest
+def test_parsing_single_float_response_with_invalid_calculation_result_should_throw():
+    """
+    Check that expected exception is thrown when calculation result is not a single float.
+    """
+    response = core_pb2.CalculationResponse()
+    # no float values at all
+    with pytest.raises(RuntimeError, match=".*invalid calculation result*"):
+        _parse_single_float_response(response)
 
 
 if __name__ == '__main__':
