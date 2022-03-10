@@ -126,3 +126,13 @@ def read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]
 
         timeseries.append(ts)
     return timeseries
+
+
+def read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[float]:
+    """
+    Converts a protobuf numeric calculation reply from Mesh server into a list of floats
+    """
+    results = []
+    for v in reply.value:
+        results.append(v)
+    return results

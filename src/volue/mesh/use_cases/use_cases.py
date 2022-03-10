@@ -173,7 +173,7 @@ def use_case_1():
 def use_case_2():
     """
     Scenario:
-    We want to find timeseries which contain reservoir volume for all reservoirs in a Norway (Norge).
+    We want to find timeseries which contain reservoir volume for all reservoirs in Norway (Norge).
 
     Start point:        Model/MeshTEK/Mesh which has guid 801896b0-d448-4299-874a-3ecf8ab0e2d4
     Search expression:  *[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative
@@ -505,7 +505,7 @@ def use_case_7():
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
-            # Transform timeseries from breakpoint to hourly
+            # Transform timeseries from hourly to daily
             timeserie_transformed = session.transform_functions(
                 MeshObjectId(uuid_id=mesh_object.id), start_time=start, end_time=end).transform(
                     Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.STANDARD)
@@ -549,7 +549,7 @@ def use_case_8():
             # Summarize timeseries
             summarized_timeseries = session.statistical_functions(
                 MeshObjectId(uuid_id=uuid.UUID(start_object_guid)), start_time=start, end_time=end).sum(
-                    search_query)
+                    search_query=search_query)
 
             path_and_pandas_dataframe = []
             pandas_dataframe = summarized_timeseries.arrow_table.to_pandas()

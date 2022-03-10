@@ -4,7 +4,6 @@ The functions in this category are used to calculate time series with a differen
 """
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from enum import Enum
 
 from volue.mesh import Timeseries
@@ -87,10 +86,10 @@ class TransformFunctions(_TransformFunctionsBase):
 class TransformFunctionsAsync(_TransformFunctionsBase):
 
     async def transform(self,
-                  resolution: Timeseries.Resolution,
-                  method: Method,
-                  timezone: Timezone = None,
-                  search_query: str = None) -> Timeseries:
+                        resolution: Timeseries.Resolution,
+                        method: Method,
+                        timezone: Timezone = None,
+                        search_query: str = None) -> Timeseries:
         expression = super()._transform_expression(resolution, method, timezone, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
