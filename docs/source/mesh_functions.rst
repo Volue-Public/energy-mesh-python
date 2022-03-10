@@ -55,10 +55,3 @@ Transformation
 
 .. automodule:: volue.mesh.calc.transform
    :noindex:
-
-.. automethod:: volue.mesh._connection.Connection.Session.read_timeseries_points
-   :noindex:
-
-.. automethod:: volue.mesh.aio._connection.Connection.Session.read_timeseries_points
-   :noindex:
-
