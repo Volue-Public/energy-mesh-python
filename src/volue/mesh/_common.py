@@ -98,12 +98,20 @@ def to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
 
 
 def read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
-    """Converts a timeseries reply into a Timeseries
+    """
+    Converts a protobuf time series reply from Mesh server into Timeseries
+
+    Raises:
+        ValueError: no time series data
     """
     timeseries = []
     for timeserie in reply.timeseries:
         resolution = timeserie.resolution
         interval = timeserie.interval
+
+        if not timeserie.data:
+            raise ValueError('No data in time series reply for the given interval')
+
         reader = pa.ipc.open_stream(timeserie.data)
         table = reader.read_all()
 
