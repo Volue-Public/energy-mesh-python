@@ -38,10 +38,26 @@ Forecast
 .. automodule:: volue.mesh.calc.forecast
    :noindex:
 
+The above class is exposed via:
+
+.. automethod:: volue.mesh._connection.Connection.Session.forecast_functions
+   :noindex:
+
+.. automethod:: volue.mesh.aio._connection.Connection.Session.forecast_functions
+   :noindex:
+
 History
 ~~~~~~~~~~~~~~
 
 .. automodule:: volue.mesh.calc.history
+   :noindex:
+
+The above class is exposed via:
+
+.. automethod:: volue.mesh._connection.Connection.Session.history_functions
+   :noindex:
+
+.. automethod:: volue.mesh.aio._connection.Connection.Session.history_functions
    :noindex:
 
 Statistical
@@ -50,8 +66,24 @@ Statistical
 .. automodule:: volue.mesh.calc.statistical
    :noindex:
 
+The above class is exposed via:
+
+.. automethod:: volue.mesh._connection.Connection.Session.statistical_functions
+   :noindex:
+
+.. automethod:: volue.mesh.aio._connection.Connection.Session.statistical_functions
+   :noindex:
+
 Transformation
 ~~~~~~~~~~~~~~~
 
 .. automodule:: volue.mesh.calc.transform
+   :noindex:
+
+The above class is exposed via:
+
+.. automethod:: volue.mesh._connection.Connection.Session.transform_functions
+   :noindex:
+
+.. automethod:: volue.mesh.aio._connection.Connection.Session.transform_functions
    :noindex:
