@@ -3,15 +3,12 @@ Mesh calculation transformation functions.
 The functions in this category are used to calculate time series with a different time resolution than the source.
 """
 
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-import datetime
 from enum import Enum
-import uuid
 
 from volue.mesh import Timeseries
-from volue.mesh._common import read_proto_reply, to_proto_guid, to_protobuf_utcinterval
-from volue.mesh.calc.common import Timezone
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.calc.common import _Calculation, Timezone, _parse_single_timeseries_response
 
 class Method(Enum):
     """
@@ -26,56 +23,74 @@ class Method(Enum):
     MIN   = 7
     MAX   = 8
 
+class _TransformFunctionsBase(_Calculation, ABC):
 
-@dataclass
-class Parameters:
-    """
-    Transformation parameters
-    """
-    resolution: Timeseries.Resolution
-    method: Method
-    timezone: Timezone = None
+    def _transform_expression(self,
+                              resolution: Timeseries.Resolution,
+                              method: Method,
+                              timezone: Timezone,
+                              search_query: str) -> str:
+
+        if resolution is Timeseries.Resolution.BREAKPOINT:
+            raise ValueError("'BREAKPOINT' resolution is unsupported for timeseries transformation")
+
+        expression = f"## = @TRANSFORM(@t("
+        if search_query:
+            expression = f"{expression}'{search_query}'"
+        expression = f"{expression}), '{resolution.name}', '{method.name}'"
+
+        if timezone is not None:
+            expression = f"{expression}, '{timezone.name}'"
+        expression = f"{expression})\n"
+
+        return expression
+
+    # Interface
+    # abstractmethod does not take into account if method is async or not
+
+    @abstractmethod
+    def transform(self,
+                  resolution: Timeseries.Resolution,
+                  method: Method,
+                  timezone: Timezone = None,
+                  search_query: str = None) -> Timeseries:
+        """
+        Transforms time series from one resolution to another resolution.
+        Some of target resolutions have a time zone foundation.
+        For example, `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).
+        When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.
+
+        You can use it to convert both ways, i.e. both from finer to coarser resolution, and the other way.
+        The most common use is accumulation, i.e. transformation to coarser resolution.
+        Most transformation methods are available for this latter use.
+
+        Returns a time series.
+
+        The resulting objects from the `search_query` will be used in the `transform` function,
+        if `search_query` is not set the `relative_to` object will be used.
+        """
+        pass
 
 
-def _prepare_request(session_id: uuid,
-                    start_time: datetime,
-                    end_time: datetime,
-                    relative_to: core_pb2.ObjectId,
-                    params: Parameters) -> core_pb2.CalculationRequest:
-    """
-    Validates transformation specific input parameters, computes calculation expression and
-    returns a gRPC calculation request to be sent to the Mesh server.
+class TransformFunctions(_TransformFunctionsBase):
 
-    Raises:
-        ValueError:
-    """
-    if params.resolution is Timeseries.Resolution.BREAKPOINT:
-        raise ValueError("'BREAKPOINT' resolution is unsupported for timeseries transformation")
-
-    expression = f"## = @TRANSFORM(@t(), '{params.resolution.name}', '{params.method.name}'"
-    if params.timezone is not None:
-        expression = f"{expression}, '{params.timezone.name}'"
-    expression = f"{expression})\n"
-
-    request = core_pb2.CalculationRequest(
-        session_id=to_proto_guid(session_id),
-        expression=expression,
-        interval=to_protobuf_utcinterval(start_time, end_time),
-        relative_to=relative_to
-        )
-
-    return request
+    def transform(self,
+                  resolution: Timeseries.Resolution,
+                  method: Method,
+                  timezone: Timezone = None,
+                  search_query: str = None) -> Timeseries:
+        expression = super()._transform_expression(resolution, method, timezone, search_query)
+        response = super().run(expression)
+        return _parse_single_timeseries_response(response)
 
 
-def _parse_response(response: core_pb2.CalculationResponse) -> Timeseries:
-    """
-    Parses a gRPC response from the Mesh server and validates the result.
+class TransformFunctionsAsync(_TransformFunctionsBase):
 
-    Raises:
-        RuntimeError:
-    """
-    timeseries = read_proto_reply(response.timeseries_results)
-    if len(timeseries) != 1:
-        raise RuntimeError(
-            f"invalid transformation result, expected 1 timeseries, bot got {len(timeseries)}")
-    return timeseries[0]
+    async def transform(self,
+                  resolution: Timeseries.Resolution,
+                  method: Method,
+                  timezone: Timezone = None,
+                  search_query: str = None) -> Timeseries:
+        expression = super()._transform_expression(resolution, method, timezone, search_query)
+        response = await super().run_async(expression)
+        return _parse_single_timeseries_response(response)
