@@ -58,4 +58,4 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           poetry run pytest -m "not authentication"
-          python .\src\volue\mesh\examples\run_tests.py
+          poetry run python .\src\volue\mesh\examples\run_tests.py
