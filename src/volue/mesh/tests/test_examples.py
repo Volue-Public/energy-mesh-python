@@ -20,6 +20,8 @@ def test_run_example_scripts():
     examples = os.path.join(os.path.dirname(volue.mesh.__file__), 'examples')
     os.chdir(examples)
 
+    # the tests could be triggered by running run_tests.py script
+    # to avoid endless loop do not run this script from this test
     exception_list = ['run_tests.py']
 
     for file in glob.glob("*.py"):

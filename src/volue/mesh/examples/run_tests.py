@@ -44,7 +44,7 @@ def main():
         '--pyargs', 'volue.mesh.tests', # specify that it is the volue.mesh.tests that will run
         '-m', 'unittest or server'      # which subset of tests to run
     ]
-    # pytest.main(cmd) # uncomment this to run
+    pytest.main(cmd)
 
 
 if __name__ == "__main__":
