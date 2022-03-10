@@ -66,7 +66,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
 
         Returns a time series.
 
-        The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function,
+        The resulting objects from the `search_query` will be used in the `transform` function,
         if `search_query` is not set the `relative_to` object will be used.
         """
         pass

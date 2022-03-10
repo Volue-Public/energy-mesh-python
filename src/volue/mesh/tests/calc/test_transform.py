@@ -4,7 +4,8 @@ import pytest
 
 from volue.mesh import Timeseries
 from volue.mesh.calc.common import MeshObjectId, Timezone
-from volue.mesh.calc.transform import Method, TransformFunctions
+from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.transform import TransformFunctions
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_attribute_2
 
 
@@ -24,7 +25,7 @@ def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
     base = TransformFunctions(session_id, MeshObjectId(full_name=full_name), start_time, end_time)
 
     with pytest.raises(ValueError, match=".*'BREAKPOINT' resolution is unsupported.*"):
-        base._transform_expression(Timeseries.Resolution.BREAKPOINT, Method.SUM, None, None)
+        base._transform_expression(Timeseries.Resolution.BREAKPOINT, Transform.Method.SUM, None, None)
 
 
 @pytest.mark.unittest
@@ -43,7 +44,7 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
     end_time = datetime(2016, 1, 1, 9, 0, 0)
 
     resolution = Timeseries.Resolution.MIN15
-    method = Method.SUM
+    method = Transform.Method.SUM
 
     _, full_name = get_timeseries_attribute_2()
     base = TransformFunctions(session_id, MeshObjectId(full_name=full_name), start_time, end_time)
