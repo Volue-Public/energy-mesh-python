@@ -1,8 +1,9 @@
 from volue.mesh._common import *
 from volue.mesh import Authentication, Credentials, Timeseries
-from volue.mesh.calc import transform as Transform
+from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
+from volue.mesh.calc.transform import TransformFunctionsAsync
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from google import protobuf
 from typing import Optional, List
@@ -74,17 +75,11 @@ class Connection:
                                          end_time: datetime,
                                          timskey: int = None,
                                          uuid_id: uuid.UUID = None,
-                                         full_name: str = None,
-                                         transformation: Transform.Parameters = None) -> Timeseries:
+                                         full_name: str = None) -> Timeseries:
             """
             |coro|
 
             Reads timeseries points for the specified timeseries in the given interval.
-            Transformed timeseries (returned when a `transformation` argument is provided)
-            does not have the following fields set:
-            - timskey
-            - uuid_id
-            - full_name
 
             Raises:
                 grpc.RpcError:
@@ -100,12 +95,6 @@ class Connection:
                 object_id.full_name = full_name
             else:
                 raise TypeError("need to specify either timskey, uuid_id or full_name")
-
-            if transformation is not None:
-                request = Transform._prepare_request(
-                    self.session_id, start_time, end_time, object_id, transformation)
-                response = await self.mesh_service.RunCalculation(request)
-                return Transform._parse_response(response)
 
             response = await self.mesh_service.ReadTimeseries(
                 core_pb2.ReadTimeseriesRequest(
@@ -319,11 +308,17 @@ class Connection:
             """
             await self.mesh_service.Commit(to_proto_guid(self.session_id))
 
+        def forecast_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> ForecastFunctionsAsync:
+            return ForecastFunctionsAsync(self, relative_to, start_time, end_time)
+
         def history_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> HistoryFunctionsAsync:
             return HistoryFunctionsAsync(self, relative_to, start_time, end_time)
 
         def statistical_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> StatisticalFunctionsAsync:
             return StatisticalFunctionsAsync(self, relative_to, start_time, end_time)
+
+        def transform_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> TransformFunctionsAsync:
+            return TransformFunctionsAsync(self, relative_to, start_time, end_time)
 
     def __init__(self, host, port, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):

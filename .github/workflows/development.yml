@@ -37,12 +37,6 @@ jobs:
       - name: Poetry build
         run: poetry build
 
-      # Run tests that don't need a mesh service
-      - name: Run unit tests
-        working-directory: ${{ github.workspace }}
-        run: |
-          poetry run pytest -m unittest
-
       - name: Checkout GitHub action
         uses: actions/checkout@v2
         with:
@@ -56,10 +50,10 @@ jobs:
         id: download-mesh-server
         with:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-          MESH_SERVICE_TAG: 'v2.3.0.7'
+          MESH_SERVICE_TAG: 'v2.3.0.12'
 
-      - name: Run server dependent tests
+      - name: Run tests
         if: ${{ success() }}
         working-directory: ${{ github.workspace }}
         run: |
-          poetry run pytest -m server
+          poetry run pytest -m "not authentication"
