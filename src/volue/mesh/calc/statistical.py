@@ -38,7 +38,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         Calculates the sum of the values of the time series for the required period.
         It returns a number.
 
-        The resulting objects from the `search_query` will be used in the `sum` function,
+        The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function,
         if `search_query` is not set the `relative_to` object will be used.
         """
         pass
