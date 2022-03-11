@@ -16,13 +16,4 @@ Using :ref:`api:volue.mesh.aio`.Connection:
 
 .. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
 
-As time series data can potentially be large
-
-.. Comment
-    - mesh client, python api, technical (.rts)
-        - gRPC, proto
-        - Python api
-            - versions
-        - sync vs async
-        - secure vs unsecure connection, tls
-        - apache arrow
+As time series data can potentially be large `Apace Arrow <https://arrow.apache.org/>`_ is used to optimised memory sharing.
