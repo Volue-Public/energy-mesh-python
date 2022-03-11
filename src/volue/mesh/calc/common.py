@@ -91,6 +91,7 @@ class _Calculation:
         return request
 
     async def run_async(self, expression: str):
+        """Run a function using an async connection"""
         from volue.mesh.aio import Connection as AsyncConnection
         if not isinstance(self.session, AsyncConnection.Session):
             raise TypeError('async connection session is required to run async calculations, but got sync session')
@@ -100,6 +101,7 @@ class _Calculation:
         return response
 
     def run(self, expression: str):
+        """Run a function using an connection"""
         from volue.mesh import Connection
         if not isinstance(self.session, Connection.Session):
             raise TypeError('sync connection session is required to run sync calculations, but got async session')

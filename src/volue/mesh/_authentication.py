@@ -42,13 +42,13 @@ class Authentication(grpc.AuthMetadataPlugin):
         service_principal: str
         user_principal: str = None
 
-
     class KerberosTokenIterator():
         """
         Kerberos token iterator to be used with AuthenticateKerberos streaming gRPC.
         Sends tokens to be processed by the Mesh server and processes tokens
         received from the server.
         """
+
         def __init__(self, service_principal: str, user_principal: str):
             self.krb_context = None
             self.first_iteration: bool = True
@@ -62,7 +62,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
             _, self.krb_context = kerberos.authGSSClientInit(
-                self.service_principal, self.user_principal, gssflags = 0)
+                self.service_principal, self.user_principal, gssflags=0)
 
         def __iter__(self):
             return self
@@ -92,7 +92,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
                 # Mesh expects it in binary form, so decode it
                 client_token = protobuf.wrappers_pb2.BytesValue(
-                    value = base64.b64decode(base64_client_kerberos_token))
+                    value=base64.b64decode(base64_client_kerberos_token))
             except Exception as ex:
                 # store exception and re-throw
                 # gRPC will raise its own RpcError with vague "Exception iterating requests"
@@ -118,12 +118,11 @@ class Authentication(grpc.AuthMetadataPlugin):
             self.final_response_received = True
             self.response_received.set()
 
-
     def __init__(
-        self,
-        parameters: Parameters,
-        target: str,
-        channel_credentials: grpc.ChannelCredentials):
+            self,
+            parameters: Parameters,
+            target: str,
+            channel_credentials: grpc.ChannelCredentials):
 
         self.service_principal: str = parameters.service_principal
         self.user_principal: str = parameters.user_principal
@@ -141,12 +140,10 @@ class Authentication(grpc.AuthMetadataPlugin):
         # extra time while executing first call to Mesh
         self.get_token()
 
-
     def __call__(self, context, callback):
         if not self.is_token_valid():
             self.get_token()
         callback((('authorization', 'Bearer ' + self.token),), None)
-
 
     def is_token_valid(self) -> bool:
         """
@@ -157,7 +154,6 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         # use UTC to avoid corner cases with Daylight Saving Time
         return self.token_expiration_date > datetime.now(timezone.utc)
-
 
     def get_token(self) -> None:
         """
@@ -184,7 +180,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
                     # shorten the token duration time by 1 minute to
                     # have some margin for transport duration, etc.
-                    duration_margin = timedelta(seconds = 60)
+                    duration_margin = timedelta(seconds=60)
                     token_duration = mesh_response.token_duration.ToTimedelta()
 
                     if token_duration <= duration_margin:
@@ -200,7 +196,6 @@ class Authentication(grpc.AuthMetadataPlugin):
                 raise kerberos_token_iterator.exception
             # otherwise the exception happened elsewhere, re-throw it
             raise ex
-
 
     def delete_access_token(self) -> str:
         """

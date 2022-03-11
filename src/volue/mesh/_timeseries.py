@@ -7,20 +7,17 @@ from volue.mesh.proto.type import resources_pb2
 from enum import Enum
 
 
-# TODO: Add wrapper structure for TimeseriesEntry info
-# TODO: Add wrapper structure for TimeseriesAttribute info
-# TODO: Add wrapper for grpc.RpcError -> _error.py with defined errors???
-# TODO: clean up interface to not expose grpc or protobuf structures
-
 class Timeseries:
 
     class Curve(Enum):
+        """A curve type of a time series"""
         UNKNOWN = 0
         STAIRCASESTARTOFSTEP = 1
         PIECEWISELINEAR = 2
         STAIRCASE = 3
 
     class Resolution(Enum):
+        """The resolution of values in the time series"""
         UNSPECIFIED = 0
         BREAKPOINT  = 1
         MIN15       = 2
@@ -31,6 +28,7 @@ class Timeseries:
         YEAR        = 7
 
     class PointFlags(Enum):
+        """Information about certain action that has been performed on the values and the state."""
         OK = 0
         MISSING = 0x04000000
         NOT_OK = 0x40000000
@@ -51,7 +49,6 @@ class Timeseries:
 
     def __init__(self,
                  table: pyarrow.Table = None,
-                 # TODO change this to: Timeseries.Resolution
                  resolution: resources_pb2.Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,
@@ -60,15 +57,16 @@ class Timeseries:
                  full_name: str = None
                  ):
         """
+        A representation of a time series.
 
         Args:
-            table:
-            resolution:
-            start_time:
-            end_time:
-            timskey:
-            uuid_id:
-            full_name:
+            table: the arrow table containing the timestamps, flags and values
+            resolution: the resolution of the time series
+            start_time: the start time of the time series
+            end_time: the end time of the time series
+            timskey: the timskey, if the time series is associated with a time series which has a timskey
+            uuid_id: the Mesh object identifier for the time series
+            full_name: the Mesh object model name of the object associated with the time series
         """
         self.full_name = full_name
         self.uuid = uuid_id

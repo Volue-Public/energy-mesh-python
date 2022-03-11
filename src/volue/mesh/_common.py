@@ -13,7 +13,11 @@ from google.protobuf import timestamp_pb2
 
 @dataclass
 class MeshObjectId:
-    """
+    """Mesh object id represents a unique way of identifying a Mesh object.
+
+    - timskey only apply to specific raw time series.
+    - uuid_id applies to all Mesh objects
+    - full_name applies to all Mesh objects that are in the Mesh model structure
     """
     timskey: int = None
     uuid_id: uuid.UUID = None
@@ -43,6 +47,7 @@ def from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
 
 
 def to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
+    """Converts from Timeseries Curve type to protobuf curve type."""
     proto_curve = resources_pb2.Curve()
     proto_curve.type = resources_pb2.Curve.UNKNOWN
     if curve == Timeseries.Curve.PIECEWISELINEAR:
