@@ -17,7 +17,7 @@ def main(address, port, root_pem_certificate):
     session.close()
 
     # 2. Create session using the with statement.
-    # Session will be created, opend and closed within the 'with' statement scope
+    # Session will be created, opened and closed within the 'with' statement scope
     with connection.create_session() as session:
         print("2. You now have a new open session")
 
