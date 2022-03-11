@@ -878,10 +878,32 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">reply_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">statistical_functions</span><span class="p">(</span>
-                <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="s1">&#39;some_query&#39;</span><span class="p">)</span>
+                <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">search_query</span><span class="o">=</span><span class="s1">&#39;some_query&#39;</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">is_calculation_expression_result</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not sum array of timeseries: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_statistical_sum_single_timeseries"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_statistical_sum_single_timeseries">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_statistical_sum_single_timeseries</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that running statistical `sum_single_timeseries` works correctly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_attribute_2</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">statistical_functions</span><span class="p">(</span>
+                <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">sum_single_timeseries</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result</span> <span class="o">==</span> <span class="mf">41.0</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not sum timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>

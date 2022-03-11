@@ -178,7 +178,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">read_proto_reply</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">to_protobuf_utcinterval</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">read_proto_reply</span><span class="p">,</span> <span class="n">read_proto_numeric_reply</span><span class="p">,</span> <span class="n">to_proto_guid</span><span class="p">,</span> <span class="n">to_protobuf_utcinterval</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
 
@@ -215,8 +215,16 @@
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">timeseries_results</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;invalid calculation result, expected 1 timeseries, bot got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;invalid calculation result, expected 1 timeseries, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">read_proto_numeric_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">numeric_results</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;invalid calculation result, expected 1 float value, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">_Calculation</span><span class="p">:</span>

@@ -176,13 +176,14 @@
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">_Calculation</span><span class="p">,</span> <span class="n">_parse_single_timeseries_response</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">_Calculation</span><span class="p">,</span> <span class="n">_parse_single_float_response</span><span class="p">,</span> <span class="n">_parse_single_timeseries_response</span>
 
-
+<span class="n">_SINGLE_TIMESERIES_CALC_SYMBOL</span> <span class="o">=</span> <span class="s1">&#39;t&#39;</span>
+<span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
 <span class="k">class</span> <span class="nc">_StatisticalFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">_sum_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## = @SUM(@T(&quot;</span>
+    <span class="k">def</span> <span class="nf">_sum_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_type_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## = @SUM(@</span><span class="si">{</span><span class="n">input_type_symbol</span><span class="si">}</span><span class="s2">(&quot;</span>
         <span class="k">if</span> <span class="n">search_query</span><span class="p">:</span>
             <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">search_query</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">))</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -202,21 +203,41 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the sum of the values of the time series for the required period.</span>
+<span class="sd">        It returns a number.</span>
+
+<span class="sd">        The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function,</span>
+<span class="sd">        if `search_query` is not set the `relative_to` object will be used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
 
 <div class="viewcode-block" id="StatisticalFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions">[docs]</a><span class="k">class</span> <span class="nc">StatisticalFunctions</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
 
-<div class="viewcode-block" id="StatisticalFunctions.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">search_query</span><span class="p">)</span>
+<div class="viewcode-block" id="StatisticalFunctions.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StatisticalFunctions.sum_single_timeseries"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum_single_timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">_SINGLE_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="StatisticalFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync">[docs]</a><span class="k">class</span> <span class="nc">StatisticalFunctionsAsync</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
 
-<div class="viewcode-block" id="StatisticalFunctionsAsync.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">search_query</span><span class="p">)</span>
+<div class="viewcode-block" id="StatisticalFunctionsAsync.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StatisticalFunctionsAsync.sum_single_timeseries"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum_single_timeseries">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">_SINGLE_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
