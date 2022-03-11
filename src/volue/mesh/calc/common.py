@@ -44,7 +44,7 @@ def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) ->
     timeseries = read_proto_reply(response.timeseries_results)
     if len(timeseries) != 1:
         raise RuntimeError(
-            f"invalid calculation result, expected 1 timeseries, bot got {len(timeseries)}")
+            f"invalid calculation result, expected 1 timeseries, but got {len(timeseries)}")
     return timeseries[0]
 
 
@@ -52,7 +52,7 @@ def _parse_single_float_response(response: core_pb2.CalculationResponse) -> floa
     result = read_proto_numeric_reply(response.numeric_results)
     if len(result) != 1:
         raise RuntimeError(
-            f"invalid calculation result, expected 1 float value, bot got {len(result)}")
+            f"invalid calculation result, expected 1 float value, but got {len(result)}")
     return result[0]
 
 

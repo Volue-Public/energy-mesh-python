@@ -743,7 +743,7 @@ async def test_statistical_sum():
                 MeshObjectId(full_name=full_name), start_time, end_time).sum(search_query='some_query')
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+            pytest.fail(f"Could not sum array of timeseries: {e}")
 
 
 @pytest.mark.asyncio
@@ -766,7 +766,7 @@ async def test_statistical_sum_single_timeseries():
                 MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
             assert isinstance(result, float) and result == 41.0
         except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+            pytest.fail(f"Could not sum timeseries points: {e}")
 
 
 if __name__ == '__main__':
