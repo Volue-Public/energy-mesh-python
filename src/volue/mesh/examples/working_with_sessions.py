@@ -1,5 +1,4 @@
 import uuid
-import grpc
 from volue.mesh.examples import _get_connection_info
 from volue.mesh import Connection
 
