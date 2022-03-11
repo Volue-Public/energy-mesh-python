@@ -30,7 +30,7 @@ def main(address, port, root_pem_certificate):
     session_id = uuid.UUID("123e4567-e89b-12d3-a456-556642440000")
     print(f"3. Session id you want to connect to: {session_id}")
     session = connection.connect_to_session(session_id)
-    # Try connecting to that session id, if it does not exist, a new will be created without warning
+    # Try connecting to that session id, if it does not exist, a new one will be created without warning
     session.open()
     print("3. You have now an open session, either the one you requested or a new one if it did not exist")
     # Check which session you are connected to and close it
