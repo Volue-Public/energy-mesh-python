@@ -11,6 +11,6 @@ If the connection is lost it is possible to reconnect to the server and attach t
 
 Trying to connect to a session with a session id that is no longer valid will result in a error.
 
-The following example show some different ways of working with sessions.
+The following example shows some different ways of working with sessions.
 
 .. literalinclude:: /../../src/volue/mesh/examples/working_with_sessions.py
