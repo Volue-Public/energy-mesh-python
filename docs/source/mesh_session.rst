@@ -5,7 +5,7 @@ A session can be viewed as temporary workspace where changes will not be affecte
 
 A Mesh server will normally have many separate sessions open at any given time. Using the Python API is just on way of working with sessions. A session should be created and closed after finishing work.
 
-When a session has been create the user can interact with the Mesh object model, search for and retrieve data like time series, information about object, and perform calculations using :doc:`functions <mesh_functions>` among other things.
+When a session has been created the user can interact with the Mesh object model, search for and retrieve data (like time series or information about object) and perform calculations using :doc:`functions <mesh_functions>` among other things.
 
 If the connection is lost it is possible to reconnect to the server and attach to a open session using a session identifier. If a user does not close a session manually it will time out and be closed after a specific time, but this might steal resources and should be avoided.
 
