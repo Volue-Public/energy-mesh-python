@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, MeshObjectId, Timeseries, from_proto_guid
+from volue.mesh import Connection, MeshObjectId, Timeseries, _from_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.proto.core.v1alpha import core_pb2
@@ -82,7 +82,7 @@ def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
     Create a printable message from a resource object
     """
     message = f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"\
-              f"has guid: '{from_proto_guid(resource_object.id)}', \n"\
+              f"has guid: '{_from_proto_guid(resource_object.id)}', \n"\
               f"path set in the resource silo is: '{resource_object.path}', \n"\
               f"it's curve '{resource_object.curve_type}', \n"\
               f"resolution '{resource_object.resolution}' \n"\
@@ -96,7 +96,7 @@ def get_mesh_object_information(mesh_object: core_pb2.TimeseriesAttribute):
     """
 
     message = f"Mesh object with path: '{mesh_object.path}'  \n"\
-              f"has guid: '{from_proto_guid(mesh_object.id)}', \n"\
+              f"has guid: '{_from_proto_guid(mesh_object.id)}', \n"\
               f"its local expression is set to: '{mesh_object.local_expression}' \n"\
               f"and its template expression is: '{mesh_object.template_expression}' \n"
     if hasattr(mesh_object, 'entry') and (mesh_object.entry.timeseries_key != 0):
@@ -155,7 +155,7 @@ def use_case_1():
             for number, mesh_object in enumerate(search_matches):
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
-                                                            uuid_id=mesh_object.id)
+                                                            mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
                 print(f"{number + 1}. \n"
                       f"-----\n"
                       f"{get_mesh_object_information(mesh_object)}")
@@ -203,7 +203,7 @@ def use_case_2():
             for number, mesh_object in enumerate(search_matches):
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
-                                                            uuid_id=mesh_object.id)
+                                                            mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
                 print(f"{number + 1}. \n"
                       f"-----\n"
                       f"{get_mesh_object_information(mesh_object)}")
@@ -250,7 +250,7 @@ def use_case_3():
                 # Retrieve the timeseries values in a given interval
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
-                                                            timskey=timskey)
+                                                            mesh_object_id=MeshObjectId.with_timskey(timskey))
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
 
@@ -292,7 +292,7 @@ def use_case_4():
                 # Retrieve the timeseries values in a given interval
                 timeseries = session.read_timeseries_points(start_time=start,
                                                             end_time=end,
-                                                            uuid_id=uuid.UUID(guid))
+                                                            mesh_object_id=MeshObjectId.with_uuid_id(uuid.UUID(guid)))
 
                 # Retrieve information connected to the timeseries
                 mesh_object = session.get_timeseries_attribute(model=model,
@@ -350,7 +350,7 @@ def use_case_5():
             # Get timeseries data before write
             timeseries_before = session.read_timeseries_points(start_time=start_utc,
                                                                end_time=end_utc,
-                                                               uuid_id=guid)
+                                                               mesh_object_id=MeshObjectId.with_uuid_id(guid))
             print(f"Before writing points: \n"
                   f"-----\n"
                   f"{get_timeseries_information(timeseries=timeseries_before)}")
@@ -387,7 +387,7 @@ def use_case_5():
             # Get timeseries data before write
             timeseries_after = session.read_timeseries_points(start_time=start_utc,
                                                               end_time=end_utc,
-                                                              uuid_id=guid)
+                                                              mesh_object_id=MeshObjectId.with_uuid_id(guid))
             print(f"After writing points: \n"
                   f"-----\n"
                   f"{get_timeseries_information(timeseries=timeseries_after)}")
@@ -441,7 +441,7 @@ def use_case_6():
             path_and_pandas_dataframe = []
             timeseries_original = session.read_timeseries_points(start_time=start,
                                                                  end_time=end,
-                                                                 uuid_id=mesh_object.id)
+                                                                 mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -497,7 +497,7 @@ def use_case_7():
             path_and_pandas_dataframe = []
             timeseries_original = session.read_timeseries_points(start_time=start,
                                                                  end_time=end,
-                                                                 uuid_id=mesh_object.id)
+                                                                 mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -596,7 +596,7 @@ def use_case_9():
             path_and_pandas_dataframe = []
             timeseries = session.read_timeseries_points(start_time=start,
                                                         end_time=end,
-                                                        uuid_id=mesh_object.id)
+                                                        mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -654,7 +654,7 @@ def use_case_10():
             path_and_pandas_dataframe = []
             timeseries = session.read_timeseries_points(start_time=start,
                                                         end_time=end,
-                                                        uuid_id=mesh_object.id)
+                                                        mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -711,7 +711,7 @@ def use_case_11():
             path_and_pandas_dataframe = []
             timeseries = session.read_timeseries_points(start_time=start,
                                                         end_time=end,
-                                                        uuid_id=mesh_object.id)
+                                                        mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
@@ -770,7 +770,7 @@ def use_case_12():
             path_and_pandas_dataframe = []
             timeseries = session.read_timeseries_points(start_time=start,
                                                         end_time=end,
-                                                        uuid_id=mesh_object.id)
+                                                        mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")

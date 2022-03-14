@@ -1,3 +1,7 @@
+"""
+Mesh authentication functionality.
+"""
+
 import base64
 import threading
 from dataclasses import dataclass
@@ -38,6 +42,10 @@ class Authentication(grpc.AuthMetadataPlugin):
     class Parameters:
         """
         Authentication parameters.
+
+        Args:
+            service_principal: |service_principal|
+            user_principal: |user_principal|
         """
         service_principal: str
         user_principal: str = None

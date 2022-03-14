@@ -1,3 +1,7 @@
+"""
+Tests for volue.mesh.Connection
+"""
+
 from datetime import datetime
 import math
 from typing import List
@@ -6,7 +10,8 @@ import uuid
 import grpc
 import pytest
 
-from volue.mesh import Connection, MeshObjectId, Timeseries, from_proto_guid, to_proto_curve_type, to_proto_guid
+from volue.mesh import Connection, MeshObjectId, Timeseries
+from volue.mesh._common import _from_proto_guid, _to_proto_curve_type, _to_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
@@ -25,9 +30,12 @@ def test_read_timeseries_points():
     with connection.create_session() as session:
         timeseries, start_time, end_time, _, full_name = get_timeseries_2()
         try:
-            test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
-            test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": timeseries.id}
-            test_case_3 = {"start_time": start_time, "end_time": end_time, "full_name": full_name}
+            test_case_1 = {"start_time": start_time, "end_time": end_time,
+                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+            test_case_2 = {"start_time": start_time, "end_time": end_time,
+                           "mesh_object_id": MeshObjectId.with_uuid_id(timeseries.id)}
+            test_case_3 = {"start_time": start_time, "end_time": end_time,
+                           "mesh_object_id": MeshObjectId.with_full_name(full_name)}
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
                 reply_timeseries = session.read_timeseries_points(**test_case)
@@ -48,8 +56,8 @@ def test_read_timeseries_points():
                 assert math.isnan(values[3].as_py())
                 for number in [0, 1, 2, 4, 5, 6, 7, 8]:
                     assert values[number].as_py() == (number+1)*100
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries points: {error}")
 
 
 @pytest.mark.database
@@ -65,7 +73,7 @@ def test_write_timeseries_points():
             session.write_timeseries_points(timeseries)
             written_ts = session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
                                                         end_time=datetime(2016, 1, 1, 3, 0, 0),
-                                                        uuid_id=ts_entry.id)
+                                                        mesh_object_id=MeshObjectId.with_uuid_id(ts_entry.id))
             assert written_ts.number_of_points == 3
             utc_time = written_ts.arrow_table[0]
             assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
@@ -82,8 +90,8 @@ def test_write_timeseries_points():
 
             session.rollback()
 
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not write timeseries points {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not write timeseries points {error}")
 
 
 @pytest.mark.database
@@ -102,16 +110,16 @@ def test_get_timeseries():
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
                 timeseries_info = session.get_timeseries_resource_info(**test_case)
-                assert from_proto_guid(timeseries_info.id) == timeseries.id
+                assert _from_proto_guid(timeseries_info.id) == timeseries.id
                 assert timeseries_info.timeseries_key == timeseries.timeseries_key
                 assert timeseries_info.path == timeseries.path
                 assert timeseries_info.temporary == timeseries.temporary
-                assert timeseries_info.curve_type == to_proto_curve_type(timeseries.curve)
+                assert timeseries_info.curve_type == _to_proto_curve_type(timeseries.curve)
                 assert timeseries_info.resolution.type == timeseries.resolution.value
                 assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
 
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries: {error}")
 
 
 @pytest.mark.database
@@ -157,8 +165,8 @@ def test_update_timeseries_entry():
 
                 session.rollback()
 
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not update timeseries entry: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not update timeseries entry: {error}")
 
 
 @pytest.mark.database
@@ -181,7 +189,7 @@ def test_read_timeseries_attribute():
             for test_case in test_cases:
                 reply = session.get_timeseries_attribute(**test_case)
                 assert reply is not None
-                assert from_proto_guid(reply.id) is not None
+                assert _from_proto_guid(reply.id) is not None
                 if "path" in test_case:
                     test_case_2["uuid_id"] = reply.id
                     attribute_without_entry.id = reply.id
@@ -201,7 +209,7 @@ def test_read_timeseries_attribute():
             for test_case in test_cases:
                 reply = session.get_timeseries_attribute(**test_case)
                 assert reply is not None
-                assert from_proto_guid(reply.id) is not None
+                assert _from_proto_guid(reply.id) is not None
                 if "path" in test_case:
                     test_case_2["uuid_id"] = reply.id
                     attribute_with_entry.id = reply.id
@@ -211,15 +219,15 @@ def test_read_timeseries_attribute():
                 assert reply.HasField('entry')
                 reply_timeseries = reply.entry
                 expected_timeseries = attribute_with_entry.timeseries
-                assert from_proto_guid(reply_timeseries.id) == expected_timeseries.id
+                assert _from_proto_guid(reply_timeseries.id) == expected_timeseries.id
                 assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
                 assert reply_timeseries.path == expected_timeseries.path
                 assert reply_timeseries.temporary == expected_timeseries.temporary
                 assert reply_timeseries.curve_type.type == expected_timeseries.curve.value
                 assert reply_timeseries.resolution.type == expected_timeseries.resolution.value
                 assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not get timeseries attribute {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not get timeseries attribute {error}")
 
 
 @pytest.mark.database
@@ -253,8 +261,8 @@ def test_update_timeseries_attribute_with_timeseriescalculation():
 
                 session.rollback()
 
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not update timeseries attribute: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not update timeseries attribute: {error}")
 
 
 @pytest.mark.database
@@ -268,7 +276,7 @@ def test_update_timeseries_attribute_with_timeseriesreference():
 
     new_timeseries, _ = get_timeseries_1()
     new_timeseries_entry = new_timeseries.entries[0]
-    new_timeseries_entry_id = core_pb2.TimeseriesEntryId(guid=to_proto_guid(new_timeseries_entry.id))
+    new_timeseries_entry_id = core_pb2.TimeseriesEntryId(guid=_to_proto_guid(new_timeseries_entry.id))
 
     with connection.create_session() as session:
         try:
@@ -280,7 +288,7 @@ def test_update_timeseries_attribute_with_timeseriesreference():
             for test_case in test_cases:
                 original_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
                 assert original_attribute.path == full_name
-                assert from_proto_guid(original_attribute.entry.id) == attribute.timeseries.id
+                assert _from_proto_guid(original_attribute.entry.id) == attribute.timeseries.id
 
                 if "path" in test_case:
                     test_case_2["uuid_id"] = original_attribute.id
@@ -289,12 +297,12 @@ def test_update_timeseries_attribute_with_timeseriesreference():
 
                 updated_attribute = session.get_timeseries_attribute(model=attribute.model, path=full_name)
                 assert updated_attribute.path == full_name
-                assert from_proto_guid(updated_attribute.entry.id) == new_timeseries.id
+                assert _from_proto_guid(updated_attribute.entry.id) == new_timeseries.id
 
                 session.rollback()
 
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not update timeseries attribute: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not update timeseries attribute: {error}")
 
 
 @pytest.mark.database
@@ -327,21 +335,21 @@ def test_search_timeseries_attribute():
                 assert any(attribute.path == full_name for attribute in reply)
                 match = next((x for x in reply if x.path == full_name), None)
                 assert match is not None
-                assert from_proto_guid(match.id) is not None
+                assert _from_proto_guid(match.id) is not None
                 assert match.local_expression == ts_attribute.local_expression
                 assert match.template_expression == ts_attribute.template_expression
                 assert match.HasField('entry')
                 reply_timeseries = match.entry
                 expected_timeseries = ts_attribute.timeseries
-                assert from_proto_guid(reply_timeseries.id) == expected_timeseries.id
+                assert _from_proto_guid(reply_timeseries.id) == expected_timeseries.id
                 assert reply_timeseries.timeseries_key == expected_timeseries.timeseries_key
                 assert reply_timeseries.path == expected_timeseries.path
                 assert reply_timeseries.temporary == expected_timeseries.temporary
-                assert reply_timeseries.curve_type == to_proto_curve_type(expected_timeseries.curve)
+                assert reply_timeseries.curve_type == _to_proto_curve_type(expected_timeseries.curve)
                 assert reply_timeseries.resolution.type == expected_timeseries.resolution.value
                 assert reply_timeseries.unit_of_measurement == expected_timeseries.unit_of_measurement
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not update timeseries attribute: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not update timeseries attribute: {error}")
 
 
 @pytest.mark.database
@@ -373,8 +381,8 @@ def test_rollback():
             timeseries_info2 = session.get_timeseries_resource_info(path=full_name)
             assert timeseries_info2.path != new_path
 
-        except grpc.RpcError as e:
-            pytest.fail("Could not rollback changes.")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not rollback changes: {error}")
 
 
 @pytest.mark.database
@@ -411,8 +419,8 @@ def test_commit():
             attribute3 = session1.get_timeseries_attribute(model=attribute.model, path=full_name)
             assert attribute3.local_expression == new_local_expression
 
-        except grpc.RpcError as e:
-            pytest.fail("Could not commit changes.")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not commit changes: {error}")
 
     with connection.create_session() as session2:
         try:
@@ -430,8 +438,8 @@ def test_commit():
             attribute5 = session2.get_timeseries_attribute(model=attribute.model, path=full_name)
             assert attribute5.local_expression == old_local_expression
 
-        except grpc.RpcError as e:
-            pytest.fail("Could not restore commited changes.")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not restore commited changes: {error}")
 
 
 @pytest.mark.database
@@ -522,8 +530,8 @@ def test_read_transformed_timeseries_points(
                 expected_date += delta
                 index += 1
 
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries points: {error}")
 
 
 @pytest.mark.database
@@ -543,8 +551,9 @@ def test_read_transformed_timeseries_points_with_uuid():
         _, full_name = get_timeseries_attribute_2()
 
         # first read timeseries UUID (it is set dynamically)
-        timeseries = session.read_timeseries_points(
-            start_time, end_time, full_name=full_name)
+        timeseries = session.read_timeseries_points(start_time=start_time,
+                                                    end_time=end_time,
+                                                    mesh_object_id=MeshObjectId.with_full_name(full_name))
         ts_uuid = timeseries.uuid
 
         reply_timeseries_full_name = session.transform_functions(
@@ -577,7 +586,7 @@ def test_read_timeseries_points_without_specifying_timeseries_should_throw():
         end_time = datetime(2016, 1, 1, 9, 0, 0)
 
         with pytest.raises(TypeError, match=".*need to specify either timskey, uuid_id or full_name.*"):
-            session.read_timeseries_points(start_time, end_time)
+            session.read_timeseries_points(start_time, end_time, MeshObjectId())
 
 
 @pytest.mark.database
@@ -598,8 +607,8 @@ def test_forecast_get_all_forecasts():
             reply_timeseries = session.forecast_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
             assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries points: {error}")
 
 
 @pytest.mark.database
@@ -616,7 +625,8 @@ def test_forecast_get_all_forecasts():
      Timezone.UTC])
 def test_forecast_get_forecast(forecast_start, available_at_timepoint, timezone):
     """
-    Check that running forecast `get_forecast` does not throw exception for any combination of parameters.
+    Check that running forecast `get_forecast`
+    does not throw exception for any combination of parameters.
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -633,8 +643,8 @@ def test_forecast_get_forecast(forecast_start, available_at_timepoint, timezone)
                 MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
                     forecast_start_min, forecast_start_max, available_at_timepoint, timezone)
             assert reply_timeseries.is_calculation_expression_result
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries points: {error}")
 
 
 @pytest.mark.database
@@ -645,7 +655,8 @@ def test_forecast_get_forecast(forecast_start, available_at_timepoint, timezone)
      Timezone.UTC])
 def test_history_get_ts_as_of_time(timezone):
     """
-    Check that running history `get_ts_as_of_time` does not throw exception for any combination of parameters.
+    Check that running history `get_ts_as_of_time`
+    does not throw exception for any combination of parameters.
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -662,8 +673,8 @@ def test_history_get_ts_as_of_time(timezone):
                 MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
                     available_at_timepoint, timezone)
             assert reply_timeseries.is_calculation_expression_result
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries points: {error}")
 
 
 @pytest.mark.database
@@ -671,7 +682,8 @@ def test_history_get_ts_as_of_time(timezone):
     [1, 2, 5])
 def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
     """
-    Check that running history `get_ts_historical_versions` does not throw exception for any combination of parameters.
+    Check that running history `get_ts_historical_versions`
+    does not throw exception for any combination of parameters.
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -687,14 +699,15 @@ def test_history_get_ts_historical_versions(max_number_of_versions_to_get):
                 MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
                     max_number_of_versions_to_get)
             assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not read timeseries points: {error}")
 
 
 @pytest.mark.database
 def test_statistical_sum():
     """
-    Check that running statistical `sum` does not throw exception for any combination of parameters.
+    Check that running statistical `sum`
+    does not throw exception for any combination of parameters.
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -709,8 +722,8 @@ def test_statistical_sum():
             reply_timeseries = session.statistical_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).sum(search_query='some_query')
             assert reply_timeseries.is_calculation_expression_result
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not sum array of timeseries: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not sum array of timeseries: {error}")
 
 
 @pytest.mark.database
@@ -731,8 +744,8 @@ def test_statistical_sum_single_timeseries():
             result = session.statistical_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
             assert isinstance(result, float) and result == 41.0
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not sum timeseries points: {e}")
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not sum timeseries points: {error}")
 
 
 if __name__ == '__main__':

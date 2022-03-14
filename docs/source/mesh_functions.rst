@@ -1,6 +1,8 @@
 Mesh functions
 ---------------
 
+.. _mesh expression:
+
 **Expressions** can be used to access **functions** available in Mesh. The result of a calculation based on a function is a temporary time series, i.e. a time series which is not in the database. Every time the calculation expression is run, values are calculated for the temporary time series. However, the result is only available when the Mesh session is open.
 
 The Mesh :doc:`search language <mesh_search>` can be used with functions to find specific objects to work on.

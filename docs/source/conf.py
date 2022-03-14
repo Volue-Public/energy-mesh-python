@@ -80,18 +80,53 @@ intersphinx_mapping = {
   'grpc': ('https://grpc.github.io/grpc/python/', None)
 }
 
+# prefixing mesh_ for anything strictly mesh object model
+# prefixing resource_ for anything only in the resource silo
+
 rst_prolog = """
 .. |deprecated| replace:: **Deprecated**.
+
 .. |coro| replace:: This function is a |coroutine_link|_.
 .. |maybecoro| replace:: This function *could be a* |coroutine_link|_.
 .. |coroutine_link| replace:: *coroutine*
 .. _coroutine_link: https://docs.python.org/3/library/asyncio-task.html#coroutine
+
 .. |test| replace:: Requires |pytest_link|_.
 .. |pytest_link| replace:: *pytest*
 .. _pytest_link: https://github.com/pytest-dev/pytest
 .. |testaio| replace:: Requires |pytest_asyncio_link|_.
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
+
+.. |mesh_session_uuid| replace:: the id of the session you are (or want to) be connected to
+.. |mesh_object_model_name| replace:: the name of the :ref:`Mesh object model <mesh object model>` you want to work within
+.. |mesh_object_id| replace:: unique way of identifying a mesh object that contains a time series. Using either a |mesh_object_uuid|, a |mesh_object_full_name| or a |timskey|
+.. |mesh_object_uuid| replace:: Universal Unique Identifier for Mesh objects
+.. |mesh_object_full_name| replace:: path in the :ref:`Mesh object model <mesh object model>`
+.. |mesh_service| replace:: the gRPC generated mesh .service use to communicate with the :doc:`Mesh server <mesh_server>`
+.. |mesh_local_expression| replace:: local expression. See :ref:`expressions <mesh expression>`
+.. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
+
+.. |host| replace:: Mesh server host name in the form an ip
+.. |port| replace:: Mesh server port number for gRPC communication
+.. |root_pem_certificates| replace::  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
+.. |authentication_parameters| replace:: TODO
+.. |service_principal| replace:: TODO
+.. |user_principal| replace:: TODO
+.. |relative_to| replace:: TODO
+.. |start_time| replace:: the start date and time of the time series interval
+.. |end_time| replace:: the end date and time of the time series interval
+.. |timskey| replace:: integer that only applies to specific raw time series.
+.. |time_series_entry| replace:: time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`.
+
+.. |resource_path| replace:: path in the resource model.
+.. |resource_curve_type| replace:: curve type for the time series.
+.. |resource_unit_of_measurement| replace:: unit of measurement for the time series.
+
+
+.. |grpc_rpc_error| replace:: Error message raised if the gRPC request could not be completed
+.. |runtime_error| replace:: Error message raised if the input is not valid
+.. |type_error| replace:: Error message raised if the returned result from the request is not as expected
 """
 
 
@@ -113,4 +148,3 @@ html_theme_options = {
     'logo_only': True,
     'display_version': False,
 }
-

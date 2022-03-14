@@ -7,26 +7,29 @@ from enum import Enum
 from typing import List
 
 from volue.mesh import MeshObjectId, Timeseries
-from volue.mesh._common import read_proto_reply, read_proto_numeric_reply, to_proto_guid, to_protobuf_utcinterval
+from volue.mesh._common import _read_proto_reply, _read_proto_numeric_reply,\
+    _to_proto_guid, _to_protobuf_utcinterval
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 
 class Timezone(Enum):
     """
     Timezone parameter
+
+    Args:
+        LOCAL : Local time zone
+        STANDARD : Local time zone without Daylight Saving Time (DST)
+        UTC : Universal Time Coordinated (UTC)
     """
     LOCAL = 0
-    """Local time zone"""
     STANDARD = 1
-    """Local time zone without Daylight Saving Time (DST)"""
     UTC = 2
-    """Universal Time Coordinated (UTC)"""
 
 
 def _convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = None) -> str:
     """
     Converts input datetime to format expected by Mesh calculator, e.g. '20210917000000000'
-    Optional timezone parameter if set will append proper prefix to the coverted datetime, e.g.:
+    Optional timezone parameter if set will append proper prefix to the converted datetime, e.g.:
     'UTC20210917000000000'
     """
     converted_date_str = input.strftime("%Y%m%d%H%M%S%f")[:-3]
@@ -36,12 +39,12 @@ def _convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = 
 
 
 def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> List[Timeseries]:
-    timeseries = read_proto_reply(response.timeseries_results)
+    timeseries = _read_proto_reply(response.timeseries_results)
     return timeseries
 
 
 def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) -> Timeseries:
-    timeseries = read_proto_reply(response.timeseries_results)
+    timeseries = _read_proto_reply(response.timeseries_results)
     if len(timeseries) != 1:
         raise RuntimeError(
             f"invalid calculation result, expected 1 timeseries, but got {len(timeseries)}")
@@ -49,7 +52,7 @@ def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) ->
 
 
 def _parse_single_float_response(response: core_pb2.CalculationResponse) -> float:
-    result = read_proto_numeric_reply(response.numeric_results)
+    result = _read_proto_numeric_reply(response.numeric_results)
     if len(result) != 1:
         raise RuntimeError(
             f"invalid calculation result, expected 1 float value, but got {len(result)}")
@@ -73,7 +76,7 @@ class _Calculation:
         if self.relative_to.timskey is not None:
             relative_to.timskey = self.relative_to.timskey
         elif self.relative_to.uuid_id is not None:
-            relative_to.guid.CopyFrom(to_proto_guid(self.relative_to.uuid_id))
+            relative_to.guid.CopyFrom(_to_proto_guid(self.relative_to.uuid_id))
         elif self.relative_to.full_name is not None:
             relative_to.full_name = self.relative_to.full_name
         else:
@@ -83,9 +86,9 @@ class _Calculation:
         # it might indicate a misuse
 
         request = core_pb2.CalculationRequest(
-            session_id=to_proto_guid(self.session.session_id),
+            session_id=_to_proto_guid(self.session.session_id),
             expression=expression,
-            interval=to_protobuf_utcinterval(self.start_time, self.end_time),
+            interval=_to_protobuf_utcinterval(self.start_time, self.end_time),
             relative_to=relative_to
         )
         return request

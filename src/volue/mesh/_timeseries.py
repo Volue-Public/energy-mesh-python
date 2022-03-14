@@ -1,3 +1,7 @@
+"""
+Functionality for working with time series.
+"""
+
 import uuid
 
 import pyarrow
@@ -8,6 +12,13 @@ from enum import Enum
 
 
 class Timeseries:
+    """Represents a mesh timeserie.
+
+    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
+    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
+    Flags
+    Value is the actual data for the given timestamp.
+    """
 
     class Curve(Enum):
         """A curve type of a time series"""
@@ -33,14 +44,6 @@ class Timeseries:
         MISSING = 0x04000000
         NOT_OK = 0x40000000
 
-    """Represents a mesh timeserie.
-
-    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
-    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
-    Flags
-    Value is the actual data for the given timestamp.
-    """
-
     schema = pa.schema([
         pa.field('utc_time', pa.timestamp('ms')),
         pa.field('flags', pa.uint32()),
@@ -56,8 +59,7 @@ class Timeseries:
                  uuid_id: uuid = None,
                  full_name: str = None
                  ):
-        """
-        A representation of a time series.
+        """A representation of a time series.
 
         Args:
             table: the arrow table containing the timestamps, flags and values
