@@ -16,4 +16,4 @@ Using :ref:`api:volue.mesh.aio`.Connection:
 
 .. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
 
-As time series data can potentially be large `Apace Arrow <https://arrow.apache.org/>`_ is used to optimised memory sharing.
+As time series data can potentially be large `Apache Arrow <https://arrow.apache.org/>`_ is used to optimize memory sharing.
