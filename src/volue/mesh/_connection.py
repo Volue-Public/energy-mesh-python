@@ -50,7 +50,7 @@ class Connection:
             """
             Request to open a new session on the Mesh server
             Raises:
-                grpc.RpcError: Error message raised if request could not be completed
+                grpc.RpcError: error message raised if request could not be completed
             """
             reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = from_proto_guid(reply)
