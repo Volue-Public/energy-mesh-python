@@ -1,5 +1,6 @@
 """
 Mesh calculation statistical functions.
+*****************************************
 """
 
 from abc import ABC, abstractmethod

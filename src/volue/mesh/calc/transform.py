@@ -1,5 +1,7 @@
 """
 Mesh calculation transformation functions.
+*******************************************
+
 The functions in this category are used to calculate time series with a different time resolution than the source.
 """
 

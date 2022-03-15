@@ -28,14 +28,4 @@ Mesh provides :doc:`functions <mesh_functions>` used to perform tasks and calcul
    mesh_search
    mesh_functions
 
-.. Comment
-    - mesh model, concepts
-        - objects with relationships mimicking a customer physical model
-        - mesh concepts guide
-        - search language
-            - syntax
-        - calculation functions
-            - forecast
-            - history
-            - statistical
 

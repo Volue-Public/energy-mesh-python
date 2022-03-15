@@ -307,7 +307,7 @@ class Connection:
             Args:
                 uuid_id: |mesh_object_uuid|
                 path: |mesh_object_full_name|
-                new_local_expression: set new |mesh_local_expression|
+                new_local_expression: set new local |mesh_expression|
                 new_timeseries_entry_id: set new |mesh_object_uuid| for the |time_series_entry|.
 
             Note:

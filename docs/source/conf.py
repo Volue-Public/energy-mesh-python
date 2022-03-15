@@ -104,7 +104,7 @@ rst_prolog = """
 .. |mesh_object_uuid| replace:: Universal Unique Identifier for Mesh objects
 .. |mesh_object_full_name| replace:: path in the :ref:`Mesh object model <mesh object model>`
 .. |mesh_service| replace:: the gRPC generated mesh .service use to communicate with the :doc:`Mesh server <mesh_server>`
-.. |mesh_local_expression| replace:: local expression. See :ref:`expressions <mesh expression>`
+.. |mesh_expression| replace:: expression which consists of a function to call. See :ref:`expressions <mesh expression>`
 .. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
 
 .. |host| replace:: Mesh server host name in the form an ip
@@ -113,7 +113,8 @@ rst_prolog = """
 .. |authentication_parameters| replace:: TODO
 .. |service_principal| replace:: TODO
 .. |user_principal| replace:: TODO
-.. |relative_to| replace:: TODO
+.. |relative_to| replace:: a Mesh object to perform actions relative to
+.. |timezone| replace:: timezone
 .. |start_time| replace:: the start date and time of the time series interval
 .. |end_time| replace:: the end date and time of the time series interval
 .. |timskey| replace:: integer that only applies to specific raw time series.
@@ -122,7 +123,6 @@ rst_prolog = """
 .. |resource_path| replace:: path in the resource model.
 .. |resource_curve_type| replace:: curve type for the time series.
 .. |resource_unit_of_measurement| replace:: unit of measurement for the time series.
-
 
 .. |grpc_rpc_error| replace:: Error message raised if the gRPC request could not be completed
 .. |runtime_error| replace:: Error message raised if the input is not valid
