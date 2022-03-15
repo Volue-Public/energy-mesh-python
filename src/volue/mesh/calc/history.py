@@ -1,6 +1,9 @@
 """
 Mesh calculation history functions.
 *************************************
+
+For more information see :ref:`mesh_functions:history`.
+
 """
 
 from abc import ABC, abstractmethod
@@ -13,11 +16,23 @@ from volue.mesh.calc.common import _Calculation, Timezone, _convert_datetime_to_
 
 
 class _HistoryFunctionsBase(_Calculation, ABC):
+    """Base class for all history function classes"""
 
     def _get_ts_as_of_time_expression(self,
                                       available_at_timepoint: datetime,
                                       timezone: Timezone,
                                       search_query: str) -> str:
+        """
+        Create an expression for `get_ts_as_of_time`.
+
+        Args:
+            available_at_timepoint (datetime): |available_at_timepoint|
+            timezone (Timezone): |timezone|
+            search_query (str): |mesh_query|
+
+        Returns:
+            str: a `get_ts_as_of_time` expression
+        """
         converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
         expression = f"## = @GetTsAsOfTime(@t("
         if search_query:
@@ -28,6 +43,16 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     def _get_ts_historical_versions_expression(self,
                                                max_number_of_versions_to_get: int,
                                                search_query: str) -> str:
+        """
+        Creates an expression for `get_ts_historical_versions`.
+
+        Args:
+            max_number_of_versions_to_get (int): maxium number of time series to return
+            search_query (str): |mesh_query|
+
+        Returns:
+            str: a `get_ts_historical_versions` expression
+        """
         expression = f"## = @GetTsHistoricalVersions(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
@@ -44,11 +69,20 @@ class _HistoryFunctionsBase(_Calculation, ABC):
                           search_query: str = None) -> Timeseries:
         """
         Finds values and status for a timeseries at a given historical time `available_at_timepoint`.
-        Returns a time series.
 
+        Note:
+            The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `relative_to` object will be used.
 
-        The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function,
-        if `search_query` is not set the `relative_to` object will be used.
+        Note:
+            If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.
+
+        Args:
+            available_at_timepoint (datetime): |available_at_timepoint|
+            timezone (Timezone): |timezone|
+            search_query (str): |mesh_query|
+
+        Returns:
+             Timeseries: a time series.
         """
         pass
 
@@ -57,10 +91,24 @@ class _HistoryFunctionsBase(_Calculation, ABC):
                                    max_number_of_versions_to_get: int,
                                    search_query: str = None) -> List[Timeseries]:
         """
-        Returns an array of a given number of versions of a time series.
+        Request an array of a given number of versions of a time series.
 
-        The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function,
-        if `search_query` is not set the `relative_to` object will be used.
+        Examples:
+
+            GetTsHistoricalVersions(ts,1) returns the last change made, i.e. the latest historical version that is different from the current time series.
+
+            GetTsHistoricalVersions(ts,3)returns the three last changes. The first series displays the state before the last change, the second displays the state before the second last hange, etc.
+
+
+        Args:
+            max_number_of_versions_to_get (int): the maximum number of time series to return
+            search_query (str): |mesh_query|
+
+        Note:
+            The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.
+
+        Returns:
+            List[Timeseries]:
         """
         pass
 

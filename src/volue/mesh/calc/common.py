@@ -17,9 +17,9 @@ class Timezone(Enum):
     Timezone specifier
 
     Args:
-        LOCAL : Local time zone
-        STANDARD : Local time zone without Daylight Saving Time (DST)
-        UTC : Universal Time Coordinated (UTC)
+        LOCAL (enum): Local time zone
+        STANDARD (enum): Local time zone without Daylight Saving Time (DST)
+        UTC (enum): Universal Time Coordinated (UTC)
     """
     LOCAL = 0
     STANDARD = 1
@@ -34,11 +34,11 @@ def _convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = 
         '20210917000000000' Optional timezone parameter if set will append proper prefix to the converted datetime, e.g.: 'UTC20210917000000000'
 
     Args:
-        input: the timestamp to be converted
-        timezone: its timezone
+        input (datetime): the timestamp to be converted
+        timezone (Timezone): its timezone
 
     Returns:
-        str
+        str:
     """
     converted_date_str = input.strftime("%Y%m%d%H%M%S%f")[:-3]
     if timezone is not None:
@@ -51,7 +51,7 @@ def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> L
     Helper function for parsing a calculator respons.
 
     Args:
-        respons: the gRPC respons received from the Mesh server
+        respons (core_pb2.CalculationResponse): the gRPC respons received from the Mesh server
 
     Returns:
         List[Timeseries]: a list of time series
@@ -65,7 +65,7 @@ def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) ->
     Helper function for parsing a calculator respons.
 
     Args:
-        respons: the gRPC respons received from the Mesh server
+        respons (core_pb2.CalculationResponse): the gRPC respons received from the Mesh server
 
     Raises:
         RuntimeError: |runtime_error|
@@ -85,7 +85,7 @@ def _parse_single_float_response(response: core_pb2.CalculationResponse) -> floa
     Helper function for parsing a calculator respons.
 
     Args:
-        respons: the gRPC respons received from the Mesh server
+        respons (core_pb2.CalculationResponse): the gRPC respons received from the Mesh server
 
     Raises:
         RuntimeError: |runtime_error|
@@ -112,10 +112,10 @@ class _Calculation:
         """
 
         Args:
-            session:
-            relative_to: |mesh_object_id|
-            start_time: |start_time|
-            end_time: |end_time|
+            session (Session):
+            relative_to (MeshObjectId): |mesh_object_id|
+            start_time (datetime): |start_time|
+            end_time (datetime): |end_time|
         """
         self.session = session
         self.relative_to: MeshObjectId = relative_to
@@ -128,13 +128,13 @@ class _Calculation:
         and constructs a calculation request object
 
         Args:
-            expression: |mesh_expression|
+            expression (str): |mesh_expression|
 
         Raises:
             TypeError: |type_error|
 
         Returns:
-            core_pb2.CalculationRequest
+            core_pb2.CalculationRequest:
         """
         relative_to = core_pb2.ObjectId()  # convert to gRPC object
         if self.relative_to.timskey is not None:
@@ -161,10 +161,10 @@ class _Calculation:
         """Run a function using an asynchronous connection.
 
         Args:
-            expression: |mesh_expression|
+            expression (str): |mesh_expression|
 
         Returns:
-            core_pb2.CalculationResponse
+            core_pb2.CalculationResponse:
         """
         from volue.mesh.aio import Connection as AsyncConnection
         if not isinstance(self.session, AsyncConnection.Session):
@@ -178,10 +178,10 @@ class _Calculation:
         """Run a function using a synchronous connection.
 
         Args:
-            expression: |mesh_expression|
+            expression (str): |mesh_expression|
 
         Returns:
-            core_pb2.CalculationResponse
+            core_pb2.CalculationResponse:
         """
         from volue.mesh import Connection
         if not isinstance(self.session, Connection.Session):

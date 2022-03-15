@@ -30,10 +30,12 @@ class Connection:
                 mesh_service: core_pb2_grpc.MeshServiceStub,
                 session_id: uuid = None):
             """
-            Initialize a session object for working with the Mesh server.
+            Initialize a session object
+            for working with the Mesh server.
+
             Args:
-                mesh_service: the gRPC generated mesh service use to communicate with the Mesh server
-                session_id:  the id of the session you are (or want to) be connected to
+                mesh_service (core_pb2_grpc.MeshServiceStub): |mesh_service|
+                session_id (uuid.UUID):  |mesh_session_uuid|
             """
             self.session_id: uuid = session_id
             self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
@@ -41,21 +43,27 @@ class Connection:
         def __enter__(self):
             """
             Used by the 'with' statement to open a session when entering 'with'
+            Raises:
+                grpc.RpcError: |grpc_rpc_error|
             """
             self.open()
             return self
 
         def __exit__(self, exc_type, exc_val, exc_tb):
             """
-            Used by the 'with' statement to close a session when exiting 'with'
+            Used by the 'with' statement to close a session when exiting 'with'.
+
+            Raises:
+                grpc.RpcError: |grpc_rpc_error|
             """
             self.close()
 
         def open(self) -> None:
             """
-            Request to open a new session on the Mesh server
+            Request to open a session on the Mesh server
+
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply)
@@ -65,7 +73,7 @@ class Connection:
             Request to close a session on the Mesh server
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
 
             Note:
                 This method does not wait for the Mesh server to finish closing
@@ -81,17 +89,16 @@ class Connection:
             """
             Reads time series points for
             the specified timeseries in the given interval.
-            |coro|
 
             Args:
-                start_time: The start time of the time series interval
-                end_time: The end time for the time series interval
-                mesh_object_id: Unique way of identifying a mesh object that contains a time series
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+                mesh_object_id (MeshObjectId): |mesh_object_id|
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
-                RuntimeError: error message raised if the input is not valid
-                TypeError: error message raised if the returned result from the request is not as expected
+                grpc.RpcError: |grpc_rpc_error|
+                RuntimeError: |runtime_error|
+                TypeError: |type_error|
             """
             object_id = core_pb2.ObjectId()
             if mesh_object_id.timskey is not None:
@@ -121,8 +128,11 @@ class Connection:
             """
             Writes time series points for the specified timeseries in the given interval.
 
+            Args:
+                timeserie (Timeseries): The modified time series
+
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             self.mesh_service.WriteTimeseries(
                 core_pb2.WriteTimeseriesRequest(
@@ -137,10 +147,22 @@ class Connection:
                                          timskey: int = None,
                                          ) -> core_pb2.TimeseriesEntry:
             """
-            Request information associated with a raw time series entry
+            Request information associated with a raw |time_series_entry|
+
+            Args:
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |resource_path|
+                timskey (int): |timskey|
+
+            Note:
+                This `path` is NOT the same as full name or the path in the Mesh object model,
+                this `path` refers to its location in the resource catalog.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
+
+            Returns:
+                core_pb2.TimeseriesEntry
             """
             entry_id = core_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -168,14 +190,30 @@ class Connection:
                                             new_unit_of_measurement: str = None
                                             ) -> None:
             """
-            Request information associated with a Mesh object which has a link to a time series, either calulated or raw
+            Request information associated with a Mesh object
+            which has a link to a time series, either calculated or raw.
 
-            Specify either uuid_id, path or timskey to a timeseries entry. Only one is needed.
+            Args:
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |resource_path|
+                timskey (int): |timskey|
+                new_path (str): set new |resource_path|
+                new_curve_type (Timeseries.Curve): set new |resource_curve_type|
+                new_unit_of_measurement (str): set new |resource_unit_of_measurement|
 
-            Specify which ever of the new_* fields you want to update.
+            Note:
+                Specify either uuid_id, path or timskey to a timeseries entry.
+                Only one is needed.
+
+            Note:
+                Specify which ever of the new_* fields you want to update.
+
+            Note:
+                This `path` is NOT the same as full name or the path in the Mesh object model,
+                this `path` refers to its location in the resource catalog.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             entry_id = core_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -213,12 +251,19 @@ class Connection:
                                      path: str = None
                                      ) -> core_pb2.TimeseriesAttribute:
             """
-            Request information associated with a Mesh object attribute
+            Request information associated with a Mesh object :doc:`attribute <mesh_object_attributes>`.
 
-            Specify model and either uuid_id or path to a timeseries attribute. Only one or uuid_id and path is needed
+            Args:
+                model (str): |mesh_object_model_name|
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |mesh_object_full_name|
+
+            Note:
+                Specify model and either `uuid_id` or `path` to a timeseries attribute.
+                Only one or uuid_id and path is needed.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             attribute_id = core_pb2.AttributeId()
             if uuid_id is not None:
@@ -244,14 +289,22 @@ class Connection:
                                         new_timeseries_entry_id: core_pb2.TimeseriesEntryId = None,
                                         ) -> None:
             """
-            Update information associated with a Mesh object attribute
+            Update information associated with a Mesh object doc:`attribute <mesh_object_attributes>`.
 
-            Specify either uuid_id or path to a timeseries attribute you want to update. Only one or uuid_id and path is needed.
+            Args:
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |mesh_object_full_name|
+                new_local_expression (str): set new local |mesh_expression|
+                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new |mesh_object_uuid| for the |time_series_entry|.
 
-            Specify a new entry and/or a new local expression for the attribute.
+            Note:
+                Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one or uuid_id and path is needed.
+
+            Note:
+             Specify a new entry and/or a new local expression for the attribute.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             attribute_id = core_pb2.AttributeId()
             if uuid_id is not None:
@@ -285,13 +338,20 @@ class Connection:
                                             start_object_guid: uuid.UUID = None
                                             ) -> List[core_pb2.TimeseriesAttribute]:
             """
-            Use the Mesh search language to find Mesh object attributes in the Mesh object model
+            Use the :doc:`Mesh search language <mesh_search>` to find :doc:`Mesh object attributes <mesh_object_attributes>` in the Mesh object model.
 
-            Specify a model, a query using mesh query language and start object to start the search from,
-            using either a path or a guid.
+            Args:
+                model (str): |mesh_object_model_name|
+                query (str): |mesh_query|
+                start_object_path (str): Start searching at the |mesh_object_full_name|
+                start_object_guid (uuid.UUID): Start searching at the object with the |mesh_object_uuid|
+
+            Note:
+                Specify a model, a query using mesh query language and start object to start the search from,
+                using either a path or a guid.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             request = core_pb2.SearchTimeseriesAttributesRequest(
                 session_id=_to_proto_guid(self.session_id),
@@ -313,56 +373,93 @@ class Connection:
 
         def rollback(self) -> None:
             """
-            Discard changes in the session.
+            Discard changes in the :doc:`Mesh session <mesh_session>`.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             self.mesh_service.Rollback(_to_proto_guid(self.session_id))
 
         def commit(self) -> None:
             """
-            Commit changes made in the session to the shared storage
+            Commit changes made in the :doc:`Mesh session <mesh_session>` to the shared storage.
 
             Raises:
-                grpc.RpcError: error message raised if request could not be completed
+                grpc.RpcError: |grpc_rpc_error|
             """
             self.mesh_service.Commit(_to_proto_guid(self.session_id))
 
         def forecast_functions(self, relative_to: MeshObjectId, start_time: datetime,
                                end_time: datetime) -> ForecastFunctions:
-            """Access to all forecast functions"""
+            """Access to :ref:`mesh_functions:Forecast` functions.
+
+            Args:
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                ForecastFunctions: object containing all forecast functions
+            """
             return ForecastFunctions(self, relative_to, start_time, end_time)
 
         def history_functions(self, relative_to: MeshObjectId, start_time: datetime,
                               end_time: datetime) -> HistoryFunctions:
-            """Access to all history functions"""
+            """Access to :ref:`mesh_functions:History` functions.
+
+            Args:
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                HistoryFunctions: object containing all history functions
+            """
             return HistoryFunctions(self, relative_to, start_time, end_time)
 
         def statistical_functions(self, relative_to: MeshObjectId, start_time: datetime,
                                   end_time: datetime) -> StatisticalFunctions:
-            """Access to all statistical functions"""
+            """Access to :ref:`mesh_functions:Statistical` functions.
+
+            Args:
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                StatisticalFunctions: object containing all statisical functions
+            """
             return StatisticalFunctions(self, relative_to, start_time, end_time)
 
         def transform_functions(self, relative_to: MeshObjectId, start_time: datetime,
                                 end_time: datetime) -> TransformFunctions:
-            """Access to all transformation functions"""
+            """Access to :ref:`mesh_functions:Transform` functions.
+
+            Args:
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                TransformFunctions: object containing all transformation functions
+            """
             return TransformFunctions(self, relative_to, start_time, end_time)
 
     def __init__(self, host, port, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):
-        """Create a synchronous connection for communication with Mesh server.
+        """Create an synchronous connection for communication with Mesh server.
 
         Args:
-            host: Mesh gRPC server host name.
-            port: Mesh gRPC server port.
-            root_pem_certificates: PEM-encoded root certificate(s) as a byte string.
-                If this argument is set then a secured connection will be created,
-                otherwise it will be an insecure connection.
-            authentication_parameters: Authentication parameters.
+            host (str): |host|
+            port (int): |port|
+            root_pem_certificates (str): |root_pem_certificates|
+            authentication_parameters (Authentication.Parameters): |authentication_parameters|
 
-        Returns:
-            A synchronous connection object.
+        Note:
+            There are 3 possible async connection types:
+            - insecure (without TLS)
+            - with TLS
+            - with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)
         """
         target = f'{host}:{port}'
         self.auth_metadata_plugin = None
@@ -409,10 +506,11 @@ class Connection:
         """
         Request version information of the connected Mesh server.
 
-        Note: does not require a session.
+        Note:
+            Does not require an open session.
 
         Raises:
-            grpc.RpcError: error message raised if request could not be completed
+            grpc.RpcError: |grpc_rpc_error|
         """
         response = self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
         return response
@@ -421,10 +519,11 @@ class Connection:
         """
         Request information about the user authorized to work with the Mesh server.
 
-        Note: does not require a session.
+        Note:
+            Does not require an open session.
 
         Raises:
-            grpc.RpcError: error message raised if request could not be completed
+            grpc.RpcError: |grpc_rpc_error|
         """
         response = self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         return response
@@ -433,11 +532,12 @@ class Connection:
         """
         Revokes Mesh token if user no longer should be authenticated.
 
-        Note: does not require a session.
+        Note:
+            Does not require an open session.
 
         Raises:
-            RuntimeError: authentication not configured
-            grpc.RpcError: error message raised if request could not be completed
+            RuntimeError: |runtime_error| and the authentication is not configured
+            grpc.RpcError: |grpc_rpc_error|
         """
         if self.auth_metadata_plugin is None:
             raise RuntimeError('Authentication not configured for this connection')
@@ -450,20 +550,21 @@ class Connection:
         """
         Create a new session.
 
-        Note: this is only happens locally,
-        you will need to open the session before it will be created on the Mesh server
+        Note:
+            This is only happens locally. No communication with the server is involved. You will need to open the session before it will be created on the Mesh server
         """
         return self.connect_to_session(session_id=None)
 
     def connect_to_session(self, session_id: uuid) -> Optional[Session]:
         """
-        Create a session with a given id.
+        Create a session with a given session id, |mesh_session_uuid|.
 
-        If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.
+        Args:
+            session_id (uuid.UUID): |mesh_session_uuid|
+
+        Note:
+            This is only happens locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.
         If the session_id is *not* a valid open session an exception will be raised when trying to use the session.
-
-        Note: This is only happens locally.
-        Any subsequent use of the session object will communicate with the Mesh server.
 
         """
         return self.Session(self.mesh_service, session_id)

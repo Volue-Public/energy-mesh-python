@@ -158,7 +158,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Args:
             forecast_start_min: forecast must start after this time
             forecast_start_max: forecast must start before this time
-            available_at_timepoint: forecast must be written around this time
+            available_at_timepoint: forecast |available_at_timepoint|
             timezone: |timezone|
             search_query: |mesh_query|
 

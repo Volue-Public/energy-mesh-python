@@ -20,22 +20,20 @@ elif platform.startswith('linux'):
 
 
 class Authentication(grpc.AuthMetadataPlugin):
-    """ Authentication services for authentication and authorization to Mesh server.
-        The flow is as follows:
+    """
+    Authentication services for authentication and authorization to Mesh server using `kerberos <https://en.wikipedia.org/wiki/Kerberos_(protocol)>`_.
 
-        1. Obtain token from Kerberos to access specified service (SPN)
-           with Mesh server running on it.
-        2. Send this token to Mesh gRPC server (using AuthenticateKerberos).
-        3. In return Mesh may respond with:
+    The flow is as follows:
 
-            a. Server challenge to be verified and processed by client (using Kerberos).
-               In this case the authentication is not yet completed and client should respond
-               to the server with next Kerberos generated token.
-            b. Mesh token - to be used in subsequent calls to Mesh that require authentication.
-               Token duration - tokens are valid for 1 hour. After this time a new token
-               needs to be acquired.
+    1. Obtain token from Kerberos to access specified service (SPN) with Mesh server running on it.
+    2. Send this token to Mesh gRPC server (using AuthenticateKerberos).
+    3. In return Mesh may respond with:
+        a. Server challenge to be verified and processed by client (using Kerberos). In this case the authentication is not yet completed and client should respond to the server with next Kerberos generated token.
+        b. Mesh token - to be used in subsequent calls to Mesh that require authentication.
 
-               This step is the final step of authentication from server side.
+    Note:
+        Token duration - tokens are valid for **1 hour**. After this time a new token needs to be acquired.
+
     """
 
     @dataclass
@@ -44,8 +42,8 @@ class Authentication(grpc.AuthMetadataPlugin):
         Authentication parameters.
 
         Args:
-            service_principal: |service_principal|
-            user_principal: |user_principal|
+            service_principal (str): |service_principal_name|
+            user_principal (str): |user_principal_name|
         """
         service_principal: str
         user_principal: str = None
@@ -58,6 +56,11 @@ class Authentication(grpc.AuthMetadataPlugin):
         """
 
         def __init__(self, service_principal: str, user_principal: str):
+            """
+            Args:
+                service_principal (str): |service_principal_name|
+                user_principal (str): |user_principal_name|
+            """
             self.krb_context = None
             self.first_iteration: bool = True
             self.final_response_received: bool = False
@@ -76,6 +79,11 @@ class Authentication(grpc.AuthMetadataPlugin):
             return self
 
         def __next__(self) -> protobuf.wrappers_pb2.BytesValue:
+            """
+
+            Returns:
+                protobuf.wrappers_pb2.BytesValue: the kerboros token
+            """
             try:
                 if self.first_iteration:
                     _ = kerberos.authGSSClientStep(self.krb_context, '')
@@ -114,6 +122,9 @@ class Authentication(grpc.AuthMetadataPlugin):
         def process_response(self, server_kerberos_token: bytes):
             """
             Sets new response from Mesh with kerberos token to be processed by client.
+            
+            Args:
+                server_kerberos_token (bytes): the kerberos token
             """
             self.server_kerberos_token = server_kerberos_token
             self.response_received.set()
@@ -131,6 +142,22 @@ class Authentication(grpc.AuthMetadataPlugin):
             parameters: Parameters,
             target: str,
             channel_credentials: grpc.ChannelCredentials):
+        r"""
+        If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: 'HOST/hostname.ad.examplecompany.com'
+
+        If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\\user.name' or r'ad\user.name'
+        
+        Note:
+            winkerberos converts service principal name if provided in RFC-2078 format. '@' is converted to '/' if there is no '/' character in the service principal name.
+
+            E.g.: service@hostname
+            Would be converted to:  service/hostname
+
+        Args:
+            parameters (Parameters): authentication parameters
+            target (str): |host|
+            channel_credentials (grpc.ChannelCredentials): an encapsulation of the data required to create a secure Channel.
+        """
 
         self.service_principal: str = parameters.service_principal
         self.user_principal: str = parameters.user_principal
@@ -156,6 +183,9 @@ class Authentication(grpc.AuthMetadataPlugin):
     def is_token_valid(self) -> bool:
         """
         Checks if current token is still valid.
+
+        Returns:
+            bool: if token is valid
         """
         if self.token_expiration_date is None:
             return False
@@ -168,8 +198,8 @@ class Authentication(grpc.AuthMetadataPlugin):
         Gets Mesh token used for authorization in other calls to Mesh server.
 
         Raises:
-            grpc.RpcError:
-            (win)kerberos.GSSError:
+            grpc.RpcError: |grpc_rpc_error|
+            (win)kerberos.GSSError: errors from kerboros
             RuntimeError: invalid token duration
         """
 
@@ -205,7 +235,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             # otherwise the exception happened elsewhere, re-throw it
             raise ex
 
-    def delete_access_token(self) -> str:
+    def delete_access_token(self):
         """
         Deletes (resets) current Mesh token if no longer needed.
         mesh_service.RevokeAccessToken call is made in Connection classes.

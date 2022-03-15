@@ -19,9 +19,9 @@ class MeshObjectId:
     """`MeshObjectId` represents a unique way of identifying a Mesh object.
 
     Args:
-        timskey : |timskey|
-        uuid_id :  |mesh_object_uuid|
-        full_name : |mesh_object_full_name|
+        timskey (int): |timskey|
+        uuid_id (uuid.UUID):  |mesh_object_uuid|
+        full_name (str): |mesh_object_full_name|
     """
     timskey: int = None
     uuid_id: uuid.UUID = None
@@ -32,7 +32,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using a timskey of a Mesh object
 
         Args:
-            timskey: |timskey|
+            timskey (int): |timskey|
         """
         mesh_object_id = cls()
         mesh_object_id.timskey = timskey
@@ -43,7 +43,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using an uuid of a Mesh object
 
         Args:
-            uuid_id : |mesh_object_uuid|
+            uuid_id (uuid.UUID): |mesh_object_uuid|
         """
         mesh_object_id = cls()
         mesh_object_id.uuid_id = uuid_id
@@ -54,7 +54,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using full_name of a Mesh object
 
         Args:
-            full_name : |mesh_object_full_name|
+            full_name (str): |mesh_object_full_name|
         """
         mesh_object_id = cls()
         mesh_object_id.full_name = full_name
@@ -65,7 +65,7 @@ def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
     """Convert from Python UUID format to Microsoft's GUID format.
 
     Args:
-        uuid: identifier in Pythons UUID format
+        uuid (uuid.UUID): identifier in Pythons UUID format
 
     Returns:
         resources_pb2.Guid
@@ -78,8 +78,11 @@ def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
 def _from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
     """Convert from Microsoft's GUID format to UUID format.
 
-    :param guid: GUID to be converted
-    :return: UUID
+    Args:
+        guid (resources_pb2.Guid): GUID to be converted
+
+    Returns:
+        uuid.UUID
     """
     if guid is None:
         return None
@@ -87,7 +90,15 @@ def _from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
 
 
 def _to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
-    """Converts from Timeseries Curve type to protobuf curve type."""
+    """
+    Converts from Timeseries Curve type to protobuf curve type.
+
+    Args:
+        curve (Timeseries.Curve): the curve to convert
+
+    Returns:
+        resources_pb2.Curve
+    """
     proto_curve = resources_pb2.Curve()
     proto_curve.type = resources_pb2.Curve.UNKNOWN
     if curve == Timeseries.Curve.PIECEWISELINEAR:
@@ -101,7 +112,16 @@ def _to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
 
 
 def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resources_pb2.UtcInterval:
-    """Convert to protobuf UtcInterval."""
+    """
+    Convert to protobuf UtcInterval.
+
+    Args:
+        start_time (datetime): start of the interval
+        end_time (datetime): end of the interval
+
+    Returns:
+        resources_pb2.UtcInterval
+    """
     start = timestamp_pb2.Timestamp()
     start.FromDatetime(start_time)
     end = timestamp_pb2.Timestamp()
@@ -114,7 +134,15 @@ def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resour
 
 
 def _to_proto_object_id(timeseries: Timeseries) -> core_pb2.ObjectId:
-    """Convert a Timeseries to corresponding protobuf ObjectId"""
+    """
+    Convert a Timeseries to corresponding protobuf ObjectId
+
+    Args:
+        timeseries (Timeseries): the time series to convert
+
+    Returns:
+        core_pb2.ObjectId
+    """
     return core_pb2.ObjectId(
         timskey=timeseries.timskey,
         guid=_to_proto_guid(timeseries.uuid),
@@ -123,7 +151,15 @@ def _to_proto_object_id(timeseries: Timeseries) -> core_pb2.ObjectId:
 
 
 def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
-    """Converts a protobuf timeseries reply from Mesh server into Timeseries"""
+    """
+    Converts a protobuf timeseries reply from Mesh server into Timeseries
+
+    Args:
+        timeseries (Timeseries):t the timeseries to convert
+
+    Returns:
+        core_pb2.Timeseries
+    """
     stream = pa.BufferOutputStream()
     writer = pa.ipc.RecordBatchStreamWriter(
         sink=stream,
@@ -146,8 +182,14 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
     """
     Converts a protobuf time series reply from Mesh server into Timeseries
 
+    Args:
+        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation
+
     Raises:
         ValueError: no time series data
+
+    Returns:
+        List[Timeseries]: list of time series extracted from the reply
     """
     timeseries = []
     for timeserie in reply.timeseries:
@@ -176,6 +218,12 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
 def _read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[float]:
     """
     Converts a protobuf numeric calculation reply from Mesh server into a list of floats
+
+    Args:
+        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation
+
+    Returns:
+        List[float]: list of floats extracted from the reply
     """
     results = []
     for value in reply.value:

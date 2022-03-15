@@ -55,6 +55,11 @@ The above class is exposed via:
 History
 ~~~~~~~~~~~~~~
 
+Historical values are not overwritten when saving new values. The figure below shows a time series having values with various write times. When asking for historical values before a given time (t\ :sub:`c`) the values indicated by red is returned.
+
+.. image:: images/calc_history.png
+   :width: 400
+
 .. automodule:: volue.mesh.calc.history
    :noindex:
 
@@ -69,6 +74,8 @@ The above class is exposed via:
 Statistical
 ~~~~~~~~~~~~~~
 
+Functions for performing statistical operations on time series.
+
 .. automodule:: volue.mesh.calc.statistical
    :noindex:
 
@@ -80,8 +87,10 @@ The above class is exposed via:
 .. automethod:: volue.mesh.aio._connection.Connection.Session.statistical_functions
    :noindex:
 
-Transformation
+Transform
 ~~~~~~~~~~~~~~~
+
+The functions in this category are used to transform a time series from one resolution to another.
 
 .. automodule:: volue.mesh.calc.transform
    :noindex:

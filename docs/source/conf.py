@@ -56,6 +56,7 @@ autosectionlabel_maxdepth = 2
 # Options for: sphinx.ext.napoleon
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
 
 # Options for: sphinx.ext.todo
 todo_include_todos = True
@@ -111,9 +112,10 @@ rst_prolog = """
 .. |port| replace:: Mesh server port number for gRPC communication
 .. |root_pem_certificates| replace::  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
 .. |authentication_parameters| replace:: TODO
-.. |service_principal| replace:: TODO
-.. |user_principal| replace:: TODO
+.. |service_principal_name| replace:: name of a active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
+.. |user_principal_name| replace:: name of a active directory user, e.g.: 'ad\\user.name'
 .. |relative_to| replace:: a Mesh object to perform actions relative to
+.. |available_at_timepoint| replace:: must be available around this time
 .. |timezone| replace:: timezone
 .. |start_time| replace:: the start date and time of the time series interval
 .. |end_time| replace:: the end date and time of the time series interval

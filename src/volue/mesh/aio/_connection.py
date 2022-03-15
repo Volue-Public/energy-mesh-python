@@ -36,16 +36,15 @@ class Connection:
             for working with the Mesh server.
 
             Args:
-                mesh_service: |mesh_service|
-                session_id:  |mesh_session_uuid|
+                mesh_service (core_pb2_grpc.MeshServiceStub): |mesh_service|
+                session_id (uuid.UUID):  |mesh_session_uuid|
             """
             self.session_id: uuid.UUID = session_id
             self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
 
         async def __aenter__(self):
             """
-            Used by the 'with' statement to open a session when entering 'with'
-            |coro|
+            Used by the 'with' statement to open a session when entering 'with'. |coro|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -55,8 +54,7 @@ class Connection:
 
         async def __aexit__(self, exc_type, exc_val, exc_tb):
             """
-            Used by the 'with' statement to close a session when exiting 'with'
-            |coro|
+            Used by the 'with' statement to close a session when exiting 'with'. |coro|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -77,8 +75,7 @@ class Connection:
 
         async def close(self) -> None:
             """
-            Request to close a session on the Mesh server
-            |coro|
+            Request to close a session on the Mesh server. |coro|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -96,13 +93,12 @@ class Connection:
                                          mesh_object_id: MeshObjectId) -> Timeseries:
             """
             Reads time series points for
-            the specified timeseries in the given interval.
-            |coro|
+            the specified timeseries in the given interval. |coro|
 
             Args:
-                start_time: |start_time|
-                end_time: |end_time|
-                mesh_object_id: |mesh_object_id|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+                mesh_object_id (MeshObjectId): |mesh_object_id|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -139,7 +135,7 @@ class Connection:
             |coro|
 
             Args:
-                timeserie: The modified time series
+                timeserie (Timeseries): The modified time series
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -157,13 +153,12 @@ class Connection:
                                                timskey: int = None,
                                                ) -> core_pb2.TimeseriesEntry:
             """
-            Request information associated with a raw |time_series_entry|
-            |coro|
+            Request information associated with a raw |time_series_entry|. |coro|
 
             Args:
-                uuid_id : |mesh_object_uuid|
-                path: |resource_path|
-                timskey: |timskey|
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |resource_path|
+                timskey (int): |timskey|
 
             Note:
                 This `path` is NOT the same as full name or the path in the Mesh object model,
@@ -202,15 +197,15 @@ class Connection:
                                                   ) -> None:
             """
             Request information associated with a Mesh object
-            which has a link to a time series, either calculated or raw
+            which has a link to a time series, either calculated or raw. |coro|
 
             Args:
-                uuid_id: |mesh_object_uuid|
-                path: |resource_path|
-                timskey: |timskey|
-                new_path: set new |resource_path|
-                new_curve_type: set new |resource_curve_type|
-                new_unit_of_measurement: set new |resource_unit_of_measurement|
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |resource_path|
+                timskey (int): |timskey|
+                new_path (str): set new |resource_path|
+                new_curve_type (Timeseries.Curve): set new |resource_curve_type|
+                new_unit_of_measurement (str): set new |resource_unit_of_measurement|
 
             Note:
                 Specify either uuid_id, path or timskey to a timeseries entry.
@@ -222,8 +217,6 @@ class Connection:
             Note:
                 This `path` is NOT the same as full name or the path in the Mesh object model,
                 this `path` refers to its location in the resource catalog.
-
-            |coro|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -267,9 +260,9 @@ class Connection:
             Request information associated with a Mesh object :doc:`attribute <mesh_object_attributes>`. |coro|
 
             Args:
-                model: |mesh_object_model_name|
-                uuid_id: |mesh_object_uuid|
-                path: |mesh_object_full_name|
+                model (str): |mesh_object_model_name|
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |mesh_object_full_name|
 
             Note:
                 Specify model and either `uuid_id` or `path` to a timeseries attribute.
@@ -305,10 +298,10 @@ class Connection:
             Update information associated with a Mesh object doc:`attribute <mesh_object_attributes>`. |coro|
 
             Args:
-                uuid_id: |mesh_object_uuid|
-                path: |mesh_object_full_name|
-                new_local_expression: set new local |mesh_expression|
-                new_timeseries_entry_id: set new |mesh_object_uuid| for the |time_series_entry|.
+                uuid_id (uuid.UUID): |mesh_object_uuid|
+                path (str): |mesh_object_full_name|
+                new_local_expression (str): set new local |mesh_expression|
+                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new |mesh_object_uuid| for the |time_series_entry|.
 
             Note:
                 Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one or uuid_id and path is needed.
@@ -354,10 +347,10 @@ class Connection:
             Use the :doc:`Mesh search language <mesh_search>` to find :doc:`Mesh object attributes <mesh_object_attributes>` in the Mesh object model. |coro|
 
             Args:
-                model: |mesh_object_model_name|
-                query: |mesh_query|
-                start_object_path: Start searching at the |mesh_object_full_name|
-                start_object_guid: Start searching at the object with the |mesh_object_uuid|
+                model (str): |mesh_object_model_name|
+                query (str): |mesh_query|
+                start_object_path (str): Start searching at the |mesh_object_full_name|
+                start_object_guid (uuid.UUID): Start searching at the object with the |mesh_object_uuid|
 
             Note:
                 Specify a model, a query using mesh query language and start object to start the search from,
@@ -405,9 +398,12 @@ class Connection:
             """Access to :ref:`mesh_functions:Forecast` functions.
 
             Args:
-                relative_to: |relative_to|
-                start_time: |start_time|
-                end_time: |end_time|
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                ForecastFunctions: object containing all forecast functions
             """
             return ForecastFunctionsAsync(self, relative_to, start_time, end_time)
 
@@ -415,9 +411,12 @@ class Connection:
             """Access to :ref:`mesh_functions:History` functions.
 
             Args:
-                relative_to: |relative_to|
-                start_time: |start_time|
-                end_time: |end_time|
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                HistoryFunctions: object containing all history functions
             """
             return HistoryFunctionsAsync(self, relative_to, start_time, end_time)
 
@@ -425,31 +424,37 @@ class Connection:
             """Access to :ref:`mesh_functions:Statistical` functions.
 
             Args:
-                relative_to: |relative_to|
-                start_time: |start_time|
-                end_time: |end_time|
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                StatisticalFunctions: object containing all statisical functions
             """
             return StatisticalFunctionsAsync(self, relative_to, start_time, end_time)
 
         def transform_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> TransformFunctionsAsync:
-            """Access to :ref:`mesh_functions:Transformation` functions.
+            """Access to :ref:`mesh_functions:Transform` functions.
 
             Args:
-                relative_to: |relative_to|
-                start_time: |start_time|
-                end_time: |end_time|
+                relative_to (MeshObjectId): |relative_to|
+                start_time (datetime): |start_time|
+                end_time (datetime): |end_time|
+
+            Returns:
+                TransformFunctions: object containing all transformation functions
             """
             return TransformFunctionsAsync(self, relative_to, start_time, end_time)
 
-    def __init__(self, host, port, root_pem_certificate: str = None,
+    def __init__(self, host: str, port: int, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):
         """Create an asynchronous connection for communication with Mesh server.
 
         Args:
-            host: |host|
-            port: |port|
-            root_pem_certificates: |root_pem_certificates|
-            authentication_parameters: |authentication_parameters|
+            host (str): |host|
+            port (int): |port|
+            root_pem_certificates (str): |root_pem_certificates|
+            authentication_parameters (Authentication.Parameters): |authentication_parameters|
 
         Note:
             There are 3 possible async connection types:
@@ -546,12 +551,12 @@ class Connection:
         """
         return self.connect_to_session(session_id=None)
 
-    def connect_to_session(self, session_id: uuid):
+    def connect_to_session(self, session_id: uuid.UUID):
         """
         Create a session with a given session id, |mesh_session_uuid|.
 
         Args:
-            session_id: |mesh_session_uuid|
+            session_id (uuid.UUID): |mesh_session_uuid|
 
         Note:
             This is only happens locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.

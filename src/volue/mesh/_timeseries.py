@@ -3,12 +3,10 @@ Functionality for working with time series.
 """
 
 import uuid
-
-import pyarrow
-import pyarrow as pa
 from datetime import datetime
-from volue.mesh.proto.type import resources_pb2
 from enum import Enum
+import pyarrow as pa
+from volue.mesh.proto.type import resources_pb2
 
 
 class Timeseries:
@@ -21,14 +19,36 @@ class Timeseries:
     """
 
     class Curve(Enum):
-        """A curve type of a time series"""
+        """
+        A curve type of a time series.
+        It specifies how the values are laid out relative to each other.
+
+        Args:
+            UNKNOWN (enum):
+            STAIRCASESTARTOFSTEP (enum):
+            PIECEWISELINEAR (enum):
+            STAIRCASE (enum):
+        """
         UNKNOWN = 0
         STAIRCASESTARTOFSTEP = 1
         PIECEWISELINEAR = 2
         STAIRCASE = 3
 
     class Resolution(Enum):
-        """The resolution of values in the time series"""
+        """
+        The resolution of values in the time series.
+        It specifies the time gap between each value.
+
+        Args:
+            UNSPECIFIED (enum):
+            BREAKPOINT (enum):
+            MIN15 (enum):
+            HOUR (enum):
+            DAY (enum):
+            WEEK (enum):
+            MONTH (enum):
+            YEAR (enum):
+        """
         UNSPECIFIED = 0
         BREAKPOINT  = 1
         MIN15       = 2
@@ -39,7 +59,14 @@ class Timeseries:
         YEAR        = 7
 
     class PointFlags(Enum):
-        """Information about certain action that has been performed on the values and the state."""
+        """
+        Information about certain action that has been performed on the values and the state.
+
+        Args:
+            OK (enum):
+            MISSING (enum):
+            NOT_OK (enum):
+        """
         OK = 0
         MISSING = 0x04000000
         NOT_OK = 0x40000000
@@ -51,7 +78,7 @@ class Timeseries:
     ])  # The pyarrow schema used for timeseries points.
 
     def __init__(self,
-                 table: pyarrow.Table = None,
+                 table: pa.Table = None,
                  resolution: resources_pb2.Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,
@@ -62,13 +89,13 @@ class Timeseries:
         """A representation of a time series.
 
         Args:
-            table: the arrow table containing the timestamps, flags and values
-            resolution: the resolution of the time series
-            start_time: the start time of the time series
-            end_time: the end time of the time series
-            timskey: the timskey, if the time series is associated with a time series which has a timskey
-            uuid_id: the Mesh object identifier for the time series
-            full_name: the Mesh object model name of the object associated with the time series
+            table (pa.Tabel): the arrow table containing the timestamps, flags and values
+            resolution (resources_pb2.Resolution): the resolution of the time series
+            start_time (datetime): |start_time|
+            end_time (datetime): |end_time|
+            timskey (int): |timskey|
+            uuid_id: |mesh_object_uuid|
+            full_name: |mesh_object_full_name|
         """
         self.full_name = full_name
         self.uuid = uuid_id
@@ -80,14 +107,23 @@ class Timeseries:
 
     @property
     def number_of_points(self) -> int:
-        """Number of points inside the timeseries"""
+        """
+        Number of points inside the time series.
+
+        Returns:
+            int: the number of points in the time series
+        """
         return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
     @property
     def is_calculation_expression_result(self) -> bool:
         """
-        If timeseries does not have timskey, uuid and full_name set then it is an
-        ad-hoc calculation expression result (like e.g.: timeseries transformations).
-        Refer to documentation 'Concepts' for more information.
+        Checks if a time series is a calculated or raw time series.
+
+        Note:
+            If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation 'Concepts' for more information.
+
+        Returns:
+            bool: true if it is a calculated time series
         """
         return self.timskey is None and self.uuid is None and self.full_name is None
