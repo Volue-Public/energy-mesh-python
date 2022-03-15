@@ -1,9 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import math
 from typing import List
 import uuid
 
+from dateutil import tz
 import grpc
+import pyarrow as pa
 import pytest
 
 from volue.mesh.aio import Connection as AsyncConnection
@@ -20,7 +22,7 @@ from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_time
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_read_timeseries_points_async():
-    """Check that timeseries points can be read"""
+    """Check that timeseries points can be read using timeseries key, UUID and full name"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
@@ -30,6 +32,7 @@ async def test_read_timeseries_points_async():
             test_case_1 = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
             test_case_2 = {"start_time": start_time, "end_time": end_time, "uuid_id": timeseries.id}
             test_case_3 = {"start_time": start_time, "end_time": end_time, "full_name": full_name}
+
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
                 reply_timeseries = await session.read_timeseries_points(**test_case)
@@ -56,32 +59,170 @@ async def test_read_timeseries_points_async():
 
 @pytest.mark.asyncio
 @pytest.mark.database
+async def test_read_timeseries_points_with_different_datetime_timezones_async():
+    """
+    Check that timeseries points read accepts time zone aware and
+    naive (treated as UTC) datetimes as input arguments.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    async with connection.create_session() as session:
+        timeseries, start_time, end_time, _, _ = get_timeseries_2()
+
+        # confirm start_time and end_time are time zone naive
+        assert start_time.tzinfo is None and end_time.tzinfo is None
+
+        # replace to UTC, because we treat time zone naive datetime as UTC
+        start_time_utc = start_time.replace(tzinfo=tz.UTC)
+        end_time_utc = end_time.replace(tzinfo=tz.UTC)
+
+        local_tzinfo = tz.gettz('Europe/Warsaw')
+
+        # now we can convert to different time zones (from time zone aware UTC datetime)
+        start_time_local = start_time_utc.astimezone(local_tzinfo)
+        end_time_local = end_time_utc.astimezone(local_tzinfo)
+
+        try:
+            test_case_naive = {"start_time": start_time, "end_time": end_time, "timskey": timeseries.timeseries_key}
+            test_case_utc = {"start_time": start_time_utc, "end_time": end_time_utc, "timskey": timeseries.timeseries_key}
+            test_case_local = {"start_time": start_time_local, "end_time": end_time_local, "timskey": timeseries.timeseries_key}
+            test_case_mixed = {"start_time": start_time_local, "end_time": end_time_utc, "timskey": timeseries.timeseries_key}
+
+            test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed]
+            for test_case in test_cases:
+                reply_timeseries = await session.read_timeseries_points(**test_case)
+                assert type(reply_timeseries) is Timeseries
+                assert reply_timeseries.number_of_points == 9
+                # check timestamps
+                utc_date = reply_timeseries.arrow_table[0]
+                for count, item in enumerate(utc_date):
+                    assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
+                # check flags
+                flags = reply_timeseries.arrow_table[1]
+                assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
+                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+                    assert flags[number].as_py() == Timeseries.PointFlags.OK.value
+                # check values
+                values = reply_timeseries.arrow_table[2]
+                values[3].as_py()
+                assert math.isnan(values[3].as_py())
+                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+                    assert values[number].as_py() == (number+1)*100
+        except grpc.RpcError as e:
+            pytest.fail(f"Could not read timeseries points: {e}")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
 async def test_write_timeseries_points_async():
-    """Check that timeseries points can be written"""
+    """
+    Check that timeseries points write accepts time series with time zone aware and
+    naive (treated as UTC) datetimes as input interval (start_time and end_time arguments).
+    """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     async with connection.create_session() as session:
         ts_entry, start_time, end_time, modified_table, full_name = get_timeseries_2()
-        timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time, full_name=full_name)
+
+        # confirm start_time and end_time are time zone naive
+        assert start_time.tzinfo is None and end_time.tzinfo is None
+
+        # replace to UTC, because we treat time zone naive datetime as UTC
+        start_time_utc = start_time.replace(tzinfo=tz.UTC)
+        end_time_utc = end_time.replace(tzinfo=tz.UTC)
+
+        local_tzinfo = tz.gettz('Europe/Warsaw')
+
+        # now we can convert to different time zones (from time zone aware UTC datetime)
+        start_time_local = start_time_utc.astimezone(local_tzinfo)
+        end_time_local = end_time_utc.astimezone(local_tzinfo)
+
+        test_case_naive = {"start_time": start_time, "end_time": end_time}
+        test_case_utc = {"start_time": start_time_utc, "end_time": end_time_utc}
+        test_case_local = {"start_time": start_time_local, "end_time": end_time_local}
+        test_case_mixed = {"start_time": start_time_local, "end_time": end_time_utc}
+
+        test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed]
+        for test_case in test_cases:
+            timeseries = Timeseries(table=modified_table, start_time=test_case['start_time'], end_time=test_case['end_time'], full_name=full_name)
+            try:
+                await session.write_timeseries_points(timeseries)
+                written_ts = await session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
+                                                                  end_time=datetime(2016, 1, 1, 3, 0, 0),
+                                                                  uuid_id=ts_entry.id)
+                assert written_ts.number_of_points == 3
+                utc_time = written_ts.arrow_table[0]
+                assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
+                assert utc_time[1].as_py() == datetime(2016, 1, 1, 2, 0, 0)
+                assert utc_time[2].as_py() == datetime(2016, 1, 1, 3, 0, 0)
+                flags = written_ts.arrow_table[1]
+                assert flags[0].as_py() == 0
+                assert flags[1].as_py() == 0
+                assert flags[2].as_py() == 0
+                values = written_ts.arrow_table[2]
+                assert values[0].as_py() == 0
+                assert values[1].as_py() == 10
+                assert values[2].as_py() == 1000
+
+                await session.rollback()
+
+            except grpc.RpcError as e:
+                pytest.fail(f"Could not write timeseries points {e}")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_write_timeseries_points_with_different_pyarrow_table_datetime_timezones_async():
+    """
+    Check that timeseries points write accepts time series with time zone aware and
+    naive (treated as UTC) datetimes as input interval (start_time and end_time arguments).
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    async with connection.create_session() as session:
+        ts_entry, _, _, _, full_name = get_timeseries_2()
+
+        # There is problem with using in PyArrow time zone from dateutil gettz
+        # I've found some PyArrow JIRA ticket with support for dateutil time zones:
+        # https://issues.apache.org/jira/browse/ARROW-5248
+        # Maybe it will solve the problem observed. It should be available in PyArrow 8.0.0.
+        #local_tzinfo = tz.gettz('Europe/Warsaw')
+
+        # For now lets create tzinfo using datetime timezone
+        some_tzinfo = timezone(timedelta(hours=-3))
+
+        arrays = [
+            pa.array([datetime(2016, 1, 1, 1, tzinfo=some_tzinfo), datetime(2016, 1, 1, 2, tzinfo=some_tzinfo), datetime(2016, 1, 1, 3, tzinfo=some_tzinfo)]),
+            pa.array([0, 0, 0]),
+            pa.array([4.0, 44.0, 444.0])]
+        modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
+
+        timeseries = Timeseries(table=modified_table, start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo), end_time=datetime(2016, 1, 1, 4, tzinfo=some_tzinfo), full_name=full_name)
         try:
             await session.write_timeseries_points(timeseries)
-            written_ts = await session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
-                                                              end_time=datetime(2016, 1, 1, 3, 0, 0),
+            written_ts = await session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo),
+                                                              end_time=datetime(2016, 1, 1, 3, tzinfo=some_tzinfo),
                                                               uuid_id=ts_entry.id)
             assert written_ts.number_of_points == 3
             utc_time = written_ts.arrow_table[0]
-            assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
-            assert utc_time[1].as_py() == datetime(2016, 1, 1, 2, 0, 0)
-            assert utc_time[2].as_py() == datetime(2016, 1, 1, 3, 0, 0)
+            # Mesh returns timestamps in UTC format, to compare them we need to make both of them either
+            # time zone aware or naive. In this case we are converting them to time zone aware objects.
+            assert utc_time[0].as_py().replace(tzinfo=tz.UTC) == datetime(2016, 1, 1, 1, tzinfo=some_tzinfo).astimezone(tz.UTC)
+            assert utc_time[1].as_py().replace(tzinfo=tz.UTC) == datetime(2016, 1, 1, 2, tzinfo=some_tzinfo).astimezone(tz.UTC)
+            assert utc_time[2].as_py().replace(tzinfo=tz.UTC) == datetime(2016, 1, 1, 3, tzinfo=some_tzinfo).astimezone(tz.UTC)
             flags = written_ts.arrow_table[1]
             assert flags[0].as_py() == 0
             assert flags[1].as_py() == 0
             assert flags[2].as_py() == 0
             values = written_ts.arrow_table[2]
-            assert values[0].as_py() == 0
-            assert values[1].as_py() == 10
-            assert values[2].as_py() == 1000
+            assert values[0].as_py() == 4
+            assert values[1].as_py() == 44
+            assert values[2].as_py() == 444
+
+            await session.rollback()
 
         except grpc.RpcError as e:
             pytest.fail(f"Could not write timeseries points {e}")
@@ -639,12 +780,7 @@ async def test_forecast_get_all_forecasts():
 @pytest.mark.parametrize('available_at_timepoint',
     [None,
      datetime(2016, 1, 5, 17, 48, 11, 123456)])
-@pytest.mark.parametrize('timezone',
-    [None,
-     Timezone.LOCAL,
-     Timezone.STANDARD,
-     Timezone.UTC])
-async def test_forecast_get_forecast(forecast_start, available_at_timepoint, timezone):
+async def test_forecast_get_forecast(forecast_start, available_at_timepoint):
     """
     Check that running forecast `get_forecast` does not throw exception for any combination of parameters.
     """
@@ -661,7 +797,7 @@ async def test_forecast_get_forecast(forecast_start, available_at_timepoint, tim
         try:
             reply_timeseries = await session.forecast_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
-                    forecast_start_min, forecast_start_max, available_at_timepoint, timezone)
+                    forecast_start_min, forecast_start_max, available_at_timepoint,)
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
@@ -669,12 +805,7 @@ async def test_forecast_get_forecast(forecast_start, available_at_timepoint, tim
 
 @pytest.mark.asyncio
 @pytest.mark.database
-@pytest.mark.parametrize('timezone',
-    [None,
-     Timezone.LOCAL,
-     Timezone.STANDARD,
-     Timezone.UTC])
-async def test_history_get_ts_as_of_time(timezone):
+async def test_history_get_ts_as_of_time():
     """
     Check that running history `get_ts_as_of_time` does not throw exception for any combination of parameters.
     """
@@ -691,7 +822,7 @@ async def test_history_get_ts_as_of_time(timezone):
         try:
             reply_timeseries = await session.history_functions(
                 MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
-                    available_at_timepoint, timezone)
+                    available_at_timepoint)
             assert reply_timeseries.is_calculation_expression_result
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")

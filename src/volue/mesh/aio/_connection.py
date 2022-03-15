@@ -80,6 +80,7 @@ class Connection:
             |coro|
 
             Reads timeseries points for the specified timeseries in the given interval.
+            All time zone naive `datetime` arguments are treated as UTC.
 
             Raises:
                 grpc.RpcError:

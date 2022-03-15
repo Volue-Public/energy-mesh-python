@@ -60,6 +60,7 @@ class Timeseries:
                  full_name: str = None
                  ):
         """
+        All time zone naive `datetime` arguments are treated as UTC.
 
         Args:
             table:

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import sys
 from typing import List, Any, Tuple
 import uuid
@@ -29,12 +29,17 @@ SAVE_TO_CSV = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
+# Set local time zone to be used in every use case (reads time zone from operating system settings)
+LOCAL_TIME_ZONE = tz.tzlocal()
+# if you want to set explicitly the time zone you can use the following:
+#LOCAL_TIME_ZONE = tz.gettz('Europe/Warsaw')
+# if you want to set fixed UTC offset (no DST) you can use the following:
+#LOCAL_TIME_ZONE = timezone(timedelta(hours=1))
 
 
 def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
                     title: str,
-                    style: str = 'plot',
-                    is_local_time: bool = False) -> None:
+                    style: str = 'plot') -> None:
     """
     Plots a list of pandas dataframes in a figure.
     """
@@ -56,7 +61,7 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
                 plt.step(*data, **arguments)
 
         plt.ylabel('value')
-        plt.xlabel('local time') if is_local_time else plt.xlabel('utc time')
+        plt.xlabel('local time')
         plt.legend(legends, ncol=2, fontsize=6)
         plt.title(title)
         figure_manager = plt.get_current_fig_manager()
@@ -139,8 +144,8 @@ def use_case_1():
             model = "MeshTEK"
             start_object_guid = uuid.UUID("801896b0-d448-4299-874a-3ecf8ab0e2d4")  # Model/MeshTEK/Mesh
             search_query = "*[.Type=HydroPlant].Production_operative"
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -160,6 +165,8 @@ def use_case_1():
                       f"-----\n"
                       f"{get_mesh_object_information(mesh_object)}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
                 path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
 
             # Post process data
@@ -187,8 +194,8 @@ def use_case_2():
             model = "MeshTEK"
             start_object_guid = uuid.UUID("801896b0-d448-4299-874a-3ecf8ab0e2d4")  # Model/MeshTEK/Mesh
             search_query = "*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative"
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -208,6 +215,8 @@ def use_case_2():
                       f"-----\n"
                       f"{get_mesh_object_information(mesh_object)}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
                 path_and_pandas_dataframe.append((mesh_object.path, pandas_dataframe))
 
             # Post process data
@@ -233,8 +242,8 @@ def use_case_3():
             use_case_name = "Use case 3"
             model = "MeshTEK"
             timskeys = [530, 536, 537, 543, 556]
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 1)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -252,6 +261,8 @@ def use_case_3():
                                                             end_time=end,
                                                             timskey=timskey)
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
                 timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
 
             # Post process data
@@ -281,8 +292,8 @@ def use_case_4():
             guids = [
                 "ff1db73f-8c8a-42f8-a44a-4bbb420874c1"
             ]
-            start = datetime(2022, 1, 10)
-            end = datetime(2022, 3, 27)
+            start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -303,6 +314,8 @@ def use_case_4():
                       f"{get_mesh_object_information(mesh_object)}")
 
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
                 timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
 
             # Post process data
@@ -334,13 +347,8 @@ def use_case_5():
             model = "MeshTEK"
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
 
-            # All timestamps used in communication with Mesh must be using UTC.
-            # This use case shows how to use local time for user input and presentation (plot and CSV is using local time)
-            # and convert it to UTC when communicating with Mesh.
-            start_local = datetime(2021, 9, 28, tzinfo=tz.tzlocal())
-            end_local = datetime(2021, 9, 30, tzinfo=tz.tzlocal())
-            start_utc = start_local.astimezone(tz.gettz('UTC'))
-            end_utc = end_local.astimezone(tz.gettz('UTC'))
+            start = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 30, tzinfo=LOCAL_TIME_ZONE)
 
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
@@ -348,14 +356,16 @@ def use_case_5():
             print("--------------------------------------------------------------")
 
             # Get timeseries data before write
-            timeseries_before = session.read_timeseries_points(start_time=start_utc,
-                                                               end_time=end_utc,
+            timeseries_before = session.read_timeseries_points(start_time=start,
+                                                               end_time=end,
                                                                uuid_id=guid)
             print(f"Before writing points: \n"
                   f"-----\n"
                   f"{get_timeseries_information(timeseries=timeseries_before)}")
 
             pandas_dataframe = timeseries_before.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
 
             # Defining the data we want to write
@@ -365,7 +375,10 @@ def use_case_5():
             # value - [pa.float64]
             timestamps = []
             for i in range(0, 24):
-                timestamps.append(start_utc + resolution * i)
+                # there is problem with using in PyArrow time zone from dateutil
+                # with time zone defined as fixed UTC offset (using `timezone(timedelta(hours=...))`) it is working correctly
+                # for dateutil time zones use `astimezone` to UTC
+                timestamps.append((start + resolution * i).astimezone(tz.UTC))
 
             utc_time = pa.array(timestamps)
             flags = pa.array([0] * 24)  # flag 0 -> Common::TimeseriesPointFlags::Ok
@@ -379,33 +392,29 @@ def use_case_5():
                 new_values
             ]
             table = pa.Table.from_arrays(arrays=new_arrays, schema=Timeseries.schema)
-            timeseries = Timeseries(table=table, start_time=start_utc, end_time=end_utc, uuid_id=guid)
+            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
 
             # Send request to write timeseries based on timskey
             session.write_timeseries_points(timeserie=timeseries)
 
             # Get timeseries data before write
-            timeseries_after = session.read_timeseries_points(start_time=start_utc,
-                                                              end_time=end_utc,
+            timeseries_after = session.read_timeseries_points(start_time=start,
+                                                              end_time=end,
                                                               uuid_id=guid)
             print(f"After writing points: \n"
                   f"-----\n"
                   f"{get_timeseries_information(timeseries=timeseries_after)}")
 
             pandas_dataframe = timeseries_after.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
 
             # Commit changes
             session.commit()
 
-            # Post process data
-            for pair in timskey_and_pandas_dataframe:
-                timeseries_pandas_dataframe = pair[1]
-                # convert to UTC timezone-aware datetime object and then to local time zone (set in operating system)
-                timeseries_pandas_dataframe['utc_time'] = pd.to_datetime(timeseries_pandas_dataframe['utc_time'], utc=True).dt.tz_convert(tz.tzlocal())
-
             plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: Before and after writing", is_local_time=True)
+                            f"{use_case_name}: Before and after writing")
             save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
 
         except grpc.RpcError as e:
@@ -428,8 +437,8 @@ def use_case_6():
             use_case_name = "Use case 6"
             model = "MeshTEK"
             object_guid = '012d70e3-8f40-40af-9c0a-5d84fc239776'
-            start = datetime(2021, 9, 5)
-            end = datetime(2021, 10, 1)
+            start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -447,14 +456,18 @@ def use_case_6():
                   f"{get_mesh_object_information(mesh_object)}")
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from breakpoint to hourly
             timeserie_transformed = session.transform_functions(
                 MeshObjectId(uuid_id=mesh_object.id), start_time=start, end_time=end).transform(
-                    Timeseries.Resolution.HOUR, Transform.Method.AVGI, Timezone.UTC)
+                    Timeseries.Resolution.HOUR, Transform.Method.AVGI, Timezone.LOCAL)
 
             pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
@@ -484,8 +497,8 @@ def use_case_7():
             use_case_name = "Use case 7"
             model = "MeshTEK"
             object_guid = '7608c9e2-c4fc-4570-b5b2-069f29a34f22'
-            start = datetime(2021, 9, 5)
-            end = datetime(2021, 9, 15)
+            start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -503,14 +516,18 @@ def use_case_7():
                   f"{get_mesh_object_information(mesh_object)}")
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform timeseries from hourly to daily
             timeserie_transformed = session.transform_functions(
                 MeshObjectId(uuid_id=mesh_object.id), start_time=start, end_time=end).transform(
-                    Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.STANDARD)
+                    Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.LOCAL)
 
             pandas_dataframe = timeserie_transformed.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
@@ -541,8 +558,8 @@ def use_case_8():
             model = "MeshTEK"
             start_object_guid = '36395abf-9a39-40ef-b29c-b1d59db855e3'
             search_query = "*[.Type=Reservoir].ReservoirVolume_operative"
-            start = datetime(2021, 9, 5)
-            end = datetime(2021, 9, 15)
+            start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -553,6 +570,8 @@ def use_case_8():
 
             path_and_pandas_dataframe = []
             pandas_dataframe = summarized_timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(("Sum", pandas_dataframe))
 
             # Post process data
@@ -582,9 +601,9 @@ def use_case_9():
             model = "MeshTEK"
             object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'  # ReservoirVolume (TimeseriesCalculation)
             search_query = ".Inflow"
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 9, 15)
-            historical_date = datetime(2021, 9, 7)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
+            historical_date = datetime(2021, 9, 7, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -602,6 +621,8 @@ def use_case_9():
                   f"{get_mesh_object_information(mesh_object)}")
 
             pandas_dataframe = timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             historical_timeseries = session.history_functions(
@@ -609,6 +630,8 @@ def use_case_9():
                     available_at_timepoint=historical_date, search_query=search_query)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append((f'History on {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
 
             # Post process data
@@ -639,8 +662,8 @@ def use_case_10():
             use_case_name = "Use case 10"
             model = "MeshTEK"
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 9, 15)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             search_query = '.Inflow'
             max_number_of_versions_to_get = 5
             print(f"{use_case_name}:")
@@ -659,6 +682,8 @@ def use_case_10():
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get historical timeseries
@@ -668,6 +693,8 @@ def use_case_10():
 
             for number, timeserie in enumerate(historical_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
                 path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
 
             # Post process data
@@ -697,8 +724,8 @@ def use_case_11():
             use_case_name = "Use case 11"
             model = "MeshTEK"
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 9, 28)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
             search_query = '.Inflow'
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -716,6 +743,8 @@ def use_case_11():
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get forecast timeseries
@@ -725,6 +754,8 @@ def use_case_11():
 
             for number, timeserie in enumerate(forecast_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
                 path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
 
             # Post process data
@@ -753,12 +784,12 @@ def use_case_12():
             use_case_name = "Use case 12"
             model = "MeshTEK"
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
-            start = datetime(2021, 9, 1)
-            end = datetime(2021, 10, 12)
+            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 10, 12, tzinfo=LOCAL_TIME_ZONE)
             search_query = '.Inflow'
-            forecast_start_min = datetime(2021, 8, 31)
-            forecast_start_max = datetime(2021, 9, 2)
-            available_at_timepoint = datetime(2021, 9, 1, 9)
+            forecast_start_min = datetime(2021, 8, 31, tzinfo=LOCAL_TIME_ZONE)
+            forecast_start_max = datetime(2021, 9, 2, tzinfo=LOCAL_TIME_ZONE)
+            available_at_timepoint = datetime(2021, 9, 1, 9, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -775,6 +806,8 @@ def use_case_12():
                   f"-----\n"
                   f"{get_mesh_object_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             # Get forecast timeseries
@@ -783,6 +816,8 @@ def use_case_12():
                     forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint, search_query=search_query)
 
             pandas_dataframe = forecast_timeseries.arrow_table.to_pandas()
+            # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append((f'Forecast for {available_at_timepoint.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
 
             # Post process data

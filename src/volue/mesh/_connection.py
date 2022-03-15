@@ -62,6 +62,7 @@ class Connection:
                                    full_name: str = None) -> Timeseries:
             """
             Reads timeseries points for the specified timeseries in the given interval.
+            All time zone naive `datetime` arguments are treated as UTC.
 
             Raises:
                 grpc.RpcError:

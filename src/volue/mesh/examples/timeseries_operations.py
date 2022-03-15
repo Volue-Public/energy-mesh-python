@@ -1,6 +1,8 @@
 from datetime import datetime
+from dateutil import tz
 
 import grpc
+import pandas as pd
 import pyarrow as pa
 
 from volue.mesh import Connection, MeshObjectId, Timeseries
@@ -52,7 +54,7 @@ def main(address, port, root_pem_certificate):
             for i in range(0, number_of_points):
                 hours = i % 24
                 days = int(i / 24) + 1
-                timestamps.append(datetime(2016, 5, days, hours))
+                timestamps.append(datetime(2016, 5, days, hours))  # if no time zone is provided then the timestamp is treated as UTC
                 values.append(days * 10)
 
             flags = [Timeseries.PointFlags.OK.value] * number_of_points
@@ -62,7 +64,7 @@ def main(address, port, root_pem_certificate):
                 pa.array(flags),
                 pa.array(values)]
             arrow_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-            start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
+            start_time = datetime(2016, 5, 1)  # if no time zone is provided then it will be treated as UTC
             end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be written
 
             timeseries = Timeseries(table=arrow_table, start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
@@ -71,17 +73,29 @@ def main(address, port, root_pem_certificate):
         except grpc.RpcError as e:
             print(f"Could not write timeseries points: {e}")
 
+        local_time_zone = tz.tzlocal()
+
         # now lets read from it
         try:
-            start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
-            end_time = datetime(2016, 5, 4)
+            # lets use local time zone (read from operating system settings)
+            start_time = datetime(2016, 5, 1, tzinfo=local_time_zone)
+            end_time = datetime(2016, 5, 4, tzinfo=local_time_zone)
 
             timeseries_read = session.read_timeseries_points(
                 start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
 
             # convert to pandas format
+            # the timestamps in PyArrow table are always returned in UTC format
             pandas_series = timeseries_read.arrow_table.to_pandas()
+
+            # lets convert it back to local time zone
+            # first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)
+            pandas_series['utc_time'] = pd.to_datetime(pandas_series['utc_time'], utc=True).dt.tz_convert(local_time_zone)
             print(pandas_series)
+
+            # notice that depending on the local time zone there is a shift in the data
+            # e.g. for UTC+2 time zone, first 2 values will be NaN, because writing time series points in the previous step
+            # is using time zone naive datetime object, so they are treated as UTC.
 
             # do some further processing
 
@@ -91,15 +105,25 @@ def main(address, port, root_pem_certificate):
         # now lets read transformations from it (transform to days)
         print("Transform resolution to days:")
         try:
-            start_time = datetime(2016, 5, 1)  # timezone provided in start and end datetimes will be discarded, it will be treated as UTC
-            end_time = datetime(2016, 5, 3)
+            start_time = datetime(2016, 5, 1, tzinfo=local_time_zone)
+            end_time = datetime(2016, 5, 3, tzinfo=local_time_zone)
 
+            # Transform function may take optionally a time zone argument.
+            # Refer to `transform` documentation for more details.
+            # If you are using `LOCAL` or `STANDARD` time zone then make sure
+            # the Mesh server is operating in the same time zone or adjust properly.
             transformed_timeseries = session.transform_functions(
                 MeshObjectId(uuid_id=timeseries_attribute.id), start_time, end_time).transform(
-                    Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.UTC)
+                    Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.LOCAL)
 
             # convert to pandas format
+            # the timestamps in PyArrow table are always returned in UTC format
             pandas_series = transformed_timeseries.arrow_table.to_pandas()
+            print(pandas_series)
+
+            # lets convert it back to local time zone
+            # first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)
+            pandas_series['utc_time'] = pd.to_datetime(pandas_series['utc_time'], utc=True).dt.tz_convert(local_time_zone)
             print(pandas_series)
 
             # do some further processing

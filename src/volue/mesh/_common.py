@@ -1,7 +1,7 @@
-import uuid
 from dataclasses import dataclass
 import datetime
 from typing import List
+import uuid
 
 import pyarrow as pa
 

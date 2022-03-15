@@ -11,7 +11,8 @@ def write_timeseries_points(session: Connection.Session):
     # Define the timeseries identifiers
     timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
 
-    # Defining a time interval to write timeseries to
+    # Defining a time interval to write timeseries to.
+    # If no time zone is provided then it will be treated as UTC.
     start = datetime(2016, 1, 1, 1)
     end = datetime(2016, 1, 1, 4)  # end time must be greater than last point to be read/written
 
@@ -21,6 +22,7 @@ def write_timeseries_points(session: Connection.Session):
     # flags - [pa.uint32]
     # value - [pa.float64]
     arrays = [
+        # if no time zone is provided then the timestamp is treated as UTC
         pa.array([datetime(2016, 1, 1, 1), datetime(2016, 1, 1, 2),  datetime(2016, 1, 1, 3)]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 10.0, 1000.0])]

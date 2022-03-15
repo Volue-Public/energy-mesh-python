@@ -7,7 +7,7 @@ import datetime
 from typing import List
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import _Calculation, Timezone, _convert_datetime_to_mesh_calc_format, \
+from volue.mesh.calc.common import _Calculation, _convert_datetime_to_mesh_calc_format, \
     _parse_timeseries_list_response, _parse_single_timeseries_response
 
 
@@ -25,7 +25,6 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                                  forecast_start_min: datetime,
                                  forecast_start_max: datetime,
                                  available_at_timepoint: datetime,
-                                 timezone: Timezone,
                                  search_query: str) -> str:
 
         if forecast_start_min is not None and forecast_start_max is None:
@@ -42,15 +41,15 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         expression = f"{expression})"
 
         if forecast_start_min is not None:
-            converted_forecast_start_min = _convert_datetime_to_mesh_calc_format(forecast_start_min, timezone)
+            converted_forecast_start_min = _convert_datetime_to_mesh_calc_format(forecast_start_min)
             expression = f"{expression},'{converted_forecast_start_min}'"
 
         if forecast_start_max is not None:
-            converted_forecast_start_max = _convert_datetime_to_mesh_calc_format(forecast_start_max, timezone)
+            converted_forecast_start_max = _convert_datetime_to_mesh_calc_format(forecast_start_max)
             expression = f"{expression},'{converted_forecast_start_max}'"
 
         if available_at_timepoint is not None:
-            converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+            converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint)
             expression = f"{expression},'{converted_available_at_timepoint}'"
         expression = f"{expression})\n"
 
@@ -77,7 +76,6 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                      forecast_start_min: datetime = None,
                      forecast_start_max: datetime = None,
                      available_at_timepoint: datetime = None,
-                     timezone: Timezone = None,
                      search_query: str = None) -> Timeseries:
         """
         The function can take `available_at_timepoint` without specifying `forecast_start_min` and `forecast_start_min` to find a forecast
@@ -88,6 +86,9 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         the relevant forecast instead of using the start of the requested period (defined in `forecast_functions`).
         It requires that the forecast series' start is less than or equal to `forecast_start_max` and larger than `forecast_start_min`.
         If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.
+
+        All time zone naive `datetime` arguments are treated as UTC.
+        Returns a time series.
 
         The resulting objects from the `search_query` will be used in the `get_forecast` function,
         if `search_query` is not set the `relative_to` object will be used.
@@ -107,10 +108,9 @@ class ForecastFunctions(_ForecastFunctionsBase):
                      forecast_start_min: datetime = None,
                      forecast_start_max: datetime = None,
                      available_at_timepoint: datetime = None,
-                     timezone: Timezone = None,
                      search_query: str = None) -> Timeseries:
-        expression = super()._get_forecast_expression(forecast_start_min, forecast_start_max, available_at_timepoint,
-                                                      timezone, search_query)
+        expression = super()._get_forecast_expression(
+            forecast_start_min, forecast_start_max, available_at_timepoint, search_query)
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
@@ -127,9 +127,8 @@ class ForecastFunctionsAsync(_ForecastFunctionsBase):
                            forecast_start_min: datetime = None,
                            forecast_start_max: datetime = None,
                            available_at_timepoint: datetime = None,
-                           timezone: Timezone = None,
                            search_query: str = None) -> Timeseries:
-        expression = super()._get_forecast_expression(forecast_start_min, forecast_start_max, available_at_timepoint,
-                                                      timezone, search_query)
+        expression = super()._get_forecast_expression(
+            forecast_start_min, forecast_start_max, available_at_timepoint, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)

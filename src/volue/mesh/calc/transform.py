@@ -51,13 +51,14 @@ class _TransformFunctionsBase(_Calculation, ABC):
     def transform(self,
                   resolution: Timeseries.Resolution,
                   method: Method,
-                  timezone: Timezone = None,
+                  timezone: Timezone = Timezone.UTC,
                   search_query: str = None) -> Timeseries:
         """
         Transforms time series from one resolution to another resolution.
         Some of target resolutions have a time zone foundation.
         For example, `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).
         When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.
+        Note: the `LOCAL` and `STANDARD` time zone refers to time zone of Mesh server, not the Python client.
 
         You can use it to convert both ways, i.e. both from finer to coarser resolution, and the other way.
         The most common use is accumulation, i.e. transformation to coarser resolution.
@@ -76,7 +77,7 @@ class TransformFunctions(_TransformFunctionsBase):
     def transform(self,
                   resolution: Timeseries.Resolution,
                   method: Method,
-                  timezone: Timezone = None,
+                  timezone: Timezone = Timezone.UTC,
                   search_query: str = None) -> Timeseries:
         expression = super()._transform_expression(resolution, method, timezone, search_query)
         response = super().run(expression)
@@ -88,7 +89,7 @@ class TransformFunctionsAsync(_TransformFunctionsBase):
     async def transform(self,
                         resolution: Timeseries.Resolution,
                         method: Method,
-                        timezone: Timezone = None,
+                        timezone: Timezone = Timezone.UTC,
                         search_query: str = None) -> Timeseries:
         expression = super()._transform_expression(resolution, method, timezone, search_query)
         response = await super().run_async(expression)

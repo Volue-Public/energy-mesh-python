@@ -1,6 +1,6 @@
 from volue.mesh import Timeseries
 import pyarrow as pa
-from datetime import datetime, timezone
+from datetime import datetime
 import uuid
 import subprocess
 import sys

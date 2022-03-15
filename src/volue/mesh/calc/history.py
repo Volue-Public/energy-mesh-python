@@ -7,7 +7,7 @@ import datetime
 from typing import List
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import _Calculation, Timezone, _convert_datetime_to_mesh_calc_format, \
+from volue.mesh.calc.common import _Calculation, _convert_datetime_to_mesh_calc_format, \
     _parse_timeseries_list_response, _parse_single_timeseries_response
 
 
@@ -15,9 +15,8 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
     def _get_ts_as_of_time_expression(self,
                                       available_at_timepoint: datetime,
-                                      timezone: Timezone,
                                       search_query: str) -> str:
-        converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+        converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint)
         expression = f"## = @GetTsAsOfTime(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
@@ -39,12 +38,11 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     @abstractmethod
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
-                          timezone: Timezone = None,
                           search_query: str = None) -> Timeseries:
         """
         Finds values and status for a timeseries at a given historical time `available_at_timepoint`.
+        If `available_at_timepoint` is a time zone naive `datetime` object then it is treated as UTC.
         Returns a time series.
-
 
         The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function,
         if `search_query` is not set the `relative_to` object will be used.
@@ -68,9 +66,8 @@ class HistoryFunctions(_HistoryFunctionsBase):
 
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
-                          timezone: Timezone = None,
                           search_query: str = None) -> Timeseries:
-        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, timezone, search_query)
+        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, search_query)
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
@@ -86,9 +83,8 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
 
     async def get_ts_as_of_time(self,
                                 available_at_timepoint: datetime,
-                                timezone: Timezone = None,
                                 search_query: str = None) -> Timeseries:
-        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, timezone, search_query)
+        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 

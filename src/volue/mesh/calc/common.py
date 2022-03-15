@@ -3,6 +3,7 @@ Common classes/enums/etc for Mesh calculation functions.
 """
 
 import datetime
+from dateutil import tz
 from enum import Enum
 from typing import List
 
@@ -23,15 +24,17 @@ class Timezone(Enum):
     """Universal Time Coordinated (UTC)"""
 
 
-def _convert_datetime_to_mesh_calc_format(input: datetime, timezone: Timezone = None) -> str:
+def _convert_datetime_to_mesh_calc_format(input: datetime) -> str:
     """
-    Converts input datetime to format expected by Mesh calculator, e.g. '20210917000000000'
-    Optional timezone parameter if set will append proper prefix to the coverted datetime, e.g.:
-    'UTC20210917000000000'
+    Converts input datetime to format expected by Mesh calculator, e.g. 'UTC20210917000000000'.
+    Datetime is converted to UTC. If input datetime is time zone naive then it is already treated as UTC.
     """
-    converted_date_str = input.strftime("%Y%m%d%H%M%S%f")[:-3]
-    if timezone is not None:
-        converted_date_str = f"{timezone.name}{converted_date_str}"
+    input_utc_datetime = input
+    if input.tzinfo is not None:
+        input_utc_datetime = input.astimezone(tz.UTC)
+
+    converted_date_str = input_utc_datetime.strftime("%Y%m%d%H%M%S%f")[:-3]
+    converted_date_str = f"UTC{converted_date_str}"
     return converted_date_str
 
 
