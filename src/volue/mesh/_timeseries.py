@@ -37,7 +37,7 @@ class Timeseries:
     class Resolution(Enum):
         """
         The resolution of values in the time series.
-        It specifies the time gap between each value.
+        It specifies the time interval between each value.
 
         Args:
             UNSPECIFIED (enum):
