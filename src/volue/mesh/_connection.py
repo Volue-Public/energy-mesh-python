@@ -551,7 +551,7 @@ class Connection:
         Create a new session.
 
         Note:
-            This is only happens locally. No communication with the server is involved. You will need to open the session before it will be created on the Mesh server
+            This is handled locally. No communication with the server is involved. You will need to open the session before it will be created on the Mesh server
         """
         return self.connect_to_session(session_id=None)
 
