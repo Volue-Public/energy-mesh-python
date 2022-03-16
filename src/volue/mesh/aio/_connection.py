@@ -37,7 +37,7 @@ class Connection:
 
             Args:
                 mesh_service (core_pb2_grpc.MeshServiceStub): |mesh_service|
-                session_id (uuid.UUID):  |mesh_session_uuid|
+                session_id (uuid.UUID):  the id of the session you are (or want to be) connected to
             """
             self.session_id: uuid.UUID = session_id
             self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
@@ -553,10 +553,10 @@ class Connection:
 
     def connect_to_session(self, session_id: uuid.UUID):
         """
-        Create a session with a given session id, |mesh_session_uuid|.
+        Create a session with a given session id, the id of the session you are (or want to be) connected to.
 
         Args:
-            session_id (uuid.UUID): |mesh_session_uuid|
+            session_id (uuid.UUID): the id of the session you are (or want to be) connected to
 
         Note:
             This is handled locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.
