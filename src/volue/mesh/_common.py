@@ -65,7 +65,7 @@ def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
     """Convert from Python UUID format to Microsoft's GUID format.
 
     Args:
-        uuid (uuid.UUID): identifier in Pythons UUID format
+        uuid (uuid.UUID): identifier in Python's UUID format
 
     Returns:
         resources_pb2.Guid
