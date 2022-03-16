@@ -92,7 +92,7 @@ class Connection:
             Args:
                 start_time (datetime): |start_time|
                 end_time (datetime): |end_time|
-                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a |mesh_object_full_name| or a |timskey|
+                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a |timskey|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -255,7 +255,7 @@ class Connection:
             Args:
                 model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
-                path (str): |mesh_object_full_name|
+                path (str): path in the :ref:`Mesh object model <mesh object model>`
 
             Note:
                 Specify model and either `uuid_id` or `path` to a timeseries attribute.
@@ -292,7 +292,7 @@ class Connection:
 
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
-                path (str): |mesh_object_full_name|
+                path (str): path in the :ref:`Mesh object model <mesh object model>`
                 new_local_expression (str): set new local |mesh_expression|
                 new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the |time_series_entry|.
 
@@ -342,7 +342,7 @@ class Connection:
             Args:
                 model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 query (str): |mesh_query|
-                start_object_path (str): Start searching at the |mesh_object_full_name|
+                start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`
                 start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
 
             Note:

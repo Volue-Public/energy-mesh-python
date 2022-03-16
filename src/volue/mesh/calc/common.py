@@ -113,7 +113,7 @@ class _Calculation:
 
         Args:
             session (Session):
-            relative_to (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a |mesh_object_full_name| or a |timskey|
+            relative_to (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a |timskey|
             start_time (datetime): |start_time|
             end_time (datetime): |end_time|
         """

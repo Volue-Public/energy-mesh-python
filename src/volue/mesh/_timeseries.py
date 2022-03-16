@@ -95,7 +95,7 @@ class Timeseries:
             end_time (datetime): |end_time|
             timskey (int): |timskey|
             uuid_id:  Universal Unique Identifier for Mesh objects
-            full_name: |mesh_object_full_name|
+            full_name: path in the :ref:`Mesh object model <mesh object model>`
         """
         self.full_name = full_name
         self.uuid = uuid_id
