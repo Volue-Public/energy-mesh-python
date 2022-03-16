@@ -42,7 +42,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         Authentication parameters.
 
         Args:
-            service_principal (str): |service_principal_name|
+            service_principal (str):  name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
             user_principal (str): |user_principal_name|
         """
         service_principal: str
@@ -58,7 +58,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         def __init__(self, service_principal: str, user_principal: str):
             """
             Args:
-                service_principal (str): |service_principal_name|
+                service_principal (str):  name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
                 user_principal (str): |user_principal_name|
             """
             self.krb_context = None
