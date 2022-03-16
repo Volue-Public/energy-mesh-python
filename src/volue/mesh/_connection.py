@@ -43,7 +43,7 @@ class Connection:
             """
             Used by the 'with' statement to open a session when entering 'with'
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             self.open()
             return self
@@ -53,7 +53,7 @@ class Connection:
             Used by the 'with' statement to close a session when exiting 'with'.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             self.close()
 
@@ -62,7 +62,7 @@ class Connection:
             Request to open a session on the Mesh server
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply)
@@ -72,7 +72,7 @@ class Connection:
             Request to close a session on the Mesh server
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
 
             Note:
                 This method does not wait for the Mesh server to finish closing
@@ -95,7 +95,7 @@ class Connection:
                 mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
                 RuntimeError: |runtime_error|
                 TypeError: |type_error|
             """
@@ -131,7 +131,7 @@ class Connection:
                 timeserie (Timeseries): The modified time series
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             self.mesh_service.WriteTimeseries(
                 core_pb2.WriteTimeseriesRequest(
@@ -158,7 +158,7 @@ class Connection:
                 this `path` refers to its location in the resource catalog.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
 
             Returns:
                 core_pb2.TimeseriesEntry
@@ -212,7 +212,7 @@ class Connection:
                 this `path` refers to its location in the resource catalog.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             entry_id = core_pb2.TimeseriesEntryId()
             if timskey is not None:
@@ -262,7 +262,7 @@ class Connection:
                 Only one or uuid_id and path is needed.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             attribute_id = core_pb2.AttributeId()
             if uuid_id is not None:
@@ -303,7 +303,7 @@ class Connection:
              Specify a new entry and/or a new local expression for the attribute.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             attribute_id = core_pb2.AttributeId()
             if uuid_id is not None:
@@ -350,7 +350,7 @@ class Connection:
                 using either a path or a guid.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             request = core_pb2.SearchTimeseriesAttributesRequest(
                 session_id=_to_proto_guid(self.session_id),
@@ -375,7 +375,7 @@ class Connection:
             Discard changes in the :doc:`Mesh session <mesh_session>`.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             self.mesh_service.Rollback(_to_proto_guid(self.session_id))
 
@@ -384,7 +384,7 @@ class Connection:
             Commit changes made in the :doc:`Mesh session <mesh_session>` to the shared storage.
 
             Raises:
-                grpc.RpcError: |grpc_rpc_error|
+                grpc.RpcError:  Error message raised if the gRPC request could not be completed
             """
             self.mesh_service.Commit(_to_proto_guid(self.session_id))
 
@@ -509,7 +509,7 @@ class Connection:
             Does not require an open session.
 
         Raises:
-            grpc.RpcError: |grpc_rpc_error|
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
         """
         response = self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
         return response
@@ -522,7 +522,7 @@ class Connection:
             Does not require an open session.
 
         Raises:
-            grpc.RpcError: |grpc_rpc_error|
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
         """
         response = self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         return response
@@ -536,7 +536,7 @@ class Connection:
 
         Raises:
             RuntimeError: |runtime_error| and the authentication is not configured
-            grpc.RpcError: |grpc_rpc_error|
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
         """
         if self.auth_metadata_plugin is None:
             raise RuntimeError('Authentication not configured for this connection')

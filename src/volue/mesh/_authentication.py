@@ -198,7 +198,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         Gets Mesh token used for authorization in other calls to Mesh server.
 
         Raises:
-            grpc.RpcError: |grpc_rpc_error|
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
             (win)kerberos.GSSError: errors from kerboros
             RuntimeError: invalid token duration
         """
