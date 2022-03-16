@@ -427,7 +427,7 @@ class Connection:
                 end_time (datetime): |end_time|
 
             Returns:
-                StatisticalFunctions: object containing all statisical functions
+                StatisticalFunctions: object containing all statistical functions
             """
             return StatisticalFunctions(self, relative_to, start_time, end_time)
 
