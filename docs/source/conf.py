@@ -119,7 +119,7 @@ rst_prolog = """
 .. |timezone| replace:: timezone
 .. |start_time| replace:: the start date and time of the time series interval
 .. |end_time| replace:: the end date and time of the time series interval
-.. |timskey| replace:: integer that only applies to specific raw time series.
+.. |timskey| replace:: integer that only applies to a specific raw time series.
 .. |time_series_entry| replace:: time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`.
 
 .. |resource_path| replace:: path in the resource model.
