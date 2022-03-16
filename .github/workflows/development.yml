@@ -52,8 +52,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           MESH_SERVICE_TAG: 'v2.3.0.12'
 
+      # run explicitly run_tests.py script
       - name: Run tests
         if: ${{ success() }}
         working-directory: ${{ github.workspace }}
         run: |
           poetry run pytest -m "not authentication"
+          poetry run python .\src\volue\mesh\examples\run_tests.py
