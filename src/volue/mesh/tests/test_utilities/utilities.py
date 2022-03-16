@@ -1,11 +1,15 @@
-from volue.mesh import Timeseries
-import pyarrow as pa
+
+from dataclasses import dataclass
 from datetime import datetime
-import uuid
+import math
+import socket
 import subprocess
 import sys
-import socket
-from dataclasses import dataclass
+import uuid
+
+import pyarrow as pa
+
+from volue.mesh import Timeseries
 
 
 @dataclass()
@@ -167,6 +171,29 @@ def get_timeseries_2():
     start_time = datetime(2016, 1, 1, 1, 0, 0)
     end_time = datetime(2016, 1, 1, 9, 0, 0)
     return timeseries, start_time, end_time, modified_table, full_name
+
+
+def verify_timeseries_2(reply_timeseries: Timeseries):
+    """
+    Verify if all time series properties and data have expected values.
+    """
+    assert type(reply_timeseries) is Timeseries
+    assert reply_timeseries.number_of_points == 9
+    # check timestamps
+    utc_date = reply_timeseries.arrow_table[0]
+    for count, item in enumerate(utc_date):
+        assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
+    # check flags
+    flags = reply_timeseries.arrow_table[1]
+    assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
+    for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+        assert flags[number].as_py() == Timeseries.PointFlags.OK.value
+    # check values
+    values = reply_timeseries.arrow_table[2]
+    values[3].as_py()
+    assert math.isnan(values[3].as_py())
+    for number in [0, 1, 2, 4, 5, 6, 7, 8]:
+        assert values[number].as_py() == (number + 1) * 100
 
 
 def get_timeseries_attribute_1():

@@ -16,7 +16,7 @@ import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
-    get_timeseries_attribute_1, get_timeseries_attribute_2
+    get_timeseries_attribute_1, get_timeseries_attribute_2, verify_timeseries_2
 
 
 @pytest.mark.asyncio
@@ -36,23 +36,7 @@ async def test_read_timeseries_points_async():
             test_cases = [test_case_1, test_case_2, test_case_3]
             for test_case in test_cases:
                 reply_timeseries = await session.read_timeseries_points(**test_case)
-                assert type(reply_timeseries) is Timeseries
-                assert reply_timeseries.number_of_points == 9
-                # check timestamps
-                utc_date = reply_timeseries.arrow_table[0]
-                for count, item in enumerate(utc_date):
-                    assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
-                # check flags
-                flags = reply_timeseries.arrow_table[1]
-                assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
-                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert flags[number].as_py() == Timeseries.PointFlags.OK.value
-                # check values
-                values = reply_timeseries.arrow_table[2]
-                values[3].as_py()
-                assert math.isnan(values[3].as_py())
-                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert values[number].as_py() == (number + 1) * 100
+                verify_timeseries_2(reply_timeseries)
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -92,23 +76,7 @@ async def test_read_timeseries_points_with_different_datetime_timezones_async():
             test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed]
             for test_case in test_cases:
                 reply_timeseries = await session.read_timeseries_points(**test_case)
-                assert type(reply_timeseries) is Timeseries
-                assert reply_timeseries.number_of_points == 9
-                # check timestamps
-                utc_date = reply_timeseries.arrow_table[0]
-                for count, item in enumerate(utc_date):
-                    assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
-                # check flags
-                flags = reply_timeseries.arrow_table[1]
-                assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
-                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert flags[number].as_py() == Timeseries.PointFlags.OK.value
-                # check values
-                values = reply_timeseries.arrow_table[2]
-                values[3].as_py()
-                assert math.isnan(values[3].as_py())
-                for number in [0, 1, 2, 4, 5, 6, 7, 8]:
-                    assert values[number].as_py() == (number+1)*100
+                verify_timeseries_2(reply_timeseries)
         except grpc.RpcError as e:
             pytest.fail(f"Could not read timeseries points: {e}")
 
@@ -158,9 +126,8 @@ async def test_write_timeseries_points_async():
                 assert utc_time[1].as_py() == datetime(2016, 1, 1, 2, 0, 0)
                 assert utc_time[2].as_py() == datetime(2016, 1, 1, 3, 0, 0)
                 flags = written_ts.arrow_table[1]
-                assert flags[0].as_py() == 0
-                assert flags[1].as_py() == 0
-                assert flags[2].as_py() == 0
+                for flag in flags:
+                    assert flag.as_py() == Timeseries.PointFlags.OK.value
                 values = written_ts.arrow_table[2]
                 assert values[0].as_py() == 0
                 assert values[1].as_py() == 10
@@ -176,8 +143,7 @@ async def test_write_timeseries_points_async():
 @pytest.mark.database
 async def test_write_timeseries_points_with_different_pyarrow_table_datetime_timezones_async():
     """
-    Check that timeseries points write accepts time series with time zone aware and
-    naive (treated as UTC) datetimes as input interval (start_time and end_time arguments).
+    Check that timeseries points write accepts PyArrow data with time zone aware timestamps.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -214,9 +180,8 @@ async def test_write_timeseries_points_with_different_pyarrow_table_datetime_tim
             assert utc_time[1].as_py().replace(tzinfo=tz.UTC) == datetime(2016, 1, 1, 2, tzinfo=some_tzinfo).astimezone(tz.UTC)
             assert utc_time[2].as_py().replace(tzinfo=tz.UTC) == datetime(2016, 1, 1, 3, tzinfo=some_tzinfo).astimezone(tz.UTC)
             flags = written_ts.arrow_table[1]
-            assert flags[0].as_py() == 0
-            assert flags[1].as_py() == 0
-            assert flags[2].as_py() == 0
+            for flag in flags:
+                assert flag.as_py() == Timeseries.PointFlags.OK.value
             values = written_ts.arrow_table[2]
             assert values[0].as_py() == 4
             assert values[1].as_py() == 44

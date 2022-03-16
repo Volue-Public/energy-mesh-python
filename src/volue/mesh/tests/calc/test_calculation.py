@@ -19,58 +19,23 @@ def test_parsing_invalid_single_timeseries_response_should_throw():
 
 
 @pytest.mark.unittest
-def test_convert_datetime_to_mesh_calc_format_converts_datetime_to_correct_format():
+@pytest.mark.parametrize('test_time, expected_result',
+    [(datetime(2016, 1, 5, 17, 48, 11, 123456), 'UTC20160105174811123'),
+     (datetime(2017, 2, 15, 8, 48, 11, 123456, tzinfo=tz.UTC), 'UTC20170215084811123'),
+     (datetime(2017, 9, 15, 8, 48, 11, 123456, tzinfo=tz.gettz('Europe/Warsaw')), 'UTC20170915064811123'),  # during daylight saving period (UTC+2)
+     (datetime(2017, 2, 15, 8, 48, 11, 123456, tzinfo=tz.gettz('Europe/Warsaw')), 'UTC20170215074811123')])  # outside of daylight saving period (UTC+1)
+def test_convert_local_datetime_to_mesh_calc_format_converts_datetime_to_correct_format(
+    test_time: datetime, expected_result: str):
     """
     Check that datetime parameter is correctly converted to format expected by Mesh calculator.
     If datetime is time zone naive it should be treated as UTC.
-    E.g. for 2021.09.17 15:25:00
-    Expected: UTC20210917152500000
-    """
-    test_time = datetime(2016, 1, 5, 17, 48, 11, 123456)
-    expected_datetime_format = 'UTC20160105174811123'
-
-    converted_datetime = _convert_datetime_to_mesh_calc_format(test_time)
-    assert expected_datetime_format == converted_datetime
-
-
-@pytest.mark.unittest
-def test_convert_utc_datetime_to_mesh_calc_format_converts_datetime_to_correct_format():
-    """
-    Check that datetime parameter is correctly converted to format expected by Mesh calculator.
     If datetime is already expressed in UTC it should be taken as it is (no conversion needed).
-    E.g. for 2021.09.17 15:25:00
-    Expected: UTC20210917152500000
-    """
-    test_time = datetime(2017, 2, 15, 8, 48, 11, 123456, tzinfo=tz.UTC)
-    expected_datetime_format = 'UTC20170215084811123'
-
-    converted_datetime = _convert_datetime_to_mesh_calc_format(test_time)
-    assert expected_datetime_format == converted_datetime
-
-
-@pytest.mark.unittest
-def test_convert_utc_datetime_to_mesh_calc_format_converts_datetime_to_correct_format():
-    """
-    Check that datetime parameter is correctly converted to format expected by Mesh calculator.
     If datetime is expressed in some time zone it should converted to UTC and DST should be taken into account.
     E.g. for 2021.09.17 15:25:00
     Expected: UTC20210917152500000
     """
-    local_tzinfo = tz.gettz('Europe/Warsaw')
-
-    # during daylight saving period (UTC+2)
-    test_time = datetime(2017, 9, 15, 8, 48, 11, 123456, tzinfo=local_tzinfo)
-    expected_datetime_format = 'UTC20170915064811123'
-
     converted_datetime = _convert_datetime_to_mesh_calc_format(test_time)
-    assert expected_datetime_format == converted_datetime
-
-    # outside of daylight saving period (UTC+1)
-    test_time = datetime(2017, 2, 15, 8, 48, 11, 123456, tzinfo=local_tzinfo)
-    expected_datetime_format = 'UTC20170215074811123'
-
-    converted_datetime = _convert_datetime_to_mesh_calc_format(test_time)
-    assert expected_datetime_format == converted_datetime
+    assert expected_result == converted_datetime
 
 
 @pytest.mark.unittest
