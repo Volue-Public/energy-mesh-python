@@ -253,7 +253,7 @@ class Connection:
             Request information associated with a Mesh object :doc:`attribute <mesh_object_attributes>`.
 
             Args:
-                model (str): |mesh_object_model_name|
+                model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 uuid_id (uuid.UUID): |mesh_object_uuid|
                 path (str): |mesh_object_full_name|
 
@@ -340,7 +340,7 @@ class Connection:
             Use the :doc:`Mesh search language <mesh_search>` to find :doc:`Mesh object attributes <mesh_object_attributes>` in the Mesh object model.
 
             Args:
-                model (str): |mesh_object_model_name|
+                model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 query (str): |mesh_query|
                 start_object_path (str): Start searching at the |mesh_object_full_name|
                 start_object_guid (uuid.UUID): Start searching at the object with the |mesh_object_uuid|
