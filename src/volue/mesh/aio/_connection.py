@@ -102,7 +102,7 @@ class Connection:
 
             Raises:
                 grpc.RpcError:  Error message raised if the gRPC request could not be completed
-                RuntimeError: |runtime_error|
+                RuntimeError:  Error message raised if the input is not valid
                 TypeError: |type_error|
             """
             object_id = core_pb2.ObjectId()
@@ -532,7 +532,7 @@ class Connection:
             Does not require an open session.
 
         Raises:
-            RuntimeError: |runtime_error| and the authentication is not configured
+            RuntimeError:  Error message raised if the input is not valid and the authentication is not configured
             grpc.RpcError:  Error message raised if the gRPC request could not be completed
         """
         if self.auth_metadata_plugin is None:

@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |runtime_error| replace:: Error message raised if the input is not valid
 .. |type_error| replace:: Error message raised if the returned result from the request is not as expected
 """
 

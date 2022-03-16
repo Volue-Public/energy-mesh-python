@@ -68,7 +68,7 @@ def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) ->
         response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
 
     Raises:
-        RuntimeError: |runtime_error|
+        RuntimeError:  Error message raised if the input is not valid
 
     Returns:
         List[Timeseries]: a single time series
@@ -88,7 +88,7 @@ def _parse_single_float_response(response: core_pb2.CalculationResponse) -> floa
         response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
 
     Raises:
-        RuntimeError: |runtime_error|
+        RuntimeError:  Error message raised if the input is not valid
 
     Returns:
         float: the value of the calculation respons
