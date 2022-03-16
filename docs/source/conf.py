@@ -105,17 +105,17 @@ rst_prolog = """
 .. |mesh_object_uuid| replace:: Universal Unique Identifier for Mesh objects
 .. |mesh_object_full_name| replace:: path in the :ref:`Mesh object model <mesh object model>`
 .. |mesh_service| replace:: the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
-.. |mesh_expression| replace:: expression which consists of a function to call. See :ref:`expressions <mesh expression>`
+.. |mesh_expression| replace:: expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 .. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
 
-.. |host| replace:: Mesh server host name in the form an ip
+.. |host| replace:: Mesh server host name in the form an ip or DNS name
 .. |port| replace:: Mesh server port number for gRPC communication
 .. |root_pem_certificates| replace::  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
 .. |authentication_parameters| replace:: TODO
 .. |service_principal_name| replace:: name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
 .. |user_principal_name| replace:: name of an active directory user, e.g.: 'ad\\user.name'
 .. |relative_to| replace:: a Mesh object to perform actions relative to
-.. |available_at_timepoint| replace:: must be available around this time
+.. |available_at_timepoint| replace:: is valid at the given timestamp
 .. |timezone| replace:: timezone
 .. |start_time| replace:: the start date and time of the time series interval
 .. |end_time| replace:: the end date and time of the time series interval

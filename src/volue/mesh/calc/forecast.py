@@ -132,7 +132,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Example:
             Use `forecast_start_min` (t\ :sub:`0min`) and `forecast_start_max` (t\ :sub:`0max`) to get the forecast that starts in that interval.
 
-            Note: This will ignore the time interval (`start_time` and `end_time`)  set by :py:func:`volue.mesh.Connection.Session.forecast_functions`
+            Note: This will ignore `start_time` set by :py:func:`volue.mesh.Connection.Session.forecast_functions`
 
             .. code-block:: python
 
@@ -158,7 +158,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Args:
             forecast_start_min: forecast must start after this time
             forecast_start_max: forecast must start before this time
-            available_at_timepoint: forecast |available_at_timepoint|
+            available_at_timepoint: forecast that |available_at_timepoint|
             timezone: |timezone|
             search_query: |mesh_query|
 

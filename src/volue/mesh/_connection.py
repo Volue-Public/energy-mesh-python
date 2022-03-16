@@ -30,8 +30,7 @@ class Connection:
                 mesh_service: core_pb2_grpc.MeshServiceStub,
                 session_id: uuid = None):
             """
-            Initialize a session object
-            for working with the Mesh server.
+            Initialize a session object for working with the Mesh server.
 
             Args:
                 mesh_service (core_pb2_grpc.MeshServiceStub): |mesh_service|
