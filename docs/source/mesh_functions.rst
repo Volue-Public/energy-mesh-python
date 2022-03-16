@@ -55,7 +55,7 @@ The above class is exposed via:
 History
 ~~~~~~~~~~~~~~
 
-Historical values are not overwritten when saving new values. The figure below shows a time series having values with various write times. When asking for historical values before a given time (t\ :sub:`c`) the values indicated by red is returned.
+Historical values are not overwritten when saving new values. The figure below shows a time series having values with various write times. When asking for historical values before a given time (t\ :sub:`c`) the values indicated by red are returned.
 
 .. image:: images/calc_history.png
    :width: 400
