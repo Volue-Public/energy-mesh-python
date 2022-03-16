@@ -36,7 +36,7 @@ Forecast
 
 A forecast is a calculation or estimate of future events, especially coming weather or a financial trend.
 
-Every grey line in the image below represents a forecast of some time series. Start and end times are given on the horizontal axis, while the vertical axis show every forecasts write time.
+Every grey line in the image below represents a forecast of some time series. Start and end times are given on the horizontal axis, while the vertical axis shows every forecasts write time.
 
 .. image:: images/calc_forecasts.png
    :width: 400
