@@ -97,7 +97,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
             GetTsHistoricalVersions(ts,1) returns the last change made, i.e. the latest historical version that is different from the current time series.
 
-            GetTsHistoricalVersions(ts,3)returns the three last changes. The first series displays the state before the last change, the second displays the state before the second last hange, etc.
+            GetTsHistoricalVersions(ts,3) returns the three last changes. The first series displays the state before the last change, the second displays the state before the second last change, etc.
 
 
         Args:
