@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |mesh_service| replace:: the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
 .. |mesh_expression| replace:: expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 .. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
 

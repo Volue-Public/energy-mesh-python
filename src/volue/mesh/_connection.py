@@ -33,7 +33,7 @@ class Connection:
             Initialize a session object for working with the Mesh server.
 
             Args:
-                mesh_service (core_pb2_grpc.MeshServiceStub): |mesh_service|
+                mesh_service (core_pb2_grpc.MeshServiceStub): the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
                 session_id (uuid.UUID):  the id of the session you are (or want to be) connected to
             """
             self.session_id: uuid = session_id
