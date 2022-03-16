@@ -99,8 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
-
 .. |authentication_parameters| replace:: TODO
 .. |service_principal_name| replace:: name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
 .. |user_principal_name| replace:: name of an active directory user, e.g.: 'ad\\user.name'

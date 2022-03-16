@@ -25,7 +25,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
 
         Args:
             input_type_symbol (str): either `t` (for returning a number) or `T` (for returning a time series)
-            search_query (str): |mesh_query|
+            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `sum` expresssion
@@ -46,7 +46,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         The resulting time series is equal to the sum of the values for each time interval in the expression.
 
         Args:
-            search_query (str): |mesh_query|
+            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Note:
             The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `relative_to` object will be used.

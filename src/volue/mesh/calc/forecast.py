@@ -23,7 +23,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Creates an expression for `get_all_forecasts` using a search query.
 
         Args:
-            search_query: |mesh_query|
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_all_forecasts` expression
@@ -44,7 +44,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Creates an expression for `get_forecasts` using a search query.
 
         Args:
-            search_query: |mesh_query|
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_forecasts` expression
@@ -98,7 +98,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `relative_to` object will be used.
 
         Args:
-            search_query: |mesh_query|
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             List[Timeseries]: an array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.
@@ -160,7 +160,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             forecast_start_max: forecast must start before this time
             available_at_timepoint: forecast that |available_at_timepoint|
             timezone: |timezone|
-            search_query: |mesh_query|
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             Timeseries: a time series forcast

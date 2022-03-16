@@ -341,7 +341,7 @@ class Connection:
 
             Args:
                 model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
-                query (str): |mesh_query|
+                query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
                 start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`
                 start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
 

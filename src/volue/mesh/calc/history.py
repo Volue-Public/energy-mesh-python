@@ -28,7 +28,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Args:
             available_at_timepoint (datetime): |available_at_timepoint|
             timezone (Timezone): |timezone|
-            search_query (str): |mesh_query|
+            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_ts_as_of_time` expression
@@ -48,7 +48,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             max_number_of_versions_to_get (int): maximum number of time series to return
-            search_query (str): |mesh_query|
+            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_ts_historical_versions` expression
@@ -79,7 +79,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Args:
             available_at_timepoint (datetime): |available_at_timepoint|
             timezone (Timezone): |timezone|
-            search_query (str): |mesh_query|
+            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
              Timeseries: a time series.
@@ -102,7 +102,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             max_number_of_versions_to_get (int): the maximum number of time series to return
-            search_query (str): |mesh_query|
+            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Note:
             The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.
