@@ -150,7 +150,7 @@ class Connection:
 
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
-                path (str): |resource_path|
+                path (str):  path in the resource model.
                 timskey (int):  integer that only applies to a specific raw time series
 
             Note:
@@ -194,9 +194,9 @@ class Connection:
 
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
-                path (str): |resource_path|
+                path (str):  path in the resource model.
                 timskey (int):  integer that only applies to a specific raw time series
-                new_path (str): set new |resource_path|
+                new_path (str): set new  path in the resource model.
                 new_curve_type (Timeseries.Curve): set new |resource_curve_type|
                 new_unit_of_measurement (str): set new |resource_unit_of_measurement|
 
