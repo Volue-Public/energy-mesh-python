@@ -51,7 +51,7 @@ def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> L
     Helper function for parsing a calculator respons.
 
     Args:
-        respons (core_pb2.CalculationResponse): the gRPC respons received from the Mesh server
+        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
 
     Returns:
         List[Timeseries]: a list of time series
