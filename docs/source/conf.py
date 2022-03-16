@@ -112,8 +112,8 @@ rst_prolog = """
 .. |port| replace:: Mesh server port number for gRPC communication
 .. |root_pem_certificates| replace::  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
 .. |authentication_parameters| replace:: TODO
-.. |service_principal_name| replace:: name of a active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
-.. |user_principal_name| replace:: name of a active directory user, e.g.: 'ad\\user.name'
+.. |service_principal_name| replace:: name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
+.. |user_principal_name| replace:: name of an active directory user, e.g.: 'ad\\user.name'
 .. |relative_to| replace:: a Mesh object to perform actions relative to
 .. |available_at_timepoint| replace:: must be available around this time
 .. |timezone| replace:: timezone
