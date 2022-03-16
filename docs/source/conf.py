@@ -101,7 +101,7 @@ rst_prolog = """
 
 .. |mesh_session_uuid| replace:: the id of the session you are (or want to be) connected to
 .. |mesh_object_model_name| replace:: the name of the :ref:`Mesh object model <mesh object model>` you want to work within
-.. |mesh_object_id| replace:: unique way of identifying a mesh object that contains a time series. Using either a |mesh_object_uuid|, a |mesh_object_full_name| or a |timskey|
+.. |mesh_object_id| replace:: unique way of identifying a Mesh object that contains a time series. Using either a |mesh_object_uuid|, a |mesh_object_full_name| or a |timskey|
 .. |mesh_object_uuid| replace:: Universal Unique Identifier for Mesh objects
 .. |mesh_object_full_name| replace:: path in the :ref:`Mesh object model <mesh object model>`
 .. |mesh_service| replace:: the gRPC generated mesh .service use to communicate with the :doc:`Mesh server <mesh_server>`
