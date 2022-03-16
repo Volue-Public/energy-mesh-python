@@ -94,7 +94,7 @@ class Timeseries:
             start_time (datetime): |start_time|
             end_time (datetime): |end_time|
             timskey (int): |timskey|
-            uuid_id: |mesh_object_uuid|
+            uuid_id:  Universal Unique Identifier for Mesh objects
             full_name: |mesh_object_full_name|
         """
         self.full_name = full_name

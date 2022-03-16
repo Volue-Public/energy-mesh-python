@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |mesh_object_uuid| replace:: Universal Unique Identifier for Mesh objects
 .. |mesh_object_full_name| replace:: path in the :ref:`Mesh object model <mesh object model>`
 .. |mesh_service| replace:: the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
 .. |mesh_expression| replace:: expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`

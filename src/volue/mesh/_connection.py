@@ -92,7 +92,7 @@ class Connection:
             Args:
                 start_time (datetime): |start_time|
                 end_time (datetime): |end_time|
-                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a |mesh_object_uuid|, a |mesh_object_full_name| or a |timskey|
+                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a |mesh_object_full_name| or a |timskey|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -149,7 +149,7 @@ class Connection:
             Request information associated with a raw |time_series_entry|
 
             Args:
-                uuid_id (uuid.UUID): |mesh_object_uuid|
+                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): |resource_path|
                 timskey (int): |timskey|
 
@@ -193,7 +193,7 @@ class Connection:
             which has a link to a time series, either calculated or raw.
 
             Args:
-                uuid_id (uuid.UUID): |mesh_object_uuid|
+                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): |resource_path|
                 timskey (int): |timskey|
                 new_path (str): set new |resource_path|
@@ -254,7 +254,7 @@ class Connection:
 
             Args:
                 model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
-                uuid_id (uuid.UUID): |mesh_object_uuid|
+                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): |mesh_object_full_name|
 
             Note:
@@ -291,10 +291,10 @@ class Connection:
             Update information associated with a Mesh object doc:`attribute <mesh_object_attributes>`.
 
             Args:
-                uuid_id (uuid.UUID): |mesh_object_uuid|
+                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): |mesh_object_full_name|
                 new_local_expression (str): set new local |mesh_expression|
-                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new |mesh_object_uuid| for the |time_series_entry|.
+                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the |time_series_entry|.
 
             Note:
                 Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one argument: `uuid_id ` or `path` is needed.
@@ -343,7 +343,7 @@ class Connection:
                 model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 query (str): |mesh_query|
                 start_object_path (str): Start searching at the |mesh_object_full_name|
-                start_object_guid (uuid.UUID): Start searching at the object with the |mesh_object_uuid|
+                start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
 
             Note:
                 Specify a model, a query using mesh query language and start object to start the search from,

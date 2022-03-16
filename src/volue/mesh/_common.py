@@ -20,7 +20,7 @@ class MeshObjectId:
 
     Args:
         timskey (int): |timskey|
-        uuid_id (uuid.UUID):  |mesh_object_uuid|
+        uuid_id (uuid.UUID):   Universal Unique Identifier for Mesh objects
         full_name (str): |mesh_object_full_name|
     """
     timskey: int = None
@@ -43,7 +43,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using an uuid of a Mesh object
 
         Args:
-            uuid_id (uuid.UUID): |mesh_object_uuid|
+            uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
         """
         mesh_object_id = cls()
         mesh_object_id.uuid_id = uuid_id
