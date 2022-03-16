@@ -456,7 +456,7 @@ class Connection:
             authentication_parameters (Authentication.Parameters): |authentication_parameters|
 
         Note:
-            There are 3 possible async connection types:
+            There are 3 possible connection types:
             - insecure (without TLS)
             - with TLS
             - with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)
