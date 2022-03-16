@@ -298,7 +298,7 @@ class Connection:
                 new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new |mesh_object_uuid| for the |time_series_entry|.
 
             Note:
-                Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one or uuid_id and path is needed.
+                Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one argument: `uuid_id ` or `path` is needed.
 
             Note:
              Specify a new entry and/or a new local expression for the attribute.
