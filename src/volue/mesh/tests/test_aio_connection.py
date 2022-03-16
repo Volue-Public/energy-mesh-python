@@ -495,61 +495,57 @@ async def test_read_transformed_timeseries_points(
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            reply_timeseries = await session.transform_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).transform(
-                    resolution, method, timezone)
+        reply_timeseries = await session.transform_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).transform(
+                resolution, method, timezone)
 
-            assert reply_timeseries.is_calculation_expression_result
+        assert reply_timeseries.is_calculation_expression_result
 
-            if resolution in [Timeseries.Resolution.HOUR,
-                              Timeseries.Resolution.DAY,
-                              Timeseries.Resolution.WEEK,
-                              Timeseries.Resolution.MONTH,
-                              Timeseries.Resolution.YEAR]:
-                # logic for those resolutions is complex and depends on other parameters
-                # make sure the result has at least 1 point and no error is thrown
-                assert reply_timeseries.number_of_points >= 1
-                return
+        if resolution in [Timeseries.Resolution.HOUR,
+                            Timeseries.Resolution.DAY,
+                            Timeseries.Resolution.WEEK,
+                            Timeseries.Resolution.MONTH,
+                            Timeseries.Resolution.YEAR]:
+            # logic for those resolutions is complex and depends on other parameters
+            # make sure the result has at least 1 point and no error is thrown
+            assert reply_timeseries.number_of_points >= 1
+            return
 
-            assert reply_timeseries.number_of_points == expected_number_of_points
+        assert reply_timeseries.number_of_points == expected_number_of_points
 
-            expected_date = start_time
-            delta = 1 if expected_number_of_points == 1 else (end_time - start_time) / (expected_number_of_points - 1)
-            index = 0
-            d = reply_timeseries.arrow_table.to_pydict()
+        expected_date = start_time
+        delta = 1 if expected_number_of_points == 1 else (end_time - start_time) / (expected_number_of_points - 1)
+        index = 0
+        d = reply_timeseries.arrow_table.to_pydict()
 
-            for utc_time, flags, value in zip(d['utc_time'], d['flags'], d['value']):
-                # check timestamps
-                assert utc_time == expected_date
+        for utc_time, flags, value in zip(d['utc_time'], d['flags'], d['value']):
+            # check timestamps
+            assert utc_time == expected_date
 
-                # check flags and values
-                # hours, flags
-                # <1, 3> - OK
-                # (3, 4) - MISSING
-                # <4, 5) - NOT_OK | MISSING
-                # <5, 10) - OK
-                if expected_date > datetime(2016, 1, 1, 3) and expected_date < datetime(2016, 1, 1, 4):
-                    assert flags == Timeseries.PointFlags.MISSING.value
-                    assert math.isnan(value)
-                elif expected_date >= datetime(2016, 1, 1, 4) and expected_date < datetime(2016, 1, 1, 5):
-                    expected_flags = Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
-                    assert flags == expected_flags
-                    assert math.isnan(value)
-                else:
-                    assert flags == Timeseries.PointFlags.OK.value
-                    # check values for one some combinations (method AVG and resolution MIN15)
-                    if method is Transform.Method.AVG and resolution is Timeseries.Resolution.MIN15:
-                        # the original timeseries data is in hourly resolution,
-                        # starts with 1 and the value is incremented with each hour up to 9
-                        # here we are using 15 min resolution, so the delta between each 15 min point is 0.25
-                        assert value == 1 + index * 0.25
+            # check flags and values
+            # hours, flags
+            # <1, 3> - OK
+            # (3, 4) - MISSING
+            # <4, 5) - NOT_OK | MISSING
+            # <5, 10) - OK
+            if expected_date > datetime(2016, 1, 1, 3) and expected_date < datetime(2016, 1, 1, 4):
+                assert flags == Timeseries.PointFlags.MISSING.value
+                assert math.isnan(value)
+            elif expected_date >= datetime(2016, 1, 1, 4) and expected_date < datetime(2016, 1, 1, 5):
+                expected_flags = Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
+                assert flags == expected_flags
+                assert math.isnan(value)
+            else:
+                assert flags == Timeseries.PointFlags.OK.value
+                # check values for one some combinations (method AVG and resolution MIN15)
+                if method is Transform.Method.AVG and resolution is Timeseries.Resolution.MIN15:
+                    # the original timeseries data is in hourly resolution,
+                    # starts with 1 and the value is incremented with each hour up to 9
+                    # here we are using 15 min resolution, so the delta between each 15 min point is 0.25
+                    assert value == 1 + index * 0.25
 
-                expected_date += delta
-                index += 1
-
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+            expected_date += delta
+            index += 1
 
 
 @pytest.mark.asyncio
@@ -623,12 +619,9 @@ async def test_forecast_get_all_forecasts():
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            reply_timeseries = await session.forecast_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
-            assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        reply_timeseries = await session.forecast_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
+        assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
 
 
 @pytest.mark.asyncio
@@ -658,13 +651,10 @@ async def test_forecast_get_forecast(forecast_start, available_at_timepoint, tim
         forecast_start_min, forecast_start_max = forecast_start
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            reply_timeseries = await session.forecast_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
-                    forecast_start_min, forecast_start_max, available_at_timepoint, timezone)
-            assert reply_timeseries.is_calculation_expression_result
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        reply_timeseries = await session.forecast_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
+                forecast_start_min, forecast_start_max, available_at_timepoint, timezone)
+        assert reply_timeseries.is_calculation_expression_result
 
 
 @pytest.mark.asyncio
@@ -688,13 +678,10 @@ async def test_history_get_ts_as_of_time(timezone):
         available_at_timepoint = datetime(2016, 1, 5, 17, 48, 11, 123456)
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            reply_timeseries = await session.history_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
-                    available_at_timepoint, timezone)
-            assert reply_timeseries.is_calculation_expression_result
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        reply_timeseries = await session.history_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
+                available_at_timepoint, timezone)
+        assert reply_timeseries.is_calculation_expression_result
 
 
 @pytest.mark.asyncio
@@ -714,13 +701,10 @@ async def test_history_get_ts_historical_versions(max_number_of_versions_to_get)
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            reply_timeseries = await session.history_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
-                    max_number_of_versions_to_get)
-            assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not read timeseries points: {e}")
+        reply_timeseries = await session.history_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
+                max_number_of_versions_to_get)
+        assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
 
 
 @pytest.mark.asyncio
@@ -738,12 +722,9 @@ async def test_statistical_sum():
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            reply_timeseries = await session.statistical_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).sum(search_query='some_query')
-            assert reply_timeseries.is_calculation_expression_result
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not sum array of timeseries: {e}")
+        reply_timeseries = await session.statistical_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).sum(search_query='some_query')
+        assert reply_timeseries.is_calculation_expression_result
 
 
 @pytest.mark.asyncio
@@ -761,12 +742,9 @@ async def test_statistical_sum_single_timeseries():
         end_time = datetime(2016, 1, 1, 9, 0, 0)
         _, full_name = get_timeseries_attribute_2()
 
-        try:
-            result = await session.statistical_functions(
-                MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
-            assert isinstance(result, float) and result == 41.0
-        except grpc.RpcError as e:
-            pytest.fail(f"Could not sum timeseries points: {e}")
+        result = await session.statistical_functions(
+            MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
+        assert isinstance(result, float) and result == 41.0
 
 
 if __name__ == '__main__':
