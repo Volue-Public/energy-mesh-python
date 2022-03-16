@@ -51,7 +51,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Args:
             resolution (Timeseries.Resolution): the resolution to transform to
             method (Method): what method to use for the transformation
-            timezone (Timezone): |timezone|
+            timezone (Timezone):  timezone
             search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
@@ -96,7 +96,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Args:
             resolution (Timeseries.Resolution): the resolution to transform to
             method (Method): what method to use for the transformation
-            timezone (Timezone): |timezone|
+            timezone (Timezone):  timezone
             search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Note:

@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |timezone| replace:: timezone
 .. |start_time| replace:: the start date and time of the time series interval
 .. |end_time| replace:: the end date and time of the time series interval
 .. |timskey| replace:: integer that only applies to a specific raw time series.

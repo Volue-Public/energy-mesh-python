@@ -27,7 +27,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             available_at_timepoint (datetime):  is valid at the given timestamp
-            timezone (Timezone): |timezone|
+            timezone (Timezone):  timezone
             search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
@@ -78,7 +78,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             available_at_timepoint (datetime):  is valid at the given timestamp
-            timezone (Timezone): |timezone|
+            timezone (Timezone):  timezone
             search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
