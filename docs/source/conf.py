@@ -98,8 +98,6 @@ rst_prolog = """
 .. |testaio| replace:: Requires |pytest_asyncio_link|_.
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
-
-.. |type_error| replace:: Error message raised if the returned result from the request is not as expected
 """
 
 

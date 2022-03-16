@@ -97,7 +97,7 @@ class Connection:
             Raises:
                 grpc.RpcError:  Error message raised if the gRPC request could not be completed
                 RuntimeError:  Error message raised if the input is not valid
-                TypeError: |type_error|
+                TypeError:  Error message raised if the returned result from the request is not as expected
             """
             object_id = core_pb2.ObjectId()
             if mesh_object_id.timskey is not None:

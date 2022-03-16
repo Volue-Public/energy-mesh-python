@@ -131,7 +131,7 @@ class _Calculation:
             expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Raises:
-            TypeError: |type_error|
+            TypeError:  Error message raised if the returned result from the request is not as expected
 
         Returns:
             core_pb2.CalculationRequest:
