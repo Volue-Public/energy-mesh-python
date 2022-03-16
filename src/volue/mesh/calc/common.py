@@ -128,7 +128,7 @@ class _Calculation:
         and constructs a calculation request object
 
         Args:
-            expression (str): |mesh_expression|
+            expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Raises:
             TypeError: |type_error|
@@ -161,7 +161,7 @@ class _Calculation:
         """Run a function using an asynchronous connection.
 
         Args:
-            expression (str): |mesh_expression|
+            expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Returns:
             core_pb2.CalculationResponse:
@@ -178,7 +178,7 @@ class _Calculation:
         """Run a function using a synchronous connection.
 
         Args:
-            expression (str): |mesh_expression|
+            expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Returns:
             core_pb2.CalculationResponse:

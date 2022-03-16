@@ -300,7 +300,7 @@ class Connection:
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): path in the :ref:`Mesh object model <mesh object model>`
-                new_local_expression (str): set new local |mesh_expression|
+                new_local_expression (str): set new local  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
                 new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the |time_series_entry|.
 
             Note:

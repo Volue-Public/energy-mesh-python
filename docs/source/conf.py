@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |mesh_expression| replace:: expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 .. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
 
 .. |host| replace:: Mesh server host name in the form an ip or DNS name
