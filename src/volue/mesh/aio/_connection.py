@@ -98,7 +98,7 @@ class Connection:
             Args:
                 start_time (datetime):  the start date and time of the time series interval
                 end_time (datetime):  the end date and time of the time series interval
-                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a |timskey|
+                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
@@ -158,7 +158,7 @@ class Connection:
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): |resource_path|
-                timskey (int): |timskey|
+                timskey (int):  integer that only applies to a specific raw time series
 
             Note:
                 This `path` is NOT the same as full name or the path in the Mesh object model,
@@ -202,7 +202,7 @@ class Connection:
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): |resource_path|
-                timskey (int): |timskey|
+                timskey (int):  integer that only applies to a specific raw time series
                 new_path (str): set new |resource_path|
                 new_curve_type (Timeseries.Curve): set new |resource_curve_type|
                 new_unit_of_measurement (str): set new |resource_unit_of_measurement|

@@ -19,7 +19,7 @@ class MeshObjectId:
     """`MeshObjectId` represents a unique way of identifying a Mesh object.
 
     Args:
-        timskey (int): |timskey|
+        timskey (int):  integer that only applies to a specific raw time series
         uuid_id (uuid.UUID):   Universal Unique Identifier for Mesh objects
         full_name (str): path in the :ref:`Mesh object model <mesh object model>`
     """
@@ -32,7 +32,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using a timskey of a Mesh object
 
         Args:
-            timskey (int): |timskey|
+            timskey (int):  integer that only applies to a specific raw time series
         """
         mesh_object_id = cls()
         mesh_object_id.timskey = timskey
