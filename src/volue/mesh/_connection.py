@@ -450,7 +450,7 @@ class Connection:
 
         Args:
             host (str):  Mesh server host name in the form an ip or DNS name
-            port (int): |port|
+            port (int):  Mesh server port number for gRPC communication
             root_pem_certificates (str): |root_pem_certificates|
             authentication_parameters (Authentication.Parameters): |authentication_parameters|
 
