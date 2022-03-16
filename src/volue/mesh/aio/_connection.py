@@ -98,7 +98,7 @@ class Connection:
             Args:
                 start_time (datetime): |start_time|
                 end_time (datetime): |end_time|
-                mesh_object_id (MeshObjectId): |mesh_object_id|
+                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a |mesh_object_uuid|, a |mesh_object_full_name| or a |timskey|
 
             Raises:
                 grpc.RpcError: |grpc_rpc_error|
