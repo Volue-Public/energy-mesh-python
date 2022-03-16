@@ -85,7 +85,7 @@ def _parse_single_float_response(response: core_pb2.CalculationResponse) -> floa
     Helper function for parsing a calculator respons.
 
     Args:
-        respons (core_pb2.CalculationResponse): the gRPC respons received from the Mesh server
+        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
 
     Raises:
         RuntimeError: |runtime_error|
