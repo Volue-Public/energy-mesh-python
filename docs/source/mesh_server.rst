@@ -1,7 +1,7 @@
 Mesh server
 ---------------------------
 
-The Volue Mesh server is an application built to handle incoming requests from clients. One way of handling such requests is by `remote procedure calls <https://en.wikipedia.org/wiki/Remote_procedure_call>`_. The Mesh Python API is able to connect to the Mesh server using `gRPC <https://grpc.io/>`_. The server has to be configured to listen for this kind of communication. To be able to connect you need the Mesh server's IP address and the port open for RPC calls.
+The Volue Mesh server is an application built to handle incoming requests from clients. One way of handling such requests is by `remote procedure calls <https://en.wikipedia.org/wiki/Remote_procedure_call>`_. The Mesh Python SDK is able to connect to the Mesh server using `gRPC <https://grpc.io/>`_. The server has to be configured to listen for this kind of communication. To be able to connect you need the Mesh server's IP address and the port open for RPC calls.
 
 Communication with the server can either be insecure or secured by encryption. The Mesh server supports `TLS (transport layer security) <https://en.wikipedia.org/wiki/Transport_Layer_Security>`_ which is a protocol designed to provide communication's security over a computer network through the use of certificates.
 
