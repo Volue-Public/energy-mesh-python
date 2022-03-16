@@ -563,7 +563,7 @@ class Connection:
             session_id (uuid.UUID): |mesh_session_uuid|
 
         Note:
-            This is only happens locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.
+            This is handled locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.
         If the session_id is *not* a valid open session an exception will be raised when trying to use the session.
 
         """
