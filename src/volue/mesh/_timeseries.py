@@ -89,7 +89,7 @@ class Timeseries:
         """A representation of a time series.
 
         Args:
-            table (pa.Tabel): the arrow table containing the timestamps, flags and values
+            table (pa.Table): the arrow table containing the timestamps, flags and values
             resolution (resources_pb2.Resolution): the resolution of the time series
             start_time (datetime): |start_time|
             end_time (datetime): |end_time|
