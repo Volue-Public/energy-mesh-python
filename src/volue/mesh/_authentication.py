@@ -43,7 +43,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         Args:
             service_principal (str):  name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
-            user_principal (str): |user_principal_name|
+            user_principal (str):  name of an active directory user, e.g.: 'ad\\user.name'
         """
         service_principal: str
         user_principal: str = None
@@ -59,7 +59,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             """
             Args:
                 service_principal (str):  name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
-                user_principal (str): |user_principal_name|
+                user_principal (str):  name of an active directory user, e.g.: 'ad\\user.name'
             """
             self.krb_context = None
             self.first_iteration: bool = True

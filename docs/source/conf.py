@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |user_principal_name| replace:: name of an active directory user, e.g.: 'ad\\user.name'
 .. |relative_to| replace:: a Mesh object to perform actions relative to
 .. |available_at_timepoint| replace:: is valid at the given timestamp
 .. |timezone| replace:: timezone
