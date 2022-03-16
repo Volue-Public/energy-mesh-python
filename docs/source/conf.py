@@ -99,8 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |resource_unit_of_measurement| replace:: unit of measurement for the time series.
-
 .. |grpc_rpc_error| replace:: Error message raised if the gRPC request could not be completed
 .. |runtime_error| replace:: Error message raised if the input is not valid
 .. |type_error| replace:: Error message raised if the returned result from the request is not as expected

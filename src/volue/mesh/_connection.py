@@ -198,7 +198,7 @@ class Connection:
                 timskey (int):  integer that only applies to a specific raw time series
                 new_path (str): set new  path in the resource model.
                 new_curve_type (Timeseries.Curve): set new  curve type for the time series.
-                new_unit_of_measurement (str): set new |resource_unit_of_measurement|
+                new_unit_of_measurement (str): set new  unit of measurement for the time series.
 
             Note:
                 Specify either uuid_id, path or timskey to a timeseries entry.
