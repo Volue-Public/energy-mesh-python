@@ -447,7 +447,7 @@ class Connection:
 
     def __init__(self, host, port, root_pem_certificate: str = None,
                  authentication_parameters: Authentication.Parameters = None):
-        """Create an synchronous connection for communication with Mesh server.
+        """Create a synchronous connection for communication with Mesh server.
 
         Args:
             host (str): |host|
