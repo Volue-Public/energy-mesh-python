@@ -451,7 +451,7 @@ class Connection:
         """Create an asynchronous connection for communication with Mesh server.
 
         Args:
-            host (str): |host|
+            host (str):  Mesh server host name in the form an ip or DNS name
             port (int): |port|
             root_pem_certificates (str): |root_pem_certificates|
             authentication_parameters (Authentication.Parameters): |authentication_parameters|

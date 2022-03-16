@@ -155,7 +155,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         Args:
             parameters (Parameters): authentication parameters
-            target (str): |host|
+            target (str):  Mesh server host name in the form an ip or DNS name
             channel_credentials (grpc.ChannelCredentials): an encapsulation of the data required to create a secure Channel.
         """
 
