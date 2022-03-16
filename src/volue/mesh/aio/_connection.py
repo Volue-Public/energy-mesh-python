@@ -97,7 +97,7 @@ class Connection:
 
             Args:
                 start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime): |end_time|
+                end_time (datetime):  the end date and time of the time series interval
                 mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a |timskey|
 
             Raises:
@@ -400,7 +400,7 @@ class Connection:
             Args:
                 relative_to (MeshObjectId): |relative_to|
                 start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime): |end_time|
+                end_time (datetime):  the end date and time of the time series interval
 
             Returns:
                 ForecastFunctions: object containing all forecast functions
@@ -413,7 +413,7 @@ class Connection:
             Args:
                 relative_to (MeshObjectId): |relative_to|
                 start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime): |end_time|
+                end_time (datetime):  the end date and time of the time series interval
 
             Returns:
                 HistoryFunctions: object containing all history functions
@@ -426,7 +426,7 @@ class Connection:
             Args:
                 relative_to (MeshObjectId): |relative_to|
                 start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime): |end_time|
+                end_time (datetime):  the end date and time of the time series interval
 
             Returns:
                 StatisticalFunctions: object containing all statistical functions
@@ -439,7 +439,7 @@ class Connection:
             Args:
                 relative_to (MeshObjectId): |relative_to|
                 start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime): |end_time|
+                end_time (datetime):  the end date and time of the time series interval
 
             Returns:
                 TransformFunctions: object containing all transformation functions
