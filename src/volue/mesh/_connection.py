@@ -146,7 +146,7 @@ class Connection:
                                          timskey: int = None,
                                          ) -> core_pb2.TimeseriesEntry:
             """
-            Request information associated with a raw |time_series_entry|
+            Request information associated with a raw  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`.
 
             Args:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
@@ -294,7 +294,7 @@ class Connection:
                 uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
                 path (str): path in the :ref:`Mesh object model <mesh object model>`
                 new_local_expression (str): set new local  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
-                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the |time_series_entry|.
+                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`..
 
             Note:
                 Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one argument: `uuid_id ` or `path` is needed.

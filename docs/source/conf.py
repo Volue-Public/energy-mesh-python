@@ -99,8 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |time_series_entry| replace:: time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`.
-
 .. |resource_path| replace:: path in the resource model.
 .. |resource_curve_type| replace:: curve type for the time series.
 .. |resource_unit_of_measurement| replace:: unit of measurement for the time series.
