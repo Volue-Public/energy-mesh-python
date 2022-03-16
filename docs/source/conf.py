@@ -101,7 +101,6 @@ rst_prolog = """
 
 .. |mesh_query| replace:: a search formulated using the :doc:`Mesh search language <mesh_search>`
 
-.. |root_pem_certificates| replace::  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
 .. |authentication_parameters| replace:: TODO
 .. |service_principal_name| replace:: name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
 .. |user_principal_name| replace:: name of an active directory user, e.g.: 'ad\\user.name'

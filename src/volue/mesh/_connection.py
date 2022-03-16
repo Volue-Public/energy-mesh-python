@@ -451,7 +451,7 @@ class Connection:
         Args:
             host (str):  Mesh server host name in the form an ip or DNS name
             port (int):  Mesh server port number for gRPC communication
-            root_pem_certificates (str): |root_pem_certificates|
+            root_pem_certificates (str):  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
             authentication_parameters (Authentication.Parameters): |authentication_parameters|
 
         Note:
