@@ -91,7 +91,7 @@ class Timeseries:
         Args:
             table (pa.Table): the arrow table containing the timestamps, flags and values
             resolution (resources_pb2.Resolution): the resolution of the time series
-            start_time (datetime): |start_time|
+            start_time (datetime):  the start date and time of the time series interval
             end_time (datetime): |end_time|
             timskey (int): |timskey|
             uuid_id:  Universal Unique Identifier for Mesh objects

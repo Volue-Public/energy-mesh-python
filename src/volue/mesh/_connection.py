@@ -90,7 +90,7 @@ class Connection:
             the specified timeseries in the given interval.
 
             Args:
-                start_time (datetime): |start_time|
+                start_time (datetime):  the start date and time of the time series interval
                 end_time (datetime): |end_time|
                 mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a |timskey|
 
@@ -394,7 +394,7 @@ class Connection:
 
             Args:
                 relative_to (MeshObjectId): |relative_to|
-                start_time (datetime): |start_time|
+                start_time (datetime):  the start date and time of the time series interval
                 end_time (datetime): |end_time|
 
             Returns:
@@ -408,7 +408,7 @@ class Connection:
 
             Args:
                 relative_to (MeshObjectId): |relative_to|
-                start_time (datetime): |start_time|
+                start_time (datetime):  the start date and time of the time series interval
                 end_time (datetime): |end_time|
 
             Returns:
@@ -422,7 +422,7 @@ class Connection:
 
             Args:
                 relative_to (MeshObjectId): |relative_to|
-                start_time (datetime): |start_time|
+                start_time (datetime):  the start date and time of the time series interval
                 end_time (datetime): |end_time|
 
             Returns:
@@ -436,7 +436,7 @@ class Connection:
 
             Args:
                 relative_to (MeshObjectId): |relative_to|
-                start_time (datetime): |start_time|
+                start_time (datetime):  the start date and time of the time series interval
                 end_time (datetime): |end_time|
 
             Returns:
