@@ -47,7 +47,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Creates an expression for `get_ts_historical_versions`.
 
         Args:
-            max_number_of_versions_to_get (int): maxium number of time series to return
+            max_number_of_versions_to_get (int): maximum number of time series to return
             search_query (str): |mesh_query|
 
         Returns:
