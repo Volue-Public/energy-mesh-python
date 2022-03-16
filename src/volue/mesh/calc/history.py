@@ -26,7 +26,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Create an expression for `get_ts_as_of_time`.
 
         Args:
-            available_at_timepoint (datetime): |available_at_timepoint|
+            available_at_timepoint (datetime):  is valid at the given timestamp
             timezone (Timezone): |timezone|
             search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
@@ -77,7 +77,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
             If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.
 
         Args:
-            available_at_timepoint (datetime): |available_at_timepoint|
+            available_at_timepoint (datetime):  is valid at the given timestamp
             timezone (Timezone): |timezone|
             search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
 

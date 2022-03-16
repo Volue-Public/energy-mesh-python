@@ -158,7 +158,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Args:
             forecast_start_min: forecast must start after this time
             forecast_start_max: forecast must start before this time
-            available_at_timepoint: forecast that |available_at_timepoint|
+            available_at_timepoint: forecast that  is valid at the given timestamp
             timezone: |timezone|
             search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 

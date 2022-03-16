@@ -99,7 +99,6 @@ rst_prolog = """
 .. |pytest_asyncio_link| replace:: *pytest-asyncio*
 .. _pytest_asyncio_link: https://github.com/pytest-dev/pytest-asyncio
 
-.. |available_at_timepoint| replace:: is valid at the given timestamp
 .. |timezone| replace:: timezone
 .. |start_time| replace:: the start date and time of the time series interval
 .. |end_time| replace:: the end date and time of the time series interval
