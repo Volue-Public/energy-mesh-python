@@ -159,6 +159,8 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             available_at_timepoint: forecast that  is valid at the given timestamp
             search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
+        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
+
         Returns:
             Timeseries: a time series forcast
         """

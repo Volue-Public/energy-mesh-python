@@ -88,7 +88,7 @@ class Connection:
             """
             Reads time series points for
             the specified timeseries in the given interval.
-            All time zone naive `datetime` arguments are treated as UTC.
+            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
             Args:
                 start_time (datetime): the start date and time of the time series interval

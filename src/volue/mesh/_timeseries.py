@@ -87,7 +87,7 @@ class Timeseries:
                  full_name: str = None
                  ):
         """A representation of a time series.
-        All time zone naive `datetime` arguments are treated as UTC.
+        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Args:
             table (pa.Table): the arrow table containing the timestamps, flags and values
