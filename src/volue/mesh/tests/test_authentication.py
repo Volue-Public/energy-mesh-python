@@ -1,3 +1,7 @@
+"""
+Tests for volue.mesh.Authentication
+"""
+
 import pytest
 
 from volue.mesh import Authentication, Connection, Credentials
@@ -32,18 +36,18 @@ def connection():
 
 
 @pytest.fixture
-async def aconnection():
+async def get_async_connection():
     """Yields AsyncConnection object and revokes access token in clean-up."""
     authentication_parameters = Authentication.Parameters(
         sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
-    aconn = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
+    async_connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
                             sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE,  # authentication requires TLS (to make sure tokens are encrypted)
                             authentication_parameters)
-    yield aconn
+    yield async_connection
 
     # clean-up
-    await aconn.revoke_access_token()
+    await async_connection.revoke_access_token()
 
 
 @pytest.mark.authentication
@@ -97,11 +101,11 @@ def test_connection_revoke_access_token(connection):
 
 @pytest.mark.asyncio
 @pytest.mark.authentication
-async def test_async_connection_revoke_access_token(aconnection):
+async def test_async_connection_revoke_access_token(get_async_connection):
     """Check if revoking access token from AsyncConnection class correctly invalidates it."""
-    assert aconnection.auth_metadata_plugin.is_token_valid()
-    await aconnection.revoke_access_token()
-    assert aconnection.auth_metadata_plugin.is_token_valid() is False
+    assert get_async_connection.auth_metadata_plugin.is_token_valid()
+    await get_async_connection.revoke_access_token()
+    assert get_async_connection.auth_metadata_plugin.is_token_valid() is False
 
 
 @pytest.mark.authentication
@@ -114,9 +118,9 @@ def test_connection_get_user_identity(connection):
 
 @pytest.mark.asyncio
 @pytest.mark.authentication
-async def test_async_connection_get_user_identity(aconnection):
+async def test_async_connection_get_user_identity(get_async_connection):
     """Check if getting user identity from AsyncConnection class returns something."""
-    user_identity = await aconnection.get_user_identity()
+    user_identity = await get_async_connection.get_user_identity()
     assert user_identity.display_name is not None
     assert user_identity.identifier is not None
 

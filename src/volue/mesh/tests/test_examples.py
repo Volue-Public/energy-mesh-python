@@ -1,3 +1,7 @@
+"""
+Tests for running the example scripts
+"""
+
 import glob
 import os
 import pytest
@@ -26,7 +30,10 @@ def test_run_example_scripts():
 
     for file in glob.glob("*.py"):
         if file not in exception_list:
-            run_example_script(file, sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+            run_example_script(file,
+                               sc.DefaultServerConfig.ADDRESS,
+                               sc.DefaultServerConfig.PORT,
+                               sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
 
 if __name__ == '__main__':
