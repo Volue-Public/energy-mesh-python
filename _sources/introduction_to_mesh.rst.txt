@@ -10,6 +10,6 @@ To be able to work efficiently with Mesh it is important to have an understandin
    :hidden:
 
    mesh_concepts
+   mesh_server
+   mesh_client
 
-..   mesh_client
-..   mesh_server

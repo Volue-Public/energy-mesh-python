@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>volue.mesh._common &mdash; volue.mesh 0.0.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usecases.html">Use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>volue.mesh._common</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for volue.mesh._common</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Common classes/enums/etc. for the Mesh API.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">timestamp_pb2</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
+
+
+<div class="viewcode-block" id="MeshObjectId"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">MeshObjectId</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;`MeshObjectId` represents a unique way of identifying a Mesh object.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">        uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
+<span class="sd">        full_name (str): path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MeshObjectId.with_timskey"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId.with_timskey">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_timskey</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using a timskey of a Mesh object</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">timskey</span>
+        <span class="k">return</span> <span class="n">mesh_object_id</span></div>
+
+<div class="viewcode-block" id="MeshObjectId.with_uuid_id"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId.with_uuid_id">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_uuid_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using an uuid of a Mesh object</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">uuid_id</span> <span class="o">=</span> <span class="n">uuid_id</span>
+        <span class="k">return</span> <span class="n">mesh_object_id</span></div>
+
+<div class="viewcode-block" id="MeshObjectId.with_full_name"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId.with_full_name">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_full_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using full_name of a Mesh object</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            full_name (str): path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
+        <span class="k">return</span> <span class="n">mesh_object_id</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Convert from Python UUID format to Microsoft&#39;s GUID format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        uuid (uuid.UUID): identifier in Python&#39;s UUID format</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        resources_pb2.Guid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert from Microsoft&#39;s GUID format to UUID format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        guid (resources_pb2.Guid): GUID to be converted</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        uuid.UUID</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">guid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">guid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_to_proto_curve_type</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts from Timeseries Curve type to protobuf curve type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        curve (Timeseries.Curve): the curve to convert</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        resources_pb2.Curve</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">proto_curve</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">()</span>
+    <span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">UNKNOWN</span>
+    <span class="k">if</span> <span class="n">curve</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span><span class="p">:</span>
+        <span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span>
+    <span class="k">elif</span> <span class="n">curve</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASE</span><span class="p">:</span>
+        <span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASE</span>
+    <span class="k">elif</span> <span class="n">curve</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASESTARTOFSTEP</span><span class="p">:</span>
+        <span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASESTARTOFSTEP</span>
+
+    <span class="k">return</span> <span class="n">proto_curve</span>
+
+
+<span class="k">def</span> <span class="nf">_to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert to protobuf UtcInterval.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        start_time (datetime): start of the interval</span>
+<span class="sd">        end_time (datetime): end of the interval</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        resources_pb2.UtcInterval</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
+    <span class="n">start</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
+    <span class="n">end</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">end_time</span><span class="p">)</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">(</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">interval</span>
+
+
+<span class="k">def</span> <span class="nf">_to_proto_object_id</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a Timeseries to corresponding protobuf ObjectId</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timeseries (Timeseries): the time series to convert</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        core_pb2.ObjectId</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
+        <span class="n">timskey</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span><span class="p">,</span>
+        <span class="n">guid</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a protobuf timeseries reply from Mesh server into Timeseries</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        timeseries (Timeseries):t the timeseries to convert</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        core_pb2.Timeseries</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stream</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
+    <span class="n">writer</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">RecordBatchStreamWriter</span><span class="p">(</span>
+        <span class="n">sink</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span>
+        <span class="n">schema</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span>
+    <span class="p">)</span>
+
+    <span class="n">writer</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">)</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+    <span class="n">proto_timeserie</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span>
+        <span class="n">object_id</span><span class="o">=</span><span class="n">_to_proto_object_id</span><span class="p">(</span><span class="n">timeseries</span><span class="p">),</span>
+        <span class="n">resolution</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span>
+        <span class="n">interval</span><span class="o">=</span><span class="n">_to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">proto_timeserie</span>
+
+
+<span class="k">def</span> <span class="nf">_read_proto_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a protobuf time series reply from Mesh server into Timeseries</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: no time series data</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[Timeseries]: list of time series extracted from the reply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">resolution</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">interval</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data in time series reply for the given interval&#39;</span><span class="p">)</span>
+
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">timeserie</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;object_id&quot;</span><span class="p">):</span>
+            <span class="n">object_id</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">object_id</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span>
+                            <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">,</span>
+                            <span class="n">object_id</span><span class="o">.</span><span class="n">timskey</span><span class="p">,</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">object_id</span><span class="o">.</span><span class="n">guid</span><span class="p">),</span> <span class="n">object_id</span><span class="o">.</span><span class="n">full_name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span>
+                            <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+
+        <span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">timeseries</span>
+
+
+<span class="k">def</span> <span class="nf">_read_proto_numeric_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a protobuf numeric calculation reply from Mesh server into a list of floats</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List[float]: list of floats extracted from the reply</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

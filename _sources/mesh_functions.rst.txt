@@ -1,6 +1,8 @@
 Mesh functions
 ---------------
 
+.. _mesh expression:
+
 **Expressions** can be used to access **functions** available in Mesh. The result of a calculation based on a function is a temporary time series, i.e. a time series which is not in the database. Every time the calculation expression is run, values are calculated for the temporary time series. However, the result is only available when the Mesh session is open.
 
 The Mesh :doc:`search language <mesh_search>` can be used with functions to find specific objects to work on.
@@ -29,11 +31,15 @@ Valid result types from functions:
 - Array of string values
 
 
-.. note::
-   Mesh Python SDK is providing wrappers for the calculation functions. See next sections.
-
 Forecast
 ~~~~~~~~~~~~~~
+
+A forecast is a calculation or estimate of future events, especially coming weather or a financial trend.
+
+Every grey line in the image below represents a forecast of some time series. Start and end times are given on the horizontal axis, while the vertical axis shows every forecasts write time.
+
+.. image:: images/calc_forecasts.png
+   :width: 400
 
 .. automodule:: volue.mesh.calc.forecast
    :noindex:
@@ -49,6 +55,11 @@ The above class is exposed via:
 History
 ~~~~~~~~~~~~~~
 
+Historical values are not overwritten when saving new values. The figure below shows a time series having values with various write times. When asking for historical values before a given time (t\ :sub:`c`) the values indicated by red are returned.
+
+.. image:: images/calc_history.png
+   :width: 400
+
 .. automodule:: volue.mesh.calc.history
    :noindex:
 
@@ -63,6 +74,8 @@ The above class is exposed via:
 Statistical
 ~~~~~~~~~~~~~~
 
+Functions for performing statistical operations on time series.
+
 .. automodule:: volue.mesh.calc.statistical
    :noindex:
 
@@ -74,8 +87,10 @@ The above class is exposed via:
 .. automethod:: volue.mesh.aio._connection.Connection.Session.statistical_functions
    :noindex:
 
-Transformation
+Transform
 ~~~~~~~~~~~~~~~
+
+The functions in this category are used to transform a time series from one resolution to another.
 
 .. automodule:: volue.mesh.calc.transform
    :noindex:

@@ -169,29 +169,57 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._timeseries</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functionality for working with time series.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">pyarrow</span>
-<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
 
-
-<span class="c1"># TODO: Add wrapper structure for TimeseriesEntry info</span>
-<span class="c1"># TODO: Add wrapper structure for TimeseriesAttribute info</span>
-<span class="c1"># TODO: Add wrapper for grpc.RpcError -&gt; _error.py with defined errors???</span>
-<span class="c1"># TODO: clean up interface to not expose grpc or protobuf structures</span>
 
 <div class="viewcode-block" id="Timeseries"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries">[docs]</a><span class="k">class</span> <span class="nc">Timeseries</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a mesh timeserie.</span>
+
+<span class="sd">    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)</span>
+<span class="sd">    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)</span>
+<span class="sd">    Flags</span>
+<span class="sd">    Value is the actual data for the given timestamp.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Timeseries.Curve"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Curve">[docs]</a>    <span class="k">class</span> <span class="nc">Curve</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A curve type of a time series.</span>
+<span class="sd">        It specifies how the values are laid out relative to each other.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            UNKNOWN (enum):</span>
+<span class="sd">            STAIRCASESTARTOFSTEP (enum):</span>
+<span class="sd">            PIECEWISELINEAR (enum):</span>
+<span class="sd">            STAIRCASE (enum):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">STAIRCASESTARTOFSTEP</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">PIECEWISELINEAR</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">STAIRCASE</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 <div class="viewcode-block" id="Timeseries.Resolution"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Resolution">[docs]</a>    <span class="k">class</span> <span class="nc">Resolution</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The resolution of values in the time series.</span>
+<span class="sd">        It specifies the time interval between each value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            UNSPECIFIED (enum):</span>
+<span class="sd">            BREAKPOINT (enum):</span>
+<span class="sd">            MIN15 (enum):</span>
+<span class="sd">            HOUR (enum):</span>
+<span class="sd">            DAY (enum):</span>
+<span class="sd">            WEEK (enum):</span>
+<span class="sd">            MONTH (enum):</span>
+<span class="sd">            YEAR (enum):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">UNSPECIFIED</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">BREAKPOINT</span>  <span class="o">=</span> <span class="mi">1</span>
         <span class="n">MIN15</span>       <span class="o">=</span> <span class="mi">2</span>
@@ -202,17 +230,17 @@
         <span class="n">YEAR</span>        <span class="o">=</span> <span class="mi">7</span></div>
 
 <div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span> <span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Information about certain action that has been performed on the values and the state.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            OK (enum):</span>
+<span class="sd">            MISSING (enum):</span>
+<span class="sd">            NOT_OK (enum):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">OK</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">MISSING</span> <span class="o">=</span> <span class="mh">0x04000000</span>
         <span class="n">NOT_OK</span> <span class="o">=</span> <span class="mh">0x40000000</span></div>
-
-    <span class="sd">&quot;&quot;&quot;Represents a mesh timeserie.</span>
-
-<span class="sd">    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)</span>
-<span class="sd">    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)</span>
-<span class="sd">    Flags</span>
-<span class="sd">    Value is the actual data for the given timestamp.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">([</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;utc_time&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)),</span>
@@ -220,9 +248,8 @@
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
     <span class="p">])</span>  <span class="c1"># The pyarrow schema used for timeseries points.</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">table</span><span class="p">:</span> <span class="n">pyarrow</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="c1"># TODO change this to: Timeseries.Resolution</span>
+<div class="viewcode-block" id="Timeseries.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">resolution</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -230,16 +257,16 @@
                  <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A representation of a time series.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            table:</span>
-<span class="sd">            resolution:</span>
-<span class="sd">            start_time:</span>
-<span class="sd">            end_time:</span>
-<span class="sd">            timskey:</span>
-<span class="sd">            uuid_id:</span>
-<span class="sd">            full_name:</span>
+<span class="sd">            table (pa.Table): the arrow table containing the timestamps, flags and values</span>
+<span class="sd">            resolution (resources_pb2.Resolution): the resolution of the time series</span>
+<span class="sd">            start_time (datetime): the start date and time of the time series interval</span>
+<span class="sd">            end_time (datetime): the end date and time of the time series interval</span>
+<span class="sd">            timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">            uuid_id:  Universal Unique Identifier for Mesh objects</span>
+<span class="sd">            full_name: path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid_id</span>
@@ -247,19 +274,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">=</span> <span class="n">table</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Number of points inside the timeseries&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Number of points inside the time series.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: the number of points in the time series</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_calculation_expression_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        If timeseries does not have timskey, uuid and full_name set then it is an</span>
-<span class="sd">        ad-hoc calculation expression result (like e.g.: timeseries transformations).</span>
-<span class="sd">        Refer to documentation &#39;Concepts&#39; for more information.</span>
+<span class="sd">        Checks if a time series is a calculated or raw time series.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation &#39;Concepts&#39; for more information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: true if it is a calculated time series</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">is</span> <span class="kc">None</span></div>
 </pre></div>

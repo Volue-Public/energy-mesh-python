@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Examples" href="examples.html" />
-    <link rel="prev" title="Mesh functions" href="mesh_functions.html" /> 
+    <link rel="prev" title="Mesh Python SDK" href="mesh_client.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -272,7 +272,7 @@ First the scenario is explained and needed information is given. Then a connecti
             <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">mesh_object</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">search_matches</span><span class="p">):</span>
                 <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
                                                             <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-                                                            <span class="n">uuid_id</span><span class="o">=</span><span class="n">mesh_object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                                                            <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_uuid_id</span><span class="p">(</span><span class="n">mesh_object</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="se">\n</span><span class="s2">&quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;-----</span><span class="se">\n</span><span class="s2">&quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">get_mesh_object_information</span><span class="p">(</span><span class="n">mesh_object</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -302,7 +302,7 @@ First the scenario is explained and needed information is given. Then a connecti
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="mesh_functions.html" class="btn btn-neutral float-left" title="Mesh functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mesh_client.html" class="btn btn-neutral float-left" title="Mesh Python SDK" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

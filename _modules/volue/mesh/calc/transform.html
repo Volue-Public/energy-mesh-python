@@ -171,7 +171,10 @@
   <h1>Source code for volue.mesh.calc.transform</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Mesh calculation transformation functions.</span>
-<span class="sd">The functions in this category are used to calculate time series with a different time resolution than the source.</span>
+<span class="sd">*******************************************</span>
+
+<span class="sd">For more information see :ref:`mesh_functions:transform`.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
@@ -180,26 +183,51 @@
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">_Calculation</span><span class="p">,</span> <span class="n">Timezone</span><span class="p">,</span> <span class="n">_parse_single_timeseries_response</span>
 
+
 <div class="viewcode-block" id="Method"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.Method">[docs]</a><span class="k">class</span> <span class="nc">Method</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Transformation method</span>
+<span class="sd">    Methods used for transforming a time series from one resolution to another.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        SUM: The sum of the values included in the base for this value. Does not consider how long the values are valid, i.e. a break point series with two values in the current interval that will give the sum of these two values.</span>
+<span class="sd">        SUMI: Integral based sum with resolution second. Calculates the sum of value multiplied with number of seconds each value is valid. Value equal 1 at the start of the day will give 86400 as day value if the base is one break point series and 3600 if this is an hour series with only one value on first hour.</span>
+<span class="sd">        AVG: For fixed interval series. Sum of all values in accumulation period divided by number of values in the accumulation period (24 for hour series that is transformed to day series). For break point series: Mean value of the values included in the base for this value. Does not consider how long the values are valid, i.e. a break point series with two values in the current interval that will give the mean value of these two values.</span>
+<span class="sd">        AVGI: Integral based mean value, i.e. considers how much of the accumulation period that a given value is valid (to next value that can be NaN for a fixed interval series). This value is presented as mean value in the summary part of the presentation in Table.</span>
+<span class="sd">        FIRST: First value in the accumulation period. For break point series this is the functional value at the start of the accumulation period, unless there exist an explicit value. Please note! For fixed interval series it is the first value not being NaN in the accumulation period.</span>
+<span class="sd">        LAST: Last value in the accumulation period. For break point series this is the functional value at the end of the accumulation period, unless there exist an explicit value. Note! For fixed interval series it is the last value not being NaN in the accumulation period.</span>
+<span class="sd">        MIN: Smallest value in the accumulation period.</span>
+<span class="sd">        MAX: Largest value in the accumulation period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">SUM</span>   <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">SUMI</span>  <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># I -&gt; weighted sum, only for breakpoint timeseries</span>
-    <span class="n">AVG</span>   <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># equivalent to MEAN</span>
-    <span class="n">AVGI</span>  <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># I -&gt; weighted average, only for breakpoint timeseries</span>
+    <span class="n">SUM</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SUMI</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># I -&gt; weighted sum, only for breakpoint timeseries</span>
+    <span class="n">AVG</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># equivalent to MEAN</span>
+    <span class="n">AVGI</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># I -&gt; weighted average, only for breakpoint timeseries</span>
     <span class="n">FIRST</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">LAST</span>  <span class="o">=</span> <span class="mi">6</span>
-    <span class="n">MIN</span>   <span class="o">=</span> <span class="mi">7</span>
-    <span class="n">MAX</span>   <span class="o">=</span> <span class="mi">8</span></div>
+    <span class="n">LAST</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">MIN</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">MAX</span> <span class="o">=</span> <span class="mi">8</span></div>
+
 
 <span class="k">class</span> <span class="nc">_TransformFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all tranformation function classes&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_transform_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
                               <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
                               <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span><span class="p">,</span>
                               <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create an expression for `transform`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            resolution (Timeseries.Resolution): the resolution to transform to</span>
+<span class="sd">            method (Method): what method to use for the transformation</span>
+<span class="sd">            timezone (Timezone): timezone</span>
+<span class="sd">            search_query (str): a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: a `transformation` expression</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">BREAKPOINT</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;BREAKPOINT&#39; resolution is unsupported for timeseries transformation&quot;</span><span class="p">)</span>
@@ -226,18 +254,27 @@
                   <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transforms time series from one resolution to another resolution.</span>
+
 <span class="sd">        Some of target resolutions have a time zone foundation.</span>
-<span class="sd">        For example, `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).</span>
-<span class="sd">        When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.</span>
 
-<span class="sd">        You can use it to convert both ways, i.e. both from finer to coarser resolution, and the other way.</span>
-<span class="sd">        The most common use is accumulation, i.e. transformation to coarser resolution.</span>
-<span class="sd">        Most transformation methods are available for this latter use.</span>
+<span class="sd">        Example:</span>
+<span class="sd">             `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).</span>
+<span class="sd">             When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.</span>
+<span class="sd">            You can use it to convert both ways, i.e. both from finer to coarser resolution, and the other way.</span>
+<span class="sd">            The most common use is accumulation, i.e. transformation to coarser resolution.</span>
+<span class="sd">            Most transformation methods are available for this latter use.</span>
 
-<span class="sd">        Returns a time series.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            resolution (Timeseries.Resolution): the resolution to transform to</span>
+<span class="sd">            method (Method): what method to use for the transformation</span>
+<span class="sd">            timezone (Timezone): timezone</span>
+<span class="sd">            search_query (str): a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`</span>
 
-<span class="sd">        The resulting objects from the `search_query` will be used in the `transform` function,</span>
-<span class="sd">        if `search_query` is not set the `relative_to` object will be used.</span>
+<span class="sd">        Note:</span>
+<span class="sd">            The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `relative_to` object will be used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Timeseries: a time series.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 

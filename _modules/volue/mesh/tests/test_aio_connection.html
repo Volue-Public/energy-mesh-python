@@ -169,7 +169,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh.tests.test_aio_connection</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tests for volue.mesh.aio</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
@@ -177,9 +181,10 @@
 <span class="kn">import</span> <span class="nn">grpc</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_from_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_curve_type</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">from_proto_guid</span><span class="p">,</span> <span class="n">to_proto_curve_type</span><span class="p">,</span> <span class="n">to_proto_guid</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
 <span class="kn">import</span> <span class="nn">volue.mesh.tests.test_utilities.server_config</span> <span class="k">as</span> <span class="nn">sc</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
@@ -198,9 +203,12 @@
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">timeseries</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_2</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">test_case_1</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span> <span class="s2">&quot;timskey&quot;</span><span class="p">:</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">}</span>
-            <span class="n">test_case_2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span> <span class="s2">&quot;uuid_id&quot;</span><span class="p">:</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">id</span><span class="p">}</span>
-            <span class="n">test_case_3</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span> <span class="s2">&quot;full_name&quot;</span><span class="p">:</span> <span class="n">full_name</span><span class="p">}</span>
+            <span class="n">test_case_1</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span>
+                           <span class="s2">&quot;mesh_object_id&quot;</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_timskey</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)}</span>
+            <span class="n">test_case_2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span>
+                           <span class="s2">&quot;mesh_object_id&quot;</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_uuid_id</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">id</span><span class="p">)}</span>
+            <span class="n">test_case_3</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">start_time</span><span class="p">,</span> <span class="s2">&quot;end_time&quot;</span><span class="p">:</span> <span class="n">end_time</span><span class="p">,</span>
+                           <span class="s2">&quot;mesh_object_id&quot;</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_full_name</span><span class="p">(</span><span class="n">full_name</span><span class="p">)}</span>
             <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_case_1</span><span class="p">,</span> <span class="n">test_case_2</span><span class="p">,</span> <span class="n">test_case_3</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
                 <span class="n">reply_timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
@@ -221,8 +229,8 @@
                 <span class="k">assert</span> <span class="n">math</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">())</span>
                 <span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]:</span>
                     <span class="k">assert</span> <span class="n">values</span><span class="p">[</span><span class="n">number</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_write_timeseries_points_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_write_timeseries_points_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -239,7 +247,7 @@
             <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
             <span class="n">written_ts</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                                                               <span class="n">end_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                                                              <span class="n">uuid_id</span><span class="o">=</span><span class="n">ts_entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                                                              <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_uuid_id</span><span class="p">(</span><span class="n">ts_entry</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
             <span class="k">assert</span> <span class="n">written_ts</span><span class="o">.</span><span class="n">number_of_points</span> <span class="o">==</span> <span class="mi">3</span>
             <span class="n">utc_time</span> <span class="o">=</span> <span class="n">written_ts</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">assert</span> <span class="n">utc_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">==</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -254,8 +262,8 @@
             <span class="k">assert</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">==</span> <span class="mi">10</span>
             <span class="k">assert</span> <span class="n">values</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1000</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_get_timeseries_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_timeseries_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -275,7 +283,7 @@
             <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_case_1</span><span class="p">,</span> <span class="n">test_case_2</span><span class="p">,</span> <span class="n">test_case_3</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
                 <span class="n">timeseries_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">timeseries_info</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">timeseries_info</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">id</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">path</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">temporary</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">temporary</span>
@@ -283,8 +291,8 @@
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">value</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries entry: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries entry: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_update_timeseries_entry_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_entry_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -330,8 +338,8 @@
                     <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">new_unit_of_measurement</span>
 
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries entry: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries entry: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_read_timeseries_attribute_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_read_timeseries_attribute_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -355,7 +363,7 @@
             <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
                 <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">reply</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
                     <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">id</span>
                     <span class="n">attribute_without_entry</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">id</span>
@@ -375,7 +383,7 @@
             <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
                 <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">reply</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
                     <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">id</span>
                     <span class="n">attribute_with_entry</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">id</span>
@@ -385,15 +393,15 @@
                 <span class="k">assert</span> <span class="n">reply</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s1">&#39;entry&#39;</span><span class="p">)</span>
                 <span class="n">reply_timeseries</span> <span class="o">=</span> <span class="n">reply</span><span class="o">.</span><span class="n">entry</span>
                 <span class="n">expected_timeseries</span> <span class="o">=</span> <span class="n">attribute_with_entry</span><span class="o">.</span><span class="n">timeseries</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">reply_timeseries</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply_timeseries</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">id</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">timeseries_key</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">path</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">temporary</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">temporary</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">curve_type</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">curve</span><span class="o">.</span><span class="n">value</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">value</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not get timeseries attribute </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not get timeseries attribute </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_update_timeseries_attribute_with_timeseriescalculation_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_timeseriescalculation_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -426,8 +434,8 @@
                 <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
                     <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">id</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_update_timeseries_attribute_with_timeseriesreference_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_timeseriesreference_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -441,7 +449,7 @@
     <span class="n">attribute</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_attribute_2</span><span class="p">()</span>
     <span class="n">new_timeseries</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_timeseries_1</span><span class="p">()</span>
     <span class="n">new_timeseries_entry</span> <span class="o">=</span> <span class="n">new_timeseries</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">new_timeseries_entry_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">to_proto_guid</span><span class="p">(</span><span class="n">new_timeseries_entry</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="n">new_timeseries_entry_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">new_timeseries_entry</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -453,7 +461,7 @@
             <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
                 <span class="n">original_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">attribute</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">original_attribute</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">attribute</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">original_attribute</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">attribute</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">id</span>
 
                 <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
                     <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">id</span>
@@ -462,12 +470,12 @@
 
                 <span class="n">updated_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">attribute</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">updated_attribute</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">new_timeseries</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">updated_attribute</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">new_timeseries</span><span class="o">.</span><span class="n">id</span>
 
                 <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_search_timeseries_attribute_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_search_timeseries_attribute_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -501,21 +509,21 @@
                 <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span> <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">reply</span><span class="p">)</span>
                 <span class="n">match</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">reply</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
                 <span class="k">assert</span> <span class="n">match</span><span class="o">.</span><span class="n">local_expression</span> <span class="o">==</span> <span class="n">ts_attribute</span><span class="o">.</span><span class="n">local_expression</span>
                 <span class="k">assert</span> <span class="n">match</span><span class="o">.</span><span class="n">template_expression</span> <span class="o">==</span> <span class="n">ts_attribute</span><span class="o">.</span><span class="n">template_expression</span>
                 <span class="k">assert</span> <span class="n">match</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s1">&#39;entry&#39;</span><span class="p">)</span>
                 <span class="n">reply_timeseries</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">entry</span>
                 <span class="n">expected_timeseries</span> <span class="o">=</span> <span class="n">ts_attribute</span><span class="o">.</span><span class="n">timeseries</span>
-                <span class="k">assert</span> <span class="n">from_proto_guid</span><span class="p">(</span><span class="n">reply_timeseries</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">assert</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply_timeseries</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">id</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">timeseries_key</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">path</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">temporary</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">temporary</span>
-                <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">curve_type</span> <span class="o">==</span> <span class="n">to_proto_curve_type</span><span class="p">(</span><span class="n">expected_timeseries</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">curve_type</span> <span class="o">==</span> <span class="n">_to_proto_curve_type</span><span class="p">(</span><span class="n">expected_timeseries</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">value</span>
                 <span class="k">assert</span> <span class="n">reply_timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">expected_timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_write_timeseries_points_using_timskey_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_write_timeseries_points_using_timskey_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -551,7 +559,7 @@
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session1</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># check base line</span>
+            <span class="c1"># check baseline</span>
             <span class="n">attribute1</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">attribute</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
             <span class="n">old_local_expression</span> <span class="o">=</span> <span class="n">attribute1</span><span class="o">.</span><span class="n">local_expression</span>
             <span class="k">assert</span> <span class="n">attribute1</span><span class="o">.</span><span class="n">local_expression</span> <span class="o">!=</span> <span class="n">new_local_expression</span>
@@ -573,8 +581,8 @@
             <span class="n">attribute3</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">attribute</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">attribute3</span><span class="o">.</span><span class="n">local_expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not commit changes.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not commit changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session2</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
@@ -592,8 +600,8 @@
             <span class="n">attribute5</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">attribute</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">attribute5</span><span class="o">.</span><span class="n">local_expression</span> <span class="o">==</span> <span class="n">old_local_expression</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not restore commited changes.&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not restore commited changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_rollback">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -608,7 +616,7 @@
             <span class="n">_</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_1</span><span class="p">()</span>
             <span class="n">new_path</span> <span class="o">=</span> <span class="s2">&quot;/new_path&quot;</span>
 
-            <span class="c1"># check base line</span>
+            <span class="c1"># check baseline</span>
             <span class="n">timeseries_info0</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">timeseries_info0</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">new_path</span>
 
@@ -626,8 +634,8 @@
             <span class="n">timeseries_info2</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">timeseries_info2</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">new_path</span>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not rollback changes.&quot;</span><span class="p">)</span></div>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not rollback changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_read_transformed_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_read_transformed_timeseries_points">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -640,14 +648,14 @@
      <span class="p">(</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MONTH</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
      <span class="p">(</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">YEAR</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">,</span>
-    <span class="p">[</span><span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUMI</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVG</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVGI</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">FIRST</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">LAST</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">MIN</span><span class="p">,</span>
-     <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">MAX</span><span class="p">])</span>
+     <span class="p">[</span><span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUMI</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVG</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVGI</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">FIRST</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">LAST</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">MIN</span><span class="p">,</span>
+      <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">MAX</span><span class="p">])</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s1">&#39;timezone&#39;</span><span class="p">,</span>
     <span class="p">[</span><span class="kc">None</span><span class="p">,</span>
      <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">,</span>
@@ -709,7 +717,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="n">flags</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span>
                 <span class="c1"># check values for one some combinations (method AVG and resolution MIN15)</span>
-                <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVG</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVG</span> <span class="ow">and</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">:</span>
                     <span class="c1"># the original timeseries data is in hourly resolution,</span>
                     <span class="c1"># starts with 1 and the value is incremented with each hour up to 9</span>
                     <span class="c1"># here we are using 15 min resolution, so the delta between each 15 min point is 0.25</span>
@@ -737,17 +745,18 @@
         <span class="n">_</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_attribute_2</span><span class="p">()</span>
 
         <span class="c1"># first read timeseries UUID (it is set dynamically)</span>
-        <span class="n">timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-            <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+        <span class="n">timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+                                                          <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+                                                          <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_full_name</span><span class="p">(</span><span class="n">full_name</span><span class="p">))</span>
         <span class="n">ts_uuid</span> <span class="o">=</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span>
 
         <span class="n">reply_timeseries_full_name</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
             <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
+                <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">,</span> <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
 
         <span class="n">reply_timeseries_uuid</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
             <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">uuid_id</span><span class="o">=</span><span class="n">ts_uuid</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
+                <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">,</span> <span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">)</span>
 
         <span class="k">assert</span> <span class="n">reply_timeseries_full_name</span><span class="o">.</span><span class="n">is_calculation_expression_result</span> <span class="o">==</span> <span class="n">reply_timeseries_uuid</span><span class="o">.</span><span class="n">is_calculation_expression_result</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply_timeseries_full_name</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">reply_timeseries_uuid</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">)</span>
@@ -772,14 +781,15 @@
         <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="s2">&quot;.*need to specify either timskey, uuid_id or full_name.*&quot;</span><span class="p">):</span>
-            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">MeshObjectId</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="test_forecast_get_all_forecasts"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_forecast_get_all_forecasts">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_forecast_get_all_forecasts</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that running forecast `get_all_forecasts` does not throw exception for any combination of parameters.</span>
+<span class="sd">    Check that running forecast `get_all_forecasts`</span>
+<span class="sd">    does not throw exception for any combination of parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
@@ -810,7 +820,8 @@
      <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_forecast_get_forecast</span><span class="p">(</span><span class="n">forecast_start</span><span class="p">,</span> <span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">timezone</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that running forecast `get_forecast` does not throw exception for any combination of parameters.</span>
+<span class="sd">    Check that running forecast `get_forecast`</span>
+<span class="sd">    does not throw exception for any combination of parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
@@ -837,7 +848,8 @@
      <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_history_get_ts_as_of_time</span><span class="p">(</span><span class="n">timezone</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that running history `get_ts_as_of_time` does not throw exception for any combination of parameters.</span>
+<span class="sd">    Check that running history `get_ts_as_of_time`</span>
+<span class="sd">    errordoes not throw exception for any combination of parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
@@ -861,7 +873,8 @@
     <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_history_get_ts_historical_versions</span><span class="p">(</span><span class="n">max_number_of_versions_to_get</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that running history `get_ts_historical_versions` does not throw exception for any combination of parameters.</span>
+<span class="sd">    Check that running history `get_ts_historical_versions`</span>
+<span class="sd">    does not throw exception for any combination of parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
@@ -882,7 +895,8 @@
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_statistical_sum</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that running statistical `sum` does not throw exception for any combination of parameters.</span>
+<span class="sd">    Check that running statistical `sum`</span>
+<span class="sd">    errordoes not throw exception for any combination of parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>

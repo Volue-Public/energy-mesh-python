@@ -169,7 +169,11 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh.tests.test_authentication</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pytest</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tests for volue.mesh.Authentication</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pytest</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Credentials</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
@@ -202,19 +206,19 @@
     <span class="n">conn</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="aconnection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.aconnection">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">aconnection</span><span class="p">():</span>
+<div class="viewcode-block" id="get_async_connection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.get_async_connection">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_async_connection</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Yields AsyncConnection object and revokes access token in clean-up.&quot;&quot;&quot;</span>
     <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
         <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span><span class="p">)</span>
-    <span class="n">aconn</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
+    <span class="n">async_connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">,</span>  <span class="c1"># authentication requires TLS (to make sure tokens are encrypted)</span>
                             <span class="n">authentication_parameters</span><span class="p">)</span>
-    <span class="k">yield</span> <span class="n">aconn</span>
+    <span class="k">yield</span> <span class="n">async_connection</span>
 
     <span class="c1"># clean-up</span>
-    <span class="k">await</span> <span class="n">aconn</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
+    <span class="k">await</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="test_auth_metadata_plugin_obtains_valid_token_in_init"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_auth_metadata_plugin_obtains_valid_token_in_init">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
@@ -268,11 +272,11 @@
 
 <div class="viewcode-block" id="test_async_connection_revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_async_connection_revoke_access_token">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_connection_revoke_access_token</span><span class="p">(</span><span class="n">aconnection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_connection_revoke_access_token</span><span class="p">(</span><span class="n">get_async_connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if revoking access token from AsyncConnection class correctly invalidates it.&quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
-    <span class="k">await</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span></div>
+    <span class="k">assert</span> <span class="n">get_async_connection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">get_async_connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">get_async_connection</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="test_connection_get_user_identity"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_connection_get_user_identity">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
@@ -285,9 +289,9 @@
 
 <div class="viewcode-block" id="test_async_connection_get_user_identity"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_async_connection_get_user_identity">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_connection_get_user_identity</span><span class="p">(</span><span class="n">aconnection</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_connection_get_user_identity</span><span class="p">(</span><span class="n">get_async_connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if getting user identity from AsyncConnection class returns something.&quot;&quot;&quot;</span>
-    <span class="n">user_identity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_async_connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 

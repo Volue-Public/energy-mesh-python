@@ -99,6 +99,8 @@
 <li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mesh_client.html">Mesh Python SDK</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
@@ -185,7 +187,7 @@
             
   <div class="section" id="mesh-concepts">
 <h1>Mesh concepts<a class="headerlink" href="#mesh-concepts" title="Permalink to this headline">¶</a></h1>
-<p>The <strong>mesh object model</strong> is designed to represent the physical infrastructure of a customer’s area and assets. This can be a hydropower production system with water courses, creeks, reservoirs, waters routs, gates, sensors, hydro plants and so on. The mesh object model contains relationships and <a class="reference internal" href="mesh_object_attributes.html"><span class="doc">attributes (aka properties)</span></a> between these assets. A relationship can represent how a water course is connected to a creek. An attribute can be the water level in a reservoir collected over time and the unit of measurement for this water level.</p>
+<p id="mesh-object-model">The <strong>mesh object model</strong> is designed to represent the physical infrastructure of a customer’s area and assets. This can be a hydropower production system with water courses, creeks, reservoirs, waters routs, gates, sensors, hydro plants and so on. The mesh object model contains relationships and <a class="reference internal" href="mesh_object_attributes.html"><span class="doc">attributes (aka properties)</span></a> between these assets. A relationship can represent how a water course is connected to a creek. An attribute can be the water level in a reservoir collected over time and the unit of measurement for this water level.</p>
 <a class="reference internal image-reference" href="_images/hydropower_object_structure.png"><img alt="_images/hydropower_object_structure.png" src="_images/hydropower_object_structure.png" style="width: 800px;" /></a>
 <p>Based on the mesh object model, customers can build a <strong>physical model</strong> of their infrastructure by creating instances matching their specific assets. For example water courses named ‘Driva’, ‘Lundesokna’, reservoirs named ‘Innerdalsvannet’, ‘Storfossdammen’ and so on. The resulting <strong>model</strong> is a tree where all the nodes are mesh objects from the mesh object model that represent customer’s physical assets.</p>
 <a class="reference internal image-reference" href="_images/physical_hydropower_object_structure.png"><img alt="_images/physical_hydropower_object_structure.png" src="_images/physical_hydropower_object_structure.png" style="width: 400px;" /></a>
