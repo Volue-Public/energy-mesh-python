@@ -1,3 +1,7 @@
+"""
+Mesh authentication functionality.
+"""
+
 import base64
 import threading
 from dataclasses import dataclass
@@ -16,32 +20,33 @@ elif platform.startswith('linux'):
 
 
 class Authentication(grpc.AuthMetadataPlugin):
-    """ Authentication services for authentication and authorization to Mesh server.
-        The flow is as follows:
+    """
+    Authentication services for authentication and authorization to Mesh server using `kerberos <https://en.wikipedia.org/wiki/Kerberos_(protocol)>`_.
 
-        1. Obtain token from Kerberos to access specified service (SPN)
-           with Mesh server running on it.
-        2. Send this token to Mesh gRPC server (using AuthenticateKerberos).
-        3. In return Mesh may respond with:
+    The flow is as follows:
 
-            a. Server challenge to be verified and processed by client (using Kerberos).
-               In this case the authentication is not yet completed and client should respond
-               to the server with next Kerberos generated token.
-            b. Mesh token - to be used in subsequent calls to Mesh that require authentication.
-               Token duration - tokens are valid for 1 hour. After this time a new token
-               needs to be acquired.
+    1. Obtain token from Kerberos to access specified service (SPN) with Mesh server running on it.
+    2. Send this token to Mesh gRPC server (using AuthenticateKerberos).
+    3. In return Mesh may respond with:
+        a. Server challenge to be verified and processed by client (using Kerberos). In this case the authentication is not yet completed and client should respond to the server with next Kerberos generated token.
+        b. Mesh token - to be used in subsequent calls to Mesh that require authentication.
 
-               This step is the final step of authentication from server side.
+    Note:
+        Token duration - tokens are valid for **1 hour**. After this time a new token needs to be acquired.
+
     """
 
     @dataclass
     class Parameters:
         """
         Authentication parameters.
+
+        Args:
+            service_principal (str): name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
+            user_principal (str): name of an active directory user, e.g.: 'ad\\user.name'
         """
         service_principal: str
         user_principal: str = None
-
 
     class KerberosTokenIterator():
         """
@@ -49,7 +54,13 @@ class Authentication(grpc.AuthMetadataPlugin):
         Sends tokens to be processed by the Mesh server and processes tokens
         received from the server.
         """
+
         def __init__(self, service_principal: str, user_principal: str):
+            """
+            Args:
+                service_principal (str): name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
+                user_principal (str): name of an active directory user, e.g.: 'ad\\user.name'
+            """
             self.krb_context = None
             self.first_iteration: bool = True
             self.final_response_received: bool = False
@@ -62,12 +73,17 @@ class Authentication(grpc.AuthMetadataPlugin):
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
             _, self.krb_context = kerberos.authGSSClientInit(
-                self.service_principal, self.user_principal, gssflags = 0)
+                self.service_principal, self.user_principal, gssflags=0)
 
         def __iter__(self):
             return self
 
         def __next__(self) -> protobuf.wrappers_pb2.BytesValue:
+            """
+
+            Returns:
+                protobuf.wrappers_pb2.BytesValue: the kerboros token
+            """
             try:
                 if self.first_iteration:
                     _ = kerberos.authGSSClientStep(self.krb_context, '')
@@ -92,7 +108,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
                 # Mesh expects it in binary form, so decode it
                 client_token = protobuf.wrappers_pb2.BytesValue(
-                    value = base64.b64decode(base64_client_kerberos_token))
+                    value=base64.b64decode(base64_client_kerberos_token))
             except Exception as ex:
                 # store exception and re-throw
                 # gRPC will raise its own RpcError with vague "Exception iterating requests"
@@ -106,6 +122,9 @@ class Authentication(grpc.AuthMetadataPlugin):
         def process_response(self, server_kerberos_token: bytes):
             """
             Sets new response from Mesh with kerberos token to be processed by client.
+            
+            Args:
+                server_kerberos_token (bytes): the kerberos token
             """
             self.server_kerberos_token = server_kerberos_token
             self.response_received.set()
@@ -118,12 +137,27 @@ class Authentication(grpc.AuthMetadataPlugin):
             self.final_response_received = True
             self.response_received.set()
 
-
     def __init__(
-        self,
-        parameters: Parameters,
-        target: str,
-        channel_credentials: grpc.ChannelCredentials):
+            self,
+            parameters: Parameters,
+            target: str,
+            channel_credentials: grpc.ChannelCredentials):
+        r"""
+        If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: 'HOST/hostname.ad.examplecompany.com'
+
+        If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\\user.name' or r'ad\user.name'
+        
+        Note:
+            winkerberos converts service principal name if provided in RFC-2078 format. '@' is converted to '/' if there is no '/' character in the service principal name.
+
+            E.g.: service@hostname
+            Would be converted to:  service/hostname
+
+        Args:
+            parameters (Parameters): authentication parameters
+            target (str): Mesh server host name in the form an IP or domain name
+            channel_credentials (grpc.ChannelCredentials): an encapsulation of the data required to create a secure Channel.
+        """
 
         self.service_principal: str = parameters.service_principal
         self.user_principal: str = parameters.user_principal
@@ -141,16 +175,17 @@ class Authentication(grpc.AuthMetadataPlugin):
         # extra time while executing first call to Mesh
         self.get_token()
 
-
     def __call__(self, context, callback):
         if not self.is_token_valid():
             self.get_token()
         callback((('authorization', 'Bearer ' + self.token),), None)
 
-
     def is_token_valid(self) -> bool:
         """
         Checks if current token is still valid.
+
+        Returns:
+            bool: if token is valid
         """
         if self.token_expiration_date is None:
             return False
@@ -158,14 +193,13 @@ class Authentication(grpc.AuthMetadataPlugin):
         # use UTC to avoid corner cases with Daylight Saving Time
         return self.token_expiration_date > datetime.now(timezone.utc)
 
-
     def get_token(self) -> None:
         """
         Gets Mesh token used for authorization in other calls to Mesh server.
 
         Raises:
-            grpc.RpcError:
-            (win)kerberos.GSSError:
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            (win)kerberos.GSSError: errors from kerboros
             RuntimeError: invalid token duration
         """
 
@@ -184,7 +218,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
                     # shorten the token duration time by 1 minute to
                     # have some margin for transport duration, etc.
-                    duration_margin = timedelta(seconds = 60)
+                    duration_margin = timedelta(seconds=60)
                     token_duration = mesh_response.token_duration.ToTimedelta()
 
                     if token_duration <= duration_margin:
@@ -201,8 +235,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             # otherwise the exception happened elsewhere, re-throw it
             raise ex
 
-
-    def delete_access_token(self) -> str:
+    def delete_access_token(self):
         """
         Deletes (resets) current Mesh token if no longer needed.
         mesh_service.RevokeAccessToken call is made in Connection classes.

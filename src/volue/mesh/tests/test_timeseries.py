@@ -1,28 +1,35 @@
+"""
+Tests for volue.mesh.Timeseries
+"""
+
 from datetime import datetime
 import uuid
 
 import pyarrow as pa
 import pytest
 
-from volue.mesh import Timeseries, to_proto_guid, to_proto_object_id, to_proto_timeseries
+from volue.mesh import Timeseries
+from volue.mesh._common import _to_proto_timeseries, _to_proto_guid, _to_proto_object_id
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 
 
 @pytest.mark.unittest
 def test_can_create_empty_timeserie():
-    """Check that an empty timeserie can be created."""
+    """Check that an empty time series can be created."""
     ts = Timeseries()
     assert ts is not None
 
 
 @pytest.mark.unittest
 def test_can_create_timeserie_from_existing_data():
-    """Check that a timeserie can be created from existing data."""
-    arrays = [pa.array(['one', 'two', 'three', 'four', 'five']), pa.array([1, 2, 3, 4, 5]), pa.array([6, 7, 8, 9, 10])]
-    table = pa.Table.from_arrays(arrays, names=["name", "first_list", "second_list"])
-    ts = Timeseries(table)
-    assert ts.number_of_points == 5
+    """Check that a time series can be created from existing data."""
+    arrays = [pa.array(['one', 'two', 'three', 'four', 'five']),
+              pa.array([1, 2, 3, 4, 5]),
+              pa.array([6, 7, 8, 9, 10])]
+    table = pa.Table.from_arrays(arrays=arrays, names=["name", "first_list", "second_list"])
+    time_series = Timeseries(table)
+    assert time_series.number_of_points == 5
 
 
 @pytest.mark.unittest
@@ -33,7 +40,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     end = datetime(year=2016, month=12, day=25, hour=0, minute=0, second=0)  # 25/12/2016 00:00:00
 
     arrays = [
-        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1),  datetime(2016, 5, 1, 2)]),
+        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)]),
         pa.array([0, 0, 0]),
         pa.array([0.0, 0.0, 0.0])]
 
@@ -46,12 +53,12 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
                                      uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
                                      full_name="Resource/Wind Power/WindPower/WPModel/WindProdForec(0)")
 
-    original_proto_timeserie = to_proto_timeseries(original_timeseries)
-    session_id_original = to_proto_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
+    original_proto_timeserie = _to_proto_timeseries(original_timeseries)
+    session_id_original = _to_proto_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
     original_reply = core_pb2.WriteTimeseriesRequest(
         session_id=session_id_original,
-        object_id=to_proto_object_id(original_timeseries),
+        object_id=_to_proto_object_id(original_timeseries),
         timeseries=original_proto_timeserie
     )
 
@@ -62,7 +69,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     reply.ParseFromString(binary_data)
     assert original_reply == reply
     assert session_id_original == reply.session_id
-    assert to_proto_object_id(original_timeseries) == reply.object_id
+    assert _to_proto_object_id(original_timeseries) == reply.object_id
     assert original_proto_timeserie == reply.timeseries
 
     reader = pa.ipc.open_stream(reply.timeseries.data)
@@ -71,6 +78,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.arrow_table[0] == table[0]
     assert original_timeseries.arrow_table[1] == table[1]
     assert original_timeseries.arrow_table[2] == table[2]
+
 
 if __name__ == '__main__':
     pytest.main()

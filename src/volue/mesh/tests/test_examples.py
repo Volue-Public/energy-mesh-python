@@ -1,3 +1,7 @@
+"""
+Tests for running the example scripts
+"""
+
 import glob
 import os
 import pytest
@@ -19,8 +23,17 @@ def test_run_example_scripts():
 
     examples = os.path.join(os.path.dirname(volue.mesh.__file__), 'examples')
     os.chdir(examples)
+
+    # the tests could be triggered by running run_tests.py script
+    # to avoid endless loop do not run this script from this test
+    exception_list = ['run_tests.py']
+
     for file in glob.glob("*.py"):
-        run_example_script(file, sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT, sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+        if file not in exception_list:
+            run_example_script(file,
+                               sc.DefaultServerConfig.ADDRESS,
+                               sc.DefaultServerConfig.PORT,
+                               sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
 
 if __name__ == '__main__':

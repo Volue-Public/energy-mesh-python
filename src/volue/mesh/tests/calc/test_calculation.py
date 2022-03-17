@@ -1,10 +1,13 @@
+"""
+Tests for volue.mesh.calc
+"""
+
 from datetime import datetime
 from dateutil import tz
 import pytest
 
 from volue.mesh.calc.common import Timezone, _convert_datetime_to_mesh_calc_format, _parse_single_float_response, _parse_single_timeseries_response
 from volue.mesh.proto.core.v1alpha import core_pb2
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_attribute_2
 
 
 @pytest.mark.unittest

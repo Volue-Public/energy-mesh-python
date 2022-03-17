@@ -82,7 +82,7 @@ def main(address, port, root_pem_certificate):
             end_time = datetime(2016, 5, 4, tzinfo=local_time_zone)
 
             timeseries_read = session.read_timeseries_points(
-                start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
+                start_time=start_time, end_time=end_time, mesh_object_id=MeshObjectId.with_full_name(timeseries_attribute.path))
 
             # convert to pandas format
             # the timestamps in PyArrow table are always returned in UTC format

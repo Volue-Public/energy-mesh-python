@@ -1,5 +1,8 @@
 """
-Mesh calculation forecast functions.
+Mesh calculation forecast functions
+*************************************
+
+For more information see :ref:`mesh_functions:forecast`.
 """
 
 from abc import ABC, abstractmethod
@@ -12,9 +15,19 @@ from volue.mesh.calc.common import _Calculation, _convert_datetime_to_mesh_calc_
 
 
 class _ForecastFunctionsBase(_Calculation, ABC):
+    """Base class for all forecast function classes"""
 
     def _get_all_forecasts_expression(self,
                                       search_query: str) -> str:
+        """
+        Creates an expression for `get_all_forecasts` using a search query.
+
+        Args:
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
+
+        Returns:
+            str: a `get_all_forecasts` expression
+        """
         expression = f"## = @GetAllForecasts(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
@@ -26,7 +39,15 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                                  forecast_start_max: datetime,
                                  available_at_timepoint: datetime,
                                  search_query: str) -> str:
+        """
+        Creates an expression for `get_forecasts` using a search query.
 
+        Args:
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
+
+        Returns:
+            str: a `get_forecasts` expression
+        """
         if forecast_start_min is not None and forecast_start_max is None:
             raise TypeError(
                 "parameter `forecast_start_min` is provided, it requires providing also `forecast_start_max`")
@@ -62,12 +83,25 @@ class _ForecastFunctionsBase(_Calculation, ABC):
     def get_all_forecasts(self,
                           search_query: str = None) -> List[Timeseries]:
         """
-        Returns an array of forecast time series with values within the relevant period.
-        Values in forecast series outside the period are not included.
-        The function returns an empty array if no forecast time series have values within the relevant period.
+        Get all forecast for a given Mesh object in a time interval.
 
-        The resulting objects from the `search_query` will be used in the `get_all_forecasts` function,
-        if `search_query` is not set the `relative_to` object will be used.
+        The Mesh object ('relative_to') and the time interval (`start_time` and `end_time`) is set by :py:func:`volue.mesh.Connection.Session.forecast_functions`
+
+        Example:
+            If interval 'P' is given for the Mesh object in the picture below, 10 forecasted time series will be returned.
+
+            .. image:: images/calc_get_all_forecasts.png
+               :width: 400
+
+        Note:
+            The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `relative_to` object will be used.
+
+        Args:
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
+
+        Returns:
+            List[Timeseries]: an array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.
+
         """
         pass
 
@@ -77,27 +111,62 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                      forecast_start_max: datetime = None,
                      available_at_timepoint: datetime = None,
                      search_query: str = None) -> Timeseries:
-        """
-        The function can take `available_at_timepoint` without specifying `forecast_start_min` and `forecast_start_min` to find a forecast
-        available at the timepoint defined in `available_at_timepoint` (y-axis) within the period requested in `forecast_functions`
-        interval parameters (`start_time` and `end_time`).
+        r"""
+        Get one forecast for a given Mesh object in a time interval.
 
-        The function can take `forecast_start_min` and `forecast_start_min` with or without specifying `available_at_timepoint` to find
-        the relevant forecast instead of using the start of the requested period (defined in `forecast_functions`).
-        It requires that the forecast series' start is less than or equal to `forecast_start_max` and larger than `forecast_start_min`.
-        If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.
+        The Mesh object ('relative_to') and the time interval (`start_time` and `end_time`) is set by :py:func:`volue.mesh.Connection.Session.forecast_functions`
 
-        All time zone naive `datetime` arguments are treated as UTC.
-        Returns a time series.
+        Example:
+            Use `available_at_timepoint` (t\ :sub:`c`) to get the forecast.
 
-        The resulting objects from the `search_query` will be used in the `get_forecast` function,
-        if `search_query` is not set the `relative_to` object will be used.
+            .. code-block:: python
+
+                forecast_funcs = session.forecast_functions(MeshObjectId(full_name=full_name), start_time, end_time)
+                result = forecast_funcs.get_forecast(available_at_timepoint)
+
+            .. image:: images/calc_get_forecast_writetime.png
+               :width: 400
+
+        Example:
+            Use `forecast_start_min` (t\ :sub:`0min`) and `forecast_start_max` (t\ :sub:`0max`) to get the forecast that starts in that interval.
+
+            Note: This will ignore `start_time` set by :py:func:`volue.mesh.Connection.Session.forecast_functions`
+
+            .. code-block:: python
+
+                forecast_funcs = session.forecast_functions(MeshObjectId(full_name=full_name), start_time, end_time)
+                result = forecast_funcs.get_forecast(forecast_start_min, forecast_start_max)
+
+            .. image:: images/calc_get_forecast_interval.png
+               :width: 400
+
+
+        Note:
+            The function can take `available_at_timepoint` without specifying `forecast_start_min` and `forecast_start_min`.
+
+        Note:
+            The function can take `forecast_start_min` and `forecast_start_min` with or without specifying `available_at_timepoint` to find the relevant forecast instead of using the start of the requested period (defined in `forecast_functions`). It requires that the forecast series' start is less than or equal to `forecast_start_max` and larger than `forecast_start_min`.
+
+        Note:
+            If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.
+
+        Note:
+            The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `relative_to` object will be used.
+
+        Args:
+            forecast_start_min: forecast must start after this time
+            forecast_start_max: forecast must start before this time
+            available_at_timepoint: forecast that  is valid at the given timestamp
+            search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
+
+        Returns:
+            Timeseries: a time series forcast
         """
         pass
 
 
 class ForecastFunctions(_ForecastFunctionsBase):
-
+    """Class for forecast functions that should be run synchronously"""
     def get_all_forecasts(self,
                           search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
@@ -116,7 +185,7 @@ class ForecastFunctions(_ForecastFunctionsBase):
 
 
 class ForecastFunctionsAsync(_ForecastFunctionsBase):
-
+    """Class for forecast functions that should be run asynchronously"""
     async def get_all_forecasts(self,
                                 search_query: str = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)

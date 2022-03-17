@@ -33,6 +33,11 @@ Connect, asynchronously
 .. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
    :language: python
 
+Working with sessions
+*************************
+.. literalinclude:: /../../src/volue/mesh/examples/working_with_sessions.py
+   :language: python
+
 Get version
 ************
 .. literalinclude:: /../../src/volue/mesh/examples/get_version.py

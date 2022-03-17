@@ -13,4 +13,5 @@ class ServerConfig:
     ROOT_PEM_CERTIFICATE: str = ''
     KERBEROS_SERVICE_PRINCIPAL_NAME: str = 'HOST/example.companyad.company.com'
 
+
 DefaultServerConfig: ServerConfig = ServerConfig()

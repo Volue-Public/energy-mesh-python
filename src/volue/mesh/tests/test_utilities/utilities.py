@@ -1,3 +1,6 @@
+"""
+Utility functions used by tests
+"""
 
 from dataclasses import dataclass
 from datetime import datetime
@@ -14,6 +17,7 @@ from volue.mesh import Timeseries
 
 @dataclass()
 class TestOwnedObject:
+    """Class for containing a link to an owned object id"""
     id: uuid.UUID
 
 
@@ -24,7 +28,7 @@ class TestTimeseriesEntry(TestOwnedObject):
 
 @dataclass()
 class TestTimeseries(TestOwnedObject):
-    """Class for representing a meta information about timeseries points in the resource layer of mesh.
+    """Class for representing meta information about timeseries points in the resource layer of mesh.
     Inside Mesh this is referred to as Timeseries.
     """
     timeseries_key: int
@@ -41,7 +45,7 @@ class TestTimeseries(TestOwnedObject):
 
 @dataclass()
 class TestTimeseriesAttribute(TestOwnedObject):
-    """Class for representing a meta information about timeseries points in a physical mesh model.
+    """Class for representing meta information about timeseries points in a physical mesh model.
         Inside Mesh this is referred to as TimeseriesAttribute.
         A timeseries attribute has a definition and either a calculation or a reference.
         A calculation has expression(s) that calculates the timeseries data points.
@@ -51,9 +55,13 @@ class TestTimeseriesAttribute(TestOwnedObject):
     """
     path: str
     # if reference:
-    timeseries: TestTimeseries  # timeseriesEntry_ in PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
+    # timeseriesEntry_ in
+    # PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
+    timeseries: TestTimeseries
     # if calculation:
-    local_expression: str  # source_ in PDCTimeseriesCalculationData->PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
+    # source_ in
+    # PDCTimeseriesCalculationData->PDCTimeseriesDynamicSourceData->PDCTimeseriesSourceData->PDCAttributeElementData->PDCNamedElementData->PDCElementData->PDCOwnedObjectData
+    local_expression: str
     template_expression: str
     model: str
     silo: str = "Model"
@@ -61,28 +69,28 @@ class TestTimeseriesAttribute(TestOwnedObject):
 
 
 def is_port_responding(host: str, port: int):
-    """Helper function to check if a socket will respond to a connect."""
+    """Helper function to check if a socket will respond to a connection."""
     args = socket.getaddrinfo(host, port, socket.AF_INET, socket.SOCK_STREAM)
-    for family, socktype, proto, canonname, sockaddr in args:
-        s = socket.socket(family, socktype, proto)
+    for family, socktype, proto, _, sockaddr in args:
+        a_socket = socket.socket(family, socktype, proto)
         try:
-            s.connect(sockaddr)
+            a_socket.connect(sockaddr)
         except socket.error:
             return False
         else:
-            s.close()
+            a_socket.close()
             return True
 
 
 def run_example_script(path, address, port, root_pem_certificate):
     """Helper function to run an example script."""
-    p = subprocess.Popen(
+    process = subprocess.Popen(
         [sys.executable, path, address, str(port), root_pem_certificate],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
 
-    stdoutdata, stderrdata = p.communicate()
-    exit_code = p.returncode
+    stdoutdata, stderrdata = process.communicate()
+    exit_code = process.returncode
     assert exit_code == 0, f"{stderrdata} {stdoutdata}"
 
 
@@ -162,10 +170,9 @@ def get_timeseries_2():
     # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
     # flags - [pa.uint32]
     # value - [pa.float64]
-    arrays = [
-        pa.array([datetime(2016, 1, 1, 1, 0, 0), datetime(2016, 1, 1, 2, 0, 0),  datetime(2016, 1, 1, 3, 0, 0)]),
-        pa.array([0, 0, 0]),
-        pa.array([0.0, 10.0, 1000.0])]
+    arrays = [pa.array([datetime(2016, 1, 1, 1, 0, 0), datetime(2016, 1, 1, 2, 0, 0), datetime(2016, 1, 1, 3, 0, 0)]),
+              pa.array([0, 0, 0]),
+              pa.array([0.0, 10.0, 1000.0])]
     modified_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
     full_name = timeseries.silo + timeseries.path + timeseries.name
     start_time = datetime(2016, 1, 1, 1, 0, 0)
@@ -239,5 +246,3 @@ def get_timeseries_attribute_2():
     )
     full_path = timeseries_attribute.silo + timeseries_attribute.path
     return timeseries_attribute, full_path
-
-

@@ -56,6 +56,7 @@ autosectionlabel_maxdepth = 2
 # Options for: sphinx.ext.napoleon
 napoleon_google_docstring = True
 napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
 
 # Options for: sphinx.ext.todo
 todo_include_todos = True
@@ -80,12 +81,17 @@ intersphinx_mapping = {
   'grpc': ('https://grpc.github.io/grpc/python/', None)
 }
 
+# prefixing mesh_ for anything strictly mesh object model
+# prefixing resource_ for anything only in the resource silo
+
 rst_prolog = """
 .. |deprecated| replace:: **Deprecated**.
+
 .. |coro| replace:: This function is a |coroutine_link|_.
 .. |maybecoro| replace:: This function *could be a* |coroutine_link|_.
 .. |coroutine_link| replace:: *coroutine*
 .. _coroutine_link: https://docs.python.org/3/library/asyncio-task.html#coroutine
+
 .. |test| replace:: Requires |pytest_link|_.
 .. |pytest_link| replace:: *pytest*
 .. _pytest_link: https://github.com/pytest-dev/pytest
@@ -113,4 +119,3 @@ html_theme_options = {
     'logo_only': True,
     'display_version': False,
 }
-
