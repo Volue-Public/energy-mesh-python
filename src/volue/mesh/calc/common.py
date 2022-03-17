@@ -113,9 +113,9 @@ class _Calculation:
 
         Args:
             session (Session):
-            relative_to (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
-            start_time (datetime):  the start date and time of the time series interval
-            end_time (datetime):  the end date and time of the time series interval
+            relative_to (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
+            start_time (datetime): the start date and time of the time series interval
+            end_time (datetime): the end date and time of the time series interval
         """
         self.session = session
         self.relative_to: MeshObjectId = relative_to
@@ -128,7 +128,7 @@ class _Calculation:
         and constructs a calculation request object
 
         Args:
-            expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
+            expression (str): expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Raises:
             TypeError:  Error message raised if the returned result from the request is not as expected
@@ -161,7 +161,7 @@ class _Calculation:
         """Run a function using an asynchronous connection.
 
         Args:
-            expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
+            expression (str): expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Returns:
             core_pb2.CalculationResponse:
@@ -178,7 +178,7 @@ class _Calculation:
         """Run a function using a synchronous connection.
 
         Args:
-            expression (str):  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
+            expression (str): expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
 
         Returns:
             core_pb2.CalculationResponse:

@@ -37,7 +37,7 @@ class Connection:
 
             Args:
                 mesh_service (core_pb2_grpc.MeshServiceStub): the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
-                session_id (uuid.UUID):  the id of the session you are (or want to be) connected to
+                session_id (uuid.UUID): the id of the session you are (or want to be) connected to
             """
             self.session_id: uuid.UUID = session_id
             self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
@@ -96,9 +96,9 @@ class Connection:
             the specified timeseries in the given interval. |coro|
 
             Args:
-                start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime):  the end date and time of the time series interval
-                mesh_object_id (MeshObjectId):  unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
+                start_time (datetime): the start date and time of the time series interval
+                end_time (datetime): the end date and time of the time series interval
+                mesh_object_id (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
 
             Raises:
                 grpc.RpcError:  Error message raised if the gRPC request could not be completed
@@ -156,9 +156,9 @@ class Connection:
             Request information associated with a raw  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`.. |coro|
 
             Args:
-                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
-                path (str):  path in the resource model.
-                timskey (int):  integer that only applies to a specific raw time series
+                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
+                path (str): path in the resource model.
+                timskey (int): integer that only applies to a specific raw time series
 
             Note:
                 This `path` is NOT the same as full name or the path in the Mesh object model,
@@ -200,9 +200,9 @@ class Connection:
             which has a link to a time series, either calculated or raw. |coro|
 
             Args:
-                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
-                path (str):  path in the resource model.
-                timskey (int):  integer that only applies to a specific raw time series
+                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
+                path (str): path in the resource model.
+                timskey (int): integer that only applies to a specific raw time series
                 new_path (str): set new  path in the resource model.
                 new_curve_type (Timeseries.Curve): set new  curve type for the time series.
                 new_unit_of_measurement (str): set new  unit of measurement for the time series.
@@ -260,8 +260,8 @@ class Connection:
             Request information associated with a Mesh object :doc:`attribute <mesh_object_attributes>`. |coro|
 
             Args:
-                model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
-                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
+                model (str): the name of the :ref:`Mesh object model <mesh object model>` you want to work within
+                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
                 path (str): path in the :ref:`Mesh object model <mesh object model>`
 
             Note:
@@ -298,7 +298,7 @@ class Connection:
             Update information associated with a Mesh object doc:`attribute <mesh_object_attributes>`. |coro|
 
             Args:
-                uuid_id (uuid.UUID):  Universal Unique Identifier for Mesh objects
+                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
                 path (str): path in the :ref:`Mesh object model <mesh object model>`
                 new_local_expression (str): set new local  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
                 new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`..
@@ -347,8 +347,8 @@ class Connection:
             Use the :doc:`Mesh search language <mesh_search>` to find :doc:`Mesh object attributes <mesh_object_attributes>` in the Mesh object model. |coro|
 
             Args:
-                model (str):  the name of the :ref:`Mesh object model <mesh object model>` you want to work within
-                query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+                model (str): the name of the :ref:`Mesh object model <mesh object model>` you want to work within
+                query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
                 start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`
                 start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
 
@@ -398,9 +398,9 @@ class Connection:
             """Access to :ref:`mesh_functions:Forecast` functions.
 
             Args:
-                relative_to (MeshObjectId):  TODO
-                start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime):  the end date and time of the time series interval
+                relative_to (MeshObjectId): a Mesh object to perform actions relative to
+                start_time (datetime): the start date and time of the time series interval
+                end_time (datetime): the end date and time of the time series interval
 
             Returns:
                 ForecastFunctions: object containing all forecast functions
@@ -411,9 +411,9 @@ class Connection:
             """Access to :ref:`mesh_functions:History` functions.
 
             Args:
-                relative_to (MeshObjectId):  TODO
-                start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime):  the end date and time of the time series interval
+                relative_to (MeshObjectId): a Mesh object to perform actions relative to
+                start_time (datetime): the start date and time of the time series interval
+                end_time (datetime): the end date and time of the time series interval
 
             Returns:
                 HistoryFunctions: object containing all history functions
@@ -424,9 +424,9 @@ class Connection:
             """Access to :ref:`mesh_functions:Statistical` functions.
 
             Args:
-                relative_to (MeshObjectId):  TODO
-                start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime):  the end date and time of the time series interval
+                relative_to (MeshObjectId): a Mesh object to perform actions relative to
+                start_time (datetime): the start date and time of the time series interval
+                end_time (datetime): the end date and time of the time series interval
 
             Returns:
                 StatisticalFunctions: object containing all statistical functions
@@ -437,9 +437,9 @@ class Connection:
             """Access to :ref:`mesh_functions:Transform` functions.
 
             Args:
-                relative_to (MeshObjectId):  TODO
-                start_time (datetime):  the start date and time of the time series interval
-                end_time (datetime):  the end date and time of the time series interval
+                relative_to (MeshObjectId): a Mesh object to perform actions relative to
+                start_time (datetime): the start date and time of the time series interval
+                end_time (datetime): the end date and time of the time series interval
 
             Returns:
                 TransformFunctions: object containing all transformation functions
@@ -451,9 +451,9 @@ class Connection:
         """Create an asynchronous connection for communication with Mesh server.
 
         Args:
-            host (str):  Mesh server host name in the form an IP or domain name
-            port (int):  Mesh server port number for gRPC communication
-            root_pem_certificates (str):  PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
+            host (str): Mesh server host name in the form an IP or domain name
+            port (int): Mesh server port number for gRPC communication
+            root_pem_certificates (str): PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.
             authentication_parameters (Authentication.Parameters): TODO
 
         Note:

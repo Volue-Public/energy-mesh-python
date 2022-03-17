@@ -26,9 +26,9 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Create an expression for `get_ts_as_of_time`.
 
         Args:
-            available_at_timepoint (datetime):  is valid at the given timestamp
-            timezone (Timezone):  timezone
-            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+            available_at_timepoint (datetime): is valid at the given timestamp
+            timezone (Timezone): timezone
+            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_ts_as_of_time` expression
@@ -48,7 +48,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             max_number_of_versions_to_get (int): maximum number of time series to return
-            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_ts_historical_versions` expression
@@ -77,9 +77,9 @@ class _HistoryFunctionsBase(_Calculation, ABC):
             If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.
 
         Args:
-            available_at_timepoint (datetime):  is valid at the given timestamp
-            timezone (Timezone):  timezone
-            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+            available_at_timepoint (datetime): is valid at the given timestamp
+            timezone (Timezone): timezone
+            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
              Timeseries: a time series.
@@ -102,7 +102,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             max_number_of_versions_to_get (int): the maximum number of time series to return
-            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Note:
             The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.

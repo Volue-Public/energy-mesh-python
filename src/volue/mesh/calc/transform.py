@@ -51,8 +51,8 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Args:
             resolution (Timeseries.Resolution): the resolution to transform to
             method (Method): what method to use for the transformation
-            timezone (Timezone):  timezone
-            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+            timezone (Timezone): timezone
+            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `transformation` expression
@@ -96,8 +96,8 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Args:
             resolution (Timeseries.Resolution): the resolution to transform to
             method (Method): what method to use for the transformation
-            timezone (Timezone):  timezone
-            search_query (str):  a search formulated using the :doc:`Mesh search language <mesh_search>`
+            timezone (Timezone): timezone
+            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Note:
             The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `relative_to` object will be used.
