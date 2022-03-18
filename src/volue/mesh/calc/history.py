@@ -112,7 +112,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
 
 class HistoryFunctions(_HistoryFunctionsBase):
-
+    """Class for history functions that should be run synchronously"""
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
                           search_query: str = None) -> Timeseries:
@@ -129,7 +129,7 @@ class HistoryFunctions(_HistoryFunctionsBase):
 
 
 class HistoryFunctionsAsync(_HistoryFunctionsBase):
-
+    """Class for history functions that should be run asynchronously"""
     async def get_ts_as_of_time(self,
                                 available_at_timepoint: datetime,
                                 search_query: str = None) -> Timeseries:
