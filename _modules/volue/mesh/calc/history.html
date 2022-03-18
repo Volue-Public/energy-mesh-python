@@ -283,7 +283,7 @@
 
 
 <div class="viewcode-block" id="HistoryFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctions">[docs]</a><span class="k">class</span> <span class="nc">HistoryFunctions</span><span class="p">(</span><span class="n">_HistoryFunctionsBase</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Class for history functions that should be run synchronously&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="HistoryFunctions.get_ts_as_of_time"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctions.get_ts_as_of_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                           <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
                           <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
@@ -300,7 +300,7 @@
 
 
 <div class="viewcode-block" id="HistoryFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctionsAsync">[docs]</a><span class="k">class</span> <span class="nc">HistoryFunctionsAsync</span><span class="p">(</span><span class="n">_HistoryFunctionsBase</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Class for history functions that should be run asynchronously&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="HistoryFunctionsAsync.get_ts_as_of_time"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_ts_as_of_time">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                 <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
                                 <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>

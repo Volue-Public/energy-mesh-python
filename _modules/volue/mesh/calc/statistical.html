@@ -243,7 +243,7 @@
 
 
 <div class="viewcode-block" id="StatisticalFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions">[docs]</a><span class="k">class</span> <span class="nc">StatisticalFunctions</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run synchronously&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="StatisticalFunctions.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
@@ -256,7 +256,7 @@
 
 
 <div class="viewcode-block" id="StatisticalFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync">[docs]</a><span class="k">class</span> <span class="nc">StatisticalFunctionsAsync</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run asynchronously&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="StatisticalFunctionsAsync.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span><span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
