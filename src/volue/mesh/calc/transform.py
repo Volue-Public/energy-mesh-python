@@ -110,7 +110,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
 
 
 class TransformFunctions(_TransformFunctionsBase):
-
+    """Class for transformation functions that should be run synchronously"""
     def transform(self,
                   resolution: Timeseries.Resolution,
                   method: Method,
@@ -122,7 +122,7 @@ class TransformFunctions(_TransformFunctionsBase):
 
 
 class TransformFunctionsAsync(_TransformFunctionsBase):
-
+    """Class for transformation functions that should be run asynchronously"""
     async def transform(self,
                         resolution: Timeseries.Resolution,
                         method: Method,

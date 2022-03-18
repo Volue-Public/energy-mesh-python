@@ -72,7 +72,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
 
 
 class StatisticalFunctions(_StatisticalFunctionsBase):
-
+    """Class for statistical functions that should be run synchronously"""
     def sum(self, search_query: str = None):
         expression = super()._sum_expression(_ARRAY_OF_TIMESERIES_CALC_SYMBOL, search_query)
         response = super().run(expression)
@@ -85,7 +85,7 @@ class StatisticalFunctions(_StatisticalFunctionsBase):
 
 
 class StatisticalFunctionsAsync(_StatisticalFunctionsBase):
-
+    """Class for statistical functions that should be run asynchronously"""
     async def sum(self, search_query: str = None):
         expression = super()._sum_expression(_ARRAY_OF_TIMESERIES_CALC_SYMBOL, search_query)
         response = await super().run_async(expression)
