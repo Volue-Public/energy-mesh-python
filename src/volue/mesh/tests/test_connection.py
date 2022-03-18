@@ -459,7 +459,7 @@ def test_search_timeseries_attribute():
 
 
 @pytest.mark.database
-async def test_write_timeseries_points_using_timskey_async():
+def test_write_timeseries_points_using_timskey():
     """Check that timeseries can be written to the server using timskey."""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
