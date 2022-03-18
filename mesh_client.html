@@ -94,7 +94,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh Python SDK</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh Python SDK</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#date-times-and-time-zones">Date times and time zones</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
@@ -269,6 +272,170 @@
 </pre></div>
 </div>
 <p>As time series data can potentially be large <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> is used to optimize memory sharing.</p>
+<div class="section" id="date-times-and-time-zones">
+<h2>Date times and time zones<a class="headerlink" href="#date-times-and-time-zones" title="Permalink to this headline">¶</a></h2>
+<p>The Mesh Python SDK can accept either time zone naive (no time zone information is provided) or time zone aware date time objects.
+All time zone naive date time objects are treated as UTC. Time zone aware date time objects are converted to UTC by the Mesh Python SDK before sending to Mesh server.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Time series data returned as PyArrow table is always using UTC to represent timestamps. The user has to convert the timestamps to different format if needed.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<blockquote>
+<div><p>As of PyArrow 7.0.0 the time zone information provided by <cite>dateutil.gettz</cite> is not supported. Please use <cite>datetime.timezone</cite> instead. E.g.:</p>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">some_tzinfo</span> <span class="o">=</span> <span class="n">timezone</span><span class="p">(</span><span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=-</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Please refer to the example <cite>timeseries_operations.py</cite> to learn how to work with time zones. Presented below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to find timeseries, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
+
+    <span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;SimpleThermalTestModel&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Name=SomePowerPlantChimney2].TsRawAtt&quot;</span>  <span class="c1"># make sure only 1 timeseries is returned</span>
+    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;ThermalComponent&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># first lets find a timeseries in our model</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attribute</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">start_object_path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find timeseries attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No such timeseries attribute in the given model/database&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of timeseries: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># pick the first timeseries and do some operations with it</span>
+        <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Working on timeseries with path: &#39;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># check for example the unit of measurement or curve type</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unit of measurement: &#39;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">entry</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="p">)</span>
+        <span class="c1">#print(&#39;Curve &#39; + str(timeseries_attribute.entry.curve_type))</span>
+
+        <span class="c1"># now lets write some data to it</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
+            <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
+            <span class="c1"># flags - [pa.uint32]</span>
+            <span class="c1"># value - [pa.float64]</span>
+
+            <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">72</span>
+            <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">):</span>
+                <span class="n">hours</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">24</span>
+                <span class="n">days</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">))</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">days</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+
+            <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
+
+            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span>
+                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span>
+                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+            <span class="n">arrow_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># if no time zone is provided then it will be treated as UTC</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># end time must be greater than last point to be written</span>
+
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">local_time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">tzlocal</span><span class="p">()</span>
+
+        <span class="c1"># now lets read from it</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># lets use local time zone (read from operating system settings)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+
+            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_full_name</span><span class="p">(</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+
+            <span class="c1"># convert to pandas format</span>
+            <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
+            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+            <span class="c1"># lets convert it back to local time zone</span>
+            <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
+
+            <span class="c1"># notice that depending on the local time zone there is a shift in the data</span>
+            <span class="c1"># e.g. for UTC+2 time zone, first 2 values will be NaN, because writing time series points in the previous step</span>
+            <span class="c1"># is using time zone naive datetime object, so they are treated as UTC.</span>
+
+            <span class="c1"># do some further processing</span>
+
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># now lets read transformations from it (transform to days)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transform resolution to days:&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+
+            <span class="c1"># Transform function may take optionally a time zone argument.</span>
+            <span class="c1"># Refer to `transform` documentation for more details.</span>
+            <span class="c1"># If you are using `LOCAL` or `STANDARD` time zone then make sure</span>
+            <span class="c1"># the Mesh server is operating in the same time zone or adjust properly.</span>
+            <span class="n">transformed_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
+                <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                    <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+
+            <span class="c1"># convert to pandas format</span>
+            <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
+            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">transformed_timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
+
+            <span class="c1"># lets convert it back to local time zone</span>
+            <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
+
+            <span class="c1"># do some further processing</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read transformed timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># optionally discard changes</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># This will search for a given timeseries, write some data,</span>
+    <span class="c1"># read it and convert to pandas format.</span>
+
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 

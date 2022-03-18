@@ -182,7 +182,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">_Calculation</span><span class="p">,</span> <span class="n">Timezone</span><span class="p">,</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">,</span> \
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">_Calculation</span><span class="p">,</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">,</span> \
     <span class="n">_parse_timeseries_list_response</span><span class="p">,</span> <span class="n">_parse_single_timeseries_response</span>
 
 
@@ -191,20 +191,18 @@
 
     <span class="k">def</span> <span class="nf">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                       <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                                      <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span><span class="p">,</span>
                                       <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an expression for `get_ts_as_of_time`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            available_at_timepoint (datetime): is valid at the given timestamp</span>
-<span class="sd">            timezone (Timezone): timezone</span>
 <span class="sd">            search_query (str): a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: a `get_ts_as_of_time` expression</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">converted_available_at_timepoint</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">timezone</span><span class="p">)</span>
+        <span class="n">converted_available_at_timepoint</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">)</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## = @GetTsAsOfTime(@t(&quot;</span>
         <span class="k">if</span> <span class="n">search_query</span><span class="p">:</span>
             <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">&#39;</span><span class="si">{</span><span class="n">search_query</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
@@ -236,7 +234,6 @@
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                           <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                          <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Finds values and status for a timeseries at a given historical time `available_at_timepoint`.</span>
@@ -249,8 +246,9 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            available_at_timepoint (datetime): is valid at the given timestamp</span>
-<span class="sd">            timezone (Timezone): timezone</span>
 <span class="sd">            search_query (str): a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`</span>
+
+<span class="sd">        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">             Timeseries: a time series.</span>
@@ -262,7 +260,7 @@
                                    <span class="n">max_number_of_versions_to_get</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                    <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request an array of a given number of versions of a time series.</span>
+<span class="sd">        Requests an array of a given number of versions of a time series.</span>
 
 <span class="sd">        Examples:</span>
 
@@ -288,9 +286,8 @@
 
 <div class="viewcode-block" id="HistoryFunctions.get_ts_as_of_time"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctions.get_ts_as_of_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                           <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                          <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                           <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
@@ -306,9 +303,8 @@
 
 <div class="viewcode-block" id="HistoryFunctionsAsync.get_ts_as_of_time"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_ts_as_of_time">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                 <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                                <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                 <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 

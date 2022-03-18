@@ -174,6 +174,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
@@ -197,23 +198,26 @@
     <span class="n">UTC</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
-<span class="k">def</span> <span class="nf">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts input datetime to format expected by Mesh calculator.</span>
+<span class="sd">    Datetime is converted to UTC. If input datetime is time zone naive then it is already treated as UTC.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &#39;20210917000000000&#39; Optional timezone parameter if set will append proper prefix to the converted datetime, e.g.: &#39;UTC20210917000000000&#39;</span>
+<span class="sd">        &#39;UTC20210917000000000&#39;</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        input (datetime): the timestamp to be converted</span>
-<span class="sd">        timezone (Timezone): its timezone</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">converted_date_str</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">timezone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">converted_date_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timezone</span><span class="o">.</span><span class="n">name</span><span class="si">}{</span><span class="n">converted_date_str</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">input_utc_datetime</span> <span class="o">=</span> <span class="nb">input</span>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">input_utc_datetime</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">astimezone</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
+
+    <span class="n">converted_date_str</span> <span class="o">=</span> <span class="n">input_utc_datetime</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">converted_date_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;UTC</span><span class="si">{</span><span class="n">converted_date_str</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">converted_date_str</span>
 
 

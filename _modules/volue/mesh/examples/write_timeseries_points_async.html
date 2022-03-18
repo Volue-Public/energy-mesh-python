@@ -183,7 +183,8 @@
     <span class="c1"># Define the timeseries identifiers</span>
     <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
 
-    <span class="c1"># Defining a time interval to write timeseries to</span>
+    <span class="c1"># Defining a time interval to write timeseries to.</span>
+    <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># end time must be greater than last point to be read/written</span>
 
@@ -193,6 +194,7 @@
     <span class="c1"># flags - [pa.uint32]</span>
     <span class="c1"># value - [pa.float64]</span>
     <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])]</span>

@@ -250,12 +250,13 @@
     <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                   <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
                   <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                  <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
                   <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transforms time series from one resolution to another resolution.</span>
 
 <span class="sd">        Some of target resolutions have a time zone foundation.</span>
+<span class="sd">        Note: the `LOCAL` and `STANDARD` time zone refers to time zone of Mesh server, not the Python client.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">             `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).</span>
@@ -284,7 +285,7 @@
 <div class="viewcode-block" id="TransformFunctions.transform"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctions.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                   <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
                   <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                  <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
                   <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
@@ -296,7 +297,7 @@
 <div class="viewcode-block" id="TransformFunctionsAsync.transform"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctionsAsync.transform">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
                         <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
                         <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
