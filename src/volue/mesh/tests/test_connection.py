@@ -202,7 +202,7 @@ def test_write_timeseries_points_with_different_pyarrow_table_datetime_timezones
 
 @pytest.mark.database
 def test_get_timeseries():
-    """Check that timeseries with entry data can be retrieved"""
+    """Check that timeseries entry data can be retrieved"""
 
     timeseries, full_name = get_timeseries_1()
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -225,7 +225,7 @@ def test_get_timeseries():
                 assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
 
         except grpc.RpcError as error:
-            pytest.fail(f"Could not read timeseries: {error}")
+            pytest.fail(f"Could not read timeseries entry: {error}")
 
 
 @pytest.mark.database
@@ -459,36 +459,22 @@ def test_search_timeseries_attribute():
 
 
 @pytest.mark.database
-def test_rollback():
-    """Check that rollback discards changes made in the current session."""
+async def test_write_timeseries_points_using_timskey_async():
+    """Check that timeseries can be written to the server using timskey."""
+
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    ts_entry, start_time, end_time, modified_table, _ = get_timeseries_2()
+    timeseries = Timeseries(table=modified_table, start_time=start_time, end_time=end_time,
+                            timskey=ts_entry.timeseries_key)
 
     with connection.create_session() as session:
         try:
-            _, full_name = get_timeseries_1()
-            new_path = "/new_path"
-
-            # check base line
-            timeseries_info0 = session.get_timeseries_resource_info(path=full_name)
-            assert timeseries_info0.path != new_path
-
-            # change something
-            session.update_timeseries_resource_info(path=full_name, new_path=new_path)
-
-            # check that the change is in the session
-            timeseries_info1 = session.get_timeseries_resource_info(path=full_name)
-            assert timeseries_info1.path == new_path
-
-            # rollback
-            session.rollback()
-
-            # check that changes have been discarded
-            timeseries_info2 = session.get_timeseries_resource_info(path=full_name)
-            assert timeseries_info2.path != new_path
-
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not rollback changes: {error}")
+            session.write_timeseries_points(
+                timeserie=timeseries
+            )
+        except grpc.RpcError:
+            pytest.fail("Could not write timeseries points")
 
 
 @pytest.mark.database
@@ -546,6 +532,39 @@ def test_commit():
 
         except grpc.RpcError as error:
             pytest.fail(f"Could not restore commited changes: {error}")
+
+
+@pytest.mark.database
+def test_rollback():
+    """Check that rollback discards changes made in the current session."""
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    with connection.create_session() as session:
+        try:
+            _, full_name = get_timeseries_1()
+            new_path = "/new_path"
+
+            # check base line
+            timeseries_info0 = session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info0.path != new_path
+
+            # change something
+            session.update_timeseries_resource_info(path=full_name, new_path=new_path)
+
+            # check that the change is in the session
+            timeseries_info1 = session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info1.path == new_path
+
+            # rollback
+            session.rollback()
+
+            # check that changes have been discarded
+            timeseries_info2 = session.get_timeseries_resource_info(path=full_name)
+            assert timeseries_info2.path != new_path
+
+        except grpc.RpcError as error:
+            pytest.fail(f"Could not rollback changes: {error}")
 
 
 @pytest.mark.database
@@ -694,7 +713,8 @@ def test_read_timeseries_points_without_specifying_timeseries_should_throw():
 @pytest.mark.database
 def test_forecast_get_all_forecasts():
     """
-    Check that running forecast `get_all_forecasts` does not throw exception for any combination of parameters.
+    Check that running forecast `get_all_forecasts`
+    does not throw exception for any combination of parameters.
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
