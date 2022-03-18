@@ -25,7 +25,7 @@ def main(address, port, root_pem_certificate):
     # start_object_guid = uuid.UUID("0000000b-0001-0000-0000-000000000000")  # ThermalComponent
 
     # The query expressed using Mesh search language syntax
-    # Travers all children (*) of the start object, not case-sensitive ({}) and
+    # Traverse all children (*) of the start object, not case-sensitive ({}) and
     # accept all that has an attribute (.) called TsRawAtt
     query = "{*}.TsRawAtt"
 

@@ -100,6 +100,8 @@ class Connection:
                 end_time (datetime): the end date and time of the time series interval
                 mesh_object_id (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
 
+            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
+
             Raises:
                 grpc.RpcError:  Error message raised if the gRPC request could not be completed
                 RuntimeError:  Error message raised if the input is not valid

@@ -6,6 +6,8 @@ import uuid
 from dataclasses import dataclass
 import datetime
 from typing import List, Optional
+import uuid
+
 from google.protobuf import timestamp_pb2
 import pyarrow as pa
 

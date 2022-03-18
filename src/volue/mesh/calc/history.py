@@ -11,7 +11,7 @@ import datetime
 from typing import List
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import _Calculation, Timezone, _convert_datetime_to_mesh_calc_format, \
+from volue.mesh.calc.common import _Calculation, _convert_datetime_to_mesh_calc_format, \
     _parse_timeseries_list_response, _parse_single_timeseries_response
 
 
@@ -20,20 +20,18 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
     def _get_ts_as_of_time_expression(self,
                                       available_at_timepoint: datetime,
-                                      timezone: Timezone,
                                       search_query: str) -> str:
         """
         Create an expression for `get_ts_as_of_time`.
 
         Args:
             available_at_timepoint (datetime): is valid at the given timestamp
-            timezone (Timezone): timezone
             search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
             str: a `get_ts_as_of_time` expression
         """
-        converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint, timezone)
+        converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint)
         expression = f"## = @GetTsAsOfTime(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
@@ -65,7 +63,6 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     @abstractmethod
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
-                          timezone: Timezone = None,
                           search_query: str = None) -> Timeseries:
         """
         Finds values and status for a timeseries at a given historical time `available_at_timepoint`.
@@ -78,8 +75,9 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             available_at_timepoint (datetime): is valid at the given timestamp
-            timezone (Timezone): timezone
             search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+
+        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Returns:
              Timeseries: a time series.
@@ -91,7 +89,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
                                    max_number_of_versions_to_get: int,
                                    search_query: str = None) -> List[Timeseries]:
         """
-        Request an array of a given number of versions of a time series.
+        Requests an array of a given number of versions of a time series.
 
         Examples:
 
@@ -117,9 +115,8 @@ class HistoryFunctions(_HistoryFunctionsBase):
 
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
-                          timezone: Timezone = None,
                           search_query: str = None) -> Timeseries:
-        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, timezone, search_query)
+        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, search_query)
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
@@ -135,9 +132,8 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
 
     async def get_ts_as_of_time(self,
                                 available_at_timepoint: datetime,
-                                timezone: Timezone = None,
                                 search_query: str = None) -> Timeseries:
-        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, timezone, search_query)
+        expression = super()._get_ts_as_of_time_expression(available_at_timepoint, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 

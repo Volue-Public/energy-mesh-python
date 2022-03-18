@@ -14,7 +14,8 @@ async def read_timeseries_points_async(session: Connection.Session):
     timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
     timeseries_id = uuid.UUID("00000003-0003-0000-0000-000000000000")
 
-    # Defining a time interval to read timeseries from
+    # Defining a time interval to read timeseries from.
+    # If no time zone is provided then it will be treated as UTC.
     start = datetime(2016, 1, 1, 6, 0, 0)
     end = datetime(2016, 1, 1, 8, 0, 0)
 
