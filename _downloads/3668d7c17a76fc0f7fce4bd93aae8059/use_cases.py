@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, MeshObjectId, Timeseries, _from_proto_guid
+from volue.mesh import Connection, MeshObjectId, Timeseries
+from volue.mesh._common import _from_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.proto.core.v1alpha import core_pb2
