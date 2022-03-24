@@ -116,9 +116,10 @@ Setup for developers
 #. Install Poetry:
 
     This library uses `Poetry`_ for development, installation and packaging. To
-    work with the repository you should `install poetry <https://python-poetry.org/docs/#installation>`_.
+    work with the repository you should `install poetry <https://github.com/python-poetry/poetry#installation>`_.
+    The steps below assume Poetry binary is added to your PATH.
 
-    To install all our development and runtime dependencies to a virtual environment run::
+    To install all our development and runtime dependencies to a virtual environment go to the Mesh Python SDK repository directory and run::
 
       poetry install
 
