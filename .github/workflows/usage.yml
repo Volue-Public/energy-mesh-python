@@ -38,7 +38,10 @@ jobs:
           MESH_SERVICE_TAG: 'v2.3.0.12'
 
       - name: Install and test Python SDK (Windows)
+        variables:
+          ErrorActionPreference: stop
         run: |
+          python non_existing_script.py
           python -m pip install git+https://${{ secrets.OAUTH_TOKEN }}@github.com/PowelAS/sme-mesh-python@${{ github.ref }}
           python -m pip install pytest pytest-asyncio pandas
           python -m pytest --pyargs volue.mesh.tests -m "not authentication"

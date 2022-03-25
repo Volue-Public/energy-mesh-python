@@ -819,7 +819,7 @@ def test_statistical_sum_single_timeseries():
 
         result = session.statistical_functions(
             MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
-        assert isinstance(result, float) and result == 42.0
+        assert isinstance(result, float) and result == 41.0
 
 
 if __name__ == '__main__':
