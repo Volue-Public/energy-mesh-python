@@ -226,7 +226,7 @@ async def test_get_timeseries_async():
                 assert timeseries_info.timeseries_key == timeseries.timeseries_key
                 assert timeseries_info.path == timeseries.path
                 assert timeseries_info.temporary == timeseries.temporary
-                assert timeseries_info.curve_type.type == timeseries.curve.value
+                assert timeseries_info.curve_type == _to_proto_curve_type(timeseries.curve)
                 assert timeseries_info.resolution.type == timeseries.resolution.value
                 assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
 
@@ -372,6 +372,8 @@ async def test_update_timeseries_attribute_with_timeseriescalculation_async():
 
                 if "path" in test_case:
                     test_case_2["uuid_id"] = updated_attribute.id
+
+                session.rollback()
 
         except grpc.RpcError as error:
             pytest.fail(f"Could not update timeseries attribute: {error}")
