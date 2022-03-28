@@ -373,7 +373,7 @@
 
 <div class="viewcode-block" id="test_get_timeseries"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_get_timeseries">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">def</span> <span class="nf">test_get_timeseries</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check that timeseries with entry data can be retrieved&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Check that timeseries entry data can be retrieved&quot;&quot;&quot;</span>
 
     <span class="n">timeseries</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_1</span><span class="p">()</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
@@ -396,7 +396,7 @@
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries entry: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_update_timeseries_entry"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_update_timeseries_entry">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
@@ -629,37 +629,23 @@
             <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="test_rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_rollback">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_rollback</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check that rollback discards changes made in the current session.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="test_write_timeseries_points_using_timskey"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_write_timeseries_points_using_timskey">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_write_timeseries_points_using_timskey</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that timeseries can be written to the server using timskey.&quot;&quot;&quot;</span>
+
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+    <span class="n">ts_entry</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">modified_table</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_timeseries_2</span><span class="p">()</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">modified_table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+                            <span class="n">timskey</span><span class="o">=</span><span class="n">ts_entry</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">_</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_1</span><span class="p">()</span>
-            <span class="n">new_path</span> <span class="o">=</span> <span class="s2">&quot;/new_path&quot;</span>
-
-            <span class="c1"># check base line</span>
-            <span class="n">timeseries_info0</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">timeseries_info0</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">new_path</span>
-
-            <span class="c1"># change something</span>
-            <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span> <span class="n">new_path</span><span class="o">=</span><span class="n">new_path</span><span class="p">)</span>
-
-            <span class="c1"># check that the change is in the session</span>
-            <span class="n">timeseries_info1</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">timeseries_info1</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">new_path</span>
-
-            <span class="c1"># rollback</span>
-            <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-            <span class="c1"># check that changes have been discarded</span>
-            <span class="n">timeseries_info2</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">timeseries_info2</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">new_path</span>
-
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not rollback changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
+                <span class="n">timeserie</span><span class="o">=</span><span class="n">timeseries</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not write timeseries points&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_commit"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_commit">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
@@ -717,6 +703,39 @@
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not restore commited changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_rollback">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_rollback</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that rollback discards changes made in the current session.&quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_1</span><span class="p">()</span>
+            <span class="n">new_path</span> <span class="o">=</span> <span class="s2">&quot;/new_path&quot;</span>
+
+            <span class="c1"># check base line</span>
+            <span class="n">timeseries_info0</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">timeseries_info0</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">new_path</span>
+
+            <span class="c1"># change something</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span> <span class="n">new_path</span><span class="o">=</span><span class="n">new_path</span><span class="p">)</span>
+
+            <span class="c1"># check that the change is in the session</span>
+            <span class="n">timeseries_info1</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">timeseries_info1</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">new_path</span>
+
+            <span class="c1"># rollback</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+            <span class="c1"># check that changes have been discarded</span>
+            <span class="n">timeseries_info2</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">timeseries_info2</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="n">new_path</span>
+
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not rollback changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_read_transformed_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_read_transformed_timeseries_points">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
@@ -865,7 +884,8 @@
 <div class="viewcode-block" id="test_forecast_get_all_forecasts"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_forecast_get_all_forecasts">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">def</span> <span class="nf">test_forecast_get_all_forecasts</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that running forecast `get_all_forecasts` does not throw exception for any combination of parameters.</span>
+<span class="sd">    Check that running forecast `get_all_forecasts`</span>
+<span class="sd">    does not throw exception for any combination of parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>

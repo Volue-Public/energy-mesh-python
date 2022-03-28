@@ -397,7 +397,7 @@
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">path</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">temporary</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">temporary</span>
-                <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">curve_type</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">curve</span><span class="o">.</span><span class="n">value</span>
+                <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">curve_type</span> <span class="o">==</span> <span class="n">_to_proto_curve_type</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">curve</span><span class="p">)</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="o">.</span><span class="n">value</span>
                 <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">unit_of_measurement</span>
 
@@ -543,6 +543,8 @@
 
                 <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
                     <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">id</span>
+
+                <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
             <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
