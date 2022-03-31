@@ -69,15 +69,15 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     original_timeseries = Timeseries(table=table,
                                      resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
                                      start_time=start, end_time=end,
-                                     timskey=201503,
-                                     uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
-                                     full_name="Resource/Wind Power/WindPower/WPModel/WindProdForce(0)")
+                                     timskey=1,
+                                     uuid_id=uuid.uuid4(),
+                                     full_name="some_name")
 
     assert original_timeseries.start_time == start
     assert original_timeseries.end_time == end
 
     original_proto_timeserie = _to_proto_timeseries(original_timeseries)
-    session_id_original = _to_proto_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
+    session_id_original = _to_proto_guid(uuid.uuid4())
 
     original_reply = core_pb2.WriteTimeseriesRequest(
         session_id=session_id_original,
@@ -123,9 +123,9 @@ def test_timeseries_without_explicit_start_end_datetime_will_deduct_it_from_pyar
 
     time_series = Timeseries(table=table,
                              resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                             timskey=201503,
-                             uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
-                             full_name="Resource/Wind Power/WindPower/WPModel/WindProdForce(0)")
+                             timskey=1,
+                             uuid_id=uuid.uuid4(),
+                             full_name="some_name")
     assert time_series.start_time == datetime(2016, 5, 1)
     assert time_series.end_time == datetime(2016, 5, 1, 2) + timedelta(seconds=1)
 
@@ -138,9 +138,9 @@ def test_timeseries_without_explicit_start_end_datetime_and_pyarrow_table():
     """
 
     time_series = Timeseries(resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                             timskey=201503,
-                             uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
-                             full_name="Resource/Wind Power/WindPower/WPModel/WindProdForce(0)")
+                             timskey=1,
+                             uuid_id=uuid.uuid4(),
+                             full_name="some_name")
     assert time_series.number_of_points == 0
 
 
@@ -159,9 +159,9 @@ def test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table(
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
     time_series = Timeseries(table=table,
                              resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                             timskey=201503,
-                             uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
-                             full_name="Resource/Wind Power/WindPower/WPModel/WindProdForce(0)")
+                             timskey=1,
+                             uuid_id=uuid.uuid4(),
+                             full_name="some_name")
     assert time_series.number_of_points == 0
 
 if __name__ == '__main__':
