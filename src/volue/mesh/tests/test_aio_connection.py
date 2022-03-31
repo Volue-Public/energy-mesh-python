@@ -123,8 +123,9 @@ async def test_write_timeseries_points_async():
         test_case_utc = {"start_time": start_time_utc, "end_time": end_time_utc}
         test_case_local = {"start_time": start_time_local, "end_time": end_time_local}
         test_case_mixed = {"start_time": start_time_local, "end_time": end_time_utc}
+        test_case_deduct = {"start_time": None, "end_time": None}  # in this case the start and end time will be taken from PyArrow table
 
-        test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed]
+        test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed, test_case_deduct]
         for test_case in test_cases:
             timeseries = Timeseries(table=modified_table, start_time=test_case['start_time'], end_time=test_case['end_time'], full_name=full_name)
             try:

@@ -3,7 +3,7 @@ Functionality for working with time series.
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 import pyarrow as pa
 from volue.mesh.proto.type import resources_pb2
@@ -87,6 +87,12 @@ class Timeseries:
                  full_name: str = None
                  ):
         """A representation of a time series.
+        If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.
+        Providing broader time interval (`start_time` and `end_time`) could be used when writing new time series points,
+        then all existing time series points within the time interval that are not covered by new time series points will be removed.
+        E.g. `start_time` is set to May 1st, `end_time` is set to May 3rd and PyArrow table has points defined only for May 2nd,
+        then all old points on May 1st and 3rd will be removed and new points will be set for May 2nd.
+
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Args:
@@ -97,14 +103,31 @@ class Timeseries:
             timskey (int): integer that only applies to a specific raw time series
             uuid_id:  Universal Unique Identifier for Mesh objects
             full_name: path in the :ref:`Mesh object model <mesh object model>`
+
+        Raises:
+            TypeError:  Error message raised if PyArrow table schema is invalid
         """
         self.full_name = full_name
         self.uuid = uuid_id
         self.timskey = timskey
-        self.end_time = end_time
-        self.start_time = start_time
         self.arrow_table = table
         self.resolution = resolution
+
+        if self.arrow_table and self.arrow_table.schema != Timeseries.schema:
+            raise TypeError('invalid PyArrow table schema')
+
+        if start_time is None:
+            if self.arrow_table and self.arrow_table.num_rows > 0:
+                self.start_time = self.arrow_table['utc_time'][0].as_py()
+        else:
+            self.start_time = start_time
+
+        # end time must be greater than last time point in PyArrow table
+        if end_time is None:
+            if self.arrow_table and self.arrow_table.num_rows > 0:
+                self.end_time = self.arrow_table['utc_time'][-1].as_py() + timedelta(seconds=1)
+        else:
+            self.end_time = end_time
 
     @property
     def number_of_points(self) -> int:
