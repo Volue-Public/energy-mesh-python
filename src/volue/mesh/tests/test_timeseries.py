@@ -73,6 +73,9 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
                                      uuid_id=uuid.UUID("3f1afdd7-5f7e-45f9-824f-a7adc09cff8e"),
                                      full_name="Resource/Wind Power/WindPower/WPModel/WindProdForce(0)")
 
+    assert original_timeseries.start_time == start
+    assert original_timeseries.end_time == end
+
     original_proto_timeserie = _to_proto_timeseries(original_timeseries)
     session_id_original = _to_proto_guid(uuid.UUID("3f1afdd7-1111-45f9-824f-a7adc09cff8e"))
 
