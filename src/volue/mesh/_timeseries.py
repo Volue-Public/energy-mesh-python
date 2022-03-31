@@ -116,15 +116,16 @@ class Timeseries:
         if self.arrow_table and self.arrow_table.schema != Timeseries.schema:
             raise TypeError('invalid PyArrow table schema')
 
+        # setting start and end time should only take effect when writing time series
         if start_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
                 self.start_time = self.arrow_table['utc_time'][0].as_py()
         else:
             self.start_time = start_time
 
-        # end time must be greater than last time point in PyArrow table
         if end_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
+                # end time must be greater than last time point in PyArrow table
                 self.end_time = self.arrow_table['utc_time'][-1].as_py() + timedelta(seconds=1)
         else:
             self.end_time = end_time
