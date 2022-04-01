@@ -174,7 +174,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
@@ -258,6 +258,12 @@
                  <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                  <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A representation of a time series.</span>
+<span class="sd">        If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.</span>
+<span class="sd">        Providing broader time interval (`start_time` and `end_time`) could be used when writing new time series points,</span>
+<span class="sd">        then all existing time series points within the time interval that are not covered by new time series points will be removed.</span>
+<span class="sd">        E.g. `start_time` is set to May 1st, `end_time` is set to May 3rd and PyArrow table has points defined only for May 2nd,</span>
+<span class="sd">        then all old points on May 1st and 3rd will be removed and new points will be set for May 2nd.</span>
+
 <span class="sd">        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
 
 <span class="sd">        Args:</span>
@@ -268,14 +274,32 @@
 <span class="sd">            timskey (int): integer that only applies to a specific raw time series</span>
 <span class="sd">            uuid_id:  Universal Unique Identifier for Mesh objects</span>
 <span class="sd">            full_name: path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError:  Error message raised if PyArrow table schema is invalid</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">timskey</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="o">=</span> <span class="n">table</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span> <span class="o">!=</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;invalid PyArrow table schema&#39;</span><span class="p">)</span>
+
+        <span class="c1"># setting start and end time should only take effect when writing time series</span>
+        <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
+
+        <span class="k">if</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># end time must be greater than last time point in PyArrow table</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>

@@ -993,7 +993,12 @@ It specifies the time interval between each value.</p>
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table:</span> <span class="pre">pyarrow.lib.Table</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution:</span> <span class="pre">volue.mesh.proto.type.resources_pb2.Resolution</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>A representation of a time series.
-For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
+If <cite>start_time</cite> and <cite>end_time</cite> are not provided explicitly they will be taken from PyArrow <cite>table</cite>.
+Providing broader time interval (<cite>start_time</cite> and <cite>end_time</cite>) could be used when writing new time series points,
+then all existing time series points within the time interval that are not covered by new time series points will be removed.
+E.g. <cite>start_time</cite> is set to May 1st, <cite>end_time</cite> is set to May 3rd and PyArrow table has points defined only for May 2nd,
+then all old points on May 1st and 3rd will be removed and new points will be set for May 2nd.</p>
+<p>For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1005,6 +1010,9 @@ For information about <cite>datetime</cite> arguments and time zones refer to <a
 <li><p><strong>uuid_id</strong> – Universal Unique Identifier for Mesh objects</p></li>
 <li><p><strong>full_name</strong> – path in the <a class="reference internal" href="mesh_concepts.html#mesh-object-model"><span class="std std-ref">Mesh object model</span></a></p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – Error message raised if PyArrow table schema is invalid</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2280,6 +2288,37 @@ Most transformation methods are available for this latter use.</p>
 <dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_can_serialize_and_deserialize_write_timeserie_request">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_can_serialize_and_deserialize_write_timeserie_request</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_can_serialize_and_deserialize_write_timeserie_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_can_serialize_and_deserialize_write_timeserie_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that timeseries can be de-/serialized.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_init_timeseries_with_wrong_pyarrow_table_schema_should_throw">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_init_timeseries_with_wrong_pyarrow_table_schema_should_throw</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_init_timeseries_with_wrong_pyarrow_table_schema_should_throw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_init_timeseries_with_wrong_pyarrow_table_schema_should_throw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a time series can’t be created with invalid PyArrow table schema.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a time series can be created without providing
+explicitly <cite>start_time</cite>, <cite>end_time</cite> and PyArrow <cite>table</cite> arguments.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_timeseries_without_explicit_start_end_datetime_and_pyarrow_table">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_timeseries_without_explicit_start_end_datetime_and_pyarrow_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_timeseries_without_explicit_start_end_datetime_and_pyarrow_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_timeseries_without_explicit_start_end_datetime_and_pyarrow_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a time series can be created without providing
+explicitly <cite>start_time</cite>, <cite>end_time</cite> and PyArrow <cite>table</cite> arguments.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_timeseries.test_timeseries_without_explicit_start_end_datetime_will_deduct_it_from_pyarrow_table">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_timeseries.</span></span><span class="sig-name descname"><span class="pre">test_timeseries_without_explicit_start_end_datetime_will_deduct_it_from_pyarrow_table</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_timeseries.html#test_timeseries_without_explicit_start_end_datetime_will_deduct_it_from_pyarrow_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_timeseries.test_timeseries_without_explicit_start_end_datetime_will_deduct_it_from_pyarrow_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that a time series can be created without providing
+explicitly <cite>start_time</cite> and <cite>end_time</cite> arguments. In such
+case it should set them based on PyArrow table data.
+<cite>start_time</cite> equals first PyArrow table timestamp
+<cite>end_time</cite> equals last PyArrow table timestamp + 1 second as it
+must be greater than last time point to be written.</p>
 </dd></dl>
 
 <span class="target" id="module-volue.mesh.tests.test_connection"></span><p>Tests for volue.mesh.Connection</p>
