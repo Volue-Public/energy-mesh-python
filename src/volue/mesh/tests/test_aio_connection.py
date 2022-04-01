@@ -374,7 +374,7 @@ async def test_update_timeseries_attribute_with_timeseriescalculation_async():
                 if "path" in test_case:
                     test_case_2["uuid_id"] = updated_attribute.id
 
-                session.rollback()
+                await session.rollback()
 
         except grpc.RpcError as error:
             pytest.fail(f"Could not update timeseries attribute: {error}")
