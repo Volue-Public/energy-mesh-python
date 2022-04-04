@@ -64,10 +64,8 @@ def main(address, port, root_pem_certificate):
                 pa.array(flags),
                 pa.array(values)]
             arrow_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-            start_time = datetime(2016, 5, 1)  # if no time zone is provided then it will be treated as UTC
-            end_time = datetime(2016, 5, 4)  # end time must be greater than last point to be written
 
-            timeseries = Timeseries(table=arrow_table, start_time=start_time, end_time=end_time, full_name=timeseries_attribute.path)
+            timeseries = Timeseries(table=arrow_table, full_name=timeseries_attribute.path)
             session.write_timeseries_points(timeseries)
 
         except grpc.RpcError as e:
@@ -106,7 +104,7 @@ def main(address, port, root_pem_certificate):
         print("Transform resolution to days:")
         try:
             start_time = datetime(2016, 5, 1, tzinfo=local_time_zone)
-            end_time = datetime(2016, 5, 3, tzinfo=local_time_zone)
+            end_time = datetime(2016, 5, 4, tzinfo=local_time_zone)
 
             # Transform function may take optionally a time zone argument.
             # Refer to `transform` documentation for more details.
