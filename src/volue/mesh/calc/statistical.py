@@ -52,7 +52,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
             The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            Timeseries: a time series with the sum of the values for each time interval in the expression.
+            :class:`volue.mesh.Timeseries`: a time series with the sum of the values for each time interval in the expression.
         """
         pass
 

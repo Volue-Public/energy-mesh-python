@@ -55,7 +55,6 @@ autosectionlabel_maxdepth = 2
 
 # Options for: sphinx.ext.napoleon
 napoleon_google_docstring = True
-napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = True
 
 # Options for: sphinx.ext.todo
@@ -67,6 +66,17 @@ autodoc_default_options = {
     'undoc-members': True,
     'special-members': False
 }
+
+def process_docstring(app, what, name, obj, options, lines):
+    if name.startswith('volue.mesh.proto.'):
+        for index, line in enumerate(lines):
+            # protofile contains '------------' which are recognized by
+            # sphinx as 'Unexpected section title.', therefore, removing it.
+            if line.startswith('--'):
+                lines[index] = ''
+
+def setup(app):
+    app.connect('autodoc-process-docstring', process_docstring)
 
 # Options for: sphinx.ext.extlinks
 extlinks = {
