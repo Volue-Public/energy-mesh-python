@@ -62,6 +62,10 @@ class Timeseries:
         """
         Information about certain action that has been performed on the values and the state.
 
+        32 bit flag setting the status for the point. There are many more options than the ones exposed here.
+
+        Default is OK = 0.
+
         Args:
             OK (enum):
             MISSING (enum):

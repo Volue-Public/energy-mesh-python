@@ -127,9 +127,8 @@ class Connection:
         def write_timeseries_points(self, timeserie: Timeseries) -> None:
             """
             Writes time series points for the specified timeseries in the given interval.
-
             Args:
-                timeserie (Timeseries): The modified time series
+                timeserie (:class:`volue.mesh.Timeseries`): The modified time series
 
             Raises:
                 grpc.RpcError:  Error message raised if the gRPC request could not be completed

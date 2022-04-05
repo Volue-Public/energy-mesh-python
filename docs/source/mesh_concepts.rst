@@ -25,8 +25,8 @@ Mesh provides :doc:`functions <mesh_functions>` used to perform tasks and calcul
 .. toctree::
    :hidden:
 
-   mesh_object_attributes
    timeseries
+   mesh_object_attributes
    mesh_search
    mesh_functions
 

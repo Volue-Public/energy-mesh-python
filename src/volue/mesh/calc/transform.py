@@ -49,7 +49,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Create an expression for `transform`.
 
         Args:
-            resolution (Timeseries.Resolution): the resolution to transform to
+            resolution (:class:`volue.mesh.Timeseries.Resolution`): the resolution to transform to
             method (Method): what method to use for the transformation
             timezone (Timezone): timezone
             search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
@@ -95,7 +95,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
             Most transformation methods are available for this latter use.
 
         Args:
-            resolution (Timeseries.Resolution): the resolution to transform to
+            resolution (:class:`volue.mesh.Timeseries.Resolution`): the resolution to transform to
             method (Method): what method to use for the transformation
             timezone (Timezone): timezone
             search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
@@ -104,7 +104,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
             The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            Timeseries: a time series.
+            :class:`volue.mesh.Timeseries`: a time series.
         """
         pass
 

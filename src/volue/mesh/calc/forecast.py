@@ -100,7 +100,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             search_query:  a search formulated using the :doc:`Mesh search language <mesh_search>`
 
         Returns:
-            List[Timeseries]: an array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.
+            List[:class:`volue.mesh.Timeseries`]: an array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.
 
         """
         pass
@@ -162,7 +162,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Returns:
-            Timeseries: a time series forcast
+            :class:`volue.mesh.Timeseries`: a time series forcast
         """
         pass
 

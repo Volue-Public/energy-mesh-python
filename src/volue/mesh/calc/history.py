@@ -80,7 +80,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Returns:
-             Timeseries: a time series.
+             :class:`volue.mesh.Timeseries`: a time series.
         """
         pass
 
@@ -106,7 +106,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
             The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            List[Timeseries]:
+            List[:class:`volue.mesh.Timeseries`]:
         """
         pass
 
