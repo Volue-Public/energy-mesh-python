@@ -20,7 +20,7 @@ Time series can be either raw or derived. *Raw time series* are store in a resou
 
 The resolution defines time step of the time series points. Some examples are hourly or daily resolutions. A special type of resolution is **breakpoint**. It means there is no time step restriction and points can be provided for any timestamps.
 
-A raw time series can be connected to a Mesh model either directly or as part of a calculation. A time series that is in the Mesh model have metadata like a path (in the Mesh model), a local and template expression and possibly a link to a raw time series entry. (see: :py:meth:`volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesAttribute`)
+A raw time series can be connected to a Mesh model either directly or as part of a calculation. Time series that are in the Mesh model have metadata like a path (in the Mesh model), a local and template expression and possibly a link to a raw time series entry. (see: :py:meth:`volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesAttribute`)
 
 
 .. image:: images/mesh_timeseries_resolution.png
