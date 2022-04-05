@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Mesh search language" href="mesh_search.html" />
-    <link rel="prev" title="Attributes" href="mesh_object_attributes.html" /> 
+    <link rel="next" title="Attributes" href="mesh_object_attributes.html" />
+    <link rel="prev" title="Mesh concepts" href="mesh_concepts.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,8 +93,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="mesh_object_attributes.html">Attributes</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Time series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_object_attributes.html">Attributes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
 </ul>
@@ -189,20 +189,45 @@
             
   <div class="section" id="time-series">
 <h1>Time series<a class="headerlink" href="#time-series" title="Permalink to this headline">¶</a></h1>
-<p>The primary data retrieved from the Mesh server is time series. Depending on the request, the size of this data can be quite large.
-A common scenario is to process this data after it has been acquired and that could mean copying or moving all the data from one library to another.
-This can be both time consuming and memory intensive, to alleviate these problems the Mesh Python SDK uses <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> to store the data.
-Several data processing libraries are now supported for this format, including <a class="reference external" href="https://arrow.apache.org/docs/python/numpy.html">numpy</a> and <a class="reference external" href="https://arrow.apache.org/docs/python/pandas.html">pandas</a>.</p>
-<p>Time series data consists of:</p>
+<p>The primary data retrieved from the Mesh server is time series. A time series is one or more points in chronological sequence.</p>
+<p>Each point in the time series contains the following fields:</p>
 <ul class="simple">
-<li><p>point value - double-precision floating point</p></li>
-<li><p>flags - 32-bit flags providing extra information like: is the point value correct or missing</p></li>
-<li><p>timestamp -  timestamp of the point (milliseconds since UNIX epoch 1970-01-01) in UTC</p></li>
+<li><dl class="simple">
+<dt><cite>utc_time</cite>:</dt><dd><ul>
+<li><p>timestamp of the point (milliseconds since UNIX epoch 1970-01-01) in UTC</p></li>
 </ul>
-<p>Besides data, time series have metadata associated with them like: curve type, unit of measurement, resolution, etc.
-The resolution defines time step of the time series points. Some examples are hourly or daily resolutions.
-Special type of resolution is <strong>breakpoint</strong>. It means there is no time step restriction and points can be provided for any timestamps.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>flags</cite>:</dt><dd><ul>
+<li><p>status flag, 32-bit flags providing extra information like: is the point value correct or missing</p></li>
+<li><p>See: <a class="reference internal" href="api.html#volue.mesh.Timeseries.PointFlags" title="volue.mesh.Timeseries.PointFlags"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Timeseries.PointFlags()</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>value</cite>:</dt><dd><ul>
+<li><p>double-precision floating point value of the point</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Time series can contain large amounts of data. A common scenario is to retrieve time series and process the data. That could mean copying or moving all the data from one library to another, this can be both time consuming and memory intensive. To alleviate these problems the Mesh Python SDK uses <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> to store the data. Apache Arrow “is designed to both improve the performance of analytical algorithms and the efficiency of moving data from one system or programming language to another”. <a class="footnote-reference brackets" href="#id2" id="id1">1</a>
+Several data processing libraries are now supported for this format, including <a class="reference external" href="https://arrow.apache.org/docs/python/numpy.html">numpy</a> and <a class="reference external" href="https://arrow.apache.org/docs/python/pandas.html">pandas</a>.</p>
+<p>Time series can be either raw, calculated or a reference to a raw time series. <em>Raw time series</em> are store as points with timestamps, flags and values. When creating new time series, flags can be set to the default, which is <cite>OK = 0</cite>, when working with existing time series preserve the flags unless you have a reason to set it to something else.</p>
+<p>All <em>raw time series entries</em> (see: <a class="reference internal" href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesEntry" title="volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesEntry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesEntry()</span></code></a>) have a time series key, a path (in the resource layer), a curve type, a resolution and a unit of measurement, which can be undefined.</p>
+<p>The resolution defines time step of the time series points. Some examples are hourly or daily resolutions. A special type of resolution is <strong>breakpoint</strong>. It means there is no time step restriction and points can be provided for any timestamps.</p>
+<p>A raw time series can be connected to a Mesh model either directly or as part of a calculation. Time series that are in the Mesh model have metadata like a path (in the Mesh model), a local and template expression and possibly a link to a raw time series entry. (see: <a class="reference internal" href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesAttribute" title="volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesAttribute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesAttribute()</span></code></a>)</p>
 <a class="reference internal image-reference" href="_images/mesh_timeseries_resolution.png"><img alt="Mesh time series resolution example" src="_images/mesh_timeseries_resolution.png" style="width: 800px;" /></a>
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference external" href="https://arrow.apache.org/overview/">https://arrow.apache.org/overview/</a></p>
+</dd>
+</dl>
 </div>
 
 
@@ -211,8 +236,8 @@ Special type of resolution is <strong>breakpoint</strong>. It means there is no 
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mesh_search.html" class="btn btn-neutral float-right" title="Mesh search language" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="mesh_object_attributes.html" class="btn btn-neutral float-left" title="Attributes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mesh_object_attributes.html" class="btn btn-neutral float-right" title="Attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mesh_concepts.html" class="btn btn-neutral float-left" title="Mesh concepts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

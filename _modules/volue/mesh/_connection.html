@@ -298,9 +298,8 @@
 <div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Writes time series points for the specified timeseries in the given interval.</span>
-
 <span class="sd">            Args:</span>
-<span class="sd">                timeserie (Timeseries): The modified time series</span>
+<span class="sd">                timeserie (:class:`volue.mesh.Timeseries`): The modified time series</span>
 
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
