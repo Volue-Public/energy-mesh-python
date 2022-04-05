@@ -16,7 +16,7 @@ Each point in the time series contains the following fields:
 Time series can contain large amounts of data. A common scenario is to retrieve time series and process the data. That could mean copying or moving all the data from one library to another, this can be both time consuming and memory intensive. To alleviate these problems the Mesh Python SDK uses `Apache Arrow <https://arrow.apache.org/>`_ to store the data. Apache Arrow "is designed to both improve the performance of analytical algorithms and the efficiency of moving data from one system or programming language to another". [#]_
 Several data processing libraries are now supported for this format, including `numpy <https://arrow.apache.org/docs/python/numpy.html>`_ and `pandas <https://arrow.apache.org/docs/python/pandas.html>`_.
 
-Time series can be either raw, calculated or a reference to a raw time series. *Raw time series* are store as points with timestamps, flags and values. When creating new time series, flags can be set to the default, which is `OK = 0`, when working with existing time series preserve the flags unless you have a reason to set it to something else.
+Time series can be either raw, calculated or a reference to a raw time series. *Raw time series* are stored as points with timestamps, flags and values. When creating new time series, flags can be set to the default, which is `OK = 0`, when working with existing time series preserve the flags unless you have a reason to set it to something else.
 
 All *raw time series entries* (see: :py:meth:`volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesEntry`) have a time series key, a path (in the resource layer), a curve type, a resolution and a unit of measurement, which can be undefined.
 
