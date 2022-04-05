@@ -3,7 +3,7 @@ Mesh concepts
 
 .. _mesh object model:
 
-The **mesh object model** is designed to represent the physical infrastructure of a customer's area and assets. This can be a hydropower production system with water courses, creeks, reservoirs, waters routs, gates, sensors, hydro plants and so on. The mesh object model contains relationships and :doc:`attributes (aka properties) <mesh_object_attributes>` between these assets. A relationship can represent how a water course is connected to a creek. An attribute can be the water level in a reservoir collected over time and the unit of measurement for this water level.
+The **mesh object model** is designed to represent the physical infrastructure of a customer's area and assets. This can be a hydropower production system with water courses, creeks, reservoirs, water routes, gates, sensors, hydro plants and so on. The mesh object model contains relationships and :doc:`attributes (aka properties) <mesh_object_attributes>` between these assets. A relationship can represent how a water course is connected to a creek. An attribute can be the water level in a reservoir collected over time and the unit of measurement for this water level.
 
 .. image:: images/hydropower_object_structure.png
    :width: 800
