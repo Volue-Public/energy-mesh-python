@@ -390,7 +390,7 @@ def use_case_5():
     We want to write some values to an existing timeseries with a known guid.
 
     Guid:              ['3fd4ed37-2114-4d95-af90-02b96bd993ed']  # Model/MeshTEK/Mesh.To_Areas/Norge.To_HydroProduction/Vannkraft.To_WaterCourses/Mørre.To_HydroPlants/Mørre.To_Units/Morre G1.Production_raw
-    Time interval:      28.9.2021, kl 01 - 28.10.2021, kl 24
+    Time interval:      28.09.2021 - 29.09.2021
     Values:             [11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
                         9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00]
 
@@ -404,7 +404,7 @@ def use_case_5():
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
 
             start = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 30, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 29, tzinfo=LOCAL_TIME_ZONE)
 
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
