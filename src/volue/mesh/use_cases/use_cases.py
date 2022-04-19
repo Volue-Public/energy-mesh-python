@@ -329,13 +329,68 @@ def use_case_4():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
+def use_case_4b():
+    """
+    Scenario:
+    We want to find timeseries, and its related information, which is connected to an object with a known path.
+
+    Paths:              [
+                        "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production"
+                        ]
+    Time interval:      10.01.2022 - 27.03.2022
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 4b"
+            model = "MeshTEK"
+            paths = [
+                "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production"
+            ]
+            start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            timskey_and_pandas_dataframe = []
+            for path in paths:
+
+                # Retrieve the timeseries values in a given interval
+                timeseries = session.read_timeseries_points(start_time=start,
+                                                            end_time=end,
+                                                            mesh_object_id=MeshObjectId.with_full_name(path))
+
+                # Retrieve information connected to the timeseries
+                mesh_object = session.get_timeseries_attribute(model=model,
+                                                               path=path)
+
+                print(f"[{path}]: \n"
+                      f"-----\n"
+                      f"{get_mesh_object_information(mesh_object)}")
+
+                pandas_dataframe = timeseries.arrow_table.to_pandas()
+                # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
+                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+                timskey_and_pandas_dataframe.append((path, pandas_dataframe))
+
+            # Post process data
+            plot_timeseries(timskey_and_pandas_dataframe,
+                            f"{use_case_name}: {len(paths)} known path(s)",
+                            style='step')
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4b')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
 def use_case_5():
     """
     Scenario:
     We want to write some values to an existing timeseries with a known guid.
 
     Guid:              ['3fd4ed37-2114-4d95-af90-02b96bd993ed']  # Model/MeshTEK/Mesh.To_Areas/Norge.To_HydroProduction/Vannkraft.To_WaterCourses/Mørre.To_HydroPlants/Mørre.To_Units/Morre G1.Production_raw
-    Time interval:      28.9.2021, kl 01 - 28.10.2021, kl 24
+    Time interval:      28.09.2021 - 29.09.2021
     Values:             [11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
                         9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00]
 
@@ -349,7 +404,7 @@ def use_case_5():
             guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
 
             start = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 30, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2021, 9, 29, tzinfo=LOCAL_TIME_ZONE)
 
             resolution = timedelta(hours=1.0)
             timskey_and_pandas_dataframe = []
@@ -393,7 +448,7 @@ def use_case_5():
                 new_values
             ]
             table = pa.Table.from_arrays(arrays=new_arrays, schema=Timeseries.schema)
-            timeseries = Timeseries(table=table, start_time=start, end_time=end, uuid_id=guid)
+            timeseries = Timeseries(table=table, uuid_id=guid)
 
             # Send request to write timeseries based on timskey
             session.write_timeseries_points(timeserie=timeseries)
@@ -838,21 +893,21 @@ if __name__ == "__main__":
 
     ALL_USE_CASE_FUNCTIONS = {key.strip('use_case_'): value for key, value in locals().items() if 'use_case_' in key}
 
-    if RUN_USE_CASE.isnumeric() and (RUN_USE_CASE in ALL_USE_CASE_FUNCTIONS.keys()):
+    if RUN_USE_CASE in ALL_USE_CASE_FUNCTIONS.keys():
         ALL_USE_CASE_FUNCTIONS[RUN_USE_CASE]()
     elif RUN_USE_CASE == 'all':
         for _, use_case in ALL_USE_CASE_FUNCTIONS.items():
             use_case()
     elif RUN_USE_CASE == 'flow_drop_2':
-        flow_drop_2_use_cases = [1, 2, 3, 4, 5]
-        for number, use_case in ALL_USE_CASE_FUNCTIONS.items():
-            if int(number) in flow_drop_2_use_cases:
-                use_case()
+        flow_drop_2_use_cases = ['1', '2', '3', '4', '4b', '5']
+        for use_case_key in flow_drop_2_use_cases:
+            if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
+                ALL_USE_CASE_FUNCTIONS[use_case_key]()
     elif RUN_USE_CASE == 'flow_drop_3':
-        flow_drop_2_use_cases = [6, 7, 8, 9, 10, 11, 12]
-        for number, use_case in ALL_USE_CASE_FUNCTIONS.items():
-            if int(number) in flow_drop_2_use_cases:
-                use_case()
+        flow_drop_3_use_cases = ['6', '7', '8', '9', '10', '11', '12']
+        for use_case_key in flow_drop_3_use_cases:
+            if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
+                ALL_USE_CASE_FUNCTIONS[use_case_key]()
     else:
         default_use_case = ALL_USE_CASE_FUNCTIONS['1']
         print(f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case {default_use_case.__name__}")
