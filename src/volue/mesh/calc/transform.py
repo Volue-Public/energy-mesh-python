@@ -28,9 +28,9 @@ class Method(Enum):
         MAX: Largest value in the accumulation period.
     """
     SUM = 0
-    SUMI = 1  # I -> weighted sum, only for breakpoint timeseries
+    SUMI = 1
     AVG = 2  # equivalent to MEAN
-    AVGI = 3  # I -> weighted average, only for breakpoint timeseries
+    AVGI = 3
     FIRST = 5
     LAST = 6
     MIN = 7
