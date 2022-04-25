@@ -333,10 +333,8 @@ def use_case_4b():
     """
     Scenario:
     We want to find timeseries, and its related information, which is connected to an object with a known path.
+    This use cases shows usage of two path types (including full name) that point to the same time series attribute.
 
-    Paths:              [
-                        "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production"
-                        ]
     Time interval:      10.01.2022 - 27.03.2022
 
     """
@@ -345,8 +343,18 @@ def use_case_4b():
         try:
             use_case_name = "Use case 4b"
             model = "MeshTEK"
+            # Both paths are pointing to the same time series attribute:
+            # - first path includes just object names
+            # - second path includes also relationship attributes (e.g.: has_cAreas pointing to Norge object)
+            # Path including also relationship attributes is called full name.
+            # It uniquely identifies an object or attribute we are looking for,
+            # because depending on the model it may happen that a parent object has more than one
+            # relationship attribute pointing to objects with the same names, e.g.:
+            # - ParentObject.has_cAreas/Norge
+            # - ParentObject.has_cProductionAreas/Norge
             paths = [
-                "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production"
+                "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production",  # path using only objects
+                "Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1975.Production"  # path using full name (objects and attributes)
             ]
             start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
