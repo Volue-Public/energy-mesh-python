@@ -23,8 +23,6 @@ from . import _base_connection
 
 
 class Connection(_base_connection.Connection):
-    """Represents a connection to a Mesh server."""
-
     class Session:
         """
         This class supports the with statement, because it's a contextmanager.

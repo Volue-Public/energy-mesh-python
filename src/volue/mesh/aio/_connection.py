@@ -20,8 +20,6 @@ from volue.mesh import _base_connection
 
 
 class Connection(_base_connection.Connection):
-    """Represents a connection to a Mesh server."""
-
     class Session:
         """
         This class supports the async with statement, because it's an async contextmanager.

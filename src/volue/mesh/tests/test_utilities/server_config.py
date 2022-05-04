@@ -13,5 +13,8 @@ class ServerConfig:
     ROOT_PEM_CERTIFICATE: str = ''
     KERBEROS_SERVICE_PRINCIPAL_NAME: str = 'HOST/example.companyad.company.com'
 
+    def target(self):
+        return f"{self.ADDRESS}:{self.PORT}"
+
 
 DefaultServerConfig: ServerConfig = ServerConfig()

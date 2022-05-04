@@ -27,8 +27,12 @@ from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_time
 def test_read_timeseries_points():
     """Check that timeseries points can be read using timeseries key, UUID and full name"""
 
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    if not sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE:
+        connection = Connection.insecure(sc.DefaultServerConfig.target())
+    else:
+        connection = Connection.with_tls(sc.DefaultServerConfig.target(),
+                                         sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
     with connection.create_session() as session:
         timeseries, start_time, end_time, _, full_name = get_timeseries_2()
         try:
