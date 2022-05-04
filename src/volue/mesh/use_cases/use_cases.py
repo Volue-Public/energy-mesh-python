@@ -111,6 +111,15 @@ def get_mesh_object_information(mesh_object: core_pb2.TimeseriesAttribute):
     return message
 
 
+def get_mesh_element_information(mesh_element: core_pb2.Object):
+    message = f"Mesh object with path: '{mesh_element.path}'  \n"\
+              f"has guid: '{_from_proto_guid(mesh_element.id)}', \n"\
+              f"name: '{mesh_element.name}', \n"\
+              f"type name: '{mesh_element.type_name}', \n"\
+              f"owner path: '{mesh_element.owner_id.path}', \n"\
+              f"owner guid: '{_from_proto_guid(mesh_element.owner_id.id)}', \n"
+    return message
+
 def get_timeseries_information(timeseries: Timeseries):
     """
     Create a printable message from a timeseries
@@ -889,6 +898,36 @@ def use_case_12():
                             f"{use_case_name}: get some forecasts"
                             )
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_12')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+
+def use_case_13():
+    """
+    Scenario:
+    We want to find all objects of type `WindPark` for a specific `WindProduction` object.
+
+    Start point:        Model/MeshTEK/Mesh/Norge/Wind which has guid d9673f4f-d117-4c1e-9ffd-0e533a644728
+    Search expression:  *[.Type=WindPark]
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 13"
+            start_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
+            search_query = '*[.Type=WindPark]'
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            reply = session.search_for_objects(search_query, start_object_id=start_object_guid)
+
+            for number, object in enumerate(reply):
+                print(f"{number + 1}. \n"
+                      f"-------------------------------------------\n"
+                      f"{get_mesh_element_information(object)}")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")

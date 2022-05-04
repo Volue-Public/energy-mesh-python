@@ -8,7 +8,7 @@ import datetime
 from typing import List, Optional
 import uuid
 
-from google.protobuf import timestamp_pb2
+from google.protobuf import field_mask_pb2, timestamp_pb2
 import pyarrow as pa
 
 from volue.mesh import Timeseries
@@ -17,11 +17,87 @@ from volue.mesh.proto.type import resources_pb2
 
 
 @dataclass
+class AttributesFilter:
+    """Defines what attributes need to be returned in response message.
+
+    Name mask:
+
+    Attribute name uniquely identifies attribute within given object.
+    If set then only attributes set in the field mask are read.
+    See examples below for more details.
+    Note: The attribute name provided in the mask must be equal to
+    the actual attribute name in the model.
+    Regular expressions are not supported.
+
+    Tag mask:
+
+    If multiple tags are provided then all attributes having
+    at least one of them are returned (logical OR).
+    See examples below for more details.
+    Note: Regular expressions are not supported.
+
+    Namespace mask:
+
+    If multiple namespaces are provided then all attributes having
+    at least one of them are returned (logical OR).
+    See examples below for more details.
+    Note: Regular expressions are not supported.
+    If an attribute has more than one namespace, they are
+    concatentad with dots '.', e.g.: namespace1.namespace2
+    In such case the namespace mask must provide also
+    "namespace1.namespace2" as one entry in the namespace mask.
+
+    `return_no_attributes` flag:
+
+    If set to True then no attributes will be returned.
+    All above masks will be ignored.
+    Default value is False.
+
+    Multiple attributes may have the same tag or namespace.
+    If both: `tag_mask` and `namespace_mask` are provided then only attributes
+    that meet both criteria are returned (intersection/logical AND).
+
+    Note: If no masks are provided then all attributes will be returned.
+
+    Example 1:
+
+        Arg:      `names` is set to "Price,Volume,Production"
+        Response: All attributes with names "Price", "Volume" or "Production" will be returned.
+        Note:     `tag_mask` or `namespace_mask` will be ignored even if set.
+
+    Example 2:
+
+        Arg:      `tag_mask` is set to "ProductionAttributes,LocationAttributes"
+        Response: All attributes with tag name "ProductionAttributes" or "LocationAttributes" will be returned.
+        Note:     If attributes A1, A2 have tag "ProductionAttributes" and A3
+        has "LocationAttributes" then all three attributes (A1, A2 and A3) will be returned.
+        Exactly the same rules apply to `namespace_mask`.
+
+    Example 3:
+
+        Arg:      `tag_mask` is set to "ProductionAttributes", `namespace_mask` is set to "Hydro,Wind".
+        Response: All attributes with tag name "ProductionAttributes" and namespace "Hydro" or "Wind" will be returned.
+        Note:     Suppose there are the following attributes:
+        - A1 (tag "ProductionAttributes", namespace "Hydro")
+        - A2 (tag "ProductionAttributes", namespace "Wind")
+        - A3 (tag "ProductionAttributes", namespace "Carbon")
+        - A4 (tag "LocationAttributes", namespace "Hydro")
+        - A5 (tag "LocationAttributes", namespace "Wind")
+        In this case attributes A1 and A2 will be returned.
+    """
+
+    name_mask: List[str] = None
+    tag_mask: List[str] = None
+    namespace_mask: List[str] = None
+    return_no_attributes: bool = False
+
+
+@dataclass
 class MeshObjectId:
     """`MeshObjectId` represents a unique way of identifying a Mesh object.
 
     Args:
-        timskey (int): integer that only applies to a specific raw time series
+        timskey (int): integer that only applies to a specific physical or virtual time series
         uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
         full_name (str): path in the :ref:`Mesh object model <mesh object model>`
     """
@@ -179,6 +255,37 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     )
     return proto_timeserie
 
+
+
+def _to_proto_mesh_id(path: str, id: uuid.UUID) -> core_pb2.MeshId:
+    proto_mesh_id = core_pb2.MeshId()
+
+    if id is not None:
+        if isinstance(id, str):
+            id = uuid.UUID(id)
+        proto_mesh_id.id.CopyFrom(_to_proto_guid(id))
+    if path is not None:
+        proto_mesh_id.path = path
+
+    if id is None and path is None:
+        raise ValueError("need to specify either path or id")
+
+    return proto_mesh_id
+
+
+def _to_proto_attribute_masks(attributes_filter: Optional[AttributesFilter]) -> core_pb2.AttributesMasks:
+    attributes_masks = core_pb2.AttributesMasks()
+
+    if attributes_filter is not None:
+        if attributes_filter.name_mask is not None:
+            attributes_masks.name_mask.CopyFrom(field_mask_pb2.FieldMask(paths=attributes_filter.name_mask))
+        if attributes_filter.tag_mask is not None:
+            attributes_masks.tag_mask.CopyFrom(field_mask_pb2.FieldMask(paths=attributes_filter.tag_mask))
+        if attributes_filter.namespace_mask is not None:
+            attributes_masks.namespace_mask.CopyFrom(field_mask_pb2.FieldMask(paths=attributes_filter.namespace_mask))
+        attributes_masks.return_no_attributes = attributes_filter.return_no_attributes
+
+    return attributes_masks
 
 def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
     """
