@@ -1,4 +1,5 @@
 import abc
+from typing import Optional, TypeVar
 import uuid
 
 import grpc
@@ -8,7 +9,33 @@ from ._credentials import Credentials
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 
+C = TypeVar('C', bound='Connection')
+
+
 class Connection(abc.ABC):
+    """A connection to a Mesh server.
+
+    There are three primary types of connections, insecure, TLS encrypted,
+    and Kerberos authenticated (with TLS encryption). These can be
+    instantiated as follows::
+
+        insecure = mesh.Connection.insecure('localhost:50051')
+        tls = mesh.Connection.with_tls('localhost:50051', root_certificates)
+        kerberos = mesh.Connection.with_kerberos('localhost',
+                                                 root_certificates,'
+                                                 'HOST/hostname.ad.examplecompany.com',
+                                                 'ad\\user.name')
+
+    The target address uses `gRPC Name Resolution <naming>`_. In general this
+    means that 'host:port' works as expected.
+
+    See :py:meth:`Connection.insecure()`, :py:meth:`Connection.with_tls`,
+    and :py:meth:`Connection.with_kerberos` for more information on the
+    connection variants.
+
+    .. _naming: https://github.com/grpc/grpc/blob/master/doc/naming.md
+    """
+
     @staticmethod
     @abc.abstractmethod
     def _insecure_grpc_channel(*args, **kwargs):
@@ -27,8 +54,9 @@ class Connection(abc.ABC):
         or grpc.secure_channel depending on desired behaviour.
         """
 
-    def __init__(self, host, port, root_pem_certificate=None,
-                 authentication_parameters: Authentication.Parameters = None):
+    def __init__(self, host=None, port=None, root_pem_certificate=None,
+                 authentication_parameters: Optional[Authentication.Parameters] = None,
+                 channel=None, auth_metadata_plugin=None):
         """Create a connection for communication with Mesh server.
 
         Args:
@@ -45,8 +73,13 @@ class Connection(abc.ABC):
             - with TLS
             - with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)
         """
+        self.auth_metadata_plugin = auth_metadata_plugin
+
+        if channel is not None:
+            self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
+            return
+
         target = f'{host}:{port}'
-        self.auth_metadata_plugin = None
 
         # There are 3 possible connection types:
         # - insecure (without TLS)
@@ -85,6 +118,65 @@ class Connection(abc.ABC):
                 )
 
         self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
+
+    @classmethod
+    def insecure(cls: C, target: str) -> C:
+        """Creates an insecure connection to a Mesh server.
+
+        Args:
+            target: The server address.
+        """
+        channel = cls._insecure_grpc_channel(target)
+        return cls(channel=channel)
+
+    @classmethod
+    def with_tls(cls: C, target: str, root_certificates: Optional[str]) -> C:
+        """Creates an encrypted connection to a Mesh server.
+
+        Args:
+            target: The server address.
+            root_certificates: The PEM-encoded TLS root certificates as a byte
+                string, or None to retrieve them from a default location chosen
+                by the gRPC runtime.
+        """
+        credentials = grpc.ssl_channel_credentials(root_certificates)
+        channel = cls._secure_grpc_channel(target, credentials)
+        return cls(channel=channel)
+
+    @classmethod
+    def with_kerberos(cls: C, target: str, root_certificates: Optional[str],
+                      service_principal: str, user_principal: str) -> C:
+        """Creates an encrypted and authenticated connection to a Mesh server.
+
+        This call will perform a Kerberos authentication flow towards Active
+        Directory and the Mesh server using the supplied principal names. If
+        successful the returned connection will then use that authenticated
+        identity for all calls to the Mesh service.
+
+        The authentication is time-limited. When close to expiration the
+        library will perform another authentication flow as part of the next
+        gRPC call. This will lead to increased latency on calls where a
+        re-authentication is necessary, but should otherwise be invisible to
+        the user.
+
+        Args:
+            target: The server address.
+            root_certificates: The PEM-encoded TLS root certificates as a byte
+                string, or None to retrieve them from a default location chosen
+                by the gRPC runtime.
+            service_principal: The Kerberos service principal name for the Mesh
+                service. For example 'HOST\\server.at.host'.
+            user_principal: The Kerberos user principal name. For example
+                'ad\\user`.
+        """
+        ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
+        auth_metadata_plugin = Authentication(target, ssl_credentials,
+                                              service_principal, user_principal)
+        call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
+        credentials = grpc.composite_channel_credentials(ssl_credentials,
+                                                         call_credentials)
+        channel = cls._secure_grpc_channel(target, credentials)
+        return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @abc.abstractmethod
     def get_version(self) -> core_pb2.VersionInfo:
