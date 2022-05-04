@@ -1373,7 +1373,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Connection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_pem_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authentication_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a connection to a Mesh server.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session">
@@ -1712,42 +1712,23 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Connection.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_pem_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authentication_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a synchronous connection for communication with Mesh server.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Mesh server host name in the form an IP or domain name</p></li>
-<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Mesh server port number for gRPC communication</p></li>
-<li><p><strong>root_pem_certificates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.</p></li>
-<li><p><strong>authentication_parameters</strong> (<a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh.Authentication.Parameters"><em>Authentication.Parameters</em></a>) – TODO</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>There are 3 possible connection types:
-- insecure (without TLS)
-- with TLS
-- with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.connect_to_session">
 <span class="sig-name descname"><span class="pre">connect_to_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Connection.Session" title="volue.mesh._connection.Connection.Session"><span class="pre">volue.mesh._connection.Connection.Session</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.connect_to_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.connect_to_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a session with a given session id, the id of the session you are (or want to be) connected to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>session_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><em>uuid.UUID</em></a>) – the id of the session you are (or want to be) connected to</p>
+<dd class="field-odd"><p><strong>session_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><em>uuid.UUID</em></a>) – The id of the session you are (or want to be) connected to.</p>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is handled locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.</p>
+<p>This is handled locally. No communication with the server is involved.
+Any subsequent use of the session object will communicate with the
+Mesh server. If the given session_id is a valid open session on the
+Mesh server, the session is now open and can be used. If the session_id
+is <em>not</em> a valid open session an exception will be raised when trying to
+use the session.</p>
 </div>
-<p>If the session_id is <em>not</em> a valid open session an exception will be raised when trying to use the session.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1756,7 +1737,8 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <dd><p>Create a new session.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is handled locally. No communication with the server is involved. You will need to open the session before it will be created on the Mesh server</p>
+<p>This is handled locally. No communication with the server is involved.
+You will need to open the session before it will be created on the Mesh server</p>
 </div>
 </dd></dl>
 
@@ -1770,7 +1752,8 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not
+    be completed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1801,8 +1784,10 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – Error message raised if the input is not valid and the authentication is not configured</p></li>
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – Error message raised if the input is not valid and
+    the authentication is not configured</p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not
+    be completed</p></li>
 </ul>
 </dd>
 </dl>
@@ -2100,7 +2085,7 @@ then all old points on May 1st and 3rd will be removed and new points will be se
 <p>Functionality that supports concurrency using asyncio.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.aio.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_pem_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authentication_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.aio.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a connection to a Mesh server.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session">
@@ -2447,42 +2432,23 @@ This function is a <a class="reference external" href="https://docs.python.org/3
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.aio.Connection.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_pem_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">authentication_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an asynchronous connection for communication with Mesh server.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Mesh server host name in the form an IP or domain name</p></li>
-<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Mesh server port number for gRPC communication</p></li>
-<li><p><strong>root_pem_certificates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.</p></li>
-<li><p><strong>authentication_parameters</strong> (<a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh.Authentication.Parameters"><em>Authentication.Parameters</em></a>) – TODO</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>There are 3 possible async connection types:
-- insecure (without TLS)
-- with TLS
-- with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.connect_to_session">
 <span class="sig-name descname"><span class="pre">connect_to_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.connect_to_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.connect_to_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a session with a given session id, the id of the session you are (or want to be) connected to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>session_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><em>uuid.UUID</em></a>) – the id of the session you are (or want to be) connected to</p>
+<dd class="field-odd"><p><strong>session_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><em>uuid.UUID</em></a>) – The id of the session you are (or want to be) connected to.</p>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is handled locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.</p>
+<p>This is handled locally. No communication with the server is involved.
+Any subsequent use of the session object will communicate with the
+Mesh server. If the given session_id is a valid open session on the
+Mesh server, the session is now open and can be used. If the session_id
+is <em>not</em> a valid open session an exception will be raised when trying to
+use the session.</p>
 </div>
-<p>If the session_id is <em>not</em> a valid open session an exception will be raised when trying to use the session.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2491,21 +2457,23 @@ This function is a <a class="reference external" href="https://docs.python.org/3
 <dd><p>Create a new session.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is handled locally. No communication with the server is involved. You will need to open the session before it will be created on the Mesh server</p>
+<p>This is handled locally. No communication with the server is involved.
+You will need to open the session before it will be created on the Mesh server</p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.get_user_identity">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_user_identity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.get_user_identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.get_user_identity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request information about the user authorized to work with the Mesh server. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Request information about the user authorized to work with the Mesh server.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Does not require an open session.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not
+    be completed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2513,7 +2481,7 @@ This function is a <a class="reference external" href="https://docs.python.org/3
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.get_version">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.get_version" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request version information of the connected Mesh server. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Request version information of the connected Mesh server.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Does not require an open session.</p>
@@ -2528,7 +2496,7 @@ This function is a <a class="reference external" href="https://docs.python.org/3
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.revoke_access_token">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">revoke_access_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.revoke_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.revoke_access_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Revokes Mesh token if user no longer should be authenticated. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Revokes Mesh token if user no longer should be authenticated.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Does not require an open session.</p>
@@ -2536,8 +2504,10 @@ This function is a <a class="reference external" href="https://docs.python.org/3
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – Error message raised if the input is not valid and the authentication is not configured</p></li>
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – Error message raised if the input is not valid and
+    the authentication is not configured</p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not
+    be completed</p></li>
 </ul>
 </dd>
 </dl>

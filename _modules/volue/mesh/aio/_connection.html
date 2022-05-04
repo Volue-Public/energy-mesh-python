@@ -187,8 +187,10 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.transform</span> <span class="kn">import</span> <span class="n">TransformFunctionsAsync</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
 
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">_base_connection</span>
 
-<div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">_base_connection</span><span class="o">.</span><span class="n">Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a connection to a Mesh server.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Connection.Session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session">[docs]</a>    <span class="k">class</span> <span class="nc">Session</span><span class="p">:</span>
@@ -619,95 +621,25 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="n">TransformFunctionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="Connection.__init__"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create an asynchronous connection for communication with Mesh server.</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_secure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            host (str): Mesh server host name in the form an IP or domain name</span>
-<span class="sd">            port (int): Mesh server port number for gRPC communication</span>
-<span class="sd">            root_pem_certificates (str): PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.</span>
-<span class="sd">            authentication_parameters (Authentication.Parameters): TODO</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_insecure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="sd">        Note:</span>
-<span class="sd">            There are 3 possible async connection types:</span>
-<span class="sd">            - insecure (without TLS)</span>
-<span class="sd">            - with TLS</span>
-<span class="sd">            - with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">root_pem_certificate</span><span class="p">:</span>
-            <span class="c1"># insecure connection (without TLS)</span>
-            <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="n">target</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">credentials</span><span class="p">:</span> <span class="n">Credentials</span> <span class="o">=</span> <span class="n">Credentials</span><span class="p">(</span><span class="n">root_pem_certificate</span><span class="p">)</span>
-
-            <span class="c1"># authentication requires TLS</span>
-            <span class="k">if</span> <span class="n">authentication_parameters</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">Authentication</span><span class="p">(</span>
-                    <span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">)</span>
-                <span class="n">call_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">metadata_call_credentials</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
-
-                <span class="n">composite_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
-                    <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">,</span>
-                    <span class="n">call_credentials</span><span class="p">,</span>
-                <span class="p">)</span>
-
-                <span class="c1"># connection using TLS and Kerberos authentication</span>
-                <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
-                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
-                    <span class="n">credentials</span><span class="o">=</span><span class="n">composite_credentials</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># connection using TLS (no Kerberos authentication)</span>
-                <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
-                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
-                    <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span>
-                <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Connection.get_version"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.get_version">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request version information of the connected Mesh server. |coro|</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Does not require an open session.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">response</span></div>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="Connection.get_user_identity"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.get_user_identity">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_user_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request information about the user authorized to work with the Mesh server. |coro|</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Does not require an open session.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetUserIdentity</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
 <div class="viewcode-block" id="Connection.revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.revoke_access_token">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Revokes Mesh token if user no longer should be authenticated. |coro|</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Does not require an open session.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError:  Error message raised if the input is not valid and the authentication is not configured</span>
-<span class="sd">            grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Authentication not configured for this connection&#39;</span><span class="p">)</span>
 
@@ -716,26 +648,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">delete_access_token</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Connection.create_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.create_session">[docs]</a>    <span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a new session.</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            This is handled locally. No communication with the server is involved. You will need to open the session before it will be created on the Mesh server</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.connect_to_session">[docs]</a>    <span class="k">def</span> <span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a session with a given session id, the id of the session you are (or want to be) connected to.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            session_id (uuid.UUID): the id of the session you are (or want to be) connected to</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            This is handled locally. No communication with the server is involved. Any subsequent use of the session object will communicate with the Mesh server. If the given session_id is a valid open session on the Mesh server, the session is now open and can be used.</span>
-<span class="sd">        If the session_id is *not* a valid open session an exception will be raised when trying to use the session.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span></div></div>
 </pre></div>
 
