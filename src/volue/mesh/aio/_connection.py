@@ -405,6 +405,15 @@ class Connection(_base_connection.Connection):
                 name, owner_attribute_id, owner_attribute_path)
             return await self.mesh_service.CreateObject(request)
 
+        async def delete_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path: Optional[str] = None,
+                recursive_delete: bool = False) -> None:
+            request = super()._prepare_delete_object_request(
+                object_id, object_path, recursive_delete)
+            return await self.mesh_service.DeleteObject(request)
+
         async def rollback(self) -> None:
             """
             Discard changes in the :doc:`Mesh session <mesh_session>`. |coro|

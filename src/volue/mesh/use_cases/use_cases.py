@@ -936,8 +936,8 @@ def use_case_14():
     """
     Scenario:
     We want to create a new object of type `WindPark` for a specific `WindProduction` object.
-    First we will an existing object of type `WindPark` to get ID or path of the relationship
-    attribute that is needed as owner for the new object to create.
+    First we will search for an existing object of type `WindPark` to get ID or path of
+    the relationship attribute that is needed as owner for the new object to create.
 
     Start point:        Model/MeshTEK/Mesh/Norge/Wind which has guid d9673f4f-d117-4c1e-9ffd-0e533a644728
     Search expression:  *[.Type=WindPark]
@@ -963,6 +963,36 @@ def use_case_14():
 
                 new_object = session.create_object("NewWindPark", owner_attribute_path=relationship_attribute_path)
                 print(get_mesh_element_information(new_object))
+
+                # Commit changes
+                #session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_15():
+    """
+    Scenario:
+    We want to delete an existing object of type `WindPark`, named `Roan` from a specific `WindProduction` object.
+    First we will search for an existing object of type `WindPark` to get ID or path of the relationship
+    attribute that is needed as owner for the new object to create.
+
+    Object path: Model/MeshTEK/Mesh/Norge/Wind/Roan
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 15"
+            object_path = "Model/MeshTEK/Mesh/Norge/Wind/Roan"
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            session.delete_object(object_path=object_path, recursive_delete=True)
+
+            # Commit changes
+            #session.commit()
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")

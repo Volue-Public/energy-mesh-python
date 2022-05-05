@@ -93,6 +93,24 @@ class Session(abc.ABC):
             grpc.RpcError:  Error message raised if the gRPC request could not be completed
         """
 
+    @abc.abstractmethod
+    def delete_object(
+            self,
+            object_id: Optional[uuid.UUID] = None,
+            object_path: Optional[str] = None,
+            recursive_delete: bool = False) -> None:
+        """
+        Delete an existing Mesh object in the Mesh object model.
+
+        Args:
+            object_id (uuid.UUID): Universal Unique Identifier of the object to be deleted
+            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the object to be deleted
+            recursive_delete (bool): If set then all child objects (owned by the object to be deleted) in the model will also be deleted
+
+        Raises:
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+        """
+
     def _prepare_get_object_request(
             self,
             object_id: uuid.UUID,
@@ -102,7 +120,7 @@ class Session(abc.ABC):
         """Create a gRPC `GetObjectRequest`"""
 
         try:
-            object_id = _to_proto_mesh_id(id=object_id, path=object_path)
+            object_mesh_id = _to_proto_mesh_id(id=object_id, path=object_path)
         except ValueError as e:
             raise ValueError("invalid object") from e
 
@@ -110,7 +128,7 @@ class Session(abc.ABC):
 
         request = core_pb2.GetObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=object_id,
+                    object_id=object_mesh_id,
                     attributes_masks=_to_proto_attribute_masks(attributes_filter),
                     attribute_view=attribute_view,
                 )
@@ -126,7 +144,7 @@ class Session(abc.ABC):
         """Create a gRPC `SearchObjectsRequest`"""
 
         try:
-            start_object_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
+            start_object_mesh_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
         except ValueError as e:
             raise ValueError("invalid start object") from e
 
@@ -134,7 +152,7 @@ class Session(abc.ABC):
 
         request = core_pb2.SearchObjectsRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    start_object_id=start_object_id,
+                    start_object_id=start_object_mesh_id,
                     attributes_masks=_to_proto_attribute_masks(attributes_filter),
                     attribute_view=attribute_view,
                     query=query
@@ -149,13 +167,32 @@ class Session(abc.ABC):
         """Create a gRPC `CreateObjectRequest`"""
 
         try:
-            owner_id = _to_proto_mesh_id(id=owner_attribute_id, path=owner_attribute_path)
+            owner_mesh_id = _to_proto_mesh_id(id=owner_attribute_id, path=owner_attribute_path)
         except ValueError as e:
-            raise ValueError("invalid start object") from e
+            raise ValueError("invalid owner") from e
 
         request = core_pb2.CreateObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    owner_id=owner_id,
+                    owner_id=owner_mesh_id,
                     name=name
+                )
+        return request
+
+    def _prepare_delete_object_request(
+            self,
+            object_id: Optional[uuid.UUID] = None,
+            object_path: Optional[str] = None,
+            recursive_delete: bool = False) -> core_pb2.DeleteObjectRequest:
+        """Create a gRPC `DeleteObjectRequest`"""
+
+        try:
+            object_mesh_id = _to_proto_mesh_id(id=object_id, path=object_path)
+        except ValueError as e:
+            raise ValueError("invalid object") from e
+
+        request = core_pb2.DeleteObjectRequest(
+                    session_id=_to_proto_guid(self.session_id),
+                    object_id=object_mesh_id,
+                    recursive_delete=recursive_delete
                 )
         return request

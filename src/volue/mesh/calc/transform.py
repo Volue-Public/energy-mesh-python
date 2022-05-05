@@ -88,8 +88,8 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Note: the `LOCAL` and `STANDARD` time zone refers to time zone of Mesh server, not the Python client.
 
         Example:
-             `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).
-             When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.
+            `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).
+            When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.
             You can use it to convert both ways, i.e. both from finer to coarser resolution, and the other way.
             The most common use is accumulation, i.e. transformation to coarser resolution.
             Most transformation methods are available for this latter use.
