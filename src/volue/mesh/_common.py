@@ -257,7 +257,7 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
 
 
 
-def _to_proto_mesh_id(path: str, id: uuid.UUID) -> core_pb2.MeshId:
+def _to_proto_mesh_id(id: uuid.UUID, path: str) -> core_pb2.MeshId:
     proto_mesh_id = core_pb2.MeshId()
 
     if id is not None:

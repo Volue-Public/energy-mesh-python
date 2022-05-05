@@ -903,7 +903,6 @@ def use_case_12():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
-
 def use_case_13():
     """
     Scenario:
@@ -928,6 +927,42 @@ def use_case_13():
                 print(f"{number + 1}. \n"
                       f"-------------------------------------------\n"
                       f"{get_mesh_element_information(object)}")
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_14():
+    """
+    Scenario:
+    We want to create a new object of type `WindPark` for a specific `WindProduction` object.
+    First we will an existing object of type `WindPark` to get ID or path of the relationship
+    attribute that is needed as owner for the new object to create.
+
+    Start point:        Model/MeshTEK/Mesh/Norge/Wind which has guid d9673f4f-d117-4c1e-9ffd-0e533a644728
+    Search expression:  *[.Type=WindPark]
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 14"
+            start_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
+            search_query = '*[.Type=WindPark]'
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Get relationship attribute from already existing objects of `WindPark` type
+            # Owner of the new object must be a relationship attribute of Object Collection type.
+            # E.g.: for `SomePowerPlant1` object with path:
+            # - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
+            # Owner will be the `ThermalPowerToPlantRef` attribute.
+            reply = session.search_for_objects(search_query, start_object_id=start_object_guid)
+            if len(reply) > 0:
+                relationship_attribute_path = reply[0].owner_id.path
+
+                new_object = session.create_object("NewWindPark", owner_attribute_path=relationship_attribute_path)
+                print(get_mesh_element_information(new_object))
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")

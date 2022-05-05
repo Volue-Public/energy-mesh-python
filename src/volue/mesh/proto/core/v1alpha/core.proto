@@ -586,13 +586,9 @@ message VersionInfo {
 
 // Every field uniquely identifies a Mesh Object, Attribute or other types.
 // For request messages it is enough to provide just one of the fields:
-// ID or path.
+// ID, path or time series key.
+// Note: time series key is applicable only for resource time series: physical or virtual.
 message MeshId {
-  optional volue.mesh.grpc.type.Guid id = 1;
-  optional string path = 2;
-}
-
-message ResourceTimeseriesId {
   optional volue.mesh.grpc.type.Guid id = 1;
   optional string path = 2;
   optional int64 timeseries_key = 3;
@@ -710,7 +706,7 @@ message TimeseriesAttributeValue {
   // if the attribute refers to one.
   // To read its meta information like curve type or resolution
   // use `GetResourceTimeseries` RPC.
-  ResourceTimeseriesId resource_time_series_id = 1;  // TODO: rename the TimeseriesEntryId when cleaning up *old* API, and define `GetResourceTimeseries` RPC.
+  MeshId resource_time_series_id = 1;  // TODO: rename the TimeseriesEntryId when cleaning up *old* API, and define `GetResourceTimeseries` RPC.
 
   // Expression that is actually used by the timeseries attribute.
   // It uses local expression if set, otherwise template expression
@@ -819,7 +815,3 @@ enum AttributeView {
   // complete attribute definition.
   FULL = 2;
 }
-
-// TODO: object attribute and object collection attribute
-// TODO: link relation attributes to other objects
-// TODO: redefine/extend existing TimeseriesAttribute

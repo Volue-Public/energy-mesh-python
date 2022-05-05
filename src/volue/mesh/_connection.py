@@ -367,26 +367,40 @@ class Connection(_base_connection.Connection):
                 ret_val.append(reply)
             return ret_val
 
+        def get_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path:  Optional[str] = None,
+                full_attribute_info:  bool = False,
+                attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+            request = super()._prepare_get_object_request(
+                object_id, object_path, full_attribute_info, attributes_filter)
+            return self.mesh_service.GetObject(request)
+
         def search_for_objects(
                 self,
                 query: str,
                 start_object_id: Optional[uuid.UUID] = None,
                 start_object_path: Optional[str] = None,
-                full_attribute_info: Optional[bool] = False,
+                full_attribute_info: bool = False,
                 attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
             request = super()._prepare_search_for_objects_request(
-                query, start_object_path, start_object_id, full_attribute_info, attributes_filter)
-            return self.mesh_service.SearchObjects(request)
+                query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
 
-        def get_object(
+            replies = self.mesh_service.SearchObjects(request)
+            ret_val = []
+            for reply in replies:
+                ret_val.append(reply)
+            return ret_val
+
+        def create_object(
                 self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path:  Optional[str] = None,
-                full_attribute_info:  Optional[bool] = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
-            request = super()._prepare_get_object_request(
-                object_path, object_id, full_attribute_info, attributes_filter)
-            return self.mesh_service.GetObject(request)
+                name: str,
+                owner_attribute_id: Optional[uuid.UUID] = None,
+                owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
+            request = super()._prepare_create_object_request(
+                name, owner_attribute_id, owner_attribute_path)
+            return self.mesh_service.CreateObject(request)
 
         def rollback(self) -> None:
             """

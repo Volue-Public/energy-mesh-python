@@ -25,12 +25,33 @@ class Session(abc.ABC):
 
 
     @abc.abstractmethod
+    def get_object(
+            self,
+            object_id: Optional[uuid.UUID] = None,
+            object_path:  Optional[str] = None,
+            full_attribute_info:  bool = False,
+            attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+        """
+        Request information associated with a Mesh object from the Mesh object model.
+
+        Args:
+            object_id (uuid.UUID): Universal Unique Identifier of the Mesh object
+            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the Mesh object
+
+        Note:
+            Specify either `uuid_id` or `path` to a Mesh object.
+
+        Raises:
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
     def search_for_objects(
             self,
             query: str,
             start_object_id: Optional[uuid.UUID] = None,
             start_object_path: Optional[str] = None,
-            full_attribute_info: Optional[bool] = False,
+            full_attribute_info: bool = False,
             attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects in the Mesh object model.
@@ -51,37 +72,61 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
-    def get_object(
+    def create_object(
             self,
-            object_id: Optional[uuid.UUID] = None,
-            object_path:  Optional[str] = None,
-            full_attribute_info:  Optional[bool] = False,
-            attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+            name: str,
+            owner_attribute_id: Optional[uuid.UUID] = None,
+            owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
         """
-        Request information associated with a Mesh object from the Mesh object model.
+        Create new Mesh object in the Mesh object model. Owner of the new object must be a relationship attribute of Object Collection type.
+        E.g.: for `SomePowerPlant1` object with path:
+        - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
+
+        Owner will be the `ThermalPowerToPlantRef` attribute.
 
         Args:
-            object_id (uuid.UUID): Universal Unique Identifier of the Mesh object
-            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the Mesh object
-
-        Note:
-            Specify either `uuid_id` or `path` to a Mesh object.
+            name (str): Name for the new object to create.
+            owner_attribute_id (uuid.UUID): Universal Unique Identifier of the owner which is a relationship attribute of Object Collection type
+            owner_attribute_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the owner which is a relationship attribute of Object Collection type
 
         Raises:
             grpc.RpcError:  Error message raised if the gRPC request could not be completed
         """
 
+    def _prepare_get_object_request(
+            self,
+            object_id: uuid.UUID,
+            object_path: str,
+            full_attribute_info: bool,
+            attributes_filter: AttributesFilter) -> core_pb2.SearchObjectsRequest:
+        """Create a gRPC `GetObjectRequest`"""
+
+        try:
+            object_id = _to_proto_mesh_id(id=object_id, path=object_path)
+        except ValueError as e:
+            raise ValueError("invalid object") from e
+
+        attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
+
+        request = core_pb2.GetObjectRequest(
+                    session_id=_to_proto_guid(self.session_id),
+                    object_id=object_id,
+                    attributes_masks=_to_proto_attribute_masks(attributes_filter),
+                    attribute_view=attribute_view,
+                )
+        return request
+
     def _prepare_search_for_objects_request(
             self,
             query: str,
-            start_object_path: str,
             start_object_id: uuid.UUID,
+            start_object_path: str,
             full_attribute_info: bool,
             attributes_filter: AttributesFilter) -> core_pb2.SearchObjectsRequest:
         """Create a gRPC `SearchObjectsRequest`"""
 
         try:
-            start_object_id = _to_proto_mesh_id(start_object_path, start_object_id)
+            start_object_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
         except ValueError as e:
             raise ValueError("invalid start object") from e
 
@@ -96,26 +141,21 @@ class Session(abc.ABC):
                 )
         return request
 
-    def _prepare_get_object_request(
+    def _prepare_create_object_request(
             self,
-            object_path: str,
-            object_id: uuid.UUID,
-            full_attribute_info: bool,
-            attributes_filter: AttributesFilter) -> core_pb2.SearchObjectsRequest:
-        """Create a gRPC `GetObjectRequest`"""
+            name: str,
+            owner_attribute_id: Optional[uuid.UUID] = None,
+            owner_attribute_path: Optional[str] = None) -> core_pb2.CreateObjectRequest:
+        """Create a gRPC `CreateObjectRequest`"""
 
         try:
-            object_id = _to_proto_mesh_id(object_path, object_id)
+            owner_id = _to_proto_mesh_id(id=owner_attribute_id, path=owner_attribute_path)
         except ValueError as e:
-            raise ValueError("invalid object") from e
+            raise ValueError("invalid start object") from e
 
-        attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
-
-        request = core_pb2.GetObjectRequest(
+        request = core_pb2.CreateObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=object_id,
-                    attributes_masks=_to_proto_attribute_masks(attributes_filter),
-                    attribute_view=attribute_view,
+                    owner_id=owner_id,
+                    name=name
                 )
         return request
-
