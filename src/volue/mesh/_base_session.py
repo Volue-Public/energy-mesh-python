@@ -2,6 +2,8 @@ import abc
 from typing import List, Optional
 import uuid
 
+from google import protobuf
+
 from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
@@ -94,6 +96,30 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
+    def update_object(
+            self,
+            object_id: Optional[uuid.UUID] = None,
+            object_path: Optional[str] = None,
+            new_name: Optional[str] = None,
+            new_owner_attribute_id: Optional[uuid.UUID] = None,
+            new_owner_attribute_path: Optional[str] = None) -> None:
+        """
+        Update an existing Mesh object in the Mesh object model. New owner of the object must be a relationship attribute of Object Collection type.
+        E.g.: for `SomePowerPlant1` object with path:
+        - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
+
+        Args:
+            object_id (uuid.UUID): Universal Unique Identifier of the Mesh object to be updated
+            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the Mesh object to be updated
+            new_name (str): New name for the object.
+            new_owner_attribute_id (uuid.UUID): Universal Unique Identifier of the new owner which is a relationship attribute of Object Collection type
+            new_owner_attribute_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the new owner which is a relationship attribute of Object Collection type
+
+        Raises:
+            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
     def delete_object(
             self,
             object_id: Optional[uuid.UUID] = None,
@@ -116,7 +142,7 @@ class Session(abc.ABC):
             object_id: uuid.UUID,
             object_path: str,
             full_attribute_info: bool,
-            attributes_filter: AttributesFilter) -> core_pb2.SearchObjectsRequest:
+            attributes_filter: AttributesFilter) -> core_pb2.GetObjectRequest:
         """Create a gRPC `GetObjectRequest`"""
 
         try:
@@ -162,8 +188,8 @@ class Session(abc.ABC):
     def _prepare_create_object_request(
             self,
             name: str,
-            owner_attribute_id: Optional[uuid.UUID] = None,
-            owner_attribute_path: Optional[str] = None) -> core_pb2.CreateObjectRequest:
+            owner_attribute_id: uuid.UUID,
+            owner_attribute_path: str) -> core_pb2.CreateObjectRequest:
         """Create a gRPC `CreateObjectRequest`"""
 
         try:
@@ -178,11 +204,50 @@ class Session(abc.ABC):
                 )
         return request
 
+    def _prepare_update_object_request(
+            self,
+            object_id: uuid.UUID,
+            object_path: str,
+            new_name: str,
+            new_owner_attribute_id: uuid.UUID,
+            new_owner_attribute_path:str) -> core_pb2.UpdateObjectRequest:
+        """Create a gRPC `UpdateObjectRequest`"""
+
+        try:
+            object_mesh_id = _to_proto_mesh_id(id=object_id, path=object_path)
+        except ValueError as e:
+            raise ValueError("invalid object to update") from e
+
+        request = core_pb2.UpdateObjectRequest(
+                    session_id=_to_proto_guid(self.session_id),
+                    object_id=object_mesh_id
+                )
+
+        fields_to_update = []
+
+        # providing new owner is optional
+        if new_owner_attribute_id is not None or new_owner_attribute_path is not None:
+            try:
+                new_owner_mesh_id = _to_proto_mesh_id(id=new_owner_attribute_id, path=new_owner_attribute_path)
+            except ValueError as e:
+                raise ValueError("invalid new owner") from e
+            
+            request.new_owner_mesh_id.CopyFrom(new_owner_mesh_id)
+            fields_to_update.append("new_owner_id")
+
+        # providing new name is optional
+        if new_name is not None:
+            request.new_name = new_name
+            fields_to_update.append("new_name")
+
+        request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
+        return request
+
     def _prepare_delete_object_request(
             self,
-            object_id: Optional[uuid.UUID] = None,
-            object_path: Optional[str] = None,
-            recursive_delete: bool = False) -> core_pb2.DeleteObjectRequest:
+            object_id: uuid.UUID,
+            object_path: str,
+            recursive_delete: bool) -> core_pb2.DeleteObjectRequest:
         """Create a gRPC `DeleteObjectRequest`"""
 
         try:

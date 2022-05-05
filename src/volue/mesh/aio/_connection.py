@@ -405,6 +405,17 @@ class Connection(_base_connection.Connection):
                 name, owner_attribute_id, owner_attribute_path)
             return await self.mesh_service.CreateObject(request)
 
+        async def update_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path: Optional[str] = None,
+                new_name: Optional[str] = None,
+                new_owner_attribute_id: Optional[uuid.UUID] = None,
+                new_owner_attribute_path: Optional[str] = None) -> None:
+            request = super()._prepare_update_object_request(
+                object_id, object_path, new_name, new_owner_attribute_id, new_owner_attribute_path)
+            return await self.mesh_service.UpdateObject(request)
+
         async def delete_object(
                 self,
                 object_id: Optional[uuid.UUID] = None,
