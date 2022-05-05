@@ -365,10 +365,10 @@ class Connection(_base_connection.Connection):
             else:
                 raise Exception("Need to specify either start_object_path or start_object_guid")
 
-            ret_val = []
+            replies = []
             async for reply in self.mesh_service.SearchTimeseriesAttributes(request):
-                ret_val.append(reply)
-            return ret_val
+                replies.append(reply)
+            return replies
 
         async def get_object(
                 self,
@@ -390,11 +390,10 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_search_for_objects_request(
                 query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
 
-            replies = await self.mesh_service.SearchObjects(request)
-            ret_val = []
-            for reply in replies:
-                ret_val.append(reply)
-            return ret_val
+            replies = []
+            async for reply in self.mesh_service.SearchObjects(request):
+                replies.append(reply)
+            return replies
 
         async def create_object(
                 self,

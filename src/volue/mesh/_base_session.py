@@ -19,8 +19,9 @@ class Session(abc.ABC):
         Initialize a session object for working with the Mesh server.
 
         Args:
-            mesh_service (core_pb2_grpc.MeshServiceStub): the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
-            session_id (uuid.UUID): the id of the session you are (or want to be) connected to
+            mesh_service: gRPC generated Mesh service to communicate with
+                the :doc:`Mesh server <mesh_server>`.
+            session_id: ID of the session you are (or want to be) connected to.
         """
         self.session_id: uuid = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
@@ -35,16 +36,15 @@ class Session(abc.ABC):
             attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
         """
         Request information associated with a Mesh object from the Mesh object model.
+        Specify either `object_id` or `object_path` to a Mesh object.
 
         Args:
-            object_id (uuid.UUID): Universal Unique Identifier of the Mesh object
-            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the Mesh object
-
-        Note:
-            Specify either `uuid_id` or `path` to a Mesh object.
+            object_id: Universal Unique Identifier of the Mesh object.
+            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the Mesh object.
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
     @abc.abstractmethod
@@ -56,21 +56,24 @@ class Session(abc.ABC):
             full_attribute_info: bool = False,
             attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
         """
-        Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects in the Mesh object model.
+        Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects
+        in the Mesh object model. Specify either `start_object_id` or
+        `start_object_path` to an object where the search query should start from.
 
         Args:
-            query (str): A search formulated using the :doc:`Mesh search language <mesh_search>`
-            start_object_id (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
-            start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`
-            full_attribute_info (bool): If set then all information (e.g. description, value type, etc.) of attributes owned by object(s) will be returned, otherwise only name, path, id and value(s)
-            attributes_filter (AttributesFilter): Filtering criteria for what attributes owned by object(s) should be returned. By default all attributes are returned.
-
-        Note:
-            Specify a query using mesh query language and start object to start the search from,
-            using either a path or an ID.
+            query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            start_object_id: Start searching at the object with the 
+                Universal Unique Identifier for Mesh objects.
+            start_object_path: Start searching at the path in the
+                :ref:`Mesh object model <mesh object model>`.
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attributes owned by object(s) will be returned, otherwise only name,
+                path, ID and value(s).
+            attributes_filter: Filtering criteria for what attributes owned by
+                object(s) should be returned. By default all attributes are returned.
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
     @abc.abstractmethod
@@ -80,19 +83,26 @@ class Session(abc.ABC):
             owner_attribute_id: Optional[uuid.UUID] = None,
             owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
         """
-        Create new Mesh object in the Mesh object model. Owner of the new object must be a relationship attribute of Object Collection type.
+        Create new Mesh object in the Mesh object model.
+        Owner of the new object must be a relationship attribute of Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
 
         Owner will be the `ThermalPowerToPlantRef` attribute.
 
         Args:
-            name (str): Name for the new object to create.
-            owner_attribute_id (uuid.UUID): Universal Unique Identifier of the owner which is a relationship attribute of Object Collection type
-            owner_attribute_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the owner which is a relationship attribute of Object Collection type
+            name: Name for the new object to create.
+            owner_attribute_id: Universal Unique Identifier of the owner which
+                is a relationship attribute of Object Collection type.
+            owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the owner which is a relationship attribute of Object Collection type.
+
+        Returns:
+            Created object with all attributes (no mask applied) and basic
+            information: name, path, ID and value(s).
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
     @abc.abstractmethod
@@ -104,19 +114,23 @@ class Session(abc.ABC):
             new_owner_attribute_id: Optional[uuid.UUID] = None,
             new_owner_attribute_path: Optional[str] = None) -> None:
         """
-        Update an existing Mesh object in the Mesh object model. New owner of the object must be a relationship attribute of Object Collection type.
+        Update an existing Mesh object in the Mesh object model.
+        New owner of the object must be a relationship attribute of Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
 
         Args:
-            object_id (uuid.UUID): Universal Unique Identifier of the Mesh object to be updated
-            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the Mesh object to be updated
-            new_name (str): New name for the object.
-            new_owner_attribute_id (uuid.UUID): Universal Unique Identifier of the new owner which is a relationship attribute of Object Collection type
-            new_owner_attribute_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the new owner which is a relationship attribute of Object Collection type
+            object_id: Universal Unique Identifier of the Mesh object to be updated.
+            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the Mesh object to be updated.
+            new_name: New name for the object.
+            new_owner_attribute_id: Universal Unique Identifier of the new owner which
+                is a relationship attribute of Object Collection type.
+            new_owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the new owner which is a relationship attribute of Object Collection type.
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
     @abc.abstractmethod
@@ -129,12 +143,14 @@ class Session(abc.ABC):
         Delete an existing Mesh object in the Mesh object model.
 
         Args:
-            object_id (uuid.UUID): Universal Unique Identifier of the object to be deleted
-            object_path (str): Path in the :ref:`Mesh object model <mesh object model>` of the object to be deleted
-            recursive_delete (bool): If set then all child objects (owned by the object to be deleted) in the model will also be deleted
+            object_id: Universal Unique Identifier of the object to be deleted.
+            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the object to be deleted.
+            recursive_delete: If set then all child objects
+                (owned by the object to be deleted) in the model will also be deleted.
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
     def _prepare_get_object_request(

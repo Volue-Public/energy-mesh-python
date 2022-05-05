@@ -20,38 +20,44 @@ from volue.mesh.proto.type import resources_pb2
 class AttributesFilter:
     """Defines what attributes need to be returned in response message.
 
-    Name mask:
+    Attributes:
+        Name mask:
+            Attribute name uniquely identifies attribute within given object.
+            If set then only attributes set in the name mask are read.
+            If any other mask: tag or namespace or `return_no_attributes`
+            flag is also set then an error will be returned.
+            The attribute name provided in the mask must be equal to
+            the actual attribute name in the model.
+            Note: Regular expressions are not supported.
+            See examples below for more details.
 
-    Attribute name uniquely identifies attribute within given object.
-    If set then only attributes set in the field mask are read.
-    See examples below for more details.
-    Note: The attribute name provided in the mask must be equal to
-    the actual attribute name in the model.
-    Regular expressions are not supported.
+        Tag mask:
+            If multiple tags are provided then all attributes having
+            at least one of them are returned (logical OR).
+            If name mask or `return_no_attributes` flag is also set
+            then an error will be returned.
+            It is allowed to have both: tag mask and namespace mask set.
+            Note: Regular expressions are not supported.
+            See examples below for more details.
 
-    Tag mask:
+        Namespace mask:
+            If multiple namespaces are provided then all attributes having
+            at least one of them are returned (logical OR).
+            If an attribute has more than one namespace, they are
+            concatentad with dots '.', e.g.: namespace1.namespace2
+            In such case the namespace mask must provide also
+            "namespace1.namespace2" as one entry in the namespace mask.
+            If name mask or `return_no_attributes` flag is also set
+            then an error will be returned.
+            It is allowed to have both: tag mask and namespace mask set.
+            Note: Regular expressions are not supported.
+            See examples below for more details.
 
-    If multiple tags are provided then all attributes having
-    at least one of them are returned (logical OR).
-    See examples below for more details.
-    Note: Regular expressions are not supported.
-
-    Namespace mask:
-
-    If multiple namespaces are provided then all attributes having
-    at least one of them are returned (logical OR).
-    See examples below for more details.
-    Note: Regular expressions are not supported.
-    If an attribute has more than one namespace, they are
-    concatentad with dots '.', e.g.: namespace1.namespace2
-    In such case the namespace mask must provide also
-    "namespace1.namespace2" as one entry in the namespace mask.
-
-    `return_no_attributes` flag:
-
-    If set to True then no attributes will be returned.
-    All above masks will be ignored.
-    Default value is False.
+        `return_no_attributes` flag:
+            If set to True then no attributes will be returned.
+            If any mask: name, tag or namespace is also set
+            then an error will be returned.
+            Default value is False.
 
     Multiple attributes may have the same tag or namespace.
     If both: `tag_mask` and `namespace_mask` are provided then only attributes
@@ -70,8 +76,8 @@ class AttributesFilter:
         Arg:      `tag_mask` is set to "ProductionAttributes,LocationAttributes"
         Response: All attributes with tag name "ProductionAttributes" or "LocationAttributes" will be returned.
         Note:     If attributes A1, A2 have tag "ProductionAttributes" and A3
-        has "LocationAttributes" then all three attributes (A1, A2 and A3) will be returned.
-        Exactly the same rules apply to `namespace_mask`.
+            has "LocationAttributes" then all three attributes (A1, A2 and A3) will be returned.
+            Exactly the same rules apply to `namespace_mask`.
 
     Example 3:
 
@@ -83,7 +89,8 @@ class AttributesFilter:
         - A3 (tag "ProductionAttributes", namespace "Carbon")
         - A4 (tag "LocationAttributes", namespace "Hydro")
         - A5 (tag "LocationAttributes", namespace "Wind")
-        In this case attributes A1 and A2 will be returned.
+
+            In this case attributes A1 and A2 will be returned.
     """
 
     name_mask: List[str] = None
