@@ -7,8 +7,8 @@ from typing import Optional, List
 from datetime import datetime
 from google import protobuf
 import grpc
-from volue.mesh import Authentication, Credentials, Timeseries, MeshObjectId
-from volue.mesh._common import _from_proto_guid, _to_proto_guid, _to_protobuf_utcinterval, \
+from volue.mesh import Timeseries, MeshObjectId
+from volue.mesh._common import AttributesFilter, _from_proto_guid, _to_proto_guid, _to_protobuf_utcinterval, \
     _read_proto_reply, _to_proto_object_id, _to_proto_timeseries, _to_proto_curve_type
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
@@ -17,10 +17,11 @@ from volue.mesh.calc.transform import TransformFunctionsAsync
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from volue.mesh import _base_connection
+from volue.mesh import _base_session
 
 
 class Connection(_base_connection.Connection):
-    class Session:
+    class Session(_base_session.Session):
         """
         This class supports the async with statement, because it's an async contextmanager.
         https://docs.python.org/3/reference/datamodel.html#asynchronous-context-managers
@@ -31,16 +32,7 @@ class Connection(_base_connection.Connection):
                 self,
                 mesh_service: core_pb2_grpc.MeshServiceStub,
                 session_id: uuid.UUID = None):
-            """
-            Initialize a session object
-            for working with the Mesh server.
-
-            Args:
-                mesh_service (core_pb2_grpc.MeshServiceStub): the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
-                session_id (uuid.UUID): the id of the session you are (or want to be) connected to
-            """
-            self.session_id: uuid.UUID = session_id
-            self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
+            super().__init__(session_id=session_id, mesh_service=mesh_service)
 
         async def __aenter__(self):
             """
@@ -373,10 +365,64 @@ class Connection(_base_connection.Connection):
             else:
                 raise Exception("Need to specify either start_object_path or start_object_guid")
 
-            ret_val = []
+            replies = []
             async for reply in self.mesh_service.SearchTimeseriesAttributes(request):
-                ret_val.append(reply)
-            return ret_val
+                replies.append(reply)
+            return replies
+
+        async def get_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path:  Optional[str] = None,
+                full_attribute_info:  bool = False,
+                attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+            request = super()._prepare_get_object_request(
+                object_id, object_path, full_attribute_info, attributes_filter)
+            return await self.mesh_service.GetObject(request)
+
+        async def search_for_objects(
+                self,
+                query: str,
+                start_object_id: Optional[uuid.UUID] = None,
+                start_object_path: Optional[str] = None,
+                full_attribute_info: bool = False,
+                attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
+            request = super()._prepare_search_for_objects_request(
+                query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
+
+            replies = []
+            async for reply in self.mesh_service.SearchObjects(request):
+                replies.append(reply)
+            return replies
+
+        async def create_object(
+                self,
+                name: str,
+                owner_attribute_id: Optional[uuid.UUID] = None,
+                owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
+            request = super()._prepare_create_object_request(
+                name, owner_attribute_id, owner_attribute_path)
+            return await self.mesh_service.CreateObject(request)
+
+        async def update_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path: Optional[str] = None,
+                new_name: Optional[str] = None,
+                new_owner_attribute_id: Optional[uuid.UUID] = None,
+                new_owner_attribute_path: Optional[str] = None) -> None:
+            request = super()._prepare_update_object_request(
+                object_id, object_path, new_name, new_owner_attribute_id, new_owner_attribute_path)
+            return await self.mesh_service.UpdateObject(request)
+
+        async def delete_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path: Optional[str] = None,
+                recursive_delete: bool = False) -> None:
+            request = super()._prepare_delete_object_request(
+                object_id, object_path, recursive_delete)
+            return await self.mesh_service.DeleteObject(request)
 
         async def rollback(self) -> None:
             """

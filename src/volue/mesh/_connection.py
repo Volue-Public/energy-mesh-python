@@ -10,9 +10,9 @@ import uuid
 from google import protobuf
 import grpc
 
-from volue.mesh import Authentication, Credentials, Timeseries, MeshObjectId
-from volue.mesh._common import _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval, \
-    _read_proto_reply, _to_proto_object_id, _to_proto_timeseries, _to_proto_curve_type
+from volue.mesh import Timeseries, MeshObjectId
+from volue.mesh._common import AttributesFilter, _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval, \
+    _read_proto_reply, _to_proto_object_id, _to_proto_timeseries, _to_proto_curve_type, _to_proto_mesh_id
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
@@ -20,10 +20,11 @@ from volue.mesh.calc.transform import TransformFunctions
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from . import _base_connection
+from . import _base_session
 
 
 class Connection(_base_connection.Connection):
-    class Session:
+    class Session(_base_session.Session):
         """
         This class supports the with statement, because it's a contextmanager.
         """
@@ -31,16 +32,9 @@ class Connection(_base_connection.Connection):
         def __init__(
                 self,
                 mesh_service: core_pb2_grpc.MeshServiceStub,
-                session_id: uuid = None):
-            """
-            Initialize a session object for working with the Mesh server.
+                session_id: uuid.UUID = None):
+            super().__init__(session_id=session_id, mesh_service=mesh_service)
 
-            Args:
-                mesh_service (core_pb2_grpc.MeshServiceStub): the gRPC generated Mesh service to communicate with the :doc:`Mesh server <mesh_server>`
-                session_id (uuid.UUID): the id of the session you are (or want to be) connected to
-            """
-            self.session_id: uuid = session_id
-            self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
 
         def __enter__(self):
             """
@@ -346,7 +340,7 @@ class Connection(_base_connection.Connection):
                 model (str): the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
                 start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`
-                start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
+                start_object_guid (uuid.UUID): Start searching at the object with the Universal Unique Identifier for Mesh objects
 
             Note:
                 Specify a model, a query using mesh query language and start object to start the search from,
@@ -368,10 +362,59 @@ class Connection(_base_connection.Connection):
                 raise Exception("Need to specify either start_object_path or start_object_guid")
 
             replies = self.mesh_service.SearchTimeseriesAttributes(request)
-            ret_val = []
-            for reply in replies:
-                ret_val.append(reply)
-            return ret_val
+            return list(replies)
+
+        def get_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path:  Optional[str] = None,
+                full_attribute_info:  bool = False,
+                attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+            request = super()._prepare_get_object_request(
+                object_id, object_path, full_attribute_info, attributes_filter)
+            return self.mesh_service.GetObject(request)
+
+        def search_for_objects(
+                self,
+                query: str,
+                start_object_id: Optional[uuid.UUID] = None,
+                start_object_path: Optional[str] = None,
+                full_attribute_info: bool = False,
+                attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
+            request = super()._prepare_search_for_objects_request(
+                query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
+
+            replies = self.mesh_service.SearchObjects(request)
+            return list(replies)
+
+        def create_object(
+                self,
+                name: str,
+                owner_attribute_id: Optional[uuid.UUID] = None,
+                owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
+            request = super()._prepare_create_object_request(
+                name, owner_attribute_id, owner_attribute_path)
+            return self.mesh_service.CreateObject(request)
+
+        def update_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path: Optional[str] = None,
+                new_name: Optional[str] = None,
+                new_owner_attribute_id: Optional[uuid.UUID] = None,
+                new_owner_attribute_path: Optional[str] = None) -> None:
+            request = super()._prepare_update_object_request(
+                object_id, object_path, new_name, new_owner_attribute_id, new_owner_attribute_path)
+            return self.mesh_service.UpdateObject(request)
+
+        def delete_object(
+                self,
+                object_id: Optional[uuid.UUID] = None,
+                object_path: Optional[str] = None,
+                recursive_delete: bool = False) -> None:
+            request = super()._prepare_delete_object_request(
+                object_id, object_path, recursive_delete)
+            return self.mesh_service.DeleteObject(request)
 
         def rollback(self) -> None:
             """

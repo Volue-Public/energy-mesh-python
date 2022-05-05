@@ -111,6 +111,15 @@ def get_mesh_object_information(mesh_object: core_pb2.TimeseriesAttribute):
     return message
 
 
+def get_mesh_element_information(mesh_element: core_pb2.Object):
+    message = f"Mesh object with path: '{mesh_element.path}'  \n"\
+              f"has guid: '{_from_proto_guid(mesh_element.id)}', \n"\
+              f"name: '{mesh_element.name}', \n"\
+              f"type name: '{mesh_element.type_name}', \n"\
+              f"owner path: '{mesh_element.owner_id.path}', \n"\
+              f"owner guid: '{_from_proto_guid(mesh_element.owner_id.id)}', \n"
+    return message
+
 def get_timeseries_information(timeseries: Timeseries):
     """
     Create a printable message from a timeseries
@@ -889,6 +898,134 @@ def use_case_12():
                             f"{use_case_name}: get some forecasts"
                             )
             save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_12')
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_13():
+    """
+    Scenario:
+    We want to find all objects of type `WindPark` for a specific `WindProduction` object.
+
+    Start point:        Model/MeshTEK/Mesh/Norge/Wind which has guid d9673f4f-d117-4c1e-9ffd-0e533a644728
+    Search expression:  *[.Type=WindPark]
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 13"
+            start_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
+            search_query = '*[.Type=WindPark]'
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            reply = session.search_for_objects(search_query, start_object_id=start_object_guid)
+
+            for number, object in enumerate(reply):
+                print(f"{number + 1}. \n"
+                      f"-------------------------------------------\n"
+                      f"{get_mesh_element_information(object)}")
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_14():
+    """
+    Scenario:
+    We want to create a new object of type `WindPark` for a specific `WindProduction` object.
+    First we will search for an existing object of type `WindPark` to get ID or path of
+    the relationship attribute that is needed as owner for the new object to create.
+
+    Start point:        Model/MeshTEK/Mesh/Norge/Wind which has guid d9673f4f-d117-4c1e-9ffd-0e533a644728
+    Search expression:  *[.Type=WindPark]
+    New object name:    NewWindPark
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 14"
+            start_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
+            search_query = '*[.Type=WindPark]'
+            new_object_name = "NewWindPark"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Get relationship attribute from already existing objects of `WindPark` type
+            # Owner of the new object must be a relationship attribute of Object Collection type.
+            # E.g.: for `SomePowerPlant1` object with path:
+            # - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
+            # Owner will be the `ThermalPowerToPlantRef` attribute.
+            reply = session.search_for_objects(search_query, start_object_id=start_object_guid)
+            if len(reply) > 0:
+                relationship_attribute_path = reply[0].owner_id.path
+
+                new_object = session.create_object(new_object_name, owner_attribute_path=relationship_attribute_path)
+                print(get_mesh_element_information(new_object))
+
+                # Commit changes
+                #session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_15():
+    """
+    Scenario:
+    We want to delete a specific, existing object of type `WindPark`, named `Roan`.
+
+    Object path: Model/MeshTEK/Mesh/Norge/Wind/Roan
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 15"
+            object_path = "Model/MeshTEK/Mesh/Norge/Wind/Roan"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            session.delete_object(object_path=object_path, recursive_delete=True)
+
+            # Commit changes
+            #session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_16():
+    """
+    Scenario:
+    We want to rename a specific, existing object of type `WindPark`, named `Roan`.
+
+    Object path:        Model/MeshTEK/Mesh/Norge/Wind/Roan which has guid 8faf6a61-5b3a-443a-8632-c628ea59c86b
+    New object name:    Roan2
+    
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 16"
+            object_guid = uuid.UUID("8faf6a61-5b3a-443a-8632-c628ea59c86b")
+            new_object_name = "Roan2"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            session.update_object(object_id=object_guid, new_name=new_object_name)
+            updated_object = session.get_object(object_id=object_guid)
+            print(get_mesh_element_information(updated_object))
+
+            # Commit changes
+            #session.commit()
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
