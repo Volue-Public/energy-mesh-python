@@ -244,11 +244,12 @@ class Session(abc.ABC):
         # providing new owner is optional
         if new_owner_attribute_id is not None or new_owner_attribute_path is not None:
             try:
-                new_owner_mesh_id = _to_proto_mesh_id(id=new_owner_attribute_id, path=new_owner_attribute_path)
+                new_owner_mesh_id = _to_proto_mesh_id(
+                    id=new_owner_attribute_id, path=new_owner_attribute_path)
             except ValueError as e:
                 raise ValueError("invalid new owner") from e
             
-            request.new_owner_mesh_id.CopyFrom(new_owner_mesh_id)
+            request.new_owner_id.CopyFrom(new_owner_mesh_id)
             fields_to_update.append("new_owner_id")
 
         # providing new name is optional

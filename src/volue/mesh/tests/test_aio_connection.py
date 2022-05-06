@@ -12,7 +12,7 @@ import grpc
 import pyarrow as pa
 import pytest
 
-from volue.mesh._common import _from_proto_guid, _to_proto_guid, _to_proto_curve_type
+from volue.mesh._common import AttributesFilter, _from_proto_guid, _to_proto_guid, _to_proto_curve_type
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import MeshObjectId, Timeseries
 from volue.mesh.calc import transform
@@ -862,6 +862,248 @@ async def test_statistical_sum_single_timeseries():
         result = await session.statistical_functions(
             MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
         assert isinstance(result, float) and result == 41.0
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_get_object():
+    """
+    Check that `get_object` returns specified object with
+    all attributes and basic attribute information.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+
+        object = await session.get_object(object_path=object_path)
+        assert object.name == "SomePowerPlant1"
+        assert object.path == object_path
+        assert object.type_name == "PlantElementType"
+        assert object.owner_id.path == "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
+        assert len(object.attributes) == 23
+
+        for attribute in object.attributes:
+            assert attribute.name is not None
+            assert attribute.path is not None
+            assert attribute.id is not None
+            assert not attribute.HasField("definition")
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_get_object_wit_full_attribute_info():
+    """
+    Check that `get_object` returns specified object with
+    all attributes and full attribute information.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+
+        string_attribute_found = False
+        object = await session.get_object(object_path=object_path, full_attribute_info=True)
+        for attribute in object.attributes:
+            assert attribute.name is not None
+            assert attribute.path is not None
+            assert attribute.id is not None
+
+            # with full info definition should be returned
+            assert attribute.HasField("definition")
+
+            # check one of the attributes
+            if attribute.name == "StringAtt":
+                string_attribute_found = True
+                assert attribute.definition.string_definition.default_value == "Default string value"
+
+        assert string_attribute_found
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_get_object_with_attributes_filter_with_name_mask():
+    """
+    Check that `get_object` returns specified object with filtered attributes.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+        attributes_filter = AttributesFilter(name_mask=["StringAtt", "BoolArrayAtt"])
+
+        string_attribute_found = False
+        bool_array_attribute_found = False
+
+        object = await session.get_object(
+            object_path=object_path, attributes_filter=attributes_filter)
+
+        for attribute in object.attributes:
+            if attribute.name == "StringAtt":
+                string_attribute_found = True
+            elif attribute.name == "BoolArrayAtt":
+                bool_array_attribute_found = True
+
+        assert string_attribute_found
+        assert bool_array_attribute_found
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_get_object_with_attributes_filter_with_non_existing_masks():
+    """
+    Check that `get_object` returns specified object with no attributes
+    when non existing masks are used in attributes filter.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+        attributes_filter = AttributesFilter(namespace_mask=["NON_EXISTING"])
+
+        object = await session.get_object(
+            object_path=object_path, attributes_filter=attributes_filter)
+        assert len(object.attributes) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_get_object_with_attributes_filter_with_return_no_attributes():
+    """
+    Check that `get_object` returns specified object with no attributes
+    when `return_no_attributes` is set to True in attributes filter.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+        attributes_filter = AttributesFilter(return_no_attributes=True)
+
+        object = await session.get_object(
+            object_path=object_path, attributes_filter=attributes_filter)
+        assert len(object.attributes) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_search_objects():
+    """
+    Check that `search_objects` returns correct objects according to specified search query.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
+        query = "*[.Type=ChimneyElementType]"
+
+        objects = await session.search_for_objects(query, start_object_path=start_object_path)
+        assert len(objects) == 2
+
+        for object in objects:
+            assert object.name == "SomePowerPlantChimney1" or object.name == "SomePowerPlantChimney2"
+            assert len(object.attributes) == 7
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_create_object():
+    """
+    Check that `create_object` creates and returns new object.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        owner_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef"
+        new_object_name = "SomeNewPowerPlantChimney"
+
+        new_object = await session.create_object(name=new_object_name, owner_attribute_path=owner_attribute_path)
+        assert new_object.name == new_object_name
+        assert new_object.path == f"{owner_attribute_path}/{new_object_name}"
+
+        object = await session.get_object(object_id=new_object.id)
+        assert new_object.name == object.name
+        assert new_object.path == object.path
+        assert new_object.type_name == object.type_name
+        assert new_object.owner_id.id == object.owner_id.id
+        assert new_object.owner_id.path == object.owner_id.path
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_object():
+    """
+    Check that `update_object` updates existing object.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_to_update_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2"
+        new_owner_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney1.ChimneyToChimneyRef"
+        new_object_name = "SomeNewPowerPlantChimney"
+
+        await session.update_object(
+            object_path=object_to_update_path,
+            new_name=new_object_name,
+            new_owner_attribute_path=new_owner_attribute_path)
+
+        new_object_path = f"{new_owner_attribute_path}/{new_object_name}"
+
+        object = await session.get_object(object_path=new_object_path)
+        assert object.name == new_object_name
+        assert object.path == new_object_path
+        assert object.owner_id.path == new_owner_attribute_path
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_delete_object():
+    """
+    Check that `delete_object` deletes existing object without children.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2"
+
+        await session.delete_object(object_path=object_path)
+        with pytest.raises(grpc.RpcError, match=r"Object not found:"):
+            await session.get_object(object_path=object_path)
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_recursive_delete_object():
+    """
+    Check that `delete_object` deletes recursively existing object with children.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    async with connection.create_session() as session:
+        object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+
+        await session.delete_object(object_path=object_path, recursive_delete=True)
+        with pytest.raises(grpc.RpcError, match=r"Object not found:"):
+            await session.get_object(object_path=object_path)
 
 
 if __name__ == '__main__':
