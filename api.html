@@ -4578,6 +4578,18 @@ must be greater than last time point to be written.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_create_object">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_create_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_create_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_create_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>create_object</cite> creates and returns new object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_delete_object">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_delete_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_delete_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_delete_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>delete_object</cite> deletes existing object without children.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_forecast_get_all_forecasts">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_forecast_get_all_forecasts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_forecast_get_all_forecasts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_forecast_get_all_forecasts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that running forecast <cite>get_all_forecasts</cite>
@@ -4589,6 +4601,40 @@ does not throw exception for any combination of parameters.</p>
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_forecast_get_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forecast_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_at_timepoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_forecast_get_forecast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_forecast_get_forecast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that running forecast <cite>get_forecast</cite>
 does not throw exception for any combination of parameters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_object">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with
+all attributes and basic attribute information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_object_wit_full_attribute_info">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_wit_full_attribute_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_object_wit_full_attribute_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_object_wit_full_attribute_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with
+all attributes and full attribute information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_object_with_attributes_filter_with_name_mask">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_with_attributes_filter_with_name_mask</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_object_with_attributes_filter_with_name_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_object_with_attributes_filter_with_name_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with filtered attributes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_object_with_attributes_filter_with_non_existing_masks">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_with_attributes_filter_with_non_existing_masks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_object_with_attributes_filter_with_non_existing_masks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_object_with_attributes_filter_with_non_existing_masks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with no attributes
+when non existing masks are used in attributes filter.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_object_with_attributes_filter_with_return_no_attributes">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_with_attributes_filter_with_return_no_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_object_with_attributes_filter_with_return_no_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_object_with_attributes_filter_with_return_no_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with no attributes
+when <cite>return_no_attributes</cite> is set to True in attributes filter.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4651,9 +4697,21 @@ read timeseries without specifying timeseries (by full_name, timskey or uuid_id)
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_recursive_delete_object">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_recursive_delete_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_recursive_delete_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_recursive_delete_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>delete_object</cite> deletes recursively existing object with children.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_rollback">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_rollback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that rollback discards changes made in the current session.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_search_objects">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_search_objects</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_search_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_search_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>search_objects</cite> returns correct objects according to specified search query.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4673,6 +4731,12 @@ does not throw exception for any combination of parameters.</p>
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_statistical_sum_single_timeseries">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_statistical_sum_single_timeseries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_statistical_sum_single_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_statistical_sum_single_timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that running statistical <cite>sum_single_timeseries</cite> works correctly.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_update_object">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_update_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_update_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_update_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>update_object</cite> updates existing object.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4720,6 +4784,18 @@ naive (treated as UTC) datetimes as input interval (start_time and end_time argu
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_create_object">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_create_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_create_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_create_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>create_object</cite> creates and returns new object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_delete_object">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_delete_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_delete_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_delete_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>delete_object</cite> deletes existing object without children.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_forecast_get_all_forecasts">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_forecast_get_all_forecasts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_forecast_get_all_forecasts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_forecast_get_all_forecasts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that running forecast <cite>get_all_forecasts</cite>
@@ -4731,6 +4807,40 @@ does not throw exception for any combination of parameters.</p>
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_forecast_get_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forecast_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_at_timepoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_forecast_get_forecast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_forecast_get_forecast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that running forecast <cite>get_forecast</cite>
 does not throw exception for any combination of parameters.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_object">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with
+all attributes and basic attribute information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_object_wit_full_attribute_info">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_wit_full_attribute_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_object_wit_full_attribute_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_object_wit_full_attribute_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with
+all attributes and full attribute information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_name_mask">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_with_attributes_filter_with_name_mask</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_object_with_attributes_filter_with_name_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_name_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with filtered attributes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_non_existing_masks">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_with_attributes_filter_with_non_existing_masks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_object_with_attributes_filter_with_non_existing_masks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_non_existing_masks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with no attributes
+when non existing masks are used in attributes filter.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_return_no_attributes">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object_with_attributes_filter_with_return_no_attributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_object_with_attributes_filter_with_return_no_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_return_no_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>get_object</cite> returns specified object with no attributes
+when <cite>return_no_attributes</cite> is set to True in attributes filter.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4793,9 +4903,21 @@ read timeseries without specifying timeseries (by full_name, timskey or uuid_id)
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_recursive_delete_object">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_recursive_delete_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_recursive_delete_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_recursive_delete_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>delete_object</cite> deletes recursively existing object with children.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_rollback">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_rollback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that rollback discards changes made in the current session.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_search_objects">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_search_objects</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_search_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_search_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>search_objects</cite> returns correct objects according to specified search query.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4815,6 +4937,12 @@ errordoes not throw exception for any combination of parameters.</p>
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_statistical_sum_single_timeseries">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_statistical_sum_single_timeseries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_statistical_sum_single_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_statistical_sum_single_timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that running statistical <cite>sum_single_timeseries</cite> works correctly.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_update_object">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_update_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_update_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_update_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that <cite>update_object</cite> updates existing object.</p>
 </dd></dl>
 
 <dl class="py function">

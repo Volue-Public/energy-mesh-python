@@ -183,7 +183,7 @@
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_from_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_curve_type</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">AttributesFilter</span><span class="p">,</span> <span class="n">_from_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_curve_type</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span>
@@ -1033,6 +1033,248 @@
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">statistical_functions</span><span class="p">(</span>
             <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">full_name</span><span class="o">=</span><span class="n">full_name</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">sum_single_timeseries</span><span class="p">()</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">result</span> <span class="o">==</span> <span class="mf">41.0</span></div>
+
+
+<div class="viewcode-block" id="test_get_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_get_object</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `get_object` returns specified object with</span>
+<span class="sd">    all attributes and basic attribute information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SomePowerPlant1&quot;</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">object_path</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;PlantElementType&quot;</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">23</span>
+
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="n">attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_get_object_wit_full_attribute_info"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_object_wit_full_attribute_info">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_get_object_wit_full_attribute_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `get_object` returns specified object with</span>
+<span class="sd">    all attributes and full attribute information.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+
+        <span class="n">string_attribute_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+            <span class="c1"># with full info definition should be returned</span>
+            <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">)</span>
+
+            <span class="c1"># check one of the attributes</span>
+            <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;StringAtt&quot;</span><span class="p">:</span>
+                <span class="n">string_attribute_found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">string_definition</span><span class="o">.</span><span class="n">default_value</span> <span class="o">==</span> <span class="s2">&quot;Default string value&quot;</span>
+
+        <span class="k">assert</span> <span class="n">string_attribute_found</span></div>
+
+
+<div class="viewcode-block" id="test_get_object_with_attributes_filter_with_name_mask"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_name_mask">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_get_object_with_attributes_filter_with_name_mask</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `get_object` returns specified object with filtered attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+        <span class="n">attributes_filter</span> <span class="o">=</span> <span class="n">AttributesFilter</span><span class="p">(</span><span class="n">name_mask</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;StringAtt&quot;</span><span class="p">,</span> <span class="s2">&quot;BoolArrayAtt&quot;</span><span class="p">])</span>
+
+        <span class="n">string_attribute_found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">bool_array_attribute_found</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span>
+            <span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">,</span> <span class="n">attributes_filter</span><span class="o">=</span><span class="n">attributes_filter</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;StringAtt&quot;</span><span class="p">:</span>
+                <span class="n">string_attribute_found</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">elif</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;BoolArrayAtt&quot;</span><span class="p">:</span>
+                <span class="n">bool_array_attribute_found</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">assert</span> <span class="n">string_attribute_found</span>
+        <span class="k">assert</span> <span class="n">bool_array_attribute_found</span></div>
+
+
+<div class="viewcode-block" id="test_get_object_with_attributes_filter_with_non_existing_masks"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_non_existing_masks">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_get_object_with_attributes_filter_with_non_existing_masks</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `get_object` returns specified object with no attributes</span>
+<span class="sd">    when non existing masks are used in attributes filter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+        <span class="n">attributes_filter</span> <span class="o">=</span> <span class="n">AttributesFilter</span><span class="p">(</span><span class="n">namespace_mask</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;NON_EXISTING&quot;</span><span class="p">])</span>
+
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span>
+            <span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">,</span> <span class="n">attributes_filter</span><span class="o">=</span><span class="n">attributes_filter</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="test_get_object_with_attributes_filter_with_return_no_attributes"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_object_with_attributes_filter_with_return_no_attributes">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_get_object_with_attributes_filter_with_return_no_attributes</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `get_object` returns specified object with no attributes</span>
+<span class="sd">    when `return_no_attributes` is set to True in attributes filter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+        <span class="n">attributes_filter</span> <span class="o">=</span> <span class="n">AttributesFilter</span><span class="p">(</span><span class="n">return_no_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span>
+            <span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">,</span> <span class="n">attributes_filter</span><span class="o">=</span><span class="n">attributes_filter</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="test_search_objects"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_search_objects">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_search_objects</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `search_objects` returns correct objects according to specified search query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Type=ChimneyElementType]&quot;</span>
+
+        <span class="n">objects</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">start_object_path</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+
+        <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SomePowerPlantChimney1&quot;</span> <span class="ow">or</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SomePowerPlantChimney2&quot;</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span></div>
+
+
+<div class="viewcode-block" id="test_create_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_create_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_create_object</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `create_object` creates and returns new object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">owner_attribute_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef&quot;</span>
+        <span class="n">new_object_name</span> <span class="o">=</span> <span class="s2">&quot;SomeNewPowerPlantChimney&quot;</span>
+
+        <span class="n">new_object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">new_object_name</span><span class="p">,</span> <span class="n">owner_attribute_path</span><span class="o">=</span><span class="n">owner_attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">new_object_name</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner_attribute_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new_object_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">object_id</span><span class="o">=</span><span class="n">new_object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">type_name</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">type_name</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">path</span></div>
+
+
+<div class="viewcode-block" id="test_update_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_object</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `update_object` updates existing object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_to_update_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2&quot;</span>
+        <span class="n">new_owner_attribute_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney1.ChimneyToChimneyRef&quot;</span>
+        <span class="n">new_object_name</span> <span class="o">=</span> <span class="s2">&quot;SomeNewPowerPlantChimney&quot;</span>
+
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_object</span><span class="p">(</span>
+            <span class="n">object_path</span><span class="o">=</span><span class="n">object_to_update_path</span><span class="p">,</span>
+            <span class="n">new_name</span><span class="o">=</span><span class="n">new_object_name</span><span class="p">,</span>
+            <span class="n">new_owner_attribute_path</span><span class="o">=</span><span class="n">new_owner_attribute_path</span><span class="p">)</span>
+
+        <span class="n">new_object_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">new_owner_attribute_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new_object_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">new_object_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">new_object_name</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">new_object_path</span>
+        <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">new_owner_attribute_path</span></div>
+
+
+<div class="viewcode-block" id="test_delete_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_delete_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_delete_object</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `delete_object` deletes existing object without children.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2&quot;</span>
+
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Object not found:&quot;</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_recursive_delete_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_recursive_delete_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_recursive_delete_object</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that `delete_object` deletes recursively existing object with children.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">,</span> <span class="n">recursive_delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;Object not found:&quot;</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">object_path</span><span class="o">=</span><span class="n">object_path</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
