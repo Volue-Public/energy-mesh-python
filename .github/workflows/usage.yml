@@ -67,7 +67,7 @@ jobs:
           sudo apt-get install --yes software-properties-common
           sudo add-apt-repository --yes ppa:deadsnakes/ppa
           sudo apt-get install --yes python${{ matrix.python-version }}
-          sudo apt-get install --yes python3-distutils
+          sudo apt-get install --yes python${{ matrix.python-version }}-distutils
           sudo apt-get install --yes python3-pip
           sudo apt-get install --yes libkrb5-dev
           sudo apt-get install --yes python${{ matrix.python-version }}-dev
