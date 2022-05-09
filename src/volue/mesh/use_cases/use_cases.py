@@ -10,7 +10,7 @@ import pandas as pd
 import pyarrow as pa
 
 from volue.mesh import Connection, MeshObjectId, Timeseries
-from volue.mesh._common import _from_proto_guid
+from volue.mesh._common import AttributesFilter, _from_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.proto.core.v1alpha import core_pb2
@@ -96,28 +96,17 @@ def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
     return message
 
 
-def get_mesh_object_information(mesh_object: core_pb2.TimeseriesAttribute):
+def get_timeseries_attribute_information(timeseries_attribute: core_pb2.TimeseriesAttribute):
     """
     Create a printable message from a mesh object
     """
-
-    message = f"Mesh object with path: '{mesh_object.path}'  \n"\
-              f"has guid: '{_from_proto_guid(mesh_object.id)}', \n"\
-              f"its local expression is set to: '{mesh_object.local_expression}' \n"\
-              f"and its template expression is: '{mesh_object.template_expression}' \n"
-    if hasattr(mesh_object, 'entry') and (mesh_object.entry.timeseries_key != 0):
+    message = f"TimeseriesAttribute with path: '{timeseries_attribute.path}'  \n"\
+              f"has guid: '{_from_proto_guid(timeseries_attribute.id)}', \n"\
+              f"its local expression is set to: '{timeseries_attribute.local_expression}' \n"\
+              f"and its template expression is: '{timeseries_attribute.template_expression}' \n"
+    if hasattr(timeseries_attribute, 'entry') and timeseries_attribute.entry.timeseries_key != 0:
         message += "It has a timeseries entry connected to it: \n"
-        message += get_resource_information(mesh_object.entry)
-    return message
-
-
-def get_mesh_element_information(mesh_element: core_pb2.Object):
-    message = f"Mesh object with path: '{mesh_element.path}'  \n"\
-              f"has guid: '{_from_proto_guid(mesh_element.id)}', \n"\
-              f"name: '{mesh_element.name}', \n"\
-              f"type name: '{mesh_element.type_name}', \n"\
-              f"owner path: '{mesh_element.owner_id.path}', \n"\
-              f"owner guid: '{_from_proto_guid(mesh_element.owner_id.id)}', \n"
+        message += get_resource_information(timeseries_attribute.entry)
     return message
 
 def get_timeseries_information(timeseries: Timeseries):
@@ -133,7 +122,48 @@ def get_timeseries_information(timeseries: Timeseries):
               f" it has '{timeseries.number_of_points}' points " \
               f"and this is some of them: \n" \
               f"{timeseries.arrow_table.to_pandas()}"
+    return message
 
+def get_object_information(object: core_pb2.Object):
+    """
+    Create a printable message from an Object
+    """
+    message = f"Object with path: '{object.path}'  \n"\
+              f"has ID: '{_from_proto_guid(object.id)}', \n"\
+              f"name: '{object.name}', \n"\
+              f"type name: '{object.type_name}', \n"\
+              f"owner path: '{object.owner_id.path}', \n"\
+              f"owner ID: '{_from_proto_guid(object.owner_id.id)}'\n"
+    return message
+
+def get_attribute_value(attribute_value: core_pb2.AttributeValue):
+    return getattr(attribute_value, attribute_value.WhichOneof('value_oneof'))
+
+def get_attribute_information(attribute: core_pb2.Attribute):
+    """
+    Create a printable message from an Attribute
+    """
+    attribute_value = None
+    if attribute.HasField('singular_value'):
+        attribute_value = get_attribute_value(attribute.singular_value)
+    elif len(attribute.collection_values) > 0:
+        attribute_value = []
+        for collection_value in attribute.collection_values:
+            attribute_value.append(get_attribute_value(collection_value))
+
+    definition = attribute.definition
+
+    message = f"Attribute with path: '{attribute.path}'  \n"\
+              f"has ID: '{_from_proto_guid(attribute.id)}', \n"\
+              f"name: '{attribute.name}', \n"\
+              f"definition type: '{definition.value_type}', \n"\
+              f"value: '{attribute_value}'\n"
+
+    if definition.HasField("double_definition") or\
+        definition.HasField("int_definition"):
+        definition_type = getattr(definition, definition.WhichOneof('definition_type_oneof'))
+        message = f"{message}"\
+                  f"unit of measurement: '{definition_type.unit_of_measurement}'\n"
     return message
 
 
@@ -173,7 +203,7 @@ def use_case_1():
                                                             mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
                 print(f"{number + 1}. \n"
                       f"-----\n"
-                      f"{get_mesh_object_information(mesh_object)}")
+                      f"{get_timeseries_attribute_information(mesh_object)}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
                 pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
@@ -223,7 +253,7 @@ def use_case_2():
                                                             mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
                 print(f"{number + 1}. \n"
                       f"-----\n"
-                      f"{get_mesh_object_information(mesh_object)}")
+                      f"{get_timeseries_attribute_information(mesh_object)}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
                 pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
@@ -321,7 +351,7 @@ def use_case_4():
 
                 print(f"[{guid}]: \n"
                       f"-----\n"
-                      f"{get_mesh_object_information(mesh_object)}")
+                      f"{get_timeseries_attribute_information(mesh_object)}")
 
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
@@ -384,7 +414,7 @@ def use_case_4b():
 
                 print(f"[{path}]: \n"
                       f"-----\n"
-                      f"{get_mesh_object_information(mesh_object)}")
+                      f"{get_timeseries_attribute_information(mesh_object)}")
 
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
@@ -526,7 +556,7 @@ def use_case_6():
                                                                  mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"{get_mesh_object_information(mesh_object)}")
+                  f"{get_timeseries_attribute_information(mesh_object)}")
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
@@ -586,7 +616,7 @@ def use_case_7():
                                                                  mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"{get_mesh_object_information(mesh_object)}")
+                  f"{get_timeseries_attribute_information(mesh_object)}")
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
@@ -691,7 +721,7 @@ def use_case_9():
                                                         mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"{get_mesh_object_information(mesh_object)}")
+                  f"{get_timeseries_attribute_information(mesh_object)}")
 
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
@@ -753,7 +783,7 @@ def use_case_10():
                                                         mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"{get_mesh_object_information(mesh_object)}")
+                  f"{get_timeseries_attribute_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
             pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
@@ -814,7 +844,7 @@ def use_case_11():
                                                         mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"{get_mesh_object_information(mesh_object)}")
+                  f"{get_timeseries_attribute_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
             pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
@@ -877,7 +907,7 @@ def use_case_12():
                                                         mesh_object_id=MeshObjectId.with_uuid_id(mesh_object.id))
             print(f"{object_guid}: \n"
                   f"-----\n"
-                  f"{get_mesh_object_information(mesh_object)}")
+                  f"{get_timeseries_attribute_information(mesh_object)}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
             pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
@@ -927,7 +957,7 @@ def use_case_13():
             for number, object in enumerate(reply):
                 print(f"{number + 1}. \n"
                       f"-------------------------------------------\n"
-                      f"{get_mesh_element_information(object)}")
+                      f"{get_object_information(object)}")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -966,7 +996,7 @@ def use_case_14():
                 relationship_attribute_path = reply[0].owner_id.path
 
                 new_object = session.create_object(new_object_name, owner_attribute_path=relationship_attribute_path)
-                print(get_mesh_element_information(new_object))
+                print(get_object_information(new_object))
 
                 # Commit changes
                 #session.commit()
@@ -1022,10 +1052,83 @@ def use_case_16():
 
             session.update_object(object_id=object_guid, new_name=new_object_name)
             updated_object = session.get_object(object_id=object_guid)
-            print(get_mesh_element_information(updated_object))
+            print(get_object_information(updated_object))
 
             # Commit changes
             #session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_17():
+    """
+    Scenario:
+    For specific object of type `WindPark`, named `Bessaker` we want to find all attributes.
+
+    Object path: Model/MeshTEK/Mesh/Norge/Wind/Bessaker which has guid d3c41952-504d-4a47-b06c-c07e901c1c5b
+    
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 17"
+            object_guid = uuid.UUID("d3c41952-504d-4a47-b06c-c07e901c1c5b")
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            object = session.get_object(object_id=object_guid, full_attribute_info=True)
+            print(get_object_information(object))
+
+            number = 1
+            for attribute in object.attributes:
+                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
+                    print(f"{number}. \n"
+                        f"-------------------------------------------\n"
+                        f"{get_attribute_information(attribute)}")
+                    number += 1
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_18():
+    """
+    Scenario:
+    For specific object of type `WindPark`, named `Bessaker` we want to find all attributes with:
+    specific namespace ad tags.
+
+    Object path:    Model/MeshTEK/Mesh/Norge/Wind/Bessaker which has guid d3c41952-504d-4a47-b06c-c07e901c1c5b
+    Tags:           ProductionProperties, SystemSettings
+    Namespace:      Wind
+    
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 18"
+            object_guid = uuid.UUID("d3c41952-504d-4a47-b06c-c07e901c1c5b")
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            tags = ['ProductionProperties', 'SystemSettings']
+            namespaces = ['Wind']
+            attributes_filter = AttributesFilter(tag_mask=tags, namespace_mask=namespaces)
+
+            object = session.get_object(object_id=object_guid,
+                full_attribute_info=True,
+                attributes_filter=attributes_filter)
+            print(get_object_information(object))
+
+            number = 1
+            for attribute in object.attributes:
+                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
+                    print(f"{number}. \n"
+                        f"-------------------------------------------\n"
+                        f"{get_attribute_information(attribute)}")
+                    number += 1
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")

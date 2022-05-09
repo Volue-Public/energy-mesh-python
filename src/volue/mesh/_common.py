@@ -43,10 +43,9 @@ class AttributesFilter:
         Namespace mask:
             If multiple namespaces are provided then all attributes having
             at least one of them are returned (logical OR).
-            If an attribute has more than one namespace, they are
-            concatentad with dots '.', e.g.: namespace1.namespace2
-            In such case the namespace mask must provide also
-            "namespace1.namespace2" as one entry in the namespace mask.
+            Namespace mask does not accept entries with namespaces
+            concatenated with dots '.'. Each namespace mask entry must
+            be a separate namespace.
             If name mask or `return_no_attributes` flag is also set
             then an error will be returned.
             It is allowed to have both: tag mask and namespace mask set.
