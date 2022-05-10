@@ -200,7 +200,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         Raises:
             grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            (win)kerberos.GSSError: errors from kerboros
+            (win)kerberos.GSSError: errors from kerberos
             RuntimeError: invalid token duration
         """
 
