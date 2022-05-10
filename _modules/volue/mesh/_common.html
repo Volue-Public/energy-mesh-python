@@ -203,6 +203,9 @@
 <span class="sd">            See examples below for more details.</span>
 
 <span class="sd">        Tag mask:</span>
+<span class="sd">            Each attribute can have zero, one or more tags.</span>
+<span class="sd">            If the tag mask is set then only attributes with</span>
+<span class="sd">            at least one tag set in the field mask are read.</span>
 <span class="sd">            If multiple tags are provided then all attributes having</span>
 <span class="sd">            at least one of them are returned (logical OR).</span>
 <span class="sd">            If name mask or `return_no_attributes` flag is also set</span>
@@ -212,12 +215,14 @@
 <span class="sd">            See examples below for more details.</span>
 
 <span class="sd">        Namespace mask:</span>
-<span class="sd">            If multiple namespaces are provided then all attributes having</span>
-<span class="sd">            at least one of them are returned (logical OR).</span>
-<span class="sd">            If an attribute has more than one namespace, they are</span>
-<span class="sd">            concatentad with dots &#39;.&#39;, e.g.: namespace1.namespace2</span>
-<span class="sd">            In such case the namespace mask must provide also</span>
-<span class="sd">            &quot;namespace1.namespace2&quot; as one entry in the namespace mask.</span>
+<span class="sd">            Each attribute can have zero, one or more namespaces.</span>
+<span class="sd">            If the namespace mask is set then only attributes with</span>
+<span class="sd">            at least one namespace set in the field mask are read.</span>
+<span class="sd">            If multiple namespaces are provided in the mask then all</span>
+<span class="sd">            attributes having at least one of them are returned (logical OR).</span>
+<span class="sd">            Namespace mask does not accept entries with namespaces</span>
+<span class="sd">            concatenated with dots &#39;.&#39;. Each namespace mask entry must</span>
+<span class="sd">            be a separate namespace.</span>
 <span class="sd">            If name mask or `return_no_attributes` flag is also set</span>
 <span class="sd">            then an error will be returned.</span>
 <span class="sd">            It is allowed to have both: tag mask and namespace mask set.</span>
@@ -251,6 +256,19 @@
 <span class="sd">            Exactly the same rules apply to `namespace_mask`.</span>
 
 <span class="sd">    Example 3:</span>
+
+<span class="sd">        Arg:      `namespace_mask` is set to &quot;Hydro,Wind&quot;.</span>
+<span class="sd">        Response: All attributes with namespace &quot;Hydro&quot; or &quot;Wind&quot; will be returned.</span>
+<span class="sd">        Note:     Suppose there are the following attributes:</span>
+<span class="sd">        - A1 (namespace &quot;EnergySystem.Hydro&quot;)</span>
+<span class="sd">        - A2 (namespace &quot;EnergySystem.Wind&quot;)</span>
+<span class="sd">        - A3 (namespace &quot;EnergySystem.Carbon&quot;)</span>
+<span class="sd">        - A4 (namespace &quot;EnergySystem.Hydro.Small&quot;)</span>
+<span class="sd">        - A5 (namespace &quot;Hydro.Normal&quot;)</span>
+
+<span class="sd">            In this case attributes A1, A2, A4 and A5 will be returned.</span>
+
+<span class="sd">    Example 4:</span>
 
 <span class="sd">        Arg:      `tag_mask` is set to &quot;ProductionAttributes&quot;, `namespace_mask` is set to &quot;Hydro,Wind&quot;.</span>
 <span class="sd">        Response: All attributes with tag name &quot;ProductionAttributes&quot; and namespace &quot;Hydro&quot; or &quot;Wind&quot; will be returned.</span>
