@@ -32,6 +32,9 @@ class AttributesFilter:
             See examples below for more details.
 
         Tag mask:
+            Each attribute can have zero, one or more tags.
+            If the tag mask is set then only attributes with
+            at least one tag set in the field mask are read.
             If multiple tags are provided then all attributes having
             at least one of them are returned (logical OR).
             If name mask or `return_no_attributes` flag is also set
@@ -41,12 +44,14 @@ class AttributesFilter:
             See examples below for more details.
 
         Namespace mask:
-            If multiple namespaces are provided then all attributes having
-            at least one of them are returned (logical OR).
-            If an attribute has more than one namespace, they are
-            concatentad with dots '.', e.g.: namespace1.namespace2
-            In such case the namespace mask must provide also
-            "namespace1.namespace2" as one entry in the namespace mask.
+            Each attribute can have zero, one or more namespaces.
+            If the namespace mask is set then only attributes with
+            at least one namespace set in the field mask are read.
+            If multiple namespaces are provided in the mask then all
+            attributes having at least one of them are returned (logical OR).
+            Namespace mask does not accept entries with namespaces
+            concatenated with dots '.'. Each namespace mask entry must
+            be a separate namespace.
             If name mask or `return_no_attributes` flag is also set
             then an error will be returned.
             It is allowed to have both: tag mask and namespace mask set.
@@ -80,6 +85,19 @@ class AttributesFilter:
             Exactly the same rules apply to `namespace_mask`.
 
     Example 3:
+
+        Arg:      `namespace_mask` is set to "Hydro,Wind".
+        Response: All attributes with namespace "Hydro" or "Wind" will be returned.
+        Note:     Suppose there are the following attributes:
+        - A1 (namespace "EnergySystem.Hydro")
+        - A2 (namespace "EnergySystem.Wind")
+        - A3 (namespace "EnergySystem.Carbon")
+        - A4 (namespace "EnergySystem.Hydro.Small")
+        - A5 (namespace "Hydro.Normal")
+
+            In this case attributes A1, A2, A4 and A5 will be returned.
+
+    Example 4:
 
         Arg:      `tag_mask` is set to "ProductionAttributes", `namespace_mask` is set to "Hydro,Wind".
         Response: All attributes with tag name "ProductionAttributes" and namespace "Hydro" or "Wind" will be returned.
