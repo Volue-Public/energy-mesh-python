@@ -84,11 +84,11 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
 def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
     """Create a printable message from a resource object."""
     message = (
-        f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"\
-        f"has guid: '{_from_proto_guid(resource_object.id)}', \n"\
-        f"path set in the resource silo is: '{resource_object.path}', \n"\
-        f"it's curve '{resource_object.curve_type}', \n"\
-        f"resolution '{resource_object.resolution}' \n"\
+        f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"
+        f"has guid: '{_from_proto_guid(resource_object.id)}', \n"
+        f"path set in the resource silo is: '{resource_object.path}', \n"
+        f"it's curve '{resource_object.curve_type}', \n"
+        f"resolution '{resource_object.resolution}' \n"
         f"and unit of measurement is: '{resource_object.unit_of_measurement}'\n"
     )
     return message
@@ -97,9 +97,9 @@ def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
 def get_timeseries_attribute_information(timeseries_attribute: core_pb2.TimeseriesAttribute):
     """Create a printable message from a TimeseriesAttribute."""
     message = (
-        f"TimeseriesAttribute with path: '{timeseries_attribute.path}'  \n"\
-        f"has guid: '{_from_proto_guid(timeseries_attribute.id)}', \n"\
-        f"its local expression is set to: '{timeseries_attribute.local_expression}' \n"\
+        f"TimeseriesAttribute with path: '{timeseries_attribute.path}' \n"
+        f"has guid: '{_from_proto_guid(timeseries_attribute.id)}', \n"
+        f"its local expression is set to: '{timeseries_attribute.local_expression}' \n"
         f"and its template expression is: '{timeseries_attribute.template_expression}' \n"
     )
     if hasattr(timeseries_attribute, 'entry') and timeseries_attribute.entry.timeseries_key != 0:
@@ -110,14 +110,14 @@ def get_timeseries_attribute_information(timeseries_attribute: core_pb2.Timeseri
 def get_timeseries_information(timeseries: Timeseries):
     """Create a printable message from a timeseries."""
     message = (
-        f"Timeseries full name: '{timeseries.full_name}', " \
-        f"uuid: '{timeseries.uuid}', " \
-        f"timeskey: '{timeseries.timskey}', " \
-        f"start time: '{str(timeseries.start_time)}', " \
-        f"end time: '{str(timeseries.end_time)}', " \
-        f"resolution: '{timeseries.resolution}', " \
-        f" it has '{timeseries.number_of_points}' points " \
-        f"and this is some of them: \n" \
+        f"Timeseries full name: '{timeseries.full_name}', "
+        f"uuid: '{timeseries.uuid}', "
+        f"timeskey: '{timeseries.timskey}', "
+        f"start time: '{str(timeseries.start_time)}', "
+        f"end time: '{str(timeseries.end_time)}', "
+        f"resolution: '{timeseries.resolution}', "
+        f" it has '{timeseries.number_of_points}' points "
+        f"and this is some of them: \n"
         f"{timeseries.arrow_table.to_pandas()}"
     )
     return message
@@ -125,11 +125,11 @@ def get_timeseries_information(timeseries: Timeseries):
 def get_object_information(object: core_pb2.Object):
     """Create a printable message from an Object."""
     message = (
-        f"Object with path: '{object.path}'  \n"\
-        f"has ID: '{_from_proto_guid(object.id)}', \n"\
-        f"name: '{object.name}', \n"\
-        f"type name: '{object.type_name}', \n"\
-        f"owner path: '{object.owner_id.path}', \n"\
+        f"Object with path: '{object.path}'  \n"
+        f"has ID: '{_from_proto_guid(object.id)}', \n"
+        f"name: '{object.name}', \n"
+        f"type name: '{object.type_name}', \n"
+        f"owner path: '{object.owner_id.path}', \n"
         f"owner ID: '{_from_proto_guid(object.owner_id.id)}'\n"
     )
     return message
@@ -150,10 +150,10 @@ def get_attribute_information(attribute: core_pb2.Attribute):
     definition = attribute.definition
 
     message = (
-        f"Attribute with path: '{attribute.path}'  \n"\
-        f"has ID: '{_from_proto_guid(attribute.id)}', \n"\
-        f"name: '{attribute.name}', \n"\
-        f"definition type: '{definition.value_type}', \n"\
+        f"Attribute with path: '{attribute.path}'  \n"
+        f"has ID: '{_from_proto_guid(attribute.id)}', \n"
+        f"name: '{attribute.name}', \n"
+        f"definition type: '{definition.value_type}', \n"
         f"value: '{attribute_value}'\n"
     )
 
@@ -161,7 +161,7 @@ def get_attribute_information(attribute: core_pb2.Attribute):
         definition.HasField("int_definition"):
         definition_type = getattr(definition, definition.WhichOneof('definition_type_oneof'))
         message = (
-            f"{message}"\
+            f"{message}"
             f"unit of measurement: '{definition_type.unit_of_measurement}'\n"
         )
     return message
