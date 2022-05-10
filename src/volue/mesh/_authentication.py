@@ -83,7 +83,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             """
 
             Returns:
-                protobuf.wrappers_pb2.BytesValue: the kerboros token
+                protobuf.wrappers_pb2.BytesValue: the kerberos token
             """
             try:
                 if self.first_iteration:
@@ -200,7 +200,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         Raises:
             grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            (win)kerberos.GSSError: errors from kerboros
+            (win)kerberos.GSSError: errors from kerberos
             RuntimeError: invalid token duration
         """
 
