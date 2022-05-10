@@ -4,6 +4,7 @@ import uuid
 
 import grpc
 
+from . import _authentication
 from ._authentication import Authentication
 from ._credentials import Credentials
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
@@ -175,6 +176,17 @@ class Connection(abc.ABC):
         call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
         credentials = grpc.composite_channel_credentials(ssl_credentials,
                                                          call_credentials)
+        channel = cls._secure_grpc_channel(target, credentials)
+        return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
+
+    @classmethod
+    def _with_fake_identity(cls, target: str, root_certificates: Optional[str], name: str):
+        ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
+        auth_metadata_plugin = _authentication.FakeIdentityPlugin(
+            target, ssl_credentials, name
+        )
+        call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
+        credentials = grpc.composite_channel_credentials(ssl_credentials, call_credentials)
         channel = cls._secure_grpc_channel(target, credentials)
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
