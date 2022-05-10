@@ -83,7 +83,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             """
 
             Returns:
-                protobuf.wrappers_pb2.BytesValue: the kerboros token
+                protobuf.wrappers_pb2.BytesValue: the kerberos token
             """
             try:
                 if self.first_iteration:
