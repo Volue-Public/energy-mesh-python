@@ -182,6 +182,7 @@
 <span class="kn">import</span> <span class="nn">grpc</span>
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
 
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2_grpc</span>
 
 <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;win32&#39;</span><span class="p">):</span>
@@ -413,6 +414,53 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">authenticate_fake</span><span class="p">(</span><span class="n">service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Authenticate to Mesh with a fake identity.</span>
+
+<span class="sd">    Requires Mesh configuration. Internal use only.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service: A mesh service stub.</span>
+<span class="sd">        name: The display name of the fake user.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A pair (token, expiration) where token is a valid Mesh authorization</span>
+<span class="sd">        token, and expiration is the datetime for the expiration of that token.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        grpc.RpcError: If the remote procedure call fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AuthenticateFakeRequest</span><span class="p">(</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="n">token_duration</span><span class="o">=</span><span class="n">protobuf</span><span class="o">.</span><span class="n">duration_pb2</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">AuthenticateFake</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">bearer_token</span><span class="p">,</span> <span class="n">now</span> <span class="o">+</span> <span class="n">response</span><span class="o">.</span><span class="n">token_duration</span><span class="o">.</span><span class="n">ToTimedelta</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">FakeIdentityPlugin</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">AuthMetadataPlugin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A grpc.AuthMetadataPlugin for fake Mesh authentication.</span>
+
+<span class="sd">    Requires Mesh configuration. Internal use only.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grpc_target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">grpc_credentials</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ChannelCredentials</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">grpc_target</span><span class="p">,</span>
+            <span class="n">credentials</span><span class="o">=</span><span class="n">grpc_credentials</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span> <span class="o">=</span> <span class="n">authenticate_fake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">callback</span><span class="p">(((</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">),),</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
            </div>
