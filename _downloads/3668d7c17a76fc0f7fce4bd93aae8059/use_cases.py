@@ -558,10 +558,10 @@ def use_case_7():
     Scenario:
     We want to transform existing timeseries from hourly resolution to daily.
 
-    Object guid:                '7608c9e2-c4fc-4570-b5b2-069f29a34f22'
+    Object guid:                '7608c9e2-c4fc-4570-b5b2-069f29a34f22' which is:
+                                Model/MeshTEK/Mesh/Norge/Vannkraft/Mørre/Mørre.Production_operative (TimeseriesCalculation)
     Transformation expression:  ## = @TRANSFORM(Object guid,'DAY','AVG')
     Time interval:              5.09.2021 - 15.09.2021
-
 
     """
     connection = Connection(host=HOST, port=PORT)
@@ -661,7 +661,8 @@ def use_case_9():
     Scenario:
     We want to get the historical data for a timeseries on a specific date.
 
-    Mesh object:                6e602d3e-1fb6-49de-9c00-4cb78ace9459
+    Mesh object:                333a4648-bd2a-4331-acd8-ab88e4a1a5f5 which is:
+                                Model/MeshTEK/Cases/Morre_Short_Opt/Norge/Vannkraft/Mørre/Mørre/Storvatnet/1962.Inflow' (TimeseriesCalculation)
     Time interval:              01.09.2021 - 15.09.2021
     Historical date:            07.09.2021
     Calculation expression:     ## = @GetTsAsOfTime(@t('.Inflow'),'20210907000000000')
@@ -672,8 +673,7 @@ def use_case_9():
         try:
             use_case_name = "Use case 9"
             model = "MeshTEK"
-            object_guid = '6e602d3e-1fb6-49de-9c00-4cb78ace9459'  # ReservoirVolume (TimeseriesCalculation)
-            search_query = ".Inflow"
+            object_guid = '333a4648-bd2a-4331-acd8-ab88e4a1a5f5'
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             historical_date = datetime(2021, 9, 7, tzinfo=LOCAL_TIME_ZONE)
@@ -700,7 +700,7 @@ def use_case_9():
 
             historical_timeseries = session.history_functions(
                 MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_ts_as_of_time(
-                    available_at_timepoint=historical_date, search_query=search_query)
+                    available_at_timepoint=historical_date)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
@@ -723,7 +723,8 @@ def use_case_10():
     Scenario:
     We want to get the last 5 historical versions of a known timeseries
 
-    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
+    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd which is:
+                                Model/MeshTEK/Mesh/Norge/HydroForecast/Mørre/Mørre.Inflow (TimeseriesCalculation)
     Time interval:              01.09.2021 - 15.09.2021
     Number of versions to get:  5
     Calculation expression:     ## = @GetTsHistoricalVersions(@t('.Inflow'),5)
@@ -737,7 +738,6 @@ def use_case_10():
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
-            search_query = '.Inflow'
             max_number_of_versions_to_get = 5
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -762,7 +762,7 @@ def use_case_10():
             # Get historical timeseries
             historical_timeseries = session.history_functions(
                 MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_ts_historical_versions(
-                    max_number_of_versions_to_get, search_query)
+                    max_number_of_versions_to_get)
 
             for number, timeserie in enumerate(historical_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
@@ -786,7 +786,8 @@ def use_case_11():
     Scenario:
     We want to get all forecasts for a specific object
 
-    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
+    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd which is:
+                                Model/MeshTEK/Mesh/Norge/HydroForecast/Mørre/Mørre.Inflow (TimeseriesCalculation)
     Time interval:              01.09.2021 - 28.09.2021
     Calculation expression:     ## = @GetAllForecasts(@t('.Inflow'))
 
@@ -799,7 +800,6 @@ def use_case_11():
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
-            search_query = '.Inflow'
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -822,8 +822,7 @@ def use_case_11():
 
             # Get forecast timeseries
             forecast_timeseries = session.forecast_functions(
-                MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_all_forecasts(
-                    search_query)
+                MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_all_forecasts()
 
             for number, timeserie in enumerate(forecast_timeseries):
                 pandas_dataframe = timeserie.arrow_table.to_pandas()
@@ -846,7 +845,8 @@ def use_case_12():
     Scenario:
     We want to get some specific forecasts for an object
 
-    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd
+    Mesh object:                f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd which is:
+                                Model/MeshTEK/Mesh/Norge/HydroForecast/Mørre/Mørre.Inflow (TimeseriesCalculation)
     Time interval:              01.09.2021 - 12.10.2021
     Calculation expression:     ## = @GetForecast(@t('.Inflow'),'20210831000000000','20210902000000000','20210901090000000')
 
@@ -859,7 +859,6 @@ def use_case_12():
             object_guid = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 10, 12, tzinfo=LOCAL_TIME_ZONE)
-            search_query = '.Inflow'
             forecast_start_min = datetime(2021, 8, 31, tzinfo=LOCAL_TIME_ZONE)
             forecast_start_max = datetime(2021, 9, 2, tzinfo=LOCAL_TIME_ZONE)
             available_at_timepoint = datetime(2021, 9, 1, 9, tzinfo=LOCAL_TIME_ZONE)
@@ -886,7 +885,7 @@ def use_case_12():
             # Get forecast timeseries
             forecast_timeseries = session.forecast_functions(
                 MeshObjectId(uuid_id=uuid.UUID(object_guid)), start_time=start, end_time=end).get_forecast(
-                    forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint, search_query=search_query)
+                    forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint)
 
             pandas_dataframe = forecast_timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
