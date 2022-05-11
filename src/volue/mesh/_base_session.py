@@ -165,7 +165,8 @@ class Session(abc.ABC):
             attribute_id: Universal Unique Identifier of the attribute to be retrieved.
             attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the attribute to be retrieved.
-            full_attribute_info: If set then attribute's definition will also be returned
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attribute will be returned, otherwise only name, path, ID and value(s).
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
