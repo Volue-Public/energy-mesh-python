@@ -27,6 +27,9 @@ PORT = 50051
 SHOW_PLOT = True
 # Save timeseries to CSV file
 SAVE_TO_CSV = True
+# Some use cases write new points or update existing objects
+# Set this flag to True to commit the changes (made in use cases) to Mesh
+COMMIT_CHANGES = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
@@ -514,7 +517,8 @@ def use_case_5():
             timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
 
             # Commit changes
-            session.commit()
+            if COMMIT_CHANGES:
+                session.commit()
 
             plot_timeseries(timskey_and_pandas_dataframe,
                             f"{use_case_name}: Before and after writing")
@@ -998,7 +1002,8 @@ def use_case_14():
                 print(get_object_information(new_object))
 
                 # Commit changes
-                #session.commit()
+                if COMMIT_CHANGES:
+                    session.commit()
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -1024,7 +1029,8 @@ def use_case_15():
             session.delete_object(object_path=object_path, recursive_delete=True)
 
             # Commit changes
-            #session.commit()
+            if COMMIT_CHANGES:
+                session.commit()
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -1054,7 +1060,8 @@ def use_case_16():
             print(get_object_information(updated_object))
 
             # Commit changes
-            #session.commit()
+            if COMMIT_CHANGES:
+                session.commit()
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
