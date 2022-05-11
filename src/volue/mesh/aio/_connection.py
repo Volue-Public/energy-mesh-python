@@ -370,6 +370,15 @@ class Connection(_base_connection.Connection):
                 replies.append(reply)
             return replies
 
+        async def get_attribute(
+                self,
+                attribute_id: Optional[uuid.UUID] = None,
+                attribute_path: Optional[str] = None,
+                full_attribute_info: bool = False) -> core_pb2.Attribute:
+            request = super()._prepare_get_attribute_request(
+                attribute_id, attribute_path, full_attribute_info)
+            return await self.mesh_service.GetAttribute(request)
+
         async def get_object(
                 self,
                 object_id: Optional[uuid.UUID] = None,

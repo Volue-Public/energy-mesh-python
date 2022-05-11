@@ -364,6 +364,15 @@ class Connection(_base_connection.Connection):
             replies = self.mesh_service.SearchTimeseriesAttributes(request)
             return list(replies)
 
+        def get_attribute(
+                self,
+                attribute_id: Optional[uuid.UUID] = None,
+                attribute_path: Optional[str] = None,
+                full_attribute_info: bool = False) -> core_pb2.Attribute:
+            request = super()._prepare_get_attribute_request(
+                attribute_id, attribute_path, full_attribute_info)
+            return self.mesh_service.GetAttribute(request)
+
         def get_object(
                 self,
                 object_id: Optional[uuid.UUID] = None,
