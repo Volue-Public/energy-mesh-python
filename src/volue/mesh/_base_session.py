@@ -162,7 +162,7 @@ class Session(abc.ABC):
         Retrieve an existing attribute from the Mesh object model.
 
         Args:
-            attribute_id: Universal Unique Identifier of the attribute to be deleted.
+            attribute_id: Universal Unique Identifier of the attribute to be retrieved.
             attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the attribute to be retrieved.
             full_attribute_info: If set then attribute's definition will also be returned
