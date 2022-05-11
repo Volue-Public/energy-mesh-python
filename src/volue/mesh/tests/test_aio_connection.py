@@ -21,7 +21,7 @@ from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
+from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_timeseries_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2, verify_timeseries_2
 
 
@@ -1116,7 +1116,7 @@ async def test_get_bool_array_attribute():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     attribute_name = "BoolArrayAtt"
-    bool_array_att_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    bool_array_att_path = get_attribute_path_principal() + attribute_name
     bool_array_values = [False, True, False, True, False]
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=bool_array_att_path, full_attribute_info=True)
@@ -1143,7 +1143,7 @@ async def test_get_xy_set_attribute():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     attribute_name = "XYSetAtt"
-    xySetAttPath = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    xySetAttPath = get_attribute_path_principal() + attribute_name
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=xySetAttPath, full_attribute_info=True)
         assert attribute.path == xySetAttPath
@@ -1168,7 +1168,7 @@ async def test_get_utc_time_attribute():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     attribute_name = "UtcDateTimeAtt"
-    utc_date_time_att_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    utc_date_time_att_path = get_attribute_path_principal() + attribute_name
     utc_time_value = datetime.strptime("05/10/22 07:24:15", "%m/%d/%y %H:%M:%S") # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=utc_date_time_att_path, full_attribute_info=True)
@@ -1197,10 +1197,11 @@ async def test_get_boolean_attribute():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     attribute_name = "BoolAtt"
-    bool_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    bool_attribute_path = get_attribute_path_principal() + attribute_name
+    bool_attribute_id = uuid.UUID("9cae71c0-ca25-4adc-a86a-51202d5e74a9")
 
     async with connection.create_session() as session:
-        attribute = await session.get_attribute(attribute_path=bool_attribute_path, full_attribute_info=True)
+        attribute = await session.get_attribute(attribute_id=bool_attribute_id, full_attribute_info=True)
         assert attribute.path == bool_attribute_path
         assert attribute.name == attribute_name
         assert attribute.singular_value.boolean_value == True
@@ -1226,7 +1227,7 @@ async def test_get_calc_time_series_attribute():
 
     attribute_name = "TsCalcAtt2"
     expression = "##= @SUM(@T('ReferenceSeriesCollectionAtt.TsRawAtt'))\n\n"
-    str_atttribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
         assert attribute.path == str_atttribute_path
@@ -1255,7 +1256,7 @@ async def test_get_raw_time_series_attribute():
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute_name = "TsRawAtt"
-    str_atttribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
         assert attribute.path == str_atttribute_path
@@ -1285,7 +1286,7 @@ async def test_get_string_attribute():
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute_name = "StringAtt"
-    str_atttribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
     default_string_value = "Default string value"
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
@@ -1313,7 +1314,7 @@ async def test_get_double_attribute():
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute_name = "DblAtt"
-    dbl_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    dbl_attribute_path = get_attribute_path_principal() + attribute_name
 
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)

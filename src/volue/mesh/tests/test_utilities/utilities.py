@@ -246,3 +246,6 @@ def get_timeseries_attribute_2():
     )
     full_path = timeseries_attribute.silo + timeseries_attribute.path
     return timeseries_attribute, full_path
+
+def get_attribute_path_principal():
+    return "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
