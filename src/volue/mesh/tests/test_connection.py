@@ -1167,9 +1167,10 @@ def test_get_boolean_attribute():
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     attribute_name = "BoolAtt"
     bool_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1." + attribute_name
+    bool_attribute_id = uuid.UUID("9cae71c0-ca25-4adc-a86a-51202d5e74a9")
 
     with connection.create_session() as session:
-        attribute = session.get_attribute(attribute_path=bool_attribute_path, full_attribute_info=True)
+        attribute = session.get_attribute(attribute_id=bool_attribute_id, full_attribute_info=True)
         assert attribute.path == bool_attribute_path
         assert attribute.name == attribute_name
         assert attribute.singular_value.boolean_value == True
