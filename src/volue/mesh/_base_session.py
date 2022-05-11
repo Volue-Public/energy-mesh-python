@@ -42,6 +42,11 @@ class Session(abc.ABC):
             object_id: Universal Unique Identifier of the Mesh object.
             object_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the Mesh object.
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attributes owned by the object will be returned, otherwise only name,
+                path, ID and value(s).
+            attributes_filter: Filtering criteria for what attributes owned by
+                object(s) should be returned. By default all attributes are returned.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -67,7 +72,7 @@ class Session(abc.ABC):
             start_object_path: Start searching at the path in the
                 :ref:`Mesh object model <mesh object model>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
-                of attributes owned by object(s) will be returned, otherwise only name,
+                of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
             attributes_filter: Filtering criteria for what attributes owned by
                 object(s) should be returned. By default all attributes are returned.
