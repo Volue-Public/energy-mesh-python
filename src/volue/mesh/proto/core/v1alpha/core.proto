@@ -783,6 +783,7 @@ message AttributeDefinition {
     TimeseriesAttributeDefinition timeseries_definition = 15;
     RatingCurveAttributeDefinition rating_curve_definition = 16;
     XYtableAttributeDefinition xy_table_definition = 17;
+    RelationshipAttributeDefinition relationship_definition = 18;
   }
 }
 
@@ -826,6 +827,10 @@ message RatingCurveAttributeDefinition {
 // TODO: XY or XYZ?
 message XYtableAttributeDefinition {
   // TODO: define
+}
+
+message RelationshipAttributeDefinition {
+  string object_type = 1;
 }
 
 enum AttributeView {
