@@ -70,7 +70,7 @@ To get the domain name from a domain joined Windows computer::
 	...
 
 At this stage it's a good idea to test if the domain controller is reachable
-from your Linux machine. All the following Linux examples run on Ubunut 20.04
+from your Linux machine. All the following Linux examples run on Ubuntu 20.04
 LTS::
 
 	# Ideally your DNS setup includes the domain controller. This will
@@ -85,7 +85,7 @@ LTS::
 
 	$ ping 172.20.101.20
 
-If the above commands both failed your network will not allow Kerberos
+If the above commands both failed, your network will not allow Kerberos
 authentication, and you will have to resolve your network issues.
 
 Then we should see if we're able to connect to the KDC on the Kerberos port. By
