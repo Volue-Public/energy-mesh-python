@@ -541,6 +541,15 @@
                 <span class="n">replies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">replies</span></div>
 
+<div class="viewcode-block" id="Connection.Session.get_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">attribute_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">:</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_get_attribute_request</span><span class="p">(</span>
+                <span class="n">attribute_id</span><span class="p">,</span> <span class="n">attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Connection.Session.get_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_object">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
                 <span class="n">object_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

@@ -2511,6 +2511,26 @@ of the object to be deleted.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.Session.get_attribute">
+<span class="sig-name descname"><span class="pre">get_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.proto.core.v1alpha.core_pb2.Attribute" title="volue.mesh.proto.core.v1alpha.core_pb2.Attribute"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.Attribute</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.get_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve an existing attribute from the Mesh object model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_id</strong> – Universal Unique Identifier of the attribute to be retrieved.</p></li>
+<li><p><strong>attribute_path</strong> – Path in the <a class="reference internal" href="mesh_concepts.html#mesh-object-model"><span class="std std-ref">Mesh object model</span></a>
+of the attribute to be retrieved.</p></li>
+<li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
+of attribute will be returned, otherwise only name, path, ID and value(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.get_object">
 <span class="sig-name descname"><span class="pre">get_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">object_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">volue.mesh._common.AttributesFilter</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.proto.core.v1alpha.core_pb2.Object" title="volue.mesh.proto.core.v1alpha.core_pb2.Object"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.Object</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.get_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.get_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request information associated with a Mesh object from the Mesh object model.
@@ -3330,6 +3350,26 @@ of the object to be deleted.</p></li>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.forecast.ForecastFunctions" title="volue.mesh.calc.forecast.ForecastFunctions">ForecastFunctions</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.get_attribute">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.proto.core.v1alpha.core_pb2.Attribute" title="volue.mesh.proto.core.v1alpha.core_pb2.Attribute"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.Attribute</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.get_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve an existing attribute from the Mesh object model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_id</strong> – Universal Unique Identifier of the attribute to be retrieved.</p></li>
+<li><p><strong>attribute_path</strong> – Path in the <a class="reference internal" href="mesh_concepts.html#mesh-object-model"><span class="std std-ref">Mesh object model</span></a>
+of the attribute to be retrieved.</p></li>
+<li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
+of attribute will be returned, otherwise only name, path, ID and value(s).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.45.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4614,6 +4654,30 @@ does not throw exception for any combination of parameters.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_bool_array_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_bool_array_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_bool_array_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_bool_array_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a boolean array attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_boolean_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_boolean_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_boolean_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_boolean_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a boolean attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_calc_time_series_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_calc_time_series_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_calc_time_series_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_calc_time_series_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a calculation time series attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_double_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_double_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_double_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_double_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a double attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_object">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that <cite>get_object</cite> returns specified object with
@@ -4648,9 +4712,33 @@ when <cite>return_no_attributes</cite> is set to True in attributes filter.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_raw_time_series_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_raw_time_series_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_raw_time_series_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_raw_time_series_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a raw time series attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_string_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_string_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_string_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_string_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a string attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_timeseries">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_timeseries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that timeseries entry data can be retrieved</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_utc_time_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_utc_time_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_utc_time_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_utc_time_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a UtcDateTime attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_xy_set_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_xy_set_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_xy_set_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_xy_set_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a XY set attribute and its definition.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -4820,6 +4908,30 @@ does not throw exception for any combination of parameters.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_bool_array_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_bool_array_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_bool_array_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_bool_array_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a boolean array attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_boolean_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_boolean_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_boolean_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_boolean_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a boolean attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_calc_time_series_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_calc_time_series_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_calc_time_series_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_calc_time_series_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a calculation time series attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_double_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_double_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_double_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_double_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a double attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_object">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that <cite>get_object</cite> returns specified object with
@@ -4854,9 +4966,33 @@ when <cite>return_no_attributes</cite> is set to True in attributes filter.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_raw_time_series_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_raw_time_series_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_raw_time_series_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_raw_time_series_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a raw time series attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_string_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_string_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_string_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_string_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a string attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_timeseries_async">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_timeseries_async</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_timeseries_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_timeseries_async" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that timeseries entry data can be retrieved</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_utc_time_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_utc_time_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_utc_time_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_utc_time_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a UtcDateTime attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_xy_set_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_xy_set_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_xy_set_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_xy_set_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a XY set attribute and its definition.</p>
 </dd></dl>
 
 <dl class="py function">
