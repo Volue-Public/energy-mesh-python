@@ -1,85 +1,183 @@
+==============
 Authentication
---------------
+==============
 
-The Mesh Python SDK supports user authentication/authorization feature. Because every user that is authenticated by Mesh server is also authorized to access all APIs exposed from Mesh gRPC, we will refer to it by just **authentication**.
+When connecting to Mesh using the Python SDK you might need to authenticate
+using Kerberos. This is required by the Mesh server if Kerberos is enabled
+for the gRPC interface in the Mesh configuration file.
 
-.. note::
-   Authentication is done using the Kerberos protocol towards Active Directory. Client and server must be in *line of sight* of the Key Distribution Center (KDC).
-
-If the Mesh server is configured to use authentication then only authenticated users may work with Mesh. Authenticated users obtain Mesh access tokens that are used for each call to Mesh server to prove the user's identity.
-Only two methods can be called without access token:
-
-* AuthenticateKerberos - used for getting authorization token
-* GetVersion - for getting Mesh server version
-
-.. note::
-   For security reasons authentication requires secure connection with Mesh server (using TLS). It is needed for encrypting tokens.
+For security reasons authentication also requires TLS to be enabled, and
+you might therefore need Mesh's TLS certificate in the below examples.
 
 
-Usage
-*****************
+Windows Kerberos
+****************
 
-To use authentication the user has to provide authentication parameters when creating a :ref:`api:volue.mesh`.Connection or a :ref:`api:volue.mesh.aio`.Connection:.
-Authentication parameters consist of:
+If you are on Windows as an Active Directory domain user Kerberos
+authentication is relatively simple. You only need to find the service
+principal name the Mesh service is running under. If Mesh is running as a
+machine user the service principal name will usually be
+``HOST/full.qualified.domain.name`` or ``HOST/f.q.d.n@DOMAIN.COM`` but it might
+be different in your environment. Determining the service principal name for
+the Mesh service is out of scope for this guide.
 
-* Service Principal Name (SPN)
-* User Principal Name (UPN)
+.. code-block:: python
 
-Depending on the system configuration providing only *service principal* may be enough for successful authentication. This is usually the case when authenticating as the currently logged in Windows user.
+	from volue import mesh
 
-Instantiation of a Connection object with authentication parameters will perform the authentication process and obtain a Mesh token that will be used for each subsequent call to the Mesh server.
+	with open("certificate.pem", "rb") as f:
+	    certificate = f.read()
 
-
-Service Principal
-*****************
-
-If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.:
-
-   .. code-block:: python
-
-      'HOST/hostname.ad.examplecompany.com'
-
-If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.:
-
-   .. code-block:: python
-
-      'ad\\user.name'
-
-   Or:
-
-   .. code-block:: python
-
-      r'ad\user.name'
-
-.. note::
-    Winkerberos converts service principal name if provided in RFC-2078 format. '@' is converted to '/' if there is no '/' character in the service principal name.
-
-    E.g.: **service@hostname**
-
-    Would be converted to: **service/hostname**
+	connection = mesh.Connection.with_kerberos("mesh.local:50051", certificate,
+					           "HOST/mesh.local@DOMAIN.COM", "user@DOMAIN.COM")
+	print(connection.get_user_identity())
 
 
-Mesh token
-*****************
+MIT Kerberos (Linux/MacOS)
+**************************
 
-The Mesh access token is valid for 1 hour, after this time it will expire and a new token needs to be obtained from the Mesh server. This is done automatically and the user does not need to take any additional action.
+When running on Linux or MacOS our world quickly becomes more complicated.
+In most configurations the system will not be aware of the Active Directory
+configuration, and you will not be logged in as a domain user. We therefore
+have to complete a number of steps to make Kerberos credentials available
+to the Python SDK.
 
-The user may optionally revoke the Mesh access token. This may useful when a user finishes working with Mesh and wants to make sure it will not be used by anyone else for the time until it expires.
+This is a quickstart guide designed to help you get started, but MIT Kerberos
+and Active Directory are both complex topics with numerous possible
+configurations, and it is not unlikely that you will need to do some debugging
+at one or more of the steps below.
 
+Before we get started you'll need to find the network address(es) of the Active
+Directory (AD) Key Distribution Center (KDC), the AD domain name, credentials
+for your AD user, the service principal name for the Mesh service, and the TLS
+certificate of the Mesh server. Your IT/Operations department might be able to
+assist with this, or you can try to investigate yourself.
 
-Requirements
-*****************
+In this guide we're going to assume that the domain name also resolves to the
+domain controller and the KDC.
 
-#. Mesh server configured to use authentication and TLS. Please contact Volue consultant to confirm your server configuration.
-#. Find out correct *service principal* for Mesh server you want to connect to.
-#. Create a :ref:`api:volue.mesh`.Connection or a :ref:`api:volue.mesh.aio`.Connection: object with authentication parameters.
+To get the domain name from a domain joined Windows computer::
+
+	REM Get the AD domain name.
+
+	> set USERDNSDOMAIN
+	USERDDNSOMAIN=DOMAIN.COM
+
+	REM Get a bit more information about the domain controller.
+	REM You should note down the IP address here.
+
+	> nltest /dsgetdc:DOMAIN.COM
+	...
+
+At this stage it's a good idea to test if the domain controller is reachable
+from your Linux machine. All the following Linux examples run on Ubuntu 20.04
+LTS::
+
+	# Ideally your DNS setup includes the domain controller. This will
+	# make the following steps significantly easier. If this command
+	# fails it might be a good idea to add the IP address of the
+	# domain controller(s) to your list of DNS servers.
+
+	$ ping domain.com       # Or the address of a domain controller.
+
+	# You can also use the IP directly, but we would recommend against
+	# it.
+
+	$ ping 172.20.101.20
+
+If the above commands both failed, your network will not allow Kerberos
+authentication, and you will have to resolve your network issues.
+
+Then we should see if we're able to connect to the KDC on the Kerberos port. By
+default the Kerberos protocol will communicate on port 88. If this fails you
+will have to work with your IT/Operations department to resolve the issue::
+
+	$ netcat -vz domain.com 88
+	Connection to domain.com 88 port [tcp/kerberos] succeeded!
+
+If everything has gone well up until this point it's time to install MIT
+Kerberos. On your distribution the MIT Kerberos package names might be different::
+
+	$ sudo apt install krb5-user krb-config libkrb5-dev
+
+Then we'll need to configure MIT Kerberos::
+
+	$ cat /etc/krb5.conf
+	[libdefaults]
+        	default_realm = DOMAIN.COM
+
+	[realms]
+        	DOMAIN.COM = {
+                	kdc = domain.com
+                	admin_server = domain.com
+		}
+
+	[domain_realm]
+        	.domain.com = DOMAIN.COM
+        	domain.com = DOMAIN.COM
+
+And finally we can get a ticket granting ticket from the KDC. If this
+works you've successfully performed your first Kerberos authentication::
+
+	$ kinit -V user@DOMAIN.COM
+	Using default cache: /tmp/krb5cc_1000
+	Using principal: user@DOMAIN.COM
+	Password for user@DOMAIN.COM: ****
+	Authenticated to Kerberos v5
+
+The newly generated ticket granting ticket will be used when the Mesh
+Python SDK authenticates to the Mesh server. As long as that ticket is
+available on the client you will not have to retype your password.
+To destroy the ticket run ``kdestroy``.
+
+Finally, we can connect to the Mesh server from Python.
+
+.. code-block:: python
+
+	from volue import mesh
+
+	# Most certificates won't work with IP addresses, therefore
+	# you'll need to be able to resolve the Mesh server by name,
+	# either through your DNS configuration, or through /etc/hosts.
+	with open("certificate.pem", "rb") as f:
+	    certificate = f.read()
+
+	# mesh.domain.com is the address of the Mesh server.
+	# HOST/... is the service principal name, and user@DOMAIN.COM
+	# is the user principal name.
+	connection = mesh.Connection.with_kerberos(
+	    "mesh.domain.com:50051", certificate,
+	    "HOST/mesh.domain.com@DOMAIN.COM", "user@DOMAIN.COM"
+	)
+	print(connection.get_user_identity())
 
 
 Example
-**********************************
+*******
 
 Please refer to example *authorization.py*:
 
 .. literalinclude:: /../../src/volue/mesh/examples/authorization.py
 
 
+Internals
+*********
+
+Mesh authentication is based on **authorization tokens**. When authentication
+is enabled most network calls to Mesh will require one of these tokens to
+succeed. To get an authorization token the client is required to make a call
+to an authentication endpoint, such as the ``AuthenticateKerberos`` gRPC
+method. Authentication endpoints perform the necessary authentication steps,
+and if successful return an authorization token that can be used for future
+calls.
+
+Authorization tokens have an expiration time, after which they're no longer
+valid, and a new authentication call and a new token is required. At the
+time of writing most authorization tokens are valid for one hour, but this
+is subject to change.
+
+When creating a Mesh connection with authentication enabled in the Python SDK
+authentication calls and authorization tokens will be handled transparently
+through the ``_authentication`` module. This module will perform authentication
+calls when a new token is required, and add authorization tokens to calls
+that require them.

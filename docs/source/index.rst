@@ -17,6 +17,7 @@ If this is your first time using this library, here are some resources to help y
 - **Quickstart:** :doc:`quickstart`
 - **Installation:** :doc:`installation`
 - **Examples:** :doc:`examples` | :doc:`tests`
+- **Authentication:** :doc:`authentication`
 - **How to do development** :ref:`Setup for developers`
 
 Features
@@ -48,6 +49,7 @@ If you're having trouble, these resources might help.
    introduction_to_mesh
    usecases
    examples
+   authentication
    tests
    faq
    glossary
