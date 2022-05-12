@@ -171,8 +171,10 @@ class Connection(abc.ABC):
                 'ad\\user`.
         """
         ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
-        auth_metadata_plugin = Authentication(target, ssl_credentials,
-                                              service_principal, user_principal)
+        auth_params = _authentication.Authentication.Parameters(
+            service_principal, user_principal
+        )
+        auth_metadata_plugin = Authentication(auth_params, target, ssl_credentials)
         call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
         credentials = grpc.composite_channel_credentials(ssl_credentials,
                                                          call_credentials)
