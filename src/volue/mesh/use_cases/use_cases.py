@@ -969,13 +969,13 @@ def use_case_13():
 def use_case_14():
     """
     Scenario:
-    We want to create a new object of type `WindPark` for a specific `WindProduction` object.
+    We want to create new objects of type `WindPark` for a specific `WindProduction` object.
     First we will search for an existing object of type `WindPark` to get ID or path of
-    the relationship attribute that is needed as owner for the new object to create.
+    the relationship attribute that is needed as owner for the new objects to create.
 
     Start point:        Model/MeshTEK/Mesh/Norge/Wind which has guid d9673f4f-d117-4c1e-9ffd-0e533a644728
     Search expression:  *[.Type=WindPark]
-    New object name:    NewWindPark
+    New objects:        NewWindPark, NewWindPark2, NewWindPark3
 
     """
     connection = Connection(host=HOST, port=PORT)
@@ -984,7 +984,7 @@ def use_case_14():
             use_case_name = "Use case 14"
             start_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
             search_query = '*[.Type=WindPark]'
-            new_object_name = "NewWindPark"
+            new_objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -998,8 +998,9 @@ def use_case_14():
             if len(reply) > 0:
                 relationship_attribute_path = reply[0].owner_id.path
 
-                new_object = session.create_object(new_object_name, owner_attribute_path=relationship_attribute_path)
-                print(get_object_information(new_object))
+                for new_object_name in new_objects_names:
+                    new_object = session.create_object(new_object_name, owner_attribute_path=relationship_attribute_path)
+                    print(get_object_information(new_object))
 
                 # Commit changes
                 if COMMIT_CHANGES:
@@ -1012,21 +1013,25 @@ def use_case_14():
 def use_case_15():
     """
     Scenario:
-    We want to delete a specific, existing object of type `WindPark`, named `Roan`.
+    We want to delete some existing objects of type `WindPark`, named `Roan`.
 
-    Object path: Model/MeshTEK/Mesh/Norge/Wind/Roan
+    Parent object path: Model/MeshTEK/Mesh/Norge/Wind
+    Objects to delete:  NewWindPark, NewWindPark2, NewWindPark3
 
     """
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 15"
-            object_path = "Model/MeshTEK/Mesh/Norge/Wind/Roan"
+            parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
+            objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            session.delete_object(object_path=object_path, recursive_delete=True)
+            for object_name in objects_names:
+                object_path = f"{parent_object_path}/{object_name}"
+                session.delete_object(object_path=object_path, recursive_delete=True)
 
             # Commit changes
             if COMMIT_CHANGES:
@@ -1039,24 +1044,26 @@ def use_case_15():
 def use_case_16():
     """
     Scenario:
-    We want to rename a specific, existing object of type `WindPark`, named `Roan`.
+    We want to rename a specific, existing object of type `WindPark`, named `NewWindPark`.
 
-    Object path:        Model/MeshTEK/Mesh/Norge/Wind/Roan which has guid 8faf6a61-5b3a-443a-8632-c628ea59c86b
-    New object name:    Roan2
+    Object path:        Model/MeshTEK/Mesh/Norge/Wind/NewWindPark
+    New object name:    NewestWindPark
     
     """
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 16"
-            object_guid = uuid.UUID("8faf6a61-5b3a-443a-8632-c628ea59c86b")
-            new_object_name = "Roan2"
+            parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
+            new_object_name = "NewestWindPark"
+            old_object_path = f"{parent_object_path}/NewWindPark"
+            new_object_path = f"{parent_object_path}/{new_object_name}"
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            session.update_object(object_id=object_guid, new_name=new_object_name)
-            updated_object = session.get_object(object_id=object_guid)
+            session.update_object(object_path=old_object_path, new_name=new_object_name)
+            updated_object = session.get_object(object_path=new_object_path)
             print(get_object_information(updated_object))
 
             # Commit changes
