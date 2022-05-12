@@ -1024,7 +1024,7 @@ def use_case_15():
         try:
             use_case_name = "Use case 15"
             parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
-            objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
+            objects_names = ["NewWindPark2", "NewWindPark3"]
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
