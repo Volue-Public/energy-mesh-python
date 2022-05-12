@@ -26,7 +26,6 @@ class Session(abc.ABC):
         self.session_id: uuid = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
 
-
     @abc.abstractmethod
     def get_object(
             self,
@@ -158,6 +157,26 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
+    @abc.abstractmethod
+    def get_attribute(
+            self,
+            attribute_id: Optional[uuid.UUID] = None,
+            attribute_path: Optional[str] = None,
+            full_attribute_info: bool = False) -> core_pb2.Attribute:
+        """
+        Retrieve an existing attribute from the Mesh object model.
+
+        Args:
+            attribute_id: Universal Unique Identifier of the attribute to be retrieved.
+            attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the attribute to be retrieved.
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attribute will be returned, otherwise only name, path, ID and value(s).
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
     def _prepare_get_object_request(
             self,
             object_id: uuid.UUID,
@@ -282,4 +301,25 @@ class Session(abc.ABC):
                     object_id=object_mesh_id,
                     recursive_delete=recursive_delete
                 )
+        return request
+
+    def _prepare_get_attribute_request(
+        self,
+        attribute_id: uuid.UUID,
+        attribute_path: str,
+        full_attribute_info: bool = False) -> core_pb2.GetAttributeRequest:
+
+        try:
+            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
+        except ValueError as e:
+            raise ValueError("invalid attribute") from e
+
+        attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
+
+        request = core_pb2.GetAttributeRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute_id=attribute_mesh_id,
+            attribute_view=attribute_view
+        )
+
         return request

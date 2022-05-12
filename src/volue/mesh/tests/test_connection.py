@@ -4,6 +4,7 @@ Tests for volue.mesh.Connection
 
 from datetime import datetime, timedelta, timezone
 import math
+import sys
 from typing import List
 import uuid
 
@@ -19,7 +20,7 @@ from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
-from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_timeseries_1, \
+from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_timeseries_1, \
     get_timeseries_attribute_1, get_timeseries_attribute_2, verify_timeseries_2
 
 
@@ -1078,6 +1079,233 @@ def test_recursive_delete_object():
         with pytest.raises(grpc.RpcError, match=r"Object not found:"):
             session.get_object(object_path=object_path)
 
+@pytest.mark.database
+def test_get_bool_array_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a boolean array attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    attribute_name = "BoolArrayAtt"
+    bool_array_att_path = get_attribute_path_principal() + attribute_name
+    bool_array_values = [False, True, False, True, False]
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=bool_array_att_path, full_attribute_info=True)
+        assert attribute.path == bool_array_att_path
+        assert attribute.name == attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == "Array of bools"
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "BooleanArrayAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 0
+        assert attribute.definition.maximum_cardinality == 10
+        for values in zip(attribute.collection_values, bool_array_values):
+            assert values[0].boolean_value == values[1]
+
+@pytest.mark.database
+def test_get_xy_set_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a XY set attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    attribute_name = "XYSetAtt"
+    xySetAttPath = get_attribute_path_principal() + attribute_name
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=xySetAttPath, full_attribute_info=True)
+        assert attribute.path == xySetAttPath
+        assert attribute.name == attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "XYSetAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        # so far no definition
+
+@pytest.mark.database
+def test_get_utc_time_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a UtcDateTime attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    attribute_name = "UtcDateTimeAtt"
+    utc_date_time_att_path = get_attribute_path_principal() + attribute_name
+    utc_time_value = datetime.strptime("05/10/22 07:24:15", "%m/%d/%y %H:%M:%S") # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=utc_date_time_att_path, full_attribute_info=True)
+        assert attribute.singular_value.utc_time_value.seconds == utc_time_value.timestamp()
+        assert attribute.path == utc_date_time_att_path
+        assert attribute.name == attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "UtcDateTimeAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.utc_time_definition.default_value_expression == "UTC20220510072415"
+        assert attribute.definition.utc_time_definition.minimum_value_expression == ""
+        assert attribute.definition.utc_time_definition.maximum_value_expression == ""
+
+@pytest.mark.database
+def test_get_boolean_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a boolean attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    attribute_name = "BoolAtt"
+    bool_attribute_path = get_attribute_path_principal() + attribute_name
+
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=bool_attribute_path, full_attribute_info=False)
+        bool_attribute_id = attribute.id
+        assert attribute.path == bool_attribute_path
+        assert attribute.name == attribute_name
+        assert attribute.singular_value.boolean_value == True
+        # now check if get by id succeeds as well
+        attribute = session.get_attribute(attribute_id=bool_attribute_id, full_attribute_info=True)
+        assert attribute.path == bool_attribute_path
+        assert attribute.name == attribute_name
+        assert attribute.singular_value.boolean_value == True
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "BooleanAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.boolean_definition.default_value == True
+
+@pytest.mark.database
+def test_get_calc_time_series_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a calculation time series attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_name = "TsCalcAtt2"
+    expression = "##= @SUM(@T('ReferenceSeriesCollectionAtt.TsRawAtt'))\n\n"
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
+        assert attribute.path == str_atttribute_path
+        assert attribute.name == attribute_name
+        print(attribute.singular_value.timeseries_value.expression)
+        assert attribute.singular_value.timeseries_value.expression == expression
+        assert attribute.singular_value.timeseries_value.is_local_expression == False
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
+        assert attribute.definition.timeseries_definition.template_expression == expression
+
+@pytest.mark.database
+def test_get_raw_time_series_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_name = "TsRawAtt"
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
+        assert attribute.path == str_atttribute_path
+        assert attribute.name == attribute_name
+        assert _from_proto_guid(attribute.singular_value.timeseries_value.resource_time_series_id.id) == uuid.UUID("00000004-0001-0000-0000-000000000000")
+        assert attribute.singular_value.timeseries_value.expression == ""
+        assert attribute.singular_value.timeseries_value.is_local_expression == False
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
+        assert attribute.definition.timeseries_definition.template_expression == ""
+
+
+@pytest.mark.database
+def test_get_string_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a string attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_name = "StringAtt"
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
+    default_string_value = "Default string value"
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
+        assert attribute.path == str_atttribute_path
+        assert attribute.name == attribute_name
+        assert attribute.singular_value.string_value == default_string_value
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "StringAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.string_definition.default_value == default_string_value
+
+
+@pytest.mark.database
+def test_get_double_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a double attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_name = "DblAtt"
+    dbl_attribute_path = get_attribute_path_principal() + attribute_name
+
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)
+        assert attribute.path == dbl_attribute_path
+        assert attribute.name == attribute_name
+        assert attribute.singular_value.double_value == 1000
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.name == attribute_name
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.name_space == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "DoubleAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.double_definition.default_value == 1000
+        assert attribute.definition.double_definition.minimum_value == -sys.float_info.max
+        assert attribute.definition.double_definition.maximum_value == sys.float_info.max
+        assert attribute.definition.double_definition.unit_of_measurement == ""
 
 if __name__ == '__main__':
     pytest.main()
