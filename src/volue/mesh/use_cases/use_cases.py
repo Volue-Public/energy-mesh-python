@@ -1016,7 +1016,7 @@ def use_case_15():
     We want to delete some existing objects of type `WindPark`, named `Roan`.
 
     Parent object path: Model/MeshTEK/Mesh/Norge/Wind
-    Objects to delete:  NewWindPark, NewWindPark2, NewWindPark3
+    Objects to delete:  NewWindPark2, NewWindPark3
 
     """
     connection = Connection(host=HOST, port=PORT)
