@@ -12,5 +12,4 @@ When connected, authenticated and authorized the user will be able to create a :
 .. toctree::
    :hidden:
 
-   authentication
    mesh_session

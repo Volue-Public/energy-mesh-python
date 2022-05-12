@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Session" href="mesh_session.html" />
-    <link rel="prev" title="Mesh server" href="mesh_server.html" /> 
+    <link rel="next" title="Tests" href="tests.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,25 +91,16 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="mesh_server.html">Mesh server</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Authentication</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#service-principal">Service Principal</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mesh-token">Mesh token</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Session</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_client.html">Mesh Python SDK</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#windows-kerberos">Windows Kerberos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mit-kerberos-linux-macos">MIT Kerberos (Linux/MacOS)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#internals">Internals</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
@@ -169,10 +160,6 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="introduction_to_mesh.html">An introduction to Mesh</a> &raquo;</li>
-        
-          <li><a href="mesh_server.html">Mesh server</a> &raquo;</li>
-        
       <li>Authentication</li>
     
     
@@ -194,69 +181,140 @@
             
   <div class="section" id="authentication">
 <h1>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h1>
-<p>The Mesh Python SDK supports user authentication/authorization feature. Because every user that is authenticated by Mesh server is also authorized to access all APIs exposed from Mesh gRPC, we will refer to it by just <strong>authentication</strong>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Authentication is done using the Kerberos protocol towards Active Directory. Client and server must be in <em>line of sight</em> of the Key Distribution Center (KDC).</p>
-</div>
-<p>If the Mesh server is configured to use authentication then only authenticated users may work with Mesh. Authenticated users obtain Mesh access tokens that are used for each call to Mesh server to prove the user’s identity.
-Only two methods can be called without access token:</p>
-<ul class="simple">
-<li><p>AuthenticateKerberos - used for getting authorization token</p></li>
-<li><p>GetVersion - for getting Mesh server version</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For security reasons authentication requires secure connection with Mesh server (using TLS). It is needed for encrypting tokens.</p>
-</div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>To use authentication the user has to provide authentication parameters when creating a <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection or a <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection:.
-Authentication parameters consist of:</p>
-<ul class="simple">
-<li><p>Service Principal Name (SPN)</p></li>
-<li><p>User Principal Name (UPN)</p></li>
-</ul>
-<p>Depending on the system configuration providing only <em>service principal</em> may be enough for successful authentication. This is usually the case when authenticating as the currently logged in Windows user.</p>
-<p>Instantiation of a Connection object with authentication parameters will perform the authentication process and obtain a Mesh token that will be used for each subsequent call to the Mesh server.</p>
-</div>
-<div class="section" id="service-principal">
-<h2>Service Principal<a class="headerlink" href="#service-principal" title="Permalink to this headline">¶</a></h2>
-<p>If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;HOST/hostname.ad.examplecompany.com&#39;</span>
+<p>When connecting to Mesh using the Python SDK you might need to authenticate
+using Kerberos. This is required by the Mesh server if Kerberos is enabled
+for the gRPC interface in the Mesh configuration file.</p>
+<p>For security reasons authentication also requires TLS to be enabled, and
+you might therefore need Mesh’s TLS certificate in the below examples.</p>
+<div class="section" id="windows-kerberos">
+<h2>Windows Kerberos<a class="headerlink" href="#windows-kerberos" title="Permalink to this headline">¶</a></h2>
+<p>If you are on Windows as an Active Directory domain user Kerberos
+authentication is relatively simple. You only need to find the service
+principal name the Mesh service is running under. If Mesh is running as a
+machine user the service principal name will usually be
+<code class="docutils literal notranslate"><span class="pre">HOST/full.qualified.domain.name</span></code> or <code class="docutils literal notranslate"><span class="pre">HOST/f.q.d.n&#64;DOMAIN.COM</span></code> but it might
+be different in your environment. Determining the service principal name for
+the Mesh service is out of scope for this guide.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span><span class="s2">&quot;mesh.local:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
+                                           <span class="s2">&quot;HOST/mesh.local@DOMAIN.COM&quot;</span><span class="p">,</span> <span class="s2">&quot;user@DOMAIN.COM&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p>If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;ad</span><span class="se">\\</span><span class="s1">user.name&#39;</span>
+</div>
+<div class="section" id="mit-kerberos-linux-macos">
+<h2>MIT Kerberos (Linux/MacOS)<a class="headerlink" href="#mit-kerberos-linux-macos" title="Permalink to this headline">¶</a></h2>
+<p>When running on Linux or MacOS our world quickly becomes more complicated.
+In most configurations the system will not be aware of the Active Directory
+configuration, and you will not be logged in as a domain user. We therefore
+have to complete a number of steps to make Kerberos credentials available
+to the Python SDK.</p>
+<p>This is a quickstart guide designed to help you get started, but MIT Kerberos
+and Active Directory are both complex topics with numerous possible
+configurations, and it is not unlikely that you will need to do some debugging
+at one or more of the steps below.</p>
+<p>Before we get started you’ll need to find the network address(es) of the Active
+Directory (AD) Key Distribution Center (KDC), the AD domain name, credentials
+for your AD user, the service principal name for the Mesh service, and the TLS
+certificate of the Mesh server. Your IT/Operations department might be able to
+assist with this, or you can try to investigate yourself.</p>
+<p>In this guide we’re going to assume that the domain name also resolves to the
+domain controller and the KDC.</p>
+<p>To get the domain name from a domain joined Windows computer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REM</span> <span class="n">Get</span> <span class="n">the</span> <span class="n">AD</span> <span class="n">domain</span> <span class="n">name</span><span class="o">.</span>
+
+<span class="o">&gt;</span> <span class="nb">set</span> <span class="n">USERDNSDOMAIN</span>
+<span class="n">USERDDNSOMAIN</span><span class="o">=</span><span class="n">DOMAIN</span><span class="o">.</span><span class="n">COM</span>
+
+<span class="n">REM</span> <span class="n">Get</span> <span class="n">a</span> <span class="n">bit</span> <span class="n">more</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">domain</span> <span class="n">controller</span><span class="o">.</span>
+<span class="n">REM</span> <span class="n">You</span> <span class="n">should</span> <span class="n">note</span> <span class="n">down</span> <span class="n">the</span> <span class="n">IP</span> <span class="n">address</span> <span class="n">here</span><span class="o">.</span>
+
+<span class="o">&gt;</span> <span class="n">nltest</span> <span class="o">/</span><span class="n">dsgetdc</span><span class="p">:</span><span class="n">DOMAIN</span><span class="o">.</span><span class="n">COM</span>
+<span class="o">...</span>
 </pre></div>
 </div>
-<p>Or:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sa">r</span><span class="s1">&#39;ad\user.name&#39;</span>
+<p>At this stage it’s a good idea to test if the domain controller is reachable
+from your Linux machine. All the following Linux examples run on Ubuntu 20.04
+LTS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Ideally your DNS setup includes the domain controller. This will
+# make the following steps significantly easier. If this command
+# fails it might be a good idea to add the IP address of the
+# domain controller(s) to your list of DNS servers.
+
+$ ping domain.com       # Or the address of a domain controller.
+
+# You can also use the IP directly, but we would recommend against
+# it.
+
+$ ping 172.20.101.20
 </pre></div>
 </div>
-</div></blockquote>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Winkerberos converts service principal name if provided in RFC-2078 format. ‘&#64;’ is converted to ‘/’ if there is no ‘/’ character in the service principal name.</p>
-<p>E.g.: <strong>service&#64;hostname</strong></p>
-<p>Would be converted to: <strong>service/hostname</strong></p>
+<p>If the above commands both failed, your network will not allow Kerberos
+authentication, and you will have to resolve your network issues.</p>
+<p>Then we should see if we’re able to connect to the KDC on the Kerberos port. By
+default the Kerberos protocol will communicate on port 88. If this fails you
+will have to work with your IT/Operations department to resolve the issue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ netcat -vz domain.com 88
+Connection to domain.com 88 port [tcp/kerberos] succeeded!
+</pre></div>
 </div>
+<p>If everything has gone well up until this point it’s time to install MIT
+Kerberos. On your distribution the MIT Kerberos package names might be different:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install krb5-user krb-config libkrb5-dev
+</pre></div>
 </div>
-<div class="section" id="mesh-token">
-<h2>Mesh token<a class="headerlink" href="#mesh-token" title="Permalink to this headline">¶</a></h2>
-<p>The Mesh access token is valid for 1 hour, after this time it will expire and a new token needs to be obtained from the Mesh server. This is done automatically and the user does not need to take any additional action.</p>
-<p>The user may optionally revoke the Mesh access token. This may useful when a user finishes working with Mesh and wants to make sure it will not be used by anyone else for the time until it expires.</p>
+<p>Then we’ll need to configure MIT Kerberos:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat /etc/krb5.conf
+[libdefaults]
+        default_realm = DOMAIN.COM
+
+[realms]
+        DOMAIN.COM = {
+                kdc = domain.com
+                admin_server = domain.com
+        }
+
+[domain_realm]
+        .domain.com = DOMAIN.COM
+        domain.com = DOMAIN.COM
+</pre></div>
 </div>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Mesh server configured to use authentication and TLS. Please contact Volue consultant to confirm your server configuration.</p></li>
-<li><p>Find out correct <em>service principal</em> for Mesh server you want to connect to.</p></li>
-<li><p>Create a <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection or a <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection: object with authentication parameters.</p></li>
-</ol>
+<p>And finally we can get a ticket granting ticket from the KDC. If this
+works you’ve successfully performed your first Kerberos authentication:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kinit -V user@DOMAIN.COM
+Using default cache: /tmp/krb5cc_1000
+Using principal: user@DOMAIN.COM
+Password for user@DOMAIN.COM: ****
+Authenticated to Kerberos v5
+</pre></div>
+</div>
+<p>The newly generated ticket granting ticket will be used when the Mesh
+Python SDK authenticates to the Mesh server. As long as that ticket is
+available on the client you will not have to retype your password.
+To destroy the ticket run <code class="docutils literal notranslate"><span class="pre">kdestroy</span></code>.</p>
+<p>Finally, we can connect to the Mesh server from Python.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+<span class="c1"># Most certificates won&#39;t work with IP addresses, therefore</span>
+<span class="c1"># you&#39;ll need to be able to resolve the Mesh server by name,</span>
+<span class="c1"># either through your DNS configuration, or through /etc/hosts.</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># mesh.domain.com is the address of the Mesh server.</span>
+<span class="c1"># HOST/... is the service principal name, and user@DOMAIN.COM</span>
+<span class="c1"># is the user principal name.</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
+    <span class="s2">&quot;mesh.domain.com:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
+    <span class="s2">&quot;HOST/mesh.domain.com@DOMAIN.COM&quot;</span><span class="p">,</span> <span class="s2">&quot;user@DOMAIN.COM&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
@@ -319,6 +377,25 @@ Authentication parameters consist of:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="internals">
+<h2>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h2>
+<p>Mesh authentication is based on <strong>authorization tokens</strong>. When authentication
+is enabled most network calls to Mesh will require one of these tokens to
+succeed. To get an authorization token the client is required to make a call
+to an authentication endpoint, such as the <code class="docutils literal notranslate"><span class="pre">AuthenticateKerberos</span></code> gRPC
+method. Authentication endpoints perform the necessary authentication steps,
+and if successful return an authorization token that can be used for future
+calls.</p>
+<p>Authorization tokens have an expiration time, after which they’re no longer
+valid, and a new authentication call and a new token is required. At the
+time of writing most authorization tokens are valid for one hour, but this
+is subject to change.</p>
+<p>When creating a Mesh connection with authentication enabled in the Python SDK
+authentication calls and authorization tokens will be handled transparently
+through the <code class="docutils literal notranslate"><span class="pre">_authentication</span></code> module. This module will perform authentication
+calls when a new token is required, and add authorization tokens to calls
+that require them.</p>
+</div>
 </div>
 
 
@@ -327,8 +404,8 @@ Authentication parameters consist of:</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mesh_session.html" class="btn btn-neutral float-right" title="Session" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="mesh_server.html" class="btn btn-neutral float-left" title="Mesh server" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.html" class="btn btn-neutral float-right" title="Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
