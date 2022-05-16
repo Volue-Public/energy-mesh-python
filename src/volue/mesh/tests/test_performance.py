@@ -32,13 +32,14 @@ def _read_timeseries_points(session: Connection.Session, path: str, start_interv
 
     duration_measurement_start = time.time()
 
-    test = session.read_timeseries_points(
+    timeseries = session.read_timeseries_points(
         start_time=start_time,
         end_time=end_time,
         mesh_object_id=MeshObjectId.with_full_name(path)
     )
 
-    print(test.arrow_table.to_pandas())
+    # useful for debugging purposes
+    # print(timeseries.arrow_table.to_pandas())
 
     # in seconds
     return time.time() - duration_measurement_start
