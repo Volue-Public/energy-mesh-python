@@ -355,12 +355,12 @@ class Session(abc.ABC):
         start_object_id: uuid.UUID,
         start_object_path: str,
         query: str,
-        full_attribute_info: bool = False) -> core_pb2.SearchAttributesRequest:
+        full_attribute_info: bool) -> core_pb2.SearchAttributesRequest:
 
         try:
             start_object_mesh_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
         except ValueError as e:
-            raise ValueError("invalid attribute") from e
+            raise ValueError("invalid start object") from e
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
 
