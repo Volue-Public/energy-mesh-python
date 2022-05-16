@@ -85,7 +85,7 @@ class Session(abc.ABC):
             self,
             name: str,
             owner_attribute_id: Optional[uuid.UUID] = None,
-            owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
+            owner_attribute_path: Optional[str] = None) -> core_pb2.Object:
         """
         Create new Mesh object in the Mesh object model.
         Owner of the new object must be a relationship attribute of Object Collection type.

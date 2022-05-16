@@ -408,7 +408,7 @@ class Connection(_base_connection.Connection):
                 self,
                 name: str,
                 owner_attribute_id: Optional[uuid.UUID] = None,
-                owner_attribute_path: Optional[str] = None) -> List[core_pb2.Object]:
+                owner_attribute_path: Optional[str] = None) -> core_pb2.Object:
             request = super()._prepare_create_object_request(
                 name, owner_attribute_id, owner_attribute_path)
             return await self.mesh_service.CreateObject(request)

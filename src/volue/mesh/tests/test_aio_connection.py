@@ -895,7 +895,7 @@ async def test_get_object():
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_get_object_wit_full_attribute_info():
+async def test_get_object_with_full_attribute_info():
     """
     Check that `get_object` returns specified object with
     all attributes and full attribute information.
