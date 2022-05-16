@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import random
 import statistics
 import time
+from typing import List
 import uuid
 
 import grpc
@@ -25,6 +26,7 @@ PORT = 50051
 
 
 def _read_timeseries_points(session: Connection.Session, path: str, start_interval: datetime, number_of_points: int):
+    """Reads values from specific time series and interval."""
     start_time = start_interval
     end_time = start_time + timedelta(hours=number_of_points)
 
@@ -43,6 +45,7 @@ def _read_timeseries_points(session: Connection.Session, path: str, start_interv
 
 
 def _write_timeseries_points(session: Connection.Session, path: str, start_interval: datetime, number_of_points: int):
+    """Writes random values to specific time series and interval."""
     timestamps = pd.date_range(start_interval, periods=number_of_points, freq="1H")
     flags = [Timeseries.PointFlags.OK.value] * number_of_points
     values = []
@@ -83,14 +86,25 @@ class PerformanceTestRunner():
     VIRTUAL_TIMESERIES_ID = uuid.UUID("00000004-000D-0000-0000-000000000000")
 
 
-    def __init__(self, connection: Connection, max_objects_count: int):
-        self.connection = connection
-        self.max_objects_count = max_objects_count
-        self.results = defaultdict(list)
+    def __init__(self, connection: Connection,
+        test_case_number_of_timeseries: List[int],
+        test_case_number_of_points: List[int],
+        test_iterations: int):
 
-    def prepare_model(self, number_of_points: int):
-        with self.connection.create_session() as session:
-            for object_index in range(self.max_objects_count):
+        self._connection = connection
+        self._test_case_number_of_timeseries = test_case_number_of_timeseries
+        self._test_case_number_of_points = test_case_number_of_points
+        self._test_iterations = test_iterations
+        self._results = defaultdict(list)
+        self._objects_to_create = max(self._test_case_number_of_timeseries)
+
+    def _prepare_model(self):
+        """
+        Creates new objects needed for running test cases and
+        initially writes some random data to physical time series.
+        """
+        with self._connection.create_session() as session:
+            for object_index in range(self._objects_to_create):
                 # create new object
                 new_object_name = f"{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
                 new_object = session.create_object(new_object_name, owner_attribute_path=self.NEW_OBJECT_OWNER_PATH)
@@ -117,27 +131,30 @@ class PerformanceTestRunner():
                     path=calculation_time_series_attribute_path, new_local_expression=expression)
 
                 # write points to physical time series
+                # write maximum number of points from test cases
                 _write_timeseries_points(
-                    session, physical_time_series_attribute_path, self.START_INTERVAL, number_of_points)
+                    session, physical_time_series_attribute_path, self.START_INTERVAL, max(self._test_case_number_of_points))
 
             # commit
             session.commit()
             print('Model prepared for testing')
 
 
-    def clean_model(self):
-        with self.connection.create_session() as session:
-            for object_index in range(self.max_objects_count):
+    def _clean_model(self):
+        """Removes all objects created during model preparation."""
+        with self._connection.create_session() as session:
+            for object_index in range(self._objects_to_create):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
                 session.delete_object(object_path=object_path, recursive_delete=True)
 
             session.commit()
 
 
-    def read_physical_timeseries(self, time_series_count: int, number_of_points: int):
+    def _read_physical_timeseries(self, time_series_count: int, number_of_points: int):
+        """Test: reading physical time series."""
         total_duration = 0
 
-        with self.connection.create_session() as session:
+        with self._connection.create_session() as session:
             for object_index in range(time_series_count):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
                 time_series_attribute_path = f"{object_path}.{self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME}"
@@ -146,14 +163,15 @@ class PerformanceTestRunner():
                     session, time_series_attribute_path, self.START_INTERVAL, number_of_points)
 
         test_case_name = f"TS1_N{time_series_count}_M{number_of_points}"
-        self.results[test_case_name].append(total_duration)
+        self._results[test_case_name].append(total_duration)
         print(f'\tRead physical time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
 
 
-    def read_virtual_timeseries(self, time_series_count: int, number_of_points: int):
+    def _read_virtual_timeseries(self, time_series_count: int, number_of_points: int):
+        """Test: reading virtual time series."""
         total_duration = 0
 
-        with self.connection.create_session() as session:
+        with self._connection.create_session() as session:
             for object_index in range(time_series_count):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
                 time_series_attribute_path = f"{object_path}.{self.VIRTUAL_TIMESERIES_ATTRIBUTE_NAME}"
@@ -162,14 +180,15 @@ class PerformanceTestRunner():
                     session, time_series_attribute_path, self.START_INTERVAL, number_of_points)
 
         test_case_name = f"TS2_N{time_series_count}_M{number_of_points}"
-        self.results[test_case_name].append(total_duration)
+        self._results[test_case_name].append(total_duration)
         print(f'\tRead virtual time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
 
 
-    def read_calculation_timeseries(self, time_series_count: int, number_of_points: int):
+    def _read_calculation_timeseries(self, time_series_count: int, number_of_points: int):
+        """Test: reading calculation time series."""
         total_duration = 0
 
-        with self.connection.create_session() as session:
+        with self._connection.create_session() as session:
             for object_index in range(time_series_count):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
                 time_series_attribute_path = f"{object_path}.{self.CALCULATION_TIMESERIES_ATTRIBUTE_NAME}"
@@ -178,14 +197,15 @@ class PerformanceTestRunner():
                     session, time_series_attribute_path, self.START_INTERVAL, number_of_points)
 
         test_case_name = f"TS3_N{time_series_count}_M{number_of_points}"
-        self.results[test_case_name].append(total_duration)
+        self._results[test_case_name].append(total_duration)
         print(f'\tRead calculation time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
 
 
-    def write_physical_timeseries(self, time_series_count: int, number_of_points: int, commit: bool):
+    def _write_physical_timeseries(self, time_series_count: int, number_of_points: int, commit: bool):
+        """Test: writing physical time series."""
         total_duration = 0
 
-        with self.connection.create_session() as session:
+        with self._connection.create_session() as session:
             for object_index in range(time_series_count):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
                 time_series_attribute_path = f"{object_path}.{self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME}"
@@ -199,8 +219,39 @@ class PerformanceTestRunner():
                     total_duration += time.time() - measurement_duration_start
 
         test_case_name = f"TS5_N{time_series_count}_M{number_of_points}" if commit else f"TS4_N{time_series_count}_M{number_of_points}"
-        self.results[test_case_name].append(total_duration)
+        self._results[test_case_name].append(total_duration)
         print(f'\tWrite physical time series: {time_series_count} time series count, {number_of_points} points, commit={commit}, operation took {round(total_duration, 2)} seconds.')
+
+
+    def _print_results(self):
+        """Prints aggregated test results."""
+        for test_case in self._results:
+            average = statistics.mean(self._results[test_case])
+            print(f'Test case: {test_case}, average duration: {average} seconds, values: {self._results[test_case]}')
+
+
+    def run_tests(self):
+        """Prepares model, runs all test cases, prints results and cleans the model afterwards."""
+        try:
+            self._prepare_model()
+
+            for i in range(self._test_iterations):
+                print(f"Iteration: {i+1}")
+                for time_series_count in self._test_case_number_of_timeseries:
+                    for points in self._test_case_number_of_points:
+                        if points > 1:
+                            self._read_physical_timeseries(time_series_count, points)
+                            self._read_virtual_timeseries(time_series_count, points)
+                            self._read_calculation_timeseries(time_series_count, points)
+                        self._write_physical_timeseries(time_series_count, points, False)
+                        self._write_physical_timeseries(time_series_count, points, True)
+
+            self._print_results()
+        except grpc.RpcError as e:
+            print(f"Failed to run performance tests: {e}")
+        finally:
+            self._clean_model()
+            pass
 
 
 if __name__ == '__main__':
@@ -210,26 +261,5 @@ if __name__ == '__main__':
     iterations = 5
 
     connection = Connection(host=HOST, port=PORT)
-    try:
-        test_runner = PerformanceTestRunner(connection, max(number_of_timeseries))
-        test_runner.prepare_model(max(number_of_points))
-
-        for i in range(iterations):
-            print(f"Iteration: {i+1}")
-            for time_series_count in number_of_timeseries:
-                for points in number_of_points:
-                    if points > 1:
-                        test_runner.read_physical_timeseries(time_series_count, points)
-                        test_runner.read_virtual_timeseries(time_series_count, points)
-                        test_runner.read_calculation_timeseries(time_series_count, points)
-                    test_runner.write_physical_timeseries(time_series_count, points, False)
-                    test_runner.write_physical_timeseries(time_series_count, points, True)
-
-        for test_case in test_runner.results:
-            average = statistics.mean(test_runner.results[test_case])
-            print(f'Test case: {test_case}, average duration: {average} seconds, values: {test_runner.results[test_case]}')
-
-    except grpc.RpcError as e:
-        print(f"Failed to run performance tests: {e}")
-    finally:
-        test_runner.clean_model()
+    test_runner = PerformanceTestRunner(connection, number_of_timeseries, number_of_points, iterations)
+    test_runner.run_tests()
