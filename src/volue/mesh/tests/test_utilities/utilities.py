@@ -214,7 +214,10 @@ def get_timeseries_attribute_1():
         id=None,  # Unknown because it's generated when the test model is generated
         path="/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsCalcAtt",
         timeseries=None,
-        local_expression="",
+        local_expression=r"""@PDLOG(12004, 'TEST') 
+##= @d('.DblAtt') + @t('.TsRawAtt') + @SUM(@D('PlantToPlantRef.DblAtt'))
+
+""",
         template_expression=r"""@PDLOG(12004, 'TEST') 
 ##= @d('.DblAtt') + @t('.TsRawAtt') + @SUM(@D('PlantToPlantRef.DblAtt'))
 

@@ -373,6 +373,19 @@ class Connection(_base_connection.Connection):
                 attribute_id, attribute_path, full_attribute_info)
             return self.mesh_service.GetAttribute(request)
 
+
+        def search_for_attributes(
+                self,
+                query: str,
+                start_object_id: Optional[uuid.UUID] = None,
+                start_object_path: Optional[str] = None,
+                full_attribute_info: bool = False) -> List[core_pb2.Attribute]:
+            request = super()._prepare_search_attributes_request(
+                start_object_id=start_object_id,
+                start_object_path=start_object_path,
+                query=query, full_attribute_info=full_attribute_info)
+            return list(self.mesh_service.SearchAttributes(request))
+
         def get_object(
                 self,
                 object_id: Optional[uuid.UUID] = None,

@@ -5,7 +5,7 @@ Tests for volue.mesh.Connection
 from datetime import datetime, timedelta, timezone
 import math
 import sys
-from typing import List
+from typing import List, Tuple
 import uuid
 
 from dateutil import tz
@@ -1189,6 +1189,28 @@ def test_get_boolean_attribute():
         assert attribute.definition.maximum_cardinality == 1
         assert attribute.definition.boolean_definition.default_value == True
 
+def verify_time_series_calculation_attribute(
+    attribute: core_pb2.Attribute, attribute_info: Tuple[str, bool], attribute_name: str):
+
+    expression = attribute_info[0]
+    is_local_expression = attribute_info[1]
+
+    str_atttribute_path = get_attribute_path_principal() + attribute_name
+    assert attribute.path == str_atttribute_path
+    assert attribute.name == attribute_name
+    assert attribute.singular_value.timeseries_value.expression == expression
+    assert attribute.singular_value.timeseries_value.is_local_expression == is_local_expression
+    assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+    assert attribute.definition.name == attribute_name
+    assert attribute.definition.description == ""
+    assert len(attribute.definition.tags) == 0
+    assert attribute.definition.name_space == "SimpleThermalTestRepository"
+    assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+    assert attribute.definition.minimum_cardinality == 1
+    assert attribute.definition.maximum_cardinality == 1
+    assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
+    assert attribute.definition.timeseries_definition.template_expression == expression
+
 @pytest.mark.database
 def test_get_calc_time_series_attribute():
     """
@@ -1201,23 +1223,10 @@ def test_get_calc_time_series_attribute():
     attribute_name = "TsCalcAtt2"
     expression = "##= @SUM(@T('ReferenceSeriesCollectionAtt.TsRawAtt'))\n\n"
     str_atttribute_path = get_attribute_path_principal() + attribute_name
+    is_local_expression = False
     with connection.create_session() as session:
         attribute = session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
-        assert attribute.path == str_atttribute_path
-        assert attribute.name == attribute_name
-        print(attribute.singular_value.timeseries_value.expression)
-        assert attribute.singular_value.timeseries_value.expression == expression
-        assert attribute.singular_value.timeseries_value.is_local_expression == False
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
-        assert attribute.definition.timeseries_definition.template_expression == expression
+        verify_time_series_calculation_attribute(attribute=attribute, attribute_info=tuple((expression, is_local_expression)), attribute_name=attribute_name)
 
 @pytest.mark.database
 def test_get_raw_time_series_attribute():
@@ -1276,21 +1285,7 @@ def test_get_string_attribute():
         assert attribute.definition.maximum_cardinality == 1
         assert attribute.definition.string_definition.default_value == default_string_value
 
-
-@pytest.mark.database
-def test_get_double_attribute():
-    """
-    Check that 'get_attribute' with full attribute view retrieves a double attribute and its definition.
-    """
-
-    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
-
-    attribute_name = "DblAtt"
-    dbl_attribute_path = get_attribute_path_principal() + attribute_name
-
-    with connection.create_session() as session:
-        attribute = session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)
+def verify_double_attribute(attribute: core_pb2.Attribute, dbl_attribute_path: str, attribute_name: str):
         assert attribute.path == dbl_attribute_path
         assert attribute.name == attribute_name
         assert attribute.singular_value.double_value == 1000
@@ -1306,6 +1301,77 @@ def test_get_double_attribute():
         assert attribute.definition.double_definition.minimum_value == -sys.float_info.max
         assert attribute.definition.double_definition.maximum_value == sys.float_info.max
         assert attribute.definition.double_definition.unit_of_measurement == ""
+
+
+@pytest.mark.database
+def test_get_double_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a double attribute and its definition.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_name = "DblAtt"
+    dbl_attribute_path = get_attribute_path_principal() + attribute_name
+
+    with connection.create_session() as session:
+        attribute = session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)
+        verify_double_attribute(attribute=attribute, dbl_attribute_path=dbl_attribute_path, attribute_name=attribute_name)
+
+@pytest.mark.database
+def test_search_multiple_attributes():
+    """
+    Check that 'search_for_attributes' with full attribute view retrieves requested attributes and their definitions.
+    """
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    start_object_path = "Model/SimpleThermalTestModel"
+
+    #requested attributes
+    attributes_names = ["TsCalcAtt", "TsCalcAtt2", "TsCalcAtt4", "TsCalcAtt7"]
+    # holds an expression and information about it's expression locality
+    attributes_info = {
+        attributes_names[0]: tuple(("@PDLOG(12004, 'TEST') \n##= @d('.DblAtt') + @t('.TsRawAtt') + @SUM(@D('PlantToPlantRef.DblAtt'))\n\n", True)),
+        attributes_names[1]: tuple(("##= @SUM(@T('ReferenceSeriesCollectionAtt.TsRawAtt'))\n\n", False)),
+        attributes_names[2]: tuple(("temp=@t('.TsRawAtt')\ngt2 = @ABS(temp) > 2\n## = temp - 1000\nIF (gt2) THEN\n## = temp + 1000\nENDIF\n", False)),
+        attributes_names[3]: tuple(("##=@Restriction('ProductionMin[MW]', 'Proposed|Recommended', @t('.TsRawAtt'), 'Minimum')\n", False))
+    }
+    # search query
+    query = "*[.Name=SomePowerPlant1]." + ",".join(attributes_names)
+
+    with connection.create_session() as session:
+        attributes = session.search_for_attributes(
+            query=query,
+            start_object_path=start_object_path,
+            full_attribute_info=True)
+        assert len(attributes) == len(attributes_names)
+        for attribute in attributes:
+            assert attribute.name in attributes_names
+            verify_time_series_calculation_attribute(attribute=attribute, attribute_info=attributes_info[attribute.name], attribute_name=attribute.name)
+
+@pytest.mark.database
+def test_search_with_absent_attribute():
+    """
+    Check that 'search_for_attributes' with query containing absent attribute will return all of the existing attributes
+    """
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+    start_object_path = "Model/SimpleThermalTestModel"
+
+    #requested attributes, one doesn't exist
+    attributes_names = ["DblAtt", "ABSENT_ATTRIBUTE_NAME"]
+    # search query
+    query = "*[.Name=SomePowerPlant1]." + ",".join(attributes_names)
+    dbl_attribute_path = get_attribute_path_principal() + attributes_names[0]
+
+    with connection.create_session() as session:
+        attributes = session.search_for_attributes(
+            query=query,
+            start_object_path=start_object_path,
+            full_attribute_info=True)
+        assert len(attributes) == 1
+        verify_double_attribute(attribute=attributes[0], dbl_attribute_path=dbl_attribute_path, attribute_name=attributes_names[0])
 
 if __name__ == '__main__':
     pytest.main()
