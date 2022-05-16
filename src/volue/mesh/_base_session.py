@@ -177,6 +177,32 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
+    @abc.abstractmethod
+    def search_for_attributes(
+            self,
+            query: str,
+            start_object_id: Optional[uuid.UUID] = None,
+            start_object_path: Optional[str] = None,
+            full_attribute_info: bool = False) -> List[core_pb2.Attribute]:
+        """
+        Use the :doc:`Mesh search language <mesh_search>` to find Mesh attributes
+        in the Mesh object model. Specify either `start_object_id` or
+        `start_object_path` to an object where the search query should start from.
+
+        Args:
+            query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            start_object_id: Start searching at the object with the 
+                Universal Unique Identifier for Mesh objects.
+            start_object_path: Start searching at the path in the
+                :ref:`Mesh object model <mesh object model>`.
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attributes owned by the object(s) will be returned, otherwise only name,
+                path, ID and value(s).
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+
     def _prepare_get_object_request(
             self,
             object_id: uuid.UUID,
@@ -307,7 +333,7 @@ class Session(abc.ABC):
         self,
         attribute_id: uuid.UUID,
         attribute_path: str,
-        full_attribute_info: bool = False) -> core_pb2.GetAttributeRequest:
+        full_attribute_info: bool) -> core_pb2.GetAttributeRequest:
 
         try:
             attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
@@ -319,6 +345,29 @@ class Session(abc.ABC):
         request = core_pb2.GetAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=attribute_mesh_id,
+            attribute_view=attribute_view
+        )
+
+        return request
+
+    def _prepare_search_attributes_request(
+        self,
+        start_object_id: uuid.UUID,
+        start_object_path: str,
+        query: str,
+        full_attribute_info: bool) -> core_pb2.SearchAttributesRequest:
+
+        try:
+            start_object_mesh_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
+        except ValueError as e:
+            raise ValueError("invalid start object") from e
+
+        attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
+
+        request = core_pb2.SearchAttributesRequest(
+            session_id=_to_proto_guid(self.session_id),
+            start_object_id=start_object_mesh_id,
+            query=query,
             attribute_view=attribute_view
         )
 
