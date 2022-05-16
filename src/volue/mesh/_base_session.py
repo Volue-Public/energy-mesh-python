@@ -333,7 +333,7 @@ class Session(abc.ABC):
         self,
         attribute_id: uuid.UUID,
         attribute_path: str,
-        full_attribute_info: bool = False) -> core_pb2.GetAttributeRequest:
+        full_attribute_info: bool) -> core_pb2.GetAttributeRequest:
 
         try:
             attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
