@@ -5,7 +5,6 @@ Functionality for working with Mesh attributes.
 from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
-from imp import SEARCH_ERROR
 from typing import Any, List, Type, TypeVar
 import uuid
 
