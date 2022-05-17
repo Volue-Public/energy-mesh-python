@@ -2,12 +2,15 @@
 Functionality for asynchronously connecting to a Mesh server and working with its sessions.
 """
 
+import datetime
+from typing import Optional, List, Type
 import uuid
-from typing import Optional, List
-from datetime import datetime
+
 from google import protobuf
 import grpc
-from volue.mesh import Timeseries, MeshObjectId
+
+from volue.mesh import Timeseries, MeshObjectId, AttributeBase, Object
+from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import AttributesFilter, _from_proto_guid, _to_proto_guid, _to_protobuf_utcinterval, \
     _read_proto_reply, _to_proto_object_id, _to_proto_timeseries, _to_proto_curve_type
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
@@ -374,37 +377,39 @@ class Connection(_base_connection.Connection):
                 self,
                 attribute_id: Optional[uuid.UUID] = None,
                 attribute_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> core_pb2.Attribute:
+                full_attribute_info: bool = False) -> Type[AttributeBase]:
             request = super()._prepare_get_attribute_request(
                 attribute_id, attribute_path, full_attribute_info)
-            return await self.mesh_service.GetAttribute(request)
+            proto_attribute = await self.mesh_service.GetAttribute(request)
+            return _from_proto_attribute(proto_attribute)
 
         async def search_for_attributes(
                 self,
                 query: str,
                 start_object_id: Optional[uuid.UUID] = None,
                 start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> List[core_pb2.Attribute]:
+                full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
 
             request = super()._prepare_search_attributes_request(
                 start_object_id=start_object_id,
                 start_object_path=start_object_path,
                 query=query, full_attribute_info=full_attribute_info)
 
-            replies = []
-            async for reply in self.mesh_service.SearchAttributes(request):
-                replies.append(reply)
-            return replies
+            attributes = []
+            async for proto_attribute in self.mesh_service.SearchAttributes(request):
+                attributes.append(_from_proto_attribute(proto_attribute))
+            return attributes
 
         async def get_object(
                 self,
                 object_id: Optional[uuid.UUID] = None,
                 object_path:  Optional[str] = None,
                 full_attribute_info:  bool = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+                attributes_filter: Optional[AttributesFilter] = None) -> Object:
             request = super()._prepare_get_object_request(
                 object_id, object_path, full_attribute_info, attributes_filter)
-            return await self.mesh_service.GetObject(request)
+            proto_object = await self.mesh_service.GetObject(request)
+            return Object._from_proto_object(proto_object)
 
         async def search_for_objects(
                 self,
@@ -412,23 +417,24 @@ class Connection(_base_connection.Connection):
                 start_object_id: Optional[uuid.UUID] = None,
                 start_object_path: Optional[str] = None,
                 full_attribute_info: bool = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
+                attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
             request = super()._prepare_search_for_objects_request(
                 query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
 
-            replies = []
-            async for reply in self.mesh_service.SearchObjects(request):
-                replies.append(reply)
-            return replies
+            objects = []
+            async for proto_object in self.mesh_service.SearchObjects(request):
+                objects.append(proto_object)
+            return objects
 
         async def create_object(
                 self,
                 name: str,
                 owner_attribute_id: Optional[uuid.UUID] = None,
-                owner_attribute_path: Optional[str] = None) -> core_pb2.Object:
+                owner_attribute_path: Optional[str] = None) -> Object:
             request = super()._prepare_create_object_request(
                 name, owner_attribute_id, owner_attribute_path)
-            return await self.mesh_service.CreateObject(request)
+            proto_object = await self.mesh_service.CreateObject(request)
+            return Object._from_proto_object(proto_object)
 
         async def update_object(
                 self,

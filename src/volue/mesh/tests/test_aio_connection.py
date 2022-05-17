@@ -4,18 +4,19 @@ Tests for volue.mesh.aio
 
 from datetime import datetime, timedelta, timezone
 import math
+import sys
 from typing import List, Tuple
 import uuid
-import sys
 
 from dateutil import tz
 import grpc
 import pyarrow as pa
 import pytest
 
-from volue.mesh._common import AttributesFilter, _from_proto_guid, _to_proto_guid, _to_proto_curve_type
-from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import MeshObjectId, Timeseries
+from volue.mesh.aio import Connection as AsyncConnection
+from volue.mesh._attribute import TimeseriesAttribute
+from volue.mesh._common import AttributesFilter, _from_proto_guid, _to_proto_guid, _to_proto_curve_type
 from volue.mesh.calc import transform
 from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
@@ -384,7 +385,7 @@ async def test_update_timeseries_attribute_with_timeseriescalculation_async():
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_update_timeseries_attribute_with_timeseriesreference_async():
-    """Check that timeseries attribute data can be updated"""
+    """Check that timeseries attribute data with a reference can be updated"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
@@ -883,14 +884,24 @@ async def test_get_object():
         assert object.name == "SomePowerPlant1"
         assert object.path == object_path
         assert object.type_name == "PlantElementType"
-        assert object.owner_id.path == "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
+        assert object.owner_path == "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
         assert len(object.attributes) == 23
 
-        for attribute in object.attributes:
+        for attribute in object.attributes.values():
             assert attribute.name is not None
             assert attribute.path is not None
             assert attribute.id is not None
-            assert not attribute.HasField("definition")
+            # the following fields mustn't be set
+            assert attribute.definition_id is None
+            assert attribute.definition_path is None
+            assert attribute.definition_name is None
+            assert attribute.description is None
+            assert attribute.value_type is None
+            assert attribute.value_type is None
+            assert len(attribute.tags) == 0
+            assert attribute.namespace is None
+            assert attribute.minimum_cardinality is None
+            assert attribute.maximum_cardinality is None
 
 
 @pytest.mark.asyncio
@@ -909,20 +920,24 @@ async def test_get_object_with_full_attribute_info():
 
         string_attribute_found = False
         object = await session.get_object(object_path=object_path, full_attribute_info=True)
-        for attribute in object.attributes:
+        for attribute in object.attributes.values():
             assert attribute.name is not None
             assert attribute.path is not None
             assert attribute.id is not None
 
-            # with full info definition should be returned
-            assert attribute.HasField("definition")
+            # with full info those fields should be returned
+            assert attribute.definition_id is not None
+            assert attribute.definition_path is not None
+            assert attribute.definition_name is not None
+            assert attribute.description is not None
+            assert attribute.value_type is not None
+            assert attribute.value_type is not None
+            assert attribute.namespace is not None
+            assert attribute.minimum_cardinality is not None
+            assert attribute.maximum_cardinality is not None
 
-            # check one of the attributes
-            if attribute.name == "StringAtt":
-                string_attribute_found = True
-                assert attribute.definition.string_definition.default_value == "Default string value"
-
-        assert string_attribute_found
+        # check one of the attributes
+        assert object.attributes["StringAtt"].default_value == "Default string value"
 
 
 @pytest.mark.asyncio
@@ -939,20 +954,11 @@ async def test_get_object_with_attributes_filter_with_name_mask():
         object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
         attributes_filter = AttributesFilter(name_mask=["StringAtt", "BoolArrayAtt"])
 
-        string_attribute_found = False
-        bool_array_attribute_found = False
-
         object = await session.get_object(
             object_path=object_path, attributes_filter=attributes_filter)
 
-        for attribute in object.attributes:
-            if attribute.name == "StringAtt":
-                string_attribute_found = True
-            elif attribute.name == "BoolArrayAtt":
-                bool_array_attribute_found = True
-
-        assert string_attribute_found
-        assert bool_array_attribute_found
+        assert object.attributes['StringAtt'] is not None
+        assert object.attributes['BoolArrayAtt'] is not None
 
 
 @pytest.mark.asyncio
@@ -1039,8 +1045,8 @@ async def test_create_object():
         assert new_object.name == object.name
         assert new_object.path == object.path
         assert new_object.type_name == object.type_name
-        assert new_object.owner_id.id == object.owner_id.id
-        assert new_object.owner_id.path == object.owner_id.path
+        assert new_object.owner_id == object.owner_id
+        assert new_object.owner_path == object.owner_path
 
 
 @pytest.mark.asyncio
@@ -1068,7 +1074,7 @@ async def test_update_object():
         object = await session.get_object(object_path=new_object_path)
         assert object.name == new_object_name
         assert object.path == new_object_path
-        assert object.owner_id.path == new_owner_attribute_path
+        assert object.owner_path == new_owner_attribute_path
 
 
 @pytest.mark.asyncio
@@ -1110,7 +1116,7 @@ async def test_recursive_delete_object():
 @pytest.mark.database
 async def test_get_bool_array_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a boolean array attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a boolean array attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1122,22 +1128,22 @@ async def test_get_bool_array_attribute():
         attribute = await session.get_attribute(attribute_path=bool_array_att_path, full_attribute_info=True)
         assert attribute.path == bool_array_att_path
         assert attribute.name == attribute_name
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == "Array of bools"
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "BooleanArrayAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 0
-        assert attribute.definition.maximum_cardinality == 10
-        for values in zip(attribute.collection_values, bool_array_values):
-            assert values[0].boolean_value == values[1]
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == "Array of bools"
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "BooleanArrayAttributeDefinition"
+        assert attribute.minimum_cardinality == 0
+        assert attribute.maximum_cardinality == 10
+        for values in zip(attribute.value, bool_array_values):
+            assert values[0] == values[1]
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_xy_set_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a XY set attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a XY set attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1148,21 +1154,21 @@ async def test_get_xy_set_attribute():
         attribute = await session.get_attribute(attribute_path=xySetAttPath, full_attribute_info=True)
         assert attribute.path == xySetAttPath
         assert attribute.name == attribute_name
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "XYSetAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == ""
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "XYSetAttributeDefinition"
+        assert attribute.minimum_cardinality == 1
+        assert attribute.maximum_cardinality == 1
         # so far no definition
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_utc_time_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a UtcDateTime attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a UtcDateTime attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1172,26 +1178,26 @@ async def test_get_utc_time_attribute():
     utc_time_value = datetime.strptime("05/10/22 07:24:15", "%m/%d/%y %H:%M:%S") # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=utc_date_time_att_path, full_attribute_info=True)
-        assert attribute.singular_value.utc_time_value.seconds == utc_time_value.timestamp()
+        assert attribute.value == utc_time_value
         assert attribute.path == utc_date_time_att_path
         assert attribute.name == attribute_name
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "UtcDateTimeAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert attribute.definition.utc_time_definition.default_value_expression == "UTC20220510072415"
-        assert attribute.definition.utc_time_definition.minimum_value_expression == ""
-        assert attribute.definition.utc_time_definition.maximum_value_expression == ""
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == ""
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "UtcDateTimeAttributeDefinition"
+        assert attribute.minimum_cardinality == 1
+        assert attribute.maximum_cardinality == 1
+        assert attribute.default_value == "UTC20220510072415"
+        assert attribute.minimum_value == None
+        assert attribute.maximum_value == None
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_boolean_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a boolean attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a boolean attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1204,24 +1210,24 @@ async def test_get_boolean_attribute():
         bool_attribute_id = attribute.id
         assert attribute.path == bool_attribute_path
         assert attribute.name == attribute_name
-        assert attribute.singular_value.boolean_value == True
+        assert attribute.value == True
         # now check if get by id succeeds as well
         attribute = await session.get_attribute(attribute_id=bool_attribute_id, full_attribute_info=True)
         assert attribute.path == bool_attribute_path
         assert attribute.name == attribute_name
-        assert attribute.singular_value.boolean_value == True
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "BooleanAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert attribute.definition.boolean_definition.default_value == True
+        assert attribute.value == True
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == ""
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "BooleanAttributeDefinition"
+        assert attribute.minimum_cardinality == 1
+        assert attribute.maximum_cardinality == 1
+        assert attribute.default_value == True
 
 def verify_time_series_calculation_attribute(
-    attribute: core_pb2.Attribute, attribute_info: Tuple[str, bool], attribute_name: str):
+    attribute: TimeseriesAttribute, attribute_info: Tuple[str, bool], attribute_name: str):
 
     expression = attribute_info[0]
     is_local_expression = attribute_info[1]
@@ -1229,24 +1235,23 @@ def verify_time_series_calculation_attribute(
     str_atttribute_path = get_attribute_path_principal() + attribute_name
     assert attribute.path == str_atttribute_path
     assert attribute.name == attribute_name
-    assert attribute.singular_value.timeseries_value.expression == expression
-    assert attribute.singular_value.timeseries_value.is_local_expression == is_local_expression
-    assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-    assert attribute.definition.name == attribute_name
-    assert attribute.definition.description == ""
-    assert len(attribute.definition.tags) == 0
-    assert attribute.definition.name_space == "SimpleThermalTestRepository"
-    assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
-    assert attribute.definition.minimum_cardinality == 1
-    assert attribute.definition.maximum_cardinality == 1
-    assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
-    assert attribute.definition.timeseries_definition.template_expression == expression
+    assert attribute.expression == expression
+    assert attribute.is_local_expression == is_local_expression
+    assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+    assert attribute.name == attribute_name
+    assert attribute.description == ""
+    assert len(attribute.tags) == 0
+    assert attribute.namespace == "SimpleThermalTestRepository"
+    assert attribute.value_type == "TimeseriesAttributeDefinition"
+    assert attribute.minimum_cardinality == 1
+    assert attribute.maximum_cardinality == 1
+    assert attribute.template_expression == expression
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_calc_time_series_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a calculation time series attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a calculation time series attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1264,7 +1269,7 @@ async def test_get_calc_time_series_attribute():
 @pytest.mark.database
 async def test_get_raw_time_series_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1276,25 +1281,24 @@ async def test_get_raw_time_series_attribute():
         attribute = await session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
         assert attribute.path == str_atttribute_path
         assert attribute.name == attribute_name
-        assert _from_proto_guid(attribute.singular_value.timeseries_value.resource_time_series_id.id) == uuid.UUID("00000004-0001-0000-0000-000000000000")
-        assert attribute.singular_value.timeseries_value.expression == ""
-        assert attribute.singular_value.timeseries_value.is_local_expression == False
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
-        assert attribute.definition.timeseries_definition.template_expression == ""
+        assert _from_proto_guid(attribute.resource_time_series_id) == uuid.UUID("00000004-0001-0000-0000-000000000000")
+        assert attribute.expression == ""
+        assert attribute.is_local_expression == False
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == ""
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "TimeseriesAttributeDefinition"
+        assert attribute.minimum_cardinality == 1
+        assert attribute.maximum_cardinality == 1
+        assert attribute.template_expression == ""
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_string_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a string attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a string attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1307,39 +1311,39 @@ async def test_get_string_attribute():
         attribute = await session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
         assert attribute.path == str_atttribute_path
         assert attribute.name == attribute_name
-        assert attribute.singular_value.string_value == default_string_value
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "StringAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert attribute.definition.string_definition.default_value == default_string_value
+        assert attribute.value == default_string_value
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == ""
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "StringAttributeDefinition"
+        assert attribute.minimum_cardinality == 1
+        assert attribute.maximum_cardinality == 1
+        assert attribute.default_value == default_string_value
 
 def verify_double_attribute(attribute: core_pb2.Attribute, dbl_attribute_path: str, attribute_name: str):
         assert attribute.path == dbl_attribute_path
         assert attribute.name == attribute_name
-        assert attribute.singular_value.double_value == 1000
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.name_space == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "DoubleAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert attribute.definition.double_definition.default_value == 1000
-        assert attribute.definition.double_definition.minimum_value == -sys.float_info.max
-        assert attribute.definition.double_definition.maximum_value == sys.float_info.max
-        assert attribute.definition.double_definition.unit_of_measurement == ""
+        assert attribute.value == 1000
+        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.name == attribute_name
+        assert attribute.description == ""
+        assert len(attribute.tags) == 0
+        assert attribute.namespace == "SimpleThermalTestRepository"
+        assert attribute.value_type == "DoubleAttributeDefinition"
+        assert attribute.minimum_cardinality == 1
+        assert attribute.maximum_cardinality == 1
+        assert attribute.default_value == 1000
+        assert attribute.minimum_value == -sys.float_info.max
+        assert attribute.maximum_value == sys.float_info.max
+        assert attribute.unit_of_measurement == None
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_get_double_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a double attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a double attribute and all data.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import sys
-from typing import List, Any, Tuple
+from typing import List, Any, Tuple, Type
 import uuid
 
 from dateutil import tz
@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, MeshObjectId, Timeseries
+from volue.mesh import Connection, MeshObjectId, AttributeBase, Object, Timeseries
 from volue.mesh._common import AttributesFilter, _from_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
@@ -125,48 +125,16 @@ def get_timeseries_information(timeseries: Timeseries):
     )
     return message
 
-def get_object_information(object: core_pb2.Object):
+def get_object_information(object: Object):
     """Create a printable message from an Object."""
     message = (
-        f"Object with path: '{object.path}'  \n"
-        f"has ID: '{_from_proto_guid(object.id)}', \n"
+        f"Object with path: '{object.path}' \n"
+        f"has ID: '{object.id}', \n"
         f"name: '{object.name}', \n"
         f"type name: '{object.type_name}', \n"
-        f"owner path: '{object.owner_id.path}', \n"
-        f"owner ID: '{_from_proto_guid(object.owner_id.id)}'\n"
+        f"owner path: '{object.owner_path}', \n"
+        f"owner ID: '{object.owner_id}'\n"
     )
-    return message
-
-def get_attribute_value(attribute_value: core_pb2.AttributeValue):
-    return getattr(attribute_value, attribute_value.WhichOneof('value_oneof'))
-
-def get_attribute_information(attribute: core_pb2.Attribute):
-    """Create a printable message from an Attribute."""
-    attribute_value = None
-    if attribute.HasField('singular_value'):
-        attribute_value = get_attribute_value(attribute.singular_value)
-    elif len(attribute.collection_values) > 0:
-        attribute_value = []
-        for collection_value in attribute.collection_values:
-            attribute_value.append(get_attribute_value(collection_value))
-
-    definition = attribute.definition
-
-    message = (
-        f"Attribute with path: '{attribute.path}'  \n"
-        f"has ID: '{_from_proto_guid(attribute.id)}', \n"
-        f"name: '{attribute.name}', \n"
-        f"definition type: '{definition.value_type}', \n"
-        f"value: '{attribute_value}'\n"
-    )
-
-    if definition.HasField("double_definition") or\
-        definition.HasField("int_definition"):
-        definition_type = getattr(definition, definition.WhichOneof('definition_type_oneof'))
-        message = (
-            f"{message}"
-            f"unit of measurement: '{definition_type.unit_of_measurement}'\n"
-        )
     return message
 
 
@@ -955,9 +923,9 @@ def use_case_13():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            reply = session.search_for_objects(search_query, start_object_id=start_object_guid)
+            objects = session.search_for_objects(search_query, start_object_id=start_object_guid)
 
-            for number, object in enumerate(reply):
+            for number, object in enumerate(objects):
                 print(f"{number + 1}. \n"
                       f"-------------------------------------------\n"
                       f"{get_object_information(object)}")
@@ -1000,9 +968,9 @@ def use_case_14():
                 object_id=parent_object_guid, full_attribute_info=True)
             relationship_attribute_path = None
 
-            for attribute in parent_object.attributes:
-                if (attribute.definition.value_type == 'ElementCollectionAttributeDefinition' and
-                    attribute.definition.relationship_definition.object_type == new_object_type):
+            for attribute in parent_object.attributes.values():
+                if (attribute.value_type == 'ElementCollectionAttributeDefinition' and
+                    attribute.object_type == new_object_type):
                     relationship_attribute_path = attribute.path
 
             if relationship_attribute_path is None:
@@ -1046,6 +1014,7 @@ def use_case_15():
             for object_name in objects_names:
                 object_path = f"{parent_object_path}/{object_name}"
                 session.delete_object(object_path=object_path, recursive_delete=True)
+                print(f"Object: '{object_path}' was deleted")
 
             # Commit changes
             if COMMIT_CHANGES:
@@ -1069,12 +1038,14 @@ def use_case_16():
         try:
             use_case_name = "Use case 16"
             parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
+            old_object_name = "NewWindPark"
             new_object_name = "NewestWindPark"
-            old_object_path = f"{parent_object_path}/NewWindPark"
-            new_object_path = f"{parent_object_path}/{new_object_name}"
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
+
+            old_object_path = f"{parent_object_path}/{old_object_name}"
+            new_object_path = f"{parent_object_path}/{new_object_name}"
 
             session.update_object(object_path=old_object_path, new_name=new_object_name)
             updated_object = session.get_object(object_path=new_object_path)
@@ -1110,13 +1081,11 @@ def use_case_17():
             print(get_object_information(object))
 
             number = 1
-            # no particular order of attributes and objects returned from Mesh is guaranteed
-            # sort attributes by name
-            for attribute in sorted(object.attributes, key=lambda attribute: attribute.name.lower()):
-                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
+            for attribute in object.attributes.values():
+                if attribute.value_type != 'TimeseriesAttributeDefinition':
                     print(f"{number}. \n"
                         f"-------------------------------------------\n"
-                        f"{get_attribute_information(attribute)}")
+                        f"{attribute}")
                     number += 1
 
         except grpc.RpcError as e:
@@ -1153,13 +1122,11 @@ def use_case_18():
             print(get_object_information(object))
 
             number = 1
-            # no particular order of attributes and objects returned from Mesh is guaranteed
-            # sort attributes by name
-            for attribute in sorted(object.attributes, key=lambda attribute: attribute.name.lower()):
-                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
+            for attribute in object.attributes.values():
+                if attribute.value_type != 'TimeseriesAttributeDefinition':
                     print(f"{number}. \n"
                         f"-------------------------------------------\n"
-                        f"{get_attribute_information(attribute)}")
+                        f"{attribute}")
                     number += 1
 
         except grpc.RpcError as e:
