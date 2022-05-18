@@ -969,7 +969,7 @@ def use_case_14():
             relationship_attribute_path = None
 
             for attribute in parent_object.attributes.values():
-                if (attribute.value_type == 'ElementCollectionAttributeDefinition' and
+                if (attribute.definition.value_type == 'ElementCollectionAttributeDefinition' and
                     attribute.object_type == new_object_type):
                     relationship_attribute_path = attribute.path
 
@@ -1082,7 +1082,7 @@ def use_case_17():
 
             number = 1
             for attribute in object.attributes.values():
-                if attribute.value_type != 'TimeseriesAttributeDefinition':
+                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
                     print(f"{number}. \n"
                         f"-------------------------------------------\n"
                         f"{attribute}")
@@ -1123,7 +1123,7 @@ def use_case_18():
 
             number = 1
             for attribute in object.attributes.values():
-                if attribute.value_type != 'TimeseriesAttributeDefinition':
+                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
                     print(f"{number}. \n"
                         f"-------------------------------------------\n"
                         f"{attribute}")

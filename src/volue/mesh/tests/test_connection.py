@@ -873,17 +873,8 @@ def test_get_object():
             assert attribute.name is not None
             assert attribute.path is not None
             assert attribute.id is not None
-            # the following fields mustn't be set
-            assert attribute.definition_id is None
-            assert attribute.definition_path is None
-            assert attribute.definition_name is None
-            assert attribute.description is None
-            assert attribute.value_type is None
-            assert attribute.value_type is None
-            assert len(attribute.tags) == 0
-            assert attribute.namespace is None
-            assert attribute.minimum_cardinality is None
-            assert attribute.maximum_cardinality is None
+            # without full info the definition is not set
+            assert attribute.definition is None
 
 
 @pytest.mark.database
@@ -904,20 +895,11 @@ def test_get_object_with_full_attribute_info():
             assert attribute.name is not None
             assert attribute.path is not None
             assert attribute.id is not None
-
-            # with full info those fields should be returned
-            assert attribute.definition_id is not None
-            assert attribute.definition_path is not None
-            assert attribute.definition_name is not None
-            assert attribute.description is not None
-            assert attribute.value_type is not None
-            assert attribute.value_type is not None
-            assert attribute.namespace is not None
-            assert attribute.minimum_cardinality is not None
-            assert attribute.maximum_cardinality is not None
+            # with full info the definition is set
+            assert attribute.definition is not None
 
         # check one of the attributes
-        assert object.attributes["StringAtt"].default_value == "Default string value"
+        assert object.attributes["StringAtt"].definition.default_value == "Default string value"
 
 
 @pytest.mark.database
@@ -1099,14 +1081,14 @@ def test_get_bool_array_attribute():
         attribute = session.get_attribute(attribute_path=bool_array_att_path, full_attribute_info=True)
         assert attribute.path == bool_array_att_path
         assert attribute.name == attribute_name
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == "Array of bools"
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "BooleanArrayAttributeDefinition"
-        assert attribute.minimum_cardinality == 0
-        assert attribute.maximum_cardinality == 10
+        assert attribute.definition.description == "Array of bools"
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "BooleanArrayAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 0
+        assert attribute.definition.maximum_cardinality == 10
         for values in zip(attribute.value, bool_array_values):
             assert values[0] == values[1]
 
@@ -1124,14 +1106,14 @@ def test_get_xy_set_attribute():
         attribute = session.get_attribute(attribute_path=xySetAttPath, full_attribute_info=True)
         assert attribute.path == xySetAttPath
         assert attribute.name == attribute_name
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == ""
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "XYSetAttributeDefinition"
-        assert attribute.minimum_cardinality == 1
-        assert attribute.maximum_cardinality == 1
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "XYSetAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
         # so far no definition
 
 @pytest.mark.database
@@ -1150,17 +1132,17 @@ def test_get_utc_time_attribute():
         assert attribute.value == utc_time_value
         assert attribute.path == utc_date_time_att_path
         assert attribute.name == attribute_name
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == ""
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "UtcDateTimeAttributeDefinition"
-        assert attribute.minimum_cardinality == 1
-        assert attribute.maximum_cardinality == 1
-        assert attribute.default_value == "UTC20220510072415"
-        assert attribute.minimum_value == None
-        assert attribute.maximum_value == None
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "UtcDateTimeAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.default_value == "UTC20220510072415"
+        assert attribute.definition.minimum_value == None
+        assert attribute.definition.maximum_value == None
 
 @pytest.mark.database
 def test_get_boolean_attribute():
@@ -1184,15 +1166,15 @@ def test_get_boolean_attribute():
         assert attribute.path == bool_attribute_path
         assert attribute.name == attribute_name
         assert attribute.value == True
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == ""
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "BooleanAttributeDefinition"
-        assert attribute.minimum_cardinality == 1
-        assert attribute.maximum_cardinality == 1
-        assert attribute.default_value == True
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "BooleanAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.default_value == True
 
 def verify_time_series_calculation_attribute(
     attribute: TimeseriesAttribute, attribute_info: Tuple[str, bool], attribute_name: str):
@@ -1205,15 +1187,15 @@ def verify_time_series_calculation_attribute(
     assert attribute.name == attribute_name
     assert attribute.expression == expression
     assert attribute.is_local_expression == is_local_expression
-    assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+    assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
     assert attribute.name == attribute_name
-    assert attribute.description == ""
-    assert len(attribute.tags) == 0
-    assert attribute.namespace == "SimpleThermalTestRepository"
-    assert attribute.value_type == "TimeseriesAttributeDefinition"
-    assert attribute.minimum_cardinality == 1
-    assert attribute.maximum_cardinality == 1
-    assert attribute.template_expression == expression
+    assert attribute.definition.description == ""
+    assert len(attribute.definition.tags) == 0
+    assert attribute.definition.namespace == "SimpleThermalTestRepository"
+    assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+    assert attribute.definition.minimum_cardinality == 1
+    assert attribute.definition.maximum_cardinality == 1
+    assert attribute.definition.template_expression == expression
 
 @pytest.mark.database
 def test_get_calc_time_series_attribute():
@@ -1250,15 +1232,15 @@ def test_get_raw_time_series_attribute():
         assert _from_proto_guid(attribute.resource_time_series_id) == uuid.UUID("00000004-0001-0000-0000-000000000000")
         assert attribute.expression == ""
         assert attribute.is_local_expression == False
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == ""
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "TimeseriesAttributeDefinition"
-        assert attribute.minimum_cardinality == 1
-        assert attribute.maximum_cardinality == 1
-        assert attribute.template_expression == ""
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.template_expression == ""
 
 
 @pytest.mark.database
@@ -1278,32 +1260,32 @@ def test_get_string_attribute():
         assert attribute.path == str_atttribute_path
         assert attribute.name == attribute_name
         assert attribute.value == default_string_value
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == ""
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "StringAttributeDefinition"
-        assert attribute.minimum_cardinality == 1
-        assert attribute.maximum_cardinality == 1
-        assert attribute.default_value == default_string_value
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "StringAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.default_value == default_string_value
 
 def verify_double_attribute(attribute: core_pb2.Attribute, dbl_attribute_path: str, attribute_name: str):
         assert attribute.path == dbl_attribute_path
         assert attribute.name == attribute_name
         assert attribute.value == 1000
-        assert attribute.definition_path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
+        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
         assert attribute.name == attribute_name
-        assert attribute.description == ""
-        assert len(attribute.tags) == 0
-        assert attribute.namespace == "SimpleThermalTestRepository"
-        assert attribute.value_type == "DoubleAttributeDefinition"
-        assert attribute.minimum_cardinality == 1
-        assert attribute.maximum_cardinality == 1
-        assert attribute.default_value == 1000
-        assert attribute.minimum_value == -sys.float_info.max
-        assert attribute.maximum_value == sys.float_info.max
-        assert attribute.unit_of_measurement == None
+        assert attribute.definition.description == ""
+        assert len(attribute.definition.tags) == 0
+        assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        assert attribute.definition.value_type == "DoubleAttributeDefinition"
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition.default_value == 1000
+        assert attribute.definition.minimum_value == -sys.float_info.max
+        assert attribute.definition.maximum_value == sys.float_info.max
+        assert attribute.definition.unit_of_measurement == None
 
 
 @pytest.mark.database

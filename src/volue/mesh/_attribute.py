@@ -54,10 +54,9 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute) -> Type[Attribute
         attribute_value_type = proto_attribute.singular_value.WhichOneof(
             PROTO_VALUE_ONE_OF_FIELD_NAME)
     elif len(proto_attribute.collection_values) > 0:
-        for collection_value in proto_attribute.collection_values:
-            attribute_value_type = collection_value.WhichOneof(
-                PROTO_VALUE_ONE_OF_FIELD_NAME)
-            break
+        # it is enough to check only value type of the first element in the collection
+        attribute_value_type = proto_attribute.collection_values[0].WhichOneof(
+            PROTO_VALUE_ONE_OF_FIELD_NAME)
 
     if proto_attribute.HasField('definition'):
         attribute_definition_type = proto_attribute.definition.WhichOneof(
@@ -89,18 +88,35 @@ class AttributeBase:
     It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).
     """
 
+    @dataclass
+    class Definition:
+        """Attribute definition common for all kinds of attributes."""
+        id: uuid = None
+        path: str = None
+        name: str = None
+        description: str = None
+        tags: List[str] = field(default_factory=list)
+        namespace: str = None
+        value_type: str = None
+        minimum_cardinality: int = None
+        maximum_cardinality: int = None
+
+        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
+            self.id = _from_proto_guid(proto_definition.id)
+            self.path = proto_definition.path
+            self.name = proto_definition.name
+            self.description = proto_definition.description
+            for tag in proto_definition.tags:
+                self.tags.append(tag)
+            self.namespace = proto_definition.name_space
+            self.value_type = proto_definition.value_type
+            self.minimum_cardinality = proto_definition.minimum_cardinality
+            self.maximum_cardinality = proto_definition.maximum_cardinality
+
     id: uuid = None
     path: str = None
     name: str = None
-    definition_id: uuid = None
-    definition_path: str = None
-    definition_name: str = None
-    description: str = None
-    tags: List[str] = field(default_factory=list)
-    namespace: str = None
-    value_type: str = None
-    minimum_cardinality: int = None
-    maximum_cardinality: int = None
+    definition: Definition = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -120,25 +136,15 @@ class AttributeBase:
         Args:
             proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
         """
-        attribute = self
-        attribute.id = _from_proto_guid(proto_attribute.id)
-        attribute.path = proto_attribute.path
-        attribute.name = proto_attribute.name
+        self.id = _from_proto_guid(proto_attribute.id)
+        self.path = proto_attribute.path
+        self.name = proto_attribute.name
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField('definition'):
-            attribute.definition_id = _from_proto_guid(proto_attribute.definition.id)
-            attribute.definition_path = proto_attribute.definition.path
-            attribute.definition_name = proto_attribute.definition.name
-            attribute.description = proto_attribute.definition.description
-            for tag in proto_attribute.definition.tags:
-                attribute.tags.append(tag)
-            attribute.namespace = proto_attribute.definition.name_space
-            attribute.value_type = proto_attribute.definition.value_type
-            attribute.minimum_cardinality = proto_attribute.definition.minimum_cardinality
-            attribute.maximum_cardinality = proto_attribute.definition.maximum_cardinality
+            self.definition = self.Definition()
+            self.definition._init_from_proto_definition(proto_attribute.definition)
 
-        return attribute
 
     def _get_string_representation(self) -> str:
         """Get string representation that could be used by subclasses `_str__` method calls."""
@@ -146,15 +152,15 @@ class AttributeBase:
             f"name: {self.name}\n"
             f"\t id: {self.id}\n"
             f"\t path: {self.id}\n"
-            f"\t id: {self.definition_id}\n"
-            f"\t path: {self.definition_path}\n"
-            f"\t name: {self.definition_name}\n"
-            f"\t description: {self.description}\n"
-            f"\t tags: {self.tags}\n"
-            f"\t namespace: {self.namespace}\n"
-            f"\t value_type: {self.value_type}\n"
-            f"\t minimum_cardinality: {self.minimum_cardinality}\n"
-            f"\t maximum_cardinality: {self.maximum_cardinality}"
+            f"\t definition name: {self.definition.name}\n"
+            f"\t definition id: {self.definition.id}\n"
+            f"\t definition path: {self.definition.path}\n"
+            f"\t description: {self.definition.description}\n"
+            f"\t tags: {self.definition.tags}\n"
+            f"\t namespace: {self.definition.namespace}\n"
+            f"\t value_type: {self.definition.value_type}\n"
+            f"\t minimum_cardinality: {self.definition.minimum_cardinality}\n"
+            f"\t maximum_cardinality: {self.definition.maximum_cardinality}"
         )
 
     def __str__(self) -> str:
@@ -188,12 +194,38 @@ class SimpleAttribute(AttributeBase):
     - unit_of_measurement
     """
 
+    @dataclass
+    class Definition(AttributeBase.Definition):
+        """Attribute definition for simple attributes."""
+
+        default_value: S = None
+        minimum_value: S = None
+        maximum_value: S = None
+        unit_of_measurement: str = None
+
+        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
+            super()._init_from_proto_definition(proto_definition)
+            definition_type_name = proto_definition.WhichOneof(
+                PROTO_DEFINITION_ONE_OF_FIELD_NAME)
+            # get the proto message
+            definition_type = getattr(proto_definition, definition_type_name)
+            # read all of the available proto fields
+            field_names = set([field.name for field, _ in definition_type.ListFields()])
+
+            # set all possible values
+            # if a field does not exist for the given definition type then return `None`
+            self.default_value = _get_field_value(
+                'default_value', field_names, definition_type)
+            self.minimum_value = _get_field_value(
+                'minimum_value', field_names, definition_type)
+            self.maximum_value = _get_field_value(
+                'maximum_value', field_names, definition_type)
+            self.unit_of_measurement = _get_field_value(
+                'unit_of_measurement', field_names, definition_type)
+
+
     value: S = None
- 
-    default_value: S = None
-    minimum_value: S = None
-    maximum_value: S = None
-    unit_of_measurement: str = None
+    definition: Definition = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -204,27 +236,6 @@ class SimpleAttribute(AttributeBase):
         """
         attribute = cls()
         super()._init_from_proto_attribute(attribute, proto_attribute)
-
-        # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
-            # get field name of specific definition type from oneof
-            definition_type_name = proto_attribute.definition.WhichOneof(
-                PROTO_DEFINITION_ONE_OF_FIELD_NAME)
-            # get the proto message
-            definition_type = getattr(proto_attribute.definition, definition_type_name)
-            # read all of the available proto fields
-            field_names = set([field.name for field, _ in definition_type.ListFields()])
-
-            # set all possible values
-            # if a field does not exist for the given definition type then return `None`
-            attribute.default_value = _get_field_value(
-                'default_value', field_names, definition_type)
-            attribute.minimum_value = _get_field_value(
-                'minimum_value', field_names, definition_type)
-            attribute.maximum_value = _get_field_value(
-                'maximum_value', field_names, definition_type)
-            attribute.unit_of_measurement = _get_field_value(
-                'unit_of_measurement', field_names, definition_type)
 
         if proto_attribute.HasField('singular_value'):
             attribute.value = _get_attribute_value(proto_attribute.singular_value)
@@ -241,10 +252,10 @@ class SimpleAttribute(AttributeBase):
             f"SimpleAttribute:\n"
             f"\t {base_message}\n"
             f"\t value: {self.value}\n"
-            f"\t default_value: {self.default_value}\n"
-            f"\t minimum_value: {self.minimum_value}\n"
-            f"\t maximum_value: {self.maximum_value}\n"
-            f"\t unit_of_measurement: {self.unit_of_measurement}"
+            f"\t default_value: {self.definition.default_value}\n"
+            f"\t minimum_value: {self.definition.minimum_value}\n"
+            f"\t maximum_value: {self.definition.maximum_value}\n"
+            f"\t unit_of_measurement: {self.definition.unit_of_measurement}"
         )
 
 
@@ -252,7 +263,7 @@ class SimpleAttribute(AttributeBase):
 class RelationshipAttribute(AttributeBase):
     """Represents relationship Mesh Attribute.
 
-    Relationship attributes connects two objects.
+    Relationship attributes connect two objects.
     The owned object's owner is always a relationship attribute that
     belongs to some other object.
 
@@ -263,7 +274,20 @@ class RelationshipAttribute(AttributeBase):
     When creating a new object the owner must be a relationship attribute
     of one-to-many type (ElementCollectionAttributeDefinition).
     """
-    object_type: str = None
+
+    @dataclass
+    class Definition(AttributeBase.Definition):
+        """Attribute definition for relationship attribute."""
+
+        object_type: str = None
+
+        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
+            super()._init_from_proto_definition(proto_definition)
+            self.object_type = proto_definition.relationship_definition.object_type
+            return self
+
+
+    definition: Definition = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -275,10 +299,6 @@ class RelationshipAttribute(AttributeBase):
         attribute = cls()
         super()._init_from_proto_attribute(attribute, proto_attribute)
 
-        # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
-            attribute.object_type = proto_attribute.definition.relationship_definition.object_type
-
         return attribute
 
     def __str__(self) -> str:
@@ -286,7 +306,7 @@ class RelationshipAttribute(AttributeBase):
         return (
             f"RelationshipAttribute:\n"
             f"\t {base_message}\n"
-            f"\t object_type: {self.object_type}"
+            f"\t object_type: {self.definition.object_type}"
         )
 
 
@@ -306,14 +326,22 @@ class TimeseriesAttribute(AttributeBase):
 
     Note: physical and virtual time series are both called resource time series.
     """
+    @dataclass
+    class Definition(AttributeBase.Definition):
+        """Attribute definition for relationship attribute."""
+
+        object_type: str = None
+
+        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
+            super()._init_from_proto_definition(proto_definition)
+            self.template_expression = proto_definition.timeseries_definition.template_expression
+
+
     resource_time_series_id: uuid = None
     resource_time_series_path: str = None
     resource_time_series_timeseries_key: int = None
     is_local_expression: bool = None
     expression: str = None
-
-    template_expression: str = None
-
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -328,10 +356,6 @@ class TimeseriesAttribute(AttributeBase):
         """
         attribute = cls()
         super()._init_from_proto_attribute(attribute, proto_attribute)
-
-        # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
-            attribute.template_expression = proto_attribute.definition.timeseries_definition.template_expression
 
         if proto_attribute.HasField('singular_value'):
             proto_value = proto_attribute.singular_value.timeseries_value
@@ -358,5 +382,5 @@ class TimeseriesAttribute(AttributeBase):
             f"\t resource_time_series_timeseries_key: {self.resource_time_series_timeseries_key}\n"
             f"\t is_local_expression: {self.is_local_expression}\n"
             f"\t expression: {self.expression}\n"
-            f"\t template_expression: {self.template_expression}"
+            f"\t template_expression: {self.definition.template_expression}"
         )
