@@ -810,14 +810,13 @@ message StringAttributeDefinition {
 }
 
 message UtcTimeAttributeDefinition {
-  string default_value_expression = 1;
-  string minimum_value_expression = 2;
-  string maximum_value_expression = 3;
+  string default_value = 1;
+  string minimum_value = 2;
+  string maximum_value = 3;
 }
 
 message TimeseriesAttributeDefinition {
-  volue.mesh.grpc.type.Guid default_value_id = 1;  // TODO: check what does it point to? Physical time series?
-  string template_expression = 2;
+  string template_expression = 1;
 }
 
 message RatingCurveAttributeDefinition {

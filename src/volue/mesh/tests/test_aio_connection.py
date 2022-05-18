@@ -1183,9 +1183,9 @@ async def test_get_utc_time_attribute():
         assert attribute.definition.value_type == "UtcDateTimeAttributeDefinition"
         assert attribute.definition.minimum_cardinality == 1
         assert attribute.definition.maximum_cardinality == 1
-        assert attribute.definition.utc_time_definition.default_value_expression == "UTC20220510072415"
-        assert attribute.definition.utc_time_definition.minimum_value_expression == ""
-        assert attribute.definition.utc_time_definition.maximum_value_expression == ""
+        assert attribute.definition.utc_time_definition.default_value == "UTC20220510072415"
+        assert attribute.definition.utc_time_definition.minimum_value == ""
+        assert attribute.definition.utc_time_definition.maximum_value == ""
 
 @pytest.mark.asyncio
 @pytest.mark.database
@@ -1239,7 +1239,6 @@ def verify_time_series_calculation_attribute(
     assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
     assert attribute.definition.minimum_cardinality == 1
     assert attribute.definition.maximum_cardinality == 1
-    assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
     assert attribute.definition.timeseries_definition.template_expression == expression
 
 @pytest.mark.asyncio
@@ -1287,7 +1286,6 @@ async def test_get_raw_time_series_attribute():
         assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
         assert attribute.definition.minimum_cardinality == 1
         assert attribute.definition.maximum_cardinality == 1
-        assert _from_proto_guid(attribute.definition.timeseries_definition.default_value_id) == uuid.UUID("00000000-0000-0000-0000-000000000000")
         assert attribute.definition.timeseries_definition.template_expression == ""
 
 @pytest.mark.asyncio
