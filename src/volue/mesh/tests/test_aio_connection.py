@@ -1098,7 +1098,7 @@ async def test_recursive_delete_object():
 @pytest.mark.database
 async def test_get_bool_array_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a boolean array attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a boolean array attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1125,7 +1125,7 @@ async def test_get_bool_array_attribute():
 @pytest.mark.database
 async def test_get_xy_set_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a XY set attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a XY set attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1150,7 +1150,7 @@ async def test_get_xy_set_attribute():
 @pytest.mark.database
 async def test_get_utc_time_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a UtcDateTime attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a UtcDateTime attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1179,7 +1179,7 @@ async def test_get_utc_time_attribute():
 @pytest.mark.database
 async def test_get_boolean_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a boolean attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a boolean attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1233,7 +1233,7 @@ def verify_time_series_calculation_attribute(
 @pytest.mark.database
 async def test_get_calc_time_series_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a calculation time series attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a calculation time series attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1251,7 +1251,7 @@ async def test_get_calc_time_series_attribute():
 @pytest.mark.database
 async def test_get_raw_time_series_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1280,7 +1280,7 @@ async def test_get_raw_time_series_attribute():
 @pytest.mark.database
 async def test_get_string_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a string attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a string attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1325,7 +1325,7 @@ def verify_double_attribute(attribute: core_pb2.Attribute, dbl_attribute_path: s
 @pytest.mark.database
 async def test_get_double_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a double attribute and all data.
+    Check that 'get_attribute' with full attribute view retrieves a double attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
