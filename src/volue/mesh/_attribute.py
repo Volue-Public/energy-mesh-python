@@ -5,6 +5,7 @@ Functionality for working with Mesh attributes.
 from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
+from dateutil import tz
 from typing import Any, List, Type, TypeVar
 import uuid
 
@@ -13,7 +14,7 @@ from google.protobuf import timestamp_pb2
 from volue.mesh._common import _from_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 
-S = TypeVar('S', int, float, bool, str, datetime)
+SIMPLE_TYPE = TypeVar('SIMPLE_TYPE', int, float, bool, str, datetime)
 
 PROTO_VALUE_ONE_OF_FIELD_NAME = 'value_oneof'
 PROTO_DEFINITION_ONE_OF_FIELD_NAME = 'definition_type_oneof'
@@ -35,7 +36,8 @@ def _get_attribute_value(proto_attribute_value: core_pb2.AttributeValue):
         PROTO_VALUE_ONE_OF_FIELD_NAME))
 
     if type(proto_value) is timestamp_pb2.Timestamp:
-        proto_value = proto_value.ToDatetime()
+        # time zone aware datetime as UTC
+        proto_value = proto_value.ToDatetime().replace(tzinfo=tz.UTC)
 
     return proto_value
 
@@ -147,7 +149,7 @@ class AttributeBase:
 
 
     def _get_string_representation(self) -> str:
-        """Get string representation that could be used by subclasses `_str__` method calls."""
+        """Get string representation that could be used by subclasses `__str__` method calls."""
         return (
             f"name: {self.name}\n"
             f"\t id: {self.id}\n"
@@ -198,9 +200,9 @@ class SimpleAttribute(AttributeBase):
     class Definition(AttributeBase.Definition):
         """Attribute definition for simple attributes."""
 
-        default_value: S = None
-        minimum_value: S = None
-        maximum_value: S = None
+        default_value: SIMPLE_TYPE = None
+        minimum_value: SIMPLE_TYPE = None
+        maximum_value: SIMPLE_TYPE = None
         unit_of_measurement: str = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
@@ -337,9 +339,9 @@ class TimeseriesAttribute(AttributeBase):
             self.template_expression = proto_definition.timeseries_definition.template_expression
 
 
-    resource_time_series_id: uuid = None
-    resource_time_series_path: str = None
-    resource_time_series_timeseries_key: int = None
+    time_series_resource_id: uuid = None
+    time_series_resource_path: str = None
+    time_series_resource_key: int = None
     is_local_expression: bool = None
     expression: str = None
     definition: Definition = None
@@ -361,10 +363,10 @@ class TimeseriesAttribute(AttributeBase):
         if proto_attribute.HasField('singular_value'):
             proto_value = proto_attribute.singular_value.timeseries_value
 
-            if proto_value.HasField('resource_time_series_id'):
-                attribute.resource_time_series_path = proto_value.resource_time_series_id.path
-                attribute.resource_time_series_timeseries_key = proto_value.resource_time_series_id.timeseries_key
-                attribute.resource_time_series_id = _from_proto_guid(proto_value.resource_time_series_id.id)
+            if proto_value.HasField('time_series_resource_id'):
+                attribute.time_series_resource_path = proto_value.time_series_resource_id.path
+                attribute.time_series_resource_key = proto_value.time_series_resource_id.timeseries_key
+                attribute.time_series_resource_id = _from_proto_guid(proto_value.time_series_resource_id.id)
 
             attribute.is_local_expression = proto_value.is_local_expression
             attribute.expression = proto_value.expression
@@ -378,9 +380,9 @@ class TimeseriesAttribute(AttributeBase):
         return (
             f"TimeseriesAttribute:\n"
             f"\t {base_message}\n"
-            f"\t resource_time_series_id: {self.resource_time_series_id}\n"
-            f"\t resource_time_series_path: {self.resource_time_series_path}\n"
-            f"\t resource_time_series_timeseries_key: {self.resource_time_series_timeseries_key}\n"
+            f"\t time_series_resource_id: {self.time_series_resource_id}\n"
+            f"\t time_series_resource_path: {self.time_series_resource_path}\n"
+            f"\t time_series_resource_key: {self.time_series_resource_key}\n"
             f"\t is_local_expression: {self.is_local_expression}\n"
             f"\t expression: {self.expression}\n"
             f"\t template_expression: {self.definition.template_expression}"

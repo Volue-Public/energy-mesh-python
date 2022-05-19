@@ -485,7 +485,15 @@ message UpdateAttributeRequest {
 
   MeshId attribute_id = 2;
 
-  // Only paths set in the field mask are updated.
+  // An array containing field names of the attribute value to be updated.
+  // Simple attribute value example:
+  //   To update a string attribute value set field_mask = ['value'] and
+  //   new_singular_value.string_value = 'new_value'
+  // Time series attribute example:
+  //   To update a time series attribute local expression and time series resource ID
+  //   set field_mask = ['time_series_resource_id', 'expression'],
+  //   new_singular_value.timeseries_value.expression = 'new local expression' and
+  //   new_singular_value.timeseries_value.time_series_resource_id.timeseries_key = 100
   google.protobuf.FieldMask field_mask = 3;
 
   // Singular type can be e.g.: double attribute or time series attribute
@@ -730,16 +738,19 @@ message TimeseriesAttributeValue {
   // Physical or virtual time series identifier from resources
   // if the attribute refers to one.
   // To read its meta information like curve type or resolution
-  // use `GetResourceTimeseries` RPC.
-  MeshId resource_time_series_id = 1;  // TODO: rename the TimeseriesEntryId when cleaning up *old* API, and define `GetResourceTimeseries` RPC.
+  // use `GetTimeseriesResource` RPC.
+  MeshId time_series_resource_id = 1;  // TODO: rename the TimeseriesEntryId when cleaning up *old* API, and define `GetTimeseriesResource` RPC.
 
   // Expression that is actually used by the timeseries attribute.
   // It uses local expression if set, otherwise template expression
   // (defined in TimeseriesAttributeDefinition) will be used.
+  // When updating expression the new value will always be assigned
+  // to local expression.
   // Note: Local expression is set on the object level in the model.
   string expression = 2;
 
   // Flag indicating expression that is actually used is a local expression.
+  // [OUTPUT_ONLY]
   bool is_local_expression = 3;
 }
 

@@ -1126,7 +1126,9 @@ def test_get_utc_time_attribute():
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     attribute_name = "UtcDateTimeAtt"
     utc_date_time_att_path = get_attribute_path_principal() + attribute_name
-    utc_time_value = datetime.strptime("05/10/22 07:24:15", "%m/%d/%y %H:%M:%S") # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
+    # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
+    utc_time_value = datetime(2022, 5, 10, 7, 24, 15, tzinfo=tz.UTC)
+
     with connection.create_session() as session:
         attribute = session.get_attribute(attribute_path=utc_date_time_att_path, full_attribute_info=True)
         assert attribute.value == utc_time_value
@@ -1229,7 +1231,7 @@ def test_get_raw_time_series_attribute():
         attribute = session.get_attribute(attribute_path=str_atttribute_path, full_attribute_info=True)
         assert attribute.path == str_atttribute_path
         assert attribute.name == attribute_name
-        assert _from_proto_guid(attribute.resource_time_series_id) == uuid.UUID("00000004-0001-0000-0000-000000000000")
+        assert _from_proto_guid(attribute.time_series_resource_id) == uuid.UUID("00000004-0001-0000-0000-000000000000")
         assert attribute.expression == ""
         assert attribute.is_local_expression == False
         assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
