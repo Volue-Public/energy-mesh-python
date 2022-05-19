@@ -328,9 +328,9 @@ class TimeseriesAttribute(AttributeBase):
     """
     @dataclass
     class Definition(AttributeBase.Definition):
-        """Attribute definition for relationship attribute."""
+        """Attribute definition for time series attribute."""
 
-        object_type: str = None
+        template_expression: str = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
             super()._init_from_proto_definition(proto_definition)
@@ -342,6 +342,7 @@ class TimeseriesAttribute(AttributeBase):
     resource_time_series_timeseries_key: int = None
     is_local_expression: bool = None
     expression: str = None
+    definition: Definition = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
