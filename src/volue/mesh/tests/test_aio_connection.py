@@ -1418,12 +1418,12 @@ async def update_double_attribute(session: AsyncConnection.Session, new_double_v
 
     new_attribute_value = core_pb2.AttributeValue()
     new_attribute_value.double_value = new_double_value
-    session.update_attribute(
+    await session.update_attribute(
         attribute_path=attribute_path,
         new_singular_value=new_attribute_value
     )
 
-    double_attribute = session.get_attribute(attribute_path=attribute_path)
+    double_attribute = await session.get_attribute(attribute_path=attribute_path)
     assert math.isclose(new_double_value, double_attribute.singular_value.double_value)
 
 @pytest.mark.asyncio
