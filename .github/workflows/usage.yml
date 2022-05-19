@@ -39,7 +39,7 @@ jobs:
         id: download-mesh-server
         with:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-          MESH_SERVICE_TAG: 'v2.5.0.6'
+          MESH_SERVICE_TAG: 'v2.5.0.13'
 
       # run one example before installing pytest packages and pandas
       # to check if all dependencies are installed together with Mesh Python SDK pip package
