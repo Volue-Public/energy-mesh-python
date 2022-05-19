@@ -2,7 +2,7 @@
 Functionality for synchronously connecting to a Mesh server and working with its sessions.
 """
 
-import abc
+from google.protobuf import timestamp_pb2
 import datetime
 from typing import Optional, List
 import uuid
@@ -386,18 +386,33 @@ class Connection(_base_connection.Connection):
                 query=query, full_attribute_info=full_attribute_info)
             return list(self.mesh_service.SearchAttributes(request))
 
-        def update_attribute(
+        def update_simple_attribute(
                 self,
+                value: _base_session.SIMPLE_TYPE,
                 attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None,
-                new_singular_value: Optional[core_pb2.AttributeValue] = None,
-                new_collection_values: Optional[List[core_pb2.AttributeValue]] = None) -> None:
+                attribute_path: Optional[str] = None) -> None:
+
+            new_attribute_value = core_pb2.AttributeValue()
+            value_type = type(value)
+            if value_type is int:
+                new_attribute_value.int_value = value
+            elif value_type is float:
+                new_attribute_value.double_value = value
+            elif value_type is bool:
+                new_attribute_value.boolean_value = value
+            elif value_type is str:
+                new_attribute_value.string_value = value
+            elif value_type is datetime:
+                timestamp = timestamp_pb2.Timestamp()
+                timestamp.FromDatetime(value)
+                new_attribute_value.utc_time_value = timestamp
+            else:
+                raise Exception("Not supported value type. Supported simple types are: boolean, float, int, str and datetime.")               
+
             request = super()._prepare_update_attribute_request(
                 attribute_id=attribute_id,
                 attriubte_path=attribute_path,
-                new_singular_value=new_singular_value,
-                new_collection_values=new_collection_values
-            )
+                new_singular_value=new_attribute_value)
             return self.mesh_service.UpdateAttribute(request)
 
         def get_object(

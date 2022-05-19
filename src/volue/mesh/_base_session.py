@@ -7,6 +7,11 @@ from google import protobuf
 from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
+from datetime import datetime
+from typing import TypeVar
+
+SIMPLE_TYPE = TypeVar('SIMPLE_TYPE', int, float, bool, str, datetime)
+
 
 class Session(abc.ABC):
     """Represents a session to a Mesh server."""
@@ -203,12 +208,11 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
-    def update_attribute(
+    def update_simple_attribute(
             self,
+            value: SIMPLE_TYPE,
             attribute_id: Optional[uuid.UUID] = None,
-            attribute_path: Optional[str] = None,
-            new_singular_value: Optional[core_pb2.AttributeValue] = None,
-            new_collection_values: Optional[List[core_pb2.AttributeValue]] = None) -> None:
+            attribute_path: Optional[str] = None) -> None:
         """
         Update an existing Mesh attribute's value in the Mesh object model.
 
@@ -411,7 +415,9 @@ class Session(abc.ABC):
             attribute_id=attribute_mesh_id
         )
 
-        if new_singular_value is None and new_collection_values is None:
+        # try to find if the request is ill-formed
+        if new_singular_value is None and new_collection_values is None \
+            or new_singular_value is not None and new_collection_values is not None:
             raise RuntimeError("Both new_singular_value and new_collection_values fields are not set.")
 
         fields_to_update = []

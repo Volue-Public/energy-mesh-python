@@ -1383,20 +1383,18 @@ def update_double_attribute(session: Connection.Session, new_double_value):
     double_attribute = session.get_attribute(attribute_path=attribute_path)
     assert not math.isclose(new_double_value, double_attribute.singular_value.double_value)
 
-    new_attribute_value = core_pb2.AttributeValue()
-    new_attribute_value.double_value = new_double_value
-    session.update_attribute(
+    session.update_simple_attribute(
         attribute_path=attribute_path,
-        new_singular_value=new_attribute_value
+        value=new_double_value
     )
 
     double_attribute = session.get_attribute(attribute_path=attribute_path)
     assert math.isclose(new_double_value, double_attribute.singular_value.double_value)
 
 @pytest.mark.database
-def test_update_attribute_invalid_request():
+def test_update_simple_attribute_invalid_request():
     """
-    Check that 'update_attribute' with invalid request
+    Check that 'update_simple_attribute' with invalid request
      (missing new_singular_value and new_collection_values) will throw
     """
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
@@ -1409,7 +1407,7 @@ def test_update_attribute_invalid_request():
         original_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
 
         with pytest.raises(RuntimeError):
-            session.update_attribute(attribute_path=attribute_path)
+            session.update_simple_attribute(attribute_path=attribute_path)
         
         array_attribute = session.get_attribute(attribute_path=attribute_path)
         updated_boolean_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
@@ -1423,7 +1421,7 @@ def test_update_attribute_invalid_request():
         with pytest.raises(grpc.RpcError):
             new_value = core_pb2.AttributeValue()
             new_value.boolean_value = True
-            session.update_attribute(attribute_path=attribute_path, new_singular_value=new_value)
+            session.update_simple_attribute(attribute_path=attribute_path, new_singular_value=new_value)
         
         array_attribute = session.get_attribute(attribute_path=attribute_path)
         updated_boolean_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
@@ -1433,7 +1431,7 @@ def test_update_attribute_invalid_request():
 @pytest.mark.database
 def test_update_simple_array_attribute():
     """
-    Check that 'update_attribute' will correctly update array attribute values
+    Check that 'update_simple_attribute' will correctly update array attribute values
     """
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
@@ -1453,7 +1451,7 @@ def test_update_simple_array_attribute():
             att_value.boolean_value = value
             new_values.append(att_value)
 
-        session.update_attribute(attribute_path=attribute_path, new_collection_values=new_values)
+        session.update_simple_attribute(attribute_path=attribute_path, new_collection_values=new_values)
         
         array_attribute = session.get_attribute(attribute_path=attribute_path)
         updated_boolean_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
@@ -1463,7 +1461,7 @@ def test_update_simple_array_attribute():
 @pytest.mark.database
 def test_update_single_simple_attribute():
     """
-    Check that 'update_attribute' will correctly update single attributes values
+    Check that 'update_simple_attribute' will correctly update single attributes values
     """
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
@@ -1478,9 +1476,7 @@ def test_update_single_simple_attribute():
         int_attribute = session.get_attribute(attribute_path=attribute_path)
         assert new_int_value != int_attribute.singular_value.int_value
 
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.int_value = new_int_value
-        session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        session.update_simple_attribute(attribute_path=attribute_path, value=new_int_value)
 
         int_attribute = session.get_attribute(attribute_path=attribute_path)
         assert int_attribute.singular_value.int_value == new_int_value
@@ -1491,9 +1487,7 @@ def test_update_single_simple_attribute():
         boolean_attribute = session.get_attribute(attribute_path=attribute_path)
         assert new_boolean_value != boolean_attribute.singular_value.boolean_value
 
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.boolean_value = new_boolean_value
-        session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_value)
 
         boolean_attribute = session.get_attribute(attribute_path=attribute_path)
         assert boolean_attribute.singular_value.boolean_value == new_boolean_value
@@ -1504,9 +1498,7 @@ def test_update_single_simple_attribute():
         string_attribute = session.get_attribute(attribute_path=attribute_path)
         assert new_string_value != string_attribute.singular_value.string_value
 
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.string_value = new_string_value
-        session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        session.update_simple_attribute(attribute_path=attribute_path, value=new_string_value)
 
         string_attribute = session.get_attribute(attribute_path=attribute_path)
         assert string_attribute.singular_value.string_value == new_string_value
@@ -1519,9 +1511,7 @@ def test_update_single_simple_attribute():
 
         timestamp = timestamp_pb2.Timestamp()
         timestamp.FromDatetime(new_utc_value)
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.utc_time_value.CopyFrom(timestamp)
-        session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        session.update_simple_attribute(attribute_path=attribute_path, value=timestamp)
 
         utc_attribute = session.get_attribute(attribute_path=attribute_path)
         assert utc_attribute.singular_value.utc_time_value.seconds == new_utc_value.timestamp()
