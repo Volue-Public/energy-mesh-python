@@ -386,6 +386,20 @@ class Connection(_base_connection.Connection):
                 query=query, full_attribute_info=full_attribute_info)
             return list(self.mesh_service.SearchAttributes(request))
 
+        def update_attribute(
+                self,
+                attribute_id: Optional[uuid.UUID] = None,
+                attribute_path: Optional[str] = None,
+                new_singular_value: Optional[core_pb2.AttributeValue] = None,
+                new_collection_values: Optional[List[core_pb2.AttributeValue]] = None) -> None:
+            request = super()._prepare_update_attribute_request(
+                attribute_id=attribute_id,
+                attriubte_path=attribute_path,
+                new_singular_value=new_singular_value,
+                new_collection_values=new_collection_values
+            )
+            return self.mesh_service.UpdateAttribute(request)
+
         def get_object(
                 self,
                 object_id: Optional[uuid.UUID] = None,

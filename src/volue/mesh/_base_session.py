@@ -1,4 +1,5 @@
 import abc
+from argparse import ArgumentError
 from typing import List, Optional
 import uuid
 
@@ -202,6 +203,26 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
+    @abc.abstractmethod
+    def update_attribute(
+            self,
+            attribute_id: Optional[uuid.UUID] = None,
+            attribute_path: Optional[str] = None,
+            new_singular_value: Optional[core_pb2.AttributeValue] = None,
+            new_collection_values: Optional[List[core_pb2.AttributeValue]] = None) -> None:
+        """
+        Update an existing Mesh attribute's value in the Mesh object model.
+
+        Args:
+            attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
+            attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+                of the Mesh attribute which value is to be updated.
+            new_singular_value: new value for a singular value attribute
+            new_collection_values: new values for an array attribute
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
 
     def _prepare_get_object_request(
             self,
@@ -372,3 +393,38 @@ class Session(abc.ABC):
         )
 
         return request
+
+    def _prepare_update_attribute_request(
+        self,
+        attribute_id: uuid.UUID,
+        attriubte_path: str,
+        new_singular_value: core_pb2.AttributeValue,
+        new_collection_values: List[core_pb2.AttributeValue]
+    ) -> core_pb2.UpdateAttributeResponse:
+
+        try:
+            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attriubte_path)
+        except ValueError as e:
+            raise ValueError("invalid attribute to update") from e
+
+        request = core_pb2.UpdateAttributeRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute_id=attribute_mesh_id
+        )
+
+        if new_singular_value is None and new_collection_values is None:
+            raise RuntimeError("Both new_singular_value and new_collection_values fields are not set.")
+
+        fields_to_update = []
+        if new_singular_value is not None:
+            fields_to_update.append("value")
+            request.new_singular_value.CopyFrom(new_singular_value)
+
+        if new_collection_values is not None:
+            for value in new_collection_values:
+                request.new_collection_values.append(value)
+            fields_to_update.append("value")
+
+        request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
+        return request
+
