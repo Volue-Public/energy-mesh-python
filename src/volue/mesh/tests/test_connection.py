@@ -2,7 +2,6 @@
 Tests for volue.mesh.Connection
 """
 
-from array import array
 from datetime import datetime, timedelta, timezone
 import math
 from operator import eq
