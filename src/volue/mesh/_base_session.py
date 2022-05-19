@@ -1,10 +1,12 @@
 import abc
-from typing import List, Optional
+from typing import List, Optional, Type
 import uuid
 
 from google import protobuf
 
+from ._attribute import AttributeBase
 from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id
+from ._object import Object
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from datetime import datetime
@@ -37,7 +39,7 @@ class Session(abc.ABC):
             object_id: Optional[uuid.UUID] = None,
             object_path:  Optional[str] = None,
             full_attribute_info:  bool = False,
-            attributes_filter: Optional[AttributesFilter] = None) -> core_pb2.Object:
+            attributes_filter: Optional[AttributesFilter] = None) -> Object:
         """
         Request information associated with a Mesh object from the Mesh object model.
         Specify either `object_id` or `object_path` to a Mesh object.
@@ -63,7 +65,7 @@ class Session(abc.ABC):
             start_object_id: Optional[uuid.UUID] = None,
             start_object_path: Optional[str] = None,
             full_attribute_info: bool = False,
-            attributes_filter: Optional[AttributesFilter] = None) -> List[core_pb2.Object]:
+            attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects
         in the Mesh object model. Specify either `start_object_id` or
@@ -90,7 +92,7 @@ class Session(abc.ABC):
             self,
             name: str,
             owner_attribute_id: Optional[uuid.UUID] = None,
-            owner_attribute_path: Optional[str] = None) -> core_pb2.Object:
+            owner_attribute_path: Optional[str] = None) -> Object:
         """
         Create new Mesh object in the Mesh object model.
         Owner of the new object must be a relationship attribute of Object Collection type.
@@ -167,7 +169,7 @@ class Session(abc.ABC):
             self,
             attribute_id: Optional[uuid.UUID] = None,
             attribute_path: Optional[str] = None,
-            full_attribute_info: bool = False) -> core_pb2.Attribute:
+            full_attribute_info: bool = False) -> Type[AttributeBase]:
         """
         Retrieve an existing attribute from the Mesh object model.
 
@@ -188,7 +190,7 @@ class Session(abc.ABC):
             query: str,
             start_object_id: Optional[uuid.UUID] = None,
             start_object_path: Optional[str] = None,
-            full_attribute_info: bool = False) -> List[core_pb2.Attribute]:
+            full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh attributes
         in the Mesh object model. Specify either `start_object_id` or
