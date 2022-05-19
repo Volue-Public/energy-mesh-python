@@ -1441,7 +1441,6 @@ async def test_update_attribute_invalid_request():
         # boolean array attribute, missing all values
         array_attribute = await session.get_attribute(attribute_path=attribute_path)
         original_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
-        assert len(array_attribute.collection_values) > 0
 
         with pytest.raises(RuntimeError):
             await session.update_attribute(attribute_path=attribute_path)
