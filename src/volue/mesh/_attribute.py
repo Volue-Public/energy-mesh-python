@@ -6,7 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from dateutil import tz
-from typing import Any, List, Type, TypeVar
+from typing import Any, List, Type, TypeVar, Union
 import uuid
 
 from google.protobuf import timestamp_pb2
@@ -226,7 +226,7 @@ class SimpleAttribute(AttributeBase):
                 'unit_of_measurement', field_names, definition_type)
 
 
-    value: S = None
+    value: Union[SIMPLE_TYPE, List[SIMPLE_TYPE]] = None
     definition: Definition = None
 
     @classmethod
