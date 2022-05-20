@@ -431,7 +431,10 @@ class Session(abc.ABC):
         self,
         value: SIMPLE_TYPE_OR_COLLECTION
     ) -> Tuple[core_pb2.AttributeValue, List[core_pb2.AttributeValue]]:
-
+            """
+                Convert value supplied by the user to singular value/collection values
+                expected by the protobuf request
+            """
             new_singular_value = None
             new_collection_values = None
             if type(value) is list:
