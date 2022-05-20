@@ -366,7 +366,7 @@ def _read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[fl
 
 def _datetime_to_timestamp_pb2(datetime: datetime.datetime):
     """
-        Converts datetime type to gRPC's Timestamp type
+        Converts datetime type to protobuf Timestamp type
     """
     timestamp = timestamp_pb2.Timestamp()
     timestamp.FromDatetime(datetime)
