@@ -28,7 +28,7 @@ Such definitions could be instantiated and so we could have: model called
 * *PowerPlantC* with *NumberOfWindTurbines* = 3
 
 
-.. _mesh object model:
+.. _mesh_model_definition:
 
 Model definition
 *****************
@@ -93,12 +93,12 @@ Attribute definition could be compared to a C++ class member.
 Model
 **********
 
-Based on the Mesh model definition, customers can build a **model** of their
-infrastructure by creating instances matching their specific assets. For
-example water courses named 'Driva', 'Lundesokna', reservoirs named
-'Innerdalsvannet', 'Storfossdammen' and so on. The resulting **model** is
-a tree where all the nodes are Mesh objects from the Mesh model that
-represent customer's physical assets.
+Based on the Mesh :ref:`model definition <mesh_model_definition>`, customers
+can build a **model** of their infrastructure by creating instances matching
+their specific assets. For example water courses named 'Driva', 'Lundesokna',
+reservoirs named 'Innerdalsvannet', 'Storfossdammen' and so on. The resulting
+**model** is a tree where all the nodes are Mesh objects from the Mesh model
+that represent customer's physical assets.
 
 .. image:: images/physical_hydropower_object_structure.png
    :width: 400

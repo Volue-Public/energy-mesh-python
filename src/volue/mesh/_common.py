@@ -124,7 +124,7 @@ class MeshObjectId:
     Args:
         timskey (int): integer that only applies to a specific physical or virtual time series
         uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-        full_name (str): path in the :ref:`Mesh object model <mesh object model>`.
+        full_name (str): path in the :ref:`Mesh model <mesh_model>`.
           See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
     """
     timskey: int = None
@@ -148,7 +148,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using an uuid of a Mesh object
 
         Args:
-            uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
+            uuid_id: Universal Unique Identifier for Mesh objects
         """
         mesh_object_id = cls()
         mesh_object_id.uuid_id = uuid_id
@@ -159,7 +159,7 @@ class MeshObjectId:
         """Create a `MeshObjectId` using full_name of a Mesh object
 
         Args:
-            full_name (str): path in the :ref:`Mesh object model <mesh object model>`.
+            full_name: path in the :ref:`Mesh model <mesh_model>`.
               See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
         """
         mesh_object_id = cls()

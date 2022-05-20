@@ -43,7 +43,7 @@ class Session(abc.ABC):
 
         Args:
             object_id: Universal Unique Identifier of the Mesh object.
-            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+            object_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the Mesh object. See:
                 :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
@@ -74,7 +74,7 @@ class Session(abc.ABC):
             start_object_id: Start searching at the object with the 
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
-                :ref:`Mesh object model <mesh object model>`.
+                :ref:`Mesh model <mesh_model>`.
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
@@ -104,7 +104,7 @@ class Session(abc.ABC):
             name: Name for the new object to create.
             owner_attribute_id: Universal Unique Identifier of the owner which
                 is a relationship attribute of Object Collection type.
-            owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+            owner_attribute_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the owner which is a relationship attribute of Object Collection type
                 (object value type = "ElementCollectionAttributeDefinition").
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
@@ -133,13 +133,13 @@ class Session(abc.ABC):
 
         Args:
             object_id: Universal Unique Identifier of the Mesh object to be updated.
-            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+            object_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the Mesh object to be updated.
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             new_name: New name for the object.
             new_owner_attribute_id: Universal Unique Identifier of the new owner which
                 is a relationship attribute of Object Collection type.
-            new_owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+            new_owner_attribute_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the new owner which is a relationship attribute of Object Collection type
                 (object value type = "ElementCollectionAttributeDefinition").
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
@@ -159,7 +159,7 @@ class Session(abc.ABC):
 
         Args:
             object_id: Universal Unique Identifier of the object to be deleted.
-            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+            object_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the object to be deleted.
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             recursive_delete: If set then all child objects
@@ -180,7 +180,7 @@ class Session(abc.ABC):
 
         Args:
             attribute_id: Universal Unique Identifier of the attribute to be retrieved.
-            attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the attribute to be retrieved.
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
@@ -207,7 +207,7 @@ class Session(abc.ABC):
             start_object_id: Start searching at the object with the 
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
-                :ref:`Mesh object model <mesh object model>`.
+                :ref:`Mesh model <mesh_model>`.
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
@@ -230,7 +230,7 @@ class Session(abc.ABC):
             value: New simple attribute value. It can be one of following simple types:
                 bool, float, int, str, datetime or a list of simple types.
             attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
-            attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the Mesh attribute which value is to be updated.
                 See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 

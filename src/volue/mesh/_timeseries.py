@@ -106,7 +106,7 @@ class Timeseries:
             end_time (datetime): the end date and time of the time series interval
             timskey (int): integer that only applies to a specific physical or virtual time series
             uuid_id:  Universal Unique Identifier for Mesh objects
-            full_name: path in the :ref:`Mesh object model <mesh object model>`.
+            full_name: path in the :ref:`Mesh model <mesh_model>`.
               See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
