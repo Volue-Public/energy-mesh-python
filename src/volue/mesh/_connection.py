@@ -22,7 +22,7 @@ from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from . import _base_connection
 from . import _base_session
-
+from . import _attribute
 
 class Connection(_base_connection.Connection):
     class Session(_base_session.Session):
@@ -395,31 +395,17 @@ class Connection(_base_connection.Connection):
 
         def update_simple_attribute(
                 self,
-                value: _base_session.SIMPLE_TYPE,
+                value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
                 attribute_id: Optional[uuid.UUID] = None,
                 attribute_path: Optional[str] = None) -> None:
 
-            new_attribute_value = core_pb2.AttributeValue()
-            value_type = type(value)
-            if value_type is int:
-                new_attribute_value.int_value = value
-            elif value_type is float:
-                new_attribute_value.double_value = value
-            elif value_type is bool:
-                new_attribute_value.boolean_value = value
-            elif value_type is str:
-                new_attribute_value.string_value = value
-            elif value_type is datetime:
-                timestamp = timestamp_pb2.Timestamp()
-                timestamp.FromDatetime(value)
-                new_attribute_value.utc_time_value = timestamp
-            else:
-                raise Exception("Not supported value type. Supported simple types are: boolean, float, int, str and datetime.")               
+            new_singular_value, new_collection_values = super()._to_update_attribute_request_values(value=value)
 
             request = super()._prepare_update_attribute_request(
                 attribute_id=attribute_id,
                 attriubte_path=attribute_path,
-                new_singular_value=new_attribute_value)
+                new_singular_value=new_singular_value,
+                new_collection_values=new_collection_values)
             return self.mesh_service.UpdateAttribute(request)
 
         def get_object(

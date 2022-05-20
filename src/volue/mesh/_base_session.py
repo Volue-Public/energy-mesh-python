@@ -1,19 +1,16 @@
 import abc
-from typing import List, Optional, Type
+from typing import List, Optional, Type, Tuple
 import uuid
 
 from google import protobuf
 
-from ._attribute import AttributeBase
-from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id
+from ._attribute import AttributeBase, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
+from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id, _datetime_to_timestamp_pb2
 from ._object import Object
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from datetime import datetime
-from typing import TypeVar
-
-SIMPLE_TYPE = TypeVar('SIMPLE_TYPE', int, float, bool, str, datetime)
-
+from google.protobuf import timestamp_pb2
 
 class Session(abc.ABC):
     """Represents a session to a Mesh server."""
@@ -212,7 +209,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_simple_attribute(
             self,
-            value: SIMPLE_TYPE,
+            value: SIMPLE_TYPE_OR_COLLECTION,
             attribute_id: Optional[uuid.UUID] = None,
             attribute_path: Optional[str] = None) -> None:
         """
@@ -435,3 +432,41 @@ class Session(abc.ABC):
         request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
         return request
 
+    def _to_update_attribute_request_values(
+        self,
+        value: SIMPLE_TYPE_OR_COLLECTION
+    ) -> Tuple[core_pb2.AttributeValue, List[core_pb2.AttributeValue]]:
+
+            new_singular_value = None
+            new_collection_values = None
+            if type(value) is list:
+                new_collection_values = []
+                for v in value:
+                    att_value = core_pb2.AttributeValue()
+                    if type(v) is int:
+                        att_value.int_value = v
+                    elif type(v) is float:
+                        att_value.double_value = v
+                    elif type(v) is bool:
+                        att_value.boolean_value = v
+                    elif type(v) is str:
+                        att_value.string_value = v
+                    elif type(v) is datetime:
+                        att_value.utc_time_value.CopyFrom(_datetime_to_timestamp_pb2(v))
+                    new_collection_values.append(att_value)
+            else:
+                new_singular_value = core_pb2.AttributeValue()
+                if type(value) is int:
+                    new_singular_value.int_value = value
+                elif type(value) is float:
+                    new_singular_value.double_value = value
+                elif type(value) is bool:
+                    new_singular_value.boolean_value = value
+                elif type(value) is str:
+                    new_singular_value.string_value = value
+                elif type(value) is datetime:
+                    new_singular_value.utc_time_value.CopyFrom(_datetime_to_timestamp_pb2(value))             
+                else:
+                    raise Exception("Not supported value type. Supported simple types are: boolean, float, int, str, datetime and lists of simple types")
+
+            return (new_singular_value, new_collection_values)

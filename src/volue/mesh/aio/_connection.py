@@ -24,6 +24,7 @@ from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from volue.mesh import _base_connection
 from volue.mesh import _base_session
+from volue.mesh import _attribute
 
 
 class Connection(_base_connection.Connection):
@@ -405,54 +406,11 @@ class Connection(_base_connection.Connection):
 
         async def update_simple_attribute(
                 self,
-                value: _base_session.SIMPLE_TYPE,
+                value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
                 attribute_id: Optional[uuid.UUID] = None,
                 attribute_path: Optional[str] = None) -> None:
             
-            new_singular_value = core_pb2.AttributeValue()
-            new_collection_values = []
-            value_type = type(value)
-            if value_type is int:
-                new_singular_value.int_value = value
-            elif value_type is float:
-                new_singular_value.double_value = value
-            elif value_type is bool:
-                new_singular_value.boolean_value = value
-            elif value_type is str:
-                new_singular_value.string_value = value
-            elif value_type is datetime:
-                timestamp = timestamp_pb2.Timestamp()
-                timestamp.FromDatetime(value)
-                new_singular_value.utc_time_value = timestamp
-            elif value_type is List[int]:
-                for v in value:
-                    att_value = core_pb2.AttributeValue()
-                    att_value.int_value = v
-                    new_collection_values.append(att_value)
-            elif value_type is List[float]:
-                for v in value:
-                    att_value = core_pb2.AttributeValue()
-                    att_value.double_value = v
-                    new_collection_values.append(att_value)
-            elif value_type is List[bool]:
-                for v in value:
-                    att_value = core_pb2.AttributeValue()
-                    att_value.boolean_value = v
-                    new_collection_values.append(att_value)                
-            elif value_type is List[str]:
-                for v in value:
-                    att_value = core_pb2.AttributeValue()
-                    att_value.string_value = v
-                    new_collection_values.append(att_value)                
-            elif value_type is List[datetime]:
-                for v in value:
-                    timestamp = timestamp_pb2.Timestamp()
-                    timestamp.FromDatetime(v)
-                    att_value = core_pb2.AttributeValue()
-                    att_value.utc_time_value = timestamp
-                    new_collection_values.append(att_value)
-            else:
-                raise Exception("Not supported value type. Supported simple types are: boolean, float, int, str and datetime and lists of simple types.")
+            new_singular_value, new_collection_values = super()._to_update_attribute_request_values(value=value)
 
             request = super()._prepare_update_attribute_request(
             attribute_id=attribute_id,

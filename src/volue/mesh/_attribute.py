@@ -15,6 +15,7 @@ from volue.mesh._common import _from_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 SIMPLE_TYPE = TypeVar('SIMPLE_TYPE', int, float, bool, str, datetime)
+SIMPLE_TYPE_OR_COLLECTION = Union[SIMPLE_TYPE, List[SIMPLE_TYPE]]
 
 PROTO_VALUE_ONE_OF_FIELD_NAME = 'value_oneof'
 PROTO_DEFINITION_ONE_OF_FIELD_NAME = 'definition_type_oneof'
@@ -226,7 +227,7 @@ class SimpleAttribute(AttributeBase):
                 'unit_of_measurement', field_names, definition_type)
 
 
-    value: Union[SIMPLE_TYPE, List[SIMPLE_TYPE]] = None
+    value: SIMPLE_TYPE_OR_COLLECTION = None
     definition: Definition = None
 
     @classmethod

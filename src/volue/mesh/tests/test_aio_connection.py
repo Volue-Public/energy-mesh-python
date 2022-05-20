@@ -1402,54 +1402,37 @@ async def update_double_attribute(session: AsyncConnection.Session, new_double_v
     attribute_path = get_attribute_path_principal() + "DblAtt"
 
     double_attribute = await session.get_attribute(attribute_path=attribute_path)
-    assert not math.isclose(new_double_value, double_attribute.singular_value.double_value)
+    assert not math.isclose(new_double_value, double_attribute.value)
 
-    new_attribute_value = core_pb2.AttributeValue()
-    new_attribute_value.double_value = new_double_value
-    await session.update_attribute(
+    await session.update_simple_attribute(
         attribute_path=attribute_path,
-        new_singular_value=new_attribute_value
+        value=new_double_value
     )
 
     double_attribute = await session.get_attribute(attribute_path=attribute_path)
-    assert math.isclose(new_double_value, double_attribute.singular_value.double_value)
+    assert math.isclose(new_double_value, double_attribute.value)
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_update_attribute_invalid_request():
     """
     Check that 'update_attribute' with invalid request
-     (missing new_singular_value and new_collection_values) will throw
+     (wrong value type and dimension) will throw
     """
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                         sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     attribute_path = get_attribute_path_principal() + "BoolArrayAtt"
     async with connection.create_session() as session:
-        # boolean array attribute, missing all values
+        # boolean array attribute, wrong value type and dimension
         array_attribute = await session.get_attribute(attribute_path=attribute_path)
-        original_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
-
-        with pytest.raises(RuntimeError):
-            await session.update_attribute(attribute_path=attribute_path)
-        
-        array_attribute = await session.get_attribute(attribute_path=attribute_path)
-        updated_boolean_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
-        assert list(updated_boolean_values) == list(original_values)
-
-    async with connection.create_session() as session:
-        # boolean array attribute, 'new_singular_value' set instead of 'new_collection_values'
-        array_attribute = await session.get_attribute(attribute_path=attribute_path)
-        original_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
+        original_values = array_attribute.value
 
         with pytest.raises(grpc.RpcError):
-            new_value = core_pb2.AttributeValue()
-            new_value.boolean_value = True
-            await session.update_attribute(attribute_path=attribute_path, new_singular_value=new_value)
+            await session.update_simple_attribute(attribute_path=attribute_path, value=7)
         
         array_attribute = await session.get_attribute(attribute_path=attribute_path)
-        updated_boolean_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
-        assert list(updated_boolean_values) == list(original_values)
+        assert array_attribute.value == original_values
         
 @pytest.mark.asyncio
 @pytest.mark.database
@@ -1466,20 +1449,12 @@ async def test_update_simple_array_attribute():
         new_boolean_array_values = [False, False, True, False, False]
 
         array_attribute = await session.get_attribute(attribute_path=attribute_path)
-        original_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
-        assert list(original_values) != new_boolean_array_values
+        assert array_attribute.value != new_boolean_array_values
 
-        new_values = []
-        for value in new_boolean_array_values:
-            att_value = core_pb2.AttributeValue()
-            att_value.boolean_value = value
-            new_values.append(att_value)
-
-        await session.update_attribute(attribute_path=attribute_path, new_collection_values=new_values)
+        await session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_array_values)
         
         array_attribute = await session.get_attribute(attribute_path=attribute_path)
-        updated_boolean_values = map(lambda v: v.boolean_value, array_attribute.collection_values)
-        assert list(updated_boolean_values) == new_boolean_array_values
+        assert array_attribute.value == new_boolean_array_values
 
 @pytest.mark.asyncio
 @pytest.mark.database
@@ -1498,55 +1473,43 @@ async def test_update_single_simple_attribute():
         new_int_value = 69
         attribute_path = get_attribute_path_principal() + "Int64Att"
         int_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert new_int_value != int_attribute.singular_value.int_value
+        assert new_int_value != int_attribute.value
 
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.int_value = new_int_value
-        await session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        await session.update_simple_attribute(attribute_path=attribute_path, value=new_int_value)
 
         int_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert int_attribute.singular_value.int_value == new_int_value
+        assert int_attribute.value == new_int_value
 
         # boolean attribute
         new_boolean_value = False
         attribute_path = get_attribute_path_principal() + "BoolAtt"
         boolean_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert new_boolean_value != boolean_attribute.singular_value.boolean_value
-
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.boolean_value = new_boolean_value
-        await session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        assert new_boolean_value != boolean_attribute.value
+        await session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_value)
 
         boolean_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert boolean_attribute.singular_value.boolean_value == new_boolean_value
+        assert boolean_attribute.value == new_boolean_value
 
         # string attribute
         new_string_value = "my test string attribute value"
         attribute_path = get_attribute_path_principal() + "StringAtt"
         string_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert new_string_value != string_attribute.singular_value.string_value
-
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.string_value = new_string_value
-        await session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        assert new_string_value != string_attribute.value
+        await session.update_simple_attribute(attribute_path=attribute_path, value=new_string_value)
 
         string_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert string_attribute.singular_value.string_value == new_string_value
+        assert string_attribute.value == new_string_value
 
         # utcDateTime attribute
-        new_utc_value = datetime(2022, 5, 14, 13, 44, 45, 0, pytz.UTC)
+        new_utc_value = datetime(2022, 5, 14, 13, 44, 45, 0, tzinfo=tz.UTC)
         attribute_path = get_attribute_path_principal() + "UtcDateTimeAtt"
         utc_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert new_utc_value.timestamp() != utc_attribute.singular_value.utc_time_value.seconds
+        assert new_utc_value != utc_attribute.value
 
-        timestamp = timestamp_pb2.Timestamp()
-        timestamp.FromDatetime(new_utc_value)
-        new_attribute_value = core_pb2.AttributeValue()
-        new_attribute_value.utc_time_value.CopyFrom(timestamp)
-        await session.update_attribute(attribute_path=attribute_path, new_singular_value=new_attribute_value)
+        await session.update_simple_attribute(attribute_path=attribute_path, value=new_utc_value)
 
         utc_attribute = await session.get_attribute(attribute_path=attribute_path)
-        assert utc_attribute.singular_value.utc_time_value.seconds == new_utc_value.timestamp()
+        assert utc_attribute.value == new_utc_value
 
 if __name__ == '__main__':
     pytest.main()
