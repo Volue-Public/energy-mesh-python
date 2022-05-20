@@ -2,7 +2,6 @@
 Functionality for synchronously connecting to a Mesh server and working with its sessions.
 """
 
-from google.protobuf import timestamp_pb2
 import datetime
 from typing import Optional, List, Type
 import uuid

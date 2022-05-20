@@ -7,9 +7,6 @@ import math
 import sys
 from typing import List, Tuple
 import uuid
-from google.protobuf import timestamp_pb2
-import pytz
-
 
 from dateutil import tz
 import grpc

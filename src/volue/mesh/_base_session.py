@@ -1,16 +1,16 @@
 import abc
 from typing import List, Optional, Type, Tuple
 import uuid
+from datetime import datetime
 
 from google import protobuf
 
-from ._attribute import AttributeBase, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
-from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id, _datetime_to_timestamp_pb2
+from ._attribute import AttributeBase, SIMPLE_TYPE_OR_COLLECTION
+from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, \
+    _to_proto_mesh_id, _datetime_to_timestamp_pb2
 from ._object import Object
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
-from datetime import datetime
-from google.protobuf import timestamp_pb2
 
 class Session(abc.ABC):
     """Represents a session to a Mesh server."""

@@ -6,7 +6,6 @@ import datetime
 from typing import Optional, List, Type
 import uuid
 from typing import Optional, List
-from google.protobuf import timestamp_pb2
 from datetime import datetime
 
 from google import protobuf
