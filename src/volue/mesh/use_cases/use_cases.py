@@ -970,7 +970,7 @@ def use_case_14():
 
             for attribute in parent_object.attributes.values():
                 if (attribute.definition.value_type == 'ElementCollectionAttributeDefinition' and
-                    attribute.object_type == new_object_type):
+                    attribute.definition.object_type == new_object_type):
                     relationship_attribute_path = attribute.path
 
             if relationship_attribute_path is None:
