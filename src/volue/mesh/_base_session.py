@@ -5,7 +5,7 @@ from datetime import datetime
 
 from google import protobuf
 
-from ._attribute import AttributeBase, SIMPLE_TYPE_OR_COLLECTION
+from ._attribute import AttributeBase, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
 from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, \
     _to_proto_mesh_id, _datetime_to_timestamp_pb2
 from ._object import Object
@@ -427,6 +427,28 @@ class Session(abc.ABC):
         request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
         return request
 
+    def _to_proto_singular_attribute_value(
+        self,
+        v: SIMPLE_TYPE
+    ) -> core_pb2.AttributeValue:
+    
+        att_value = core_pb2.AttributeValue()
+        if type(v) is int:
+            att_value.int_value = v
+        elif type(v) is float:
+            att_value.double_value = v
+        elif type(v) is bool:
+            att_value.boolean_value = v
+        elif type(v) is str:
+            att_value.string_value = v
+        elif type(v) is datetime:
+            att_value.utc_time_value.CopyFrom(_datetime_to_timestamp_pb2(v))
+        else:
+            raise RuntimeError("Not supported value type. Supported simple types are: boolean, float, int, str, datetime.")
+
+        return att_value
+
+
     def _to_update_attribute_request_values(
         self,
         value: SIMPLE_TYPE_OR_COLLECTION
@@ -440,31 +462,9 @@ class Session(abc.ABC):
             if type(value) is list:
                 new_collection_values = []
                 for v in value:
-                    att_value = core_pb2.AttributeValue()
-                    if type(v) is int:
-                        att_value.int_value = v
-                    elif type(v) is float:
-                        att_value.double_value = v
-                    elif type(v) is bool:
-                        att_value.boolean_value = v
-                    elif type(v) is str:
-                        att_value.string_value = v
-                    elif type(v) is datetime:
-                        att_value.utc_time_value.CopyFrom(_datetime_to_timestamp_pb2(v))
+                    att_value = self._to_proto_singular_attribute_value(v)
                     new_collection_values.append(att_value)
             else:
-                new_singular_value = core_pb2.AttributeValue()
-                if type(value) is int:
-                    new_singular_value.int_value = value
-                elif type(value) is float:
-                    new_singular_value.double_value = value
-                elif type(value) is bool:
-                    new_singular_value.boolean_value = value
-                elif type(value) is str:
-                    new_singular_value.string_value = value
-                elif type(value) is datetime:
-                    new_singular_value.utc_time_value.CopyFrom(_datetime_to_timestamp_pb2(value))             
-                else:
-                    raise Exception("Not supported value type. Supported simple types are: boolean, float, int, str, datetime and lists of simple types")
+                new_singular_value = self._to_proto_singular_attribute_value(value)       
 
             return (new_singular_value, new_collection_values)
