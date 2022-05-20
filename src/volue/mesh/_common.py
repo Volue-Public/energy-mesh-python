@@ -136,7 +136,8 @@ class MeshObjectId:
         """Create a `MeshObjectId` using a timskey of a Mesh object
 
         Args:
-            timskey (int): integer that only applies to a specific raw time series
+            timskey: integer that only applies to a specific physical or
+              virtual time series
         """
         mesh_object_id = cls()
         mesh_object_id.timskey = timskey

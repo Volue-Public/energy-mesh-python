@@ -84,13 +84,16 @@ class Connection(_base_connection.Connection):
                                    mesh_object_id: MeshObjectId) -> Timeseries:
             """
             Reads time series points for
-            the specified timeseries in the given interval.
+            the specified time series in the given interval.
             For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
             Args:
-                start_time (datetime): the start date and time of the time series interval
-                end_time (datetime): the end date and time of the time series interval
-                mesh_object_id (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a integer that only applies to a specific raw time series.
+                start_time: the start date and time of the time series interval
+                end_time: the end date and time of the time series interval
+                mesh_object_id: unique way of identifying a Mesh object that contains a time series.
+                  Using either a  Universal Unique Identifier for Mesh objects, a path in the 
+                  :ref:`Mesh object model <mesh object model>` or a integer that only applies
+                  to a specific physical or virtual time series.
                   See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
             Raises:
@@ -144,12 +147,12 @@ class Connection(_base_connection.Connection):
                                          timskey: int = None,
                                          ) -> core_pb2.TimeseriesEntry:
             """
-            Request information associated with a raw  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute <mesh_attribute>`.
+            Request information associated with a physical time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute <mesh_attribute>`.
 
             Args:
                 uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
                 path (str): path in the resource model.
-                timskey (int): integer that only applies to a specific raw time series
+                timskey (int): integer that only applies to a specific physical time series
 
             Note:
                 This `path` is NOT the same as full name or the path in the Mesh object model,
@@ -187,13 +190,12 @@ class Connection(_base_connection.Connection):
                                             new_unit_of_measurement: str = None
                                             ) -> None:
             """
-            Request information associated with a Mesh object
-            which has a link to a time series, either calculated or raw.
+            Update information associated with a physical time series.
 
             Args:
                 uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
                 path (str): path in the resource model.
-                timskey (int): integer that only applies to a specific raw time series
+                timskey (int): integer that only applies to a specific physical time series
                 new_path (str): set new  path in the resource model.
                 new_curve_type (Timeseries.Curve): set new  curve type for the time series.
                 new_unit_of_measurement (str): set new  unit of measurement for the time series.
