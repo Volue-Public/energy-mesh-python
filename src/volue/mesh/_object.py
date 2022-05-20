@@ -16,6 +16,8 @@ class Object:
     """Represents a Mesh Object.
 
     Mesh Object is an instance of Object Definition in the Mesh Model.
+    Refer to documentation for more details:
+    :ref:`Mesh object <mesh_object>`.
     """
 
     id: uuid = None

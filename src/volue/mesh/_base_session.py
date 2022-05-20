@@ -44,7 +44,8 @@ class Session(abc.ABC):
         Args:
             object_id: Universal Unique Identifier of the Mesh object.
             object_path: Path in the :ref:`Mesh object model <mesh object model>`
-                of the Mesh object.
+                of the Mesh object. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object will be returned, otherwise only name,
                 path, ID and value(s).
@@ -103,7 +104,9 @@ class Session(abc.ABC):
             owner_attribute_id: Universal Unique Identifier of the owner which
                 is a relationship attribute of Object Collection type.
             owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
-                of the owner which is a relationship attribute of Object Collection type.
+                of the owner which is a relationship attribute of Object Collection type
+                (object value type = "ElementCollectionAttributeDefinition").
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Returns:
             Created object with all attributes (no mask applied) and basic
@@ -131,11 +134,14 @@ class Session(abc.ABC):
             object_id: Universal Unique Identifier of the Mesh object to be updated.
             object_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the Mesh object to be updated.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             new_name: New name for the object.
             new_owner_attribute_id: Universal Unique Identifier of the new owner which
                 is a relationship attribute of Object Collection type.
             new_owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
-                of the new owner which is a relationship attribute of Object Collection type.
+                of the new owner which is a relationship attribute of Object Collection type
+                (object value type = "ElementCollectionAttributeDefinition").
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -154,6 +160,7 @@ class Session(abc.ABC):
             object_id: Universal Unique Identifier of the object to be deleted.
             object_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the object to be deleted.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             recursive_delete: If set then all child objects
                 (owned by the object to be deleted) in the model will also be deleted.
 
@@ -174,6 +181,7 @@ class Session(abc.ABC):
             attribute_id: Universal Unique Identifier of the attribute to be retrieved.
             attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the attribute to be retrieved.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
@@ -202,6 +210,7 @@ class Session(abc.ABC):
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
+
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """

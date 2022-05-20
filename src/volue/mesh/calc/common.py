@@ -117,7 +117,8 @@ class _Calculation:
 
         Args:
             session (Session):
-            relative_to (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
+            relative_to (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a integer that only applies to a specific raw time series.
+              See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             start_time (datetime): the start date and time of the time series interval
             end_time (datetime): the end date and time of the time series interval
         """

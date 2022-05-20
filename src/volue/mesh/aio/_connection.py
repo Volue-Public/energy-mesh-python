@@ -96,7 +96,8 @@ class Connection(_base_connection.Connection):
             Args:
                 start_time (datetime): the start date and time of the time series interval
                 end_time (datetime): the end date and time of the time series interval
-                mesh_object_id (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a  integer that only applies to a specific raw time series
+                mesh_object_id (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model <mesh object model>` or a integer that only applies to a specific raw time series.
+                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
             For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
@@ -153,7 +154,7 @@ class Connection(_base_connection.Connection):
                                                timskey: int = None,
                                                ) -> core_pb2.TimeseriesEntry:
             """
-            Request information associated with a raw  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`.. |coro|
+            Request information associated with a raw  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute <mesh_attribute>`.. |coro|
 
             Args:
                 uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
@@ -257,12 +258,13 @@ class Connection(_base_connection.Connection):
                                            path: str = None
                                            ) -> core_pb2.TimeseriesAttribute:
             """
-            Request information associated with a Mesh object :doc:`attribute <mesh_object_attributes>`. |coro|
+            Request information associated with a Mesh object :ref:`time series attribute <mesh_attribute>`. |coro|
 
             Args:
                 model (str): the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-                path (str): path in the :ref:`Mesh object model <mesh object model>`
+                path (str): path in the :ref:`Mesh object model <mesh object model>`.
+                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
             Note:
                 Specify model and either `uuid_id` or `path` to a timeseries attribute.
@@ -295,13 +297,14 @@ class Connection(_base_connection.Connection):
                                               new_timeseries_entry_id: core_pb2.TimeseriesEntryId = None,
                                               ) -> None:
             """
-            Update information associated with a Mesh object doc:`attribute <mesh_object_attributes>`. |coro|
+            Update information associated with a Mesh object :ref:`time series attribute <mesh_attribute>`. |coro|
 
             Args:
                 uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-                path (str): path in the :ref:`Mesh object model <mesh object model>`
+                path (str): path in the :ref:`Mesh object model <mesh object model>`.
+                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
                 new_local_expression (str): set new local  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
-                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute <mesh_object_attributes>`..
+                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute <mesh_attribute>`.
 
             Note:
                 Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one argument: `uuid_id ` or `path` is needed.
@@ -344,12 +347,13 @@ class Connection(_base_connection.Connection):
                                                   start_object_guid: uuid.UUID = None
                                                   ) -> List[core_pb2.TimeseriesAttribute]:
             """
-            Use the :doc:`Mesh search language <mesh_search>` to find :doc:`Mesh object attributes <mesh_object_attributes>` in the Mesh object model. |coro|
+            Use the :doc:`Mesh search language <mesh_search>` to find :ref:`time series attributes <mesh_attribute>` in the Mesh object model. |coro|
 
             Args:
                 model (str): the name of the :ref:`Mesh object model <mesh object model>` you want to work within
                 query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
-                start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`
+                start_object_path (str): Start searching at the path in the :ref:`Mesh object model <mesh object model>`.
+                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
                 start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
 
             Note:

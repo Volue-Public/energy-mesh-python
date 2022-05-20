@@ -89,6 +89,9 @@ class AttributeBase:
     Mesh Attribute is an instance of Attribute Definition in the
     Mesh Model and has always an owner of Object type.
     It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).
+
+    Refer to documentation for more details:
+    :ref:`Mesh attribute <mesh_attribute>`.
     """
 
     @dataclass
@@ -202,6 +205,9 @@ class SimpleAttribute(AttributeBase):
     - minimum_value
     - maximum_value
     - unit_of_measurement
+
+    Refer to documentation for more details:
+    :ref:`Mesh attribute <mesh_attribute>`.
     """
 
     @dataclass
@@ -290,6 +296,9 @@ class RelationshipAttribute(AttributeBase):
 
     When creating a new object the owner must be a relationship attribute
     of one-to-many type (ElementCollectionAttributeDefinition).
+
+    Refer to documentation for more details:
+    :ref:`Mesh attribute <mesh_attribute>`.
     """
 
     @dataclass
@@ -339,16 +348,19 @@ class TimeseriesAttribute(AttributeBase):
     """Represents time series Mesh Attribute.
 
     Time series attribute can be a:
-    - reference to a physical time series: it has actual data (timestamps, values and flags)
+      - reference to a physical time series: it has actual data (timestamps, values and flags)
         and meta data (e.g.: curve type, resolution, etc.).
-    - reference to a virtual time series: it has defined an expression to calculate
+      - reference to a virtual time series: it has defined an expression to calculate
         time series data (similar to calculation time series).
-    - calculation time series: it has defined an expression to calculate
+      - calculation time series: it has defined an expression to calculate
         time series data. The calculation expression can be defined on Attribute Definition
         level (`template_expression`) or overwritten for the given attribute (if it is then
         `is_local_expression` is set to True).
 
     Note: physical and virtual time series are both called resource time series.
+
+    Refer to documentation for more details:
+    :ref:`Mesh attribute <mesh_attribute>`.
     """
     @dataclass
     class Definition(AttributeBase.Definition):

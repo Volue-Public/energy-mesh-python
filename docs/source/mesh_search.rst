@@ -12,7 +12,7 @@ To be able to search for a mesh object you need to specify which model to search
 Query syntax
 ~~~~~~~~~~~~~~
 
-A search consists of a traversal, optionally followed by an :doc:`attribute <mesh_object_attributes>` access (".AttributeName"). A search takes an object (the start point) as input and produces a set of objects or attributes as output (the result). If the attribute access is specified, the result objects are all attributes (attribute search), otherwise they are all objects (object search). The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on criteria (f.ex. [Criteria] or \*[Criteria]).
+A search consists of a traversal, optionally followed by an :ref:`attribute <mesh_attribute>` access (".AttributeName"). A search takes an object (the start point) as input and produces a set of objects or attributes as output (the result). If the attribute access is specified, the result objects are all attributes (attribute search), otherwise they are all objects (object search). The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on criteria (f.ex. [Criteria] or \*[Criteria]).
 
 Traversal
 ***********
