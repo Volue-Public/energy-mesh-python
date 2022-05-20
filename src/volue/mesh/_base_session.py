@@ -75,6 +75,7 @@ class Session(abc.ABC):
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
                 :ref:`Mesh object model <mesh object model>`.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -207,6 +208,7 @@ class Session(abc.ABC):
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
                 :ref:`Mesh object model <mesh object model>`.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -230,6 +232,8 @@ class Session(abc.ABC):
             attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
             attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the Mesh attribute which value is to be updated.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
