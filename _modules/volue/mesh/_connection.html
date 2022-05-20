@@ -193,7 +193,7 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_base_connection</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_base_session</span>
-
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_attribute</span>
 
 <div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">_base_connection</span><span class="o">.</span><span class="n">Connection</span><span class="p">):</span>
 <div class="viewcode-block" id="Connection.Session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session">[docs]</a>    <span class="k">class</span> <span class="nc">Session</span><span class="p">(</span><span class="n">_base_session</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
@@ -563,6 +563,21 @@
             <span class="k">for</span> <span class="n">proto_attribute</span> <span class="ow">in</span> <span class="n">proto_attributes</span><span class="p">:</span>
                 <span class="n">attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_from_proto_attribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">attributes</span></div>
+
+<div class="viewcode-block" id="Connection.Session.update_simple_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_simple_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">update_simple_attribute</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">value</span><span class="p">:</span> <span class="n">_attribute</span><span class="o">.</span><span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">attribute_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">new_singular_value</span><span class="p">,</span> <span class="n">new_collection_values</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_to_update_attribute_request_values</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_attribute_request</span><span class="p">(</span>
+                <span class="n">attribute_id</span><span class="o">=</span><span class="n">attribute_id</span><span class="p">,</span>
+                <span class="n">attriubte_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span>
+                <span class="n">new_singular_value</span><span class="o">=</span><span class="n">new_singular_value</span><span class="p">,</span>
+                <span class="n">new_collection_values</span><span class="o">=</span><span class="n">new_collection_values</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.get_object"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_object">[docs]</a>        <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>

@@ -1532,6 +1532,121 @@
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="n">verify_double_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dbl_attribute_path</span><span class="o">=</span><span class="n">dbl_attribute_path</span><span class="p">,</span> <span class="n">attribute_name</span><span class="o">=</span><span class="n">attributes_names</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
+
+<div class="viewcode-block" id="update_double_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.update_double_attribute">[docs]</a><span class="k">def</span> <span class="nf">update_double_attribute</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">new_double_value</span><span class="p">):</span>
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;DblAtt&quot;</span>
+
+    <span class="n">double_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">new_double_value</span><span class="p">,</span> <span class="n">double_attribute</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span>
+        <span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span>
+        <span class="n">value</span><span class="o">=</span><span class="n">new_double_value</span>
+    <span class="p">)</span>
+
+    <span class="n">double_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">new_double_value</span><span class="p">,</span> <span class="n">double_attribute</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_update_simple_attribute_invalid_request"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_update_simple_attribute_invalid_request">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_update_simple_attribute_invalid_request</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that &#39;update_attribute&#39; with invalid request</span>
+<span class="sd">     (wrong value type and dimension) will throw</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                        <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;BoolArrayAtt&quot;</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># boolean array attribute, wrong value type and dimension</span>
+        <span class="n">array_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="n">original_values</span> <span class="o">=</span> <span class="n">array_attribute</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">):</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+        
+        <span class="n">array_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">array_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">original_values</span></div>
+        
+
+<div class="viewcode-block" id="test_update_simple_array_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_update_simple_array_attribute">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_update_simple_array_attribute</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that &#39;update_simple_attribute&#39; will correctly update array attribute values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;BoolArrayAtt&quot;</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1">#boolean array attribute</span>
+        <span class="n">new_boolean_array_values</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+
+        <span class="n">array_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">array_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="n">new_boolean_array_values</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">new_boolean_array_values</span><span class="p">)</span>
+        
+        <span class="n">array_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">array_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">new_boolean_array_values</span></div>
+
+
+<div class="viewcode-block" id="test_update_single_simple_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_update_single_simple_attribute">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_update_single_simple_attribute</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that &#39;update_simple_attribute&#39; will correctly update single attributes values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">update_double_attribute</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span> <span class="c1"># float provided</span>
+        <span class="n">update_double_attribute</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span> <span class="c1"># int provided</span>
+
+        <span class="c1"># int attribute</span>
+        <span class="n">new_int_value</span> <span class="o">=</span> <span class="mi">69</span>
+        <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;Int64Att&quot;</span>
+        <span class="n">int_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">new_int_value</span> <span class="o">!=</span> <span class="n">int_attribute</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">new_int_value</span><span class="p">)</span>
+
+        <span class="n">int_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">int_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">new_int_value</span>
+
+        <span class="c1"># boolean attribute</span>
+        <span class="n">new_boolean_value</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;BoolAtt&quot;</span>
+        <span class="n">boolean_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">new_boolean_value</span> <span class="o">!=</span> <span class="n">boolean_attribute</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">new_boolean_value</span><span class="p">)</span>
+
+        <span class="n">boolean_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">boolean_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">new_boolean_value</span>
+
+        <span class="c1"># string attribute</span>
+        <span class="n">new_string_value</span> <span class="o">=</span> <span class="s2">&quot;my test string attribute value&quot;</span>
+        <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;StringAtt&quot;</span>
+        <span class="n">string_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">new_string_value</span> <span class="o">!=</span> <span class="n">string_attribute</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">new_string_value</span><span class="p">)</span>
+
+        <span class="n">string_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">string_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">new_string_value</span>
+
+        <span class="c1"># utcDateTime attribute</span>
+        <span class="n">new_utc_value</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
+        <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;UtcDateTimeAtt&quot;</span>
+        <span class="n">utc_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">new_utc_value</span> <span class="o">!=</span> <span class="n">utc_attribute</span><span class="o">.</span><span class="n">value</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">new_utc_value</span><span class="p">)</span>
+
+        <span class="n">utc_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">utc_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">new_utc_value</span></div>
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
 </pre></div>
