@@ -21,7 +21,7 @@ from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from . import _base_connection
 from . import _base_session
-
+from . import _attribute
 
 class Connection(_base_connection.Connection):
     class Session(_base_session.Session):
@@ -391,6 +391,21 @@ class Connection(_base_connection.Connection):
             for proto_attribute in proto_attributes:
                 attributes.append(_from_proto_attribute(proto_attribute))
             return attributes
+
+        def update_simple_attribute(
+                self,
+                value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
+                attribute_id: Optional[uuid.UUID] = None,
+                attribute_path: Optional[str] = None) -> None:
+
+            new_singular_value, new_collection_values = super()._to_update_attribute_request_values(value=value)
+
+            request = super()._prepare_update_attribute_request(
+                attribute_id=attribute_id,
+                attriubte_path=attribute_path,
+                new_singular_value=new_singular_value,
+                new_collection_values=new_collection_values)
+            return self.mesh_service.UpdateAttribute(request)
 
         def get_object(
                 self,

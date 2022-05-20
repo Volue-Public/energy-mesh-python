@@ -5,6 +5,8 @@ Functionality for asynchronously connecting to a Mesh server and working with it
 import datetime
 from typing import Optional, List, Type
 import uuid
+from typing import Optional, List
+from datetime import datetime
 
 from google import protobuf
 import grpc
@@ -21,6 +23,7 @@ from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 from volue.mesh import _base_connection
 from volue.mesh import _base_session
+from volue.mesh import _attribute
 
 
 class Connection(_base_connection.Connection):
@@ -399,6 +402,21 @@ class Connection(_base_connection.Connection):
             async for proto_attribute in self.mesh_service.SearchAttributes(request):
                 attributes.append(_from_proto_attribute(proto_attribute))
             return attributes
+
+        async def update_simple_attribute(
+                self,
+                value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
+                attribute_id: Optional[uuid.UUID] = None,
+                attribute_path: Optional[str] = None) -> None:
+            
+            new_singular_value, new_collection_values = super()._to_update_attribute_request_values(value=value)
+
+            request = super()._prepare_update_attribute_request(
+            attribute_id=attribute_id,
+            attriubte_path=attribute_path,
+            new_singular_value=new_singular_value,
+            new_collection_values=new_collection_values)
+            return await self.mesh_service.UpdateAttribute(request)
 
         async def get_object(
                 self,
