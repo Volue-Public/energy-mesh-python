@@ -216,11 +216,11 @@ class Session(abc.ABC):
         Update an existing Mesh attribute's value in the Mesh object model.
 
         Args:
+            value: New simple attribute value. It can be one of following simple types:
+                bool, float, int, str, datetime or a list of simple types.
             attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
             attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
                 of the Mesh attribute which value is to be updated.
-            new_singular_value: new value for a singular value attribute
-            new_collection_values: new values for an array attribute
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
