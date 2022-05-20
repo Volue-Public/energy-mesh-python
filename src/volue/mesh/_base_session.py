@@ -414,11 +414,6 @@ class Session(abc.ABC):
             attribute_id=attribute_mesh_id
         )
 
-        # try to find if the request is ill-formed
-        if new_singular_value is None and new_collection_values is None \
-            or new_singular_value is not None and new_collection_values is not None:
-            raise RuntimeError("Both new_singular_value and new_collection_values fields are not set.")
-
         fields_to_update = []
         if new_singular_value is not None:
             fields_to_update.append("value")
