@@ -3,6 +3,50 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
+`Mesh Python SDK version 0.0.4 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.5>`_
+*************************************************************************************************************************
+
+------------
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version 2.5.*
+- Python [3.7.1, 3.8 and 3.9]
+- Tested with Mesh server version 2.5.0.14
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- Sum function for single time series. :issue:`161`Implement RPCs for handling attributes
+- Read of virtual timeseries in SmG. :issue:`153`
+- Logging and audit trail. :issue:`156`
+- Read and write of objects in the physical Mesh model. :issue:`151`
+- Implement RPCs for handling attributes. :issue:`203`
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- **Enhancement:** Separate forecasting and history functions. :issue:`113`
+- **Enhancement:** Readable error for reply with no timeseries data. :issue:`164`
+- **Enhancement:** Expose transformation functions the same way other calc functions are exposed. :issue:`157`
+- **Fixed:** Dependecies not set correctly :issue:`178`
+- **Fixed:** Inconsistent handling of timestamps in time series data point update. :issue:`183`
+
+Known issues
+~~~~~~~~~~~~~~~~~~
+
+- Lacking support to read and write XYZ attributes and link relations.
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+::
+
+    python -m pip install --force-reinstall git+https://github.com/PowelAS/sme-mesh-python@Mesh_v2.5
+
 
 `Mesh Python SDK version 0.0.3 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.3>`_
 *************************************************************************************************************************
