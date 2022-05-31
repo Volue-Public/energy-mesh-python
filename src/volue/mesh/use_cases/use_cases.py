@@ -1162,11 +1162,11 @@ def use_case_19():
             for attribute in object.attributes.values():
                 print(attribute)
 
-            attribute_path = f"{object_path}.HubHeight"
-            session.update_simple_attribute(attribute_path=attribute_path, value=100)
+            session.update_simple_attribute(
+                attribute_path=object.attributes['HubHeight'].path, value=100)
 
-            attribute_path = f"{object_path}.MaxProduction"
-            session.update_simple_attribute(attribute_path=attribute_path, value=50)
+            session.update_simple_attribute(
+                attribute_path=object.attributes['MaxProduction'].path, value=50)
 
             print("\nAttribute values after update:")
             object = session.get_object(object_path=object_path,
