@@ -1133,6 +1133,55 @@ def use_case_18():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
+def use_case_19():
+    """
+    Scenario:
+    We want to update 2 attributes of a specific, existing object of type
+    `WindPark`, named `NewestWindPark`.
+
+    Object path:            Model/MeshTEK/Mesh/Norge/Wind/NewWindPark
+    Attributes to update:   HubHeight (new value = 100)
+                            MaxProduction (new value = 50)
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 19"
+            object_path = "Model/MeshTEK/Mesh/Norge/Wind/NewWindPark"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            names = ['HubHeight', 'MaxProduction']
+            attributes_filter = AttributesFilter(name_mask=names)
+
+            print("Attribute values before update:")
+            object = session.get_object(object_path=object_path,
+                attributes_filter=attributes_filter)
+            for attribute in object.attributes.values():
+                print(attribute)
+
+            session.update_simple_attribute(
+                attribute_path=object.attributes['HubHeight'].path, value=100)
+
+            session.update_simple_attribute(
+                attribute_path=object.attributes['MaxProduction'].path, value=50)
+
+            print("\nAttribute values after update:")
+            object = session.get_object(object_path=object_path,
+                attributes_filter=attributes_filter)
+            for attribute in object.attributes.values():
+                print(attribute)
+
+            # Commit changes
+            if COMMIT_CHANGES:
+                session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 1:

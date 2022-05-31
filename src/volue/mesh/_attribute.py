@@ -151,20 +151,27 @@ class AttributeBase:
 
     def _get_string_representation(self) -> str:
         """Get string representation that could be used by subclasses `__str__` method calls."""
-        return (
+        message = (
             f"name: {self.name}\n"
             f"\t id: {self.id}\n"
-            f"\t path: {self.id}\n"
-            f"\t definition name: {self.definition.name}\n"
-            f"\t definition id: {self.definition.id}\n"
-            f"\t definition path: {self.definition.path}\n"
-            f"\t description: {self.definition.description}\n"
-            f"\t tags: {self.definition.tags}\n"
-            f"\t namespace: {self.definition.namespace}\n"
-            f"\t value_type: {self.definition.value_type}\n"
-            f"\t minimum_cardinality: {self.definition.minimum_cardinality}\n"
-            f"\t maximum_cardinality: {self.definition.maximum_cardinality}"
+            f"\t path: {self.path}"
         )
+
+        if self.definition is not None:
+            message = (
+                f"{message}\n"
+                f"\t definition name: {self.definition.name}\n"
+                f"\t definition id: {self.definition.id}\n"
+                f"\t definition path: {self.definition.path}\n"
+                f"\t description: {self.definition.description}\n"
+                f"\t tags: {self.definition.tags}\n"
+                f"\t namespace: {self.definition.namespace}\n"
+                f"\t value_type: {self.definition.value_type}\n"
+                f"\t minimum_cardinality: {self.definition.minimum_cardinality}\n"
+                f"\t maximum_cardinality: {self.definition.maximum_cardinality}"
+            )
+
+        return message
 
     def __str__(self) -> str:
         return (
@@ -251,15 +258,22 @@ class SimpleAttribute(AttributeBase):
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        return (
+        message = (
             f"SimpleAttribute:\n"
             f"\t {base_message}\n"
-            f"\t value: {self.value}\n"
-            f"\t default_value: {self.definition.default_value}\n"
-            f"\t minimum_value: {self.definition.minimum_value}\n"
-            f"\t maximum_value: {self.definition.maximum_value}\n"
-            f"\t unit_of_measurement: {self.definition.unit_of_measurement}"
+            f"\t value: {self.value}"
         )
+
+        if self.definition is not None:
+            message = (
+                f"{message}\n"
+                f"\t default_value: {self.definition.default_value}\n"
+                f"\t minimum_value: {self.definition.minimum_value}\n"
+                f"\t maximum_value: {self.definition.maximum_value}\n"
+                f"\t unit_of_measurement: {self.definition.unit_of_measurement}"
+            )
+
+        return message
 
 
 @dataclass
@@ -306,11 +320,18 @@ class RelationshipAttribute(AttributeBase):
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        return (
+        message = (
             f"RelationshipAttribute:\n"
-            f"\t {base_message}\n"
-            f"\t object_type: {self.definition.object_type}"
+            f"\t {base_message}"
         )
+
+        if self.definition is not None:
+            message = (
+                f"{message}\n"
+                f"\t object_type: {self.definition.object_type}"
+            )
+
+        return message
 
 
 @dataclass
@@ -378,13 +399,20 @@ class TimeseriesAttribute(AttributeBase):
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        return (
+        message = (
             f"TimeseriesAttribute:\n"
             f"\t {base_message}\n"
             f"\t time_series_resource_id: {self.time_series_resource_id}\n"
             f"\t time_series_resource_path: {self.time_series_resource_path}\n"
             f"\t time_series_resource_key: {self.time_series_resource_key}\n"
             f"\t is_local_expression: {self.is_local_expression}\n"
-            f"\t expression: {self.expression}\n"
-            f"\t template_expression: {self.definition.template_expression}"
+            f"\t expression: {self.expression}"
         )
+
+        if self.definition is not None:
+            message = (
+                f"{message}\n"
+                f"\t template_expression: {self.definition.template_expression}"
+            )
+
+        return message
