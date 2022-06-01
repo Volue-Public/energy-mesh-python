@@ -98,9 +98,9 @@ Calculation time series
 ========================
 
 Calculation time series is similar to virtual time series, but they are
-represent a newer concept and are more flexible. They do not contain actual
-data points but an :ref:`expression <mesh_calc_expressions>` that may reference
-other time series types, attribute values or constants. For example::
+a newer concept and are more flexible. They do not contain actual data points
+but an :ref:`expression <mesh_calc_expressions>` that may reference other time
+series types, attribute values or constants. For example::
 
     "##= @d('.DoubleAttribute') + @t('.TimeSeriesAttributePhysical') + @t('...TimeSeriesAttributeCalculation')\n"
 
@@ -128,7 +128,7 @@ representing a theme for those functions. Refer to
 :doc:`Mesh functions <mesh_functions>` for more information.
 
 
-For calculation time series expressions refer to
+For more information on calculation time series expressions refer to
 :doc:`search language <mesh_search>` which is used to traverse the Mesh model
 to find specific objects or attributes provided in the expressions. One might
 want to find the water level for all reservoirs in a specific area in a given

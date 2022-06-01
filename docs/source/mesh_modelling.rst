@@ -9,10 +9,10 @@ Real world objects are represented in Mesh using the following concepts:
 * objects and object definitions
 * attributes and attribute definitions
 
-From high-level view there are model definitions that consist of one or more
-object definitions. Each object definition consists of one or more attribute
-definitions. The definitions serve as *blueprints* and can be instantiated.
-Instances of the definitions are just called: models, objects and attributes.
+Model definition contains one or more object definitions. Each object
+definition contains one or more attribute definitions. The definitions
+serve as *blueprints* and can be instantiated. Instances of the definitions are
+just called: models, objects and attributes.
 
 For example we could have a model definition called *EnergySystem* that has
 object definition called *PowerPlant* that has two attribute definitions:
@@ -33,10 +33,10 @@ Such definitions could be instantiated and so we could have: model called
 Model definition
 *****************
 
-The **Mesh model definition** is designed to represent the physical
-infrastructure of a customer's area and assets. This can be a hydropower
-production system with water courses, creeks, reservoirs, water routes,
-gates, sensors, hydro plants and so on. The Mesh model definition consists of
+The **Mesh model definition** is designed to represent the structure of
+customer's infrastructure and assets. This can be a hydropower production
+system with water courses, creeks, reservoirs, water routes, gates, sensors,
+hydro plants and so on. The Mesh model definition contains
 :ref:`object definitions<mesh_object_definition>` and
 :ref:`attribute definitions <mesh_attribute_definition>` of different types.
 Each asset type is represented by a **Mesh object definition**.
@@ -50,13 +50,13 @@ Each asset type is represented by a **Mesh object definition**.
 Object definition
 *******************
 
-Consists of :ref:`attribute definitions <mesh_attribute_definition>` of
+Contains :ref:`attribute definitions <mesh_attribute_definition>` of
 different types. Object definition could be compared to a C++ class.
 
-For example: an object definition could represent a water course. It can have
+For example: an object definition could represent a reservoir. It can have
 an attribute definition that represents current water level in a reservoir and
-a relationship attribute definition that represents how this water course is
-connected to some creek.
+a relationship attribute definition that represents how water is flowing to
+another object like hydro plant.
 
 
 .. _mesh_attribute_definition:
@@ -106,12 +106,15 @@ that represent customer's physical assets.
 In the diagram above object names are written in blue, object value types are
 written in black and there are no attribute shown.
 
+It is possible to create links (via relationship attributes) between objects in
+this tree.
+
 .. _mesh_object:
 
 Object
 **********
 
-Mesh object consists of :ref:`attributes <mesh_attribute>`. Object is an
+Mesh object contains :ref:`attributes <mesh_attribute>`. Object is an
 instance of an :ref:`object definition <mesh_object_definition>`.
 
 Objects are identified by IDs or paths, refer to
@@ -125,7 +128,7 @@ Attribute
 **********
 
 Attribute is an instance of
-:ref:`attribute definition <mesh_attribute_definition>`. Attribute consists of
+:ref:`attribute definition <mesh_attribute_definition>`. Attribute contains
 a **definition** (inherited from **attribute definition**) and possibly
 a **value** of some type.
 
@@ -218,7 +221,7 @@ Objects and attributes paths
 ****************************
 
 Objects and attributes are identified by IDs or paths. Path is a string
-uniquely identifying an object in the model and consists of all ancestors of
+uniquely identifying an object in the model and contains all ancestors of
 a given object and optionally their relationship attributes.
 
 For example the path for the *Innerdalsvannet* reservoir from example diagram
@@ -243,4 +246,6 @@ Every path in Mesh model starts with *Model/* prefix.
 .. note::
 
   Mesh Python SDK library returns always full names as path when reading
-  objects or attributes.
+  objects or attributes. The path containing attributes (full name path) is
+  guaranteed to be unique, whereas depending on the model the path without
+  attributes may be ambiguous.
