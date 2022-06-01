@@ -155,7 +155,7 @@ class Connection(_base_connection.Connection):
                 timskey (int): integer that only applies to a specific physical time series
 
             Note:
-                This `path` is NOT the same as full name or the path in the Mesh object model,
+                This `path` is NOT the same as full name or the path in the Mesh model,
                 this `path` refers to its location in the resource catalog.
 
             Raises:
@@ -208,7 +208,7 @@ class Connection(_base_connection.Connection):
                 Specify which ever of the new_* fields you want to update.
 
             Note:
-                This `path` is NOT the same as full name or the path in the Mesh object model,
+                This `path` is NOT the same as full name or the path in the Mesh model,
                 this `path` refers to its location in the resource catalog.
 
             Raises:
@@ -339,7 +339,7 @@ class Connection(_base_connection.Connection):
                                             start_object_guid: uuid.UUID = None
                                             ) -> List[core_pb2.TimeseriesAttribute]:
             """
-            Use the :doc:`Mesh search language <mesh_search>` to find :ref:`time series attributes <mesh_attribute>` in the Mesh object model.
+            Use the :doc:`Mesh search language <mesh_search>` to find :ref:`time series attributes <mesh_attribute>` in the Mesh model.
 
             Args:
                 model (str): the name of the :ref:`Mesh model <mesh_model>` you want to work within

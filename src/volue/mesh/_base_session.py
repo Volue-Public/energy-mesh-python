@@ -38,7 +38,7 @@ class Session(abc.ABC):
             full_attribute_info:  bool = False,
             attributes_filter: Optional[AttributesFilter] = None) -> Object:
         """
-        Request information associated with a Mesh object from the Mesh object model.
+        Request information associated with a Mesh object from the Mesh model.
         Specify either `object_id` or `object_path` to a Mesh object.
 
         Args:
@@ -66,7 +66,7 @@ class Session(abc.ABC):
             attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects
-        in the Mesh object model. Specify either `start_object_id` or
+        in the Mesh model. Specify either `start_object_id` or
         `start_object_path` to an object where the search query should start from.
 
         Args:
@@ -93,7 +93,7 @@ class Session(abc.ABC):
             owner_attribute_id: Optional[uuid.UUID] = None,
             owner_attribute_path: Optional[str] = None) -> Object:
         """
-        Create new Mesh object in the Mesh object model.
+        Create new Mesh object in the Mesh model.
         Owner of the new object must be a relationship attribute of Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
@@ -126,7 +126,7 @@ class Session(abc.ABC):
             new_owner_attribute_id: Optional[uuid.UUID] = None,
             new_owner_attribute_path: Optional[str] = None) -> None:
         """
-        Update an existing Mesh object in the Mesh object model.
+        Update an existing Mesh object in the Mesh model.
         New owner of the object must be a relationship attribute of Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
@@ -155,7 +155,7 @@ class Session(abc.ABC):
             object_path: Optional[str] = None,
             recursive_delete: bool = False) -> None:
         """
-        Delete an existing Mesh object in the Mesh object model.
+        Delete an existing Mesh object in the Mesh model.
 
         Args:
             object_id: Universal Unique Identifier of the object to be deleted.
@@ -176,7 +176,7 @@ class Session(abc.ABC):
             attribute_path: Optional[str] = None,
             full_attribute_info: bool = False) -> Type[AttributeBase]:
         """
-        Retrieve an existing attribute from the Mesh object model.
+        Retrieve an existing attribute from the Mesh model.
 
         Args:
             attribute_id: Universal Unique Identifier of the attribute to be retrieved.
@@ -199,7 +199,7 @@ class Session(abc.ABC):
             full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh attributes
-        in the Mesh object model. Specify either `start_object_id` or
+        in the Mesh model. Specify either `start_object_id` or
         `start_object_path` to an object where the search query should start from.
 
         Args:
@@ -224,7 +224,7 @@ class Session(abc.ABC):
             attribute_id: Optional[uuid.UUID] = None,
             attribute_path: Optional[str] = None) -> None:
         """
-        Update an existing Mesh attribute's value in the Mesh object model.
+        Update an existing Mesh attribute's value in the Mesh model.
 
         Args:
             value: New simple attribute value. It can be one of following simple types:

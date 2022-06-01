@@ -13,13 +13,13 @@ Glossary
         Integrated Development Environment. Software that consolidates the basic tools needed for software testing and writing.
 
     Mesh functions
-        Used to perform tasks and calculations on data in the mesh object model.
+        Used to perform tasks and calculations on data in the Mesh model.
 
-    Mesh object model
-        Represent the physical infrastructure of a customers area and assets.
+    Mesh model
+        Represents the physical infrastructure of a customers area and assets.
 
     Mesh search language
-        A language with a custom syntax designed to traverse the mesh object model.
+        A language with a custom syntax designed to traverse the Mesh model.
 
     SDK
         Software Development Kit. A collection of software development tools in one installable package.
