@@ -17,7 +17,7 @@ A search consists of a traversal, optionally followed by an :ref:`attribute <mes
 Traversal
 ***********
 
-A traversal describes a set of relative paths in the mesh object structure. It takes a set of objects as input (the start points) and produces a set of objects as output (the result) by following the paths from each start point and collecting endpoints. The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on criteria (f.ex. [Criteria] or \*[Criteria]). For example, the traversal ‘..’ will output the parent, if it exists, for each input object. Traversals can be combined with operators to form new traversals.
+A traversal describes a set of relative paths in the mesh object structure. It takes a set of objects as an input (the start points) and produces a set of objects as an output (the result) by following the paths from each start point and collecting endpoints. The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on criteria (f.ex. [Criteria] or \*[Criteria]). For example, the traversal ‘..’ will output the parent, if it exists, for each input object. Traversals can be combined with operators to form new traversals.
 
 .. image:: images/search1.png
    :width: 800
