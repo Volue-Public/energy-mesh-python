@@ -1219,7 +1219,7 @@ def test_get_calc_time_series_attribute():
 @pytest.mark.database
 def test_get_raw_time_series_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a physical time series attribute and its definition.
     """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,

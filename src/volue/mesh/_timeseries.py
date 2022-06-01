@@ -104,9 +104,10 @@ class Timeseries:
             resolution (resources_pb2.Resolution): the resolution of the time series
             start_time (datetime): the start date and time of the time series interval
             end_time (datetime): the end date and time of the time series interval
-            timskey (int): integer that only applies to a specific raw time series
+            timskey (int): integer that only applies to a specific physical or virtual time series
             uuid_id:  Universal Unique Identifier for Mesh objects
-            full_name: path in the :ref:`Mesh object model <mesh object model>`
+            full_name: path in the :ref:`Mesh model <mesh_model>`.
+              See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
             TypeError:  Error message raised if PyArrow table schema is invalid
@@ -147,7 +148,7 @@ class Timeseries:
     @property
     def is_calculation_expression_result(self) -> bool:
         """
-        Checks if a time series is a calculated or raw time series.
+        Checks if a time series is a calculated or a physical or virtual time series.
 
         Note:
             If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation 'Concepts' for more information.

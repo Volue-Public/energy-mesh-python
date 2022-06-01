@@ -38,13 +38,14 @@ class Session(abc.ABC):
             full_attribute_info:  bool = False,
             attributes_filter: Optional[AttributesFilter] = None) -> Object:
         """
-        Request information associated with a Mesh object from the Mesh object model.
+        Request information associated with a Mesh object from the Mesh model.
         Specify either `object_id` or `object_path` to a Mesh object.
 
         Args:
             object_id: Universal Unique Identifier of the Mesh object.
-            object_path: Path in the :ref:`Mesh object model <mesh object model>`
-                of the Mesh object.
+            object_path: Path in the :ref:`Mesh model <mesh_model>`
+                of the Mesh object. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object will be returned, otherwise only name,
                 path, ID and value(s).
@@ -65,7 +66,7 @@ class Session(abc.ABC):
             attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects
-        in the Mesh object model. Specify either `start_object_id` or
+        in the Mesh model. Specify either `start_object_id` or
         `start_object_path` to an object where the search query should start from.
 
         Args:
@@ -73,7 +74,8 @@ class Session(abc.ABC):
             start_object_id: Start searching at the object with the 
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
-                :ref:`Mesh object model <mesh object model>`.
+                :ref:`Mesh model <mesh_model>`.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -91,7 +93,7 @@ class Session(abc.ABC):
             owner_attribute_id: Optional[uuid.UUID] = None,
             owner_attribute_path: Optional[str] = None) -> Object:
         """
-        Create new Mesh object in the Mesh object model.
+        Create new Mesh object in the Mesh model.
         Owner of the new object must be a relationship attribute of Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
@@ -102,8 +104,10 @@ class Session(abc.ABC):
             name: Name for the new object to create.
             owner_attribute_id: Universal Unique Identifier of the owner which
                 is a relationship attribute of Object Collection type.
-            owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
-                of the owner which is a relationship attribute of Object Collection type.
+            owner_attribute_path: Path in the :ref:`Mesh model <mesh_model>`
+                of the owner which is a relationship attribute of Object Collection type
+                (object value type = "ElementCollectionAttributeDefinition").
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Returns:
             Created object with all attributes (no mask applied) and basic
@@ -122,20 +126,23 @@ class Session(abc.ABC):
             new_owner_attribute_id: Optional[uuid.UUID] = None,
             new_owner_attribute_path: Optional[str] = None) -> None:
         """
-        Update an existing Mesh object in the Mesh object model.
+        Update an existing Mesh object in the Mesh model.
         New owner of the object must be a relationship attribute of Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
 
         Args:
             object_id: Universal Unique Identifier of the Mesh object to be updated.
-            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+            object_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the Mesh object to be updated.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             new_name: New name for the object.
             new_owner_attribute_id: Universal Unique Identifier of the new owner which
                 is a relationship attribute of Object Collection type.
-            new_owner_attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
-                of the new owner which is a relationship attribute of Object Collection type.
+            new_owner_attribute_path: Path in the :ref:`Mesh model <mesh_model>`
+                of the new owner which is a relationship attribute of Object Collection type
+                (object value type = "ElementCollectionAttributeDefinition").
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -148,12 +155,13 @@ class Session(abc.ABC):
             object_path: Optional[str] = None,
             recursive_delete: bool = False) -> None:
         """
-        Delete an existing Mesh object in the Mesh object model.
+        Delete an existing Mesh object in the Mesh model.
 
         Args:
             object_id: Universal Unique Identifier of the object to be deleted.
-            object_path: Path in the :ref:`Mesh object model <mesh object model>`
+            object_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the object to be deleted.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             recursive_delete: If set then all child objects
                 (owned by the object to be deleted) in the model will also be deleted.
 
@@ -168,12 +176,13 @@ class Session(abc.ABC):
             attribute_path: Optional[str] = None,
             full_attribute_info: bool = False) -> Type[AttributeBase]:
         """
-        Retrieve an existing attribute from the Mesh object model.
+        Retrieve an existing attribute from the Mesh model.
 
         Args:
             attribute_id: Universal Unique Identifier of the attribute to be retrieved.
-            attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the attribute to be retrieved.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
@@ -190,7 +199,7 @@ class Session(abc.ABC):
             full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh attributes
-        in the Mesh object model. Specify either `start_object_id` or
+        in the Mesh model. Specify either `start_object_id` or
         `start_object_path` to an object where the search query should start from.
 
         Args:
@@ -198,10 +207,12 @@ class Session(abc.ABC):
             start_object_id: Start searching at the object with the 
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
-                :ref:`Mesh object model <mesh object model>`.
+                :ref:`Mesh model <mesh_model>`.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
+
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
@@ -213,14 +224,16 @@ class Session(abc.ABC):
             attribute_id: Optional[uuid.UUID] = None,
             attribute_path: Optional[str] = None) -> None:
         """
-        Update an existing Mesh attribute's value in the Mesh object model.
+        Update an existing Mesh attribute's value in the Mesh model.
 
         Args:
             value: New simple attribute value. It can be one of following simple types:
                 bool, float, int, str, datetime or a list of simple types.
             attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
-            attribute_path: Path in the :ref:`Mesh object model <mesh object model>`
+            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
                 of the Mesh attribute which value is to be updated.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """

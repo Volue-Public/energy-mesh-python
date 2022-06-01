@@ -1252,7 +1252,7 @@ async def test_get_calc_time_series_attribute():
 @pytest.mark.database
 async def test_get_raw_time_series_attribute():
     """
-    Check that 'get_attribute' with full attribute view retrieves a raw time series attribute and its definition.
+    Check that 'get_attribute' with full attribute view retrieves a physical time series attribute and its definition.
     """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
