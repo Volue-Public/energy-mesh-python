@@ -18,7 +18,7 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Sum function for single time series. :issue:`161`Implement RPCs for handling attributes
+- Sum function for single time series. :issue:`161`
 - Read of virtual timeseries in SmG. :issue:`153`
 - Logging and audit trail. :issue:`156`
 - Read and write of objects in the physical Mesh model. :issue:`151`
@@ -30,7 +30,7 @@ Changes
 - **Enhancement:** Separate forecasting and history functions. :issue:`113`
 - **Enhancement:** Readable error for reply with no timeseries data. :issue:`164`
 - **Enhancement:** Expose transformation functions the same way other calc functions are exposed. :issue:`157`
-- **Fixed:** Dependecies not set correctly :issue:`178`
+- **Fixed:** Dependencies not set correctly :issue:`178`
 - **Fixed:** Inconsistent handling of timestamps in time series data point update. :issue:`183`
 
 Known issues
