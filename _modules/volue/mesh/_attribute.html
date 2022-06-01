@@ -261,6 +261,9 @@
 <span class="sd">    Mesh Attribute is an instance of Attribute Definition in the</span>
 <span class="sd">    Mesh Model and has always an owner of Object type.</span>
 <span class="sd">    It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).</span>
+
+<span class="sd">    Refer to documentation for more details:</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AttributeBase.Definition"><a class="viewcode-back" href="../../../api.html#volue.mesh.AttributeBase.Definition">[docs]</a>    <span class="nd">@dataclass</span>
@@ -374,6 +377,9 @@
 <span class="sd">    - minimum_value</span>
 <span class="sd">    - maximum_value</span>
 <span class="sd">    - unit_of_measurement</span>
+
+<span class="sd">    Refer to documentation for more details:</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@dataclass</span>
@@ -462,6 +468,9 @@
 
 <span class="sd">    When creating a new object the owner must be a relationship attribute</span>
 <span class="sd">    of one-to-many type (ElementCollectionAttributeDefinition).</span>
+
+<span class="sd">    Refer to documentation for more details:</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@dataclass</span>
@@ -511,16 +520,19 @@
     <span class="sd">&quot;&quot;&quot;Represents time series Mesh Attribute.</span>
 
 <span class="sd">    Time series attribute can be a:</span>
-<span class="sd">    - reference to a physical time series: it has actual data (timestamps, values and flags)</span>
+<span class="sd">      - reference to a physical time series: it has actual data (timestamps, values and flags)</span>
 <span class="sd">        and meta data (e.g.: curve type, resolution, etc.).</span>
-<span class="sd">    - reference to a virtual time series: it has defined an expression to calculate</span>
+<span class="sd">      - reference to a virtual time series: it has defined an expression to calculate</span>
 <span class="sd">        time series data (similar to calculation time series).</span>
-<span class="sd">    - calculation time series: it has defined an expression to calculate</span>
+<span class="sd">      - calculation time series: it has defined an expression to calculate</span>
 <span class="sd">        time series data. The calculation expression can be defined on Attribute Definition</span>
 <span class="sd">        level (`template_expression`) or overwritten for the given attribute (if it is then</span>
 <span class="sd">        `is_local_expression` is set to True).</span>
 
 <span class="sd">    Note: physical and virtual time series are both called resource time series.</span>
+
+<span class="sd">    Refer to documentation for more details:</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@dataclass</span>
     <span class="k">class</span> <span class="nc">Definition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">Definition</span><span class="p">):</span>

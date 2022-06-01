@@ -276,9 +276,10 @@
 <span class="sd">            resolution (resources_pb2.Resolution): the resolution of the time series</span>
 <span class="sd">            start_time (datetime): the start date and time of the time series interval</span>
 <span class="sd">            end_time (datetime): the end date and time of the time series interval</span>
-<span class="sd">            timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">            timskey (int): integer that only applies to a specific physical or virtual time series</span>
 <span class="sd">            uuid_id:  Universal Unique Identifier for Mesh objects</span>
-<span class="sd">            full_name: path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">            full_name: path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">              See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError:  Error message raised if PyArrow table schema is invalid</span>
@@ -319,7 +320,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_calculation_expression_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Checks if a time series is a calculated or raw time series.</span>
+<span class="sd">        Checks if a time series is a calculated or a physical or virtual time series.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation &#39;Concepts&#39; for more information.</span>

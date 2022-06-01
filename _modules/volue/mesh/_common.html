@@ -296,7 +296,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        timskey (int): integer that only applies to a specific physical or virtual time series</span>
 <span class="sd">        uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
-<span class="sd">        full_name (str): path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">        full_name (str): path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">          See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span>
@@ -307,7 +308,8 @@
         <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using a timskey of a Mesh object</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">            timskey: integer that only applies to a specific physical or</span>
+<span class="sd">              virtual time series</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">timskey</span>
@@ -318,7 +320,7 @@
         <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using an uuid of a Mesh object</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
+<span class="sd">            uuid_id: Universal Unique Identifier for Mesh objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">uuid_id</span> <span class="o">=</span> <span class="n">uuid_id</span>
@@ -329,7 +331,8 @@
         <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using full_name of a Mesh object</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            full_name (str): path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">            full_name: path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">              See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>

@@ -256,13 +256,17 @@
                                    <span class="n">mesh_object_id</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Reads time series points for</span>
-<span class="sd">            the specified timeseries in the given interval.</span>
+<span class="sd">            the specified time series in the given interval.</span>
 <span class="sd">            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">                end_time (datetime): the end date and time of the time series interval</span>
-<span class="sd">                mesh_object_id (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model &lt;mesh object model&gt;` or a  integer that only applies to a specific raw time series</span>
+<span class="sd">                start_time: the start date and time of the time series interval</span>
+<span class="sd">                end_time: the end date and time of the time series interval</span>
+<span class="sd">                mesh_object_id: unique way of identifying a Mesh object that contains a time series.</span>
+<span class="sd">                  Using either a  Universal Unique Identifier for Mesh objects, a path in the </span>
+<span class="sd">                  :ref:`Mesh model &lt;mesh_model&gt;` or a integer that only applies</span>
+<span class="sd">                  to a specific physical or virtual time series.</span>
+<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
@@ -315,15 +319,15 @@
                                          <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntry</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Request information associated with a raw  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute &lt;mesh_object_attributes&gt;`.</span>
+<span class="sd">            Request information associated with a physical time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute &lt;mesh_attribute&gt;`.</span>
 
 <span class="sd">            Args:</span>
 <span class="sd">                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
 <span class="sd">                path (str): path in the resource model.</span>
-<span class="sd">                timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">                timskey (int): integer that only applies to a specific physical time series</span>
 
 <span class="sd">            Note:</span>
-<span class="sd">                This `path` is NOT the same as full name or the path in the Mesh object model,</span>
+<span class="sd">                This `path` is NOT the same as full name or the path in the Mesh model,</span>
 <span class="sd">                this `path` refers to its location in the resource catalog.</span>
 
 <span class="sd">            Raises:</span>
@@ -358,13 +362,12 @@
                                             <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Request information associated with a Mesh object</span>
-<span class="sd">            which has a link to a time series, either calculated or raw.</span>
+<span class="sd">            Update information associated with a physical time series.</span>
 
 <span class="sd">            Args:</span>
 <span class="sd">                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
 <span class="sd">                path (str): path in the resource model.</span>
-<span class="sd">                timskey (int): integer that only applies to a specific raw time series</span>
+<span class="sd">                timskey (int): integer that only applies to a specific physical time series</span>
 <span class="sd">                new_path (str): set new  path in the resource model.</span>
 <span class="sd">                new_curve_type (Timeseries.Curve): set new  curve type for the time series.</span>
 <span class="sd">                new_unit_of_measurement (str): set new  unit of measurement for the time series.</span>
@@ -377,7 +380,7 @@
 <span class="sd">                Specify which ever of the new_* fields you want to update.</span>
 
 <span class="sd">            Note:</span>
-<span class="sd">                This `path` is NOT the same as full name or the path in the Mesh object model,</span>
+<span class="sd">                This `path` is NOT the same as full name or the path in the Mesh model,</span>
 <span class="sd">                this `path` refers to its location in the resource catalog.</span>
 
 <span class="sd">            Raises:</span>
@@ -419,12 +422,13 @@
                                      <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
                                      <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Request information associated with a Mesh object :doc:`attribute &lt;mesh_object_attributes&gt;`.</span>
+<span class="sd">            Request information associated with a Mesh object :ref:`time series attribute &lt;mesh_attribute&gt;`.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                model (str): the name of the :ref:`Mesh object model &lt;mesh object model&gt;` you want to work within</span>
+<span class="sd">                model (str): the name of the :ref:`Mesh model &lt;mesh_model&gt;` you want to work within</span>
 <span class="sd">                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
-<span class="sd">                path (str): path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">                path (str): path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 
 <span class="sd">            Note:</span>
 <span class="sd">                Specify model and either `uuid_id` or `path` to a timeseries attribute.</span>
@@ -457,13 +461,14 @@
                                         <span class="n">new_timeseries_entry_id</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Update information associated with a Mesh object doc:`attribute &lt;mesh_object_attributes&gt;`.</span>
+<span class="sd">            Update information associated with a Mesh object :ref:`time series attribute &lt;mesh_attribute&gt;`.</span>
 
 <span class="sd">            Args:</span>
 <span class="sd">                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
-<span class="sd">                path (str): path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">                path (str): path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 <span class="sd">                new_local_expression (str): set new local  expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`</span>
-<span class="sd">                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :doc:`time series attribute &lt;mesh_object_attributes&gt;`..</span>
+<span class="sd">                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute &lt;mesh_attribute&gt;`..</span>
 
 <span class="sd">            Note:</span>
 <span class="sd">                Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one argument: `uuid_id ` or `path` is needed.</span>
@@ -506,12 +511,13 @@
                                             <span class="n">start_object_guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span>
                                             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
             <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Use the :doc:`Mesh search language &lt;mesh_search&gt;` to find :doc:`Mesh object attributes &lt;mesh_object_attributes&gt;` in the Mesh object model.</span>
+<span class="sd">            Use the :doc:`Mesh search language &lt;mesh_search&gt;` to find :ref:`time series attributes &lt;mesh_attribute&gt;` in the Mesh model.</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                model (str): the name of the :ref:`Mesh object model &lt;mesh object model&gt;` you want to work within</span>
+<span class="sd">                model (str): the name of the :ref:`Mesh model &lt;mesh_model&gt;` you want to work within</span>
 <span class="sd">                query (str): a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`</span>
-<span class="sd">                start_object_path (str): Start searching at the path in the :ref:`Mesh object model &lt;mesh object model&gt;`</span>
+<span class="sd">                start_object_path (str): Start searching at the path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 <span class="sd">                start_object_guid (uuid.UUID): Start searching at the object with the Universal Unique Identifier for Mesh objects</span>
 
 <span class="sd">            Note:</span>

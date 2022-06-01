@@ -288,10 +288,14 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            session (Session):</span>
-<span class="sd">            relative_to (MeshObjectId): unique way of identifying a Mesh object that contains a time series. Using either a  Universal Unique Identifier for Mesh objects, a path in the :ref:`Mesh object model &lt;mesh object model&gt;` or a  integer that only applies to a specific raw time series</span>
-<span class="sd">            start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">            end_time (datetime): the end date and time of the time series interval</span>
+<span class="sd">            session: active Mesh session</span>
+<span class="sd">            relative_to: unique way of identifying a Mesh object that contains a time series.</span>
+<span class="sd">                  Using either a  Universal Unique Identifier for Mesh objects, a path in the </span>
+<span class="sd">                  :ref:`Mesh model &lt;mesh_model&gt;` or a time series key that only applies</span>
+<span class="sd">                  to a specific physical or virtual time series.</span>
+<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">            start_time: the start date and time of the time series interval</span>
+<span class="sd">            end_time: the end date and time of the time series interval</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span> <span class="o">=</span> <span class="n">relative_to</span>

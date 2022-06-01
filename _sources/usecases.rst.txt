@@ -35,12 +35,12 @@ The first section of the file exposes some configuration options. Edit these to 
 
 .. literalinclude:: /../../src/volue/mesh/use_cases/use_cases.py
    :language: python
-   :lines: 17-27
+   :lines: 17-41
 
 Helper functions
 ~~~~~~~~~~~~~~~~~~~~
 
-The helper functions get information about Mesh Python objects, plot and save timeseries to file.
+The helper functions get information about Mesh Python objects, plot and save time series to file.
 
 The use cases
 ~~~~~~~~~~~~~~

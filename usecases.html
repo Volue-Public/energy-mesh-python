@@ -227,12 +227,26 @@ $ python -m pip install matplotlib
 <span class="n">PORT</span> <span class="o">=</span> <span class="mi">50051</span>
 <span class="c1"># Use matplotlib to visualize results</span>
 <span class="n">SHOW_PLOT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Save timeseries to CSV file</span>
+<span class="n">SAVE_TO_CSV</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Some use cases write new points or update existing objects</span>
+<span class="c1"># Set this flag to True to commit the changes (made in use cases) to Mesh</span>
+<span class="n">COMMIT_CHANGES</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Which use case to run</span>
+<span class="c1"># [&#39;all&#39;, &#39;flow_drop_2&#39;, &#39;flow_drop_3&#39;, &#39;1&#39; ... &#39;&lt;number_of_use_cases&gt;&#39;]</span>
+<span class="n">RUN_USE_CASE</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+<span class="c1"># Set local time zone to be used in every use case (reads time zone from operating system settings)</span>
+<span class="n">LOCAL_TIME_ZONE</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">tzlocal</span><span class="p">()</span>
+<span class="c1"># if you want to set explicitly the time zone you can use the following:</span>
+<span class="c1">#LOCAL_TIME_ZONE = tz.gettz(&#39;Europe/Warsaw&#39;)</span>
+<span class="c1"># if you want to set fixed UTC offset (no DST) you can use the following:</span>
+<span class="c1">#LOCAL_TIME_ZONE = timezone(timedelta(hours=1))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="helper-functions">
 <h3>Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h3>
-<p>The helper functions get information about Mesh Python objects, plot and save timeseries to file.</p>
+<p>The helper functions get information about Mesh Python objects, plot and save time series to file.</p>
 </div>
 <div class="section" id="the-use-cases">
 <h3>The use cases<a class="headerlink" href="#the-use-cases" title="Permalink to this headline">¶</a></h3>
