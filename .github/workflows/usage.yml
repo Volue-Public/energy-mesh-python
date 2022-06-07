@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: PowelAS/sme-run-mesh-service
-          ref: volue-repo-switch
+          ref: master
           token: ${{ secrets.OAUTH_TOKEN }}
           path: .github/actions
 
