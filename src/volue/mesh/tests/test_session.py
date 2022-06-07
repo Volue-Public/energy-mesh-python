@@ -16,7 +16,8 @@ def test_get_version():
                             sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     version_info = connection.get_version()
-    assert version_info.full_version != ""
+    assert version_info.version != ""
+    assert version_info.name != ""
 
 
 @pytest.mark.server
@@ -27,7 +28,8 @@ async def test_async_get_version():
                                  sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     version_info = await connection.get_version()
-    assert version_info.full_version != ""
+    assert version_info.version != ""
+    assert version_info.name != ""
 
 
 @pytest.mark.server

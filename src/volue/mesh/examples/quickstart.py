@@ -9,13 +9,13 @@ def main(address, port, root_pem_certificate):
     connection = Connection(address, port, root_pem_certificate)
 
     # Which version is the server running
-    mesh_server_version = connection.get_version()
-    print(f"The connected Volue Mesh Server is {mesh_server_version}")
+    version_info = connection.get_version()
+    print(f"Connected to {version_info.name} {version_info.version}")
 
     # Create a remote session on the Volue Mesh server
     session = connection.create_session()
     session.open()
-    print("You have now an open session and can request timeseries")
+    print("You have now an open session and can request time series")
 
     # Close the remote session
     session.close()
