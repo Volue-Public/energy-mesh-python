@@ -10,12 +10,12 @@ def main(address, port, root_pem_certificate):
     print("Synchronous get version: ")
     connection = Connection(address, port, root_pem_certificate)
     version_info = connection.get_version()
-    print(version_info.full_version)
+    print(version_info.version)
 
     print("Asynchronous get version: ")
     connection = AsyncConnection(address, port, root_pem_certificate)
     version_info = asyncio.get_event_loop().run_until_complete(connection.get_version())
-    print(version_info.full_version)
+    print(version_info.version)
 
 
 if __name__ == "__main__":
