@@ -44,12 +44,7 @@ If everything is set up right you should be getting output like the following:
 
 ::
 
-    The connected Volue Mesh Server is version: "99.0.0+0"
-    name: "Volue Mesh Server"
-    build_date: "ToDo"
-    commit: "ToDo"
-    full_version: "Volue Mesh Server 99.0.0+0 (ToDo ToDo)"
-
+    Connected to Volue Mesh Server 99.0.0+0
     You have now an open session and can request timeseries
 
 If there are some problems with this code check out :doc:`faq`.

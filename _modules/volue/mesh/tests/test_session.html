@@ -188,7 +188,8 @@
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
     <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span></div>
+    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="test_async_get_version"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_session.test_async_get_version">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">server</span>
@@ -199,7 +200,8 @@
                                  <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                                  <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
     <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">full_version</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span></div>
+    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span></div>
 
 
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">server</span>
