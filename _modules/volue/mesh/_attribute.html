@@ -183,6 +183,7 @@
 
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">timestamp_pb2</span>
 
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">TimeseriesResource</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_from_proto_guid</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
@@ -219,7 +220,7 @@
     <span class="sd">&quot;&quot;&quot;Factory for creating attributes from protobuf Mesh Attribute.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.</span>
+<span class="sd">        proto_attribute: protobuf Attribute returned from the gRPC methods.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attribute_value_type</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">attribute_definition_type</span> <span class="o">=</span> <span class="kc">None</span>
@@ -515,7 +516,7 @@
         <span class="k">return</span> <span class="n">message</span>
 
 
-<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="TimeseriesAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.TimeseriesAttribute">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TimeseriesAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents time series Mesh Attribute.</span>
 
@@ -534,20 +535,20 @@
 <span class="sd">    Refer to documentation for more details:</span>
 <span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nd">@dataclass</span>
+<div class="viewcode-block" id="TimeseriesAttribute.Definition"><a class="viewcode-back" href="../../../api.html#volue.mesh.TimeseriesAttribute.Definition">[docs]</a>    <span class="nd">@dataclass</span>
     <span class="k">class</span> <span class="nc">Definition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">Definition</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Attribute definition for time series attribute.&quot;&quot;&quot;</span>
 
         <span class="n">template_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">def</span> <span class="nf">_init_from_proto_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_init_from_proto_definition</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template_expression</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">template_expression</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">unit_of_measurement</span></div>
 
 
-    <span class="n">time_series_resource_id</span><span class="p">:</span> <span class="n">uuid</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">time_series_resource_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">time_series_resource_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">time_series_resource</span><span class="p">:</span> <span class="n">TimeseriesResource</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">is_local_expression</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">definition</span><span class="p">:</span> <span class="n">Definition</span> <span class="o">=</span> <span class="kc">None</span>
@@ -569,10 +570,9 @@
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s1">&#39;singular_value&#39;</span><span class="p">):</span>
             <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="o">.</span><span class="n">timeseries_value</span>
 
-            <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s1">&#39;time_series_resource_id&#39;</span><span class="p">):</span>
-                <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource_path</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource_id</span><span class="o">.</span><span class="n">path</span>
-                <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource_key</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource_id</span><span class="o">.</span><span class="n">timeseries_key</span>
-                <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource_id</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s1">&#39;time_series_resource&#39;</span><span class="p">):</span>
+                <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">_from_proto_timeseries_resource</span><span class="p">(</span>
+                    <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource</span><span class="p">)</span>
 
             <span class="n">attribute</span><span class="o">.</span><span class="n">is_local_expression</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">is_local_expression</span>
             <span class="n">attribute</span><span class="o">.</span><span class="n">expression</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">expression</span>
@@ -586,9 +586,7 @@
         <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;TimeseriesAttribute:</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="n">base_message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> time_series_resource_id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource_id</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> time_series_resource_path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource_path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> time_series_resource_key: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource_key</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> time_series_resource: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> is_local_expression: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">is_local_expression</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> expression: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
@@ -596,10 +594,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> template_expression: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">template_expression</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> template_expression: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">template_expression</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> unit_of_measurement: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="n">message</span></div>
 </pre></div>
 
            </div>
