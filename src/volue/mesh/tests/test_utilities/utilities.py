@@ -109,7 +109,7 @@ def get_timeseries_0():
         temporary=False,
         curve=Timeseries.Curve.PIECEWISELINEAR,
         resolution=Timeseries.Resolution.HOUR,
-        unit_of_measurement="",
+        unit_of_measurement="SomeUnit2",
         path='/SimpleThermalTestResourceCatalog/',
         name="plantTimeSeriesRaw",
         entries=[timeseries_entry_1]

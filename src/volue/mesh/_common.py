@@ -172,9 +172,6 @@ def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
 
     Args:
         uuid (uuid.UUID): identifier in Python's UUID format
-
-    Returns:
-        resources_pb2.Guid
     """
     if uuid is None:
         return None
@@ -186,9 +183,6 @@ def _from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
 
     Args:
         guid (resources_pb2.Guid): GUID to be converted
-
-    Returns:
-        uuid.UUID
     """
     if guid is None:
         return None
@@ -197,13 +191,10 @@ def _from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
 
 def _to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
     """
-    Converts from Timeseries Curve type to protobuf curve type.
+    Converts from Timeseries.Curve type to protobuf curve type.
 
     Args:
-        curve (Timeseries.Curve): the curve to convert
-
-    Returns:
-        resources_pb2.Curve
+        curve: the curve to convert
     """
     proto_curve = resources_pb2.Curve()
     proto_curve.type = resources_pb2.Curve.UNKNOWN
@@ -215,6 +206,52 @@ def _to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
         proto_curve.type = resources_pb2.Curve.STAIRCASESTARTOFSTEP
 
     return proto_curve
+
+
+def _from_proto_curve_type(proto_curve: resources_pb2.Curve) -> Timeseries.Curve:
+    """
+    Converts from protobuf curve type to Timeseries.Curve type.
+
+    Args:
+        proto_curve: the protobuf curve to convert
+    """
+    curve = Timeseries.Curve.UNKNOWN
+
+    if proto_curve.type == resources_pb2.Curve.PIECEWISELINEAR:
+        curve =  Timeseries.Curve.PIECEWISELINEAR
+    elif proto_curve.type == resources_pb2.Curve.STAIRCASE:
+        curve =  Timeseries.Curve.STAIRCASE
+    elif proto_curve.type == resources_pb2.Curve.STAIRCASESTARTOFSTEP:
+        curve = Timeseries.Curve.STAIRCASESTARTOFSTEP
+
+    return curve
+
+
+def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timeseries.Resolution:
+    """
+    Converts from protobuf resolution type to Timeseries.Resolution type.
+
+    Args:
+        proto_resolution: the protobuf resolution to convert
+    """
+    resolution = Timeseries.Resolution.UNSPECIFIED
+
+    if proto_resolution.type == resources_pb2.Resolution.BREAKPOINT:
+        resolution =  Timeseries.Resolution.BREAKPOINT
+    elif proto_resolution.type == resources_pb2.Resolution.MIN15:
+        resolution =  Timeseries.Resolution.MIN15
+    elif proto_resolution.type == resources_pb2.Resolution.HOUR:
+        resolution = Timeseries.Resolution.HOUR
+    elif proto_resolution.type == resources_pb2.Resolution.DAY:
+        resolution = Timeseries.Resolution.DAY
+    elif proto_resolution.type == resources_pb2.Resolution.WEEK:
+        resolution = Timeseries.Resolution.WEEK
+    elif proto_resolution.type == resources_pb2.Resolution.MONTH:
+        resolution = Timeseries.Resolution.MONTH
+    elif proto_resolution.type == resources_pb2.Resolution.YEAR:
+        resolution = Timeseries.Resolution.YEAR
+
+    return resolution
 
 
 def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resources_pb2.UtcInterval:
