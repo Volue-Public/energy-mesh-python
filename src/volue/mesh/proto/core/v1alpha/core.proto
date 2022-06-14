@@ -195,6 +195,7 @@ message AuthenticateKerberosResponse {
 message AuthenticateFakeRequest {
   string display_name = 1;
   google.protobuf.Duration token_duration = 2;
+  string internal = 15;
 }
 
 message AuthenticateFakeResponse {
@@ -491,15 +492,15 @@ message UpdateAttributeRequest {
   //   new_singular_value.string_value = 'new_value'
   // Time series attribute example:
   //   To update a time series attribute local expression and time series resource ID
-  //   set field_mask = ['time_series_resource_id', 'expression'],
+  //   set field_mask = ['time_series_resource', 'expression'],
   //   new_singular_value.timeseries_value.expression = 'new local expression' and
-  //   new_singular_value.timeseries_value.time_series_resource_id.timeseries_key = 100
+  //   new_singular_value.timeseries_value.time_series_resource.timeseries_key = 100
   google.protobuf.FieldMask field_mask = 3;
 
   // Singular type can be e.g.: double attribute or time series attribute
-  AttributeValue new_singular_value = 5;
+  AttributeValue new_singular_value = 4;
   // Collection of types can be e.g.: collection of double attributes
-  repeated AttributeValue new_collection_values = 6;
+  repeated AttributeValue new_collection_values = 5;
 }
 
 message UpdateAttributeResponse {
@@ -563,6 +564,34 @@ message TimeseriesEntry {
   string unit_of_measurement = 7;
 }
 
+// Information about physical or virtual time series.
+message TimeseriesResource {
+  // Unique identifier for physical or virtual time series.
+  // Set to 0 if it is a local session time series.
+  // This is the only field that could be used for updating 
+  // time series attribute with new time series resource.
+  int64 timeseries_key = 1;
+
+  // [OUTPUT_ONLY]
+  string path = 2;
+
+  // [OUTPUT_ONLY]
+  string name = 3;
+
+  // Set to true if it is a local session time series.
+  // [OUTPUT_ONLY]
+  bool temporary = 4;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.type.Curve curve_type = 5;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.type.Resolution resolution = 6;
+
+  // [OUTPUT_ONLY]
+  string unit_of_measurement = 7;
+}
+
 message TimeseriesAttribute {
   volue.mesh.grpc.type.Guid id = 1;
   // Model path.
@@ -586,10 +615,8 @@ message StringResults {
 // Version information for the Mesh server.
 message VersionInfo {
   string version = 1;
+  // Friendly name of the Mesh server, e.g.: Volue Mesh Server
   string name = 2;
-  string build_date = 3;
-  string commit = 4;
-  string full_version = 5;
 }
 
 // Every field uniquely identifies a Mesh Object, Attribute or other types.
@@ -737,11 +764,13 @@ message AttributeValue {
 message TimeseriesAttributeValue {
   // Physical or virtual time series identifier from resources
   // if the attribute refers to one.
-  // To read its meta information like curve type or resolution
-  // use `GetTimeseriesResource` RPC.
-  MeshId time_series_resource_id = 1;  // TODO: rename the TimeseriesEntryId when cleaning up *old* API, and define `GetTimeseriesResource` RPC.
+  // When updating time series attribute with new time series
+  // resource, only `timeseries_key` field from the `TimeseriesResource`
+  // is used. To update curve type or resolution use
+  // `UpdateTimeseriesResource` RPC.
+  TimeseriesResource time_series_resource = 1;  // TODO: define `GetTimeseriesResource`and `UpdateTimeseriesResource` RPCs.
 
-  // Expression that is actually used by the timeseries attribute.
+  // Expression that is actually used by the time series attribute.
   // It uses local expression if set, otherwise template expression
   // (defined in TimeseriesAttributeDefinition) will be used.
   // When updating expression the new value will always be assigned
@@ -828,6 +857,7 @@ message UtcTimeAttributeDefinition {
 
 message TimeseriesAttributeDefinition {
   string template_expression = 1;
+  string unit_of_measurement = 2;
 }
 
 message RatingCurveAttributeDefinition {

@@ -11,6 +11,7 @@ import uuid
 
 from google.protobuf import timestamp_pb2
 
+from volue.mesh import TimeseriesResource
 from volue.mesh._common import _from_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 
@@ -47,7 +48,7 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute) -> Type[Attribute
     """Factory for creating attributes from protobuf Mesh Attribute.
 
     Args:
-        proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
+        proto_attribute: protobuf Attribute returned from the gRPC methods.
     """
     attribute_value_type = None
     attribute_definition_type = None
@@ -367,15 +368,15 @@ class TimeseriesAttribute(AttributeBase):
         """Attribute definition for time series attribute."""
 
         template_expression: str = None
+        unit_of_measurement: str = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
             super()._init_from_proto_definition(proto_definition)
             self.template_expression = proto_definition.timeseries_definition.template_expression
+            self.unit_of_measurement = proto_definition.timeseries_definition.unit_of_measurement
 
 
-    time_series_resource_id: uuid = None
-    time_series_resource_path: str = None
-    time_series_resource_key: int = None
+    time_series_resource: TimeseriesResource = None
     is_local_expression: bool = None
     expression: str = None
     definition: Definition = None
@@ -397,10 +398,9 @@ class TimeseriesAttribute(AttributeBase):
         if proto_attribute.HasField('singular_value'):
             proto_value = proto_attribute.singular_value.timeseries_value
 
-            if proto_value.HasField('time_series_resource_id'):
-                attribute.time_series_resource_path = proto_value.time_series_resource_id.path
-                attribute.time_series_resource_key = proto_value.time_series_resource_id.timeseries_key
-                attribute.time_series_resource_id = _from_proto_guid(proto_value.time_series_resource_id.id)
+            if proto_value.HasField('time_series_resource'):
+                attribute.time_series_resource = TimeseriesResource._from_proto_timeseries_resource(
+                    proto_value.time_series_resource)
 
             attribute.is_local_expression = proto_value.is_local_expression
             attribute.expression = proto_value.expression
@@ -414,9 +414,7 @@ class TimeseriesAttribute(AttributeBase):
         message = (
             f"TimeseriesAttribute:\n"
             f"\t {base_message}\n"
-            f"\t time_series_resource_id: {self.time_series_resource_id}\n"
-            f"\t time_series_resource_path: {self.time_series_resource_path}\n"
-            f"\t time_series_resource_key: {self.time_series_resource_key}\n"
+            f"\t time_series_resource: {self.time_series_resource}\n"
             f"\t is_local_expression: {self.is_local_expression}\n"
             f"\t expression: {self.expression}"
         )
@@ -424,7 +422,8 @@ class TimeseriesAttribute(AttributeBase):
         if self.definition is not None:
             message = (
                 f"{message}\n"
-                f"\t template_expression: {self.definition.template_expression}"
+                f"\t template_expression: {self.definition.template_expression}\n"
+                f"\t unit_of_measurement: {self.definition.unit_of_measurement}"
             )
 
         return message
