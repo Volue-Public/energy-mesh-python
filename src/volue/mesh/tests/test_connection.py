@@ -1241,7 +1241,8 @@ def test_get_physical_time_series_attribute():
             assert attribute.expression == ""
             assert attribute.is_local_expression == False
             assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-            assert attribute.name == attribute_name
+            # attribute definition name is the same as attribute name
+            assert attribute.definition.name == attribute_name
             assert attribute.definition.description == ""
             assert len(attribute.definition.tags) == 0
             assert attribute.definition.namespace == "SimpleThermalTestRepository"
