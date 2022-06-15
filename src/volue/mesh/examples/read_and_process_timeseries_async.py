@@ -71,19 +71,20 @@ async def main(address, port, root_pem_certificate):
           (e.g. requests send to different service).
     """
 
-    model_name = "SimpleThermalTestModel"
     query = "*.TsRawAtt"
-    start_object_path = "ThermalComponent"
+    start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
 
     connection = Connection(address, port, root_pem_certificate)
     async with connection.create_session() as session:
         try:
-            timeseries_attributes = await session.search_for_timeseries_attribute(model_name, query, start_object_path)
+            timeseries_attributes = await session.search_for_timeseries_attributes(
+                start_object_path=start_object_path,
+                query=query)
         except grpc.RpcError as e:
             print(f"Could not find timeseries attribute: {e}")
             return
 
-        print(f'Number of timeseries: {len(timeseries_attributes)}')
+        print(f'Number of found time series: {len(timeseries_attributes)}')
         await asyncio.gather(*(handle_timeseries(session, timeseries_attribute.path) for timeseries_attribute in timeseries_attributes))
 
 

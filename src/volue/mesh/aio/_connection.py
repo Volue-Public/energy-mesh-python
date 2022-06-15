@@ -11,7 +11,7 @@ from datetime import datetime
 from google import protobuf
 import grpc
 
-from volue.mesh import Timeseries, MeshObjectId, AttributeBase, Object
+from volue.mesh import Timeseries, MeshObjectId, AttributeBase, TimeseriesAttribute, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import AttributesFilter, _from_proto_guid, _to_proto_guid, _to_protobuf_utcinterval, \
     _read_proto_reply, _to_proto_object_id, _to_proto_timeseries, _to_proto_curve_type
@@ -255,44 +255,6 @@ class Connection(_base_connection.Connection):
 
             await self.mesh_service.UpdateTimeseriesEntry(request)
 
-        async def get_timeseries_attribute(self,
-                                           model: str = None,
-                                           uuid_id: uuid.UUID = None,
-                                           path: str = None
-                                           ) -> core_pb2.TimeseriesAttribute:
-            """
-            Request information associated with a Mesh object :ref:`time series attribute <mesh_attribute>`. |coro|
-
-            Args:
-                model (str): the name of the :ref:`Mesh model <mesh_model>` you want to work within
-                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-                path (str): path in the :ref:`Mesh model <mesh_model>`.
-                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-
-            Note:
-                Specify model and either `uuid_id` or `path` to a timeseries attribute.
-                Only one or uuid_id and path is needed.
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
-            attribute_id = core_pb2.AttributeId()
-            if uuid_id is not None:
-                attribute_id.id.CopyFrom(_to_proto_guid(uuid_id))
-            elif path is not None:
-                attribute_id.path = path
-            else:
-                raise Exception("Need to specify either uuid_id or path.")
-
-            reply = await self.mesh_service.GetTimeseriesAttribute(
-                core_pb2.GetTimeseriesAttributeRequest(
-                    session_id=_to_proto_guid(self.session_id),
-                    model=model,
-                    attribute_id=attribute_id
-                )
-            )
-            return reply
-
         async def update_timeseries_attribute(self,
                                               uuid_id: uuid.UUID = None,
                                               path: str = None,
@@ -343,46 +305,6 @@ class Connection(_base_connection.Connection):
                 )
             )
 
-        async def search_for_timeseries_attribute(self,
-                                                  model: str,
-                                                  query: str,
-                                                  start_object_path: str = None,
-                                                  start_object_guid: uuid.UUID = None
-                                                  ) -> List[core_pb2.TimeseriesAttribute]:
-            """
-            Use the :doc:`Mesh search language <mesh_search>` to find :ref:`time series attributes <mesh_attribute>` in the Mesh model. |coro|
-
-            Args:
-                model (str): the name of the :ref:`Mesh model <mesh_model>` you want to work within
-                query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
-                start_object_path (str): Start searching at the path in the :ref:`Mesh model <mesh_model>`.
-                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-                start_object_guid (uuid.UUID): Start searching at the object with the  Universal Unique Identifier for Mesh objects
-
-            Note:
-                Specify a model, a query using mesh query language and start object to start the search from,
-                using either a path or a guid.
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
-            request = core_pb2.SearchTimeseriesAttributesRequest(
-                session_id=_to_proto_guid(self.session_id),
-                model_name=model,
-                query=query
-            )
-            if start_object_path is not None:
-                request.start_object_path = start_object_path
-            elif start_object_guid is not None:
-                request.start_object_guid.CopyFrom(_to_proto_guid(start_object_guid))
-            else:
-                raise Exception("Need to specify either start_object_path or start_object_guid")
-
-            replies = []
-            async for reply in self.mesh_service.SearchTimeseriesAttributes(request):
-                replies.append(reply)
-            return replies
-
         async def get_attribute(
                 self,
                 attribute_id: Optional[uuid.UUID] = None,
@@ -392,6 +314,16 @@ class Connection(_base_connection.Connection):
                 attribute_id, attribute_path, full_attribute_info)
             proto_attribute = await self.mesh_service.GetAttribute(request)
             return _from_proto_attribute(proto_attribute)
+
+        async def get_timeseries_attribute(
+            self,
+            attribute_id: uuid.UUID = None,
+            attribute_path: str = None,
+            full_attribute_info: bool = False) -> TimeseriesAttribute:
+            attribute = await self.get_attribute(attribute_id, attribute_path, full_attribute_info)
+            if not isinstance(attribute, TimeseriesAttribute):
+                raise ValueError(f'attribute is not a TimeseriesAttribute, but a {type(attribute).__name__}')
+            return attribute
 
         async def search_for_attributes(
                 self,
@@ -410,6 +342,16 @@ class Connection(_base_connection.Connection):
                 attributes.append(_from_proto_attribute(proto_attribute))
             return attributes
 
+        async def search_for_timeseries_attributes(
+                self,
+                query: str,
+                start_object_id: Optional[uuid.UUID] = None,
+                start_object_path: Optional[str] = None,
+                full_attribute_info: bool = False) -> List[TimeseriesAttribute]:
+            attributes = await self.search_for_attributes(
+                query, start_object_id, start_object_path, full_attribute_info)
+            return list(filter(lambda x: (isinstance(x, TimeseriesAttribute)), attributes))
+
         async def update_simple_attribute(
                 self,
                 value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
@@ -420,7 +362,7 @@ class Connection(_base_connection.Connection):
 
             request = super()._prepare_update_attribute_request(
             attribute_id=attribute_id,
-            attriubte_path=attribute_path,
+            attribute_path=attribute_path,
             new_singular_value=new_singular_value,
             new_collection_values=new_collection_values)
             return await self.mesh_service.UpdateAttribute(request)

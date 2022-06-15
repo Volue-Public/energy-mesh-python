@@ -5,7 +5,7 @@ from datetime import datetime
 
 from google import protobuf
 
-from ._attribute import AttributeBase, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
+from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
 from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, \
     _to_proto_mesh_id, _datetime_to_timestamp_pb2
 from ._object import Object
@@ -176,7 +176,8 @@ class Session(abc.ABC):
             attribute_path: Optional[str] = None,
             full_attribute_info: bool = False) -> Type[AttributeBase]:
         """
-        Retrieve an existing attribute from the Mesh model.
+        Request information associated with a Mesh :ref:`attribute <mesh_attribute>` from the Mesh model.
+        Specify either `attribute_id` or `attribute_path` to a Mesh attribute.
 
         Args:
             attribute_id: Universal Unique Identifier of the attribute to be retrieved.
@@ -191,6 +192,30 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
+    def get_timeseries_attribute(
+        self,
+        attribute_id: uuid.UUID = None,
+        attribute_path: str = None,
+        full_attribute_info: bool = False) -> TimeseriesAttribute:
+        """
+        Request information associated with a Mesh :ref:`time series attribute <mesh_attribute>` from the Mesh model.
+        Specify either `attribute_id` or `attribute_path` to a Mesh time series attribute.
+
+        Args:
+            attribute_id: Universal Unique Identifier of the attribute to be retrieved.
+            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
+                of the attribute to be retrieved.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attribute will be returned, otherwise only name, path, ID and value(s).
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            ValueError: Raised if given attribute ID or path points to an attribute of
+                different type than `TimeseriesAttribute`
+        """
+
+    @abc.abstractmethod
     def search_for_attributes(
             self,
             query: str,
@@ -198,13 +223,42 @@ class Session(abc.ABC):
             start_object_path: Optional[str] = None,
             full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
         """
-        Use the :doc:`Mesh search language <mesh_search>` to find Mesh attributes
-        in the Mesh model. Specify either `start_object_id` or
-        `start_object_path` to an object where the search query should start from.
+        Use the :doc:`Mesh search language <mesh_search>` to find Mesh
+        :ref:`attributes <mesh_attribute>` in the Mesh model.
+        Specify either `start_object_id` or `start_object_path` to an object
+        where the search query should start from.
 
         Args:
             query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
             start_object_id: Start searching at the object with the 
+                Universal Unique Identifier for Mesh objects.
+            start_object_path: Start searching at the path in the
+                :ref:`Mesh model <mesh_model>`.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            full_attribute_info: If set then all information (e.g. description, value type, etc.)
+                of attributes owned by the object(s) will be returned, otherwise only name,
+                path, ID and value(s).
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
+    def search_for_timeseries_attributes(
+            self,
+            query: str,
+            start_object_id: Optional[uuid.UUID] = None,
+            start_object_path: Optional[str] = None,
+            full_attribute_info: bool = False) -> List[TimeseriesAttribute]:
+        """
+        Use the :doc:`Mesh search language <mesh_search>` to find Mesh
+        :ref:`time series attributes <mesh_attribute>` in the Mesh model.
+        Specify either `start_object_id` or `start_object_path` to an object
+        where the search query should start from.
+
+        Args:
+            query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            start_object_id: Start searching at the object with the
                 Universal Unique Identifier for Mesh objects.
             start_object_path: Start searching at the path in the
                 :ref:`Mesh model <mesh_model>`.
@@ -412,13 +466,13 @@ class Session(abc.ABC):
     def _prepare_update_attribute_request(
         self,
         attribute_id: uuid.UUID,
-        attriubte_path: str,
+        attribute_path: str,
         new_singular_value: core_pb2.AttributeValue,
         new_collection_values: List[core_pb2.AttributeValue]
     ) -> core_pb2.UpdateAttributeResponse:
 
         try:
-            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attriubte_path)
+            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
         except ValueError as e:
             raise ValueError("invalid attribute to update") from e
 
