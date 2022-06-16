@@ -181,7 +181,7 @@
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
 <span class="kn">import</span> <span class="nn">grpc</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">,</span> <span class="n">Object</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._attribute</span> <span class="kn">import</span> <span class="n">_from_proto_attribute</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">AttributesFilter</span><span class="p">,</span> <span class="n">_to_proto_guid</span><span class="p">,</span> <span class="n">_from_proto_guid</span><span class="p">,</span> <span class="n">_to_protobuf_utcinterval</span><span class="p">,</span> \
     <span class="n">_read_proto_reply</span><span class="p">,</span> <span class="n">_to_proto_object_id</span><span class="p">,</span> <span class="n">_to_proto_timeseries</span><span class="p">,</span> <span class="n">_to_proto_curve_type</span><span class="p">,</span> <span class="n">_to_proto_mesh_id</span>
@@ -416,44 +416,6 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateTimeseriesEntry</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.get_timeseries_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_timeseries_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">get_timeseries_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                     <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                     <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-                                     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Request information associated with a Mesh object :ref:`time series attribute &lt;mesh_attribute&gt;`.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                model (str): the name of the :ref:`Mesh model &lt;mesh_model&gt;` you want to work within</span>
-<span class="sd">                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
-<span class="sd">                path (str): path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
-<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-
-<span class="sd">            Note:</span>
-<span class="sd">                Specify model and either `uuid_id` or `path` to a timeseries attribute.</span>
-<span class="sd">                Only one or uuid_id and path is needed.</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">attribute_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeId</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">uuid_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">attribute_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">uuid_id</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">attribute_id</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to specify either uuid_id or path.&quot;</span><span class="p">)</span>
-
-            <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetTimeseriesAttribute</span><span class="p">(</span>
-                <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetTimeseriesAttributeRequest</span><span class="p">(</span>
-                    <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-                    <span class="n">attribute_id</span><span class="o">=</span><span class="n">attribute_id</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">reply</span></div>
-
 <div class="viewcode-block" id="Connection.Session.update_timeseries_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_timeseries_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">update_timeseries_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                         <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -504,44 +466,6 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.search_for_timeseries_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.search_for_timeseries_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">search_for_timeseries_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                            <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                            <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                            <span class="n">start_object_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                            <span class="n">start_object_guid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span>
-                                            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Use the :doc:`Mesh search language &lt;mesh_search&gt;` to find :ref:`time series attributes &lt;mesh_attribute&gt;` in the Mesh model.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                model (str): the name of the :ref:`Mesh model &lt;mesh_model&gt;` you want to work within</span>
-<span class="sd">                query (str): a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`</span>
-<span class="sd">                start_object_path (str): Start searching at the path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
-<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-<span class="sd">                start_object_guid (uuid.UUID): Start searching at the object with the Universal Unique Identifier for Mesh objects</span>
-
-<span class="sd">            Note:</span>
-<span class="sd">                Specify a model, a query using mesh query language and start object to start the search from,</span>
-<span class="sd">                using either a path or a guid.</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchTimeseriesAttributesRequest</span><span class="p">(</span>
-                <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                <span class="n">model_name</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-                <span class="n">query</span><span class="o">=</span><span class="n">query</span>
-            <span class="p">)</span>
-            <span class="k">if</span> <span class="n">start_object_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">request</span><span class="o">.</span><span class="n">start_object_path</span> <span class="o">=</span> <span class="n">start_object_path</span>
-            <span class="k">elif</span> <span class="n">start_object_guid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">request</span><span class="o">.</span><span class="n">start_object_guid</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">start_object_guid</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Need to specify either start_object_path or start_object_guid&quot;</span><span class="p">)</span>
-
-            <span class="n">replies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">SearchTimeseriesAttributes</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">replies</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="Connection.Session.get_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
                 <span class="n">attribute_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -551,6 +475,16 @@
                 <span class="n">attribute_id</span><span class="p">,</span> <span class="n">attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
             <span class="n">proto_attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">_from_proto_attribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.Session.get_timeseries_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_timeseries_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">get_timeseries_attribute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">attribute_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">attribute_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesAttribute</span><span class="p">:</span>
+            <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_id</span><span class="p">,</span> <span class="n">attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;attribute is not a TimeseriesAttribute, but a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">attribute</span></div>
 
 <div class="viewcode-block" id="Connection.Session.search_for_attributes"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.search_for_attributes">[docs]</a>        <span class="k">def</span> <span class="nf">search_for_attributes</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
@@ -570,6 +504,16 @@
                 <span class="n">attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_from_proto_attribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">attributes</span></div>
 
+<div class="viewcode-block" id="Connection.Session.search_for_timeseries_attributes"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.search_for_timeseries_attributes">[docs]</a>        <span class="k">def</span> <span class="nf">search_for_timeseries_attributes</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">start_object_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">start_object_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_for_attributes</span><span class="p">(</span>
+                <span class="n">query</span><span class="p">,</span> <span class="n">start_object_id</span><span class="p">,</span> <span class="n">start_object_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">attr</span><span class="p">:</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">)),</span> <span class="n">attributes</span><span class="p">))</span></div>
+
 <div class="viewcode-block" id="Connection.Session.update_simple_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_simple_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">update_simple_attribute</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
                 <span class="n">value</span><span class="p">:</span> <span class="n">_attribute</span><span class="o">.</span><span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
@@ -580,7 +524,7 @@
 
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_attribute_request</span><span class="p">(</span>
                 <span class="n">attribute_id</span><span class="o">=</span><span class="n">attribute_id</span><span class="p">,</span>
-                <span class="n">attriubte_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span>
+                <span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span>
                 <span class="n">new_singular_value</span><span class="o">=</span><span class="n">new_singular_value</span><span class="p">,</span>
                 <span class="n">new_collection_values</span><span class="o">=</span><span class="n">new_collection_values</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
