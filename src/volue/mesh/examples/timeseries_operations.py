@@ -12,34 +12,33 @@ from volue.mesh.examples import _get_connection_info
 
 
 def main(address, port, root_pem_certificate):
-    """Showing how to find timeseries, write, read points from it and convert them to pandas format."""
+    """Showing how to find time series, write, read points from it and convert them to pandas format."""
 
-    model_name = "SimpleThermalTestModel"
-    query = "*[.Name=SomePowerPlantChimney2].TsRawAtt"  # make sure only 1 timeseries is returned
-    start_object_path = "ThermalComponent"
+    query = "*[.Name=SomePowerPlantChimney2].TsRawAtt"  # make sure only 1 time series is returned
+    start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
 
     connection = Connection(address, port, root_pem_certificate)
     with connection.create_session() as session:
-        # first lets find a timeseries in our model
+        # first lets find a time series in our model
         try:
-            timeseries_attributes = session.search_for_timeseries_attribute(model_name, query, start_object_path)
+            timeseries_attributes = session.search_for_timeseries_attributes(
+                query, start_object_path=start_object_path)
         except grpc.RpcError as e:
-            print(f"Could not find timeseries attribute: {e}")
+            print(f"Could not find time series attribute: {e}")
             return
 
         if len(timeseries_attributes) == 0:
-            print("No such timeseries attribute in the given model/database")
+            print("No such time series attribute in the given model/database")
             return
 
-        print(f'Number of timeseries: {len(timeseries_attributes)}')
+        print(f'Number of found time series: {len(timeseries_attributes)}')
 
-        # pick the first timeseries and do some operations with it
+        # pick the first time series and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
         print('Working on timeseries with path: ' + timeseries_attribute.path)
 
-        # check for example the unit of measurement or curve type
-        print('Unit of measurement: ' + timeseries_attribute.entry.unit_of_measurement)
-        #print('Curve ' + str(timeseries_attribute.entry.curve_type))
+        # check for example the curve type of the connected physical time series
+        print(f'Curve: {timeseries_attribute.time_series_resource.curve_type}')
 
         # now lets write some data to it
         try:
@@ -134,7 +133,7 @@ def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    # This will search for a given timeseries, write some data,
+    # This will search for a given time series, write some data,
     # read it and convert to pandas format.
 
     address, port, root_pem_certificate = _get_connection_info()
