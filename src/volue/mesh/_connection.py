@@ -340,7 +340,7 @@ class Connection(_base_connection.Connection):
                 full_attribute_info: bool = False) -> List[TimeseriesAttribute]:
             attributes = self.search_for_attributes(
                 query, start_object_id, start_object_path, full_attribute_info)
-            return list(filter(lambda x: (isinstance(x, TimeseriesAttribute)), attributes))
+            return list(filter(lambda attr: (isinstance(attr, TimeseriesAttribute)), attributes))
 
         def update_simple_attribute(
                 self,
