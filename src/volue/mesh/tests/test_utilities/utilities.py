@@ -204,32 +204,6 @@ def verify_timeseries_2(reply_timeseries: Timeseries):
         assert values[number].as_py() == (number + 1) * 100
 
 
-def get_timeseries_attribute_1():
-    """
-    Timeseries attribute with calculation expression but no timeseries entry.
-    Attribute: TsCalcAtt (generated guid)
-    Entry: None
-    Kind: TimeseriesAttribute with a TimeseriesCalculation.
-    """
-    timeseries_attribute = TestTimeseriesAttribute(
-        id=None,  # Unknown because it's generated when the test model is generated
-        path="/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsCalcAtt",
-        timeseries=None,
-        local_expression=r"""@PDLOG(12004, 'TEST') 
-##= @d('.DblAtt') + @t('.TsRawAtt') + @SUM(@D('PlantToPlantRef.DblAtt'))
-
-""",
-        template_expression=r"""@PDLOG(12004, 'TEST') 
-##= @d('.DblAtt') + @t('.TsRawAtt') + @SUM(@D('PlantToPlantRef.DblAtt'))
-
-""",
-        model='PowerSystem',
-        silo="Model"
-    )
-    full_path = timeseries_attribute.silo + timeseries_attribute.path
-    return timeseries_attribute, full_path
-
-
 def get_timeseries_attribute_2():
     """
     Timeseries attribute with timeseries entry.

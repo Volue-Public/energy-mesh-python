@@ -244,56 +244,6 @@ class Connection(_base_connection.Connection):
 
             self.mesh_service.UpdateTimeseriesEntry(request)
 
-        def update_timeseries_attribute(self,
-                                        uuid_id: uuid.UUID = None,
-                                        path: str = None,
-                                        new_local_expression: str = None,
-                                        new_timeseries_entry_id: core_pb2.TimeseriesEntryId = None,
-                                        ) -> None:
-            """
-            Update information associated with a Mesh object :ref:`time series attribute <mesh_attribute>`.
-
-            Args:
-                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-                path (str): path in the :ref:`Mesh model <mesh_model>`.
-                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-                new_local_expression (str): set new local  expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
-                new_timeseries_entry_id (core_pb2.TimeseriesEntryId): set new  Universal Unique Identifier for Mesh objects for the  time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute <mesh_attribute>`..
-
-            Note:
-                Specify either `uuid_id` or `path` to a timeseries attribute you want to update. Only one argument: `uuid_id ` or `path` is needed.
-
-            Note:
-             Specify a new entry and/or a new local expression for the attribute.
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
-            attribute_id = core_pb2.AttributeId()
-            if uuid_id is not None:
-                attribute_id.id.CopyFrom(_to_proto_guid(uuid_id))
-            elif path is not None:
-                attribute_id.path = path
-            else:
-                raise Exception("Need to specify either uuid_id or path.")
-
-            paths = []
-            if new_timeseries_entry_id is not None:
-                paths.append("new_timeseries_entry_id")
-            if new_local_expression is not None:
-                paths.append("new_local_expression")
-            field_mask = protobuf.field_mask_pb2.FieldMask(paths=paths)
-
-            self.mesh_service.UpdateTimeseriesAttribute(
-                core_pb2.UpdateTimeseriesAttributeRequest(
-                    session_id=_to_proto_guid(self.session_id),
-                    attribute_id=attribute_id,
-                    field_mask=field_mask,
-                    new_timeseries_entry_id=new_timeseries_entry_id,
-                    new_local_expression=new_local_expression
-                )
-            )
-
         def get_attribute(
                 self,
                 attribute_id: Optional[uuid.UUID] = None,
@@ -348,14 +298,25 @@ class Connection(_base_connection.Connection):
                 attribute_id: Optional[uuid.UUID] = None,
                 attribute_path: Optional[str] = None) -> None:
 
-            new_singular_value, new_collection_values = super()._to_update_attribute_request_values(value=value)
-
-            request = super()._prepare_update_attribute_request(
+            request = super()._prepare_update_simple_attribute_request(
                 attribute_id=attribute_id,
                 attribute_path=attribute_path,
-                new_singular_value=new_singular_value,
-                new_collection_values=new_collection_values)
-            return self.mesh_service.UpdateAttribute(request)
+                value=value)
+            return self.mesh_service.UpdateSimpleAttribute(request)
+
+        def update_timeseries_attribute(
+            self,
+            new_local_expression: str = None,
+            new_timeseries_resource_key: int = None,
+            attribute_id: Optional[uuid.UUID] = None,
+            attribute_path: Optional[str] = None) -> None:
+
+            request = super()._prepare_update_timeseries_attribute_request(
+                attribute_id=attribute_id,
+                attribute_path=attribute_path,
+                new_local_expression=new_local_expression,
+                new_timeseries_resource_key=new_timeseries_resource_key)
+            return self.mesh_service.UpdateTimeseriesAttribute(request)
 
         def get_object(
                 self,

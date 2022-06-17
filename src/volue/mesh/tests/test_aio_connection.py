@@ -23,7 +23,7 @@ import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_timeseries_1, \
-    get_timeseries_attribute_1, get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
+    get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
 
 
 @pytest.mark.asyncio
@@ -287,77 +287,129 @@ async def test_update_timeseries_entry_async():
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_update_timeseries_attribute_with_calculation_async():
-    """Check that time series attribute data with a calculation can be updated"""
+async def test_update_timeseries_attribute_with_expression():
+    """Check that time series attribute data with an expression can be updated"""
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    attribute, full_name = get_timeseries_attribute_1()
+    attribute_path = get_attribute_path_principal() + "TsCalcAtt"
     new_local_expression = "something"
 
     async with connection.create_session() as session:
-        try:
-            test_new_local_expression = {"new_local_expression": new_local_expression}
-            test_case_1 = {"path": full_name, **test_new_local_expression}
-            test_case_2 = {"uuid_id": None,
-                           **test_new_local_expression}  # since it is generated we find it through the first test case
-            test_cases = [test_case_1, test_case_2]
+        attribute_id = (await session.get_timeseries_attribute(attribute_path=attribute_path)).id
 
-            for test_case in test_cases:
+        test_new_local_expression = {"new_local_expression": new_local_expression}
+        test_case_1 = {"attribute_path": attribute_path, **test_new_local_expression}
+        test_case_2 = {"attribute_id": attribute_id, **test_new_local_expression}
+        test_cases = [test_case_1, test_case_2]
 
-                await session.update_timeseries_attribute(**test_case)
+        for test_case in test_cases:
 
-                updated_attribute = await session.get_timeseries_attribute(attribute_path=full_name)
-                assert updated_attribute.path == full_name
-                assert updated_attribute.expression == new_local_expression
-                assert updated_attribute.is_local_expression == True
+            await session.update_timeseries_attribute(**test_case)
 
-                if "path" in test_case:
-                    test_case_2["uuid_id"] = updated_attribute.id
+            updated_attribute = await session.get_timeseries_attribute(attribute_path=attribute_path)
+            assert updated_attribute.path == attribute_path
+            assert updated_attribute.expression == new_local_expression
+            assert updated_attribute.is_local_expression == True
 
-                await session.rollback()
-
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not update timeseries attribute: {error}")
+            await session.rollback()
 
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_update_timeseries_attribute_with_reference_async():
-    """Check that time series attribute data with a reference can be updated"""
+async def test_update_timeseries_attribute_with_timeseries_resource():
+    """
+    Check that time series attribute data with a connected
+    time series resource can be updated
+    """
 
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    attribute, full_name = get_timeseries_attribute_2()
-    new_timeseries, _ = get_timeseries_1()
-    new_timeseries_entry = new_timeseries.entries[0]
-    new_timeseries_entry_id = core_pb2.TimeseriesEntryId(guid=_to_proto_guid(new_timeseries_entry.id))
+    attribute_path = get_attribute_path_principal() + "TsRawAtt"
+    new_timeseries_resource_key = 2
 
     async with connection.create_session() as session:
-        try:
-            test_new_timeseries_entry_id = {"new_timeseries_entry_id": new_timeseries_entry_id}
-            test_case_1 = {"path": full_name, **test_new_timeseries_entry_id}
-            test_case_2 = {"uuid_id": None,
-                           **test_new_timeseries_entry_id}  # since it is generated we find it through the first test case
-            test_cases = [test_case_1, test_case_2]
-            for test_case in test_cases:
-                original_attribute = await session.get_timeseries_attribute(attribute_path=full_name)
-                assert original_attribute.path == full_name
+        attribute_id = (await session.get_timeseries_attribute(attribute_path=attribute_path)).id
 
-                if "path" in test_case:
-                    test_case_2["uuid_id"] = original_attribute.id
+        test_new_timeseries_resource_key = {"new_timeseries_resource_key": new_timeseries_resource_key}
+        test_case_1 = {"attribute_path": attribute_path, **test_new_timeseries_resource_key}
+        test_case_2 = {"attribute_id": attribute_id, **test_new_timeseries_resource_key}
+        test_cases = [test_case_1, test_case_2]
+        for test_case in test_cases:
+            original_attribute = await session.get_timeseries_attribute(attribute_path=attribute_path)
+            assert original_attribute.path == attribute_path
+            assert original_attribute.time_series_resource is not None
+            assert original_attribute.time_series_resource.timeseries_key != new_timeseries_resource_key
 
-                await session.update_timeseries_attribute(**test_case)
+            await session.update_timeseries_attribute(**test_case)
 
-                updated_attribute = await session.get_timeseries_attribute(attribute_path=full_name)
-                assert updated_attribute.path == full_name
+            updated_attribute = await session.get_timeseries_attribute(attribute_path=attribute_path)
+            assert updated_attribute.path == attribute_path
+            assert updated_attribute.time_series_resource is not None
+            assert updated_attribute.time_series_resource.timeseries_key == new_timeseries_resource_key
 
-                await session.rollback()
+            await session.rollback()
 
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not update timeseries attribute: {error}")
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_timeseries_attribute_with_disconnect_timeseries_resource():
+    """
+    Check that we can connect time series resource to an existing
+    time series attribute.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_path = get_attribute_path_principal() + "TsRawAtt"
+
+    async with connection.create_session() as session:
+        # first make sure it is connected to some physical time series
+        attribute = await session.get_timeseries_attribute(attribute_path=attribute_path)
+        assert attribute.path == attribute_path
+        assert attribute.time_series_resource is not None
+
+        # now let's disconnect it
+        await session.update_timeseries_attribute(
+            attribute_path=attribute_path, new_timeseries_resource_key=0)
+
+        attribute = await session.get_timeseries_attribute(attribute_path=attribute_path)
+        assert attribute.path == attribute_path
+        assert attribute.time_series_resource is None
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_timeseries_attribute_with_invalid_request():
+    """
+    Check that 'update_timeseries_attribute' with invalid request
+    (e.g.: non existing time series key) will throw.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_path = get_attribute_path_principal() + "TsRawAtt"
+    non_existing_timeseries_key = 123456
+
+    async with connection.create_session() as session:
+        # first make sure it is connected to some physical time series
+        attribute = await session.get_timeseries_attribute(attribute_path=attribute_path)
+        assert attribute.path == attribute_path
+        assert attribute.time_series_resource is not None
+
+        with pytest.raises(grpc.RpcError):
+            await session.update_timeseries_attribute(
+                attribute_path=attribute_path,
+                new_timeseries_resource_key=non_existing_timeseries_key)
+
+        # if no attribute identifier (ID or path) is provided we should get an error
+        with pytest.raises(ValueError):
+            await session.update_timeseries_attribute(
+                new_timeseries_resource_key=non_existing_timeseries_key)
 
 
 @pytest.mark.asyncio
@@ -427,32 +479,32 @@ async def test_commit():
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                                  sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    attribute, full_name = get_timeseries_attribute_1()
+    attribute_path = get_attribute_path_principal() + "TsCalcAtt"
     new_local_expression = "something"
-    old_local_expression = attribute.local_expression
 
     async with connection.create_session() as session1:
         try:
             # check baseline
-            attribute1 = await session1.get_timeseries_attribute(attribute_path=full_name)
+            attribute1 = await session1.get_timeseries_attribute(attribute_path=attribute_path)
             old_local_expression = attribute1.expression
             assert old_local_expression != new_local_expression
 
             # change something
-            await session1.update_timeseries_attribute(path=full_name, new_local_expression=new_local_expression)
+            await session1.update_timeseries_attribute(
+                attribute_path=attribute_path, new_local_expression=new_local_expression)
 
             # commit
             await session1.commit()
 
             # check that the change is in the session
-            attribute2 = await session1.get_timeseries_attribute(attribute_path=full_name)
+            attribute2 = await session1.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute2.expression == new_local_expression
 
             # rollback
             await session1.rollback()
 
             # check that changes are still there
-            attribute3 = await session1.get_timeseries_attribute(attribute_path=full_name)
+            attribute3 = await session1.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute3.expression == new_local_expression
 
         except grpc.RpcError as error:
@@ -461,17 +513,18 @@ async def test_commit():
     async with connection.create_session() as session2:
         try:
             # check that the change is still there
-            attribute4 = await session2.get_timeseries_attribute(attribute_path=full_name)
+            attribute4 = await session2.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute4.expression == new_local_expression
 
             # change it back to what is was originally
-            await session2.update_timeseries_attribute(path=full_name, new_local_expression=old_local_expression)
+            await session2.update_timeseries_attribute(
+                attribute_path=attribute_path, new_local_expression=old_local_expression)
 
             # commit
             await session2.commit()
 
             # check that status has been restored (important to keep db clean)
-            attribute5 = await session2.get_timeseries_attribute(attribute_path=full_name)
+            attribute5 = await session2.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute5.expression == old_local_expression
 
         except grpc.RpcError as error:
@@ -1337,8 +1390,8 @@ async def update_double_attribute(session: AsyncConnection.Session, new_double_v
 @pytest.mark.database
 async def test_update_simple_attribute_invalid_request():
     """
-    Check that 'update_attribute' with invalid request
-     (wrong value type and dimension) will throw
+    Check that 'update_simple_attribute' with invalid request
+    (e.g.: wrong value type and dimension) will throw.
     """
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                         sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
@@ -1351,10 +1404,15 @@ async def test_update_simple_attribute_invalid_request():
 
         with pytest.raises(grpc.RpcError):
             await session.update_simple_attribute(attribute_path=attribute_path, value=7)
-        
+
         array_attribute = await session.get_attribute(attribute_path=attribute_path)
         assert array_attribute.value == original_values
-        
+
+        # if no attribute identifier (ID or path) is provided we should get an error
+        with pytest.raises(ValueError):
+            await session.update_simple_attribute(value=7)
+
+
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_update_simple_array_attribute():
@@ -1381,7 +1439,7 @@ async def test_update_simple_array_attribute():
 @pytest.mark.database
 async def test_update_single_simple_attribute():
     """
-    Check that 'update_attribute' will correctly update single attributes values
+    Check that 'update_simple_attribute' will correctly update single attributes values.
     """
     connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
