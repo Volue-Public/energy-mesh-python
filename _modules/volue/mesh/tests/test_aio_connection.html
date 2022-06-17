@@ -195,7 +195,7 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.tests.test_utilities.utilities</span> <span class="kn">import</span> <span class="n">get_attribute_path_principal</span><span class="p">,</span> <span class="n">get_timeseries_2</span><span class="p">,</span> <span class="n">get_timeseries_1</span><span class="p">,</span> \
-    <span class="n">get_timeseries_attribute_1</span><span class="p">,</span> <span class="n">get_timeseries_attribute_2</span><span class="p">,</span> <span class="n">verify_timeseries_2</span><span class="p">,</span> <span class="n">verify_plant_timeseries_attribute</span>
+    <span class="n">get_timeseries_attribute_2</span><span class="p">,</span> <span class="n">verify_timeseries_2</span><span class="p">,</span> <span class="n">verify_plant_timeseries_attribute</span>
 
 
 <div class="viewcode-block" id="test_read_timeseries_points_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_read_timeseries_points_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -457,79 +457,131 @@
             <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries entry: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="test_update_timeseries_attribute_with_calculation_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_calculation_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<div class="viewcode-block" id="test_update_timeseries_attribute_with_expression"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_expression">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_timeseries_attribute_with_calculation_async</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check that time series attribute data with a calculation can be updated&quot;&quot;&quot;</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_timeseries_attribute_with_expression</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Check that time series attribute data with an expression can be updated&quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                                  <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
 
-    <span class="n">attribute</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_attribute_1</span><span class="p">()</span>
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;TsCalcAtt&quot;</span>
     <span class="n">new_local_expression</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">test_new_local_expression</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;new_local_expression&quot;</span><span class="p">:</span> <span class="n">new_local_expression</span><span class="p">}</span>
-            <span class="n">test_case_1</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">full_name</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_local_expression</span><span class="p">}</span>
-            <span class="n">test_case_2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="o">**</span><span class="n">test_new_local_expression</span><span class="p">}</span>  <span class="c1"># since it is generated we find it through the first test case</span>
-            <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_case_1</span><span class="p">,</span> <span class="n">test_case_2</span><span class="p">]</span>
+        <span class="n">attribute_id</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">))</span><span class="o">.</span><span class="n">id</span>
 
-            <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
+        <span class="n">test_new_local_expression</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;new_local_expression&quot;</span><span class="p">:</span> <span class="n">new_local_expression</span><span class="p">}</span>
+        <span class="n">test_case_1</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attribute_path&quot;</span><span class="p">:</span> <span class="n">attribute_path</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_local_expression</span><span class="p">}</span>
+        <span class="n">test_case_2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attribute_id&quot;</span><span class="p">:</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_local_expression</span><span class="p">}</span>
+        <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_case_1</span><span class="p">,</span> <span class="n">test_case_2</span><span class="p">]</span>
 
-                <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
 
-                <span class="n">updated_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span>
-                <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
-                <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">is_local_expression</span> <span class="o">==</span> <span class="kc">True</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
-                    <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">updated_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">attribute_path</span>
+            <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
+            <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">is_local_expression</span> <span class="o">==</span> <span class="kc">True</span>
 
-                <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="test_update_timeseries_attribute_with_reference_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_reference_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<div class="viewcode-block" id="test_update_timeseries_attribute_with_timeseries_resource"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_timeseries_resource">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_timeseries_attribute_with_reference_async</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check that time series attribute data with a reference can be updated&quot;&quot;&quot;</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_timeseries_attribute_with_timeseries_resource</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that time series attribute data with a connected</span>
+<span class="sd">    time series resource can be updated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                                  <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
 
-    <span class="n">attribute</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_attribute_2</span><span class="p">()</span>
-    <span class="n">new_timeseries</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_timeseries_1</span><span class="p">()</span>
-    <span class="n">new_timeseries_entry</span> <span class="o">=</span> <span class="n">new_timeseries</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">new_timeseries_entry_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesEntryId</span><span class="p">(</span><span class="n">guid</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">new_timeseries_entry</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;TsRawAtt&quot;</span>
+    <span class="n">new_timeseries_resource_key</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">test_new_timeseries_entry_id</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;new_timeseries_entry_id&quot;</span><span class="p">:</span> <span class="n">new_timeseries_entry_id</span><span class="p">}</span>
-            <span class="n">test_case_1</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">full_name</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_timeseries_entry_id</span><span class="p">}</span>
-            <span class="n">test_case_2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="o">**</span><span class="n">test_new_timeseries_entry_id</span><span class="p">}</span>  <span class="c1"># since it is generated we find it through the first test case</span>
-            <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_case_1</span><span class="p">,</span> <span class="n">test_case_2</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
-                <span class="n">original_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span>
+        <span class="n">attribute_id</span> <span class="o">=</span> <span class="p">(</span><span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">))</span><span class="o">.</span><span class="n">id</span>
 
-                <span class="k">if</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
-                    <span class="n">test_case_2</span><span class="p">[</span><span class="s2">&quot;uuid_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">test_new_timeseries_resource_key</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;new_timeseries_resource_key&quot;</span><span class="p">:</span> <span class="n">new_timeseries_resource_key</span><span class="p">}</span>
+        <span class="n">test_case_1</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attribute_path&quot;</span><span class="p">:</span> <span class="n">attribute_path</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_timeseries_resource_key</span><span class="p">}</span>
+        <span class="n">test_case_2</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;attribute_id&quot;</span><span class="p">:</span> <span class="n">attribute_id</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_timeseries_resource_key</span><span class="p">}</span>
+        <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_case_1</span><span class="p">,</span> <span class="n">test_case_2</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
+            <span class="n">original_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">attribute_path</span>
+            <span class="k">assert</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">original_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">!=</span> <span class="n">new_timeseries_resource_key</span>
 
-                <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
 
-                <span class="n">updated_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">full_name</span>
+            <span class="n">updated_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">attribute_path</span>
+            <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">assert</span> <span class="n">updated_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">new_timeseries_resource_key</span>
 
-                <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span></div>
 
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not update timeseries attribute: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_update_timeseries_attribute_with_disconnect_timeseries_resource"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_disconnect_timeseries_resource">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_timeseries_attribute_with_disconnect_timeseries_resource</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that we can connect time series resource to an existing</span>
+<span class="sd">    time series attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;TsRawAtt&quot;</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># first make sure it is connected to some physical time series</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">attribute_path</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="c1"># now let&#39;s disconnect it</span>
+        <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+            <span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">new_timeseries_resource_key</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">attribute_path</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="test_update_timeseries_attribute_with_invalid_request"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_attribute_with_invalid_request">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_timeseries_attribute_with_invalid_request</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that &#39;update_timeseries_attribute&#39; with invalid request</span>
+<span class="sd">    (e.g.: non existing time series key) will throw.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                                 <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;TsRawAtt&quot;</span>
+    <span class="n">non_existing_timeseries_key</span> <span class="o">=</span> <span class="mi">123456</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># first make sure it is connected to some physical time series</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">attribute_path</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+                <span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span>
+                <span class="n">new_timeseries_resource_key</span><span class="o">=</span><span class="n">non_existing_timeseries_key</span><span class="p">)</span>
+
+        <span class="c1"># if no attribute identifier (ID or path) is provided we should get an error</span>
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+                <span class="n">new_timeseries_resource_key</span><span class="o">=</span><span class="n">non_existing_timeseries_key</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_search_timeseries_attribute_async"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_search_timeseries_attribute_async">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -599,32 +651,32 @@
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                                  <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
 
-    <span class="n">attribute</span><span class="p">,</span> <span class="n">full_name</span> <span class="o">=</span> <span class="n">get_timeseries_attribute_1</span><span class="p">()</span>
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;TsCalcAtt&quot;</span>
     <span class="n">new_local_expression</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
-    <span class="n">old_local_expression</span> <span class="o">=</span> <span class="n">attribute</span><span class="o">.</span><span class="n">local_expression</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session1</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># check baseline</span>
-            <span class="n">attribute1</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="n">attribute1</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
             <span class="n">old_local_expression</span> <span class="o">=</span> <span class="n">attribute1</span><span class="o">.</span><span class="n">expression</span>
             <span class="k">assert</span> <span class="n">old_local_expression</span> <span class="o">!=</span> <span class="n">new_local_expression</span>
 
             <span class="c1"># change something</span>
-            <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="o">=</span><span class="n">new_local_expression</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+                <span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="o">=</span><span class="n">new_local_expression</span><span class="p">)</span>
 
             <span class="c1"># commit</span>
             <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
             <span class="c1"># check that the change is in the session</span>
-            <span class="n">attribute2</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="n">attribute2</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">attribute2</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
 
             <span class="c1"># rollback</span>
             <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
 
             <span class="c1"># check that changes are still there</span>
-            <span class="n">attribute3</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="n">attribute3</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">attribute3</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
@@ -633,17 +685,18 @@
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session2</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># check that the change is still there</span>
-            <span class="n">attribute4</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="n">attribute4</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">attribute4</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
 
             <span class="c1"># change it back to what is was originally</span>
-            <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">full_name</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="o">=</span><span class="n">old_local_expression</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+                <span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="o">=</span><span class="n">old_local_expression</span><span class="p">)</span>
 
             <span class="c1"># commit</span>
             <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
             <span class="c1"># check that status has been restored (important to keep db clean)</span>
-            <span class="n">attribute5</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">full_name</span><span class="p">)</span>
+            <span class="n">attribute5</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">attribute5</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">old_local_expression</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
@@ -1509,8 +1562,8 @@
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_simple_attribute_invalid_request</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that &#39;update_attribute&#39; with invalid request</span>
-<span class="sd">     (wrong value type and dimension) will throw</span>
+<span class="sd">    Check that &#39;update_simple_attribute&#39; with invalid request</span>
+<span class="sd">    (e.g.: wrong value type and dimension) will throw.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                         <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
@@ -1523,10 +1576,15 @@
 
         <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">):</span>
             <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
-        
+
         <span class="n">array_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">array_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">original_values</span></div>
-        
+        <span class="k">assert</span> <span class="n">array_attribute</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">original_values</span>
+
+        <span class="c1"># if no attribute identifier (ID or path) is provided we should get an error</span>
+        <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="test_update_simple_array_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_simple_array_attribute">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_simple_array_attribute</span><span class="p">():</span>
@@ -1553,7 +1611,7 @@
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">test_update_single_simple_attribute</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check that &#39;update_attribute&#39; will correctly update single attributes values</span>
+<span class="sd">    Check that &#39;update_simple_attribute&#39; will correctly update single attributes values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
                             <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
