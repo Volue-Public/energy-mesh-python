@@ -22,19 +22,15 @@ import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_timeseries_1, \
-    get_timeseries_attribute_1, get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
+    get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
 
 
 @pytest.mark.database
 def test_read_timeseries_points():
     """Check that timeseries points can be read using timeseries key, UUID and full name"""
 
-    if not sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE:
-        connection = Connection.insecure(sc.DefaultServerConfig.target())
-    else:
-        connection = Connection.with_tls(sc.DefaultServerConfig.target(),
-                                         sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
-
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     with connection.create_session() as session:
         timeseries, start_time, end_time, _, full_name = get_timeseries_2()
         try:
@@ -283,77 +279,126 @@ def test_update_timeseries_entry():
 
 
 @pytest.mark.database
-def test_update_timeseries_attribute_with_calculation():
-    """Check that time series attribute data with a calculation can be updated"""
+def test_update_timeseries_attribute_with_expression():
+    """Check that time series attribute data with an expression can be updated"""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    attribute, full_name = get_timeseries_attribute_1()
+    attribute_path = get_attribute_path_principal() + "TsCalcAtt"
     new_local_expression = "something"
 
     with connection.create_session() as session:
-        try:
-            test_new_local_expression = {"new_local_expression": new_local_expression}
-            test_case_1 = {"path": full_name, **test_new_local_expression}
-            test_case_2 = {"uuid_id": None,
-                           **test_new_local_expression}  # since it is generated we find it through the first test case
-            test_cases = [test_case_1, test_case_2]
+        attribute_id = session.get_timeseries_attribute(attribute_path=attribute_path).id
 
-            for test_case in test_cases:
+        test_new_local_expression = {"new_local_expression": new_local_expression}
+        test_case_1 = {"attribute_path": attribute_path, **test_new_local_expression}
+        test_case_2 = {"attribute_id": attribute_id, **test_new_local_expression}
+        test_cases = [test_case_1, test_case_2]
 
-                session.update_timeseries_attribute(**test_case)
+        for test_case in test_cases:
 
-                updated_attribute = session.get_timeseries_attribute(attribute_path=full_name)
-                assert updated_attribute.path == full_name
-                assert updated_attribute.expression == new_local_expression
-                assert updated_attribute.is_local_expression == True
+            session.update_timeseries_attribute(**test_case)
 
-                if "path" in test_case:
-                    test_case_2["uuid_id"] = updated_attribute.id
+            updated_attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+            assert updated_attribute.path == attribute_path
+            assert updated_attribute.expression == new_local_expression
+            assert updated_attribute.is_local_expression == True
 
-                session.rollback()
-
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not update timeseries attribute: {error}")
+            session.rollback()
 
 
 @pytest.mark.database
-def test_update_timeseries_attribute_with_reference():
-    """Check that time series attribute data with a reference can be updated"""
+def test_update_timeseries_attribute_with_timeseries_resource():
+    """
+    Check that we can connect time series resource to an existing
+    time series attribute.
+    """
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    attribute, full_name = get_timeseries_attribute_2()
-
-    new_timeseries, _ = get_timeseries_1()
-    new_timeseries_entry = new_timeseries.entries[0]
-    new_timeseries_entry_id = core_pb2.TimeseriesEntryId(guid=_to_proto_guid(new_timeseries_entry.id))
+    attribute_path = get_attribute_path_principal() + "TsRawAtt"
+    new_timeseries_resource_key = 2
 
     with connection.create_session() as session:
-        try:
-            test_new_timeseries_entry_id = {"new_timeseries_entry_id": new_timeseries_entry_id}
-            test_case_1 = {"path": full_name, **test_new_timeseries_entry_id}
-            test_case_2 = {"uuid_id": None,
-                           **test_new_timeseries_entry_id}  # since it is generated we find it through the first test case
-            test_cases = [test_case_1, test_case_2]
-            for test_case in test_cases:
-                original_attribute = session.get_timeseries_attribute(attribute_path=full_name)
-                assert original_attribute.path == full_name
+        attribute_id = session.get_timeseries_attribute(attribute_path=attribute_path).id
 
-                if "path" in test_case:
-                    test_case_2["uuid_id"] = original_attribute.id
+        test_new_timeseries_resource_key = {"new_timeseries_resource_key": new_timeseries_resource_key}
+        test_case_1 = {"attribute_path": attribute_path, **test_new_timeseries_resource_key}
+        test_case_2 = {"attribute_id": attribute_id, **test_new_timeseries_resource_key}
+        test_cases = [test_case_1, test_case_2]
+        for test_case in test_cases:
+            original_attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+            assert original_attribute.path == attribute_path
+            assert original_attribute.time_series_resource is not None
+            assert original_attribute.time_series_resource.timeseries_key != new_timeseries_resource_key
 
-                session.update_timeseries_attribute(**test_case)
+            session.update_timeseries_attribute(**test_case)
 
-                updated_attribute = session.get_timeseries_attribute(attribute_path=full_name)
-                assert updated_attribute.path == full_name
+            updated_attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+            assert updated_attribute.path == attribute_path
+            assert updated_attribute.time_series_resource is not None
+            assert updated_attribute.time_series_resource.timeseries_key == new_timeseries_resource_key
 
-                session.rollback()
+            session.rollback()
 
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not update timeseries attribute: {error}")
+
+@pytest.mark.database
+def test_update_timeseries_attribute_with_disconnect_timeseries_resource():
+    """
+    Check that we can connect time series resource to an existing
+    time series attribute.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_path = get_attribute_path_principal() + "TsRawAtt"
+
+    with connection.create_session() as session:
+        # first make sure it is connected to some physical time series
+        attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+        assert attribute.path == attribute_path
+        assert attribute.time_series_resource is not None
+
+        # now let's disconnect it
+        session.update_timeseries_attribute(
+            attribute_path=attribute_path, new_timeseries_resource_key=0)
+
+        attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+        assert attribute.path == attribute_path
+        assert attribute.time_series_resource is None
+
+
+@pytest.mark.database
+def test_update_timeseries_attribute_with_invalid_request():
+    """
+    Check that 'update_timeseries_attribute' with invalid request
+    (e.g.: non existing time series key) will throw.
+    """
+
+    connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_path = get_attribute_path_principal() + "TsRawAtt"
+    non_existing_timeseries_key = 123456
+
+    with connection.create_session() as session:
+        # first make sure it is connected to some physical time series
+        attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+        assert attribute.path == attribute_path
+        assert attribute.time_series_resource is not None
+
+        with pytest.raises(grpc.RpcError):
+            session.update_timeseries_attribute(
+                attribute_path=attribute_path,
+                new_timeseries_resource_key=non_existing_timeseries_key)
+
+        # if no attribute identifier (ID or path) is provided we should get an error
+        with pytest.raises(ValueError):
+            session.update_timeseries_attribute(
+                new_timeseries_resource_key=non_existing_timeseries_key)
 
 
 @pytest.mark.database
@@ -420,32 +465,32 @@ def test_commit():
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    attribute, full_name = get_timeseries_attribute_1()
+    attribute_path = get_attribute_path_principal() + "TsCalcAtt"
     new_local_expression = "something"
-    old_local_expression = attribute.local_expression
 
     with connection.create_session() as session1:
         try:
-            # check base line
-            attribute1 = session1.get_timeseries_attribute(attribute_path=full_name)
+            # check baseline
+            attribute1 = session1.get_timeseries_attribute(attribute_path=attribute_path)
             old_local_expression = attribute1.expression
             assert old_local_expression != new_local_expression
 
             # change something
-            session1.update_timeseries_attribute(path=full_name, new_local_expression=new_local_expression)
+            session1.update_timeseries_attribute(
+                attribute_path=attribute_path, new_local_expression=new_local_expression)
 
             # commit
             session1.commit()
 
             # check that the change is in the session
-            attribute2 = session1.get_timeseries_attribute(attribute_path=full_name)
+            attribute2 = session1.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute2.expression == new_local_expression
 
             # rollback
             session1.rollback()
 
             # check that changes are still there
-            attribute3 = session1.get_timeseries_attribute(attribute_path=full_name)
+            attribute3 = session1.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute3.expression == new_local_expression
 
         except grpc.RpcError as error:
@@ -454,17 +499,18 @@ def test_commit():
     with connection.create_session() as session2:
         try:
             # check that the change is still there
-            attribute4 = session2.get_timeseries_attribute(attribute_path=full_name)
+            attribute4 = session2.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute4.expression == new_local_expression
 
             # change it back to what is was originally
-            session2.update_timeseries_attribute(path=full_name, new_local_expression=old_local_expression)
+            session2.update_timeseries_attribute(
+                attribute_path=attribute_path, new_local_expression=old_local_expression)
 
             # commit
             session2.commit()
 
             # check that status has been restored (important to keep db clean)
-            attribute5 = session2.get_timeseries_attribute(attribute_path=full_name)
+            attribute5 = session2.get_timeseries_attribute(attribute_path=attribute_path)
             assert attribute5.expression == old_local_expression
 
         except grpc.RpcError as error:
@@ -482,7 +528,7 @@ def test_rollback():
             _, full_name = get_timeseries_1()
             new_path = "/new_path"
 
-            # check base line
+            # check baseline
             timeseries_info0 = session.get_timeseries_resource_info(path=full_name)
             assert timeseries_info0.path != new_path
 
@@ -1297,11 +1343,12 @@ def update_double_attribute(session: Connection.Session, new_double_value):
     double_attribute = session.get_attribute(attribute_path=attribute_path)
     assert math.isclose(new_double_value, double_attribute.value)
 
+
 @pytest.mark.database
 def test_update_simple_attribute_invalid_request():
     """
-    Check that 'update_attribute' with invalid request
-     (wrong value type and dimension) will throw
+    Check that 'update_simple_attribute' with invalid request
+    (e.g.: wrong value type and dimension) will throw.
     """
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                         sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
@@ -1314,10 +1361,14 @@ def test_update_simple_attribute_invalid_request():
 
         with pytest.raises(grpc.RpcError):
             session.update_simple_attribute(attribute_path=attribute_path, value=7)
-        
+
         array_attribute = session.get_attribute(attribute_path=attribute_path)
         assert array_attribute.value == original_values
-        
+
+        # if no attribute identifier (ID or path) is provided we should get an error
+        with pytest.raises(ValueError):
+            session.update_simple_attribute(value=7)
+
 
 @pytest.mark.database
 def test_update_simple_array_attribute():

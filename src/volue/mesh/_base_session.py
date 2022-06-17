@@ -278,7 +278,13 @@ class Session(abc.ABC):
             attribute_id: Optional[uuid.UUID] = None,
             attribute_path: Optional[str] = None) -> None:
         """
-        Update an existing Mesh attribute's value in the Mesh model.
+        Update an existing Mesh simple attribute's value in the Mesh model.
+        Simple attribute is a singular type or collection of the following types:
+        - double (float in Python)
+        - integer (int in Python)
+        - boolean (bool in Python)
+        - string (str in Python)
+        - UTC time (datetime in Python)
 
         Args:
             value: New simple attribute value. It can be one of following simple types:
@@ -292,6 +298,30 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
 
+    @abc.abstractmethod
+    def update_timeseries_attribute(
+        self,
+        new_local_expression: str = None,
+        new_timeseries_resource_key: int = None,
+        attribute_id: Optional[uuid.UUID] = None,
+        attribute_path: Optional[str] = None) -> None:
+        """
+        Update meta data of an existing Mesh time series attribute's in the Mesh model.
+
+        Args:
+            new_local_expression: New local expression.
+            new_timeseries_resource_key: time series key of a new time series resource
+                (physical or virtual) to connect to the time series attribute. To disconnect
+                time series attribute from already connected time series resource set this
+                argument to 0.
+            attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
+            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
+                of the Mesh attribute which value is to be updated.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
 
     def _prepare_get_object_request(
             self,
@@ -463,33 +493,60 @@ class Session(abc.ABC):
 
         return request
 
-    def _prepare_update_attribute_request(
+    def _prepare_update_simple_attribute_request(
         self,
         attribute_id: uuid.UUID,
         attribute_path: str,
-        new_singular_value: core_pb2.AttributeValue,
-        new_collection_values: List[core_pb2.AttributeValue]
-    ) -> core_pb2.UpdateAttributeResponse:
+        value: SIMPLE_TYPE_OR_COLLECTION
+    ) -> core_pb2.UpdateSimpleAttributeRequest:
 
         try:
             attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
         except ValueError as e:
             raise ValueError("invalid attribute to update") from e
 
-        request = core_pb2.UpdateAttributeRequest(
+        request = core_pb2.UpdateSimpleAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=attribute_mesh_id
         )
 
-        fields_to_update = []
+        new_singular_value, new_collection_values = self._to_update_attribute_request_values(value=value)
+
         if new_singular_value is not None:
-            fields_to_update.append("value")
             request.new_singular_value.CopyFrom(new_singular_value)
 
         if new_collection_values is not None:
             for value in new_collection_values:
                 request.new_collection_values.append(value)
-            fields_to_update.append("value")
+
+        return request
+
+    def _prepare_update_timeseries_attribute_request(
+        self,
+        attribute_id: uuid.UUID,
+        attribute_path: str,
+        new_local_expression: str,
+        new_timeseries_resource_key: int
+    ) -> core_pb2.UpdateTimeseriesAttributeRequest:
+
+        try:
+            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
+        except ValueError as e:
+            raise ValueError("invalid attribute to update") from e
+
+        request = core_pb2.UpdateTimeseriesAttributeRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute_id=attribute_mesh_id
+        )
+
+        fields_to_update = []
+        if new_local_expression is not None:
+            fields_to_update.append("new_local_expression")
+            request.new_local_expression = new_local_expression
+
+        if new_timeseries_resource_key is not None:
+            fields_to_update.append("new_timeseries_resource_key")
+            request.new_timeseries_resource_key = new_timeseries_resource_key
 
         request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
         return request
@@ -520,18 +577,18 @@ class Session(abc.ABC):
         self,
         value: SIMPLE_TYPE_OR_COLLECTION
     ) -> Tuple[core_pb2.AttributeValue, List[core_pb2.AttributeValue]]:
-            """
-                Convert value supplied by the user to singular value/collection values
-                expected by the protobuf request
-            """
-            new_singular_value = None
-            new_collection_values = None
-            if type(value) is list:
-                new_collection_values = []
-                for v in value:
-                    att_value = self._to_proto_singular_attribute_value(v)
-                    new_collection_values.append(att_value)
-            else:
-                new_singular_value = self._to_proto_singular_attribute_value(value)       
+        """
+            Convert value supplied by the user to singular value/collection values
+            expected by the protobuf request.
+        """
+        new_singular_value = None
+        new_collection_values = None
+        if type(value) is list:
+            new_collection_values = []
+            for v in value:
+                att_value = self._to_proto_singular_attribute_value(v)
+                new_collection_values.append(att_value)
+        else:
+            new_singular_value = self._to_proto_singular_attribute_value(value)
 
-            return (new_singular_value, new_collection_values)
+        return (new_singular_value, new_collection_values)

@@ -105,9 +105,6 @@ service MeshService {
   // This kind of metadata is called attribute data.
   rpc GetTimeseriesAttribute(GetTimeseriesAttributeRequest) returns (TimeseriesAttribute) {}
 
-  // Update timeseries attribute meta data
-  rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (UpdateTimeseriesAttributeResponse) {}
-
   // Search for timeseries attributes in a given physical model
   //
   // The search uses Mesh's query language, which is the same language that's
@@ -148,13 +145,16 @@ service MeshService {
   // In the first step user sets owner and name of the new object.
   // In case of success, the create operation returns OK status and newly
   // created object with all of the attributes set to default values.
-  // Then the user may update the attributes and call `UpdateAttribute` RPC.
-  // Note: Returned object has all attributes (no mask applied) and `AttributeView::BASIC`.
+  // Then the user may update the attributes with proper update attributes
+  // RPCs, e.g.: `UpdateSimpleAttribute` or `UpdateTimeseriesAttribute`.
+  // Note: Returned object has all attributes (no mask applied) and
+  // `AttributeView::BASIC`.
   rpc CreateObject(CreateObjectRequest) returns (Object) {}
 
   // Update existing object in the model.
-  // User may rename an object or change it's owner.
-  // To update object's attributes use `UpdateAttribute` RPC.
+  // User may rename an object or change its owner.
+  // To update object's attributes use proper update attributes RPCs,
+  // e.g.: `UpdateSimpleAttribute` or `UpdateTimeseriesAttribute`.
   rpc UpdateObject(UpdateObjectRequest) returns (UpdateObjectResponse) {}
 
   // Delete existing object in the model.
@@ -174,10 +174,19 @@ service MeshService {
   // is returned.
   rpc SearchAttributes(SearchAttributesRequest) returns (stream Attribute) {}
 
-  // Update existing attributes in the model.
-  rpc UpdateAttribute(UpdateAttributeRequest) returns (UpdateAttributeResponse) {}
+  // Update value(s) of existing simple attribute in the model.
+  // Simple attribute is a singular type or collection of the following types:
+  // - double
+  // - integer
+  // - boolean
+  // - string
+  // - UTC time
+  rpc UpdateSimpleAttribute(UpdateSimpleAttributeRequest) returns (UpdateSimpleAttributeResponse) {}
 
-  // Get the Mesh server version information
+  // Update existing time series attribute in the model.
+  rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (UpdateTimeseriesAttributeResponse) {}
+
+  // Get the Mesh server version information.
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 }
 
@@ -220,7 +229,7 @@ message UserIdentity {
   // An identifier that uniquely identifies the user within given `source` instance, but
   // not necessarily globally. Combining `source` and `identifier` does not guarantee
   // to get globally unique identifier for the user as there may be different
-  // Active Direcories using the same security packages (`source`) with
+  // Active Directories using the same security packages (`source`) with
   // duplicated user identifiers. However such situation is rather unlikely.
   string identifier = 3;
 }
@@ -312,23 +321,6 @@ message GetTimeseriesAttributeRequest {
 }
 
 message UpdateTimeseriesEntryResponse {
-  // currently empty
-}
-
-message UpdateTimeseriesAttributeRequest {
-  // ID of the Mesh server's session in which changes should be applied.
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  AttributeId attribute_id = 2;
-
-  // Only paths set in the field mask are updated.
-  // (except complex types like TimeseriesEntryId, those could be checked if are set)
-  google.protobuf.FieldMask field_mask = 3;
-  TimeseriesEntryId new_timeseries_entry_id = 4;
-  string new_local_expression = 5;
-}
-
-message UpdateTimeseriesAttributeResponse {
   // currently empty
 }
 
@@ -480,30 +472,59 @@ message SearchAttributesRequest {
   AttributeView attribute_view = 4;
 }
 
-message UpdateAttributeRequest {
+message UpdateSimpleAttributeRequest {
   // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   MeshId attribute_id = 2;
 
-  // An array containing field names of the attribute value to be updated.
   // Simple attribute value example:
-  //   To update a string attribute value set field_mask = ['value'] and
-  //   new_singular_value.string_value = 'new_value'
-  // Time series attribute example:
-  //   To update a time series attribute local expression and time series resource ID
-  //   set field_mask = ['time_series_resource', 'expression'],
-  //   new_singular_value.timeseries_value.expression = 'new local expression' and
-  //   new_singular_value.timeseries_value.time_series_resource.timeseries_key = 100
-  google.protobuf.FieldMask field_mask = 3;
+  //   To update a string attribute value set
+  //      new_singular_value.string_value = 'new_value'
+  //   To update a string attribute collection values set
+  //      new_collection_values[0].string_value = 'new_value_1'
+  //      new_collection_values[1].string_value = 'new_value_2'
+  //      new_collection_values[2].string_value = 'new_value_3'
+  //
+  // Note: 
+  // To remove all existing values from an attribute collection
+  // just set session_id and attribute_id of an attribute collection
+  // type and leave the new_collection_values empty.
 
-  // Singular type can be e.g.: double attribute or time series attribute
-  AttributeValue new_singular_value = 4;
+  // Singular type can be e.g.: double attribute
+  AttributeValue new_singular_value = 3;
   // Collection of types can be e.g.: collection of double attributes
-  repeated AttributeValue new_collection_values = 5;
+  repeated AttributeValue new_collection_values = 4;
 }
 
-message UpdateAttributeResponse {
+message UpdateSimpleAttributeResponse {
+  // currently empty
+}
+
+message UpdateTimeseriesAttributeRequest {
+  // ID of the Mesh server's session in which changes should be applied.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  MeshId attribute_id = 2;
+
+  // An array containing field names to be updated.
+  // For example to update a time series attribute local expression and
+  // connected time series resource:
+  //   field_mask = ['new_timeseries_resource_key', 'new_local_expression']
+  //   new_timeseries_resource_key = 100
+  //   new_local_expression = 'new local expression'
+  google.protobuf.FieldMask field_mask = 3;
+
+  // Time series key of the time series resource to be connected to
+  // the given time series attribute.
+  // Note:
+  // To disconnect time series attribute from already connected time
+  // series resource set `new_timeseries_resource_key` to 0.
+  int64 new_timeseries_resource_key = 4;
+  string new_local_expression = 5;
+}
+
+message UpdateTimeseriesAttributeResponse {
   // currently empty
 }
 
@@ -764,11 +785,11 @@ message AttributeValue {
 message TimeseriesAttributeValue {
   // Physical or virtual time series identifier from resources
   // if the attribute refers to one.
-  // When updating time series attribute with new time series
-  // resource, only `timeseries_key` field from the `TimeseriesResource`
-  // is used. To update curve type or resolution use
-  // `UpdateTimeseriesResource` RPC.
-  TimeseriesResource time_series_resource = 1;  // TODO: define `GetTimeseriesResource`and `UpdateTimeseriesResource` RPCs.
+  // To disconnect time series attribute from already connected time
+  // series resource set `new_timeseries_resource_key` to 0 in the
+  // `UpdateTimeseriesAttribute` RPC.
+  // To update curve type or resolution use `UpdateTimeseriesResource` RPC.
+  TimeseriesResource time_series_resource = 1;
 
   // Expression that is actually used by the time series attribute.
   // It uses local expression if set, otherwise template expression
@@ -801,7 +822,7 @@ message AttributeDefinition {
   repeated string tags = 5;
 
   // If an attribute has more than one namespace,
-  // they are concatentad with dots '.', e.g.:
+  // they are concatenated with dots '.', e.g.:
   //   namespace1.namespace2
   string name_space = 6;
   string value_type = 7;
