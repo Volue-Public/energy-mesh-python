@@ -144,13 +144,13 @@ class _Calculation:
         Returns:
             core_pb2.CalculationRequest:
         """
-        relative_to = core_pb2.ObjectId()  # convert to gRPC object
+        relative_to = core_pb2.MeshId()  # convert to gRPC object
         if self.relative_to.timskey is not None:
-            relative_to.timskey = self.relative_to.timskey
+            relative_to.timeseries_key = self.relative_to.timskey
         elif self.relative_to.uuid_id is not None:
-            relative_to.guid.CopyFrom(_to_proto_guid(self.relative_to.uuid_id))
+            relative_to.id.CopyFrom(_to_proto_guid(self.relative_to.uuid_id))
         elif self.relative_to.full_name is not None:
-            relative_to.full_name = self.relative_to.full_name
+            relative_to.path = self.relative_to.full_name
         else:
             raise TypeError("need to specify either timskey, uuid_id or full_name of 'relative_to' object")
 
