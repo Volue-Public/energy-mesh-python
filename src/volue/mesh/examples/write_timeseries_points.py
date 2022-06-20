@@ -25,7 +25,7 @@ def write_timeseries_points(session: Connection.Session):
     timeseries = Timeseries(table=table, full_name=timeseries_full_name)
 
     # Send request to write timeseries based on timskey
-    session.write_timeseries_points(timeserie=timeseries)
+    session.write_timeseries_points(timeseries=timeseries)
 
     # Commit the changes to the database
     # session.commit()
