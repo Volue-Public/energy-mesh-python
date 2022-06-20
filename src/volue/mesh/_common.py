@@ -276,32 +276,12 @@ def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resour
     return interval
 
 
-def _to_proto_object_id(timeseries: Timeseries) -> core_pb2.ObjectId:
-    """
-    Convert a Timeseries to corresponding protobuf ObjectId
-
-    Args:
-        timeseries (Timeseries): the time series to convert
-
-    Returns:
-        core_pb2.ObjectId
-    """
-    return core_pb2.ObjectId(
-        timskey=timeseries.timskey,
-        guid=_to_proto_guid(timeseries.uuid),
-        full_name=timeseries.full_name
-    )
-
-
 def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     """
-    Converts a protobuf timeseries reply from Mesh server into Timeseries
+    Convert a Timeseries to corresponding protobuf Timeseries
 
     Args:
-        timeseries (Timeseries):t the timeseries to convert
-
-    Returns:
-        core_pb2.Timeseries
+        timeseries: the timeseries to convert
     """
     stream = pa.BufferOutputStream()
     writer = pa.ipc.RecordBatchStreamWriter(
@@ -312,17 +292,22 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     writer.write_table(timeseries.arrow_table)
     buffer = stream.getvalue()
 
-    proto_timeserie = core_pb2.Timeseries(
-        object_id=_to_proto_object_id(timeseries),
+    timeseries_id = _to_proto_mesh_id(
+        id=_to_proto_guid(timeseries.uuid),
+        path=timeseries.full_name,
+        timeseries_key=timeseries.timskey)
+
+    proto_timeseries = core_pb2.Timeseries(
+        id=timeseries_id,
         resolution=timeseries.resolution,
         interval=_to_protobuf_utcinterval(start_time=timeseries.start_time, end_time=timeseries.end_time),
         data=buffer.to_pybytes()
     )
-    return proto_timeserie
+    return proto_timeseries
 
 
 
-def _to_proto_mesh_id(id: uuid.UUID, path: str) -> core_pb2.MeshId:
+def _to_proto_mesh_id(id: uuid.UUID, path: str, timeseries_key: int = None) -> core_pb2.MeshId:
     proto_mesh_id = core_pb2.MeshId()
 
     if id is not None:
@@ -331,9 +316,11 @@ def _to_proto_mesh_id(id: uuid.UUID, path: str) -> core_pb2.MeshId:
         proto_mesh_id.id.CopyFrom(_to_proto_guid(id))
     if path is not None:
         proto_mesh_id.path = path
+    if timeseries_key is not None:
+        proto_mesh_id.timeseries_key = timeseries_key
 
-    if id is None and path is None:
-        raise ValueError("need to specify either path or id")
+    if id is None and path is None and timeseries_key is None:
+        raise ValueError("need to specify either path, id or time series key")
 
     return proto_mesh_id
 
@@ -366,21 +353,23 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
         List[Timeseries]: list of time series extracted from the reply
     """
     timeseries = []
-    for timeserie in reply.timeseries:
-        resolution = timeserie.resolution
-        interval = timeserie.interval
+    for proto_timeseries in reply.timeseries:
+        resolution = proto_timeseries.resolution
+        interval = proto_timeseries.interval
 
-        if not timeserie.data:
+        if not proto_timeseries.data:
             raise ValueError('No data in time series reply for the given interval')
 
-        reader = pa.ipc.open_stream(timeserie.data)
+        reader = pa.ipc.open_stream(proto_timeseries.data)
         table = reader.read_all()
 
-        if timeserie.HasField("object_id"):
-            object_id = timeserie.object_id
+        if proto_timeseries.HasField("id"):
+            timeseries_id = proto_timeseries.id
             ts = Timeseries(table, _from_proto_resolution(resolution),
                             interval.start_time, interval.end_time,
-                            object_id.timskey, _from_proto_guid(object_id.guid), object_id.full_name)
+                            timeseries_id.timeseries_key,
+                            _from_proto_guid(timeseries_id.id),
+                            timeseries_id.path)
         else:
             ts = Timeseries(table, resolution,
                             interval.start_time, interval.end_time)

@@ -12,7 +12,7 @@ import grpc
 from volue.mesh import Timeseries, MeshObjectId, AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import AttributesFilter, _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval, \
-    _read_proto_reply, _to_proto_object_id, _to_proto_timeseries
+    _read_proto_reply, _to_proto_timeseries, _to_proto_curve_type
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
@@ -72,20 +72,20 @@ class Connection(_base_connection.Connection):
                                    start_time: datetime,
                                    end_time: datetime,
                                    mesh_object_id: MeshObjectId) -> Timeseries:
-            object_id = core_pb2.ObjectId()
+            mesh_id = core_pb2.MeshId()
             if mesh_object_id.timskey is not None:
-                object_id.timskey = mesh_object_id.timskey
+                mesh_id.timeseries_key = mesh_object_id.timskey
             elif mesh_object_id.uuid_id is not None:
-                object_id.guid.CopyFrom(_to_proto_guid(mesh_object_id.uuid_id))
+                mesh_id.id.CopyFrom(_to_proto_guid(mesh_object_id.uuid_id))
             elif mesh_object_id.full_name is not None:
-                object_id.full_name = mesh_object_id.full_name
+                mesh_id.path = mesh_object_id.full_name
             else:
                 raise TypeError("need to specify either timskey, uuid_id or full_name")
 
             response = self.mesh_service.ReadTimeseries(
                 core_pb2.ReadTimeseriesRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=object_id,
+                    timeseries_id=mesh_id,
                     interval=_to_protobuf_utcinterval(start_time, end_time)
                 ))
 
@@ -100,7 +100,6 @@ class Connection(_base_connection.Connection):
             self.mesh_service.WriteTimeseries(
                 core_pb2.WriteTimeseriesRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=_to_proto_object_id(timeseries),
                     timeseries=_to_proto_timeseries(timeseries)
                 ))
 

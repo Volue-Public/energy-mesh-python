@@ -9,7 +9,7 @@ import pyarrow as pa
 import pytest
 
 from volue.mesh import Timeseries
-from volue.mesh._common import _to_proto_timeseries, _to_proto_guid, _to_proto_object_id
+from volue.mesh._common import _to_proto_timeseries, _to_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 
@@ -76,13 +76,12 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     assert original_timeseries.start_time == start
     assert original_timeseries.end_time == end
 
-    original_proto_timeserie = _to_proto_timeseries(original_timeseries)
+    original_proto_timeseries = _to_proto_timeseries(original_timeseries)
     session_id_original = _to_proto_guid(uuid.uuid4())
 
     original_reply = core_pb2.WriteTimeseriesRequest(
         session_id=session_id_original,
-        object_id=_to_proto_object_id(original_timeseries),
-        timeseries=original_proto_timeserie
+        timeseries=original_proto_timeseries
     )
 
     binary_data = original_reply.SerializeToString()
@@ -92,8 +91,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     reply.ParseFromString(binary_data)
     assert original_reply == reply
     assert session_id_original == reply.session_id
-    assert _to_proto_object_id(original_timeseries) == reply.object_id
-    assert original_proto_timeserie == reply.timeseries
+    assert original_proto_timeseries == reply.timeseries
 
     reader = pa.ipc.open_stream(reply.timeseries.data)
     table = reader.read_all()
