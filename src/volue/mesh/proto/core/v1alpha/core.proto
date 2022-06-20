@@ -344,7 +344,7 @@ message CalculationRequest {
     volue.mesh.grpc.type.Guid session_id = 1;
     string expression = 2;
     volue.mesh.grpc.type.UtcInterval interval = 3;
-    ObjectId relative_to = 4;
+    MeshId relative_to = 4;
 }
 
 message CalculationResponse {
