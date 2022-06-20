@@ -232,56 +232,24 @@
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Connection.Session.open"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.open">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Request to open a session on the Mesh server</span>
-<span class="sd">            |coro|</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">reply</span></div>
 
 <div class="viewcode-block" id="Connection.Session.close"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.close">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Request to close a session on the Mesh server. |coro|</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-
-<span class="sd">            Note:</span>
-<span class="sd">                This method does not wait for the Mesh server to finish closing</span>
-<span class="sd">                the session on the Mesh server</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">EndSession</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Connection.Session.rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.rollback">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Connection.Session.commit"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.commit">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Connection.Session.read_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.read_timeseries_points">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                          <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
                                          <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
                                          <span class="n">mesh_object_id</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Reads time series points for</span>
-<span class="sd">            the specified time series in the given interval. |coro|</span>
-<span class="sd">            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                start_time: the start date and time of the time series interval</span>
-<span class="sd">                end_time: the end date and time of the time series interval</span>
-<span class="sd">                mesh_object_id: unique way of identifying a Mesh object that contains a time series.</span>
-<span class="sd">                  Using either a  Universal Unique Identifier for Mesh objects, a path in the </span>
-<span class="sd">                  :ref:`Mesh model &lt;mesh_model&gt;` or a integer that only applies</span>
-<span class="sd">                  to a specific physical or virtual time series.</span>
-<span class="sd">                  See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-
-<span class="sd">            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">                RuntimeError:  Error message raised if the input is not valid</span>
-<span class="sd">                TypeError:  Error message raised if the returned result from the request is not as expected</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">object_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">object_id</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">timskey</span>
@@ -302,26 +270,16 @@
             <span class="n">timeseries</span> <span class="o">=</span> <span class="n">_read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;invalid result from &#39;read_timeseries_points&#39;, expected 1 timeseries, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;invalid result from &#39;read_timeseries_points&#39;, expected 1 time series, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeserie</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Writes time series points for the specified timeseries in the given interval.</span>
-<span class="sd">            |coro|</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                timeserie (:class:`volue.mesh.Timeseries`): The modified time series</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Connection.Session.write_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.write_timeseries_points">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">):</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">WriteTimeseries</span><span class="p">(</span>
                 <span class="n">core_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
                     <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                    <span class="n">object_id</span><span class="o">=</span><span class="n">_to_proto_object_id</span><span class="p">(</span><span class="n">timeserie</span><span class="p">),</span>
-                    <span class="n">timeseries</span><span class="o">=</span><span class="n">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeserie</span><span class="p">)</span>
+                    <span class="n">object_id</span><span class="o">=</span><span class="n">_to_proto_object_id</span><span class="p">(</span><span class="n">timeseries</span><span class="p">),</span>
+                    <span class="n">timeseries</span><span class="o">=</span><span class="n">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
                 <span class="p">))</span></div>
 
 <div class="viewcode-block" id="Connection.Session.get_timeseries_resource_info"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_timeseries_resource_info">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_timeseries_resource_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -438,10 +396,10 @@
             <span class="k">return</span> <span class="n">_from_proto_attribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.get_timeseries_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_timeseries_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_timeseries_attribute</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">attribute_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">attribute_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesAttribute</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">attribute_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesAttribute</span><span class="p">:</span>
             <span class="n">attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_id</span><span class="p">,</span> <span class="n">attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;attribute is not a TimeseriesAttribute, but a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -487,11 +445,11 @@
             <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateSimpleAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.update_timeseries_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.update_timeseries_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">update_timeseries_attribute</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">new_local_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">attribute_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">attribute_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">new_local_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">attribute_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">attribute_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_timeseries_attribute_request</span><span class="p">(</span>
                 <span class="n">attribute_id</span><span class="o">=</span><span class="n">attribute_id</span><span class="p">,</span>
@@ -556,74 +514,32 @@
                 <span class="n">object_id</span><span class="p">,</span> <span class="n">object_path</span><span class="p">,</span> <span class="n">recursive_delete</span><span class="p">)</span>
             <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">DeleteObject</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.rollback">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Discard changes in the :doc:`Mesh session &lt;mesh_session&gt;`. |coro|</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Rollback</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Connection.Session.commit"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.commit">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Commit changes made in the :doc:`Mesh session &lt;mesh_session&gt;` to the shared storage. |coro|</span>
-
-<span class="sd">            Raises:</span>
-<span class="sd">                grpc.RpcError:  Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">Commit</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="Connection.Session.forecast_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.forecast_functions">[docs]</a>        <span class="k">def</span> <span class="nf">forecast_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForecastFunctionsAsync</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:Forecast` functions.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                relative_to (MeshObjectId): a Mesh object to perform actions relative to</span>
-<span class="sd">                start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">                end_time (datetime): the end date and time of the time series interval</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">                ForecastFunctions: object containing all forecast functions</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Connection.Session.forecast_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.forecast_functions">[docs]</a>        <span class="k">def</span> <span class="nf">forecast_functions</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForecastFunctionsAsync</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ForecastFunctionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.history_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.history_functions">[docs]</a>        <span class="k">def</span> <span class="nf">history_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryFunctionsAsync</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:History` functions.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                relative_to (MeshObjectId): a Mesh object to perform actions relative to</span>
-<span class="sd">                start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">                end_time (datetime): the end date and time of the time series interval</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">                HistoryFunctions: object containing all history functions</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Connection.Session.history_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.history_functions">[docs]</a>        <span class="k">def</span> <span class="nf">history_functions</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryFunctionsAsync</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">HistoryFunctionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.statistical_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.statistical_functions">[docs]</a>        <span class="k">def</span> <span class="nf">statistical_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticalFunctionsAsync</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:Statistical` functions.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                relative_to (MeshObjectId): a Mesh object to perform actions relative to</span>
-<span class="sd">                start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">                end_time (datetime): the end date and time of the time series interval</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">                StatisticalFunctions: object containing all statistical functions</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Connection.Session.statistical_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.statistical_functions">[docs]</a>        <span class="k">def</span> <span class="nf">statistical_functions</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticalFunctionsAsync</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">StatisticalFunctionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.Session.transform_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.transform_functions">[docs]</a>        <span class="k">def</span> <span class="nf">transform_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformFunctionsAsync</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:Transform` functions.</span>
-
-<span class="sd">            Args:</span>
-<span class="sd">                relative_to (MeshObjectId): a Mesh object to perform actions relative to</span>
-<span class="sd">                start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">                end_time (datetime): the end date and time of the time series interval</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">                TransformFunctions: object containing all transformation functions</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Connection.Session.transform_functions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.transform_functions">[docs]</a>        <span class="k">def</span> <span class="nf">transform_functions</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">relative_to</span><span class="p">:</span> <span class="n">MeshObjectId</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformFunctionsAsync</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">TransformFunctionsAsync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relative_to</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span></div></div>
 
     <span class="nd">@staticmethod</span>

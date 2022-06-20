@@ -625,7 +625,7 @@
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span>
-                <span class="n">timeserie</span><span class="o">=</span><span class="n">timeseries</span>
+                <span class="n">timeseries</span><span class="o">=</span><span class="n">timeseries</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">:</span>
             <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Could not write timeseries points&quot;</span><span class="p">)</span></div>

@@ -2568,7 +2568,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.close">
 <span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request to close a session on the Mesh server</p>
+<dd><p>Request to close a session on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -2577,7 +2577,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method does not wait for the Mesh server to finish closing
-the session on the Mesh server</p>
+the session on the Mesh server.</p>
 </div>
 </dd></dl>
 
@@ -2650,16 +2650,13 @@ See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribu
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all forecast functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.forecast.ForecastFunctions" title="volue.mesh.calc.forecast.ForecastFunctions">ForecastFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2772,16 +2769,13 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all history functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.history.HistoryFunctions" title="volue.mesh.calc.history.HistoryFunctions">HistoryFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2789,7 +2783,7 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.open">
 <span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request to open a session on the Mesh server</p>
+<dd><p>Request to open a session on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -2802,7 +2796,8 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_object_id:</span> <span class="pre">volue.mesh._common.MeshObjectId</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads time series points for
 the specified time series in the given interval.
-For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
+For information about <cite>datetime</cite> arguments and time zones refer to
+<a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2925,16 +2920,13 @@ path, ID and value(s).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all statistical functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.statistical.StatisticalFunctions" title="volue.mesh.calc.statistical.StatisticalFunctions">StatisticalFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2946,16 +2938,13 @@ path, ID and value(s).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all transformation functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.transform.TransformFunctions" title="volue.mesh.calc.transform.TransformFunctions">TransformFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3079,13 +3068,14 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.write_timeseries_points">
-<span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes time series points for the specified timeseries in the given interval.
-:param timeserie: The modified time series
-:type timeserie: <a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes time series points for the specified time series in the given interval.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>series</strong> (<em>time</em>) – The modified time series</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3623,7 +3613,7 @@ level (<cite>template_expression</cite>) or overwritten for the given attribute 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.close">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request to close a session on the Mesh server. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Request to close a session on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -3632,14 +3622,14 @@ level (<cite>template_expression</cite>) or overwritten for the given attribute 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method does not wait for the Mesh server to finish closing
-the session on the Mesh server</p>
+the session on the Mesh server.</p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.commit">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.commit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Commit changes made in the <a class="reference internal" href="mesh_session.html"><span class="doc">Mesh session</span></a> to the shared storage. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Commit changes made in the <a class="reference internal" href="mesh_session.html"><span class="doc">Mesh session</span></a> to the shared storage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -3705,16 +3695,13 @@ See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribu
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all forecast functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.forecast.ForecastFunctions" title="volue.mesh.calc.forecast.ForecastFunctions">ForecastFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3827,16 +3814,13 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all history functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.history.HistoryFunctions" title="volue.mesh.calc.history.HistoryFunctions">HistoryFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3844,8 +3828,7 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.open">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request to open a session on the Mesh server
-This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Request to open a session on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -3857,8 +3840,9 @@ This function is a <a class="reference external" href="https://docs.python.org/3
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.read_timeseries_points">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mesh_object_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh._common.MeshObjectId"><span class="pre">volue.mesh._common.MeshObjectId</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.read_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.read_timeseries_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads time series points for
-the specified time series in the given interval. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.
-For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
+the specified time series in the given interval.
+For information about <cite>datetime</cite> arguments and time zones refer to
+<a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3871,11 +3855,8 @@ to a specific physical or virtual time series.
 See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
 </ul>
 </dd>
-</dl>
-<p>For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – Error message raised if the input is not valid</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – Error message raised if the returned result from the request is not as expected</p></li>
@@ -3887,7 +3868,7 @@ See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribu
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.rollback">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.rollback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Discard changes in the <a class="reference internal" href="mesh_session.html"><span class="doc">Mesh session</span></a>. This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<dd><p>Discard changes in the <a class="reference internal" href="mesh_session.html"><span class="doc">Mesh session</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -3984,16 +3965,13 @@ path, ID and value(s).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all statistical functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.statistical.StatisticalFunctions" title="volue.mesh.calc.statistical.StatisticalFunctions">StatisticalFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4005,16 +3983,13 @@ path, ID and value(s).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>relative_to</strong> (<a class="reference internal" href="#volue.mesh.MeshObjectId" title="volue.mesh.MeshObjectId"><em>MeshObjectId</em></a>) – a Mesh object to perform actions relative to</p></li>
-<li><p><strong>start_time</strong> (<em>datetime</em>) – the start date and time of the time series interval</p></li>
-<li><p><strong>end_time</strong> (<em>datetime</em>) – the end date and time of the time series interval</p></li>
+<li><p><strong>relative_to</strong> – a Mesh object to perform actions relative to</p></li>
+<li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
+<li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>object containing all transformation functions</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#volue.mesh.calc.transform.TransformFunctions" title="volue.mesh.calc.transform.TransformFunctions">TransformFunctions</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -4138,12 +4113,11 @@ this <cite>path</cite> refers to its location in the resource catalog.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.write_timeseries_points">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeserie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes time series points for the specified timeseries in the given interval.
-This function is a <a class="reference external" href="https://docs.python.org/3/library/asyncio-task.html#coroutine"><em>coroutine</em></a>.</p>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes time series points for the specified time series in the given interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>timeserie</strong> (<a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a>) – The modified time series</p>
+<dd class="field-odd"><p><strong>series</strong> (<em>time</em>) – The modified time series</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
