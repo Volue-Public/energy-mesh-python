@@ -60,56 +60,24 @@ class Connection(_base_connection.Connection):
             await self.close()
 
         async def open(self):
-            """
-            Request to open a session on the Mesh server
-            |coro|
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
             reply = await self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply)
             return reply
 
         async def close(self) -> None:
-            """
-            Request to close a session on the Mesh server. |coro|
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-
-            Note:
-                This method does not wait for the Mesh server to finish closing
-                the session on the Mesh server
-            """
             await self.mesh_service.EndSession(_to_proto_guid(self.session_id))
             self.session_id = None
+
+        async def rollback(self) -> None:
+            await self.mesh_service.Rollback(_to_proto_guid(self.session_id))
+
+        async def commit(self) -> None:
+            await self.mesh_service.Commit(_to_proto_guid(self.session_id))
 
         async def read_timeseries_points(self,
                                          start_time: datetime,
                                          end_time: datetime,
                                          mesh_object_id: MeshObjectId) -> Timeseries:
-            """
-            Reads time series points for
-            the specified time series in the given interval. |coro|
-            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
-
-            Args:
-                start_time: the start date and time of the time series interval
-                end_time: the end date and time of the time series interval
-                mesh_object_id: unique way of identifying a Mesh object that contains a time series.
-                  Using either a  Universal Unique Identifier for Mesh objects, a path in the 
-                  :ref:`Mesh model <mesh_model>` or a integer that only applies
-                  to a specific physical or virtual time series.
-                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-
-            For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-                RuntimeError:  Error message raised if the input is not valid
-                TypeError:  Error message raised if the returned result from the request is not as expected
-            """
             object_id = core_pb2.ObjectId()
             if mesh_object_id.timskey is not None:
                 object_id.timskey = mesh_object_id.timskey
@@ -130,26 +98,16 @@ class Connection(_base_connection.Connection):
             timeseries = _read_proto_reply(response)
             if len(timeseries) != 1:
                 raise RuntimeError(
-                    f"invalid result from 'read_timeseries_points', expected 1 timeseries, but got {len(timeseries)}")
+                    f"invalid result from 'read_timeseries_points', expected 1 time series, but got {len(timeseries)}")
 
             return timeseries[0]
 
-        async def write_timeseries_points(self, timeserie: Timeseries):
-            """
-            Writes time series points for the specified timeseries in the given interval.
-            |coro|
-
-            Args:
-                timeserie (:class:`volue.mesh.Timeseries`): The modified time series
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
+        async def write_timeseries_points(self, timeseries: Timeseries):
             await self.mesh_service.WriteTimeseries(
                 core_pb2.WriteTimeseriesRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=_to_proto_object_id(timeserie),
-                    timeseries=_to_proto_timeseries(timeserie)
+                    object_id=_to_proto_object_id(timeseries),
+                    timeseries=_to_proto_timeseries(timeseries)
                 ))
 
         async def get_timeseries_resource_info(self,
@@ -266,10 +224,10 @@ class Connection(_base_connection.Connection):
             return _from_proto_attribute(proto_attribute)
 
         async def get_timeseries_attribute(
-            self,
-            attribute_id: uuid.UUID = None,
-            attribute_path: str = None,
-            full_attribute_info: bool = False) -> TimeseriesAttribute:
+                self,
+                attribute_id: uuid.UUID = None,
+                attribute_path: str = None,
+                full_attribute_info: bool = False) -> TimeseriesAttribute:
             attribute = await self.get_attribute(attribute_id, attribute_path, full_attribute_info)
             if not isinstance(attribute, TimeseriesAttribute):
                 raise ValueError(f'attribute is not a TimeseriesAttribute, but a {type(attribute).__name__}')
@@ -315,11 +273,11 @@ class Connection(_base_connection.Connection):
             return await self.mesh_service.UpdateSimpleAttribute(request)
 
         async def update_timeseries_attribute(
-            self,
-            new_local_expression: str = None,
-            new_timeseries_resource_key: int = None,
-            attribute_id: Optional[uuid.UUID] = None,
-            attribute_path: Optional[str] = None) -> None:
+                self,
+                new_local_expression: str = None,
+                new_timeseries_resource_key: int = None,
+                attribute_id: Optional[uuid.UUID] = None,
+                attribute_path: Optional[str] = None) -> None:
 
             request = super()._prepare_update_timeseries_attribute_request(
                 attribute_id=attribute_id,
@@ -384,74 +342,32 @@ class Connection(_base_connection.Connection):
                 object_id, object_path, recursive_delete)
             return await self.mesh_service.DeleteObject(request)
 
-        async def rollback(self) -> None:
-            """
-            Discard changes in the :doc:`Mesh session <mesh_session>`. |coro|
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
-            await self.mesh_service.Rollback(_to_proto_guid(self.session_id))
-
-        async def commit(self) -> None:
-            """
-            Commit changes made in the :doc:`Mesh session <mesh_session>` to the shared storage. |coro|
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
-            await self.mesh_service.Commit(_to_proto_guid(self.session_id))
-
-        def forecast_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> ForecastFunctionsAsync:
-            """Access to :ref:`mesh_functions:Forecast` functions.
-
-            Args:
-                relative_to (MeshObjectId): a Mesh object to perform actions relative to
-                start_time (datetime): the start date and time of the time series interval
-                end_time (datetime): the end date and time of the time series interval
-
-            Returns:
-                ForecastFunctions: object containing all forecast functions
-            """
+        def forecast_functions(
+                self,
+                relative_to: MeshObjectId,
+                start_time: datetime,
+                end_time: datetime) -> ForecastFunctionsAsync:
             return ForecastFunctionsAsync(self, relative_to, start_time, end_time)
 
-        def history_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> HistoryFunctionsAsync:
-            """Access to :ref:`mesh_functions:History` functions.
-
-            Args:
-                relative_to (MeshObjectId): a Mesh object to perform actions relative to
-                start_time (datetime): the start date and time of the time series interval
-                end_time (datetime): the end date and time of the time series interval
-
-            Returns:
-                HistoryFunctions: object containing all history functions
-            """
+        def history_functions(
+                self,
+                relative_to: MeshObjectId,
+                start_time: datetime,
+                end_time: datetime) -> HistoryFunctionsAsync:
             return HistoryFunctionsAsync(self, relative_to, start_time, end_time)
 
-        def statistical_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> StatisticalFunctionsAsync:
-            """Access to :ref:`mesh_functions:Statistical` functions.
-
-            Args:
-                relative_to (MeshObjectId): a Mesh object to perform actions relative to
-                start_time (datetime): the start date and time of the time series interval
-                end_time (datetime): the end date and time of the time series interval
-
-            Returns:
-                StatisticalFunctions: object containing all statistical functions
-            """
+        def statistical_functions(
+                self,
+                relative_to: MeshObjectId,
+                start_time: datetime,
+                end_time: datetime) -> StatisticalFunctionsAsync:
             return StatisticalFunctionsAsync(self, relative_to, start_time, end_time)
 
-        def transform_functions(self, relative_to: MeshObjectId, start_time: datetime, end_time: datetime) -> TransformFunctionsAsync:
-            """Access to :ref:`mesh_functions:Transform` functions.
-
-            Args:
-                relative_to (MeshObjectId): a Mesh object to perform actions relative to
-                start_time (datetime): the start date and time of the time series interval
-                end_time (datetime): the end date and time of the time series interval
-
-            Returns:
-                TransformFunctions: object containing all transformation functions
-            """
+        def transform_functions(
+                self,
+                relative_to: MeshObjectId,
+                start_time: datetime,
+                end_time: datetime) -> TransformFunctionsAsync:
             return TransformFunctionsAsync(self, relative_to, start_time, end_time)
 
     @staticmethod

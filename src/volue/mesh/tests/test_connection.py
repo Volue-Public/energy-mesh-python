@@ -453,7 +453,7 @@ def test_write_timeseries_points_using_timskey():
     with connection.create_session() as session:
         try:
             session.write_timeseries_points(
-                timeserie=timeseries
+                timeseries=timeseries
             )
         except grpc.RpcError:
             pytest.fail("Could not write timeseries points")

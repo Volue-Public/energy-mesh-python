@@ -442,7 +442,7 @@ def use_case_5():
             timeseries = Timeseries(table=table, uuid_id=guid)
 
             # Send request to write time series based on timskey
-            session.write_timeseries_points(timeserie=timeseries)
+            session.write_timeseries_points(timeseries=timeseries)
 
             # Get time series data before write
             timeseries_after = session.read_timeseries_points(start_time=start,

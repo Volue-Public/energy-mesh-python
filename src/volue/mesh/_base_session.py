@@ -6,9 +6,16 @@ from datetime import datetime
 from google import protobuf
 
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
-from ._common import AttributesFilter, _to_proto_attribute_masks, _to_proto_guid, \
+from ._common import AttributesFilter, MeshObjectId, _to_proto_attribute_masks, _to_proto_guid, \
     _to_proto_mesh_id, _datetime_to_timestamp_pb2
 from ._object import Object
+from ._timeseries import Timeseries
+
+from .calc.forecast import ForecastFunctions
+from.calc.history import HistoryFunctions
+from.calc.statistical import StatisticalFunctions
+from.calc.transform import TransformFunctions
+
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 
@@ -29,6 +36,88 @@ class Session(abc.ABC):
         """
         self.session_id: uuid = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
+
+
+    @abc.abstractmethod
+    def open(self) -> None:
+        """
+        Request to open a session on the Mesh server.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
+    def close(self) -> None:
+        """
+        Request to close a session on the Mesh server.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+
+        Note:
+            This method does not wait for the Mesh server to finish closing
+            the session on the Mesh server.
+        """
+
+    @abc.abstractmethod
+    def rollback(self) -> None:
+        """
+        Discard changes in the :doc:`Mesh session <mesh_session>`.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
+    def commit(self) -> None:
+        """
+        Commit changes made in the :doc:`Mesh session <mesh_session>` to the shared storage.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
+    def read_timeseries_points(
+            self,
+            start_time: datetime,
+            end_time: datetime,
+            mesh_object_id: MeshObjectId) -> Timeseries:
+        """
+        Reads time series points for
+        the specified time series in the given interval.
+        For information about `datetime` arguments and time zones refer to
+        :ref:`mesh_client:Date times and time zones`.
+
+        Args:
+            start_time: the start date and time of the time series interval
+            end_time: the end date and time of the time series interval
+            mesh_object_id: unique way of identifying a Mesh object that contains a time series.
+                Using either a  Universal Unique Identifier for Mesh objects, a path in the 
+                :ref:`Mesh model <mesh_model>` or a integer that only applies
+                to a specific physical or virtual time series.
+                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            RuntimeError: Error message raised if the input is not valid
+            TypeError: Error message raised if the returned result from the request is not as expected
+        """
+
+    @abc.abstractmethod
+    def write_timeseries_points(
+            self,
+            timeseries: Timeseries) -> None:
+        """
+        Writes time series points for the specified time series in the given interval.
+
+        Args:
+            time series (:class:`volue.mesh.Timeseries`): The modified time series
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
 
     @abc.abstractmethod
     def get_object(
@@ -300,11 +389,11 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def update_timeseries_attribute(
-        self,
-        new_local_expression: str = None,
-        new_timeseries_resource_key: int = None,
-        attribute_id: Optional[uuid.UUID] = None,
-        attribute_path: Optional[str] = None) -> None:
+            self,
+            new_local_expression: str = None,
+            new_timeseries_resource_key: int = None,
+            attribute_id: Optional[uuid.UUID] = None,
+            attribute_path: Optional[str] = None) -> None:
         """
         Update meta data of an existing Mesh time series attribute's in the Mesh model.
 
@@ -322,6 +411,75 @@ class Session(abc.ABC):
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
         """
+
+    @abc.abstractmethod
+    def forecast_functions(
+            self,
+            relative_to: MeshObjectId,
+            start_time: datetime,
+            end_time: datetime) -> ForecastFunctions:
+        """Access to :ref:`mesh_functions:Forecast` functions.
+
+        Args:
+            relative_to: a Mesh object to perform actions relative to
+            start_time: the start date and time of the time series interval
+            end_time: the end date and time of the time series interval
+
+        Returns:
+            object containing all forecast functions
+        """
+
+    @abc.abstractmethod
+    def history_functions(
+            self,
+            relative_to: MeshObjectId,
+            start_time: datetime,
+            end_time: datetime) -> HistoryFunctions:
+        """Access to :ref:`mesh_functions:History` functions.
+
+        Args:
+            relative_to: a Mesh object to perform actions relative to
+            start_time: the start date and time of the time series interval
+            end_time: the end date and time of the time series interval
+
+        Returns:
+           object containing all history functions
+        """
+
+    @abc.abstractmethod
+    def statistical_functions(
+            self,
+            relative_to: MeshObjectId,
+            start_time: datetime,
+            end_time: datetime) -> StatisticalFunctions:
+        """Access to :ref:`mesh_functions:Statistical` functions.
+
+        Args:
+            relative_to: a Mesh object to perform actions relative to
+            start_time: the start date and time of the time series interval
+            end_time: the end date and time of the time series interval
+
+        Returns:
+            object containing all statistical functions
+        """
+
+    @abc.abstractmethod
+    def transform_functions(
+            self,
+            relative_to: MeshObjectId,
+            start_time: datetime,
+            end_time: datetime) -> TransformFunctions:
+        """Access to :ref:`mesh_functions:Transform` functions.
+
+        Args:
+            relative_to: a Mesh object to perform actions relative to
+            start_time: the start date and time of the time series interval
+            end_time: the end date and time of the time series interval
+
+        Returns:
+            object containing all transformation functions
+        """
+
 
     def _prepare_get_object_request(
             self,
