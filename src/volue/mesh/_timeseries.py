@@ -79,11 +79,11 @@ class Timeseries:
         pa.field('utc_time', pa.timestamp('ms')),
         pa.field('flags', pa.uint32()),
         pa.field('value', pa.float64()),
-    ])  # The pyarrow schema used for timeseries points.
+    ])  # The pyarrow schema used for time series points.
 
     def __init__(self,
                  table: pa.Table = None,
-                 resolution: resources_pb2.Resolution = None,
+                 resolution: Resolution = None,
                  start_time: datetime = None,
                  end_time: datetime = None,
                  timskey: int = None,
@@ -100,17 +100,17 @@ class Timeseries:
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Args:
-            table (pa.Table): the arrow table containing the timestamps, flags and values
-            resolution (resources_pb2.Resolution): the resolution of the time series
-            start_time (datetime): the start date and time of the time series interval
-            end_time (datetime): the end date and time of the time series interval
-            timskey (int): integer that only applies to a specific physical or virtual time series
+            table: the arrow table containing the timestamps, flags and values
+            resolution: the resolution of the time series
+            start_time: the start date and time of the time series interval
+            end_time: the end date and time of the time series interval
+            timskey: integer that only applies to a specific physical or virtual time series
             uuid_id:  Universal Unique Identifier for Mesh objects
             full_name: path in the :ref:`Mesh model <mesh_model>`.
               See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
-            TypeError:  Error message raised if PyArrow table schema is invalid
+            TypeError: Error message raised if PyArrow table schema is invalid
         """
         self.full_name = full_name
         self.uuid = uuid_id
