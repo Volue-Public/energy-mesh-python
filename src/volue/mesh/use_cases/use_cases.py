@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 import sys
-from typing import List, Any, Tuple, Type
+from typing import List, Any, Tuple
 import uuid
 
 from dateutil import tz
@@ -9,11 +9,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, MeshObjectId, AttributeBase, Object, Timeseries
+from volue.mesh import Connection, MeshObjectId, Object, Timeseries, TimeseriesResource
 from volue.mesh._common import AttributesFilter, _from_proto_guid
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.proto.core.v1alpha import core_pb2
 
 """
 These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)
@@ -84,24 +83,32 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
             timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
 
 
-def get_resource_information(resource_object: core_pb2.TimeseriesEntry):
+def get_resource_information(timeseries_resource: TimeseriesResource):
     """Create a printable message from a resource object."""
     message = (
-        f"Timeseries with timskey: '{resource_object.timeseries_key}' \n"
-        f"has guid: '{_from_proto_guid(resource_object.id)}', \n"
-        f"path set in the resource silo is: '{resource_object.path}', \n"
-        f"it's curve '{resource_object.curve_type}', \n"
-        f"resolution '{resource_object.resolution}' \n"
-        f"and unit of measurement is: '{resource_object.unit_of_measurement}'\n"
+        f"Time series with timskey: '{timeseries_resource.timeseries_key}' \n"
+        f"has name: '{timeseries_resource.name}', \n"
+        f"path set in the resource silo is: '{timeseries_resource.path}', \n"
+        f"curve type: '{timeseries_resource.curve_type}', \n"
+        f"resolution: '{timeseries_resource.resolution}', \n"
+        f"unit of measurement: '{timeseries_resource.unit_of_measurement}'\n"
     )
+
+    expression = timeseries_resource.virtual_timeseries_expression
+    if expression is not None and expression != "":
+        message = (
+            f"{message}"
+            f"virtual time series expression: '{expression}'\n"
+        )
+
     return message
 
 def get_timeseries_information(timeseries: Timeseries):
     """Create a printable message from a timeseries."""
     message = (
-        f"Timeseries full name: '{timeseries.full_name}', "
+        f"Time series full name: '{timeseries.full_name}', "
         f"uuid: '{timeseries.uuid}', "
-        f"timeskey: '{timeseries.timskey}', "
+        f"timskey: '{timeseries.timskey}', "
         f"start time: '{str(timeseries.start_time)}', "
         f"end time: '{str(timeseries.end_time)}', "
         f"resolution: '{timeseries.resolution}', "
@@ -241,10 +248,10 @@ def use_case_3():
             for timskey in timskeys:
 
                 # Get information about the time series
-                resource_object = session.get_timeseries_resource_info(timskey=timskey)
+                timeseries_resource = session.get_timeseries_resource_info(timeseries_key=timskey)
                 print(f"[{timskey}]: \n"
                       f"-----\n"
-                      f"{get_resource_information(resource_object)}")
+                      f"{get_resource_information(timeseries_resource)}")
 
                 # Retrieve the time series points in a given interval
                 timeseries = session.read_timeseries_points(start_time=start,
