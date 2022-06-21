@@ -83,12 +83,12 @@ def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.
             timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
 
 
-def get_resource_information(timeseries_resource: TimeseriesResource):
-    """Create a printable message from a resource object."""
+def get_timeseries_resource_information(timeseries_resource: TimeseriesResource):
+    """Create a printable message from a time series resource."""
     message = (
         f"Time series with timskey: '{timeseries_resource.timeseries_key}' \n"
         f"has name: '{timeseries_resource.name}', \n"
-        f"path set in the resource silo is: '{timeseries_resource.path}', \n"
+        f"path set in the resource container is: '{timeseries_resource.path}', \n"
         f"curve type: '{timeseries_resource.curve_type}', \n"
         f"resolution: '{timeseries_resource.resolution}', \n"
         f"unit of measurement: '{timeseries_resource.unit_of_measurement}'\n"
@@ -104,7 +104,7 @@ def get_resource_information(timeseries_resource: TimeseriesResource):
     return message
 
 def get_timeseries_information(timeseries: Timeseries):
-    """Create a printable message from a timeseries."""
+    """Create a printable message from a time series."""
     message = (
         f"Time series full name: '{timeseries.full_name}', "
         f"uuid: '{timeseries.uuid}', "
@@ -251,7 +251,7 @@ def use_case_3():
                 timeseries_resource = session.get_timeseries_resource_info(timeseries_key=timskey)
                 print(f"[{timskey}]: \n"
                       f"-----\n"
-                      f"{get_resource_information(timeseries_resource)}")
+                      f"{get_timeseries_resource_information(timeseries_resource)}")
 
                 # Retrieve the time series points in a given interval
                 timeseries = session.read_timeseries_points(start_time=start,

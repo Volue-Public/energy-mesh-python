@@ -267,7 +267,7 @@ async def test_update_timeseries_resource():
             if "new_unit_of_measurement" in test_case:
                 assert timeseries_info.unit_of_measurement == new_unit_of_measurement
 
-                await session.rollback()
+            await session.rollback()
 
 
 @pytest.mark.asyncio
