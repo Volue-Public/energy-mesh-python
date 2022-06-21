@@ -13,7 +13,7 @@ import uuid
 
 import pyarrow as pa
 
-from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute
+from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute, TimeseriesResource
 
 
 @dataclass()
@@ -120,29 +120,40 @@ def get_timeseries_0():
     return timeseries, full_name
 
 
-def get_timeseries_1():
+def get_physical_timeseries():
     """
-    Timeseries with timeseries key.
-    StorageType: Classic
-    Kind: Timeseries with 1 TimeseriesEntry
+    Physical time series from SimpleThermalModel test model.
     """
-    timeseries_entry_1 = TestTimeseriesEntry(
-        id=uuid.UUID("00000004-0002-0000-0000-000000000000")
-    )
-    timeseries = TestTimeseries(
-        id=uuid.UUID("00000003-0002-0000-0000-000000000000"),
-        timeseries_key=2,
+    ts_name = "chimney2TimeSeriesRaw"
+    test_timeseries = TimeseriesResource(
+        timeseries_key=3,
         temporary=False,
-        curve=Timeseries.Curve.PIECEWISELINEAR,
+        curve_type=Timeseries.Curve.PIECEWISELINEAR,
         resolution=Timeseries.Resolution.HOUR,
-        unit_of_measurement="SomeUnit1",
-        path='/SimpleThermalTestResourceCatalog/',
-        name="chimney1TimeSeriesRaw",
-        entries=[timeseries_entry_1]
+        unit_of_measurement="Unit2",
+        path=f"Resource/SimpleThermalTestResourceCatalog/{ts_name}",
+        name=ts_name,
+        virtual_timeseries_expression=""
     )
+    return test_timeseries
 
-    full_name = timeseries.silo + timeseries.path + timeseries.name
-    return timeseries, full_name
+
+def get_virtual_timeseries():
+    """
+    Virtual time series from SimpleThermalModel test model.
+    """
+    ts_name = "simpleVtsTimeseries"
+    test_timeseries = TimeseriesResource(
+        timeseries_key=4,
+        temporary=False,
+        curve_type=Timeseries.Curve.PIECEWISELINEAR,
+        resolution=Timeseries.Resolution.HOUR,
+        unit_of_measurement="",
+        path=f"Resource/SimpleThermalTestResourceCatalog/{ts_name}",
+        name=ts_name,
+        virtual_timeseries_expression="## = 5\n"
+    )
+    return test_timeseries
 
 
 def get_timeseries_2():

@@ -21,6 +21,7 @@ class TimeseriesResource:
     curve_type: Timeseries.Curve = None
     resolution: Timeseries.Resolution = None
     unit_of_measurement: str = None
+    virtual_timeseries_expression: str = None
 
     @classmethod
     def _from_proto_timeseries_resource(cls,
@@ -38,5 +39,6 @@ class TimeseriesResource:
         resource.curve_type = _from_proto_curve_type(proto_timeseries_resource.curve_type)
         resource.resolution = _from_proto_resolution(proto_timeseries_resource.resolution)
         resource.unit_of_measurement = proto_timeseries_resource.unit_of_measurement
+        resource.virtual_timeseries_expression = proto_timeseries_resource.virtual_timeseries_expression
 
         return resource

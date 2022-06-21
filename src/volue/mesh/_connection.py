@@ -9,10 +9,10 @@ import uuid
 from google import protobuf
 import grpc
 
-from volue.mesh import Timeseries, MeshObjectId, AttributeBase, TimeseriesAttribute, Object
+from volue.mesh import Timeseries, MeshObjectId, AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import AttributesFilter, _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval, \
-    _read_proto_reply, _to_proto_object_id, _to_proto_timeseries, _to_proto_curve_type
+    _read_proto_reply, _to_proto_object_id, _to_proto_timeseries
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
@@ -104,108 +104,24 @@ class Connection(_base_connection.Connection):
                     timeseries=_to_proto_timeseries(timeseries)
                 ))
 
-        def get_timeseries_resource_info(self,
-                                         uuid_id: uuid.UUID = None,
-                                         path: str = None,
-                                         timskey: int = None,
-                                         ) -> core_pb2.TimeseriesEntry:
-            """
-            Request information associated with a physical time series entry. *Time series entry* is the raw timestamps, values and flags of a times series. It is stored in the resource catalog and will often be connected to a :ref:`time series attribute <mesh_attribute>`.
-
-            Args:
-                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-                path (str): path in the resource model.
-                timskey (int): integer that only applies to a specific physical time series
-
-            Note:
-                This `path` is NOT the same as full name or the path in the Mesh model,
-                this `path` refers to its location in the resource catalog.
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-
-            Returns:
-                core_pb2.TimeseriesEntry
-            """
-            entry_id = core_pb2.TimeseriesEntryId()
-            if timskey is not None:
-                entry_id.timeseries_key = timskey
-            elif uuid_id is not None:
-                entry_id.guid.CopyFrom(_to_proto_guid(uuid_id))
-            elif path is not None:
-                entry_id.path = path
-            else:
-                raise Exception("Need to specify either uuid_id, timeseries_key or path.")
-
-            reply = self.mesh_service.GetTimeseriesEntry(
-                core_pb2.GetTimeseriesEntryRequest(
+        def get_timeseries_resource_info(
+                self,
+                timeseries_key: int) -> TimeseriesResource:
+            proto_timeseries_resource = self.mesh_service.GetTimeseriesResource(
+                core_pb2.GetTimeseriesResourceRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    entry_id=entry_id
+                    timeseries_resource_key=timeseries_key
                 ))
-            return reply
+            return TimeseriesResource._from_proto_timeseries_resource(proto_timeseries_resource)
 
-        def update_timeseries_resource_info(self,
-                                            uuid_id: uuid.UUID = None,
-                                            path: str = None,
-                                            timskey: int = None,
-                                            new_path: str = None,
-                                            new_curve_type: Timeseries.Curve = None,
-                                            new_unit_of_measurement: str = None
-                                            ) -> None:
-            """
-            Update information associated with a physical time series.
-
-            Args:
-                uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-                path (str): path in the resource model.
-                timskey (int): integer that only applies to a specific physical time series
-                new_path (str): set new  path in the resource model.
-                new_curve_type (Timeseries.Curve): set new  curve type for the time series.
-                new_unit_of_measurement (str): set new  unit of measurement for the time series.
-
-            Note:
-                Specify either uuid_id, path or timskey to a timeseries entry.
-                Only one is needed.
-
-            Note:
-                Specify which ever of the new_* fields you want to update.
-
-            Note:
-                This `path` is NOT the same as full name or the path in the Mesh model,
-                this `path` refers to its location in the resource catalog.
-
-            Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            """
-            entry_id = core_pb2.TimeseriesEntryId()
-            if timskey is not None:
-                entry_id.timeseries_key = timskey
-            elif uuid_id is not None:
-                entry_id.guid.CopyFrom(_to_proto_guid(uuid_id))
-            elif path is not None:
-                entry_id.path = path
-            else:
-                raise Exception("Need to specify either uuid_id, timeseries_key or path.")
-
-            request = core_pb2.UpdateTimeseriesEntryRequest(
-                session_id=_to_proto_guid(self.session_id),
-                entry_id=entry_id
-            )
-
-            paths = []
-            if new_path is not None:
-                request.new_path = new_path
-                paths.append("new_path")
-            if new_curve_type is not None:
-                request.new_curve_type.CopyFrom(_to_proto_curve_type(new_curve_type))
-                paths.append("new_curve_type")
-            if new_unit_of_measurement is not None:
-                request.new_unit_of_measurement = new_unit_of_measurement
-                paths.append("new_unit_of_measurement")
-
-            request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=paths))
-
-            self.mesh_service.UpdateTimeseriesEntry(request)
+        def update_timeseries_resource_info(
+                self,
+                timeseries_key: int,
+                new_curve_type: Timeseries.Curve = None,
+                new_unit_of_measurement: str = None) -> None:
+            request = super()._prepare_update_timeseries_resource_request(
+                timeseries_key, new_curve_type, new_unit_of_measurement)
+            self.mesh_service.UpdateTimeseriesResource(request)
 
         def get_attribute(
                 self,
@@ -265,7 +181,7 @@ class Connection(_base_connection.Connection):
                 attribute_id=attribute_id,
                 attribute_path=attribute_path,
                 value=value)
-            return self.mesh_service.UpdateSimpleAttribute(request)
+            self.mesh_service.UpdateSimpleAttribute(request)
 
         def update_timeseries_attribute(
                 self,
@@ -279,7 +195,7 @@ class Connection(_base_connection.Connection):
                 attribute_path=attribute_path,
                 new_local_expression=new_local_expression,
                 new_timeseries_resource_key=new_timeseries_resource_key)
-            return self.mesh_service.UpdateTimeseriesAttribute(request)
+            self.mesh_service.UpdateTimeseriesAttribute(request)
 
         def get_object(
                 self,
@@ -328,7 +244,7 @@ class Connection(_base_connection.Connection):
                 new_owner_attribute_path: Optional[str] = None) -> None:
             request = super()._prepare_update_object_request(
                 object_id, object_path, new_name, new_owner_attribute_id, new_owner_attribute_path)
-            return self.mesh_service.UpdateObject(request)
+            self.mesh_service.UpdateObject(request)
 
         def delete_object(
                 self,
@@ -337,7 +253,7 @@ class Connection(_base_connection.Connection):
                 recursive_delete: bool = False) -> None:
             request = super()._prepare_delete_object_request(
                 object_id, object_path, recursive_delete)
-            return self.mesh_service.DeleteObject(request)
+            self.mesh_service.DeleteObject(request)
 
         def forecast_functions(
                 self,

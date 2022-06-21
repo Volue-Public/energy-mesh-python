@@ -7,9 +7,10 @@ from google import protobuf
 
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
 from ._common import AttributesFilter, MeshObjectId, _to_proto_attribute_masks, _to_proto_guid, \
-    _to_proto_mesh_id, _datetime_to_timestamp_pb2
+    _to_proto_mesh_id, _to_proto_curve_type, _datetime_to_timestamp_pb2
 from ._object import Object
 from ._timeseries import Timeseries
+from ._timeseries_resource import TimeseriesResource
 
 from .calc.forecast import ForecastFunctions
 from.calc.history import HistoryFunctions
@@ -413,6 +414,44 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
+    def get_timeseries_resource_info(
+            self,
+            timeseries_key: int) -> TimeseriesResource:
+        """
+        Request information (like curve type or resolution) associated with
+        a physical or virtual time series.
+
+        Args:
+            timeseries_key: integer that only applies to a specific physical or
+                virtual time series.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
+    def update_timeseries_resource_info(
+            self,
+            timeseries_key: int,
+            new_curve_type: Timeseries.Curve = None,
+            new_unit_of_measurement: str = None) -> None:
+        """
+        Update information associated with a physical or virtual time series.
+
+        Args:
+            timeseries_key: integer that only applies to a specific physical or
+                virtual time series.
+            new_curve_type: set new  curve type.
+            new_unit_of_measurement: set new  unit of measurement.
+
+        Note:
+            Specify which ever of the new_* fields you want to update.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
+
+    @abc.abstractmethod
     def forecast_functions(
             self,
             relative_to: MeshObjectId,
@@ -750,3 +789,28 @@ class Session(abc.ABC):
             new_singular_value = self._to_proto_singular_attribute_value(value)
 
         return (new_singular_value, new_collection_values)
+
+
+    def _prepare_update_timeseries_resource_request(
+        self,
+        timeseries_key: int,
+        new_curve_type: Timeseries.Curve,
+        new_unit_of_measurement: str
+    ) -> core_pb2.UpdateTimeseriesResourceRequest:
+
+        request = core_pb2.UpdateTimeseriesResourceRequest(
+            session_id=_to_proto_guid(self.session_id),
+            timeseries_resource_key=timeseries_key
+        )
+
+        fields_to_update = []
+        if new_curve_type is not None:
+            fields_to_update.append("new_curve_type")
+            request.new_curve_type.CopyFrom(_to_proto_curve_type(new_curve_type))
+
+        if new_unit_of_measurement is not None:
+            fields_to_update.append("new_unit_of_measurement")
+            request.new_unit_of_measurement = new_unit_of_measurement
+
+        request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
+        return request

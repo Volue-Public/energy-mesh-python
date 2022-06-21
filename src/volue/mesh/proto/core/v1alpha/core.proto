@@ -186,6 +186,22 @@ service MeshService {
   // Update existing time series attribute in the model.
   rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (UpdateTimeseriesAttributeResponse) {}
 
+  // Get time series resource.
+  // A time series resource:
+  // - can be either physical or virtual time series
+  // - can be connected to time series attributes.
+  // - is identified by time series key or path within Resource catalog
+  //
+  // Physical time series has data (timestamps, values and flags) and
+  // meta data (e.g.: curve type, resolution, etc.).
+  // Virtual time series has meta data but instead of timestamps, values and
+  // flags it has defined an expression to calculate time series data
+  // (similar to calculation time series) but is stored in the resources.
+  rpc GetTimeseriesResource(GetTimeseriesResourceRequest) returns (TimeseriesResource) {}
+
+  // Update existing time series resource.
+  rpc UpdateTimeseriesResource(UpdateTimeseriesResourceRequest) returns (UpdateTimeseriesResourceResponse) {}
+
   // Get the Mesh server version information.
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 }
@@ -528,6 +544,37 @@ message UpdateTimeseriesAttributeResponse {
   // currently empty
 }
 
+message GetTimeseriesResourceRequest {
+  // The server session ID
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series key of the time series resource to be returned.
+  int64 timeseries_resource_key = 2;
+}
+
+message UpdateTimeseriesResourceRequest {
+  // ID of the Mesh server's session in which changes should be applied.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series key of the time series resource to be updated.
+  int64 timeseries_resource_key = 2;
+
+  // An array containing field names to be updated.
+  // For example to update a time series resource curve type and
+  // unit of measurement:
+  //   field_mask = ['new_curve_type', 'new_unit_of_measurement']
+  //   new_curve_type = CurveType::PIECEWISELINEAR
+  //   new_unit_of_measurement = 'new unit'
+  google.protobuf.FieldMask field_mask = 3;
+
+  volue.mesh.grpc.type.Curve new_curve_type = 4;
+  string new_unit_of_measurement = 5;
+}
+
+message UpdateTimeseriesResourceResponse {
+  // currently empty
+}
+
 // Contains one or more ways to uniquely identify an object.
 message ObjectId {
   optional int64 timskey = 1;
@@ -611,6 +658,9 @@ message TimeseriesResource {
 
   // [OUTPUT_ONLY]
   string unit_of_measurement = 7;
+
+  // [OUTPUT_ONLY]
+  string virtual_timeseries_expression = 8;
 }
 
 message TimeseriesAttribute {

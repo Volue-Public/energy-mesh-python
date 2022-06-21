@@ -21,8 +21,8 @@ from volue.mesh.calc.common import Timezone
 import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
-from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_timeseries_1, \
-    get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
+from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_physical_timeseries, \
+    get_virtual_timeseries, get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
 
 
 @pytest.mark.database
@@ -204,78 +204,63 @@ def test_write_timeseries_points_with_different_pyarrow_table_datetime_timezones
 
 
 @pytest.mark.database
-def test_get_timeseries():
-    """Check that timeseries entry data can be retrieved"""
+def test_get_timeseries_resource():
+    """Check that time series resource can be retrieved."""
 
-    timeseries, full_name = get_timeseries_1()
+    physical_timeseries = get_physical_timeseries()
+    virtual_timeseries = get_virtual_timeseries()
+
+    test_cases = [physical_timeseries, virtual_timeseries]
+
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
-        try:
-            test_case_1 = {"path": full_name}
-            test_case_2 = {"uuid_id": timeseries.id}
-            test_case_3 = {"timskey": timeseries.timeseries_key}
-            test_cases = [test_case_1, test_case_2, test_case_3]
-            for test_case in test_cases:
-                timeseries_info = session.get_timeseries_resource_info(**test_case)
-                assert _from_proto_guid(timeseries_info.id) == timeseries.id
-                assert timeseries_info.timeseries_key == timeseries.timeseries_key
-                assert timeseries_info.path == timeseries.path
-                assert timeseries_info.temporary == timeseries.temporary
-                assert timeseries_info.curve_type == _to_proto_curve_type(timeseries.curve)
-                assert timeseries_info.resolution.type == timeseries.resolution.value
-                assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
-
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not read timeseries entry: {error}")
+        for test_case in test_cases:
+            timeseries_info = session.get_timeseries_resource_info(
+                timeseries_key=test_case.timeseries_key)
+            assert timeseries_info.timeseries_key == test_case.timeseries_key
+            assert timeseries_info.path == test_case.path
+            assert timeseries_info.name == test_case.name
+            assert timeseries_info.temporary == test_case.temporary
+            assert timeseries_info.curve_type == test_case.curve_type
+            assert timeseries_info.resolution == test_case.resolution
+            assert timeseries_info.unit_of_measurement == test_case.unit_of_measurement
+            #assert timeseries_info.virtual_timeseries_expression == test_case.virtual_timeseries_expression
 
 
 @pytest.mark.database
-def test_update_timeseries_entry():
-    """Check that timeseries entry data can be updated"""
+def test_update_timeseries_resource():
+    """Check that time series resource can be updated."""
 
     connection = Connection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
-    new_path = "/test"
-    new_curve_type = "curvy"  # -> UNKNOWN
-    new_unit_of_measurement = "mega watt"
+    new_curve_type = Timeseries.Curve.STAIRCASESTARTOFSTEP
+    new_unit_of_measurement = "Unit1"
 
     with connection.create_session() as session:
-        try:
-            ts_entry, full_name = get_timeseries_1()
+        timeseries = get_physical_timeseries()
 
-            test_ids = [{"path": full_name}, {"uuid_id": ts_entry.id}, {"timskey": ts_entry.timeseries_key}]
-            test_new_path = {"new_path": new_path}
-            test_new_curve_type = {"new_curve_type": new_curve_type}
-            test_new_unit_of_measurement = {"new_unit_of_measurement": new_unit_of_measurement}
-            test_cases = []
-            for test_id in test_ids:
-                test_cases.extend(
-                    [{**test_id, **test_new_path},
-                     {**test_id, **test_new_curve_type},
-                     {**test_id, **test_new_unit_of_measurement},
-                     {**test_id, **test_new_path, **test_new_curve_type},
-                     {**test_id, **test_new_path, **test_new_unit_of_measurement},
-                     {**test_id, **test_new_curve_type, **test_new_unit_of_measurement},
-                     {**test_id, **test_new_path, **test_new_curve_type, **test_new_unit_of_measurement}]
-                )
-            for test_case in test_cases:
-                session.update_timeseries_resource_info(**test_case)
-                timeseries_info = session.get_timeseries_resource_info(**test_id)
+        test_id = {"timeseries_key": timeseries.timeseries_key}
+        test_new_curve_type = {"new_curve_type": new_curve_type}
+        test_new_unit_of_measurement = {"new_unit_of_measurement": new_unit_of_measurement}
+        test_cases = [
+            {**test_id, **test_new_curve_type},
+            {**test_id, **test_new_unit_of_measurement},
+            {**test_id, **test_new_curve_type, **test_new_unit_of_measurement}
+        ]
 
-                if "new_path" in test_case:
-                    assert timeseries_info.path == new_path
-                if "new_curve_type" in test_case:
-                    assert timeseries_info.curve_type.type == resources_pb2.Curve.UNKNOWN
-                if "new_unit_of_measurement" in test_case:
-                    assert timeseries_info.unit_of_measurement == new_unit_of_measurement
+        for test_case in test_cases:
+            session.update_timeseries_resource_info(**test_case)
+            timeseries_info = session.get_timeseries_resource_info(**test_id)
 
-                session.rollback()
+            if "new_curve_type" in test_case:
+                assert timeseries_info.curve_type == new_curve_type
+            if "new_unit_of_measurement" in test_case:
+                assert timeseries_info.unit_of_measurement == new_unit_of_measurement
 
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not update timeseries entry: {error}")
+            session.rollback()
 
 
 @pytest.mark.database
@@ -524,30 +509,31 @@ def test_rollback():
                             sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
 
     with connection.create_session() as session:
-        try:
-            _, full_name = get_timeseries_1()
-            new_path = "/new_path"
+        timeseries = get_physical_timeseries()
+        new_unit_of_measurement = "Unit1"
 
-            # check baseline
-            timeseries_info0 = session.get_timeseries_resource_info(path=full_name)
-            assert timeseries_info0.path != new_path
+        # check baseline
+        timeseries_info = session.get_timeseries_resource_info(
+            timeseries_key=timeseries.timeseries_key)
+        assert timeseries_info.unit_of_measurement != new_unit_of_measurement
 
-            # change something
-            session.update_timeseries_resource_info(path=full_name, new_path=new_path)
+        # change something
+        session.update_timeseries_resource_info(
+            timeseries_key=timeseries.timeseries_key,
+            new_unit_of_measurement=new_unit_of_measurement)
 
-            # check that the change is in the session
-            timeseries_info1 = session.get_timeseries_resource_info(path=full_name)
-            assert timeseries_info1.path == new_path
+        # check that the change is in the session
+        timeseries_info = session.get_timeseries_resource_info(
+            timeseries_key=timeseries.timeseries_key)
+        assert timeseries_info.unit_of_measurement == new_unit_of_measurement
 
-            # rollback
-            session.rollback()
+        # rollback
+        session.rollback()
 
-            # check that changes have been discarded
-            timeseries_info2 = session.get_timeseries_resource_info(path=full_name)
-            assert timeseries_info2.path != new_path
-
-        except grpc.RpcError as error:
-            pytest.fail(f"Could not rollback changes: {error}")
+        # check that changes have been discarded
+        timeseries_info = session.get_timeseries_resource_info(
+            timeseries_key=timeseries.timeseries_key)
+        assert timeseries_info.unit_of_measurement != new_unit_of_measurement
 
 
 @pytest.mark.database
