@@ -331,6 +331,16 @@
                 <span class="n">request_serializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeRequest</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
                 <span class="n">response_deserializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeResponse</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
                 <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GetTimeseriesResource</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">unary_unary</span><span class="p">(</span>
+                <span class="s1">&#39;/volue.mesh.grpc.core.v1alpha.MeshService/GetTimeseriesResource&#39;</span><span class="p">,</span>
+                <span class="n">request_serializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">GetTimeseriesResourceRequest</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
+                <span class="n">response_deserializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UpdateTimeseriesResource</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">unary_unary</span><span class="p">(</span>
+                <span class="s1">&#39;/volue.mesh.grpc.core.v1alpha.MeshService/UpdateTimeseriesResource&#39;</span><span class="p">,</span>
+                <span class="n">request_serializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesResourceRequest</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
+                <span class="n">response_deserializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesResourceResponse</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
+                <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">GetVersion</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">unary_unary</span><span class="p">(</span>
                 <span class="s1">&#39;/volue.mesh.grpc.core.v1alpha.MeshService/GetVersion&#39;</span><span class="p">,</span>
                 <span class="n">request_serializer</span><span class="o">=</span><span class="n">google_dot_protobuf_dot_empty__pb2</span><span class="o">.</span><span class="n">Empty</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
@@ -611,6 +621,30 @@
         <span class="n">context</span><span class="o">.</span><span class="n">set_details</span><span class="p">(</span><span class="s1">&#39;Method not implemented!&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Method not implemented!&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="MeshServiceServicer.GetTimeseriesResource"><a class="viewcode-back" href="../../../../../../api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer.GetTimeseriesResource">[docs]</a>    <span class="k">def</span> <span class="nf">GetTimeseriesResource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get time series resource.</span>
+<span class="sd">        A time series resource:</span>
+<span class="sd">        - can be either physical or virtual time series</span>
+<span class="sd">        - can be connected to time series attributes.</span>
+<span class="sd">        - is identified by time series key or path within Resource catalog</span>
+
+<span class="sd">        Physical time series has data (timestamps, values and flags) and</span>
+<span class="sd">        meta data (e.g.: curve type, resolution, etc.).</span>
+<span class="sd">        Virtual time series has meta data but instead of timestamps, values and</span>
+<span class="sd">        flags it has defined an expression to calculate time series data</span>
+<span class="sd">        (similar to calculation time series) but is stored in the resources.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_code</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">UNIMPLEMENTED</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_details</span><span class="p">(</span><span class="s1">&#39;Method not implemented!&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Method not implemented!&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshServiceServicer.UpdateTimeseriesResource"><a class="viewcode-back" href="../../../../../../api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer.UpdateTimeseriesResource">[docs]</a>    <span class="k">def</span> <span class="nf">UpdateTimeseriesResource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update existing time series resource.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_code</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">UNIMPLEMENTED</span><span class="p">)</span>
+        <span class="n">context</span><span class="o">.</span><span class="n">set_details</span><span class="p">(</span><span class="s1">&#39;Method not implemented!&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Method not implemented!&#39;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="MeshServiceServicer.GetVersion"><a class="viewcode-back" href="../../../../../../api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer.GetVersion">[docs]</a>    <span class="k">def</span> <span class="nf">GetVersion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the Mesh server version information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -740,6 +774,16 @@
                     <span class="n">servicer</span><span class="o">.</span><span class="n">UpdateTimeseriesAttribute</span><span class="p">,</span>
                     <span class="n">request_deserializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeRequest</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
                     <span class="n">response_serializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeResponse</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;GetTimeseriesResource&#39;</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">unary_unary_rpc_method_handler</span><span class="p">(</span>
+                    <span class="n">servicer</span><span class="o">.</span><span class="n">GetTimeseriesResource</span><span class="p">,</span>
+                    <span class="n">request_deserializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">GetTimeseriesResourceRequest</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
+                    <span class="n">response_serializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="s1">&#39;UpdateTimeseriesResource&#39;</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">unary_unary_rpc_method_handler</span><span class="p">(</span>
+                    <span class="n">servicer</span><span class="o">.</span><span class="n">UpdateTimeseriesResource</span><span class="p">,</span>
+                    <span class="n">request_deserializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesResourceRequest</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
+                    <span class="n">response_serializer</span><span class="o">=</span><span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesResourceResponse</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="s1">&#39;GetVersion&#39;</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">unary_unary_rpc_method_handler</span><span class="p">(</span>
                     <span class="n">servicer</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">,</span>
@@ -1183,6 +1227,40 @@
         <span class="k">return</span> <span class="n">grpc</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">unary_unary</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="s1">&#39;/volue.mesh.grpc.core.v1alpha.MeshService/UpdateTimeseriesAttribute&#39;</span><span class="p">,</span>
             <span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeRequest</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
             <span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeResponse</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
+            <span class="n">options</span><span class="p">,</span> <span class="n">channel_credentials</span><span class="p">,</span>
+            <span class="n">insecure</span><span class="p">,</span> <span class="n">call_credentials</span><span class="p">,</span> <span class="n">compression</span><span class="p">,</span> <span class="n">wait_for_ready</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshService.GetTimeseriesResource"><a class="viewcode-back" href="../../../../../../api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService.GetTimeseriesResource">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">GetTimeseriesResource</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">(),</span>
+            <span class="n">channel_credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">call_credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">insecure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">compression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">wait_for_ready</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">grpc</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">unary_unary</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="s1">&#39;/volue.mesh.grpc.core.v1alpha.MeshService/GetTimeseriesResource&#39;</span><span class="p">,</span>
+            <span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">GetTimeseriesResourceRequest</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
+            <span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
+            <span class="n">options</span><span class="p">,</span> <span class="n">channel_credentials</span><span class="p">,</span>
+            <span class="n">insecure</span><span class="p">,</span> <span class="n">call_credentials</span><span class="p">,</span> <span class="n">compression</span><span class="p">,</span> <span class="n">wait_for_ready</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MeshService.UpdateTimeseriesResource"><a class="viewcode-back" href="../../../../../../api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService.UpdateTimeseriesResource">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">UpdateTimeseriesResource</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">,</span>
+            <span class="n">options</span><span class="o">=</span><span class="p">(),</span>
+            <span class="n">channel_credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">call_credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">insecure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">compression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">wait_for_ready</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">grpc</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">unary_unary</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="s1">&#39;/volue.mesh.grpc.core.v1alpha.MeshService/UpdateTimeseriesResource&#39;</span><span class="p">,</span>
+            <span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesResourceRequest</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">,</span>
+            <span class="n">volue_dot_mesh_dot_proto_dot_core_dot_v1alpha_dot_core__pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesResourceResponse</span><span class="o">.</span><span class="n">FromString</span><span class="p">,</span>
             <span class="n">options</span><span class="p">,</span> <span class="n">channel_credentials</span><span class="p">,</span>
             <span class="n">insecure</span><span class="p">,</span> <span class="n">call_credentials</span><span class="p">,</span> <span class="n">compression</span><span class="p">,</span> <span class="n">wait_for_ready</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span></div>
 

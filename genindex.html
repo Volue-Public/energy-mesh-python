@@ -508,6 +508,8 @@
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesEntryRequest.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesEntryRequest attribute)</a>
 </li>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest attribute)</a>
+</li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.Int64AttributeDefinition.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.Int64AttributeDefinition attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.MeshId.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.MeshId attribute)</a>
@@ -571,6 +573,10 @@
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryResponse.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryResponse attribute)</a>
+</li>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest attribute)</a>
+</li>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceResponse.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceResponse attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UserIdentity.DESCRIPTOR">(volue.mesh.proto.core.v1alpha.core_pb2.UserIdentity attribute)</a>
 </li>
@@ -646,17 +652,19 @@
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest.field_mask">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest attribute)</a>
 </li>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest.field_mask">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest attribute)</a>
+</li>
       </ul></li>
       <li><a href="api.html#volue.mesh.calc.transform.Method.FIRST">FIRST (volue.mesh.calc.transform.Method attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.aio.Connection.Session.forecast_functions">forecast_functions() (volue.mesh.aio.Connection.Session method)</a>
 
       <ul>
         <li><a href="api.html#volue.mesh.Connection.Session.forecast_functions">(volue.mesh.Connection.Session method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctions">ForecastFunctions (class in volue.mesh.calc.forecast)</a>
 </li>
       <li><a href="api.html#volue.mesh.calc.forecast.ForecastFunctionsAsync">ForecastFunctionsAsync (class in volue.mesh.calc.forecast)</a>
@@ -774,6 +782,14 @@
 </li>
       </ul></li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesEntryRequest">GetTimeseriesEntryRequest (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
+</li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService.GetTimeseriesResource">GetTimeseriesResource() (volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService static method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer.GetTimeseriesResource">(volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer method)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest">GetTimeseriesResourceRequest (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService.GetUserIdentity">GetUserIdentity() (volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService static method)</a>
 
@@ -1076,14 +1092,18 @@
 </li>
       <li><a href="api.html#volue.mesh.AttributeBase.Definition.namespace">namespace (volue.mesh.AttributeBase.Definition attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.AttributesMasks.namespace_mask">namespace_mask (volue.mesh.proto.core.v1alpha.core_pb2.AttributesMasks attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateSimpleAttributeRequest.new_collection_values">new_collection_values (volue.mesh.proto.core.v1alpha.core_pb2.UpdateSimpleAttributeRequest attribute)</a>
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest.new_curve_type">new_curve_type (volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest attribute)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest.new_curve_type">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesAttributeRequest.new_local_expression">new_local_expression (volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesAttributeRequest attribute)</a>
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateObjectRequest.new_name">new_name (volue.mesh.proto.core.v1alpha.core_pb2.UpdateObjectRequest attribute)</a>
@@ -1097,7 +1117,11 @@
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesAttributeRequest.new_timeseries_resource_key">new_timeseries_resource_key (volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesAttributeRequest attribute)</a>
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest.new_unit_of_measurement">new_unit_of_measurement (volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest attribute)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest.new_unit_of_measurement">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.Timeseries.PointFlags.NOT_OK">NOT_OK (volue.mesh.Timeseries.PointFlags attribute)</a>
 </li>
       <li><a href="api.html#volue.mesh.Timeseries.number_of_points">number_of_points (volue.mesh.Timeseries property)</a>
@@ -1369,6 +1393,8 @@
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesEntryRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesEntryRequest attribute)</a>
 </li>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest attribute)</a>
+</li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.ReadTimeseriesRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.ReadTimeseriesRequest attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.SearchAttributesRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.SearchAttributesRequest attribute)</a>
@@ -1384,6 +1410,8 @@
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesAttributeRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesAttributeRequest attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest attribute)</a>
+</li>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.WriteTimeseriesRequest.session_id">(volue.mesh.proto.core.v1alpha.core_pb2.WriteTimeseriesRequest attribute)</a>
 </li>
@@ -1610,10 +1638,12 @@
         <li><a href="api.html#volue.mesh.tests.test_connection.test_get_string_attribute">(in module volue.mesh.tests.test_connection)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#volue.mesh.tests.test_connection.test_get_timeseries">test_get_timeseries() (in module volue.mesh.tests.test_connection)</a>
+      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_get_timeseries_resource">test_get_timeseries_resource() (in module volue.mesh.tests.test_aio_connection)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.tests.test_connection.test_get_timeseries_resource">(in module volue.mesh.tests.test_connection)</a>
 </li>
-      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_get_timeseries_async">test_get_timeseries_async() (in module volue.mesh.tests.test_aio_connection)</a>
-</li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_get_utc_time_attribute">test_get_utc_time_attribute() (in module volue.mesh.tests.test_aio_connection)</a>
 
       <ul>
@@ -1686,10 +1716,10 @@
         <li><a href="api.html#volue.mesh.tests.test_connection.test_rollback">(in module volue.mesh.tests.test_connection)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.tests.test_examples.test_run_example_scripts">test_run_example_scripts() (in module volue.mesh.tests.test_examples)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_search_multiple_attributes">test_search_multiple_attributes() (in module volue.mesh.tests.test_aio_connection)</a>
 
       <ul>
@@ -1782,10 +1812,12 @@
         <li><a href="api.html#volue.mesh.tests.test_connection.test_update_timeseries_attribute_with_timeseries_resource">(in module volue.mesh.tests.test_connection)</a>
 </li>
       </ul></li>
-      <li><a href="api.html#volue.mesh.tests.test_connection.test_update_timeseries_entry">test_update_timeseries_entry() (in module volue.mesh.tests.test_connection)</a>
+      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_resource">test_update_timeseries_resource() (in module volue.mesh.tests.test_aio_connection)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.tests.test_connection.test_update_timeseries_resource">(in module volue.mesh.tests.test_connection)</a>
 </li>
-      <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_update_timeseries_entry_async">test_update_timeseries_entry_async() (in module volue.mesh.tests.test_aio_connection)</a>
-</li>
+      </ul></li>
       <li><a href="api.html#volue.mesh.tests.test_connection.test_write_timeseries_points">test_write_timeseries_points() (in module volue.mesh.tests.test_connection)</a>
 </li>
       <li><a href="api.html#volue.mesh.tests.test_aio_connection.test_write_timeseries_points_async">test_write_timeseries_points_async() (in module volue.mesh.tests.test_aio_connection)</a>
@@ -1836,6 +1868,12 @@
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesResource.timeseries_key">(volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesResource attribute)</a>
 </li>
         <li><a href="api.html#volue.mesh.TimeseriesResource.timeseries_key">(volue.mesh.TimeseriesResource attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest.timeseries_resource_key">timeseries_resource_key (volue.mesh.proto.core.v1alpha.core_pb2.GetTimeseriesResourceRequest attribute)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest.timeseries_resource_key">(volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest attribute)</a>
 </li>
       </ul></li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.CalculationResponse.timeseries_results">timeseries_results (volue.mesh.proto.core.v1alpha.core_pb2.CalculationResponse attribute)</a>
@@ -1964,12 +2002,12 @@
         <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer.UpdateObject">(volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateObjectRequest">UpdateObjectRequest (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateObjectResponse">UpdateObjectResponse (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService.UpdateSimpleAttribute">UpdateSimpleAttribute() (volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService static method)</a>
 
       <ul>
@@ -1999,6 +2037,16 @@
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryRequest">UpdateTimeseriesEntryRequest (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesEntryResponse">UpdateTimeseriesEntryResponse (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
+</li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService.UpdateTimeseriesResource">UpdateTimeseriesResource() (volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshService static method)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer.UpdateTimeseriesResource">(volue.mesh.proto.core.v1alpha.core_pb2_grpc.MeshServiceServicer method)</a>
+</li>
+      </ul></li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceRequest">UpdateTimeseriesResourceRequest (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
+</li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.UpdateTimeseriesResourceResponse">UpdateTimeseriesResourceResponse (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
 </li>
       <li><a href="api.html#volue.mesh.Authentication.Parameters.user_principal">user_principal (volue.mesh.Authentication.Parameters attribute)</a>
 </li>
@@ -2050,6 +2098,12 @@
 </li>
       <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.VersionInfo">VersionInfo (class in volue.mesh.proto.core.v1alpha.core_pb2)</a>
 </li>
+      <li><a href="api.html#volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesResource.virtual_timeseries_expression">virtual_timeseries_expression (volue.mesh.proto.core.v1alpha.core_pb2.TimeseriesResource attribute)</a>
+
+      <ul>
+        <li><a href="api.html#volue.mesh.TimeseriesResource.virtual_timeseries_expression">(volue.mesh.TimeseriesResource attribute)</a>
+</li>
+      </ul></li>
       <li>
     volue.mesh
 
@@ -2120,6 +2174,8 @@
         <li><a href="api.html#module-volue.mesh.examples.connect_asynchronously">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     volue.mesh.examples.connect_synchronously
 
@@ -2127,8 +2183,6 @@
         <li><a href="api.html#module-volue.mesh.examples.connect_synchronously">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     volue.mesh.examples.get_version
 
