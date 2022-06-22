@@ -266,10 +266,7 @@ message ReadTimeseriesRequest {
   // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // The search can return more than one valid object.
-  // In that case, the timeseries will be read for all
-  // valid objects, for the requested interval.
-  ObjectId object_id = 2;
+  MeshId timeseries_id = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
 
   // if we request points from a breakpoint series, the actual points
@@ -280,20 +277,18 @@ message ReadTimeseriesRequest {
 }
 
 message ReadTimeseriesResponse {
-  // A search expression may return several timeseries.
   repeated Timeseries timeseries = 1;
 }
 
 message WriteTimeseriesRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // Must point to exactly one Timeseries
-  // (entry, attribute or value)
-  ObjectId object_id = 2;
-
-  // The resolution of the points has to fit the stored timeseries.
+  // Time series must point to exactly one time series
+  // - attribute or source (pointed by path or ID)
+  // - physical or virtual (pointed by time series key)
+  // The resolution of the points has to fit the stored time series.
   // Otherwise it will be rejected.
-  Timeseries timeseries = 3;
+  Timeseries timeseries = 2;
 }
 
 message WriteTimeseriesResponse {
@@ -575,16 +570,8 @@ message UpdateTimeseriesResourceResponse {
   // currently empty
 }
 
-// Contains one or more ways to uniquely identify an object.
-message ObjectId {
-  optional int64 timskey = 1;
-  optional volue.mesh.grpc.type.Guid guid = 2;
-  optional string full_name = 3;
-}
-
 message Timeseries {
-  // GUID of the timeseries entry.
-  ObjectId object_id = 1;
+  MeshId id = 1;
 
   // Resolution/spacing for this timeseries.
   volue.mesh.grpc.type.Resolution resolution = 2;
