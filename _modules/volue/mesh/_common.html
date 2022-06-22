@@ -550,7 +550,7 @@
 
         <span class="k">if</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;object_id&quot;</span><span class="p">):</span>
             <span class="n">object_id</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">object_id</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">_from_proto_resolution</span><span class="p">(</span><span class="n">resolution</span><span class="p">),</span>
                             <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">,</span>
                             <span class="n">object_id</span><span class="o">.</span><span class="n">timskey</span><span class="p">,</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">object_id</span><span class="o">.</span><span class="n">guid</span><span class="p">),</span> <span class="n">object_id</span><span class="o">.</span><span class="n">full_name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

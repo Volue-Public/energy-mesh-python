@@ -251,11 +251,11 @@
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;utc_time&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint32</span><span class="p">()),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
-    <span class="p">])</span>  <span class="c1"># The pyarrow schema used for timeseries points.</span>
+    <span class="p">])</span>  <span class="c1"># The pyarrow schema used for time series points.</span>
 
 <div class="viewcode-block" id="Timeseries.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">resolution</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">resolution</span><span class="p">:</span> <span class="n">Resolution</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -272,17 +272,17 @@
 <span class="sd">        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            table (pa.Table): the arrow table containing the timestamps, flags and values</span>
-<span class="sd">            resolution (resources_pb2.Resolution): the resolution of the time series</span>
-<span class="sd">            start_time (datetime): the start date and time of the time series interval</span>
-<span class="sd">            end_time (datetime): the end date and time of the time series interval</span>
-<span class="sd">            timskey (int): integer that only applies to a specific physical or virtual time series</span>
+<span class="sd">            table: the arrow table containing the timestamps, flags and values</span>
+<span class="sd">            resolution: the resolution of the time series</span>
+<span class="sd">            start_time: the start date and time of the time series interval</span>
+<span class="sd">            end_time: the end date and time of the time series interval</span>
+<span class="sd">            timskey: integer that only applies to a specific physical or virtual time series</span>
 <span class="sd">            uuid_id:  Universal Unique Identifier for Mesh objects</span>
 <span class="sd">            full_name: path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
 <span class="sd">              See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError:  Error message raised if PyArrow table schema is invalid</span>
+<span class="sd">            TypeError: Error message raised if PyArrow table schema is invalid</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid_id</span>
