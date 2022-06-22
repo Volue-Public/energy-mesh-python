@@ -448,32 +448,12 @@
     <span class="k">return</span> <span class="n">interval</span>
 
 
-<span class="k">def</span> <span class="nf">_to_proto_object_id</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a Timeseries to corresponding protobuf ObjectId</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        timeseries (Timeseries): the time series to convert</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        core_pb2.ObjectId</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">(</span>
-        <span class="n">timskey</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span><span class="p">,</span>
-        <span class="n">guid</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
-        <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span>
-    <span class="p">)</span>
-
-
 <span class="k">def</span> <span class="nf">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a protobuf timeseries reply from Mesh server into Timeseries</span>
+<span class="sd">    Convert a Timeseries to corresponding protobuf Timeseries</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        timeseries (Timeseries):t the timeseries to convert</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        core_pb2.Timeseries</span>
+<span class="sd">        timeseries: the timeseries to convert</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">stream</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
     <span class="n">writer</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">RecordBatchStreamWriter</span><span class="p">(</span>
@@ -484,17 +464,22 @@
     <span class="n">writer</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">)</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
 
-    <span class="n">proto_timeserie</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span>
-        <span class="n">object_id</span><span class="o">=</span><span class="n">_to_proto_object_id</span><span class="p">(</span><span class="n">timeseries</span><span class="p">),</span>
+    <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">_to_proto_mesh_id</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
+        <span class="n">path</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span><span class="p">,</span>
+        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span><span class="p">)</span>
+
+    <span class="n">proto_timeseries</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span>
         <span class="n">resolution</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">_to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
         <span class="n">data</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">proto_timeserie</span>
+    <span class="k">return</span> <span class="n">proto_timeseries</span>
 
 
 
-<span class="k">def</span> <span class="nf">_to_proto_mesh_id</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_to_proto_mesh_id</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
     <span class="n">proto_mesh_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -503,9 +488,11 @@
         <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="k">if</span> <span class="n">timeseries_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">timeseries_key</span>
 
-    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;need to specify either path or id&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeseries_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;need to specify either path, id or time series key&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">proto_mesh_id</span>
 
@@ -538,21 +525,23 @@
 <span class="sd">        List[Timeseries]: list of time series extracted from the reply</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">timeserie</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
-        <span class="n">resolution</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">resolution</span>
-        <span class="n">interval</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">interval</span>
+    <span class="k">for</span> <span class="n">proto_timeseries</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">resolution</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">interval</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data in time series reply for the given interval&#39;</span><span class="p">)</span>
 
-        <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">timeserie</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">proto_timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;object_id&quot;</span><span class="p">):</span>
-            <span class="n">object_id</span> <span class="o">=</span> <span class="n">timeserie</span><span class="o">.</span><span class="n">object_id</span>
+        <span class="k">if</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">):</span>
+            <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">id</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">_from_proto_resolution</span><span class="p">(</span><span class="n">resolution</span><span class="p">),</span>
                             <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">,</span>
-                            <span class="n">object_id</span><span class="o">.</span><span class="n">timskey</span><span class="p">,</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">object_id</span><span class="o">.</span><span class="n">guid</span><span class="p">),</span> <span class="n">object_id</span><span class="o">.</span><span class="n">full_name</span><span class="p">)</span>
+                            <span class="n">timeseries_id</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">,</span>
+                            <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">timeseries_id</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                            <span class="n">timeseries_id</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span>
                             <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>

@@ -181,7 +181,7 @@
 <span class="kn">import</span> <span class="nn">pytest</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_to_proto_timeseries</span><span class="p">,</span> <span class="n">_to_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_object_id</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_to_proto_timeseries</span><span class="p">,</span> <span class="n">_to_proto_guid</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
 
@@ -248,13 +248,12 @@
     <span class="k">assert</span> <span class="n">original_timeseries</span><span class="o">.</span><span class="n">start_time</span> <span class="o">==</span> <span class="n">start</span>
     <span class="k">assert</span> <span class="n">original_timeseries</span><span class="o">.</span><span class="n">end_time</span> <span class="o">==</span> <span class="n">end</span>
 
-    <span class="n">original_proto_timeserie</span> <span class="o">=</span> <span class="n">_to_proto_timeseries</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">)</span>
+    <span class="n">original_proto_timeseries</span> <span class="o">=</span> <span class="n">_to_proto_timeseries</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">)</span>
     <span class="n">session_id_original</span> <span class="o">=</span> <span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
 
     <span class="n">original_reply</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
         <span class="n">session_id</span><span class="o">=</span><span class="n">session_id_original</span><span class="p">,</span>
-        <span class="n">object_id</span><span class="o">=</span><span class="n">_to_proto_object_id</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">),</span>
-        <span class="n">timeseries</span><span class="o">=</span><span class="n">original_proto_timeserie</span>
+        <span class="n">timeseries</span><span class="o">=</span><span class="n">original_proto_timeseries</span>
     <span class="p">)</span>
 
     <span class="n">binary_data</span> <span class="o">=</span> <span class="n">original_reply</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
@@ -264,8 +263,7 @@
     <span class="n">reply</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">binary_data</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">original_reply</span> <span class="o">==</span> <span class="n">reply</span>
     <span class="k">assert</span> <span class="n">session_id_original</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">session_id</span>
-    <span class="k">assert</span> <span class="n">_to_proto_object_id</span><span class="p">(</span><span class="n">original_timeseries</span><span class="p">)</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">object_id</span>
-    <span class="k">assert</span> <span class="n">original_proto_timeserie</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span>
+    <span class="k">assert</span> <span class="n">original_proto_timeseries</span> <span class="o">==</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span>
 
     <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
