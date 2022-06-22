@@ -112,7 +112,7 @@ def get_timeseries_information(timeseries: Timeseries):
         f"start time: '{str(timeseries.start_time)}', "
         f"end time: '{str(timeseries.end_time)}', "
         f"resolution: '{timeseries.resolution}', "
-        f" it has '{timeseries.number_of_points}' points "
+        f"it has '{timeseries.number_of_points}' points "
         f"and this is some of them: \n"
         f"{timeseries.arrow_table.to_pandas()}"
     )

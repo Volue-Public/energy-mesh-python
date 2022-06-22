@@ -378,7 +378,7 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
 
         if timeserie.HasField("object_id"):
             object_id = timeserie.object_id
-            ts = Timeseries(table, resolution,
+            ts = Timeseries(table, _from_proto_resolution(resolution),
                             interval.start_time, interval.end_time,
                             object_id.timskey, _from_proto_guid(object_id.guid), object_id.full_name)
         else:
