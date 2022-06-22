@@ -9,9 +9,10 @@ import uuid
 from google import protobuf
 import grpc
 
-from volue.mesh import Timeseries, MeshObjectId, AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
+from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, \
+    AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
-from volue.mesh._common import AttributesFilter, _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval, \
+from volue.mesh._common import _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval, \
     _read_proto_reply, _to_proto_timeseries, _to_proto_curve_type
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
@@ -293,13 +294,13 @@ class Connection(_base_connection.Connection):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_version(self) -> core_pb2.VersionInfo:
-        response = self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
-        return response
+    def get_version(self) -> VersionInfo:
+        return VersionInfo._from_proto(
+            self.mesh_service.GetVersion(protobuf.empty_pb2.Empty()))
 
-    def get_user_identity(self) -> core_pb2.UserIdentity:
-        response = self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
-        return response
+    def get_user_identity(self) -> UserIdentity:
+        return UserIdentity._from_proto(
+            self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty()))
 
     def revoke_access_token(self) -> None:
         if self.auth_metadata_plugin is None:

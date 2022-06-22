@@ -2,7 +2,7 @@
 Common classes/enums/etc. for the Mesh API.
 """
 
-import uuid
+from __future__ import annotations
 from dataclasses import dataclass
 import datetime
 from typing import List, Optional
@@ -81,8 +81,8 @@ class AttributesFilter:
         Arg:      `tag_mask` is set to "ProductionAttributes,LocationAttributes"
         Response: All attributes with tag name "ProductionAttributes" or "LocationAttributes" will be returned.
         Note:     If attributes A1, A2 have tag "ProductionAttributes" and A3
-            has "LocationAttributes" then all three attributes (A1, A2 and A3) will be returned.
-            Exactly the same rules apply to `namespace_mask`.
+        has "LocationAttributes" then all three attributes (A1, A2 and A3) will be returned.
+        Exactly the same rules apply to `namespace_mask`.
 
     Example 3:
 
@@ -116,6 +116,63 @@ class AttributesFilter:
     namespace_mask: List[str] = None
     return_no_attributes: bool = False
 
+@dataclass
+class UserIdentity:
+    """Represents a Mesh server user identity.
+
+    display_name - a human readable name identifying this user. This name
+    should not be used as an unique identifier for the user as it may be
+    identical  between users and change over time.
+
+    source - security package name where the user identity came from.
+    It is not an unique identifier of the security package instance.
+
+    identifier - uniquely identifies the user within given `source` instance, but
+    not necessarily globally. Combining `source` and `identifier` does not guarantee
+    to get globally unique identifier for the user as there may be different
+    Active Directories using the same security packages (`source`) with
+    duplicated user identifiers. However such situation is rather unlikely.
+    """
+
+    display_name: str
+    source: str
+    identifier : str
+
+    @classmethod
+    def _from_proto(cls, proto_user_identity: core_pb2.UserIdentity) -> UserIdentity:
+        """Create a `UserIdentity` from protobuf UserIdentity.
+
+        Args:
+            proto_user_identity: protobuf UserIdentity returned from the gRPC method.
+        """
+        return cls(
+            display_name=proto_user_identity.display_name,
+            source=proto_user_identity.source,
+            identifier=proto_user_identity.identifier)
+
+@dataclass
+class VersionInfo:
+    """
+    Represents a Mesh server version information.
+
+    version - version number, e.g.: 2.5.2.32
+
+    name - friendly name of the Mesh server, e.g.: Volue Mesh Server
+    """
+
+    version: str
+    name: str
+
+    @classmethod
+    def _from_proto(cls, proto_version_info: core_pb2.VersionInfo) -> VersionInfo:
+        """Create a `VersionInfo` from protobuf VersionInfo.
+
+        Args:
+            proto_version_info: protobuf VersionInfo returned from the gRPC method.
+        """
+        return cls(
+            version=proto_version_info.version,
+            name=proto_version_info.name)
 
 @dataclass
 class MeshObjectId:

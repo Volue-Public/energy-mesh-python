@@ -3,12 +3,6 @@ API documentation
 
 The Mesh Python API contains several packages, namespaces and modules.
 
-volue.mesh.proto.core.v1alpha
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: volue.mesh.proto.core.v1alpha.core_pb2_grpc
-.. automodule:: volue.mesh.proto.core.v1alpha.core_pb2
-
 volue.mesh
 ~~~~~~~~~~~~~~~~~~~~
 
