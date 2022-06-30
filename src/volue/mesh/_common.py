@@ -5,7 +5,7 @@ Common classes/enums/etc. for the Mesh API.
 from __future__ import annotations
 from dataclasses import dataclass
 import datetime
-from typing import List, Optional
+from typing import List, Optional, NamedTuple, Tuple
 import uuid
 
 from google.protobuf import field_mask_pb2, timestamp_pb2
@@ -222,6 +222,16 @@ class MeshObjectId:
         mesh_object_id = cls()
         mesh_object_id.full_name = full_name
         return mesh_object_id
+
+
+class XyCurve(NamedTuple):
+    z: float
+    xy: List[Tuple[float, float]]
+
+
+class XySet(NamedTuple):
+    valid_from_time: Optional[datetime.datetime]
+    xy_curves: List[XyCurve]
 
 
 def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
