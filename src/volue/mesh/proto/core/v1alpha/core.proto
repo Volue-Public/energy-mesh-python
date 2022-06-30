@@ -204,6 +204,26 @@ service MeshService {
 
   // Get the Mesh server version information.
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
+
+  // Get zero or more `XySet`s from an XY-set attribute (`XYSetAttribute`) or
+  // a versioned XY-set attribute (`XYZSeriesAttribute`). See `GetXySetsRequest`
+  // for more information.
+  rpc GetXySets(GetXySetsRequest) returns (GetXySetsResponse) {}
+
+  // Create, update, and/or delete `XySet`s in an XY-set attribute
+  // (`XYZAttribute`) or a versioned XY-set attribute (`XYZSeriesAttribute`).
+  // See `UpdateXySetsRequest` for more information.
+  rpc UpdateXySets(UpdateXySetsRequest) returns (UpdateXySetsResponse) {}
+
+  // Get rating curve version(s) from a rating curve attribute
+  // (`RatingCurveAttribute`).
+  // See `GetRatingCurveVersionsRequest` for more information.
+  rpc GetRatingCurveVersions(GetRatingCurveVersionsRequest) returns (GetRatingCurveVersionsResponse) {}
+
+  // Create, update, and/or delete rating curve versions in a rating curve
+  // attribute (`RatingCurveAttribute`).
+  // See `UpdateRatingCurveVersionsRequest` for more information.
+  rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
 }
 
 message AuthenticateKerberosResponse {
@@ -570,6 +590,43 @@ message UpdateTimeseriesResourceResponse {
   // currently empty
 }
 
+message GetRatingCurveVersionsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Retrieve all versions that apply in this interval.
+  // This may include one version with a `from` before
+  // the interval.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+
+  // Don't return `x_range_from` and `x_value_segments`,
+  // only `from`s, in the returned `RatingCurveVersion`s.
+  bool versions_only = 3;
+
+  // The ID of a rating curve attribute (`RatingCurveAttribute`).
+  MeshId attribute = 4;
+}
+
+message GetRatingCurveVersionsResponse {
+  repeated RatingCurveVersion versions = 1;
+}
+
+message UpdateRatingCurveVersionsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // All existing rating curve versions inside the interval will be
+  // deleted. Passing a `null` interval is an error.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+
+  // The ID of a rating curve attribute (`RatingCurveAttribute`).
+  MeshId attribute = 3;
+
+  // Update rating curve versions for rating curve attribute. The `from` of all
+  // versions must be inside the interval.
+  repeated RatingCurveVersion versions = 4;
+}
+
+message UpdateRatingCurveVersionsResponse {}
+
 message Timeseries {
   MeshId id = 1;
 
@@ -799,6 +856,10 @@ message Attribute {
   string name = 3;
   AttributeDefinition definition = 4;
 
+  // Some attribute types, such as XY-sets, do not include their values in the
+  // `Attribute` message. This is because those attributes have potentially
+  // large values, and specialized methods exist to handle those values.
+
   // Singular type can be e.g.: double attribute or time series attribute
   AttributeValue singular_value = 5;
   // Collection of types can be e.g.: collection of double attributes
@@ -815,7 +876,6 @@ message AttributeValue {
 
     TimeseriesAttributeValue timeseries_value = 6;
     RatingCurveAttributeValue rating_curve_value = 7;
-    XYtableAttributeValue xy_table_value = 8;
   }
 }
 
@@ -842,12 +902,13 @@ message TimeseriesAttributeValue {
 }
 
 message RatingCurveAttributeValue {
-  // TODO: define
-}
-
-// TODO: XY or XYZ?
-message XYtableAttributeValue {
-  // TODO: define
+  // Versions are kept in a RatingCurveDefinition structure.
+  // This is the name of this structure, it is/might be used
+  // by UI applications communicating with Mesh.
+  // Note: It is kept on the model level (not model definition),
+  //       so this is not the same as the name of definition
+  //       from AttributeDefinition.
+  string definition_name = 1;
 }
 
 message AttributeDefinition {
@@ -879,9 +940,8 @@ message AttributeDefinition {
     UtcTimeAttributeDefinition utc_time_definition = 14;
 
     TimeseriesAttributeDefinition timeseries_definition = 15;
-    RatingCurveAttributeDefinition rating_curve_definition = 16;
-    XYtableAttributeDefinition xy_table_definition = 17;
-    RelationshipAttributeDefinition relationship_definition = 18;
+    XySetsAttributeDefinition xy_table_definition = 16;
+    RelationshipAttributeDefinition relationship_definition = 17;
   }
 }
 
@@ -918,13 +978,21 @@ message TimeseriesAttributeDefinition {
   string unit_of_measurement = 2;
 }
 
-message RatingCurveAttributeDefinition {
-  // TODO: define
+// Describes an axis in a `XySet`.
+message XySetAxis {
+  string description = 1;
+  string unit_of_measurement = 2;
 }
 
-// TODO: XY or XYZ?
-message XYtableAttributeDefinition {
-  // TODO: define
+message XySetsAttributeDefinition {
+  // XYSetAttribute if not versioned. XYZSeriesAttribute if versioned.
+  bool versioned = 1;
+
+  XySetAxis x_axis = 2;
+  XySetAxis y_axis = 3;
+
+  // Reference values/z values, if applicable.
+  optional XySetAxis z_axis = 4;
 }
 
 message RelationshipAttributeDefinition {
@@ -942,4 +1010,89 @@ enum AttributeView {
   // Response will include attribute's ID, name, path, value(s) and
   // complete attribute definition.
   FULL = 2;
+}
+
+// TODO: link relation attributes to other objects
+
+// An `XyCurve` is a set of (x, y) pairs.
+message XyCurve {
+  // The reference value of this curve. Also known as the z value.
+  double reference_value = 1;
+
+  // Always equal length.
+  repeated double x_values = 2;
+  repeated double y_values = 3;
+}
+
+// An `XySet` is a set of `XyCurve`s indexed by reference values, also known as
+// z values.
+message XySet {
+  // If this `XySet` is a part of a versioned XY set attribute in Mesh
+  // `valid_from_time` will contain the start of the active period for
+  // this `XySet`. Otherwise `valid_from_time` will be null.
+  google.protobuf.Timestamp valid_from_time = 1;
+
+  // A list of `XyCurve`s in this `XySet`. Always sorted by `reference_value`.
+  repeated XyCurve xy_curves = 3;
+}
+
+// A request for the `XySet`s in an interval, or in the case of `XYSet` attributes
+// the single `XySet` owned by that attribute.
+message GetXySetsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // For versioned XY sets (`XYZSeriesAttribute`) retrieve all versions that apply
+  // in this interval. This may include one version with a `valid_from_time` before
+  // the interval.
+  //
+  // For non-versioned XY set attributes (`XYSetAttribute`) this must be null.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+
+  // Don't return `XyCurve`s, only `valid_from_time`s, in the returned `XySet`s.
+  bool versions_only = 3;
+
+  // The ID of a versioned XY set attribute (`XYZSeriesAttribute`) or a non-versioned
+  // XY set attribute (`XYSetAttribute`).
+  MeshId attribute = 4;
+}
+
+message GetXySetsResponse {
+  repeated XySet xy_sets = 1;
+}
+
+message UpdateXySetsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // For versioned XY sets all existing XY sets inside the interval will be
+  // deleted. Passing a `null` interval is an error.
+  //
+  // For non-versioned XY sets (`XYSetAttribute`) this must be null.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+
+  // The ID of a versioned XY set attribute (`XYZSeriesAttribute`) or a non-versioned
+  // XY set attribute (`XYSetAttribute`).
+  MeshId attribute = 3;
+
+  // If updating a versioned XY set attribute (`XYZSeriesAttribute`) the `XySet`s
+  // in `xy_sets` will be inserted in the XY set series. The `valid_from_time` of all
+  // XY sets must be inside the interval.
+  //
+  // If updating a non-versioned XY set attribute (`XYSetAttribute`) this must contain
+  // zero or one `XySet`.
+  repeated XySet xy_sets = 4;
+}
+
+message UpdateXySetsResponse {}
+
+message RatingCurveSegment {
+  double x_range_until = 1;
+  double factor_a = 2;
+  double factor_b = 3;
+  double factor_c = 4;
+}
+
+message RatingCurveVersion {
+  google.protobuf.Timestamp from = 1;
+  double x_range_from = 2;
+  repeated RatingCurveSegment x_value_segments = 3;
 }
