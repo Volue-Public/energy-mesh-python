@@ -9,4 +9,5 @@ Mesh concepts
    timeseries
    mesh_search
    mesh_functions
+   mesh_xy_sets
    mesh_rating_curve
