@@ -2,10 +2,9 @@
 Functionality for asynchronously connecting to a Mesh server and working with its sessions.
 """
 
-import datetime
-from typing import Optional, List, Type
+import typing
 import uuid
-from typing import Optional, List
+from typing import Optional, List, Type
 from datetime import datetime
 
 from google import protobuf
@@ -14,8 +13,9 @@ import grpc
 from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, \
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
-from volue.mesh._common import _from_proto_guid, _to_proto_guid, _to_protobuf_utcinterval, \
-    _read_proto_reply, _to_proto_timeseries, _to_proto_curve_type
+from volue.mesh._common import (XyCurve, XySet, _from_proto_guid, _to_proto_guid,
+                                _to_protobuf_utcinterval, _read_proto_reply,
+                                _to_proto_timeseries, _to_proto_curve_type)
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
@@ -285,6 +285,26 @@ class Connection(_base_connection.Connection):
                 start_time: datetime,
                 end_time: datetime) -> TransformFunctionsAsync:
             return TransformFunctionsAsync(self, relative_to, start_time, end_time)
+
+        async def get_xy_sets(
+                self, target: typing.Union[uuid.UUID, str],
+                start_time: datetime = None,
+                end_time: datetime = None,
+                versions_only: bool = False
+        ) -> typing.List[XySet]:
+            gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
+            request = next(gen)
+            response = await self.mesh_service.GetXySets(request)
+            return gen.send(response)
+
+        async def update_xy_sets(
+                self, target: typing.Union[uuid.UUID, str],
+                start_time: datetime = None,
+                end_time: datetime = None,
+                new_xy_sets: typing.List[XySet] = []
+        ) -> None:
+            request = super()._prepare_update_xy_sets_request(target, start_time, end_time, new_xy_sets)
+            await self.mesh_service.UpdateXySets(request)
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):

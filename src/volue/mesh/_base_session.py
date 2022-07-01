@@ -1,4 +1,6 @@
 import abc
+import dateutil
+import typing
 from typing import List, Optional, Type, Tuple
 import uuid
 from datetime import datetime
@@ -6,8 +8,9 @@ from datetime import datetime
 from google import protobuf
 
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
-from ._common import AttributesFilter, MeshObjectId, _to_proto_attribute_masks, _to_proto_guid, \
-    _to_proto_mesh_id, _to_proto_curve_type, _datetime_to_timestamp_pb2
+from ._common import (AttributesFilter, MeshObjectId, XyCurve, XySet,
+                      _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id,
+                      _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_protobuf_utcinterval)
 from ._object import Object
 from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
@@ -519,6 +522,170 @@ class Session(abc.ABC):
             object containing all transformation functions
         """
 
+    def get_xy_sets(
+            self, target: typing.Union[uuid.UUID, str],
+            start_time: typing.Optional[datetime], end_time: typing.Optional[datetime],
+            versions_only: bool
+    ) -> typing.List[XySet]:
+        """Get zero or more XY-sets from an XY-set attribute on the server.
+
+        An XY-set attribute is either versioned, with a kind
+        :code:`XYZSeriesAttribute`, or unversioned, with a kind
+        :code:`XYSetAttribute`.
+
+        Args:
+            target: the GUID or the path of an XY-set attribute.
+
+            start_time: the (inclusive) start of the interval to retrieve XY
+                sets in for versioned XY-set attributes. Must be :code:`None`
+                for unversioned attributes.
+
+            end_time: the (exclusive) end of the interval to retrieve XY sets
+                in for versioned XY-set attributes. Must be :code:`None` for
+                unversioned attributes.
+
+            versions_only: don't retrieve XY-set curves, only :code:`valid_from_time`.
+
+        Returns:
+            A list of :class:`XySet`. The list always contains one element for
+            unversioned attributes, and zero or more elements for versioned
+            attributes.
+
+            For versioned attributes the method will return all XY sets that
+            are valid in :code:`[start_time, end_time)`. This may include the
+            last XY set that started its validity period before the interval.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            TypeError: on invalid arguments (see above).
+        """
+
+    def update_xy_sets(
+            self, target: typing.Union[uuid.UUID, str],
+            start_time: typing.Optional[datetime], end_time: typing.Optional[datetime],
+            new_xy_sets: typing.List[XySet]
+    ) -> None:
+        """Replace XY sets on an XY-set attribute on the server.
+
+        An XY-set attribute is either versioned, with a kind
+        :code:`XYZSeriesAttribute`, or unversioned, with a kind
+        :code:`XYSetAttribute`.
+
+        When applied to an unversioned attribute the update_xy_sets operation
+        removes the existing XY-set, and replaces it with the contents of
+        :code:`xy_sets`, which must contain zero or one XY-set.
+
+        When applied to a versioned attribute the operation deletes all
+        versions in the interval :code:`[start_time, end_time)`, and inserts
+        the new versions in :code:`xy_sets`.
+
+        Args:
+            target: the GUID or the path of an XY-set attribute.
+            start_time: the (inclusive) start of the edit interval. Must be
+                None for unversioned XY-set attributes.
+            end_time: the (exclusive) end of the edit interval. Must be
+                None for unversioned XY-set attributes.
+            new_xy_sets: the list of XY-sets to insert. Must contain zero or
+                one element for unversioned attributes. All elements must
+                be sorted and within :code:`[start_time, end_time)` for versioned
+                attributes.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            TypeError: on invalid arguments (see above).
+        """
+
+    def _get_xy_sets_impl(
+            self, target: typing.Union[uuid.UUID, str],
+            start_time: datetime, end_time: datetime,
+            versions_only: bool
+    ) -> typing.Generator[typing.Any, core_pb2.GetXySetsResponse, None]:
+        """Generator implementation of get_xy_sets.
+
+        Yields the protobuf request, receives the protobuf response, and yields
+        the final result.
+        """
+
+        if (start_time is None) != (end_time is None):
+            raise TypeError("start_time and end_time must both be None or both have a value")
+
+        # FIXME: add convenience function based on decision in https://github.com/PowelAS/sme-mesh-python/pull/241.
+        if isinstance(target, uuid.UUID):
+            target = core_pb2.MeshId(id=_to_proto_guid(target))
+        elif isinstance(target, str):
+            target = core_pb2.MeshId(path=target)
+        else:
+            raise TypeError("target must be a uuid.UUID or str")
+
+        if start_time is None or end_time is None:
+            interval = None
+        else:
+            interval = _to_protobuf_utcinterval(start_time, end_time)
+
+        request = core_pb2.GetXySetsRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute=target,
+            interval=interval,
+            versions_only=versions_only
+        )
+
+        response = yield request
+
+        def get_valid_from_time(proto: core_pb2.XySet):
+            if proto.HasField("valid_from_time"):
+                return proto.valid_from_time.ToDatetime(dateutil.tz.UTC)
+            else:
+                return None
+
+        yield [XySet(get_valid_from_time(proto_xy_set),
+                     [XyCurve(proto_curve.reference_value,
+                              list(zip(proto_curve.x_values, proto_curve.y_values)))
+                      for proto_curve in proto_xy_set.xy_curves])
+               for proto_xy_set in response.xy_sets]
+
+    def _prepare_update_xy_sets_request(
+            self, target: typing.Union[uuid.UUID, str],
+            start_time: datetime, end_time: datetime,
+            new_xy_sets: typing.List[XySet]
+    ) -> core_pb2.UpdateXySetsRequest:
+        if (start_time is None) != (end_time is None):
+            raise TypeError("start_time and end_time must both be None or both have a value")
+
+        # FIXME: add convenience function based on decision in https://github.com/PowelAS/sme-mesh-python/pull/241.
+        if isinstance(target, uuid.UUID):
+            target = core_pb2.MeshId(id=_to_proto_guid(target))
+        elif isinstance(target, str):
+            target = core_pb2.MeshId(path=target)
+        else:
+            raise TypeError("target must be a uuid.UUID or str")
+
+        if start_time is None or end_time is None:
+            interval = None
+        else:
+            interval = _to_protobuf_utcinterval(start_time, end_time)
+
+        def to_proto_xy_curve(curve: XyCurve) -> core_pb2.XyCurve:
+            return core_pb2.XyCurve(reference_value=curve.z,
+                                    x_values=[x for (x, _) in curve.xy],
+                                    y_values=[y for (_, y) in curve.xy])
+
+        def to_proto_xy_set(xy_set: XySet) -> core_pb2.XySet:
+            valid_from_time = (None if xy_set.valid_from_time is None
+                               else _datetime_to_timestamp_pb2(xy_set.valid_from_time))
+            xy_curves = [to_proto_xy_curve(curve) for curve in xy_set.xy_curves]
+            return core_pb2.XySet(valid_from_time=valid_from_time,
+                                  xy_curves=xy_curves)
+
+        xy_sets = [to_proto_xy_set(xy_set) for xy_set in new_xy_sets]
+
+        request = core_pb2.UpdateXySetsRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute=target,
+            interval=interval,
+            xy_sets=xy_sets
+        )
+
+        return request
 
     def _prepare_get_object_request(
             self,

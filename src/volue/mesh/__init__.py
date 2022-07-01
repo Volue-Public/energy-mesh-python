@@ -7,7 +7,7 @@ from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
 from ._attribute import AttributeBase, TimeseriesAttribute
 from ._object import Object
-from ._common import AttributesFilter, UserIdentity, VersionInfo, MeshObjectId
+from ._common import AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, XyCurve, XySet
 from ._credentials import Credentials
 from ._connection import Connection
 from .tests import *
@@ -28,5 +28,7 @@ __all__ = [
     'AttributesFilter',
     'UserIdentity',
     'VersionInfo',
-    'MeshObjectId'
+    'MeshObjectId',
+    'XyCurve',
+    'XySet'
 ]
