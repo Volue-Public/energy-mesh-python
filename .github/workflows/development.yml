@@ -51,7 +51,7 @@ jobs:
         id: download-mesh-server
         with:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-          MESH_SERVICE_TAG: 'v2.5.2.32'
+          MESH_SERVICE_TAG: 'v2.5.2.33'
 
       # run explicitly run_tests.py script
       - name: Run tests

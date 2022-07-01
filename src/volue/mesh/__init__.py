@@ -5,7 +5,7 @@ Client library for Volue Energy's Mesh software.
 from ._authentication import Authentication
 from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
-from ._attribute import AttributeBase, TimeseriesAttribute
+from ._attribute import AttributeBase, RatingCurveAttribute, TimeseriesAttribute
 from ._object import Object
 from ._common import AttributesFilter, UserIdentity, VersionInfo, MeshObjectId
 from ._credentials import Credentials
@@ -21,6 +21,7 @@ __all__ = [
     'Credentials',
     'Connection',
     'AttributeBase',
+    'RatingCurveAttribute',
     'TimeseriesAttribute',
     'Object',
     'Timeseries',
