@@ -522,6 +522,7 @@ class Session(abc.ABC):
             object containing all transformation functions
         """
 
+    @abc.abstractmethod
     def get_xy_sets(
             self, target: typing.Union[uuid.UUID, str],
             start_time: typing.Optional[datetime], end_time: typing.Optional[datetime],
@@ -560,6 +561,7 @@ class Session(abc.ABC):
             TypeError: on invalid arguments (see above).
         """
 
+    @abc.abstractmethod
     def update_xy_sets(
             self, target: typing.Union[uuid.UUID, str],
             start_time: typing.Optional[datetime], end_time: typing.Optional[datetime],
