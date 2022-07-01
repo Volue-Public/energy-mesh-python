@@ -738,6 +738,44 @@ virtual time series.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.Session.get_xy_sets">
+<span class="sig-name descname"><span class="pre">get_xy_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">versions_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.XySet" title="volue.mesh._common.XySet"><span class="pre">volue.mesh._common.XySet</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.get_xy_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.get_xy_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get zero or more XY-sets from an XY-set attribute on the server.</p>
+<p>An XY-set attribute is either versioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYZSeriesAttribute</span></code>, or unversioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYSetAttribute</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – the GUID or the path of an XY-set attribute.</p></li>
+<li><p><strong>start_time</strong> – the (inclusive) start of the interval to retrieve XY
+sets in for versioned XY-set attributes. Must be <code class="code docutils literal notranslate"><span class="pre">None</span></code>
+for unversioned attributes.</p></li>
+<li><p><strong>end_time</strong> – the (exclusive) end of the interval to retrieve XY sets
+in for versioned XY-set attributes. Must be <code class="code docutils literal notranslate"><span class="pre">None</span></code> for
+unversioned attributes.</p></li>
+<li><p><strong>versions_only</strong> – don’t retrieve XY-set curves, only <code class="code docutils literal notranslate"><span class="pre">valid_from_time</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A list of <a class="reference internal" href="#volue.mesh.XySet" title="volue.mesh.XySet"><code class="xref py py-class docutils literal notranslate"><span class="pre">XySet</span></code></a>. The list always contains one element for
+unversioned attributes, and zero or more elements for versioned
+attributes.</p>
+<p>For versioned attributes the method will return all XY sets that
+are valid in <code class="code docutils literal notranslate"><span class="pre">[start_time,</span> <span class="pre">end_time)</span></code>. This may include the
+last XY set that started its validity period before the interval.</p>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – on invalid arguments (see above).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.history_functions">
 <span class="sig-name descname"><span class="pre">history_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_to:</span> <span class="pre">volue.mesh._common.MeshObjectId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.history.HistoryFunctions" title="volue.mesh.calc.history.HistoryFunctions"><span class="pre">volue.mesh.calc.history.HistoryFunctions</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.history_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.history_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Access to <a class="reference internal" href="mesh_functions.html#history"><span class="std std-ref">History</span></a> functions.</p>
@@ -1025,6 +1063,42 @@ virtual time series.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.Session.update_xy_sets">
+<span class="sig-name descname"><span class="pre">update_xy_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_xy_sets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.XySet" title="volue.mesh._common.XySet"><span class="pre">volue.mesh._common.XySet</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.update_xy_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.update_xy_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace XY sets on an XY-set attribute on the server.</p>
+<p>An XY-set attribute is either versioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYZSeriesAttribute</span></code>, or unversioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYSetAttribute</span></code>.</p>
+<p>When applied to an unversioned attribute the update_xy_sets operation
+removes the existing XY-set, and replaces it with the contents of
+<code class="code docutils literal notranslate"><span class="pre">xy_sets</span></code>, which must contain zero or one XY-set.</p>
+<p>When applied to a versioned attribute the operation deletes all
+versions in the interval <code class="code docutils literal notranslate"><span class="pre">[start_time,</span> <span class="pre">end_time)</span></code>, and inserts
+the new versions in <code class="code docutils literal notranslate"><span class="pre">xy_sets</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – the GUID or the path of an XY-set attribute.</p></li>
+<li><p><strong>start_time</strong> – the (inclusive) start of the edit interval. Must be
+None for unversioned XY-set attributes.</p></li>
+<li><p><strong>end_time</strong> – the (exclusive) end of the edit interval. Must be
+None for unversioned XY-set attributes.</p></li>
+<li><p><strong>new_xy_sets</strong> – the list of XY-sets to insert. Must contain zero or
+one element for unversioned attributes. All elements must
+be sorted and within <code class="code docutils literal notranslate"><span class="pre">[start_time,</span> <span class="pre">end_time)</span></code> for versioned
+attributes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – on invalid arguments (see above).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1614,6 +1688,40 @@ duplicated user identifiers. However such situation is rather unlikely.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.XyCurve">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">XyCurve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#XyCurve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.XyCurve" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.XyCurve.xy">
+<span class="sig-name descname"><span class="pre">xy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.XyCurve.xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.XyCurve.z">
+<span class="sig-name descname"><span class="pre">z</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></em><a class="headerlink" href="#volue.mesh.XyCurve.z" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.XySet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">XySet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_from_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_curves</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#XySet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.XySet" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.XySet.valid_from_time">
+<span class="sig-name descname"><span class="pre">valid_from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.XySet.valid_from_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.XySet.xy_curves">
+<span class="sig-name descname"><span class="pre">xy_curves</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.XyCurve" title="volue.mesh._common.XyCurve"><span class="pre">volue.mesh._common.XyCurve</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.XySet.xy_curves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-volue.mesh.aio">
 <span id="volue-mesh-aio"></span><h2>volue.mesh.aio<a class="headerlink" href="#module-volue.mesh.aio" title="Permalink to this headline">¶</a></h2>
@@ -1808,6 +1916,44 @@ virtual time series.</p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.get_xy_sets">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_xy_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">versions_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.XySet" title="volue.mesh._common.XySet"><span class="pre">volue.mesh._common.XySet</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.get_xy_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.get_xy_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get zero or more XY-sets from an XY-set attribute on the server.</p>
+<p>An XY-set attribute is either versioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYZSeriesAttribute</span></code>, or unversioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYSetAttribute</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – the GUID or the path of an XY-set attribute.</p></li>
+<li><p><strong>start_time</strong> – the (inclusive) start of the interval to retrieve XY
+sets in for versioned XY-set attributes. Must be <code class="code docutils literal notranslate"><span class="pre">None</span></code>
+for unversioned attributes.</p></li>
+<li><p><strong>end_time</strong> – the (exclusive) end of the interval to retrieve XY sets
+in for versioned XY-set attributes. Must be <code class="code docutils literal notranslate"><span class="pre">None</span></code> for
+unversioned attributes.</p></li>
+<li><p><strong>versions_only</strong> – don’t retrieve XY-set curves, only <code class="code docutils literal notranslate"><span class="pre">valid_from_time</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A list of <code class="xref py py-class docutils literal notranslate"><span class="pre">XySet</span></code>. The list always contains one element for
+unversioned attributes, and zero or more elements for versioned
+attributes.</p>
+<p>For versioned attributes the method will return all XY sets that
+are valid in <code class="code docutils literal notranslate"><span class="pre">[start_time,</span> <span class="pre">end_time)</span></code>. This may include the
+last XY set that started its validity period before the interval.</p>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – on invalid arguments (see above).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2100,6 +2246,42 @@ virtual time series.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.update_xy_sets">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_xy_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_xy_sets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.XySet" title="volue.mesh._common.XySet"><span class="pre">volue.mesh._common.XySet</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.update_xy_sets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.update_xy_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replace XY sets on an XY-set attribute on the server.</p>
+<p>An XY-set attribute is either versioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYZSeriesAttribute</span></code>, or unversioned, with a kind
+<code class="code docutils literal notranslate"><span class="pre">XYSetAttribute</span></code>.</p>
+<p>When applied to an unversioned attribute the update_xy_sets operation
+removes the existing XY-set, and replaces it with the contents of
+<code class="code docutils literal notranslate"><span class="pre">xy_sets</span></code>, which must contain zero or one XY-set.</p>
+<p>When applied to a versioned attribute the operation deletes all
+versions in the interval <code class="code docutils literal notranslate"><span class="pre">[start_time,</span> <span class="pre">end_time)</span></code>, and inserts
+the new versions in <code class="code docutils literal notranslate"><span class="pre">xy_sets</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – the GUID or the path of an XY-set attribute.</p></li>
+<li><p><strong>start_time</strong> – the (inclusive) start of the edit interval. Must be
+None for unversioned XY-set attributes.</p></li>
+<li><p><strong>end_time</strong> – the (exclusive) end of the edit interval. Must be
+None for unversioned XY-set attributes.</p></li>
+<li><p><strong>new_xy_sets</strong> – the list of XY-sets to insert. Must contain zero or
+one element for unversioned attributes. All elements must
+be sorted and within <code class="code docutils literal notranslate"><span class="pre">[start_time,</span> <span class="pre">end_time)</span></code> for versioned
+attributes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – on invalid arguments (see above).</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
