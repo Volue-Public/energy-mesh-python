@@ -1,4 +1,5 @@
 import datetime
+import dateutil
 import sys
 import uuid
 
@@ -9,6 +10,7 @@ from volue import mesh
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 UNVERSIONED_PATH = OBJECT_PATH + ".XYSetAtt"
+VERSIONED_PATH = OBJECT_PATH + ".XYZSeriesAtt"
 
 
 @pytest.fixture(scope="module")
@@ -112,6 +114,41 @@ def test_update_xy_set_invalid_input_unversioned(mesh_session):
     # will cause an error.
     mesh_session.update_xy_sets(target=UNVERSIONED_PATH,
                                 new_xy_sets=[mesh.XySet(now, [])])
+
+
+@pytest.mark.server
+def test_update_xy_set_invalid_input_versioned(mesh_session):
+    # start_time, end_time must be used with unversioned attributes
+    with pytest.raises(grpc.RpcError, match="interval must have a value when updating XYZSeriesAttribute"):
+        mesh_session.update_xy_sets(target=VERSIONED_PATH)
+
+    now = datetime.datetime.now(dateutil.tz.UTC)
+    later = now + datetime.timedelta(days=365)
+
+    # [start_time, end_time) must be a valid interval
+    with pytest.raises(grpc.RpcError, match="UtcInterval .* is invalid, start_time > end_time"):
+        mesh_session.update_xy_sets(target=VERSIONED_PATH, start_time=later, end_time=now)
+
+    kwargs = {"target": VERSIONED_PATH, "start_time": now, "end_time": later}
+
+    # valid_from_time must be set on new XY sets
+    with pytest.raises(grpc.RpcError, match="must have a valid_from_time"):
+        mesh_session.update_xy_sets(new_xy_sets=[mesh.XySet(None, [])], **kwargs)
+
+    # One XySet cannot have curves with duplicate reference values
+    with pytest.raises(grpc.RpcError, match="duplicate reference value"):
+        value = mesh.XySet(now, [mesh.XyCurve(0, []), mesh.XyCurve(0, [])])
+        mesh_session.update_xy_sets(new_xy_sets=[value], **kwargs)
+
+    # New XySets must be within interval
+    even_later = later + datetime.timedelta(days=365)
+    with pytest.raises(grpc.RpcError, match="within .* interval"):
+        mesh_session.update_xy_sets(new_xy_sets=[mesh.XySet(even_later, [])], **kwargs)
+
+    # Multiple XySets cannot have the same valid_from_times
+    value = mesh.XySet(now, [])
+    with pytest.raises(grpc.RpcError, match="duplicate timestamps"):
+        mesh_session.update_xy_sets(new_xy_sets=[value, value], **kwargs)
 
 
 if __name__ == '__main__':
