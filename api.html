@@ -1330,6 +1330,33 @@ Refer to documentation for more details:
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.RatingCurveAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">RatingCurveAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">uuid</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.AttributeBase.Definition" title="volue.mesh.AttributeBase.Definition"><span class="pre">Definition</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">definition_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#RatingCurveAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.RatingCurveAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents rating curve Mesh Attribute.</p>
+<p>A rating curve is used to convert water level in river measurements in
+a watercourse to discharge. There is a math formula that does this
+conversion. Depending on the water level the formula has different factors.
+To reflect that a rating curve segment concept is introduced.</p>
+<p>Moreover rating curves can change over time because of for example changes
+in a river due to erosion and sedimentation. Such changes affect the
+discharge function and the function equation factors need to be adjusted.
+To reflect that the rating curve segments in Mesh are grouped into
+rating curve versions.</p>
+<p>Refer to documentation for more details about Mesh rating curves:
+<span class="xref std std-ref">Mesh rating curve</span>.</p>
+<p>Because the rating curve can potentially contain large amounts of data,
+specialized methods exist to handle those values.
+See <cite>Session.get_rating_curve_versions</cite> and <cite>Session.update_rating_curve_versions</cite>.</p>
+<p>Refer to documentation for more details about attributes:
+<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.RatingCurveAttribute.definition_name">
+<span class="sig-name descname"><span class="pre">definition_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.RatingCurveAttribute.definition_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table:</span> <span class="pre">pyarrow.lib.Table</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution:</span> <span class="pre">volue.mesh._timeseries.Timeseries.Resolution</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a mesh timeserie.</p>
@@ -3294,6 +3321,12 @@ all attributes and full attribute information.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_rating_curve_attribute">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_rating_curve_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_rating_curve_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_rating_curve_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a rating curve attribute.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_string_attribute">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_string_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_string_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_string_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that ‘get_attribute’ with full attribute view retrieves a string attribute and its definition.</p>
@@ -3600,6 +3633,12 @@ all attributes and full attribute information.</p>
 <dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_physical_time_series_attribute">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_physical_time_series_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_physical_time_series_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_physical_time_series_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check that ‘get_attribute’ with full attribute view retrieves a physical time series attribute and its definition.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_get_rating_curve_attribute">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_rating_curve_attribute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_get_rating_curve_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_get_rating_curve_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that ‘get_attribute’ with full attribute view retrieves a rating curve attribute.</p>
 </dd></dl>
 
 <dl class="py function">

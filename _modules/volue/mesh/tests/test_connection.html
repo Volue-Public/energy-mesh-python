@@ -194,7 +194,8 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.tests.test_utilities.utilities</span> <span class="kn">import</span> <span class="n">get_attribute_path_principal</span><span class="p">,</span> <span class="n">get_timeseries_2</span><span class="p">,</span> <span class="n">get_physical_timeseries</span><span class="p">,</span> \
-    <span class="n">get_virtual_timeseries</span><span class="p">,</span> <span class="n">get_timeseries_attribute_2</span><span class="p">,</span> <span class="n">verify_timeseries_2</span><span class="p">,</span> <span class="n">verify_plant_timeseries_attribute</span>
+    <span class="n">get_virtual_timeseries</span><span class="p">,</span> <span class="n">get_timeseries_attribute_2</span><span class="p">,</span> <span class="n">verify_timeseries_2</span><span class="p">,</span> <span class="n">verify_plant_timeseries_attribute</span><span class="p">,</span> \
+    <span class="n">verify_plant_base_attribute</span>
 
 
 <div class="viewcode-block" id="test_read_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_read_timeseries_points">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
@@ -1001,7 +1002,7 @@
         <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">object_path</span>
         <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;PlantElementType&quot;</span>
         <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_path</span> <span class="o">==</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef&quot;</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">23</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">25</span>
 
         <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -1431,6 +1432,25 @@
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">dbl_attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">verify_double_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span> <span class="n">dbl_attribute_path</span><span class="o">=</span><span class="n">dbl_attribute_path</span><span class="p">,</span> <span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_get_rating_curve_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_get_rating_curve_attribute">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
+<span class="k">def</span> <span class="nf">test_get_rating_curve_attribute</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check that &#39;get_attribute&#39; with full attribute view retrieves a rating curve attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
+                            <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span>
+
+    <span class="n">attribute_name</span> <span class="o">=</span> <span class="s2">&quot;RatingCurveAtt&quot;</span>
+    <span class="n">attribute_path</span> <span class="o">=</span> <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="n">attribute_name</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">verify_plant_base_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">attribute_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">minimum_cardinality</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">maximum_cardinality</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition_name</span> <span class="o">==</span> <span class="s2">&quot;TestRatingCurveDefinition&quot;</span></div>
 
 <div class="viewcode-block" id="test_search_multiple_attributes"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_search_multiple_attributes">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">def</span> <span class="nf">test_search_multiple_attributes</span><span class="p">():</span>
