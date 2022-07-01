@@ -68,6 +68,8 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute) -> Type[Attribute
 
     if attribute_value_type == 'timeseries_value':
         attribute = TimeseriesAttribute._from_proto_attribute(proto_attribute)
+    elif attribute_value_type == 'rating_curve_value':
+        attribute = RatingCurveAttribute._from_proto_attribute(proto_attribute)
     # Relationship attribute is a bit special.
     # It does not have a value, only definition.
     # It will be treated as generic AttributeBase if
@@ -425,5 +427,75 @@ class TimeseriesAttribute(AttributeBase):
                 f"\t template_expression: {self.definition.template_expression}\n"
                 f"\t unit_of_measurement: {self.definition.unit_of_measurement}"
             )
+
+        return message
+
+
+@dataclass
+class RatingCurveAttribute(AttributeBase):
+    """Represents rating curve Mesh Attribute.
+
+    A rating curve is used to convert water level in river measurements in
+    a watercourse to discharge. There is a math formula that does this
+    conversion. Depending on the water level the formula has different factors.
+    To reflect that a rating curve segment concept is introduced.
+
+    Moreover rating curves can change over time because of for example changes
+    in a river due to erosion and sedimentation. Such changes affect the
+    discharge function and the function equation factors need to be adjusted.
+    To reflect that the rating curve segments in Mesh are grouped into
+    rating curve versions.
+
+    Refer to documentation for more details about Mesh rating curves:
+    :ref:`Mesh rating curve <mesh_rating_curve>`.
+
+    Because the rating curve can potentially contain large amounts of data,
+    specialized methods exist to handle those values.
+    See `Session.get_rating_curve_versions` and `Session.update_rating_curve_versions`.
+
+    Refer to documentation for more details about attributes:
+    :ref:`Mesh attribute <mesh_attribute>`.
+    """
+
+    
+    """
+    Versions are kept in a RatingCurveDefinition structure.
+    This is the name of this structure, it is/might be used
+    by UI applications communicating with Mesh.
+    Note: It is kept on the model level (not model definition),
+          so this is not the same as the name of definition
+          from AttributeDefinition.
+    """
+    definition_name: str = None
+
+    @classmethod
+    def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
+        """Create a `RatingCurveAttribute` from protobuf Mesh Attribute.
+
+        Args:
+            proto_attribute: protobuf Attribute returned from the gRPC methods.
+
+        Raises:
+            TypeError: Error message raised if collection of rating curve
+                attributes is passed as input.
+        """
+        attribute = cls()
+        super()._init_from_proto_attribute(attribute, proto_attribute)
+
+        if proto_attribute.HasField('singular_value'):
+            proto_value = proto_attribute.singular_value.rating_curve_value
+            attribute.definition_name = proto_value.definition_name
+        elif len(proto_attribute.collection_values) > 0:
+            raise TypeError('rating curve collection attribute is not supported')
+
+        return attribute
+
+    def __str__(self) -> str:
+        base_message = super()._get_string_representation()
+        message = (
+            f"RatingCurveAttribute:\n"
+            f"\t {base_message}\n"
+            f"\t definition_name: {self.definition_name}"
+        )
 
         return message

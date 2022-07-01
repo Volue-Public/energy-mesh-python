@@ -23,7 +23,8 @@ import volue.mesh.tests.test_utilities.server_config as sc
 from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 from volue.mesh.tests.test_utilities.utilities import get_attribute_path_principal, get_timeseries_2, get_physical_timeseries, \
-    get_virtual_timeseries, get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute
+    get_virtual_timeseries, get_timeseries_attribute_2, verify_timeseries_2, verify_plant_timeseries_attribute, \
+    verify_plant_base_attribute
 
 
 @pytest.mark.asyncio
@@ -854,7 +855,7 @@ async def test_get_object():
         assert object.path == object_path
         assert object.type_name == "PlantElementType"
         assert object.owner_path == "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-        assert len(object.attributes) == 23
+        assert len(object.attributes) == 25
 
         for attribute in object.attributes.values():
             assert attribute.name is not None
@@ -1300,6 +1301,26 @@ async def test_get_double_attribute():
     async with connection.create_session() as session:
         attribute = await session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)
         verify_double_attribute(attribute=attribute, dbl_attribute_path=dbl_attribute_path, attribute_name=attribute_name)
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_get_rating_curve_attribute():
+    """
+    Check that 'get_attribute' with full attribute view retrieves a rating curve attribute.
+    """
+
+    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS, sc.DefaultServerConfig.PORT,
+                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
+
+    attribute_name = "RatingCurveAtt"
+    attribute_path = get_attribute_path_principal() + attribute_name
+
+    async with connection.create_session() as session:
+        attribute = await session.get_attribute(attribute_path=attribute_path, full_attribute_info=True)
+        verify_plant_base_attribute(attribute, path=attribute_path, name=attribute_name)
+        assert attribute.definition.minimum_cardinality == 1
+        assert attribute.definition.maximum_cardinality == 1
+        assert attribute.definition_name == "TestRatingCurveDefinition"
 
 @pytest.mark.asyncio
 @pytest.mark.database

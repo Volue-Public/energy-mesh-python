@@ -267,3 +267,12 @@ def verify_plant_timeseries_attribute(attribute: Union[AttributeBase, Timeseries
         assert attribute.definition.minimum_cardinality == 1
         assert attribute.definition.maximum_cardinality == 1
         assert attribute.definition.template_expression == ""
+
+def verify_plant_base_attribute(attribute: AttributeBase, path: str, name: str):
+    assert attribute.path == path
+    assert attribute.name == name
+    assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + name
+    assert attribute.definition.description == ""
+    assert len(attribute.definition.tags) == 0
+    assert attribute.definition.namespace == "SimpleThermalTestRepository"
+    assert attribute.definition.value_type == "RatingCurveAttributeDefinition"
