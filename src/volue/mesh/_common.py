@@ -234,6 +234,19 @@ class XySet(NamedTuple):
     xy_curves: List[XyCurve]
 
 
+class RatingCurveSegment(NamedTuple):
+    x_range_until: float
+    factor_a: float
+    factor_b: float
+    factor_c: float
+
+
+class RatingCurveVersion(NamedTuple):
+    x_range_from: float
+    valid_from_time: datetime
+    x_value_segments: List[RatingCurveSegment]
+
+
 def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
     """Convert from Python UUID format to Microsoft's GUID format.
 

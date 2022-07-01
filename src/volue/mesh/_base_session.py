@@ -1,7 +1,7 @@
 import abc
 import dateutil
 import typing
-from typing import List, Optional, Type, Tuple
+from typing import List, Optional, Type, Tuple, Union
 import uuid
 from datetime import datetime
 
@@ -9,6 +9,7 @@ from google import protobuf
 
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
 from ._common import (AttributesFilter, MeshObjectId, XyCurve, XySet,
+                      RatingCurveSegment, RatingCurveVersion,
                       _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id,
                       _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_protobuf_utcinterval)
 from ._object import Object
@@ -597,6 +598,61 @@ class Session(abc.ABC):
             TypeError: on invalid arguments (see above).
         """
 
+    @abc.abstractmethod
+    def get_rating_curve_versions(
+        self,
+        target: Union[uuid.UUID, str],
+        start_time: datetime,
+        end_time: datetime,
+        versions_only: bool = False
+    ) -> List[RatingCurveVersion]:
+        """Get rating curve versions from an rating curve attribute on the server.
+
+        Args:
+            target: the ID or the path of an rating curve attribute.
+            start_time: the (inclusive) start of the interval to retrieve
+                rating curve versions.
+            end_time: the (exclusive) end of the interval to retrieve
+                rating curve versions.
+            versions_only: retrieve only `valid_from_time` timestamps for each
+                version, no other data like segments will be retrieved.
+
+        Returns:
+            A list of :class:`RatingCurveVersion`.
+
+            The method will return all rating curve versions that are valid in
+            `[start_time, end_time)` interval. This may include the last rating
+            curve version that started its validity period before the interval.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+        """
+
+    @abc.abstractmethod
+    def update_rating_curve_versions(
+        self,
+        target: Union[uuid.UUID, str],
+        start_time: datetime,
+        end_time: datetime,
+        new_versions: List[RatingCurveVersion]
+    ) -> None:
+        """Replace rating curve versions on an rating curve attribute on the server.
+
+        The update operation deletes all versions in the
+        `[start_time, end_time)` interval, and inserts the new versions.
+
+        Args:
+            target: the ID or the path of an rating curve attribute.
+            start_time: the (inclusive) start of the edit interval.
+            end_time: the (exclusive) end of the edit interval.
+            new_versions: the list of rating curve versions to insert.
+                All versions must be within `[start_time, end_time)` interval.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+        """
+
+
     def _get_xy_sets_impl(
             self, target: typing.Union[uuid.UUID, str],
             start_time: datetime, end_time: datetime,
@@ -982,4 +1038,102 @@ class Session(abc.ABC):
             request.new_unit_of_measurement = new_unit_of_measurement
 
         request.field_mask.CopyFrom(protobuf.field_mask_pb2.FieldMask(paths=fields_to_update))
+        return request
+
+    def _get_rating_curve_versions_impl(
+            self,
+            target: Union[uuid.UUID, str],
+            start_time: datetime,
+            end_time: datetime,
+            versions_only: bool
+    ) -> typing.Generator[typing.Any, core_pb2.GetRatingCurveVersionsResponse, None]:
+        """Generator implementation of get_rating_curve_versions.
+
+        Yields the protobuf request, receives the protobuf response, and yields
+        the final result.
+        """
+
+        if isinstance(target, uuid.UUID):
+            target = core_pb2.MeshId(id=_to_proto_guid(target))
+        elif isinstance(target, str):
+            target = core_pb2.MeshId(path=target)
+        else:
+            raise TypeError("target must be a uuid.UUID or str")
+
+        if start_time is None or end_time is None:
+            raise TypeError("start_time and end_time must both have a value")
+
+        interval = _to_protobuf_utcinterval(start_time, end_time)
+
+        request = core_pb2.GetRatingCurveVersionsRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute=target,
+            interval=interval,
+            versions_only=versions_only
+        )
+
+        response = yield request
+
+        # name of the field in proto file is a Python keyword
+        # need to use `getattr` to get its value, see:
+        # https://developers.google.com/protocol-buffers/docs/reference/python-generated#keyword-conflicts
+        yield [RatingCurveVersion(
+            x_range_from=proto_version.x_range_from,
+            valid_from_time=getattr(proto_version, "from").ToDatetime().replace(tzinfo=dateutil.tz.UTC),
+            x_value_segments=[RatingCurveSegment(
+                proto_segment.x_range_until,
+                proto_segment.factor_a,
+                proto_segment.factor_b,
+                proto_segment.factor_c)
+                      for proto_segment in proto_version.x_value_segments])
+               for proto_version in response.versions]
+
+    def _prepare_update_rating_curve_versions_request(
+        self,
+        target: Union[uuid.UUID, str],
+        start_time: datetime,
+        end_time: datetime,
+        new_versions: List[RatingCurveVersion]
+    ) -> core_pb2.UpdateRatingCurveVersionsRequest:
+
+        if isinstance(target, uuid.UUID):
+            target = core_pb2.MeshId(id=_to_proto_guid(target))
+        elif isinstance(target, str):
+            target = core_pb2.MeshId(path=target)
+        else:
+            raise TypeError("target must be a uuid.UUID or str")
+
+        if start_time is None or end_time is None:
+            raise TypeError("start_time and end_time must both have a value")
+
+        def to_proto_rating_curve_segment(segment: RatingCurveSegment) -> core_pb2.RatingCurveSegment:
+            return core_pb2.RatingCurveSegment(
+                x_range_until=segment.x_range_until,
+                factor_a=segment.factor_a,
+                factor_b=segment.factor_b,
+                factor_c=segment.factor_c)
+
+        def to_proto_rating_curve_version(version: RatingCurveVersion) -> core_pb2.RatingCurveVersion:
+            proto_segments = [to_proto_rating_curve_segment(segment) for segment in version.x_value_segments]
+
+            proto_version = core_pb2.RatingCurveVersion(
+                x_range_from = version.x_range_from,
+                x_value_segments=proto_segments)
+
+            # name of the field in proto file is a Python keyword
+            # need to use `setattr`, but because it is not a simple type
+            # first we need to call `getattr` and then set its value via
+            # CopyFrom or FromDatetime, see:
+            # https://developers.google.com/protocol-buffers/docs/reference/python-generated#keyword-conflicts
+            getattr(proto_version, "from").FromDatetime(version.valid_from_time)
+            return proto_version
+
+        proto_versions = [to_proto_rating_curve_version(version) for version in new_versions]
+
+        request = core_pb2.UpdateRatingCurveVersionsRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute=target,
+            interval=_to_protobuf_utcinterval(start_time, end_time),
+            versions=proto_versions
+        )
         return request
