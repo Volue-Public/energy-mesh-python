@@ -183,8 +183,13 @@ def test_update_xy_set_invalid_input_versioned(mesh_session):
         mesh_session.update_xy_sets(new_xy_sets=[mesh.XySet(None, [])], **kwargs)
 
     # One XySet cannot have curves with duplicate reference values
+
     with pytest.raises(grpc.RpcError, match="duplicate reference value"):
         value = mesh.XySet(now, [mesh.XyCurve(0, []), mesh.XyCurve(0, [])])
+        mesh_session.update_xy_sets(new_xy_sets=[value], **kwargs)
+
+    with pytest.raises(grpc.RpcError, match="duplicate reference value"):
+        value = mesh.XySet(now, [mesh.XyCurve(0, []), mesh.XyCurve(1, []), mesh.XyCurve(0, [])])
         mesh_session.update_xy_sets(new_xy_sets=[value], **kwargs)
 
     # New XySets must be within interval
