@@ -24,10 +24,10 @@ def mesh_session(mesh_connection):
         yield session
 
 
-def generate_xy_set(seed):
+def generate_xy_set(seed, valid_from_time=None):
     curves = [mesh.XyCurve(z, [(v, -v) for v in range(seed)])
               for z in range(seed)]
-    return mesh.XySet(None, curves)
+    return mesh.XySet(valid_from_time, curves)
 
 
 @pytest.mark.server
@@ -70,6 +70,53 @@ def test_update_xy_sets_unversioned(mesh_session):
     xy_sets = mesh_session.get_xy_sets(target=UNVERSIONED_PATH)
     assert len(xy_sets) == 1
     assert len(xy_sets[0].xy_curves) == 0
+
+
+@pytest.mark.server
+def test_update_xy_sets_versioned(mesh_session):
+    start_time = datetime.datetime.fromisoformat("1965-10-10").replace(tzinfo=dateutil.tz.UTC)
+    end_time = datetime.datetime.fromisoformat("1975-10-10").replace(tzinfo=dateutil.tz.UTC)
+
+    kwargs = {"target": VERSIONED_PATH, "start_time": start_time, "end_time": end_time}
+
+    # No-op update
+    mesh_session.update_xy_sets(**kwargs)
+
+    # Add an XY set at start
+    value = generate_xy_set(3, start_time)
+    mesh_session.update_xy_sets(new_xy_sets=[value], **kwargs)
+    xy_sets = mesh_session.get_xy_sets(**kwargs)
+    assert len(xy_sets) == 1
+    assert xy_sets[0] == value
+
+    # Remove that XY set
+    mesh_session.update_xy_sets(**kwargs)
+    xy_sets = mesh_session.get_xy_sets(**kwargs)
+    assert len(xy_sets) == 0
+
+    values = []
+    valid_from_time = start_time
+    for i in range(10):
+        values.append(generate_xy_set(i, valid_from_time))
+        valid_from_time = valid_from_time.replace(year=valid_from_time.year + 1)
+
+    # Add multiple XY sets, one operation
+    mesh_session.update_xy_sets(new_xy_sets=values, **kwargs)
+    xy_sets = mesh_session.get_xy_sets(**kwargs)
+    assert xy_sets == values
+
+    # Remove that XY set
+    mesh_session.update_xy_sets(**kwargs)
+    xy_sets = mesh_session.get_xy_sets(**kwargs)
+    assert len(xy_sets) == 0
+
+    # Add multiple XY sets, multiple operations
+    for xy_set in values:
+        mesh_session.update_xy_sets(VERSIONED_PATH, xy_set.valid_from_time, end_time,
+                                    new_xy_sets=[xy_set])
+
+    xy_sets = mesh_session.get_xy_sets(**kwargs)
+    assert xy_sets == values
 
 
 @pytest.mark.server
