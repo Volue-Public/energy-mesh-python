@@ -446,8 +446,8 @@ class RatingCurveAttribute(AttributeBase):
     To reflect that the rating curve segments in Mesh are grouped into
     rating curve versions.
 
-    Refer to documentation for more details about Mesh rating curves:
-    :ref:`Mesh rating curve <mesh_rating_curve>`.
+    Refer to documentation for more details about rating curves:
+    :doc:`Mesh rating curve <mesh_rating_curve>`.
 
     Because the rating curve can potentially contain large amounts of data,
     specialized methods exist to handle those values.
