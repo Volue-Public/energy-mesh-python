@@ -773,6 +773,10 @@ last XY set that started its validity period before the interval.</p>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1101,6 +1105,10 @@ attributes.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1717,8 +1725,13 @@ duplicated user identifiers. However such situation is rather unlikely.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.XyCurve">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">XyCurve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#XyCurve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.XyCurve" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py attribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">XyCurve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#XyCurve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.XyCurve" title="Permalink to this definition">¶</a></dt>
+<dd><p>A list of (x, y) pairs, indexed by a reference/z value.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.XyCurve.xy">
 <span class="sig-name descname"><span class="pre">xy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.XyCurve.xy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 1</p>
@@ -1734,8 +1747,16 @@ duplicated user identifiers. However such situation is rather unlikely.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.XySet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">XySet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_from_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_curves</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#XySet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.XySet" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py attribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">XySet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">valid_from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy_curves</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.XyCurve" title="volue.mesh.XyCurve"><span class="pre">XyCurve</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#XySet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.XySet" title="Permalink to this definition">¶</a></dt>
+<dd><p>A set of XY-curves.</p>
+<p>If this set is part of a versioned XY-set attribute (<code class="code docutils literal notranslate"><span class="pre">XYZSeriesAttribute</span></code>)
+the <code class="code docutils literal notranslate"><span class="pre">valid_from_time</span></code> field contains a datetime with the start of the validity
+period for the XY-set. Otherwise it will be <code class="code docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+</div>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.XySet.valid_from_time">
 <span class="sig-name descname"><span class="pre">valid_from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.XySet.valid_from_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 0</p>
@@ -1983,6 +2004,10 @@ last XY set that started its validity period before the interval.</p>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2311,6 +2336,10 @@ attributes.</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">

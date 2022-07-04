@@ -397,11 +397,25 @@
 
 
 <div class="viewcode-block" id="XyCurve"><a class="viewcode-back" href="../../../api.html#volue.mesh.XyCurve">[docs]</a><span class="k">class</span> <span class="nc">XyCurve</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A list of (x, y) pairs, indexed by a reference/z value.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        :doc:`mesh_xy_sets`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">z</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">xy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span></div>
 
 
 <div class="viewcode-block" id="XySet"><a class="viewcode-back" href="../../../api.html#volue.mesh.XySet">[docs]</a><span class="k">class</span> <span class="nc">XySet</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A set of XY-curves.</span>
+
+<span class="sd">    If this set is part of a versioned XY-set attribute (:code:`XYZSeriesAttribute`)</span>
+<span class="sd">    the :code:`valid_from_time` field contains a datetime with the start of the validity</span>
+<span class="sd">    period for the XY-set. Otherwise it will be :code:`None`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        :doc:`mesh_xy_sets`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]</span>
     <span class="n">xy_curves</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">XyCurve</span><span class="p">]</span></div>
 
