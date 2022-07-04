@@ -1,4 +1,6 @@
 import datetime
+import operator
+
 import dateutil
 import sys
 import uuid
@@ -70,6 +72,20 @@ def test_update_xy_sets_unversioned(mesh_session):
     xy_sets = mesh_session.get_xy_sets(target=UNVERSIONED_PATH)
     assert len(xy_sets) == 1
     assert len(xy_sets[0].xy_curves) == 0
+
+
+@pytest.mark.database
+def test_update_xy_sets_unsorted_z(mesh_session):
+    curves = [mesh.XyCurve(14.3, []),
+              mesh.XyCurve(3.8, []),
+              mesh.XyCurve(900.4, []),
+              mesh.XyCurve(-100.0, [])]
+
+    mesh_session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(None, curves)])
+    xy_sets = mesh_session.get_xy_sets(target=UNVERSIONED_PATH)
+    assert len(xy_sets) == 1
+    # The server always returns sorted z-values.
+    assert xy_sets[0].xy_curves == sorted(curves, key=operator.attrgetter("z"))
 
 
 @pytest.mark.database
