@@ -3,7 +3,7 @@ Common classes/enums/etc. for the Mesh API.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 import datetime
 from typing import List, Optional, NamedTuple, Tuple
 import uuid
