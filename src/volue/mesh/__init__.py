@@ -10,8 +10,6 @@ from ._object import Object
 from ._common import AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, XyCurve, XySet
 from ._credentials import Credentials
 from ._connection import Connection
-from .tests import *
-from .examples import *
 
 __title__ = 'volue.mesh'
 __author__ = 'Volue AS'
