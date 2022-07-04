@@ -2,10 +2,10 @@
 Functionality for asynchronously connecting to a Mesh server and working with its sessions.
 """
 
-import typing
-import uuid
-from typing import Optional, List, Type
 from datetime import datetime
+import typing
+from typing import List, Optional, Type, Union
+import uuid
 
 from google import protobuf
 import grpc
@@ -13,9 +13,9 @@ import grpc
 from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, \
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
-from volue.mesh._common import (XyCurve, XySet, _from_proto_guid, _to_proto_guid,
-                                _to_protobuf_utcinterval, _read_proto_reply,
-                                _to_proto_timeseries, _to_proto_curve_type)
+from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
+     _from_proto_guid, _to_protobuf_utcinterval, _read_proto_reply,
+     _to_proto_timeseries)
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
@@ -305,6 +305,29 @@ class Connection(_base_connection.Connection):
         ) -> None:
             request = super()._prepare_update_xy_sets_request(target, start_time, end_time, new_xy_sets)
             await self.mesh_service.UpdateXySets(request)
+
+        async def get_rating_curve_versions(
+            self,
+            target: Union[uuid.UUID, str],
+            start_time: datetime,
+            end_time: datetime,
+            versions_only: bool = False
+        ) -> List[RatingCurveVersion]:
+            gen = super()._get_rating_curve_versions_impl(target, start_time, end_time, versions_only)
+            request = next(gen)
+            response = await self.mesh_service.GetRatingCurveVersions(request)
+            return gen.send(response)
+
+        async def update_rating_curve_versions(
+            self,
+            target: Union[uuid.UUID, str],
+            start_time: datetime,
+            end_time: datetime,
+            new_versions: List[RatingCurveVersion]
+        ) -> None:
+            request = super()._prepare_update_rating_curve_versions_request(
+                target, start_time, end_time, new_versions)
+            await self.mesh_service.UpdateRatingCurveVersions(request)
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):

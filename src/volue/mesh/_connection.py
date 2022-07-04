@@ -2,9 +2,9 @@
 Functionality for synchronously connecting to a Mesh server and working with its sessions.
 """
 
-import datetime
+from datetime import datetime
 import typing
-from typing import Optional, List, Type
+from typing import List, Optional, Type, Union
 import uuid
 
 from google import protobuf
@@ -13,8 +13,9 @@ import grpc
 from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, \
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
-from volue.mesh._common import (XySet, _to_proto_guid, _from_proto_guid, _to_protobuf_utcinterval,
-    _read_proto_reply, _to_proto_timeseries, _to_proto_curve_type )
+from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
+     _from_proto_guid, _to_protobuf_utcinterval, _read_proto_reply,
+     _to_proto_timeseries)
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
@@ -24,6 +25,7 @@ from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from . import _base_connection
 from . import _base_session
 from . import _attribute
+
 
 class Connection(_base_connection.Connection):
     class Session(_base_session.Session):
@@ -286,8 +288,8 @@ class Connection(_base_connection.Connection):
 
         def get_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],
-                start_time: datetime.datetime = None,
-                end_time: datetime.datetime = None,
+                start_time: datetime = None,
+                end_time: datetime = None,
                 versions_only: bool = False
         ) -> typing.List[XySet]:
             gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
@@ -296,12 +298,34 @@ class Connection(_base_connection.Connection):
 
         def update_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],
-                start_time: datetime.datetime = None,
-                end_time: datetime.datetime = None,
+                start_time: datetime = None,
+                end_time: datetime = None,
                 new_xy_sets: typing.List[XySet] = []
         ) -> None:
             request = super()._prepare_update_xy_sets_request(target, start_time, end_time, new_xy_sets)
             self.mesh_service.UpdateXySets(request)
+
+        def get_rating_curve_versions(
+            self,
+            target: Union[uuid.UUID, str],
+            start_time: datetime,
+            end_time: datetime,
+            versions_only: bool = False
+        ) -> List[RatingCurveVersion]:
+            gen = super()._get_rating_curve_versions_impl(target, start_time, end_time, versions_only)
+            request = next(gen)
+            return gen.send(self.mesh_service.GetRatingCurveVersions(request))
+
+        def update_rating_curve_versions(
+            self,
+            target: Union[uuid.UUID, str],
+            start_time: datetime,
+            end_time: datetime,
+            new_versions: List[RatingCurveVersion]
+        ) -> None:
+            request = super()._prepare_update_rating_curve_versions_request(
+                target, start_time, end_time, new_versions)
+            self.mesh_service.UpdateRatingCurveVersions(request)
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):

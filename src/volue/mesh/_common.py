@@ -256,6 +256,66 @@ class XySet:
         return (getattr(self, field.name) for field in fields(self))
 
 
+@dataclass
+class RatingCurveSegment():
+    """Represents a rating curve segment.
+
+    Contains `a`, `b` and `c` factors for the discharge formula.
+    Additionally each segment `i` stores a 64 bit floating point
+    `x_range_until` value and is valid for a range of `x` values
+    `[x_range_until[i-1], x_range_until[i])`.
+
+    See Also:
+         :doc:`mesh_rating_curve`
+    """
+    x_range_until: float
+    factor_a: float
+    factor_b: float
+    factor_c: float
+
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
+
+    def __str__(self) -> str:
+        return (
+            f'x range until={self.x_range_until}, '
+            f'a={self.factor_a}, '
+            f'b={self.factor_b}, '
+            f'c={self.factor_c}\n'
+        )
+
+@dataclass
+class RatingCurveVersion():
+    """Represents a rating curve version.
+
+    Contains rating curve segments, timestamp with the time at which the
+    version becomes active and a threshold indicating the minimal `x` value
+    for the curve. For `x < x_range_from` for the given version the
+    `f(x) = nan`.
+
+    See Also:
+         :doc:`mesh_rating_curve`
+    """
+    x_range_from: float
+    valid_from_time: datetime
+    x_value_segments: List[RatingCurveSegment]
+
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
+
+    def __str__(self) -> str:
+        message = (
+            f'Valid from: {self.valid_from_time}\n'
+            f'x range from: {self.x_range_from}\n'
+        )
+        for i, segment in enumerate(self.x_value_segments):
+            message = (
+                f'{message}'
+                f'\tSegment {i+1}: {segment}'
+            )
+        return message
+
+
 def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
     """Convert from Python UUID format to Microsoft's GUID format.
 
