@@ -1,4 +1,6 @@
 import datetime
+import operator
+
 import dateutil
 import sys
 import uuid
@@ -7,6 +9,8 @@ import grpc
 import pytest
 
 from volue import mesh
+import volue.mesh.aio
+
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 UNVERSIONED_PATH = OBJECT_PATH + ".XYSetAtt"
@@ -30,7 +34,7 @@ def generate_xy_set(seed, valid_from_time=None):
     return mesh.XySet(valid_from_time, curves)
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_get_empty_xy_set_unversioned(mesh_session):
     xy_sets = mesh_session.get_xy_sets(target=UNVERSIONED_PATH)
 
@@ -44,7 +48,7 @@ def test_get_empty_xy_set_unversioned(mesh_session):
     assert len(xy_sets[0].xy_curves) == 0
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_sets_unversioned(mesh_session):
     # An empty update will reset the value of an unversioned XY set attribute.
     # This will not remove the value, but make it empty.
@@ -72,7 +76,21 @@ def test_update_xy_sets_unversioned(mesh_session):
     assert len(xy_sets[0].xy_curves) == 0
 
 
-@pytest.mark.server
+@pytest.mark.database
+def test_update_xy_sets_unsorted_z(mesh_session):
+    curves = [mesh.XyCurve(14.3, []),
+              mesh.XyCurve(3.8, []),
+              mesh.XyCurve(900.4, []),
+              mesh.XyCurve(-100.0, [])]
+
+    mesh_session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(None, curves)])
+    xy_sets = mesh_session.get_xy_sets(target=UNVERSIONED_PATH)
+    assert len(xy_sets) == 1
+    # The server always returns sorted z-values.
+    assert xy_sets[0].xy_curves == sorted(curves, key=operator.attrgetter("z"))
+
+
+@pytest.mark.database
 def test_update_xy_sets_versioned(mesh_session):
     start_time = datetime.datetime.fromisoformat("1965-10-10").replace(tzinfo=dateutil.tz.UTC)
     end_time = datetime.datetime.fromisoformat("1975-10-10").replace(tzinfo=dateutil.tz.UTC)
@@ -119,7 +137,7 @@ def test_update_xy_sets_versioned(mesh_session):
     assert xy_sets == values
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_set_invalid_input_unversioned(mesh_session):
     # Target is required, and checked client-side.
     with pytest.raises(TypeError):
@@ -163,7 +181,7 @@ def test_update_xy_set_invalid_input_unversioned(mesh_session):
                                 new_xy_sets=[mesh.XySet(now, [])])
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_set_invalid_input_versioned(mesh_session):
     # start_time, end_time must be used with versioned attributes
     with pytest.raises(grpc.RpcError, match="interval must have a value when updating XYZSeriesAttribute"):
@@ -201,6 +219,30 @@ def test_update_xy_set_invalid_input_versioned(mesh_session):
     value = mesh.XySet(now, [])
     with pytest.raises(grpc.RpcError, match="duplicate timestamps"):
         mesh_session.update_xy_sets(new_xy_sets=[value, value], **kwargs)
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_xy_async():
+    connection = mesh.aio.Connection.insecure("127.0.0.1:50051")
+    async with connection.create_session() as session:
+        xy_sets = await session.get_xy_sets(UNVERSIONED_PATH)
+        assert xy_sets == [mesh.XySet(None, [])]
+
+        # Create an update task, but don't run it.
+        new_xy_sets = [generate_xy_set(3)]
+        future_update = session.update_xy_sets(UNVERSIONED_PATH, new_xy_sets=new_xy_sets)
+
+        # Still empty.
+        xy_sets = await session.get_xy_sets(UNVERSIONED_PATH)
+        assert xy_sets == [mesh.XySet(None, [])]
+
+        # Run the update.
+        await future_update
+
+        # And now we should have data.
+        xy_sets = await session.get_xy_sets(UNVERSIONED_PATH)
+        assert xy_sets == new_xy_sets
 
 
 if __name__ == '__main__':

@@ -591,9 +591,8 @@ class Session(abc.ABC):
             end_time: the (exclusive) end of the edit interval. Must be
                 None for unversioned XY-set attributes.
             new_xy_sets: the list of XY-sets to insert. Must contain zero or
-                one element for unversioned attributes. All elements must
-                be sorted and within :code:`[start_time, end_time)` for versioned
-                attributes.
+                one element for unversioned attributes. All elements must be
+                within :code:`[start_time, end_time)` for versioned attributes.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed

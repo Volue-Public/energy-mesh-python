@@ -3,7 +3,7 @@ Common classes/enums/etc. for the Mesh API.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 import datetime
 from typing import List, Optional, NamedTuple, Tuple
 import uuid
@@ -224,7 +224,8 @@ class MeshObjectId:
         return mesh_object_id
 
 
-class XyCurve(NamedTuple):
+@dataclass
+class XyCurve:
     """A list of (x, y) pairs, indexed by a reference/z value.
 
     See Also:
@@ -233,8 +234,12 @@ class XyCurve(NamedTuple):
     z: float
     xy: List[Tuple[float, float]]
 
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
 
-class XySet(NamedTuple):
+
+@dataclass
+class XySet:
     """A set of XY-curves.
 
     If this set is part of a versioned XY-set attribute (:code:`XYZSeriesAttribute`)
@@ -246,6 +251,9 @@ class XySet(NamedTuple):
     """
     valid_from_time: Optional[datetime.datetime]
     xy_curves: List[XyCurve]
+
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
 
 
 def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
