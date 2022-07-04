@@ -225,11 +225,25 @@ class MeshObjectId:
 
 
 class XyCurve(NamedTuple):
+    """A list of (x, y) pairs, indexed by a reference/z value.
+
+    See Also:
+        :doc:`mesh_xy_sets`
+    """
     z: float
     xy: List[Tuple[float, float]]
 
 
 class XySet(NamedTuple):
+    """A set of XY-curves.
+
+    If this set is part of a versioned XY-set attribute (:code:`XYZSeriesAttribute`)
+    the :code:`valid_from_time` field contains a datetime with the start of the validity
+    period for the XY-set. Otherwise it will be :code:`None`.
+
+    See Also:
+        :doc:`mesh_xy_sets`
+    """
     valid_from_time: Optional[datetime.datetime]
     xy_curves: List[XyCurve]
 

@@ -72,15 +72,27 @@ X, Y, and Z. For example if we have the following axis definitions...
 
 ...Nimbus will visualize the above XY set as:
 
-+--------------------+----------------------------+----------------------------+
-| | Wind speed [m/s] | | Wind direction [degrees] | | Wind direction [degrees] |
-|                    | | Production [MW]          | | Production [MW]          |
-+====================+============================+============================+
-|                    |                      **0** |                    **180** |
-+--------------------+----------------------------+----------------------------+
-|                  2 |                        1.5 |                        0.3 |
-+--------------------+----------------------------+----------------------------+
-|                  3 |                        0.5 |                          1 |
-+--------------------+----------------------------+----------------------------+
-|                 10 |                         -1 |                          9 |
-+--------------------+----------------------------+----------------------------+
++-------------------+---------------------------+---------------------------+
+|| Wind speed [m/s] || Wind direction [degrees] || Wind direction [degrees] |
+||                  || Production [MW]          || Production [MW]          |
++===================+===========================+===========================+
+|                   | **0**                     | **180**                   |
++-------------------+---------------------------+---------------------------+
+| 2                 | 1.5                       | 0.3                       |
++-------------------+---------------------------+---------------------------+
+| 3                 | 0.5                       | 1                         |
++-------------------+---------------------------+---------------------------+
+| 10                | -1                        | 9                         |
++-------------------+---------------------------+---------------------------+
+
+
+Accessing XY-set values using the Python SDK
+--------------------------------------------
+
+XY-sets and XY-curves are represented in Python by the :class:`volue.mesh.XySet`
+and :class:`volue.mesh.XyCurve` classes. See their respective documentation for
+more information.
+
+To access or update XY-sets you can use the :meth:`volue.mesh.Connection.Session.get_xy_sets`
+and :meth:`volue.mesh.Connection.Session.update_xy_sets` methods. See their respective
+documentation for more information.
