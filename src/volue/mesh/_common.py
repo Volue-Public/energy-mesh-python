@@ -251,6 +251,8 @@ class RatingCurveSegment():
     factor_b: float
     factor_c: float
 
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
 
     def __str__(self) -> str:
         return (
@@ -276,6 +278,8 @@ class RatingCurveVersion():
     valid_from_time: datetime
     x_value_segments: List[RatingCurveSegment]
 
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
 
     def __str__(self) -> str:
         message = (
