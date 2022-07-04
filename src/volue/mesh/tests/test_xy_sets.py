@@ -165,7 +165,7 @@ def test_update_xy_set_invalid_input_unversioned(mesh_session):
 
 @pytest.mark.server
 def test_update_xy_set_invalid_input_versioned(mesh_session):
-    # start_time, end_time must be used with unversioned attributes
+    # start_time, end_time must be used with versioned attributes
     with pytest.raises(grpc.RpcError, match="interval must have a value when updating XYZSeriesAttribute"):
         mesh_session.update_xy_sets(target=VERSIONED_PATH)
 
