@@ -252,6 +252,14 @@ class RatingCurveSegment():
     factor_c: float
 
 
+    def __str__(self) -> str:
+        return (
+            f'x range until={self.x_range_until}, '
+            f'a={self.factor_a}, '
+            f'b={self.factor_b}, '
+            f'c={self.factor_c}\n'
+        )
+
 @dataclass
 class RatingCurveVersion():
     """Represents a rating curve version.
@@ -267,6 +275,19 @@ class RatingCurveVersion():
     x_range_from: float
     valid_from_time: datetime
     x_value_segments: List[RatingCurveSegment]
+
+
+    def __str__(self) -> str:
+        message = (
+            f'Valid from: {self.valid_from_time}\n'
+            f'x range from: {self.x_range_from}\n'
+        )
+        for i, segment in enumerate(self.x_value_segments):
+            message = (
+                f'{message}'
+                f'\tSegment {i+1}: {segment}'
+            )
+        return message
 
 
 def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
