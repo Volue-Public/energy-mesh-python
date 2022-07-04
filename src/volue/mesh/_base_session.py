@@ -559,6 +559,9 @@ class Session(abc.ABC):
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
             TypeError: on invalid arguments (see above).
+
+        See Also:
+            :doc:`mesh_xy_sets`
         """
 
     @abc.abstractmethod
@@ -595,6 +598,9 @@ class Session(abc.ABC):
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
             TypeError: on invalid arguments (see above).
+
+        See Also:
+            :doc:`mesh_xy_sets`
         """
 
     def _get_xy_sets_impl(
