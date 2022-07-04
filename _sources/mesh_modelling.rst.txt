@@ -201,6 +201,18 @@ readability. Here is a list of all attribute types currently supported:
   Definition value types are "ElementAttributeDefinition" for singular value or
   "ElementCollectionAttributeDefinition" for collection of values.
 
+* **Rating curve attributes** - Mesh rating curve attribute contains a set of
+  :doc:`rating curve versions <mesh_rating_curve>`. 
+  Because the rating curve versions can potentially contain large amounts of
+  data, specialized methods exist to handle those.
+  See `Session.get_rating_curve_versions` and `Session.update_rating_curve_versions`.
+
+  As a result the Python's **rating curve attribute** contains only limited data,
+  like `definition_name`.
+
+  Definition value type is "RatingCurveAttributeDefinition". Rating curve attributes
+  have only singular value, there is no collection of values.
+
 
 .. note::
 

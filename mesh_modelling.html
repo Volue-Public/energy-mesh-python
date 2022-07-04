@@ -106,6 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="timeseries.html">Time series</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
@@ -359,6 +360,16 @@ of one-to-many type. Relationship attribute has defined <em>object type</em>
 is accepted to be added as child.</p>
 <p>Definition value types are “ElementAttributeDefinition” for singular value or
 “ElementCollectionAttributeDefinition” for collection of values.</p>
+</li>
+<li><p><strong>Rating curve attributes</strong> - Mesh rating curve attribute contains a set of
+<a class="reference internal" href="mesh_rating_curve.html"><span class="doc">rating curve versions</span></a>.
+Because the rating curve versions can potentially contain large amounts of
+data, specialized methods exist to handle those.
+See <cite>Session.get_rating_curve_versions</cite> and <cite>Session.update_rating_curve_versions</cite>.</p>
+<p>As a result the Python’s <strong>rating curve attribute</strong> contains only limited data,
+like <cite>definition_name</cite>.</p>
+<p>Definition value type is “RatingCurveAttributeDefinition”. Rating curve attributes
+have only singular value, there is no collection of values.</p>
 </li>
 </ul>
 <div class="admonition note">

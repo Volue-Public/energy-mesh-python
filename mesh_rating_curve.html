@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Mesh concepts &mdash; volue.mesh 0.0.4 documentation</title>
+  <title>Rating curves &mdash; volue.mesh 0.0.4 documentation</title>
   
 
   
@@ -38,14 +38,15 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Mesh object modelling" href="mesh_modelling.html" />
-    <link rel="prev" title="An introduction to Mesh" href="introduction_to_mesh.html" /> 
+    <link rel="next" title="Mesh server" href="mesh_server.html" />
+    <link rel="prev" title="Mesh functions" href="mesh_functions.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,12 +93,12 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh concepts</a><ul>
+<li class="toctree-l2 current"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="mesh_modelling.html">Mesh object modelling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="timeseries.html">Time series</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Rating curves</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
@@ -168,13 +169,15 @@
         
           <li><a href="introduction_to_mesh.html">An introduction to Mesh</a> &raquo;</li>
         
-      <li>Mesh concepts</li>
+          <li><a href="mesh_concepts.html">Mesh concepts</a> &raquo;</li>
+        
+      <li>Rating curves</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/mesh_concepts.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/mesh_rating_curve.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -187,43 +190,135 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="mesh-concepts">
-<h1>Mesh concepts<a class="headerlink" href="#mesh-concepts" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="mesh_modelling.html">Mesh object modelling</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#model-definition">Model definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#object-definition">Object definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#attribute-definition">Attribute definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#model">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#object">Object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#attribute">Attribute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#objects-and-attributes-paths">Objects and attributes paths</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries.html">Time series</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#mesh-time-series">Mesh time series</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#resolution">Resolution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#types">Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#expressions">Expressions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_search.html">Mesh search language</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_search.html#query-syntax">Query syntax</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_search.html#combining-multiple-search-operations">Combining multiple search operations</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_functions.html">Mesh functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#definition-of-a-mesh-function">Definition of a Mesh function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#forecast">Forecast</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#history">History</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#statistical">Statistical</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#transform">Transform</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
-</ul>
-</div>
+  <div class="section" id="rating-curves">
+<h1>Rating curves<a class="headerlink" href="#rating-curves" title="Permalink to this headline">¶</a></h1>
+<p>A <strong>rating curve</strong> is used to convert water level in river measurements <cite>x</cite> in
+a watercourse to discharge. In Mesh we use the following formula:</p>
+<div class="math notranslate nohighlight">
+\[f(x) = a * (x + b)^c\]</div>
+<p>to approximate discharge, and we store rating curves as a set of segments where
+each segment contains values for the 64 bit floating point factors <cite>a</cite>, <cite>b</cite>,
+and <cite>c</cite>. Additionally each segment <cite>i</cite> stores a 64 bit floating point
+<cite>x_range_until</cite> value and is valid for a range of <cite>x</cite> values
+<cite>[x_range_until[i-1], x_range_until[i])</cite>.</p>
+<p>For example, with a segment…</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>x_range_until</p></th>
+<th class="head"><p>a</p></th>
+<th class="head"><p>b</p></th>
+<th class="head"><p>c</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>10</p></td>
+<td><p>1.24</p></td>
+<td><p>13.7</p></td>
+<td><p>11.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>50</p></td>
+<td><p>11.2</p></td>
+<td><p>1.0</p></td>
+<td><p>6.65</p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>4.27</p></td>
+<td><p>1.55</p></td>
+<td><p>0.87</p></td>
+</tr>
+</tbody>
+</table>
+<p>…we’d have the following rating curve function:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f(x) =
+\begin{cases}
+   1.24 * (x + 13.7)^{11.1} &amp; \text{if } 0 \leq x \lt 10\\
+   11.2 * (x + 1.0)^{6.65} &amp; \text{if } 10 \leq x \lt 50\\
+   4.27 * (x + 1.55)^{0.87} &amp; \text{if } 50 \leq x \lt 100\\
+   \text{nan} &amp; \text{otherwise}
+\end{cases}\end{split}\]</div>
+<p>Rating curves can change over time because of for example changes in a river
+due to erosion and sedimentation. Such changes affect the discharge function
+and the function equation factors need to be adjusted. To reflect that the
+rating curve segments in Mesh are grouped into <strong>rating curve versions</strong>. Each
+version is timestamped with the time at which the version becomes active, and
+the version is active until the next version, if any, becomes active.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 33%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>version</p></th>
+<th class="head"><p>x_range_until</p></th>
+<th class="head"><p>a</p></th>
+<th class="head"><p>b</p></th>
+<th class="head"><p>c</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td rowspan="3"><p>2019</p></td>
+<td><p>10</p></td>
+<td><p>1.24</p></td>
+<td><p>13.7</p></td>
+<td><p>11.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>50</p></td>
+<td><p>11.2</p></td>
+<td><p>1.0</p></td>
+<td><p>6.65</p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>4.27</p></td>
+<td><p>1.55</p></td>
+<td><p>0.87</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><p>2020</p></td>
+<td><p>10</p></td>
+<td><p>3.31</p></td>
+<td><p>11.7</p></td>
+<td><p>12.1</p></td>
+</tr>
+<tr class="row-even"><td><p>50</p></td>
+<td><p>10.1</p></td>
+<td><p>1.5</p></td>
+<td><p>5.45</p></td>
+</tr>
+<tr class="row-odd"><td><p>100</p></td>
+<td><p>5.00</p></td>
+<td><p>1.32</p></td>
+<td><p>0.96</p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><p>2021</p></td>
+<td><p>10</p></td>
+<td><p>2.22</p></td>
+<td><p>12.7</p></td>
+<td><p>10.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>50</p></td>
+<td><p>11.1</p></td>
+<td><p>1.3</p></td>
+<td><p>5.65</p></td>
+</tr>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>3.27</p></td>
+<td><p>2.55</p></td>
+<td><p>0.37</p></td>
+</tr>
+</tbody>
+</table>
+<p>In addition each version has an <cite>x_range_from</cite> field, with the minimal <cite>x</cite> value
+for the curve. For <cite>x &lt; x_range_from</cite> for the given version the <cite>f(x) = nan</cite>.</p>
+<p>In Mesh <strong>rating curve attributes</strong> contain a set of rating curve versions.</p>
 </div>
 
 
@@ -232,8 +327,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mesh_modelling.html" class="btn btn-neutral float-right" title="Mesh object modelling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="introduction_to_mesh.html" class="btn btn-neutral float-left" title="An introduction to Mesh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mesh_server.html" class="btn btn-neutral float-right" title="Mesh server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mesh_functions.html" class="btn btn-neutral float-left" title="Mesh functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
