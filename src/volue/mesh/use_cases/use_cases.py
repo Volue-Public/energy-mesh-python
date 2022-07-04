@@ -1173,6 +1173,11 @@ def use_case_20():
 
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
             print(f"Attribute value after update: {xy_sets}")
+
+            # Commit changes
+            if COMMIT_CHANGES:
+                session.commit()
+
         except grpc.RpcError as e:
             print(f"use case 20 resulted in a error: {e}")
 
