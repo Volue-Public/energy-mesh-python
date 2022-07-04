@@ -234,7 +234,8 @@ class XySet(NamedTuple):
     xy_curves: List[XyCurve]
 
 
-class RatingCurveSegment(NamedTuple):
+@dataclass
+class RatingCurveSegment():
     """Represents a rating curve segment.
 
     Contains `a`, `b` and `c` factors for the discharge formula.
@@ -251,7 +252,8 @@ class RatingCurveSegment(NamedTuple):
     factor_c: float
 
 
-class RatingCurveVersion(NamedTuple):
+@dataclass
+class RatingCurveVersion():
     """Represents a rating curve version.
 
     Contains rating curve segments, timestamp with the time at which the
