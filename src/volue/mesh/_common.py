@@ -235,6 +235,16 @@ class XySet(NamedTuple):
 
 
 class RatingCurveSegment(NamedTuple):
+    """Represents a rating curve segment.
+
+    Contains `a`, `b` and `c` factors for the discharge formula.
+    Additionally each segment `i` stores a 64 bit floating point
+    `x_range_until` value and is valid for a range of `x` values
+    `[x_range_until[i-1], x_range_until[i])`.
+
+    See Also:
+         :doc:`mesh_rating_curve`
+    """
     x_range_until: float
     factor_a: float
     factor_b: float
@@ -242,6 +252,16 @@ class RatingCurveSegment(NamedTuple):
 
 
 class RatingCurveVersion(NamedTuple):
+    """Represents a rating curve version.
+
+    Contains rating curve segments, timestamp with the time at which the
+    version becomes active and a threshold indicating the minimal `x` value
+    for the curve. For `x < x_range_from` for the given version the
+    `f(x) = nan`.
+
+    See Also:
+         :doc:`mesh_rating_curve`
+    """
     x_range_from: float
     valid_from_time: datetime
     x_value_segments: List[RatingCurveSegment]

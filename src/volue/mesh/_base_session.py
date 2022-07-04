@@ -626,6 +626,9 @@ class Session(abc.ABC):
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        See Also:
+            :doc:`mesh_rating_curve`
         """
 
     @abc.abstractmethod
@@ -650,6 +653,9 @@ class Session(abc.ABC):
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        See Also:
+            :doc:`mesh_rating_curve`
         """
 
 
