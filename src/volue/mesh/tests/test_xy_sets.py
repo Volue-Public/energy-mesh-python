@@ -30,7 +30,7 @@ def generate_xy_set(seed, valid_from_time=None):
     return mesh.XySet(valid_from_time, curves)
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_get_empty_xy_set_unversioned(mesh_session):
     xy_sets = mesh_session.get_xy_sets(target=UNVERSIONED_PATH)
 
@@ -44,7 +44,7 @@ def test_get_empty_xy_set_unversioned(mesh_session):
     assert len(xy_sets[0].xy_curves) == 0
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_sets_unversioned(mesh_session):
     # An empty update will reset the value of an unversioned XY set attribute.
     # This will not remove the value, but make it empty.
@@ -72,7 +72,7 @@ def test_update_xy_sets_unversioned(mesh_session):
     assert len(xy_sets[0].xy_curves) == 0
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_sets_versioned(mesh_session):
     start_time = datetime.datetime.fromisoformat("1965-10-10").replace(tzinfo=dateutil.tz.UTC)
     end_time = datetime.datetime.fromisoformat("1975-10-10").replace(tzinfo=dateutil.tz.UTC)
@@ -119,7 +119,7 @@ def test_update_xy_sets_versioned(mesh_session):
     assert xy_sets == values
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_set_invalid_input_unversioned(mesh_session):
     # Target is required, and checked client-side.
     with pytest.raises(TypeError):
@@ -163,7 +163,7 @@ def test_update_xy_set_invalid_input_unversioned(mesh_session):
                                 new_xy_sets=[mesh.XySet(now, [])])
 
 
-@pytest.mark.server
+@pytest.mark.database
 def test_update_xy_set_invalid_input_versioned(mesh_session):
     # start_time, end_time must be used with versioned attributes
     with pytest.raises(grpc.RpcError, match="interval must have a value when updating XYZSeriesAttribute"):
