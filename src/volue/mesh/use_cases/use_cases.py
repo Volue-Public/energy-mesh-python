@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, AttributesFilter, MeshObjectId, Object, Timeseries, TimeseriesResource 
+from volue.mesh import (Connection, AttributesFilter, MeshObjectId, Object, Timeseries,
+                        TimeseriesResource, XySet, XyCurve)
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 
@@ -1146,6 +1147,34 @@ def use_case_19():
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_20():
+    """Add an XY-set version at 2022-01-01 to a versioned XY-set attribute.
+
+    Attribute path: Model/MeshTEK/Mesh/Norge/Wind/Bessaker/T01.WindPowerCurve
+    """
+    use_case_name = "Use case 20"
+    target = "Model/MeshTEK/Mesh/Norge/Wind/Bessaker/T01.WindPowerCurve"
+
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            print(f"{use_case_name}")
+            print("--------------------------------------------------------------")
+
+            xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
+            print(f"Attribute value before update: {xy_sets}")
+
+            start_time = datetime.fromisoformat("2022-01-01")
+            new_xy_set = XySet(valid_from_time=start_time,
+                               xy_curves=[XyCurve(0.0, [(1.0, 15), (2.0, 30)])])
+            session .update_xy_sets(target, start_time, datetime.max, [new_xy_set])
+
+            xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
+            print(f"Attribute value after update: {xy_sets}")
+        except grpc.RpcError as e:
+            print(f"use case 20 resulted in a error: {e}")
 
 
 if __name__ == "__main__":
