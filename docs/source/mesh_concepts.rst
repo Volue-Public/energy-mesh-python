@@ -9,3 +9,4 @@ Mesh concepts
    timeseries
    mesh_search
    mesh_functions
+   mesh_rating_curve
