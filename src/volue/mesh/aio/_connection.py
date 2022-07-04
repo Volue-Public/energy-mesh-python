@@ -2,10 +2,10 @@
 Functionality for asynchronously connecting to a Mesh server and working with its sessions.
 """
 
-import typing
-import uuid
-from typing import Optional, List, Type, Union
 from datetime import datetime
+import typing
+from typing import List, Optional, Type, Union
+import uuid
 
 from google import protobuf
 import grpc

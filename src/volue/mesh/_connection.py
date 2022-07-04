@@ -2,9 +2,9 @@
 Functionality for synchronously connecting to a Mesh server and working with its sessions.
 """
 
-import datetime
+from datetime import datetime
 import typing
-from typing import Optional, List, Type, Union
+from typing import List, Optional, Type, Union
 import uuid
 
 from google import protobuf
@@ -288,8 +288,8 @@ class Connection(_base_connection.Connection):
 
         def get_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],
-                start_time: datetime.datetime = None,
-                end_time: datetime.datetime = None,
+                start_time: datetime = None,
+                end_time: datetime = None,
                 versions_only: bool = False
         ) -> typing.List[XySet]:
             gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
@@ -298,8 +298,8 @@ class Connection(_base_connection.Connection):
 
         def update_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],
-                start_time: datetime.datetime = None,
-                end_time: datetime.datetime = None,
+                start_time: datetime = None,
+                end_time: datetime = None,
                 new_xy_sets: typing.List[XySet] = []
         ) -> None:
             request = super()._prepare_update_xy_sets_request(target, start_time, end_time, new_xy_sets)
