@@ -428,6 +428,66 @@
         <span class="k">return</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
 
+<div class="viewcode-block" id="RatingCurveSegment"><a class="viewcode-back" href="../../../api.html#volue.mesh.RatingCurveSegment">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">RatingCurveSegment</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Represents a rating curve segment.</span>
+
+<span class="sd">    Contains `a`, `b` and `c` factors for the discharge formula.</span>
+<span class="sd">    Additionally each segment `i` stores a 64 bit floating point</span>
+<span class="sd">    `x_range_until` value and is valid for a range of `x` values</span>
+<span class="sd">    `[x_range_until[i-1], x_range_until[i])`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">         :doc:`mesh_rating_curve`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_range_until</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">factor_a</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">factor_b</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">factor_c</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;x range until=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range_until</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;a=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_a</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;b=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_b</span><span class="si">}</span><span class="s1">, &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;c=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_c</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RatingCurveVersion"><a class="viewcode-back" href="../../../api.html#volue.mesh.RatingCurveVersion">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">RatingCurveVersion</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Represents a rating curve version.</span>
+
+<span class="sd">    Contains rating curve segments, timestamp with the time at which the</span>
+<span class="sd">    version becomes active and a threshold indicating the minimal `x` value</span>
+<span class="sd">    for the curve. For `x &lt; x_range_from` for the given version the</span>
+<span class="sd">    `f(x) = nan`.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">         :doc:`mesh_rating_curve`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_range_from</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">x_value_segments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RatingCurveSegment</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Valid from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_from_time</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;x range from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range_from</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_value_segments</span><span class="p">):</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Segment </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">segment</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">message</span></div>
+
+
 <span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Convert from Python UUID format to Microsoft&#39;s GUID format.</span>
 
