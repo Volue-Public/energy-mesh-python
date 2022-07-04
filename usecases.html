@@ -216,30 +216,30 @@ $ python -m pip install matplotlib
 <div class="section" id="preferences">
 <h3>Preferences<a class="headerlink" href="#preferences" title="Permalink to this headline">¶</a></h3>
 <p>The first section of the file exposes some configuration options. Edit these to fit your Mesh server setup and preferences.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">These</span> <span class="n">use</span> <span class="n">cases</span> <span class="n">were</span> <span class="n">designed</span> <span class="n">to</span> <span class="n">work</span> <span class="k">with</span> <span class="n">a</span> <span class="n">real</span> <span class="n">customer</span> <span class="n">database</span> <span class="p">(</span><span class="n">TEKICC_ST</span><span class="nd">@MULLIGAN</span><span class="p">)</span>
-<span class="s2">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">These use cases were designed to work with a real customer database (TEKICC_ST@MULLIGAN)</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
-<span class="s2"># Ip address for the Mesh server</span>
-<span class="s2">HOST = &quot;localhost&quot;</span>
-<span class="s2"># Mesh server port for gRPC communication</span>
-<span class="s2">PORT = 50051</span>
-<span class="s2"># Use matplotlib to visualize results</span>
-<span class="s2">SHOW_PLOT = True</span>
-<span class="s2"># Save time series to CSV file</span>
-<span class="s2">SAVE_TO_CSV = True</span>
-<span class="s2"># Some use cases write new points or update existing objects</span>
-<span class="s2"># Set this flag to True to commit the changes (made in use cases) to Mesh</span>
-<span class="s2">COMMIT_CHANGES = True</span>
-<span class="s2"># Which use case to run</span>
-<span class="s2"># [&#39;all&#39;, &#39;flow_drop_2&#39;, &#39;flow_drop_3&#39;, &#39;1&#39; ... &#39;&lt;number_of_use_cases&gt;&#39;]</span>
-<span class="s2">RUN_USE_CASE = &#39;all&#39;</span>
-<span class="s2"># Set local time zone to be used in every use case (reads time zone from operating system settings)</span>
-<span class="s2">LOCAL_TIME_ZONE = tz.tzlocal()</span>
-<span class="s2"># if you want to set explicitly the time zone you can use the following:</span>
-<span class="s2">#LOCAL_TIME_ZONE = tz.gettz(&#39;Europe/Warsaw&#39;)</span>
-<span class="s2"># if you want to set fixed UTC offset (no DST) you can use the following:</span>
-<span class="s2">#LOCAL_TIME_ZONE = timezone(timedelta(hours=1))</span>
-
+<span class="c1"># Ip address for the Mesh server</span>
+<span class="n">HOST</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+<span class="c1"># Mesh server port for gRPC communication</span>
+<span class="n">PORT</span> <span class="o">=</span> <span class="mi">50051</span>
+<span class="c1"># Use matplotlib to visualize results</span>
+<span class="n">SHOW_PLOT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Save time series to CSV file</span>
+<span class="n">SAVE_TO_CSV</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Some use cases write new points or update existing objects</span>
+<span class="c1"># Set this flag to True to commit the changes (made in use cases) to Mesh</span>
+<span class="n">COMMIT_CHANGES</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Which use case to run</span>
+<span class="c1"># [&#39;all&#39;, &#39;flow_drop_2&#39;, &#39;flow_drop_3&#39;, &#39;1&#39; ... &#39;&lt;number_of_use_cases&gt;&#39;]</span>
+<span class="n">RUN_USE_CASE</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+<span class="c1"># Set local time zone to be used in every use case (reads time zone from operating system settings)</span>
+<span class="n">LOCAL_TIME_ZONE</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">tzlocal</span><span class="p">()</span>
+<span class="c1"># if you want to set explicitly the time zone you can use the following:</span>
+<span class="c1">#LOCAL_TIME_ZONE = tz.gettz(&#39;Europe/Warsaw&#39;)</span>
+<span class="c1"># if you want to set fixed UTC offset (no DST) you can use the following:</span>
+<span class="c1">#LOCAL_TIME_ZONE = timezone(timedelta(hours=1))</span>
 
 </pre></div>
 </div>
