@@ -10,10 +10,13 @@ UNVERSIONED_PATH = OBJECT_PATH + ".XYSetAtt"
 VERSIONED_PATH = OBJECT_PATH + ".XYZSeriesAtt"
 
 
-
 def main(address, port, tls_root_cert):
     c = mesh.Connection(address, port, tls_root_cert)
     with c.create_session() as session:
+        # In the default test model both the versioned and the unversioned
+        # attribute are initially empty. The following two calls are therefore
+        # expected to return [].
+
         print(f"Getting XY-sets from {UNVERSIONED_PATH}")
         xy_sets = session.get_xy_sets(UNVERSIONED_PATH)
         print(xy_sets)
