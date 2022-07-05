@@ -69,32 +69,6 @@ class TestTimeseriesAttribute(TestOwnedObject):
     kind = "TimeseriesAttribute"
 
 
-def is_port_responding(host: str, port: int):
-    """Helper function to check if a socket will respond to a connection."""
-    args = socket.getaddrinfo(host, port, socket.AF_INET, socket.SOCK_STREAM)
-    for family, socktype, proto, _, sockaddr in args:
-        a_socket = socket.socket(family, socktype, proto)
-        try:
-            a_socket.connect(sockaddr)
-        except socket.error:
-            return False
-        else:
-            a_socket.close()
-            return True
-
-
-def run_example_script(path, address, port, root_pem_certificate):
-    """Helper function to run an example script."""
-    process = subprocess.Popen(
-        [sys.executable, path, address, str(port), root_pem_certificate],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
-
-    stdoutdata, stderrdata = process.communicate()
-    exit_code = process.returncode
-    assert exit_code == 0, f"{stderrdata} {stdoutdata}"
-
-
 def get_timeseries_0():
     """
     Timeseries with timeseries key.

@@ -1,20 +1,16 @@
 """
 Tests for volue.mesh.Connection.Session and volue.mesh.aio.Connection.Session
 """
-
+import sys
 from time import sleep
+
 import grpc
 import pytest
-from volue.mesh import Connection
-from volue.mesh.aio import Connection as AsyncConnection
-import volue.mesh.tests.test_utilities.server_config as sc
+
 
 @pytest.mark.server
-def test_get_version():
+def test_get_version(connection):
     """Check if the server can respond with its version. |test|"""
-    connection = Connection(sc.DefaultServerConfig.ADDRESS,
-                            sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     version_info = connection.get_version()
     assert version_info.version != ""
     assert version_info.name != ""
@@ -22,22 +18,16 @@ def test_get_version():
 
 @pytest.mark.server
 @pytest.mark.asyncio
-async def test_async_get_version():
+async def test_async_get_version(async_connection):
     """Check if the server can respond with its version. |testaio|"""
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
-                                 sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
-    version_info = await connection.get_version()
+    version_info = await async_connection.get_version()
     assert version_info.version != ""
     assert version_info.name != ""
 
 
 @pytest.mark.server
-def test_open_and_close_session():
+def test_open_and_close_session(connection):
     """Check if a session can be opened and closed. |test|"""
-    connection = Connection(sc.DefaultServerConfig.ADDRESS,
-                            sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     session = connection.create_session()
     session.open()
     assert session.session_id is not None
@@ -47,12 +37,9 @@ def test_open_and_close_session():
 
 @pytest.mark.server
 @pytest.mark.asyncio
-async def test_open_and_close_session():
+async def test_async_open_and_close_session(async_connection):
     """Check if a session can be opened and closed. |testaio|"""
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
-                                 sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
-    session = connection.create_session()
+    session = async_connection.create_session()
     await session.open()
     assert session.session_id is not None
     await session.close()
@@ -60,15 +47,12 @@ async def test_open_and_close_session():
 
 
 @pytest.mark.server
-def test_can_connect_to_existing_session():
+def test_can_connect_to_existing_session(connection):
     """Check if it is possible to connect to an existing session. |test|
     1. Create a session.
     2. Connect to the session using a new object.
     3. Close using the new session object.
     4. Try to close the old session object, which should no longer be alive on the server."""
-    connection = Connection(sc.DefaultServerConfig.ADDRESS,
-                            sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     session = connection.create_session()
     session.open()
     assert session.session_id is not None
@@ -84,12 +68,10 @@ def test_can_connect_to_existing_session():
     assert info.type == grpc._channel._InactiveRpcError
     assert info.value.details() == ('Session with id {} not found.'.format({str(session.session_id).upper()})).replace("'", "")
 
+
 @pytest.mark.server
-def test_sessions_using_contextmanager():
+def test_sessions_using_contextmanager(connection):
     """Check if a session can be opened and closed using a contextmanager. |test|"""
-    connection = Connection(sc.DefaultServerConfig.ADDRESS,
-                            sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     session_id1 = None
     session_id2 = None
     with connection.create_session() as open_session:
@@ -106,18 +88,15 @@ def test_sessions_using_contextmanager():
 
 @pytest.mark.server
 @pytest.mark.asyncio
-async def test_sessions_using_async_contextmanager():
+async def test_sessions_using_async_contextmanager(async_connection):
     """Check if a session can be opened and closed using a contextmanager. |testaio|"""
-    connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
-                                 sc.DefaultServerConfig.PORT,
-                                 sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
     session_id1 = None
     session_id2 = None
-    async with connection.create_session() as open_session:
+    async with async_connection.create_session() as open_session:
         session_id1 = open_session.session_id
         assert session_id1 is not None
 
-    async with connection.create_session() as open_session:
+    async with async_connection.create_session() as open_session:
         session_id2 = open_session.session_id
         assert session_id1 is not None
 
@@ -126,4 +105,4 @@ async def test_sessions_using_async_contextmanager():
 
 
 if __name__ == '__main__':
-    pytest.main()
+    sys.exit(pytest.main(sys.argv))

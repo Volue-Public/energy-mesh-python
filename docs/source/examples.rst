@@ -71,8 +71,3 @@ Search for timeseries attributes
 **********************************
 .. literalinclude:: /../../src/volue/mesh/examples/timeseries_search.py
    :language: python
-
-Running tests
-********************************
-.. literalinclude:: /../../src/volue/mesh/examples/run_tests.py
-   :language: python

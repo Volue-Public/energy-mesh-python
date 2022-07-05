@@ -3,6 +3,8 @@ Tests for volue.mesh.calc
 """
 
 from datetime import datetime
+import sys
+
 from dateutil import tz
 import pytest
 
@@ -64,4 +66,4 @@ def test_parsing_single_float_response_with_invalid_calculation_result_should_th
 
 
 if __name__ == '__main__':
-    pytest.main()
+    sys.exit(pytest.main(sys.argv))
