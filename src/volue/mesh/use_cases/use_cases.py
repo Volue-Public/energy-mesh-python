@@ -9,8 +9,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import (Connection, AttributesFilter, Object, Timeseries,
-                        TimeseriesResource, XySet, XyCurve)
+from volue.mesh import (Connection, AttributesFilter, Object,
+    RatingCurveSegment, RatingCurveVersion, Timeseries, TimeseriesResource,
+    XySet, XyCurve)
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 
@@ -30,7 +31,7 @@ SAVE_TO_CSV = False
 # Set this flag to True to commit the changes (made in use cases) to Mesh
 COMMIT_CHANGES = False
 # Which use case to run
-# ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
+# ['all', 'flow_drop_2', 'flow_drop_3', 'flow_drop_4', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
 # Set local time zone to be used in every use case (reads time zone from operating system settings)
 LOCAL_TIME_ZONE = tz.tzlocal()
@@ -1182,6 +1183,82 @@ def use_case_20():
             print(f"use case 20 resulted in a error: {e}")
 
 
+def use_case_28():
+    """
+    Scenario:
+    We want to read and update specific rating curve attribute.
+
+    Attribute path: Model/MeshTEK/Mesh/Norge/Målestasjoner/Nidelva/Kobberdammen.HydStationRatingCurve
+    Time interval:  10.01.2020 - 27.03.2022
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 28"
+            attribute_path = "Model/MeshTEK/Mesh/Norge/Målestasjoner/Nidelva/Kobberdammen.HydStationRatingCurve"
+            start = datetime(2012, 1, 10, tzinfo=LOCAL_TIME_ZONE)
+            end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # First read the attribute using `get_attribute`.
+            # We can get standard information like name, ID, tags, etc.
+            # Only rating curve attribute specific value is the
+            # `definition_name`, which is the name of a RatingCurveDefinition
+            # structure, where all rating curve versions are stored. It is
+            # defined on the model level (not model definition), so this is not
+            # the same as the name of definition from AttributeDefinition.
+            rating_curve_attribute = session.get_attribute(
+                attribute_path=attribute_path, full_attribute_info=True)
+            print(f"Basic information about the rating curve attribute: {rating_curve_attribute}\n")
+
+            # Because the rating curve can potentially contain large amounts of data,
+            # specialized methods exist to handle those values.
+            versions = session.get_rating_curve_versions(
+                target=attribute_path,
+                start_time=start,
+                end_time=end)
+
+            print((
+                f"There is/are {len(versions)} rating curve version(s) for the time interval: "
+                f"{start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}:\n"
+            ))
+            for i, version in enumerate(versions):
+                print(f'Version {i+1}:\n{version}')
+
+            if len(versions) == 0 or len(versions[-1].x_value_segments) == 0:
+                print('No rating curve versions found. Skip update.')
+                return
+
+            # Now for the last version update first segment and add a new one.
+            versions[-1].x_value_segments[0].factor_b = 1.7
+            versions[-1].x_value_segments.append(RatingCurveSegment(24, 1.0, -2.5, -9.8))
+            session.update_rating_curve_versions(
+                target=attribute_path,
+                start_time=versions[0].valid_from_time,
+                end_time=datetime.max,
+                new_versions=versions)
+
+            # Read once again.
+            versions = session.get_rating_curve_versions(
+                target=attribute_path,
+                start_time=start,
+                end_time=end)
+
+            print("Updated rating curve versions:")
+            for i, version in enumerate(versions):
+                print(f'Version {i+1}:\n{version}')
+
+            # Commit changes
+            if COMMIT_CHANGES:
+                session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 1:
@@ -1202,6 +1279,11 @@ if __name__ == "__main__":
     elif RUN_USE_CASE == 'flow_drop_3':
         flow_drop_3_use_cases = ['6', '7', '8', '9', '10', '11', '12']
         for use_case_key in flow_drop_3_use_cases:
+            if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
+                ALL_USE_CASE_FUNCTIONS[use_case_key]()
+    elif RUN_USE_CASE == 'flow_drop_4':
+        flow_drop_4_use_cases = ['13', '14', '15', '16', '17', '18', '19', '20', '28']
+        for use_case_key in flow_drop_4_use_cases:
             if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
                 ALL_USE_CASE_FUNCTIONS[use_case_key]()
     else:
