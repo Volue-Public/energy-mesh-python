@@ -121,7 +121,7 @@ def async_connection():
 
 @pytest.fixture
 async def async_session(async_connection):
-    """Return a :class:`mesh.Connection.Session` for the current test.
+    """Return a :class:`mesh.aio.Connection.Session` for the current test.
 
     The session will be closed after the test is complete.
     """
