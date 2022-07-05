@@ -211,7 +211,7 @@
 
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">proto_value</span><span class="p">)</span> <span class="ow">is</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">:</span>
         <span class="c1"># time zone aware datetime as UTC</span>
-        <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
+        <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">proto_value</span>
 
