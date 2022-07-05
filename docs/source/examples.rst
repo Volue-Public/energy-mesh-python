@@ -1,4 +1,4 @@
-Examples
+/xamples
 ---------
 
 This section contains code examples. These examples are packaged with the Mesh Python SDK and can be accessed when the package is installed.
@@ -70,9 +70,4 @@ Write timeseries, asynchronously
 Search for timeseries attributes
 **********************************
 .. literalinclude:: /../../src/volue/mesh/examples/timeseries_search.py
-   :language: python
-
-Running tests
-********************************
-.. literalinclude:: /../../src/volue/mesh/examples/run_tests.py
    :language: python
