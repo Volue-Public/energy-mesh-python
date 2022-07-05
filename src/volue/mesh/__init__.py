@@ -13,7 +13,7 @@ from ._credentials import Credentials
 from ._connection import Connection
 
 __title__ = 'volue.mesh'
-__author__ = 'Volue AS'
+__author__ = 'Volue ASA'
 
 __all__ = [
     'Authentication',
