@@ -39,7 +39,7 @@ def _get_attribute_value(proto_attribute_value: core_pb2.AttributeValue):
 
     if type(proto_value) is timestamp_pb2.Timestamp:
         # time zone aware datetime as UTC
-        proto_value = proto_value.ToDatetime().replace(tzinfo=tz.UTC)
+        proto_value = proto_value.ToDatetime(tz.UTC)
 
     return proto_value
 
