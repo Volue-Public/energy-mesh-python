@@ -3,6 +3,7 @@ Tests for volue.mesh.Authentication
 """
 
 import pytest
+import sys
 
 from volue import mesh
 import volue.mesh.aio
