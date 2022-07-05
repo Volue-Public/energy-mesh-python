@@ -1090,7 +1090,7 @@ class Session(abc.ABC):
         # https://developers.google.com/protocol-buffers/docs/reference/python-generated#keyword-conflicts
         yield [RatingCurveVersion(
             x_range_from=proto_version.x_range_from,
-            valid_from_time=getattr(proto_version, "from").ToDatetime().replace(tzinfo=dateutil.tz.UTC),
+            valid_from_time=getattr(proto_version, "from").ToDatetime(dateutil.tz.UTC),
             x_value_segments=[RatingCurveSegment(
                 proto_segment.x_range_until,
                 proto_segment.factor_a,
