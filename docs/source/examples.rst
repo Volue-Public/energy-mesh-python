@@ -1,4 +1,4 @@
-/xamples
+Examples
 ---------
 
 This section contains code examples. These examples are packaged with the Mesh Python SDK and can be accessed when the package is installed.
