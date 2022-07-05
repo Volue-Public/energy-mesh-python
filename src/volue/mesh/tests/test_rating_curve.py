@@ -71,9 +71,9 @@ def verify_version_2(version: mesh.RatingCurveVersion):
 
 
 def get_new_rating_curve_version(
-    x_range_from = 2.0,
-    valid_from_time = datetime.now(tz.UTC) + timedelta(days=2),
-    x_value_segments = None) -> mesh.RatingCurveVersion:
+        x_range_from = 2.0,
+        valid_from_time = datetime.now(tz.UTC) + timedelta(days=2),
+        x_value_segments = None) -> mesh.RatingCurveVersion:
     """Helper function update rating curve tests."""
     if x_value_segments is None:
         x_value_segments = [mesh.RatingCurveSegment(5.0, 1.0, 1.0, 1.0)]
@@ -86,7 +86,8 @@ def get_new_rating_curve_version(
 @pytest.mark.parametrize('end_time',
     [datetime.max, datetime(2020, 1, 1), datetime(2010, 1, 2)])
 def test_get_all_rating_curve_versions(
-    mesh_session: _base_session.Session, start_time: datetime, end_time: datetime):
+        mesh_session: _base_session.Session,
+        start_time: datetime, end_time: datetime):
     versions = mesh_session.get_rating_curve_versions(
         target=ATTRIBUTE_PATH,
         start_time=start_time,
@@ -104,7 +105,8 @@ def test_get_all_rating_curve_versions(
 @pytest.mark.parametrize('end_time',
     [datetime(2006, 1, 1), datetime(2010, 1, 1)])
 def test_get_one_rating_curve_version_with_limited_interval(
-    mesh_session: _base_session.Session, start_time: datetime, end_time: datetime):
+        mesh_session: _base_session.Session,
+        start_time: datetime, end_time: datetime):
     versions = mesh_session.get_rating_curve_versions(
         target=ATTRIBUTE_PATH,
         start_time=start_time,
@@ -117,7 +119,7 @@ def test_get_one_rating_curve_version_with_limited_interval(
 
 @pytest.mark.database
 def test_get_rating_curve_versions_with_versions_only(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     versions = mesh_session.get_rating_curve_versions(
         target=ATTRIBUTE_PATH,
         start_time=datetime.min,
@@ -137,7 +139,7 @@ def test_get_rating_curve_versions_with_versions_only(
 
 @pytest.mark.database
 def test_get_rating_curve_versions_invalid_input(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
 
     # [start_time, end_time) must be a valid interval
     with pytest.raises(grpc.RpcError, match="UtcInterval .* is invalid, start_time > end_time"):
@@ -150,7 +152,7 @@ def test_get_rating_curve_versions_invalid_input(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_remove_one_version(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
 
     mesh_session.update_rating_curve_versions(
         target=ATTRIBUTE_PATH,
@@ -171,7 +173,7 @@ def test_update_rating_curve_versions_remove_one_version(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_remove_all_versions(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
 
     mesh_session.update_rating_curve_versions(
         target=ATTRIBUTE_PATH,
@@ -195,7 +197,8 @@ def test_update_rating_curve_versions_remove_all_versions(
 @pytest.mark.parametrize('end_time',
     [datetime(1999, 12, 31), datetime(2000, 1, 1)])
 def test_update_rating_curve_versions_remove_versions_before_current_versions(
-    mesh_session: _base_session.Session, start_time: datetime, end_time: datetime):
+        mesh_session: _base_session.Session,
+        start_time: datetime, end_time: datetime):
     """
     Originally there are 2 versions from: 2000, from: 2010.
     Send empty update requests with intervals before current
@@ -225,7 +228,8 @@ def test_update_rating_curve_versions_remove_versions_before_current_versions(
 @pytest.mark.parametrize('end_time',
     [datetime(2010, 1, 2), datetime(2011, 1, 1)])
 def test_update_rating_curve_versions_replace_two_old_versions_with_one_longer(
-    mesh_session: _base_session.Session, start_time: datetime, end_time: datetime):
+        mesh_session: _base_session.Session,
+        start_time: datetime, end_time: datetime):
     """
     Originally there are 2 versions from: 2000, from: 2010.
     Send update requests with single version, with intervals
@@ -251,7 +255,7 @@ def test_update_rating_curve_versions_replace_two_old_versions_with_one_longer(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_with_new_versions_in_the_middle(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     new_versions = [
         generate_rating_curve_version(1, datetime(2005, 1, 1)),
         generate_rating_curve_version(5, datetime(2008, 1, 1))
@@ -277,7 +281,7 @@ def test_update_rating_curve_versions_with_new_versions_in_the_middle(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_with_new_versions_before(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     new_versions = [
         generate_rating_curve_version(2, datetime(1995, 1, 1))
     ]
@@ -303,7 +307,7 @@ def test_update_rating_curve_versions_with_new_versions_before(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_with_new_versions_after(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     new_versions = [
         generate_rating_curve_version(8, datetime(2022, 1, 1))
     ]
@@ -329,7 +333,7 @@ def test_update_rating_curve_versions_with_new_versions_after(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_replace_all_existing_versions_with_new_ones(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     new_versions = [
         generate_rating_curve_version(3, datetime(1995, 1, 1)),
         generate_rating_curve_version(1, datetime(2012, 1, 1)),
@@ -354,7 +358,7 @@ def test_update_rating_curve_versions_replace_all_existing_versions_with_new_one
 
 @pytest.mark.database
 def test_update_rating_curve_versions_remove_last_version(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     # if interval contains `from` of last version the last version should be removed
     # i.e. the end interval does not need to be UtcDateTime::Max
     mesh_session.update_rating_curve_versions(
@@ -376,7 +380,7 @@ def test_update_rating_curve_versions_remove_last_version(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_unsorted_versions(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     new_versions = [
         generate_rating_curve_version(3, datetime(1999, 1, 1)),
         generate_rating_curve_version(2, datetime(1992, 1, 1)),
@@ -403,7 +407,7 @@ def test_update_rating_curve_versions_unsorted_versions(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_unsorted_segments(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     new_segments = [
         mesh.RatingCurveSegment(5.0, 1.0, 1.0, 1.0),
         mesh.RatingCurveSegment(3.0, 1.0, 1.0, 1.0),
@@ -437,7 +441,7 @@ def test_update_rating_curve_versions_unsorted_segments(
 
 @pytest.mark.database
 def test_update_rating_curve_versions_invalid_input(
-    mesh_session: _base_session.Session):
+        mesh_session: _base_session.Session):
     now = datetime.now(tz.UTC)
     later = now + timedelta(days=365)
 
