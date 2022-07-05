@@ -176,40 +176,53 @@
 
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.tests.test_utilities.server_config</span> <span class="k">as</span> <span class="nn">sc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.tests.test_utilities.utilities</span> <span class="kn">import</span> <span class="n">run_example_script</span><span class="p">,</span> <span class="n">is_port_responding</span>
-<span class="kn">import</span> <span class="nn">volue.mesh</span>
+
+<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+
+<div class="viewcode-block" id="is_port_responding"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_examples.is_port_responding">[docs]</a><span class="k">def</span> <span class="nf">is_port_responding</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper function to check if a socket will respond to a connection.&quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">getaddrinfo</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">family</span><span class="p">,</span> <span class="n">socktype</span><span class="p">,</span> <span class="n">proto</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">sockaddr</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="n">a_socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="n">socktype</span><span class="p">,</span> <span class="n">proto</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">a_socket</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">sockaddr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">a_socket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="test_is_grpc_responding"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_examples.test_is_grpc_responding">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">server</span>
-<span class="k">def</span> <span class="nf">test_is_grpc_responding</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">test_is_grpc_responding</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if the server&#39;s socket is open and responding.&quot;&quot;&quot;</span>
-    <span class="k">assert</span> <span class="n">is_port_responding</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span></div>
+    <span class="k">assert</span> <span class="n">is_port_responding</span><span class="p">(</span><span class="o">*</span><span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="test_run_example_scripts"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_examples.test_run_example_scripts">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">examples</span>
+<div class="viewcode-block" id="test_example"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_examples.test_example">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">examples</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_run_example_scripts</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Check if all examples run and that they exit with no error code.&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">test_example</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="p">,</span> <span class="n">example_path</span><span class="p">):</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">example_path</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs_path</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span></div>
 
-    <span class="n">examples</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">volue</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;examples&#39;</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
 
-    <span class="c1"># the tests could be triggered by running run_tests.py script</span>
-    <span class="c1"># to avoid endless loop do not run this script from this test</span>
-    <span class="n">exception_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;run_tests.py&#39;</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">file</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exception_list</span><span class="p">:</span>
-            <span class="n">run_example_script</span><span class="p">(</span><span class="n">file</span><span class="p">,</span>
-                               <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span><span class="p">,</span>
-                               <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span><span class="p">,</span>
-                               <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span><span class="p">)</span></div>
+<div class="viewcode-block" id="pytest_generate_tests"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_examples.pytest_generate_tests">[docs]</a><span class="k">def</span> <span class="nf">pytest_generate_tests</span><span class="p">(</span><span class="n">metafunc</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s2">&quot;example_path&quot;</span> <span class="ow">in</span> <span class="n">metafunc</span><span class="o">.</span><span class="n">fixturenames</span><span class="p">:</span>
+        <span class="n">examples</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;examples&#39;</span><span class="p">)</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">examples</span> <span class="o">+</span> <span class="s2">&quot;/*.py&quot;</span><span class="p">)</span>
+        <span class="n">metafunc</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;example_path&quot;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
 </pre></div>
 
            </div>

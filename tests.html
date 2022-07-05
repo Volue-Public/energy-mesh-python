@@ -204,60 +204,6 @@
 <span class="n">markers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Tests can be run by doing the following. In case there are failing tests there is the option to generate a report. This will log all except passing tests. More information can be found in <a class="reference external" href="https://docs.pytest.org/en/latest/how-to/output.html">pytests documentation</a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytest</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.tests.test_utilities.server_config</span> <span class="k">as</span> <span class="nn">sc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.tests</span> <span class="kn">import</span> <span class="n">test_timeseries</span>
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to run tests.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Change to fit your server</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ADDRESS</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">PORT</span> <span class="o">=</span> <span class="mi">50051</span>
-    <span class="c1"># PEM-encoded root certificate(s) as a byte string.</span>
-    <span class="c1"># Note: Authentication tests require secure connection,</span>
-    <span class="c1">#       so providing root certificate is required for them.</span>
-    <span class="c1">#       Change to path with your certificate.</span>
-    <span class="c1"># with open(&#39;C:\\certs\\self_signed_certificate.crt&#39;, &#39;rb&#39;) as file:</span>
-    <span class="c1">#     sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE = file.read()</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">ROOT_PEM_CERTIFICATE</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-
-    <span class="c1"># If Mesh gRPC server is running as a service user,</span>
-    <span class="c1"># for example LocalSystem, NetworkService or a user account</span>
-    <span class="c1"># with a registered service principal name then it is enough</span>
-    <span class="c1"># to provide hostname as service principal, e.g.:</span>
-    <span class="c1">#   &#39;HOST/hostname.ad.examplecompany.com&#39;</span>
-    <span class="c1"># If Mesh gRPC server is running as a user account without</span>
-    <span class="c1"># registered service principal name then it is enough to provide</span>
-    <span class="c1"># user account name running Mesh server as service principal, e.g.:</span>
-    <span class="c1">#   &#39;ad\\user.name&#39; or r&#39;ad\user.name&#39;</span>
-    <span class="c1"># Note: winkerberos converts service principal name if provided in</span>
-    <span class="c1">#       RFC-2078 format. &#39;@&#39; is converted to &#39;/&#39; if there is no &#39;/&#39;</span>
-    <span class="c1">#       character in the service principal name. E.g.:</span>
-    <span class="c1">#           service@hostname</span>
-    <span class="c1">#       Would be converted to:</span>
-    <span class="c1">#           service/hostname</span>
-    <span class="n">sc</span><span class="o">.</span><span class="n">DefaultServerConfig</span><span class="o">.</span><span class="n">KERBEROS_SERVICE_PRINCIPAL_NAME</span> <span class="o">=</span> <span class="s1">&#39;HOST/example.companyad.company.com&#39;</span>
-
-    <span class="c1"># Run individual tests:</span>
-    <span class="n">test_timeseries</span><span class="o">.</span><span class="n">test_can_create_empty_timeserie</span><span class="p">()</span>
-
-    <span class="c1"># Run a subset (or all) tests and generate report:</span>
-    <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;--junitxml&#39;</span><span class="p">,</span> <span class="s1">&#39;test.xml&#39;</span><span class="p">,</span>       <span class="c1"># the test report</span>
-        <span class="s1">&#39;-ra&#39;</span><span class="p">,</span>                          <span class="c1"># specify which tests should be reported</span>
-        <span class="s1">&#39;-vv&#39;</span><span class="p">,</span>                          <span class="c1"># verbose output</span>
-        <span class="s1">&#39;--pyargs&#39;</span><span class="p">,</span> <span class="s1">&#39;volue.mesh.tests&#39;</span><span class="p">,</span> <span class="c1"># specify that it is the volue.mesh.tests that will run</span>
-        <span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;unittest or server&#39;</span>      <span class="c1"># which subset of tests to run</span>
-    <span class="p">]</span>
-    <span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
-</pre></div>
-</div>
 </div>
 </div>
 
