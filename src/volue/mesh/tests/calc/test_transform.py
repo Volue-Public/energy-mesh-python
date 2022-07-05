@@ -3,7 +3,9 @@ Tests for volue.mesh.calc.transform
 """
 
 from datetime import datetime
+import sys
 import uuid
+
 import pytest
 
 from volue.mesh import Timeseries
@@ -64,4 +66,4 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
 
 
 if __name__ == '__main__':
-    pytest.main()
+    sys.exit(pytest.main(sys.argv))
