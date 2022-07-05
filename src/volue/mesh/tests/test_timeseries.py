@@ -3,6 +3,7 @@ Tests for volue.mesh.Timeseries
 """
 
 from datetime import datetime, timedelta
+import sys
 import uuid
 
 import pyarrow as pa
@@ -162,5 +163,6 @@ def test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table(
                              full_name="some_name")
     assert time_series.number_of_points == 0
 
+
 if __name__ == '__main__':
-    pytest.main()
+    sys.exit(pytest.main(sys.argv))

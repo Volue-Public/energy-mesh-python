@@ -4,50 +4,37 @@ Tests for volue.mesh.Authentication
 
 import pytest
 
-from volue.mesh import Authentication, Connection, Credentials
-from volue.mesh.aio import Connection as AsyncConnection
-import volue.mesh.tests.test_utilities.server_config as sc
+from volue import mesh
+import volue.mesh.aio
 
 
 @pytest.fixture
-def auth_metadata_plugin():
+def auth_metadata_plugin(mesh_test_config):
     """Yields Authentication object. No clean-up is done (it requires Connection object)
     Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server."""
-    target = f'{sc.DefaultServerConfig.ADDRESS}:{sc.DefaultServerConfig.PORT}'
-    credentials = Credentials(sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE)
-    authentication_parameters = Authentication.Parameters(
-        sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
-    return Authentication(authentication_parameters, target, credentials.channel_creds)
+    assert mesh_test_config.creds_type == "kerberos"
+    credentials = mesh.Credentials(mesh_test_config.tls_root_certs)
+    authentication_parameters = mesh.Authentication.Parameters(mesh_test_config.krb5_svc,
+                                                               mesh_test_config.krb5_usr)
+    return mesh.Authentication(authentication_parameters, mesh_test_config.address, credentials.channel_creds)
 
 
 @pytest.fixture
-def connection():
-    """Yields Connection object and revokes access token in clean-up."""
-    authentication_parameters = Authentication.Parameters(
-        sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
-    conn = Connection(sc.DefaultServerConfig.ADDRESS,
-                      sc.DefaultServerConfig.PORT,
-                      sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE,  # authentication requires TLS (to make sure tokens are encrypted)
-                      authentication_parameters)
-    yield conn
-
-    # clean-up
-    conn.revoke_access_token()
+def kerberos_connection(mesh_test_config) -> mesh.Connection:
+    assert mesh_test_config.creds_type == "kerberos"
+    connection = mesh.Connection.with_kerberos(mesh_test_config.address, mesh_test_config.tls_root_certs,
+                                               mesh_test_config.krb5_svc, mesh_test_config.krb5_usr)
+    yield connection
+    connection.revoke_access_token()
 
 
 @pytest.fixture
-async def get_async_connection():
-    """Yields AsyncConnection object and revokes access token in clean-up."""
-    authentication_parameters = Authentication.Parameters(
-        sc.DefaultServerConfig.KERBEROS_SERVICE_PRINCIPAL_NAME)
-    async_connection = AsyncConnection(sc.DefaultServerConfig.ADDRESS,
-                            sc.DefaultServerConfig.PORT,
-                            sc.DefaultServerConfig.ROOT_PEM_CERTIFICATE,  # authentication requires TLS (to make sure tokens are encrypted)
-                            authentication_parameters)
-    yield async_connection
-
-    # clean-up
-    await async_connection.revoke_access_token()
+async def async_kerberos_connection(mesh_test_config) -> mesh.aio.Connection:
+    assert mesh_test_config.creds_type == "kerberos"
+    connection = mesh.aio.Connection.with_kerberos(mesh_test_config.address, mesh_test_config.tls_root_certs,
+                                                   mesh_test_config.krb5_svc, mesh_test_config.krb5_usr)
+    yield connection
+    await connection.revoke_access_token()
 
 
 @pytest.mark.authentication
@@ -92,38 +79,38 @@ def test_auth_metadata_plugin_obtains_correctly_new_token_after_delete(auth_meta
 
 
 @pytest.mark.authentication
-def test_connection_revoke_access_token(connection):
+def test_connection_revoke_access_token(kerberos_connection):
     """Check if revoking access token from Connection class correctly invalidates it."""
-    assert connection.auth_metadata_plugin.is_token_valid()
-    connection.revoke_access_token()
-    assert connection.auth_metadata_plugin.is_token_valid() is False
+    assert kerberos_connection.auth_metadata_plugin.is_token_valid()
+    kerberos_connection.revoke_access_token()
+    assert kerberos_connection.auth_metadata_plugin.is_token_valid() is False
 
 
 @pytest.mark.asyncio
 @pytest.mark.authentication
-async def test_async_connection_revoke_access_token(get_async_connection):
+async def test_async_connection_revoke_access_token(async_kerberos_connection):
     """Check if revoking access token from AsyncConnection class correctly invalidates it."""
-    assert get_async_connection.auth_metadata_plugin.is_token_valid()
-    await get_async_connection.revoke_access_token()
-    assert get_async_connection.auth_metadata_plugin.is_token_valid() is False
+    assert async_kerberos_connection.auth_metadata_plugin.is_token_valid()
+    await async_kerberos_connection.revoke_access_token()
+    assert async_kerberos_connection.auth_metadata_plugin.is_token_valid() is False
 
 
 @pytest.mark.authentication
-def test_connection_get_user_identity(connection):
+def test_connection_get_user_identity(kerberos_connection):
     """Check if getting user identity from Connection class returns something."""
-    user_identity = connection.get_user_identity()
+    user_identity = kerberos_connection.get_user_identity()
     assert user_identity.display_name is not None
     assert user_identity.identifier is not None
 
 
 @pytest.mark.asyncio
 @pytest.mark.authentication
-async def test_async_connection_get_user_identity(get_async_connection):
+async def test_async_connection_get_user_identity(async_kerberos_connection):
     """Check if getting user identity from AsyncConnection class returns something."""
-    user_identity = await get_async_connection.get_user_identity()
+    user_identity = await async_kerberos_connection.get_user_identity()
     assert user_identity.display_name is not None
     assert user_identity.identifier is not None
 
 
 if __name__ == '__main__':
-    pytest.main()
+    sys.exit(pytest.main(sys.argv))
