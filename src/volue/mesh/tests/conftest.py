@@ -1,9 +1,9 @@
 """pytest command line options and global test fixtures."""
 
 from dataclasses import dataclass
-import os
-import pytest
 import typing
+
+import pytest
 
 from volue import mesh
 import volue.mesh.aio
