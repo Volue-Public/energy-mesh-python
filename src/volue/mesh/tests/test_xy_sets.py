@@ -9,8 +9,6 @@ import grpc
 import pytest
 
 from volue import mesh
-import volue.mesh.aio
-
 
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
