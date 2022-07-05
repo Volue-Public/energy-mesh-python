@@ -49,6 +49,7 @@ def generate_rating_curve_version(seed: int,
 
 
 def verify_version_1(version: mesh.RatingCurveVersion):
+    """Verify existing rating curve version from the the SimpleThermalModel"""
     assert version.valid_from_time == datetime(2000, 1, 1, tzinfo=tz.UTC)
     assert version.x_range_from == 2.0
     for i, segment in enumerate(version.x_value_segments):
@@ -59,6 +60,7 @@ def verify_version_1(version: mesh.RatingCurveVersion):
 
 
 def verify_version_2(version: mesh.RatingCurveVersion):
+    """Verify existing rating curve version from the the SimpleThermalModel"""
     assert version.valid_from_time == datetime(2010, 1, 1, tzinfo=tz.UTC)
     assert version.x_range_from == 4.0
     for i, segment in enumerate(version.x_value_segments):
@@ -66,6 +68,17 @@ def verify_version_2(version: mesh.RatingCurveVersion):
         assert segment.factor_a == -(i*3 + 1)
         assert segment.factor_b == -(i*3 + 2)
         assert segment.factor_c == -(i*3 + 3)
+
+
+def get_new_rating_curve_version(
+    x_range_from = 2.0,
+    valid_from_time = datetime.now(tz.UTC) + timedelta(days=2),
+    x_value_segments = None) -> mesh.RatingCurveVersion:
+    """Helper function update rating curve tests."""
+    if x_value_segments is None:
+        x_value_segments = [mesh.RatingCurveSegment(5.0, 1.0, 1.0, 1.0)]
+    return mesh.RatingCurveVersion(x_range_from, valid_from_time, x_value_segments)
+
 
 @pytest.mark.database
 @pytest.mark.parametrize('start_time',
@@ -421,13 +434,6 @@ def test_update_rating_curve_versions_unsorted_segments(
     # use [2:3] instead of [2] to get a list
     assert updated_versions[2:3] == new_versions
 
-def get_new_rating_curve_version(
-    x_range_from = 2.0,
-    valid_from_time = datetime.now(tz.UTC) + timedelta(days=2),
-    x_value_segments = None) -> mesh.RatingCurveVersion:
-    if x_value_segments is None:
-        x_value_segments = [mesh.RatingCurveSegment(5.0, 1.0, 1.0, 1.0)]
-    return mesh.RatingCurveVersion(x_range_from, valid_from_time, x_value_segments)
 
 @pytest.mark.database
 def test_update_rating_curve_versions_invalid_input(
