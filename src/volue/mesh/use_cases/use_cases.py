@@ -1166,7 +1166,7 @@ def use_case_20():
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
             print(f"Attribute value before update: {xy_sets}")
 
-            start_time = datetime.fromisoformat("2022-01-01")
+            start_time = datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE)
             new_xy_set = XySet(valid_from_time=start_time,
                                xy_curves=[XyCurve(0.0, [(1.0, 15), (2.0, 30)])])
             session .update_xy_sets(target, start_time, datetime.max, [new_xy_set])
