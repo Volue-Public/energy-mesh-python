@@ -1240,8 +1240,6 @@ def use_case_22():
     versions.
 
     Attribute path: Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve
-
-    Note: currently we can't change the rating curve `definition_name`.
     """
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
