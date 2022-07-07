@@ -9,7 +9,7 @@ from google import protobuf
 
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
 from ._common import (AttributesFilter, MeshObjectId, XyCurve, XySet,
-                      RatingCurveSegment, RatingCurveVersion,
+                      RatingCurveSegment, RatingCurveVersion, _read_proto_reply,
                       _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id,
                       _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_protobuf_utcinterval)
 from ._object import Object
@@ -755,6 +755,42 @@ class Session(abc.ABC):
         )
 
         return request
+
+    def _read_timeseries_impl(
+        self, mesh_object_id: MeshObjectId, start_time: datetime, end_time: datetime
+    ) -> typing.Generator[typing.Any, core_pb2.ReadTimeseriesResponse, None]:
+        """Generator implementation of read_timeseries.
+
+        Yields the protobuf request, receives the protobuf response, and yields
+        the final result.
+        """
+
+        mesh_id = core_pb2.MeshId()
+        if mesh_object_id.timskey is not None:
+            mesh_id.timeseries_key = mesh_object_id.timskey
+        elif mesh_object_id.uuid_id is not None:
+            mesh_id.id.CopyFrom(_to_proto_guid(mesh_object_id.uuid_id))
+        elif mesh_object_id.full_name is not None:
+            mesh_id.path = mesh_object_id.full_name
+        else:
+            raise TypeError("need to specify either timskey, uuid_id or full_name")
+
+        request = core_pb2.ReadTimeseriesRequest(
+            session_id=_to_proto_guid(self.session_id),
+            timeseries_id=mesh_id,
+            interval=_to_protobuf_utcinterval(start_time, end_time),
+        )
+
+        response = yield request
+
+        timeseries = _read_proto_reply(response)
+        if len(timeseries) != 1:
+            raise RuntimeError(
+                f"invalid result from 'read_timeseries_points', "
+                f"expected 1 time series, but got {len(timeseries)}"
+            )
+
+        yield timeseries[0]
 
     def _prepare_get_object_request(
             self,

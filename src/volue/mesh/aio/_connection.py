@@ -14,8 +14,7 @@ from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, 
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
-     _from_proto_guid, _to_protobuf_utcinterval, _read_proto_reply,
-     _to_proto_timeseries)
+     _from_proto_guid, _to_proto_timeseries)
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
@@ -79,29 +78,10 @@ class Connection(_base_connection.Connection):
                                          start_time: datetime,
                                          end_time: datetime,
                                          mesh_object_id: MeshObjectId) -> Timeseries:
-            mesh_id = core_pb2.MeshId()
-            if mesh_object_id.timskey is not None:
-                mesh_id.timeseries_key = mesh_object_id.timskey
-            elif mesh_object_id.uuid_id is not None:
-                mesh_id.id.CopyFrom(_to_proto_guid(mesh_object_id.uuid_id))
-            elif mesh_object_id.full_name is not None:
-                mesh_id.path = mesh_object_id.full_name
-            else:
-                raise TypeError("need to specify either timskey, uuid_id or full_name")
-
-            response = await self.mesh_service.ReadTimeseries(
-                core_pb2.ReadTimeseriesRequest(
-                    session_id=_to_proto_guid(self.session_id),
-                    timeseries_id=mesh_id,
-                    interval=_to_protobuf_utcinterval(start_time, end_time)
-                ))
-
-            timeseries = _read_proto_reply(response)
-            if len(timeseries) != 1:
-                raise RuntimeError(
-                    f"invalid result from 'read_timeseries_points', expected 1 time series, but got {len(timeseries)}")
-
-            return timeseries[0]
+            gen = super()._read_timeseries_impl(mesh_object_id, start_time, end_time)
+            request = next(gen)
+            response = await self.mesh_service.ReadTimeseries(request)
+            return gen.send(response)
 
         async def write_timeseries_points(self, timeseries: Timeseries):
             await self.mesh_service.WriteTimeseries(
