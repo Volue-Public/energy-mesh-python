@@ -14,8 +14,7 @@ from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, 
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
-     _from_proto_guid, _to_protobuf_utcinterval, _read_proto_reply,
-     _to_proto_timeseries)
+     _from_proto_guid, _to_proto_timeseries)
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
