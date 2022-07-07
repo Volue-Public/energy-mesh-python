@@ -758,7 +758,7 @@ class Session(abc.ABC):
 
     def _read_timeseries_impl(
         self, mesh_object_id: MeshObjectId, start_time: datetime, end_time: datetime
-    ) -> core_pb2.ReadTimeseriesRequest:
+    ) -> typing.Generator[typing.Any, core_pb2.ReadTimeseriesResponse, None]:
         """Generator implementation of read_timeseries.
 
         Yields the protobuf request, receives the protobuf response, and yields
