@@ -141,6 +141,17 @@ Setup for developers
 
     to drop into a shell with the dependencies available.
 
+#.  For the development we are using `Black <https://github.com/psf/black>`_
+    auto formatter. It is added as a development dependency and installed
+    automatically by Poetry, so you don't need to install anything extra.
+    Before committing your changes and creating a Pull Request to Python SDK
+    repository make sure the code is correctly formatted, by running::
+
+        poetry run black src\volue\mesh
+
+    Most IDEs have options to automate the usage of auto formatters like
+    *Black*, e.g.: the formatting can be executed on file save, so you don't
+    need to make an explicit call like presented above.
 
 Dependencies
 =============
