@@ -22,7 +22,7 @@ def main(address, port, tls_root_cert):
         # defined on the model level (not model definition), so this is not
         # the same as the name of definition from AttributeDefinition.
         rating_curve_attribute = session.get_attribute(
-            attribute_path=rating_curve_attribute_path, full_attribute_info=True)
+            rating_curve_attribute_path, full_attribute_info=True)
         print(f"Basic information about the rating curve attribute: {rating_curve_attribute}\n")
 
         # Because the rating curve can potentially contain large amounts of data,

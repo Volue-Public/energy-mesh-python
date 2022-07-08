@@ -5,7 +5,7 @@ Common classes/enums/etc. for the Mesh API.
 from __future__ import annotations
 from dataclasses import dataclass, fields
 import datetime
-from typing import List, Optional, NamedTuple, Tuple
+from typing import List, Optional, Tuple, Union
 import uuid
 
 from google.protobuf import field_mask_pb2, timestamp_pb2
@@ -121,11 +121,11 @@ class UserIdentity:
     """Represents a Mesh server user identity.
 
     display_name - a human readable name identifying this user. This name
-    should not be used as an unique identifier for the user as it may be
+    should not be used as a unique identifier for the user as it may be
     identical  between users and change over time.
 
     source - security package name where the user identity came from.
-    It is not an unique identifier of the security package instance.
+    It is not a unique identifier of the security package instance.
 
     identifier - uniquely identifies the user within given `source` instance, but
     not necessarily globally. Combining `source` and `identifier` does not guarantee
@@ -173,55 +173,6 @@ class VersionInfo:
         return cls(
             version=proto_version_info.version,
             name=proto_version_info.name)
-
-@dataclass
-class MeshObjectId:
-    """`MeshObjectId` represents a unique way of identifying a Mesh object.
-
-    Args:
-        timskey (int): integer that only applies to a specific physical or virtual time series
-        uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects
-        full_name (str): path in the :ref:`Mesh model <mesh_model>`.
-          See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-    """
-    timskey: int = None
-    uuid_id: uuid.UUID = None
-    full_name: str = None
-
-    @classmethod
-    def with_timskey(cls, timskey: int):
-        """Create a `MeshObjectId` using a timskey of a Mesh object
-
-        Args:
-            timskey: integer that only applies to a specific physical or
-              virtual time series
-        """
-        mesh_object_id = cls()
-        mesh_object_id.timskey = timskey
-        return mesh_object_id
-
-    @classmethod
-    def with_uuid_id(cls, uuid_id: uuid.UUID):
-        """Create a `MeshObjectId` using an uuid of a Mesh object
-
-        Args:
-            uuid_id: Universal Unique Identifier for Mesh objects
-        """
-        mesh_object_id = cls()
-        mesh_object_id.uuid_id = uuid_id
-        return mesh_object_id
-
-    @classmethod
-    def with_full_name(cls, full_name: str):
-        """Create a `MeshObjectId` using full_name of a Mesh object
-
-        Args:
-            full_name: path in the :ref:`Mesh model <mesh_model>`.
-              See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-        """
-        mesh_object_id = cls()
-        mesh_object_id.full_name = full_name
-        return mesh_object_id
 
 
 @dataclass
@@ -441,35 +392,55 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     writer.write_table(timeseries.arrow_table)
     buffer = stream.getvalue()
 
-    timeseries_id = _to_proto_mesh_id(
-        id=_to_proto_guid(timeseries.uuid),
-        path=timeseries.full_name,
-        timeseries_key=timeseries.timskey)
-
     proto_timeseries = core_pb2.Timeseries(
-        id=timeseries_id,
+        id=_to_proto_mesh_id_from_timeseries(timeseries),
         resolution=timeseries.resolution,
         interval=_to_protobuf_utcinterval(start_time=timeseries.start_time, end_time=timeseries.end_time),
         data=buffer.to_pybytes()
     )
     return proto_timeseries
 
-
-
-def _to_proto_mesh_id(id: uuid.UUID, path: str, timeseries_key: int = None) -> core_pb2.MeshId:
+def _to_proto_mesh_id_from_timeseries(timeseries: Timeseries) -> core_pb2.MeshId:
     proto_mesh_id = core_pb2.MeshId()
 
-    if id is not None:
-        if isinstance(id, str):
-            id = uuid.UUID(id)
-        proto_mesh_id.id.CopyFrom(_to_proto_guid(id))
-    if path is not None:
-        proto_mesh_id.path = path
-    if timeseries_key is not None:
-        proto_mesh_id.timeseries_key = timeseries_key
+    if timeseries.uuid is not None:
+        proto_mesh_id.id.CopyFrom(_to_proto_guid(timeseries.uuid))
+    if timeseries.full_name is not None:
+        proto_mesh_id.path = timeseries.full_name
+    if timeseries.timskey is not None:
+        proto_mesh_id.timeseries_key = timeseries.timskey
 
-    if id is None and path is None and timeseries_key is None:
-        raise ValueError("need to specify either path, id or time series key")
+    if timeseries.uuid is None and timeseries.full_name is None and timeseries.timskey is None:
+        raise TypeError("need to specify either path, id or time series key")
+
+    return proto_mesh_id
+
+def _to_proto_attribute_mesh_id(target: Union[uuid.UUID, str]) -> core_pb2.MeshId:
+    """Accepts attribute identifiers: path and ID as input."""
+    return _to_proto_mesh_id(target, accept_time_series_key=False)
+
+def _to_proto_object_mesh_id(target: Union[uuid.UUID, str]) -> core_pb2.MeshId:
+    """Accepts object identifiers: path and ID as input."""
+    # For now it is the same as _to_proto_attribute_mesh_id,
+    # will be useful for:
+    # https://github.com/PowelAS/sme-mesh-python/issues/267
+    return _to_proto_mesh_id(target, accept_time_series_key=False)
+
+def _to_proto_mesh_id(target: Union[uuid.UUID, str, int], accept_time_series_key=True) -> core_pb2.MeshId:
+    """Accepts path, ID and time series key as input."""
+    proto_mesh_id = core_pb2.MeshId()
+
+    if isinstance(target, uuid.UUID):
+        proto_mesh_id.id.CopyFrom(_to_proto_guid(target))
+    elif isinstance(target, str):
+        proto_mesh_id.path = target
+    elif accept_time_series_key and isinstance(target, int):
+        proto_mesh_id.timeseries_key = target
+    else:
+        if accept_time_series_key:
+            raise TypeError("need to provide either path (as str), ID (as uuid.UUID) or time series key (as int)")
+        else:
+            raise TypeError("need to provide either path (as str) or ID (as uuid.UUID)")
 
     return proto_mesh_id
 

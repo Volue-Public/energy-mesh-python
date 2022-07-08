@@ -5,11 +5,12 @@ Common classes/enums/etc for Mesh calculation functions.
 import datetime
 from dateutil import tz
 from enum import Enum
-from typing import List
+from typing import List, Union
+import uuid
 
-from volue.mesh import MeshObjectId, Timeseries
+from volue.mesh import Timeseries
 from volue.mesh._common import _read_proto_reply, _read_proto_numeric_reply,\
-    _to_proto_guid, _to_protobuf_utcinterval
+    _to_proto_guid, _to_proto_mesh_id, _to_protobuf_utcinterval
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 
@@ -110,23 +111,22 @@ class _Calculation:
     """
     def __init__(self,
                  session,
-                 relative_to: MeshObjectId,
+                 target: Union[uuid.UUID, str, int],
                  start_time: datetime,
                  end_time: datetime):
         """
 
         Args:
             session: active Mesh session
-            relative_to: unique way of identifying a Mesh object that contains a time series.
-                  Using either a  Universal Unique Identifier for Mesh objects, a path in the 
-                  :ref:`Mesh model <mesh_model>` or a time series key that only applies
-                  to a specific physical or virtual time series.
-                  See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            target: Mesh object, virtual or physical time series the
+                calculation expression will be evaluated relative to.
+                It could be a time series key, Universal Unique Identifier or
+                a path in the :ref:`Mesh model <mesh_model>`.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
         """
         self.session = session
-        self.relative_to: MeshObjectId = relative_to
+        self.target: Union[uuid.UUID, str, int] = target
         self.start_time: datetime = start_time
         self.end_time: datetime = end_time
 
@@ -144,24 +144,11 @@ class _Calculation:
         Returns:
             core_pb2.CalculationRequest:
         """
-        relative_to = core_pb2.MeshId()  # convert to gRPC object
-        if self.relative_to.timskey is not None:
-            relative_to.timeseries_key = self.relative_to.timskey
-        elif self.relative_to.uuid_id is not None:
-            relative_to.id.CopyFrom(_to_proto_guid(self.relative_to.uuid_id))
-        elif self.relative_to.full_name is not None:
-            relative_to.path = self.relative_to.full_name
-        else:
-            raise TypeError("need to specify either timskey, uuid_id or full_name of 'relative_to' object")
-
-        # TODO: potentially it is worth to check here if more than one property of 'self.relative_to' is set
-        # it might indicate a misuse
-
         request = core_pb2.CalculationRequest(
             session_id=_to_proto_guid(self.session.session_id),
             expression=expression,
             interval=_to_protobuf_utcinterval(self.start_time, self.end_time),
-            relative_to=relative_to
+            relative_to=_to_proto_mesh_id(self.target)
         )
         return request
 

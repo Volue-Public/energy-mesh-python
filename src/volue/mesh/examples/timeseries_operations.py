@@ -5,7 +5,7 @@ import grpc
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, MeshObjectId, Timeseries
+from volue.mesh import Connection, Timeseries
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.examples import _get_connection_info
@@ -22,7 +22,7 @@ def main(address, port, root_pem_certificate):
         # first lets find a time series in our model
         try:
             timeseries_attributes = session.search_for_timeseries_attributes(
-                query, start_object_path=start_object_path)
+                start_object_path, query)
         except grpc.RpcError as e:
             print(f"Could not find time series attribute: {e}")
             return
@@ -79,7 +79,7 @@ def main(address, port, root_pem_certificate):
             end_time = datetime(2016, 5, 4, tzinfo=local_time_zone)
 
             timeseries_read = session.read_timeseries_points(
-                start_time=start_time, end_time=end_time, mesh_object_id=MeshObjectId.with_full_name(timeseries_attribute.path))
+                target=timeseries_attribute.path, start_time=start_time, end_time=end_time)
 
             # convert to pandas format
             # the timestamps in PyArrow table are always returned in UTC format
@@ -110,7 +110,7 @@ def main(address, port, root_pem_certificate):
             # If you are using `LOCAL` or `STANDARD` time zone then make sure
             # the Mesh server is operating in the same time zone or adjust properly.
             transformed_timeseries = session.transform_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time, end_time).transform(
+                timeseries_attribute.id, start_time, end_time).transform(
                     Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.LOCAL)
 
             # convert to pandas format
