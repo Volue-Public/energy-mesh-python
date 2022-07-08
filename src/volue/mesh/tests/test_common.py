@@ -106,7 +106,7 @@ def test_to_proto_mesh_id():
     assert mesh_id.timeseries_key == target
 
 
-def test_to_proto_object_mesh_id_from_timskey_when_not_accepted():
+def test_to_proto_mesh_id_from_timskey_when_not_accepted():
     with pytest.raises(TypeError):
         _common._to_proto_mesh_id(100, accept_time_series_key=False)
 
@@ -116,7 +116,7 @@ def test_to_proto_object_mesh_id_from_timskey_when_not_accepted():
     "target",
     [Timeseries(), None, 100.0],
 )
-def test_to_proto_object_mesh_id_from_invalid_type(target):
+def test_to_proto_mesh_id_from_invalid_type(target):
     with pytest.raises(TypeError):
         _common._to_proto_mesh_id(target)
 
