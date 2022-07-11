@@ -10,7 +10,7 @@ import uuid
 from google import protobuf
 import grpc
 
-from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, \
+from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, \
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
@@ -71,11 +71,13 @@ class Connection(_base_connection.Connection):
         def commit(self) -> None:
             self.mesh_service.Commit(_to_proto_guid(self.session_id))
 
-        def read_timeseries_points(self,
-                                   start_time: datetime,
-                                   end_time: datetime,
-                                   mesh_object_id: MeshObjectId) -> Timeseries:
-            gen = super()._read_timeseries_impl(mesh_object_id, start_time, end_time)
+        def read_timeseries_points(
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime,
+        ) -> Timeseries:
+            gen = super()._read_timeseries_impl(target, start_time, end_time)
             request = next(gen)
             return gen.send(self.mesh_service.ReadTimeseries(request))
 
@@ -106,35 +108,29 @@ class Connection(_base_connection.Connection):
             self.mesh_service.UpdateTimeseriesResource(request)
 
         def get_attribute(
-                self,
-                attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> Type[AttributeBase]:
+            self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+        ) -> Type[AttributeBase]:
             request = super()._prepare_get_attribute_request(
-                attribute_id, attribute_path, full_attribute_info)
+                target, full_attribute_info)
             proto_attribute = self.mesh_service.GetAttribute(request)
             return _from_proto_attribute(proto_attribute)
 
         def get_timeseries_attribute(
-                self,
-                attribute_id: uuid.UUID = None,
-                attribute_path: str = None,
-                full_attribute_info: bool = False) -> TimeseriesAttribute:
-            attribute = self.get_attribute(attribute_id, attribute_path, full_attribute_info)
+            self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+        ) -> TimeseriesAttribute:
+            attribute = self.get_attribute(target, full_attribute_info)
             if not isinstance(attribute, TimeseriesAttribute):
                 raise ValueError(f'attribute is not a TimeseriesAttribute, but a {type(attribute).__name__}')
             return attribute
 
         def search_for_attributes(
-                self,
-                query: str,
-                start_object_id: Optional[uuid.UUID] = None,
-                start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
+            self,
+            target: Union[uuid.UUID, str],
+            query: str,
+            full_attribute_info: bool = False,
+        ) -> List[Type[AttributeBase]]:
             request = super()._prepare_search_attributes_request(
-                start_object_id=start_object_id,
-                start_object_path=start_object_path,
-                query=query, full_attribute_info=full_attribute_info)
+                target, query, full_attribute_info)
 
             proto_attributes = self.mesh_service.SearchAttributes(request)
 
@@ -144,61 +140,53 @@ class Connection(_base_connection.Connection):
             return attributes
 
         def search_for_timeseries_attributes(
-                self,
-                query: str,
-                start_object_id: Optional[uuid.UUID] = None,
-                start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> List[TimeseriesAttribute]:
-            attributes = self.search_for_attributes(
-                query, start_object_id, start_object_path, full_attribute_info)
+            self,
+            target: Union[uuid.UUID, str],
+            query: str,
+            full_attribute_info: bool = False,
+        ) -> List[TimeseriesAttribute]:
+            attributes = self.search_for_attributes(target, query, full_attribute_info)
             return list(filter(lambda attr: (isinstance(attr, TimeseriesAttribute)), attributes))
 
         def update_simple_attribute(
-                self,
-                value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
-                attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None) -> None:
-
+            self,
+            target: Union[uuid.UUID, str],
+            value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
+        ) -> None:
             request = super()._prepare_update_simple_attribute_request(
-                attribute_id=attribute_id,
-                attribute_path=attribute_path,
-                value=value)
+                target, value)
             self.mesh_service.UpdateSimpleAttribute(request)
 
         def update_timeseries_attribute(
-                self,
-                new_local_expression: str = None,
-                new_timeseries_resource_key: int = None,
-                attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None) -> None:
-
+            self,
+            target: Union[uuid.UUID, str],
+            new_local_expression: str = None,
+            new_timeseries_resource_key: int = None,
+        ) -> None:
             request = super()._prepare_update_timeseries_attribute_request(
-                attribute_id=attribute_id,
-                attribute_path=attribute_path,
-                new_local_expression=new_local_expression,
-                new_timeseries_resource_key=new_timeseries_resource_key)
+                target, new_local_expression, new_timeseries_resource_key)
             self.mesh_service.UpdateTimeseriesAttribute(request)
 
         def get_object(
-                self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path:  Optional[str] = None,
-                full_attribute_info:  bool = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> Object:
+            self,
+            target: Union[uuid.UUID, str],
+            full_attribute_info: bool = False,
+            attributes_filter: Optional[AttributesFilter] = None,
+        ) -> Object:
             request = super()._prepare_get_object_request(
-                object_id, object_path, full_attribute_info, attributes_filter)
+                target, full_attribute_info, attributes_filter)
             proto_object = self.mesh_service.GetObject(request)
             return Object._from_proto_object(proto_object)
 
         def search_for_objects(
-                self,
-                query: str,
-                start_object_id: Optional[uuid.UUID] = None,
-                start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
+            self,
+            target: Union[uuid.UUID, str],
+            query: str,
+            full_attribute_info: bool = False,
+            attributes_filter: Optional[AttributesFilter] = None,
+        ) -> List[Object]:
             request = super()._prepare_search_for_objects_request(
-                query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
+                target, query, full_attribute_info, attributes_filter)
 
             proto_objects = self.mesh_service.SearchObjects(request)
 
@@ -207,63 +195,58 @@ class Connection(_base_connection.Connection):
                 objects.append(Object._from_proto_object(proto_object))
             return objects
 
-        def create_object(
-                self,
-                name: str,
-                owner_attribute_id: Optional[uuid.UUID] = None,
-                owner_attribute_path: Optional[str] = None) -> Object:
-            request = super()._prepare_create_object_request(
-                name, owner_attribute_id, owner_attribute_path)
+        def create_object(self, target: Union[uuid.UUID, str], name: str) -> Object:
+            request = super()._prepare_create_object_request(target=target, name=name)
             proto_object = self.mesh_service.CreateObject(request)
             return Object._from_proto_object(proto_object)
 
         def update_object(
-                self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path: Optional[str] = None,
-                new_name: Optional[str] = None,
-                new_owner_attribute_id: Optional[uuid.UUID] = None,
-                new_owner_attribute_path: Optional[str] = None) -> None:
+            self,
+            target: Union[uuid.UUID, str],
+            new_name: Optional[str] = None,
+            new_owner_attribute: Optional[Union[uuid.UUID, str]] = None,
+        ) -> None:
             request = super()._prepare_update_object_request(
-                object_id, object_path, new_name, new_owner_attribute_id, new_owner_attribute_path)
+                target, new_name, new_owner_attribute)
             self.mesh_service.UpdateObject(request)
 
         def delete_object(
-                self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path: Optional[str] = None,
-                recursive_delete: bool = False) -> None:
-            request = super()._prepare_delete_object_request(
-                object_id, object_path, recursive_delete)
+            self, target: Union[uuid.UUID, str], recursive_delete: bool = False
+        ) -> None:
+            request = super()._prepare_delete_object_request(target, recursive_delete)
             self.mesh_service.DeleteObject(request)
 
         def forecast_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> ForecastFunctions:
-            return ForecastFunctions(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> ForecastFunctions:
+            return ForecastFunctions(self, target, start_time, end_time)
 
         def history_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> HistoryFunctions:
-            return HistoryFunctions(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> HistoryFunctions:
+            return HistoryFunctions(self, target, start_time, end_time)
 
         def statistical_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> StatisticalFunctions:
-            return StatisticalFunctions(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> StatisticalFunctions:
+            return StatisticalFunctions(self, target, start_time, end_time)
 
         def transform_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> TransformFunctions:
-            return TransformFunctions(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> TransformFunctions:
+            return TransformFunctions(self, target, start_time, end_time)
 
         def get_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],

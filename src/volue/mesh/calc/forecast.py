@@ -121,7 +121,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
 
             .. code-block:: python
 
-                forecast_funcs = session.forecast_functions(MeshObjectId(full_name=full_name), start_time, end_time)
+                forecast_funcs = session.forecast_functions(full_name, start_time, end_time)
                 result = forecast_funcs.get_forecast(available_at_timepoint)
 
             .. image:: images/calc_get_forecast_writetime.png
@@ -134,7 +134,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
 
             .. code-block:: python
 
-                forecast_funcs = session.forecast_functions(MeshObjectId(full_name=full_name), start_time, end_time)
+                forecast_funcs = session.forecast_functions(full_name, start_time, end_time)
                 result = forecast_funcs.get_forecast(forecast_start_min, forecast_start_max)
 
             .. image:: images/calc_get_forecast_interval.png

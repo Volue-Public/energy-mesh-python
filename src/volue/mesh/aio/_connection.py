@@ -10,7 +10,7 @@ import uuid
 from google import protobuf
 import grpc
 
-from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, MeshObjectId, \
+from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, \
     AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
@@ -74,16 +74,17 @@ class Connection(_base_connection.Connection):
         async def commit(self) -> None:
             await self.mesh_service.Commit(_to_proto_guid(self.session_id))
 
-        async def read_timeseries_points(self,
-                                         start_time: datetime,
-                                         end_time: datetime,
-                                         mesh_object_id: MeshObjectId) -> Timeseries:
-            gen = super()._read_timeseries_impl(mesh_object_id, start_time, end_time)
+        async def read_timeseries_points(
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime,
+        ) -> Timeseries:
+            gen = super()._read_timeseries_impl(target, start_time, end_time)
             request = next(gen)
-            response = await self.mesh_service.ReadTimeseries(request)
-            return gen.send(response)
+            return gen.send(await self.mesh_service.ReadTimeseries(request))
 
-        async def write_timeseries_points(self, timeseries: Timeseries):
+        async def write_timeseries_points(self, timeseries: Timeseries) -> None:
             await self.mesh_service.WriteTimeseries(
                 core_pb2.WriteTimeseriesRequest(
                     session_id=_to_proto_guid(self.session_id),
@@ -110,36 +111,29 @@ class Connection(_base_connection.Connection):
             await self.mesh_service.UpdateTimeseriesResource(request)
 
         async def get_attribute(
-                self,
-                attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> Type[AttributeBase]:
+            self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+        ) -> Type[AttributeBase]:
             request = super()._prepare_get_attribute_request(
-                attribute_id, attribute_path, full_attribute_info)
+                target, full_attribute_info)
             proto_attribute = await self.mesh_service.GetAttribute(request)
             return _from_proto_attribute(proto_attribute)
 
         async def get_timeseries_attribute(
-                self,
-                attribute_id: uuid.UUID = None,
-                attribute_path: str = None,
-                full_attribute_info: bool = False) -> TimeseriesAttribute:
-            attribute = await self.get_attribute(attribute_id, attribute_path, full_attribute_info)
+            self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+        ) -> TimeseriesAttribute:
+            attribute = await self.get_attribute(target, full_attribute_info)
             if not isinstance(attribute, TimeseriesAttribute):
                 raise ValueError(f'attribute is not a TimeseriesAttribute, but a {type(attribute).__name__}')
             return attribute
 
         async def search_for_attributes(
-                self,
-                query: str,
-                start_object_id: Optional[uuid.UUID] = None,
-                start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
-
+            self,
+            target: Union[uuid.UUID, str],
+            query: str,
+            full_attribute_info: bool = False,
+        ) -> List[Type[AttributeBase]]:
             request = super()._prepare_search_attributes_request(
-                start_object_id=start_object_id,
-                start_object_path=start_object_path,
-                query=query, full_attribute_info=full_attribute_info)
+                target, query, full_attribute_info)
 
             attributes = []
             async for proto_attribute in self.mesh_service.SearchAttributes(request):
@@ -147,124 +141,114 @@ class Connection(_base_connection.Connection):
             return attributes
 
         async def search_for_timeseries_attributes(
-                self,
-                query: str,
-                start_object_id: Optional[uuid.UUID] = None,
-                start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False) -> List[TimeseriesAttribute]:
+            self,
+            target: Union[uuid.UUID, str],
+            query: str,
+            full_attribute_info: bool = False,
+        ) -> List[TimeseriesAttribute]:
             attributes = await self.search_for_attributes(
-                query, start_object_id, start_object_path, full_attribute_info)
+                target, query, full_attribute_info)
             return list(filter(lambda attr: (isinstance(attr, TimeseriesAttribute)), attributes))
 
         async def update_simple_attribute(
-                self,
-                value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
-                attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None) -> None:
-
+            self,
+            target: Union[uuid.UUID, str],
+            value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
+        ) -> None:
             request = super()._prepare_update_simple_attribute_request(
-                attribute_id=attribute_id,
-                attribute_path=attribute_path,
-                value=value)
+                target, value)
             await self.mesh_service.UpdateSimpleAttribute(request)
 
         async def update_timeseries_attribute(
-                self,
-                new_local_expression: str = None,
-                new_timeseries_resource_key: int = None,
-                attribute_id: Optional[uuid.UUID] = None,
-                attribute_path: Optional[str] = None) -> None:
-
+            self,
+            target: Union[uuid.UUID, str],
+            new_local_expression: str = None,
+            new_timeseries_resource_key: int = None,
+        ) -> None:
             request = super()._prepare_update_timeseries_attribute_request(
-                attribute_id=attribute_id,
-                attribute_path=attribute_path,
-                new_local_expression=new_local_expression,
-                new_timeseries_resource_key=new_timeseries_resource_key)
+                target, new_local_expression, new_timeseries_resource_key
+            )
             await self.mesh_service.UpdateTimeseriesAttribute(request)
 
         async def get_object(
-                self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path:  Optional[str] = None,
-                full_attribute_info:  bool = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> Object:
+            self,
+            target: Union[uuid.UUID, str],
+            full_attribute_info: bool = False,
+            attributes_filter: Optional[AttributesFilter] = None,
+        ) -> Object:
             request = super()._prepare_get_object_request(
-                object_id, object_path, full_attribute_info, attributes_filter)
+                target, full_attribute_info, attributes_filter)
             proto_object = await self.mesh_service.GetObject(request)
             return Object._from_proto_object(proto_object)
 
         async def search_for_objects(
-                self,
-                query: str,
-                start_object_id: Optional[uuid.UUID] = None,
-                start_object_path: Optional[str] = None,
-                full_attribute_info: bool = False,
-                attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
+            self,
+            target: Union[uuid.UUID, str],
+            query: str,
+            full_attribute_info: bool = False,
+            attributes_filter: Optional[AttributesFilter] = None,
+        ) -> List[Object]:
             request = super()._prepare_search_for_objects_request(
-                query, start_object_id, start_object_path, full_attribute_info, attributes_filter)
+                target, query, full_attribute_info, attributes_filter)
 
             objects = []
             async for proto_object in self.mesh_service.SearchObjects(request):
                 objects.append(proto_object)
             return objects
 
-        async def create_object(
-                self,
-                name: str,
-                owner_attribute_id: Optional[uuid.UUID] = None,
-                owner_attribute_path: Optional[str] = None) -> Object:
-            request = super()._prepare_create_object_request(
-                name, owner_attribute_id, owner_attribute_path)
+        async def create_object(self, target: Union[uuid.UUID, str], name: str) -> Object:
+            request = super()._prepare_create_object_request(target=target, name=name)
             proto_object = await self.mesh_service.CreateObject(request)
             return Object._from_proto_object(proto_object)
 
         async def update_object(
-                self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path: Optional[str] = None,
-                new_name: Optional[str] = None,
-                new_owner_attribute_id: Optional[uuid.UUID] = None,
-                new_owner_attribute_path: Optional[str] = None) -> None:
+            self,
+            target: Union[uuid.UUID, str],
+            new_name: Optional[str] = None,
+            new_owner_attribute: Optional[Union[uuid.UUID, str]] = None,
+        ) -> None:
             request = super()._prepare_update_object_request(
-                object_id, object_path, new_name, new_owner_attribute_id, new_owner_attribute_path)
+                target, new_name, new_owner_attribute
+            )
             await self.mesh_service.UpdateObject(request)
 
         async def delete_object(
-                self,
-                object_id: Optional[uuid.UUID] = None,
-                object_path: Optional[str] = None,
-                recursive_delete: bool = False) -> None:
-            request = super()._prepare_delete_object_request(
-                object_id, object_path, recursive_delete)
-            await self.mesh_service.DeleteObject(request)
+            self, target: Union[uuid.UUID, str], recursive_delete: bool = False
+        ) -> None:
+            request = super()._prepare_delete_object_request(target, recursive_delete)
+            self.mesh_service.DeleteObject(request)
 
         def forecast_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> ForecastFunctionsAsync:
-            return ForecastFunctionsAsync(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> ForecastFunctionsAsync:
+            return ForecastFunctionsAsync(self, target, start_time, end_time)
 
         def history_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> HistoryFunctionsAsync:
-            return HistoryFunctionsAsync(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> HistoryFunctionsAsync:
+            return HistoryFunctionsAsync(self, target, start_time, end_time)
 
         def statistical_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> StatisticalFunctionsAsync:
-            return StatisticalFunctionsAsync(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> StatisticalFunctionsAsync:
+            return StatisticalFunctionsAsync(self, target, start_time, end_time)
 
         def transform_functions(
-                self,
-                relative_to: MeshObjectId,
-                start_time: datetime,
-                end_time: datetime) -> TransformFunctionsAsync:
-            return TransformFunctionsAsync(self, relative_to, start_time, end_time)
+            self,
+            target: Union[uuid.UUID, str, int],
+            start_time: datetime,
+            end_time: datetime
+        ) -> TransformFunctionsAsync:
+            return TransformFunctionsAsync(self, target, start_time, end_time)
 
         async def get_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],

@@ -8,9 +8,10 @@ from datetime import datetime
 from google import protobuf
 
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
-from ._common import (AttributesFilter, MeshObjectId, XyCurve, XySet,
+from ._common import (AttributesFilter, XyCurve, XySet,
                       RatingCurveSegment, RatingCurveVersion, _read_proto_reply,
-                      _to_proto_attribute_masks, _to_proto_guid, _to_proto_mesh_id,
+                      _to_proto_attribute_masks, _to_proto_guid, _to_proto_attribute_mesh_id,
+                      _to_proto_mesh_id, _to_proto_object_mesh_id,
                       _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_protobuf_utcinterval)
 from ._object import Object
 from ._timeseries import Timeseries
@@ -85,10 +86,11 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def read_timeseries_points(
-            self,
-            start_time: datetime,
-            end_time: datetime,
-            mesh_object_id: MeshObjectId) -> Timeseries:
+        self,
+        target: Union[uuid.UUID, str, int],
+        start_time: datetime,
+        end_time: datetime
+    ) -> Timeseries:
         """
         Reads time series points for
         the specified time series in the given interval.
@@ -96,13 +98,11 @@ class Session(abc.ABC):
         :ref:`mesh_client:Date times and time zones`.
 
         Args:
+            target: Mesh attribute, virtual or physical time series. It could
+                be a time series key, Universal Unique Identifier or a path in
+                the :ref:`Mesh model <mesh_model>`.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
-            mesh_object_id: unique way of identifying a Mesh object that contains a time series.
-                Using either a  Universal Unique Identifier for Mesh objects, a path in the 
-                :ref:`Mesh model <mesh_model>` or a integer that only applies
-                to a specific physical or virtual time series.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -126,19 +126,18 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def get_object(
-            self,
-            object_id: Optional[uuid.UUID] = None,
-            object_path:  Optional[str] = None,
-            full_attribute_info:  bool = False,
-            attributes_filter: Optional[AttributesFilter] = None) -> Object:
+        self,
+        target: Union[uuid.UUID, str],
+        full_attribute_info: bool = False,
+        attributes_filter: Optional[AttributesFilter] = None
+    ) -> Object:
         """
         Request information associated with a Mesh object from the Mesh model.
         Specify either `object_id` or `object_path` to a Mesh object.
 
         Args:
-            object_id: Universal Unique Identifier of the Mesh object.
-            object_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the Mesh object. See:
+            target: Mesh object to be read. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
                 :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object will be returned, otherwise only name,
@@ -152,24 +151,21 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def search_for_objects(
-            self,
-            query: str,
-            start_object_id: Optional[uuid.UUID] = None,
-            start_object_path: Optional[str] = None,
-            full_attribute_info: bool = False,
-            attributes_filter: Optional[AttributesFilter] = None) -> List[Object]:
+        self,
+        target: Union[uuid.UUID, str],
+        query: str,
+        full_attribute_info: bool = False,
+        attributes_filter: Optional[AttributesFilter] = None
+    ) -> List[Object]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects
-        in the Mesh model. Specify either `start_object_id` or
-        `start_object_path` to an object where the search query should start from.
+        in the Mesh model.
 
         Args:
+            target: Start searching at the target object. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
-            start_object_id: Start searching at the object with the 
-                Universal Unique Identifier for Mesh objects.
-            start_object_path: Start searching at the path in the
-                :ref:`Mesh model <mesh_model>`.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -181,11 +177,7 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
-    def create_object(
-            self,
-            name: str,
-            owner_attribute_id: Optional[uuid.UUID] = None,
-            owner_attribute_path: Optional[str] = None) -> Object:
+    def create_object(self, target: Union[uuid.UUID, str], name: str) -> Object:
         """
         Create new Mesh object in the Mesh model.
         Owner of the new object must be a relationship attribute of Object Collection type.
@@ -195,13 +187,11 @@ class Session(abc.ABC):
         Owner will be the `ThermalPowerToPlantRef` attribute.
 
         Args:
+            target: Owner of the new object to be created. It must be a relationship attribute of
+                Object Collection type (object value type = "ElementCollectionAttributeDefinition").
+                It could be a Universal Unique Identifier or a path in the
+                :ref:`Mesh model <mesh_model>`.
             name: Name for the new object to create.
-            owner_attribute_id: Universal Unique Identifier of the owner which
-                is a relationship attribute of Object Collection type.
-            owner_attribute_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the owner which is a relationship attribute of Object Collection type
-                (object value type = "ElementCollectionAttributeDefinition").
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Returns:
             Created object with all attributes (no mask applied) and basic
@@ -213,12 +203,11 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def update_object(
-            self,
-            object_id: Optional[uuid.UUID] = None,
-            object_path: Optional[str] = None,
-            new_name: Optional[str] = None,
-            new_owner_attribute_id: Optional[uuid.UUID] = None,
-            new_owner_attribute_path: Optional[str] = None) -> None:
+        self,
+        target: Optional[Union[uuid.UUID, str]] = None,
+        new_name: Optional[str] = None,
+        new_owner_attribute: Optional[Union[uuid.UUID, str]] = None
+    ) -> None:
         """
         Update an existing Mesh object in the Mesh model.
         New owner of the object must be a relationship attribute of Object Collection type.
@@ -226,17 +215,14 @@ class Session(abc.ABC):
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
 
         Args:
-            object_id: Universal Unique Identifier of the Mesh object to be updated.
-            object_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the Mesh object to be updated.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            target: Mesh object to be updated. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`
             new_name: New name for the object.
-            new_owner_attribute_id: Universal Unique Identifier of the new owner which
-                is a relationship attribute of Object Collection type.
-            new_owner_attribute_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the new owner which is a relationship attribute of Object Collection type
-                (object value type = "ElementCollectionAttributeDefinition").
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            new_owner_attribute: New owner of the object. It must be a relationship attribute of
+                Object Collection type (object value type = "ElementCollectionAttributeDefinition").
+                It could be a Universal Unique Identifier or a path in the
+                :ref:`Mesh model <mesh_model>`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -244,18 +230,15 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def delete_object(
-            self,
-            object_id: Optional[uuid.UUID] = None,
-            object_path: Optional[str] = None,
-            recursive_delete: bool = False) -> None:
+        self, target: Union[uuid.UUID, str], recursive_delete: bool = False
+    ) -> None:
         """
         Delete an existing Mesh object in the Mesh model.
 
         Args:
-            object_id: Universal Unique Identifier of the object to be deleted.
-            object_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the object to be deleted.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            target: Mesh object to be deleted. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`
             recursive_delete: If set then all child objects
                 (owned by the object to be deleted) in the model will also be deleted.
 
@@ -265,19 +248,16 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def get_attribute(
-            self,
-            attribute_id: Optional[uuid.UUID] = None,
-            attribute_path: Optional[str] = None,
-            full_attribute_info: bool = False) -> Type[AttributeBase]:
+        self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+    ) -> Type[AttributeBase]:
         """
-        Request information associated with a Mesh :ref:`attribute <mesh_attribute>` from the Mesh model.
-        Specify either `attribute_id` or `attribute_path` to a Mesh attribute.
+        Request information associated with a Mesh :ref:`attribute <mesh_attribute>`
+        from the Mesh model.
 
         Args:
-            attribute_id: Universal Unique Identifier of the attribute to be retrieved.
-            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the attribute to be retrieved.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            target: Mesh attribute to be read. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
@@ -287,19 +267,15 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def get_timeseries_attribute(
-        self,
-        attribute_id: uuid.UUID = None,
-        attribute_path: str = None,
-        full_attribute_info: bool = False) -> TimeseriesAttribute:
+        self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+    ) -> TimeseriesAttribute:
         """
         Request information associated with a Mesh :ref:`time series attribute <mesh_attribute>` from the Mesh model.
-        Specify either `attribute_id` or `attribute_path` to a Mesh time series attribute.
 
         Args:
-            attribute_id: Universal Unique Identifier of the attribute to be retrieved.
-            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the attribute to be retrieved.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            target: Mesh time series attribute to be read. It could be a Universal Unique
+                Identifier or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
@@ -311,24 +287,20 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def search_for_attributes(
-            self,
-            query: str,
-            start_object_id: Optional[uuid.UUID] = None,
-            start_object_path: Optional[str] = None,
-            full_attribute_info: bool = False) -> List[Type[AttributeBase]]:
+        self,
+        target: Union[uuid.UUID, str],
+        query: str,
+        full_attribute_info: bool = False
+    ) -> List[Type[AttributeBase]]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh
         :ref:`attributes <mesh_attribute>` in the Mesh model.
-        Specify either `start_object_id` or `start_object_path` to an object
-        where the search query should start from.
 
         Args:
+            target: Start searching at the target object. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
-            start_object_id: Start searching at the object with the 
-                Universal Unique Identifier for Mesh objects.
-            start_object_path: Start searching at the path in the
-                :ref:`Mesh model <mesh_model>`.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -339,24 +311,20 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def search_for_timeseries_attributes(
-            self,
-            query: str,
-            start_object_id: Optional[uuid.UUID] = None,
-            start_object_path: Optional[str] = None,
-            full_attribute_info: bool = False) -> List[TimeseriesAttribute]:
+        self,
+        target: Union[uuid.UUID, str],
+        query: str,
+        full_attribute_info: bool = False
+    ) -> List[TimeseriesAttribute]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh
         :ref:`time series attributes <mesh_attribute>` in the Mesh model.
-        Specify either `start_object_id` or `start_object_path` to an object
-        where the search query should start from.
 
         Args:
+            target: Start searching at the target object. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
-            start_object_id: Start searching at the object with the
-                Universal Unique Identifier for Mesh objects.
-            start_object_path: Start searching at the path in the
-                :ref:`Mesh model <mesh_model>`.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -367,10 +335,8 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def update_simple_attribute(
-            self,
-            value: SIMPLE_TYPE_OR_COLLECTION,
-            attribute_id: Optional[uuid.UUID] = None,
-            attribute_path: Optional[str] = None) -> None:
+        self, target: Union[uuid.UUID, str], value: SIMPLE_TYPE_OR_COLLECTION
+    ) -> None:
         """
         Update an existing Mesh simple attribute's value in the Mesh model.
         Simple attribute is a singular type or collection of the following types:
@@ -381,12 +347,11 @@ class Session(abc.ABC):
         - UTC time (datetime in Python)
 
         Args:
+            target: Mesh attribute to be updated. It could be a Universal Unique Identifier
+                or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             value: New simple attribute value. It can be one of following simple types:
                 bool, float, int, str, datetime or a list of simple types.
-            attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
-            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the Mesh attribute which value is to be updated.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -394,24 +359,23 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def update_timeseries_attribute(
-            self,
-            new_local_expression: str = None,
-            new_timeseries_resource_key: int = None,
-            attribute_id: Optional[uuid.UUID] = None,
-            attribute_path: Optional[str] = None) -> None:
+        self,
+        target: Union[uuid.UUID, str],
+        new_local_expression: str = None,
+        new_timeseries_resource_key: int = None
+    ) -> None:
         """
         Update meta data of an existing Mesh time series attribute's in the Mesh model.
 
         Args:
+            target: Mesh time series attribute to be updated. It could be a Universal Unique
+                Identifier or a path in the :ref:`Mesh model <mesh_model>`. See:
+                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             new_local_expression: New local expression.
             new_timeseries_resource_key: time series key of a new time series resource
                 (physical or virtual) to connect to the time series attribute. To disconnect
                 time series attribute from already connected time series resource set this
                 argument to 0.
-            attribute_id: Universal Unique Identifier of the Mesh attribute to be updated.
-            attribute_path: Path in the :ref:`Mesh model <mesh_model>`
-                of the Mesh attribute which value is to be updated.
-                See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
@@ -457,14 +421,18 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def forecast_functions(
-            self,
-            relative_to: MeshObjectId,
-            start_time: datetime,
-            end_time: datetime) -> ForecastFunctions:
+        self,
+        target: Union[uuid.UUID, str, int],
+        start_time: datetime,
+        end_time: datetime
+    ) -> ForecastFunctions:
         """Access to :ref:`mesh_functions:Forecast` functions.
 
         Args:
-            relative_to: a Mesh object to perform actions relative to
+            target: Mesh object, virtual or physical time series the
+                calculation expression will be evaluated relative to.
+                It could be a time series key, Universal Unique Identifier or
+                a path in the :ref:`Mesh model <mesh_model>`.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -474,14 +442,18 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def history_functions(
-            self,
-            relative_to: MeshObjectId,
-            start_time: datetime,
-            end_time: datetime) -> HistoryFunctions:
+        self,
+        target: Union[uuid.UUID, str, int],
+        start_time: datetime,
+        end_time: datetime
+    ) -> HistoryFunctions:
         """Access to :ref:`mesh_functions:History` functions.
 
         Args:
-            relative_to: a Mesh object to perform actions relative to
+            target: Mesh object, virtual or physical time series the
+                calculation expression will be evaluated relative to.
+                It could be a time series key, Universal Unique Identifier or
+                a path in the :ref:`Mesh model <mesh_model>`.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -491,14 +463,18 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def statistical_functions(
-            self,
-            relative_to: MeshObjectId,
-            start_time: datetime,
-            end_time: datetime) -> StatisticalFunctions:
+        self,
+        target: Union[uuid.UUID, str, int],
+        start_time: datetime,
+        end_time: datetime
+    ) -> StatisticalFunctions:
         """Access to :ref:`mesh_functions:Statistical` functions.
 
         Args:
-            relative_to: a Mesh object to perform actions relative to
+            target: Mesh object, virtual or physical time series the
+                calculation expression will be evaluated relative to.
+                It could be a time series key, Universal Unique Identifier or
+                a path in the :ref:`Mesh model <mesh_model>`.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -508,14 +484,18 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def transform_functions(
-            self,
-            relative_to: MeshObjectId,
-            start_time: datetime,
-            end_time: datetime) -> TransformFunctions:
+        self,
+        target: Union[uuid.UUID, str, int],
+        start_time: datetime,
+        end_time: datetime
+    ) -> TransformFunctions:
         """Access to :ref:`mesh_functions:Transform` functions.
 
         Args:
-            relative_to: a Mesh object to perform actions relative to
+            target: Mesh object, virtual or physical time series the
+                calculation expression will be evaluated relative to.
+                It could be a time series key, Universal Unique Identifier or
+                a path in the :ref:`Mesh model <mesh_model>`.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -678,14 +658,6 @@ class Session(abc.ABC):
         if (start_time is None) != (end_time is None):
             raise TypeError("start_time and end_time must both be None or both have a value")
 
-        # FIXME: add convenience function based on decision in https://github.com/PowelAS/sme-mesh-python/pull/241.
-        if isinstance(target, uuid.UUID):
-            target = core_pb2.MeshId(id=_to_proto_guid(target))
-        elif isinstance(target, str):
-            target = core_pb2.MeshId(path=target)
-        else:
-            raise TypeError("target must be a uuid.UUID or str")
-
         if start_time is None or end_time is None:
             interval = None
         else:
@@ -693,7 +665,7 @@ class Session(abc.ABC):
 
         request = core_pb2.GetXySetsRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute=target,
+            attribute=_to_proto_attribute_mesh_id(target),
             interval=interval,
             versions_only=versions_only
         )
@@ -720,14 +692,6 @@ class Session(abc.ABC):
         if (start_time is None) != (end_time is None):
             raise TypeError("start_time and end_time must both be None or both have a value")
 
-        # FIXME: add convenience function based on decision in https://github.com/PowelAS/sme-mesh-python/pull/241.
-        if isinstance(target, uuid.UUID):
-            target = core_pb2.MeshId(id=_to_proto_guid(target))
-        elif isinstance(target, str):
-            target = core_pb2.MeshId(path=target)
-        else:
-            raise TypeError("target must be a uuid.UUID or str")
-
         if start_time is None or end_time is None:
             interval = None
         else:
@@ -749,7 +713,7 @@ class Session(abc.ABC):
 
         request = core_pb2.UpdateXySetsRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute=target,
+            attribute=_to_proto_attribute_mesh_id(target),
             interval=interval,
             xy_sets=xy_sets
         )
@@ -757,7 +721,7 @@ class Session(abc.ABC):
         return request
 
     def _read_timeseries_impl(
-        self, mesh_object_id: MeshObjectId, start_time: datetime, end_time: datetime
+        self, target: Union[uuid.UUID, str, int], start_time: datetime, end_time: datetime
     ) -> typing.Generator[typing.Any, core_pb2.ReadTimeseriesResponse, None]:
         """Generator implementation of read_timeseries.
 
@@ -765,19 +729,9 @@ class Session(abc.ABC):
         the final result.
         """
 
-        mesh_id = core_pb2.MeshId()
-        if mesh_object_id.timskey is not None:
-            mesh_id.timeseries_key = mesh_object_id.timskey
-        elif mesh_object_id.uuid_id is not None:
-            mesh_id.id.CopyFrom(_to_proto_guid(mesh_object_id.uuid_id))
-        elif mesh_object_id.full_name is not None:
-            mesh_id.path = mesh_object_id.full_name
-        else:
-            raise TypeError("need to specify either timskey, uuid_id or full_name")
-
         request = core_pb2.ReadTimeseriesRequest(
             session_id=_to_proto_guid(self.session_id),
-            timeseries_id=mesh_id,
+            timeseries_id=_to_proto_mesh_id(target),
             interval=_to_protobuf_utcinterval(start_time, end_time),
         )
 
@@ -793,47 +747,37 @@ class Session(abc.ABC):
         yield timeseries[0]
 
     def _prepare_get_object_request(
-            self,
-            object_id: uuid.UUID,
-            object_path: str,
-            full_attribute_info: bool,
-            attributes_filter: AttributesFilter) -> core_pb2.GetObjectRequest:
+        self,
+        target: Union[uuid.UUID, str],
+        full_attribute_info: bool,
+        attributes_filter: AttributesFilter
+    ) -> core_pb2.GetObjectRequest:
         """Create a gRPC `GetObjectRequest`"""
-
-        try:
-            object_mesh_id = _to_proto_mesh_id(id=object_id, path=object_path)
-        except ValueError as e:
-            raise ValueError("invalid object") from e
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
 
         request = core_pb2.GetObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=object_mesh_id,
+                    object_id=_to_proto_object_mesh_id(target),
                     attributes_masks=_to_proto_attribute_masks(attributes_filter),
                     attribute_view=attribute_view,
                 )
         return request
 
     def _prepare_search_for_objects_request(
-            self,
-            query: str,
-            start_object_id: uuid.UUID,
-            start_object_path: str,
-            full_attribute_info: bool,
-            attributes_filter: AttributesFilter) -> core_pb2.SearchObjectsRequest:
+        self,
+        target: Union[uuid.UUID, str],
+        query: str,
+        full_attribute_info: bool,
+        attributes_filter: AttributesFilter
+    ) -> core_pb2.SearchObjectsRequest:
         """Create a gRPC `SearchObjectsRequest`"""
-
-        try:
-            start_object_mesh_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
-        except ValueError as e:
-            raise ValueError("invalid start object") from e
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
 
         request = core_pb2.SearchObjectsRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    start_object_id=start_object_mesh_id,
+                    start_object_id=_to_proto_object_mesh_id(target),
                     attributes_masks=_to_proto_attribute_masks(attributes_filter),
                     attribute_view=attribute_view,
                     query=query
@@ -841,53 +785,41 @@ class Session(abc.ABC):
         return request
 
     def _prepare_create_object_request(
-            self,
-            name: str,
-            owner_attribute_id: uuid.UUID,
-            owner_attribute_path: str) -> core_pb2.CreateObjectRequest:
+        self, target: Union[uuid.UUID, str], name: str
+    ) -> core_pb2.CreateObjectRequest:
         """Create a gRPC `CreateObjectRequest`"""
-
-        try:
-            owner_mesh_id = _to_proto_mesh_id(id=owner_attribute_id, path=owner_attribute_path)
-        except ValueError as e:
-            raise ValueError("invalid owner") from e
 
         request = core_pb2.CreateObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    owner_id=owner_mesh_id,
+                    owner_id=_to_proto_attribute_mesh_id(target),
                     name=name
                 )
         return request
 
     def _prepare_update_object_request(
-            self,
-            object_id: uuid.UUID,
-            object_path: str,
-            new_name: str,
-            new_owner_attribute_id: uuid.UUID,
-            new_owner_attribute_path:str) -> core_pb2.UpdateObjectRequest:
+        self,
+        target: Union[uuid.UUID, str],
+        new_name: str,
+        new_owner_attribute: Union[uuid.UUID, str],
+    ) -> core_pb2.UpdateObjectRequest:
         """Create a gRPC `UpdateObjectRequest`"""
-
-        try:
-            object_mesh_id = _to_proto_mesh_id(id=object_id, path=object_path)
-        except ValueError as e:
-            raise ValueError("invalid object to update") from e
 
         request = core_pb2.UpdateObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=object_mesh_id
+                    object_id=_to_proto_object_mesh_id(target)
                 )
 
         fields_to_update = []
 
         # providing new owner is optional
-        if new_owner_attribute_id is not None or new_owner_attribute_path is not None:
+        if new_owner_attribute is not None:
             try:
-                new_owner_mesh_id = _to_proto_mesh_id(
-                    id=new_owner_attribute_id, path=new_owner_attribute_path)
-            except ValueError as e:
-                raise ValueError("invalid new owner") from e
-            
+                new_owner_mesh_id = _to_proto_attribute_mesh_id(new_owner_attribute)
+            except TypeError as e:
+                # Wrap the error so that the user can distinguish what
+                # MeshId is wrong: target or new_owner_attribute.
+                raise TypeError("invalid new owner attribute") from e
+
             request.new_owner_id.CopyFrom(new_owner_mesh_id)
             fields_to_update.append("new_owner_id")
 
@@ -900,62 +832,40 @@ class Session(abc.ABC):
         return request
 
     def _prepare_delete_object_request(
-            self,
-            object_id: uuid.UUID,
-            object_path: str,
-            recursive_delete: bool) -> core_pb2.DeleteObjectRequest:
+        self, target: Union[uuid.UUID, str], recursive_delete: bool
+    ) -> core_pb2.DeleteObjectRequest:
         """Create a gRPC `DeleteObjectRequest`"""
-
-        try:
-            object_mesh_id = _to_proto_mesh_id(id=object_id, path=object_path)
-        except ValueError as e:
-            raise ValueError("invalid object") from e
 
         request = core_pb2.DeleteObjectRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    object_id=object_mesh_id,
+                    object_id=_to_proto_object_mesh_id(target),
                     recursive_delete=recursive_delete
                 )
         return request
 
     def _prepare_get_attribute_request(
-        self,
-        attribute_id: uuid.UUID,
-        attribute_path: str,
-        full_attribute_info: bool) -> core_pb2.GetAttributeRequest:
-
-        try:
-            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
-        except ValueError as e:
-            raise ValueError("invalid attribute") from e
+        self, target: Union[uuid.UUID, str], full_attribute_info: bool
+    ) -> core_pb2.GetAttributeRequest:
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
 
         request = core_pb2.GetAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute_id=attribute_mesh_id,
+            attribute_id=_to_proto_attribute_mesh_id(target),
             attribute_view=attribute_view
         )
 
         return request
 
     def _prepare_search_attributes_request(
-        self,
-        start_object_id: uuid.UUID,
-        start_object_path: str,
-        query: str,
-        full_attribute_info: bool) -> core_pb2.SearchAttributesRequest:
-
-        try:
-            start_object_mesh_id = _to_proto_mesh_id(id=start_object_id, path=start_object_path)
-        except ValueError as e:
-            raise ValueError("invalid start object") from e
+        self, target: Union[uuid.UUID, str], query: str, full_attribute_info: bool
+    ) -> core_pb2.SearchAttributesRequest:
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
 
         request = core_pb2.SearchAttributesRequest(
             session_id=_to_proto_guid(self.session_id),
-            start_object_id=start_object_mesh_id,
+            start_object_id=_to_proto_object_mesh_id(target),
             query=query,
             attribute_view=attribute_view
         )
@@ -963,20 +873,12 @@ class Session(abc.ABC):
         return request
 
     def _prepare_update_simple_attribute_request(
-        self,
-        attribute_id: uuid.UUID,
-        attribute_path: str,
-        value: SIMPLE_TYPE_OR_COLLECTION
+        self, target: Union[uuid.UUID, str], value: SIMPLE_TYPE_OR_COLLECTION
     ) -> core_pb2.UpdateSimpleAttributeRequest:
-
-        try:
-            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
-        except ValueError as e:
-            raise ValueError("invalid attribute to update") from e
 
         request = core_pb2.UpdateSimpleAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute_id=attribute_mesh_id
+            attribute_id=_to_proto_attribute_mesh_id(target)
         )
 
         new_singular_value, new_collection_values = self._to_update_attribute_request_values(value=value)
@@ -992,20 +894,14 @@ class Session(abc.ABC):
 
     def _prepare_update_timeseries_attribute_request(
         self,
-        attribute_id: uuid.UUID,
-        attribute_path: str,
+        target: Union[uuid.UUID, str],
         new_local_expression: str,
         new_timeseries_resource_key: int
     ) -> core_pb2.UpdateTimeseriesAttributeRequest:
 
-        try:
-            attribute_mesh_id = _to_proto_mesh_id(id=attribute_id, path=attribute_path)
-        except ValueError as e:
-            raise ValueError("invalid attribute to update") from e
-
         request = core_pb2.UpdateTimeseriesAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute_id=attribute_mesh_id
+            attribute_id=_to_proto_attribute_mesh_id(target)
         )
 
         fields_to_update = []
@@ -1100,13 +996,6 @@ class Session(abc.ABC):
         the final result.
         """
 
-        if isinstance(target, uuid.UUID):
-            target = core_pb2.MeshId(id=_to_proto_guid(target))
-        elif isinstance(target, str):
-            target = core_pb2.MeshId(path=target)
-        else:
-            raise TypeError("target must be a uuid.UUID or str")
-
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
@@ -1114,7 +1003,7 @@ class Session(abc.ABC):
 
         request = core_pb2.GetRatingCurveVersionsRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute=target,
+            attribute=_to_proto_attribute_mesh_id(target),
             interval=interval,
             versions_only=versions_only
         )
@@ -1142,13 +1031,6 @@ class Session(abc.ABC):
         end_time: datetime,
         new_versions: List[RatingCurveVersion]
     ) -> core_pb2.UpdateRatingCurveVersionsRequest:
-
-        if isinstance(target, uuid.UUID):
-            target = core_pb2.MeshId(id=_to_proto_guid(target))
-        elif isinstance(target, str):
-            target = core_pb2.MeshId(path=target)
-        else:
-            raise TypeError("target must be a uuid.UUID or str")
 
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
@@ -1179,7 +1061,7 @@ class Session(abc.ABC):
 
         request = core_pb2.UpdateRatingCurveVersionsRequest(
             session_id=_to_proto_guid(self.session_id),
-            attribute=target,
+            attribute=_to_proto_attribute_mesh_id(target),
             interval=_to_protobuf_utcinterval(start_time, end_time),
             versions=proto_versions
         )

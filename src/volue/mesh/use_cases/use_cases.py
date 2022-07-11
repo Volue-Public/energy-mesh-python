@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import (Connection, AttributesFilter, MeshObjectId, Object, Timeseries,
+from volue.mesh import (Connection, AttributesFilter, Object, Timeseries,
                         TimeseriesResource, XySet, XyCurve)
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
@@ -25,10 +25,10 @@ PORT = 50051
 # Use matplotlib to visualize results
 SHOW_PLOT = True
 # Save time series to CSV file
-SAVE_TO_CSV = True
+SAVE_TO_CSV = False
 # Some use cases write new points or update existing objects
 # Set this flag to True to commit the changes (made in use cases) to Mesh
-COMMIT_CHANGES = True
+COMMIT_CHANGES = False
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = 'all'
@@ -153,15 +153,15 @@ def use_case_1():
             print("--------------------------------------------------------------")
 
             timeseries_attributes = session.search_for_timeseries_attributes(
-                start_object_id=start_object_guid, query=search_query)
+                start_object_guid, search_query)
             print(f"Search resulted in {len(timeseries_attributes)} object(s) that match(es) the search criteria: {search_query}")
 
             # Retrieve time series points connected to the found time series attributes
             path_and_pandas_dataframe = []
             for number, timeseries_attribute in enumerate(timeseries_attributes):
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+                timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                            start_time=start,
+                                                            end_time=end)
                 print(f"{number + 1}. \n"
                       f"-----\n"
                       f"{timeseries_attribute}")
@@ -200,15 +200,15 @@ def use_case_2():
             print("--------------------------------------------------------------")
 
             timeseries_attributes = session.search_for_timeseries_attributes(
-                start_object_id=start_object_guid, query=search_query)
+                start_object_guid, search_query)
             print(f"Search resulted in {len(timeseries_attributes)} object(s) that match(es) the search criteria: {search_query}")
 
             # Retrieve time series points connected to the found time series attributes
             path_and_pandas_dataframe = []
             for number, timeseries_attribute in enumerate(timeseries_attributes):
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+                timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                            start_time=start,
+                                                            end_time=end)
                 print(f"{number + 1}. \n"
                       f"-----\n"
                       f"{timeseries_attribute}")
@@ -254,9 +254,9 @@ def use_case_3():
                       f"{get_timeseries_resource_information(timeseries_resource)}")
 
                 # Retrieve the time series points in a given interval
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            mesh_object_id=MeshObjectId.with_timskey(timskey))
+                timeseries = session.read_timeseries_points(target=timskey,
+                                                            start_time=start,
+                                                            end_time=end)
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
                 pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
@@ -297,12 +297,12 @@ def use_case_4():
             for guid in guids:
 
                 # Retrieve the time series points in a given interval
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            mesh_object_id=MeshObjectId.with_uuid_id(uuid.UUID(guid)))
+                timeseries = session.read_timeseries_points(target=uuid.UUID(guid),
+                                                            start_time=start,
+                                                            end_time=end)
 
                 # Retrieve information about the time series attribute
-                timeseries_attribute = session.get_timeseries_attribute(attribute_id=uuid.UUID(guid), full_attribute_info=True)
+                timeseries_attribute = session.get_timeseries_attribute(uuid.UUID(guid), full_attribute_info=True)
                 print(f"[{guid}]: \n"
                       f"-----\n"
                       f"{timeseries_attribute}")
@@ -357,12 +357,12 @@ def use_case_4b():
             for path in paths:
 
                 # Retrieve the time series points in a given interval
-                timeseries = session.read_timeseries_points(start_time=start,
-                                                            end_time=end,
-                                                            mesh_object_id=MeshObjectId.with_full_name(path))
+                timeseries = session.read_timeseries_points(target=path,
+                                                            start_time=start,
+                                                            end_time=end)
 
                 # Retrieve information connected to the timeseries
-                timeseries_attribute = session.get_timeseries_attribute(attribute_path=path)
+                timeseries_attribute = session.get_timeseries_attribute(path)
 
                 print(f"[{path}]: \n"
                       f"-----\n"
@@ -410,9 +410,9 @@ def use_case_5():
             print("--------------------------------------------------------------")
 
             # Get time series data before write
-            timeseries_before = session.read_timeseries_points(start_time=start,
-                                                               end_time=end,
-                                                               mesh_object_id=MeshObjectId.with_uuid_id(guid))
+            timeseries_before = session.read_timeseries_points(target=guid,
+                                                               start_time=start,
+                                                               end_time=end)
             print(f"Before writing points: \n"
                   f"-----\n"
                   f"{get_timeseries_information(timeseries=timeseries_before)}")
@@ -452,9 +452,9 @@ def use_case_5():
             session.write_timeseries_points(timeseries=timeseries)
 
             # Get time series data before write
-            timeseries_after = session.read_timeseries_points(start_time=start,
-                                                              end_time=end,
-                                                              mesh_object_id=MeshObjectId.with_uuid_id(guid))
+            timeseries_after = session.read_timeseries_points(target=guid,
+                                                              start_time=start,
+                                                              end_time=end)
             print(f"After writing points: \n"
                   f"-----\n"
                   f"{get_timeseries_information(timeseries=timeseries_after)}")
@@ -498,13 +498,13 @@ def use_case_6():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                attribute_id=uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id))
 
             # Retrieve time series points connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries_original = session.read_timeseries_points(start_time=start,
-                                                                 end_time=end,
-                                                                 mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+            timeseries_original = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                                 start_time=start,
+                                                                 end_time=end)
             print(timeseries_attribute)
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
@@ -514,7 +514,7 @@ def use_case_6():
 
             # Transform time series from breakpoint to hourly
             timeseries_transformed = session.transform_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time=start, end_time=end).transform(
+                timeseries_attribute.id, start_time=start, end_time=end).transform(
                     Timeseries.Resolution.HOUR, Transform.Method.AVGI, Timezone.LOCAL)
 
             pandas_dataframe = timeseries_transformed.arrow_table.to_pandas()
@@ -555,13 +555,13 @@ def use_case_7():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                attribute_id=uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id))
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries_original = session.read_timeseries_points(start_time=start,
-                                                                 end_time=end,
-                                                                 mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+            timeseries_original = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                                 start_time=start,
+                                                                 end_time=end)
             print(timeseries_attribute)
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
@@ -571,7 +571,7 @@ def use_case_7():
 
             # Transform time series from hourly to daily
             timeseries_transformed = session.transform_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time=start, end_time=end).transform(
+                timeseries_attribute.id, start_time=start, end_time=end).transform(
                     Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.LOCAL)
 
             pandas_dataframe = timeseries_transformed.arrow_table.to_pandas()
@@ -613,7 +613,7 @@ def use_case_8():
 
             # Summarize timeseries
             summarized_timeseries = session.statistical_functions(
-                MeshObjectId(uuid_id=uuid.UUID(start_object_guid)), start_time=start, end_time=end).sum(
+                uuid.UUID(start_object_guid), start_time=start, end_time=end).sum(
                     search_query=search_query)
 
             path_and_pandas_dataframe = []
@@ -656,13 +656,13 @@ def use_case_9():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                attribute_id=uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id))
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                        start_time=start,
+                                                        end_time=end)
             print(f"{timeseries_attribute_id}: \n"
                   f"-----\n"
                   f"{timeseries_attribute}")
@@ -673,7 +673,7 @@ def use_case_9():
             path_and_pandas_dataframe.append(('Original', pandas_dataframe))
 
             historical_timeseries = session.history_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time=start, end_time=end).get_ts_as_of_time(
+                timeseries_attribute.id, start_time=start, end_time=end).get_ts_as_of_time(
                     available_at_timepoint=historical_date)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
@@ -717,13 +717,13 @@ def use_case_10():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                attribute_id=uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id))
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                        start_time=start,
+                                                        end_time=end)
             print(f"{timeseries_attribute_id}: \n"
                   f"-----\n"
                   f"{timeseries_attribute}")
@@ -734,7 +734,7 @@ def use_case_10():
 
             # Get historical time series
             historical_timeseries = session.history_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time=start, end_time=end).get_ts_historical_versions(
+                timeseries_attribute.id, start_time=start, end_time=end).get_ts_historical_versions(
                     max_number_of_versions_to_get)
 
             for number, timeseries in enumerate(historical_timeseries):
@@ -777,13 +777,13 @@ def use_case_11():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                attribute_id=uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id))
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                        start_time=start,
+                                                        end_time=end)
             print(f"{timeseries_attribute_id}: \n"
                   f"-----\n"
                   f"{timeseries_attribute}")
@@ -794,7 +794,7 @@ def use_case_11():
 
             # Get forecast time series
             forecast_timeseries = session.forecast_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time=start, end_time=end).get_all_forecasts()
+                timeseries_attribute.id, start_time=start, end_time=end).get_all_forecasts()
 
             for number, timeseries in enumerate(forecast_timeseries):
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
@@ -838,13 +838,13 @@ def use_case_12():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                attribute_id=uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id))
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(start_time=start,
-                                                        end_time=end,
-                                                        mesh_object_id=MeshObjectId.with_uuid_id(timeseries_attribute.id))
+            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
+                                                        start_time=start,
+                                                        end_time=end)
             print(f"{timeseries_attribute_id}: \n"
                   f"-----\n"
                   f"{timeseries_attribute}")
@@ -855,7 +855,7 @@ def use_case_12():
 
             # Get forecast time series
             forecast_timeseries = session.forecast_functions(
-                MeshObjectId(uuid_id=timeseries_attribute.id), start_time=start, end_time=end).get_forecast(
+                timeseries_attribute.id, start_time=start, end_time=end).get_forecast(
                     forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint)
 
             pandas_dataframe = forecast_timeseries.arrow_table.to_pandas()
@@ -892,7 +892,7 @@ def use_case_13():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            objects = session.search_for_objects(search_query, start_object_id=start_object_guid)
+            objects = session.search_for_objects(start_object_guid, search_query)
 
             for number, object in enumerate(objects):
                 print(f"{number + 1}. \n"
@@ -932,7 +932,7 @@ def use_case_14():
             # First we need to find correct relationship attribute that
             # will serve as owner for the new objects.
             parent_object = session.get_object(
-                object_id=parent_object_guid, full_attribute_info=True)
+                parent_object_guid, full_attribute_info=True)
             relationship_attribute_path = None
 
             for attribute in parent_object.attributes.values():
@@ -946,7 +946,7 @@ def use_case_14():
 
             for number, new_object_name in enumerate(new_objects_names):
                 new_object = session.create_object(
-                    new_object_name, owner_attribute_path=relationship_attribute_path)
+                    relationship_attribute_path, new_object_name)
                 print(f"{number + 1}. \n"
                       f"-------------------------------------------\n"
                       f"{get_object_information(new_object)}")
@@ -980,7 +980,7 @@ def use_case_15():
 
             for object_name in objects_names:
                 object_path = f"{parent_object_path}/{object_name}"
-                session.delete_object(object_path=object_path, recursive_delete=True)
+                session.delete_object(object_path, recursive_delete=True)
                 print(f"Object: '{object_path}' was deleted")
 
             # Commit changes
@@ -1014,8 +1014,8 @@ def use_case_16():
             old_object_path = f"{parent_object_path}/{old_object_name}"
             new_object_path = f"{parent_object_path}/{new_object_name}"
 
-            session.update_object(object_path=old_object_path, new_name=new_object_name)
-            updated_object = session.get_object(object_path=new_object_path)
+            session.update_object(old_object_path, new_name=new_object_name)
+            updated_object = session.get_object(new_object_path)
             print(get_object_information(updated_object))
 
             # Commit changes
@@ -1044,7 +1044,7 @@ def use_case_17():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            object = session.get_object(object_id=object_guid, full_attribute_info=True)
+            object = session.get_object(object_guid, full_attribute_info=True)
             print(get_object_information(object))
 
             number = 1
@@ -1083,7 +1083,7 @@ def use_case_18():
             namespaces = ['Wind']
             attributes_filter = AttributesFilter(tag_mask=tags, namespace_mask=namespaces)
 
-            object = session.get_object(object_id=object_guid,
+            object = session.get_object(object_guid,
                 full_attribute_info=True,
                 attributes_filter=attributes_filter)
             print(get_object_information(object))
@@ -1124,19 +1124,19 @@ def use_case_19():
             attributes_filter = AttributesFilter(name_mask=names)
 
             print("Attribute values before update:")
-            object = session.get_object(object_path=object_path,
+            object = session.get_object(object_path,
                 attributes_filter=attributes_filter)
             for attribute in object.attributes.values():
                 print(attribute)
 
             session.update_simple_attribute(
-                attribute_path=object.attributes['HubHeight'].path, value=100)
+                object.attributes['HubHeight'].path, value=100)
 
             session.update_simple_attribute(
-                attribute_path=object.attributes['MaxProduction'].path, value=50)
+                object.attributes['MaxProduction'].path, value=50)
 
             print("\nAttribute values after update:")
-            object = session.get_object(object_path=object_path,
+            object = session.get_object(object_path,
                 attributes_filter=attributes_filter)
             for attribute in object.attributes.values():
                 print(attribute)

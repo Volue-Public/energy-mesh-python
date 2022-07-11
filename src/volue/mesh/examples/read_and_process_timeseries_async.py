@@ -3,7 +3,6 @@ from datetime import datetime
 
 import grpc
 
-from volue.mesh import MeshObjectId
 from volue.mesh.aio import Connection
 from volue.mesh.examples import _get_connection_info
 
@@ -23,7 +22,7 @@ async def read_timeseries_points(session, path):
     # while waiting for the read operation to complete
     # (e.g. doing processing for already returned time series)
     timeseries_read = await session.read_timeseries_points(
-        start_time=start_time, end_time=end_time, mesh_object_id=MeshObjectId.with_full_name(path))
+        target=path, start_time=start_time, end_time=end_time)
 
     return timeseries_read.arrow_table
 
@@ -78,7 +77,7 @@ async def main(address, port, root_pem_certificate):
     async with connection.create_session() as session:
         try:
             timeseries_attributes = await session.search_for_timeseries_attributes(
-                start_object_path=start_object_path,
+                target=start_object_path,
                 query=query)
         except grpc.RpcError as e:
             print(f"Could not find timeseries attribute: {e}")

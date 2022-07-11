@@ -13,7 +13,7 @@ import grpc
 import pyarrow as pa
 import pytest
 
-from volue.mesh import Connection, MeshObjectId, Timeseries
+from volue.mesh import Connection, Timeseries
 from volue.mesh._attribute import TimeseriesAttribute
 from volue.mesh._common import AttributesFilter
 from volue.mesh.calc import transform as Transform
@@ -30,11 +30,11 @@ def test_read_timeseries_points(session):
     timeseries, start_time, end_time, _, full_name = get_timeseries_2()
     try:
         test_case_1 = {"start_time": start_time, "end_time": end_time,
-                       "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                       "target": timeseries.timeseries_key}
         test_case_2 = {"start_time": start_time, "end_time": end_time,
-                       "mesh_object_id": MeshObjectId.with_uuid_id(timeseries.id)}
+                       "target": timeseries.id}
         test_case_3 = {"start_time": start_time, "end_time": end_time,
-                       "mesh_object_id": MeshObjectId.with_full_name(full_name)}
+                       "target": full_name}
 
         test_cases = [test_case_1, test_case_2, test_case_3]
         for test_case in test_cases:
@@ -67,13 +67,13 @@ def test_read_timeseries_points_with_different_datetime_timezones(session):
 
     try:
         test_case_naive = {"start_time": start_time, "end_time": end_time,
-                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                           "target": timeseries.timeseries_key}
         test_case_utc = {"start_time": start_time_utc, "end_time": end_time_utc,
-                         "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                         "target": timeseries.timeseries_key}
         test_case_local = {"start_time": start_time_local, "end_time": end_time_local,
-                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                           "target": timeseries.timeseries_key}
         test_case_mixed = {"start_time": start_time_local, "end_time": end_time_utc,
-                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                           "target": timeseries.timeseries_key}
 
         test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed]
         for test_case in test_cases:
@@ -115,9 +115,9 @@ def test_write_timeseries_points(session):
         timeseries = Timeseries(table=modified_table, start_time=test_case['start_time'], end_time=test_case['end_time'], full_name=full_name)
         try:
             session.write_timeseries_points(timeseries)
-            written_ts = session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
-                                                        end_time=datetime(2016, 1, 1, 3, 0, 0),
-                                                        mesh_object_id=MeshObjectId.with_uuid_id(ts_entry.id))
+            written_ts = session.read_timeseries_points(target=ts_entry.id,
+                                                        start_time=datetime(2016, 1, 1, 1, 0, 0),
+                                                        end_time=datetime(2016, 1, 1, 3, 0, 0))
             assert written_ts.number_of_points == 3
             utc_time = written_ts.arrow_table[0]
             assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
@@ -162,9 +162,9 @@ def test_write_timeseries_points_with_different_pyarrow_table_datetime_timezones
     timeseries = Timeseries(table=modified_table, start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo), end_time=datetime(2016, 1, 1, 4, tzinfo=some_tzinfo), full_name=full_name)
     try:
         session.write_timeseries_points(timeseries)
-        written_ts = session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo),
-                                                    end_time=datetime(2016, 1, 1, 3, tzinfo=some_tzinfo),
-                                                    mesh_object_id=MeshObjectId.with_uuid_id(ts_entry.id))
+        written_ts = session.read_timeseries_points(target=ts_entry.id,
+                                                    start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo),
+                                                    end_time=datetime(2016, 1, 1, 3, tzinfo=some_tzinfo))
         assert written_ts.number_of_points == 3
         utc_time = written_ts.arrow_table[0]
         # Mesh returns timestamps in UTC format, to compare them we need to make both of them either
@@ -245,18 +245,18 @@ def test_update_timeseries_attribute_with_expression(session):
     attribute_path = get_attribute_path_principal() + "TsCalcAtt"
     new_local_expression = "something"
 
-    attribute_id = session.get_timeseries_attribute(attribute_path=attribute_path).id
+    attribute_id = session.get_timeseries_attribute(attribute_path).id
 
     test_new_local_expression = {"new_local_expression": new_local_expression}
-    test_case_1 = {"attribute_path": attribute_path, **test_new_local_expression}
-    test_case_2 = {"attribute_id": attribute_id, **test_new_local_expression}
+    test_case_1 = {"target": attribute_path, **test_new_local_expression}
+    test_case_2 = {"target": attribute_id, **test_new_local_expression}
     test_cases = [test_case_1, test_case_2]
 
     for test_case in test_cases:
 
         session.update_timeseries_attribute(**test_case)
 
-        updated_attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+        updated_attribute = session.get_timeseries_attribute(attribute_path)
         assert updated_attribute.path == attribute_path
         assert updated_attribute.expression == new_local_expression
         assert updated_attribute.is_local_expression == True
@@ -274,21 +274,21 @@ def test_update_timeseries_attribute_with_timeseries_resource(session):
     attribute_path = get_attribute_path_principal() + "TsRawAtt"
     new_timeseries_resource_key = 2
 
-    attribute_id = session.get_timeseries_attribute(attribute_path=attribute_path).id
+    attribute_id = session.get_timeseries_attribute(attribute_path).id
 
     test_new_timeseries_resource_key = {"new_timeseries_resource_key": new_timeseries_resource_key}
-    test_case_1 = {"attribute_path": attribute_path, **test_new_timeseries_resource_key}
-    test_case_2 = {"attribute_id": attribute_id, **test_new_timeseries_resource_key}
+    test_case_1 = {"target": attribute_path, **test_new_timeseries_resource_key}
+    test_case_2 = {"target": attribute_id, **test_new_timeseries_resource_key}
     test_cases = [test_case_1, test_case_2]
     for test_case in test_cases:
-        original_attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+        original_attribute = session.get_timeseries_attribute(attribute_path)
         assert original_attribute.path == attribute_path
         assert original_attribute.time_series_resource is not None
         assert original_attribute.time_series_resource.timeseries_key != new_timeseries_resource_key
 
         session.update_timeseries_attribute(**test_case)
 
-        updated_attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+        updated_attribute = session.get_timeseries_attribute(attribute_path)
         assert updated_attribute.path == attribute_path
         assert updated_attribute.time_series_resource is not None
         assert updated_attribute.time_series_resource.timeseries_key == new_timeseries_resource_key
@@ -306,15 +306,15 @@ def test_update_timeseries_attribute_with_disconnect_timeseries_resource(session
     attribute_path = get_attribute_path_principal() + "TsRawAtt"
 
     # first make sure it is connected to some physical time series
-    attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+    attribute = session.get_timeseries_attribute(attribute_path)
     assert attribute.path == attribute_path
     assert attribute.time_series_resource is not None
 
     # now let's disconnect it
     session.update_timeseries_attribute(
-        attribute_path=attribute_path, new_timeseries_resource_key=0)
+        attribute_path, new_timeseries_resource_key=0)
 
-    attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+    attribute = session.get_timeseries_attribute(attribute_path)
     assert attribute.path == attribute_path
     assert attribute.time_series_resource is None
 
@@ -330,18 +330,13 @@ def test_update_timeseries_attribute_with_invalid_request(session):
     non_existing_timeseries_key = 123456
 
     # first make sure it is connected to some physical time series
-    attribute = session.get_timeseries_attribute(attribute_path=attribute_path)
+    attribute = session.get_timeseries_attribute(attribute_path)
     assert attribute.path == attribute_path
     assert attribute.time_series_resource is not None
 
     with pytest.raises(grpc.RpcError):
         session.update_timeseries_attribute(
-            attribute_path=attribute_path,
-            new_timeseries_resource_key=non_existing_timeseries_key)
-
-    # if no attribute identifier (ID or path) is provided we should get an error
-    with pytest.raises(ValueError):
-        session.update_timeseries_attribute(
+            attribute_path,
             new_timeseries_resource_key=non_existing_timeseries_key)
 
 
@@ -355,16 +350,16 @@ def test_search_timeseries_attribute(session):
 
     try:
         test_case_1 = {"query": query,
-                       "start_object_path": start_object_path,
+                       "target": start_object_path,
                        "full_attribute_info": False}
         test_case_2 = {"query": query,
-                       "start_object_path": start_object_path,
+                       "target": start_object_path,
                        "full_attribute_info": True}
         test_case_3 = {"query": query,
-                       "start_object_id": start_object_guid,
+                       "target": start_object_guid,
                        "full_attribute_info": False}
         test_case_4 = {"query": query,
-                       "start_object_id": start_object_guid,
+                       "target": start_object_guid,
                        "full_attribute_info": True}
         test_cases = [test_case_1, test_case_2, test_case_3, test_case_4]
         for test_case in test_cases:
@@ -405,26 +400,26 @@ def test_commit(connection):
     with connection.create_session() as session1:
         try:
             # check baseline
-            attribute1 = session1.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute1 = session1.get_timeseries_attribute(attribute_path)
             old_local_expression = attribute1.expression
             assert old_local_expression != new_local_expression
 
             # change something
             session1.update_timeseries_attribute(
-                attribute_path=attribute_path, new_local_expression=new_local_expression)
+                attribute_path, new_local_expression=new_local_expression)
 
             # commit
             session1.commit()
 
             # check that the change is in the session
-            attribute2 = session1.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute2 = session1.get_timeseries_attribute(attribute_path)
             assert attribute2.expression == new_local_expression
 
             # rollback
             session1.rollback()
 
             # check that changes are still there
-            attribute3 = session1.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute3 = session1.get_timeseries_attribute(attribute_path)
             assert attribute3.expression == new_local_expression
 
         except grpc.RpcError as error:
@@ -433,18 +428,18 @@ def test_commit(connection):
     with connection.create_session() as session2:
         try:
             # check that the change is still there
-            attribute4 = session2.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute4 = session2.get_timeseries_attribute(attribute_path)
             assert attribute4.expression == new_local_expression
 
             # change it back to what is was originally
             session2.update_timeseries_attribute(
-                attribute_path=attribute_path, new_local_expression=old_local_expression)
+                attribute_path, new_local_expression=old_local_expression)
 
             # commit
             session2.commit()
 
             # check that status has been restored (important to keep db clean)
-            attribute5 = session2.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute5 = session2.get_timeseries_attribute(attribute_path)
             assert attribute5.expression == old_local_expression
 
         except grpc.RpcError as error:
@@ -516,7 +511,7 @@ def test_read_transformed_timeseries_points(
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = session.transform_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).transform(
+        full_name, start_time, end_time).transform(
             resolution, method, timezone)
 
     assert reply_timeseries.is_calculation_expression_result
@@ -581,17 +576,17 @@ def test_read_transformed_timeseries_points_with_uuid(session):
     _, full_name = get_timeseries_attribute_2()
 
     # first read timeseries UUID (it is set dynamically)
-    timeseries = session.read_timeseries_points(start_time=start_time,
-                                                end_time=end_time,
-                                                mesh_object_id=MeshObjectId.with_full_name(full_name))
+    timeseries = session.read_timeseries_points(target=full_name,
+                                                start_time=start_time,
+                                                end_time=end_time)
     ts_uuid = timeseries.uuid
 
     reply_timeseries_full_name = session.transform_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).transform(
+        full_name, start_time, end_time).transform(
             Timeseries.Resolution.MIN15, Transform.Method.SUM)
 
     reply_timeseries_uuid = session.transform_functions(
-        MeshObjectId(uuid_id=ts_uuid), start_time, end_time).transform(
+        ts_uuid, start_time, end_time).transform(
             Timeseries.Resolution.MIN15, Transform.Method.SUM)
 
     assert reply_timeseries_full_name.is_calculation_expression_result == reply_timeseries_uuid.is_calculation_expression_result
@@ -599,20 +594,6 @@ def test_read_transformed_timeseries_points_with_uuid(session):
 
     for column_index in range(0, 3):
         assert reply_timeseries_full_name.arrow_table[column_index] == reply_timeseries_uuid.arrow_table[column_index]
-
-
-@pytest.mark.database
-def test_read_timeseries_points_without_specifying_timeseries_should_throw(session):
-    """
-    Check that expected exception is thrown when trying to
-    read timeseries without specifying timeseries (by full_name, timskey or uuid_id).
-    """
-
-    start_time = datetime(2016, 1, 1, 1, 0, 0)
-    end_time = datetime(2016, 1, 1, 9, 0, 0)
-
-    with pytest.raises(TypeError, match=".*need to specify either timskey, uuid_id or full_name.*"):
-        session.read_timeseries_points(start_time, end_time, MeshObjectId())
 
 
 @pytest.mark.database
@@ -627,7 +608,7 @@ def test_forecast_get_all_forecasts(session):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = session.forecast_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
+        full_name, start_time, end_time).get_all_forecasts()
     assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
 
 
@@ -650,7 +631,7 @@ def test_forecast_get_forecast(session, forecast_start, available_at_timepoint):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = session.forecast_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
+        full_name, start_time, end_time).get_forecast(
             forecast_start_min, forecast_start_max, available_at_timepoint)
     assert reply_timeseries.is_calculation_expression_result
 
@@ -668,7 +649,7 @@ def test_history_get_ts_as_of_time(session):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = session.history_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
+        full_name, start_time, end_time).get_ts_as_of_time(
             available_at_timepoint)
     assert reply_timeseries.is_calculation_expression_result
 
@@ -687,7 +668,7 @@ def test_history_get_ts_historical_versions(session, max_number_of_versions_to_g
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = session.history_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
+        full_name, start_time, end_time).get_ts_historical_versions(
             max_number_of_versions_to_get)
     assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
 
@@ -703,7 +684,7 @@ def test_statistical_sum(session):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = session.statistical_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).sum(search_query='some_query')
+        full_name, start_time, end_time).sum(search_query='some_query')
     assert reply_timeseries.is_calculation_expression_result
 
 
@@ -717,7 +698,7 @@ def test_statistical_sum_single_timeseries(session):
     _, full_name = get_timeseries_attribute_2()
 
     result = session.statistical_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
+        full_name, start_time, end_time).sum_single_timeseries()
     assert isinstance(result, float) and result == 41.0
 
 
@@ -729,7 +710,7 @@ def test_get_object(session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 
-    object = session.get_object(object_path=object_path)
+    object = session.get_object(object_path)
     assert object.name == "SomePowerPlant1"
     assert object.path == object_path
     assert object.type_name == "PlantElementType"
@@ -752,7 +733,7 @@ def test_get_object_with_full_attribute_info(session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 
-    object = session.get_object(object_path=object_path, full_attribute_info=True)
+    object = session.get_object(object_path, full_attribute_info=True)
     for attribute in object.attributes.values():
         assert attribute.name is not None
         assert attribute.path is not None
@@ -773,7 +754,7 @@ def test_get_object_with_attributes_filter_with_name_mask(session):
     attributes_filter = AttributesFilter(name_mask=["StringAtt", "BoolArrayAtt"])
 
     object = session.get_object(
-        object_path=object_path, attributes_filter=attributes_filter)
+        object_path, attributes_filter=attributes_filter)
 
     assert object.attributes['StringAtt'] is not None
     assert object.attributes['BoolArrayAtt'] is not None
@@ -789,7 +770,7 @@ def test_get_object_with_attributes_filter_with_non_existing_masks(session):
     attributes_filter = AttributesFilter(namespace_mask=["NON_EXISTING"])
 
     object = session.get_object(
-        object_path=object_path, attributes_filter=attributes_filter)
+        object_path, attributes_filter=attributes_filter)
     assert len(object.attributes) == 0
 
 
@@ -803,7 +784,7 @@ def test_get_object_with_attributes_filter_with_return_no_attributes(session):
     attributes_filter = AttributesFilter(return_no_attributes=True)
 
     object = session.get_object(
-        object_path=object_path, attributes_filter=attributes_filter)
+        object_path, attributes_filter=attributes_filter)
     assert len(object.attributes) == 0
 
 
@@ -815,7 +796,7 @@ def test_search_objects(session):
     start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
     query = "*[.Type=ChimneyElementType]"
 
-    objects = session.search_for_objects(query, start_object_path=start_object_path)
+    objects = session.search_for_objects(start_object_path, query)
     assert len(objects) == 2
 
     for object in objects:
@@ -831,11 +812,11 @@ def test_create_object(session):
     owner_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef"
     new_object_name = "SomeNewPowerPlantChimney"
 
-    new_object = session.create_object(name=new_object_name, owner_attribute_path=owner_attribute_path)
+    new_object = session.create_object(owner_attribute_path, new_object_name)
     assert new_object.name == new_object_name
     assert new_object.path == f"{owner_attribute_path}/{new_object_name}"
 
-    object = session.get_object(object_id=new_object.id)
+    object = session.get_object(new_object.id)
     assert new_object.name == object.name
     assert new_object.path == object.path
     assert new_object.type_name == object.type_name
@@ -853,13 +834,13 @@ def test_update_object(session):
     new_object_name = "SomeNewPowerPlantChimney"
 
     session.update_object(
-        object_path=object_to_update_path,
+        object_to_update_path,
         new_name=new_object_name,
-        new_owner_attribute_path=new_owner_attribute_path)
+        new_owner_attribute=new_owner_attribute_path)
 
     new_object_path = f"{new_owner_attribute_path}/{new_object_name}"
 
-    object = session.get_object(object_path=new_object_path)
+    object = session.get_object(new_object_path)
     assert object.name == new_object_name
     assert object.path == new_object_path
     assert object.owner_path == new_owner_attribute_path
@@ -872,9 +853,9 @@ def test_delete_object(session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2"
 
-    session.delete_object(object_path=object_path)
+    session.delete_object(object_path)
     with pytest.raises(grpc.RpcError, match=r"Object not found:"):
-        session.get_object(object_path=object_path)
+        session.get_object(object_path)
 
 
 @pytest.mark.database
@@ -884,9 +865,9 @@ def test_recursive_delete_object(session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 
-    session.delete_object(object_path=object_path, recursive_delete=True)
+    session.delete_object(object_path, recursive_delete=True)
     with pytest.raises(grpc.RpcError, match=r"Object not found:"):
-        session.get_object(object_path=object_path)
+        session.get_object(object_path)
 
 
 @pytest.mark.database
@@ -898,7 +879,7 @@ def test_get_bool_array_attribute(session):
     bool_array_att_path = get_attribute_path_principal() + attribute_name
     bool_array_values = [False, True, False, True, False]
 
-    attribute = session.get_attribute(attribute_path=bool_array_att_path, full_attribute_info=True)
+    attribute = session.get_attribute(bool_array_att_path, full_attribute_info=True)
     assert attribute.path == bool_array_att_path
     assert attribute.name == attribute_name
     assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
@@ -921,7 +902,7 @@ def test_get_xy_set_attribute(session):
     attribute_name = "XYSetAtt"
     xySetAttPath = get_attribute_path_principal() + attribute_name
 
-    attribute = session.get_attribute(attribute_path=xySetAttPath, full_attribute_info=True)
+    attribute = session.get_attribute(xySetAttPath, full_attribute_info=True)
     assert attribute.path == xySetAttPath
     assert attribute.name == attribute_name
     assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
@@ -945,7 +926,7 @@ def test_get_utc_time_attribute(session):
     # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
     utc_time_value = datetime(2022, 5, 10, 7, 24, 15, tzinfo=tz.UTC)
 
-    attribute = session.get_attribute(attribute_path=utc_date_time_att_path, full_attribute_info=True)
+    attribute = session.get_attribute(utc_date_time_att_path, full_attribute_info=True)
     assert attribute.value == utc_time_value
     assert attribute.path == utc_date_time_att_path
     assert attribute.name == attribute_name
@@ -970,13 +951,13 @@ def test_get_boolean_attribute(session):
     attribute_name = "BoolAtt"
     bool_attribute_path = get_attribute_path_principal() + attribute_name
 
-    attribute = session.get_attribute(attribute_path=bool_attribute_path, full_attribute_info=False)
+    attribute = session.get_attribute(bool_attribute_path, full_attribute_info=False)
     bool_attribute_id = attribute.id
     assert attribute.path == bool_attribute_path
     assert attribute.name == attribute_name
     assert attribute.value == True
     # now check if get by id succeeds as well
-    attribute = session.get_attribute(attribute_id=bool_attribute_id, full_attribute_info=True)
+    attribute = session.get_attribute(bool_attribute_id, full_attribute_info=True)
     assert attribute.path == bool_attribute_path
     assert attribute.name == attribute_name
     assert attribute.value == True
@@ -1023,7 +1004,7 @@ def test_get_calc_time_series_attribute(session):
     attribute_path = get_attribute_path_principal() + attribute_name
     is_local_expression = False
 
-    attribute = session.get_attribute(attribute_path=attribute_path, full_attribute_info=True)
+    attribute = session.get_attribute(attribute_path, full_attribute_info=True)
     verify_time_series_calculation_attribute(attribute=attribute, attribute_info=tuple((expression, is_local_expression)), attribute_name=attribute_name)
 
 
@@ -1036,9 +1017,9 @@ def test_get_physical_time_series_attribute(session):
     attribute_path = get_attribute_path_principal() + attribute_name
 
     base_attribute = session.get_attribute(
-        attribute_path=attribute_path, full_attribute_info=True)
+        attribute_path, full_attribute_info=True)
     timeseries_attribute = session.get_timeseries_attribute(
-        attribute_path=attribute_path, full_attribute_info=True)
+        attribute_path, full_attribute_info=True)
 
     for attribute in [base_attribute, timeseries_attribute]:
         verify_plant_timeseries_attribute(attribute)
@@ -1054,7 +1035,7 @@ def test_get_string_attribute(session):
     default_string_value = "Default string value"
 
     attribute = session.get_attribute(
-        attribute_path=str_attribute_path, full_attribute_info=True)
+        str_attribute_path, full_attribute_info=True)
     assert attribute.path == str_attribute_path
     assert attribute.name == attribute_name
     assert attribute.value == default_string_value
@@ -1095,7 +1076,7 @@ def test_get_double_attribute(session):
     attribute_name = "DblAtt"
     dbl_attribute_path = get_attribute_path_principal() + attribute_name
 
-    attribute = session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)
+    attribute = session.get_attribute(dbl_attribute_path, full_attribute_info=True)
     verify_double_attribute(attribute=attribute, dbl_attribute_path=dbl_attribute_path, attribute_name=attribute_name)
 
 
@@ -1107,7 +1088,7 @@ def test_get_rating_curve_attribute(session):
     attribute_name = "RatingCurveAtt"
     attribute_path = get_attribute_path_principal() + attribute_name
 
-    attribute = session.get_attribute(attribute_path=attribute_path, full_attribute_info=True)
+    attribute = session.get_attribute(attribute_path, full_attribute_info=True)
     verify_plant_base_attribute(attribute, path=attribute_path, name=attribute_name)
     assert attribute.definition.minimum_cardinality == 1
     assert attribute.definition.maximum_cardinality == 1
@@ -1134,8 +1115,8 @@ def test_search_multiple_attributes(session):
     query = "*[.Name=SomePowerPlant1]." + ",".join(attributes_names)
 
     attributes = session.search_for_attributes(
+        target=start_object_path,
         query=query,
-        start_object_path=start_object_path,
         full_attribute_info=True)
     assert len(attributes) == len(attributes_names)
     for attribute in attributes:
@@ -1157,8 +1138,8 @@ def test_search_with_absent_attribute(session):
     dbl_attribute_path = get_attribute_path_principal() + attributes_names[0]
 
     attributes = session.search_for_attributes(
+        target=start_object_path,
         query=query,
-        start_object_path=start_object_path,
         full_attribute_info=True)
     assert len(attributes) == 1
     verify_double_attribute(attribute=attributes[0], dbl_attribute_path=dbl_attribute_path, attribute_name=attributes_names[0])
@@ -1167,15 +1148,12 @@ def test_search_with_absent_attribute(session):
 def update_double_attribute(session: Connection.Session, new_double_value):
     attribute_path = get_attribute_path_principal() + "DblAtt"
 
-    double_attribute = session.get_attribute(attribute_path=attribute_path)
+    double_attribute = session.get_attribute(attribute_path)
     assert not math.isclose(new_double_value, double_attribute.value)
 
-    session.update_simple_attribute(
-        attribute_path=attribute_path,
-        value=new_double_value
-    )
+    session.update_simple_attribute(attribute_path, new_double_value)
 
-    double_attribute = session.get_attribute(attribute_path=attribute_path)
+    double_attribute = session.get_attribute(attribute_path)
     assert math.isclose(new_double_value, double_attribute.value)
 
 
@@ -1188,18 +1166,14 @@ def test_update_simple_attribute_invalid_request(session):
     attribute_path = get_attribute_path_principal() + "BoolArrayAtt"
 
     # boolean array attribute, wrong value type and dimension
-    array_attribute = session.get_attribute(attribute_path=attribute_path)
+    array_attribute = session.get_attribute(attribute_path)
     original_values = array_attribute.value
 
     with pytest.raises(grpc.RpcError):
-        session.update_simple_attribute(attribute_path=attribute_path, value=7)
+        session.update_simple_attribute(attribute_path, value=7)
 
-    array_attribute = session.get_attribute(attribute_path=attribute_path)
+    array_attribute = session.get_attribute(attribute_path)
     assert array_attribute.value == original_values
-
-    # if no attribute identifier (ID or path) is provided we should get an error
-    with pytest.raises(ValueError):
-        session.update_simple_attribute(value=7)
 
 
 @pytest.mark.database
@@ -1212,12 +1186,12 @@ def test_update_simple_array_attribute(session):
     #boolean array attribute
     new_boolean_array_values = [False, False, True, False, False]
 
-    array_attribute = session.get_attribute(attribute_path=attribute_path)
+    array_attribute = session.get_attribute(attribute_path)
     assert array_attribute.value != new_boolean_array_values
 
-    session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_array_values)
+    session.update_simple_attribute(attribute_path, new_boolean_array_values)
 
-    array_attribute = session.get_attribute(attribute_path=attribute_path)
+    array_attribute = session.get_attribute(attribute_path)
     assert array_attribute.value == new_boolean_array_values
 
 
@@ -1232,45 +1206,45 @@ def test_update_single_simple_attribute(session):
     # int attribute
     new_int_value = 69
     attribute_path = get_attribute_path_principal() + "Int64Att"
-    int_attribute = session.get_attribute(attribute_path=attribute_path)
+    int_attribute = session.get_attribute(attribute_path)
     assert new_int_value != int_attribute.value
 
-    session.update_simple_attribute(attribute_path=attribute_path, value=new_int_value)
+    session.update_simple_attribute(attribute_path, new_int_value)
 
-    int_attribute = session.get_attribute(attribute_path=attribute_path)
+    int_attribute = session.get_attribute(attribute_path)
     assert int_attribute.value == new_int_value
 
     # boolean attribute
     new_boolean_value = False
     attribute_path = get_attribute_path_principal() + "BoolAtt"
-    boolean_attribute = session.get_attribute(attribute_path=attribute_path)
+    boolean_attribute = session.get_attribute(attribute_path)
     assert new_boolean_value != boolean_attribute.value
 
-    session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_value)
+    session.update_simple_attribute(attribute_path, new_boolean_value)
 
-    boolean_attribute = session.get_attribute(attribute_path=attribute_path)
+    boolean_attribute = session.get_attribute(attribute_path)
     assert boolean_attribute.value == new_boolean_value
 
     # string attribute
     new_string_value = "my test string attribute value"
     attribute_path = get_attribute_path_principal() + "StringAtt"
-    string_attribute = session.get_attribute(attribute_path=attribute_path)
+    string_attribute = session.get_attribute(attribute_path)
     assert new_string_value != string_attribute.value
 
-    session.update_simple_attribute(attribute_path=attribute_path, value=new_string_value)
+    session.update_simple_attribute(attribute_path, new_string_value)
 
-    string_attribute = session.get_attribute(attribute_path=attribute_path)
+    string_attribute = session.get_attribute(attribute_path)
     assert string_attribute.value == new_string_value
 
     # utcDateTime attribute
     new_utc_value = datetime(2022, 5, 14, 13, 44, 45, 0, tzinfo=tz.UTC)
     attribute_path = get_attribute_path_principal() + "UtcDateTimeAtt"
-    utc_attribute = session.get_attribute(attribute_path=attribute_path)
+    utc_attribute = session.get_attribute(attribute_path)
     assert new_utc_value != utc_attribute.value
 
-    session.update_simple_attribute(attribute_path=attribute_path, value=new_utc_value)
+    session.update_simple_attribute(attribute_path, new_utc_value)
 
-    utc_attribute = session.get_attribute(attribute_path=attribute_path)
+    utc_attribute = session.get_attribute(attribute_path)
     assert utc_attribute.value == new_utc_value
 
 

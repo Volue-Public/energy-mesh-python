@@ -13,7 +13,7 @@ import grpc
 import pyarrow as pa
 import pytest
 
-from volue.mesh import MeshObjectId, Timeseries
+from volue.mesh import Timeseries
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh._attribute import TimeseriesAttribute
 from volue.mesh._common import AttributesFilter
@@ -32,11 +32,11 @@ async def test_read_timeseries_points_async(async_session):
     timeseries, start_time, end_time, _, full_name = get_timeseries_2()
     try:
         test_case_1 = {"start_time": start_time, "end_time": end_time,
-                       "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                       "target": timeseries.timeseries_key}
         test_case_2 = {"start_time": start_time, "end_time": end_time,
-                       "mesh_object_id": MeshObjectId.with_uuid_id(timeseries.id)}
+                       "target": timeseries.id}
         test_case_3 = {"start_time": start_time, "end_time": end_time,
-                       "mesh_object_id": MeshObjectId.with_full_name(full_name)}
+                       "target": full_name}
 
         test_cases = [test_case_1, test_case_2, test_case_3]
         for test_case in test_cases:
@@ -70,13 +70,13 @@ async def test_read_timeseries_points_with_different_datetime_timezones_async(as
 
     try:
         test_case_naive = {"start_time": start_time, "end_time": end_time,
-                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                           "target": timeseries.timeseries_key}
         test_case_utc = {"start_time": start_time_utc, "end_time": end_time_utc,
-                         "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                         "target": timeseries.timeseries_key}
         test_case_local = {"start_time": start_time_local, "end_time": end_time_local,
-                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                           "target": timeseries.timeseries_key}
         test_case_mixed = {"start_time": start_time_local, "end_time": end_time_utc,
-                           "mesh_object_id": MeshObjectId.with_timskey(timeseries.timeseries_key)}
+                           "target": timeseries.timeseries_key}
 
         test_cases = [test_case_naive, test_case_utc, test_case_local, test_case_mixed]
         for test_case in test_cases:
@@ -119,9 +119,9 @@ async def test_write_timeseries_points_async(async_session):
         timeseries = Timeseries(table=modified_table, start_time=test_case['start_time'], end_time=test_case['end_time'], full_name=full_name)
         try:
             await async_session.write_timeseries_points(timeseries)
-            written_ts = await async_session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, 0, 0),
-                                                              end_time=datetime(2016, 1, 1, 3, 0, 0),
-                                                              mesh_object_id=MeshObjectId.with_uuid_id(ts_entry.id))
+            written_ts = await async_session.read_timeseries_points(target=ts_entry.id,
+                                                                    start_time=datetime(2016, 1, 1, 1, 0, 0),
+                                                                    end_time=datetime(2016, 1, 1, 3, 0, 0))
             assert written_ts.number_of_points == 3
             utc_time = written_ts.arrow_table[0]
             assert utc_time[0].as_py() == datetime(2016, 1, 1, 1, 0, 0)
@@ -167,9 +167,9 @@ async def test_write_timeseries_points_with_different_pyarrow_table_datetime_tim
     timeseries = Timeseries(table=modified_table, start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo), end_time=datetime(2016, 1, 1, 4, tzinfo=some_tzinfo), full_name=full_name)
     try:
         await async_session.write_timeseries_points(timeseries)
-        written_ts = await async_session.read_timeseries_points(start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo),
-                                                               end_time=datetime(2016, 1, 1, 3, tzinfo=some_tzinfo),
-                                                               mesh_object_id=MeshObjectId.with_uuid_id(ts_entry.id))
+        written_ts = await async_session.read_timeseries_points(target=ts_entry.id,
+                                                                start_time=datetime(2016, 1, 1, 1, tzinfo=some_tzinfo),
+                                                                end_time=datetime(2016, 1, 1, 3, tzinfo=some_tzinfo))
         assert written_ts.number_of_points == 3
         utc_time = written_ts.arrow_table[0]
         # Mesh returns timestamps in UTC format, to compare them we need to make both of them either
@@ -250,17 +250,17 @@ async def test_update_timeseries_attribute_with_expression(async_session):
     attribute_path = get_attribute_path_principal() + "TsCalcAtt"
     new_local_expression = "something"
 
-    attribute_id = (await async_session.get_timeseries_attribute(attribute_path=attribute_path)).id
+    attribute_id = (await async_session.get_timeseries_attribute(attribute_path)).id
 
     test_new_local_expression = {"new_local_expression": new_local_expression}
-    test_case_1 = {"attribute_path": attribute_path, **test_new_local_expression}
-    test_case_2 = {"attribute_id": attribute_id, **test_new_local_expression}
+    test_case_1 = {"target": attribute_path, **test_new_local_expression}
+    test_case_2 = {"target": attribute_id, **test_new_local_expression}
     test_cases = [test_case_1, test_case_2]
 
     for test_case in test_cases:
         await async_session.update_timeseries_attribute(**test_case)
 
-        updated_attribute = await async_session.get_timeseries_attribute(attribute_path=attribute_path)
+        updated_attribute = await async_session.get_timeseries_attribute(attribute_path)
         assert updated_attribute.path == attribute_path
         assert updated_attribute.expression == new_local_expression
         assert updated_attribute.is_local_expression == True
@@ -278,21 +278,21 @@ async def test_update_timeseries_attribute_with_timeseries_resource(async_sessio
     attribute_path = get_attribute_path_principal() + "TsRawAtt"
     new_timeseries_resource_key = 2
 
-    attribute_id = (await async_session.get_timeseries_attribute(attribute_path=attribute_path)).id
+    attribute_id = (await async_session.get_timeseries_attribute(attribute_path)).id
 
     test_new_timeseries_resource_key = {"new_timeseries_resource_key": new_timeseries_resource_key}
-    test_case_1 = {"attribute_path": attribute_path, **test_new_timeseries_resource_key}
-    test_case_2 = {"attribute_id": attribute_id, **test_new_timeseries_resource_key}
+    test_case_1 = {"target": attribute_path, **test_new_timeseries_resource_key}
+    test_case_2 = {"target": attribute_id, **test_new_timeseries_resource_key}
     test_cases = [test_case_1, test_case_2]
     for test_case in test_cases:
-        original_attribute = await async_session.get_timeseries_attribute(attribute_path=attribute_path)
+        original_attribute = await async_session.get_timeseries_attribute(attribute_path)
         assert original_attribute.path == attribute_path
         assert original_attribute.time_series_resource is not None
         assert original_attribute.time_series_resource.timeseries_key != new_timeseries_resource_key
 
         await async_session.update_timeseries_attribute(**test_case)
 
-        updated_attribute = await async_session.get_timeseries_attribute(attribute_path=attribute_path)
+        updated_attribute = await async_session.get_timeseries_attribute(attribute_path)
         assert updated_attribute.path == attribute_path
         assert updated_attribute.time_series_resource is not None
         assert updated_attribute.time_series_resource.timeseries_key == new_timeseries_resource_key
@@ -310,15 +310,15 @@ async def test_update_timeseries_attribute_with_disconnect_timeseries_resource(a
     attribute_path = get_attribute_path_principal() + "TsRawAtt"
 
     # first make sure it is connected to some physical time series
-    attribute = await async_session.get_timeseries_attribute(attribute_path=attribute_path)
+    attribute = await async_session.get_timeseries_attribute(attribute_path)
     assert attribute.path == attribute_path
     assert attribute.time_series_resource is not None
 
     # now let's disconnect it
     await async_session.update_timeseries_attribute(
-        attribute_path=attribute_path, new_timeseries_resource_key=0)
+        attribute_path, new_timeseries_resource_key=0)
 
-    attribute = await async_session.get_timeseries_attribute(attribute_path=attribute_path)
+    attribute = await async_session.get_timeseries_attribute(attribute_path)
     assert attribute.path == attribute_path
     assert attribute.time_series_resource is None
 
@@ -334,18 +334,13 @@ async def test_update_timeseries_attribute_with_invalid_request(async_session):
     non_existing_timeseries_key = 123456
 
     # first make sure it is connected to some physical time series
-    attribute = await async_session.get_timeseries_attribute(attribute_path=attribute_path)
+    attribute = await async_session.get_timeseries_attribute(attribute_path)
     assert attribute.path == attribute_path
     assert attribute.time_series_resource is not None
 
     with pytest.raises(grpc.RpcError):
         await async_session.update_timeseries_attribute(
-            attribute_path=attribute_path,
-            new_timeseries_resource_key=non_existing_timeseries_key)
-
-    # if no attribute identifier (ID or path) is provided we should get an error
-    with pytest.raises(ValueError):
-        await async_session.update_timeseries_attribute(
+            attribute_path,
             new_timeseries_resource_key=non_existing_timeseries_key)
 
 
@@ -359,16 +354,16 @@ async def test_search_timeseries_attribute_async(async_session):
 
     try:
         test_case_1 = {"query": query,
-                       "start_object_path": start_object_path,
+                       "target": start_object_path,
                        "full_attribute_info": False}
         test_case_2 = {"query": query,
-                       "start_object_path": start_object_path,
+                       "target": start_object_path,
                        "full_attribute_info": True}
         test_case_3 = {"query": query,
-                       "start_object_id": start_object_guid,
+                       "target": start_object_guid,
                        "full_attribute_info": False}
         test_case_4 = {"query": query,
-                       "start_object_id": start_object_guid,
+                       "target": start_object_guid,
                        "full_attribute_info": True}
         test_cases = [test_case_1, test_case_2, test_case_3, test_case_4]
         for test_case in test_cases:
@@ -408,26 +403,26 @@ async def test_commit(async_connection):
     async with async_connection.create_session() as session1:
         try:
             # check baseline
-            attribute1 = await session1.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute1 = await session1.get_timeseries_attribute(attribute_path)
             old_local_expression = attribute1.expression
             assert old_local_expression != new_local_expression
 
             # change something
             await session1.update_timeseries_attribute(
-                attribute_path=attribute_path, new_local_expression=new_local_expression)
+                attribute_path, new_local_expression=new_local_expression)
 
             # commit
             await session1.commit()
 
             # check that the change is in the session
-            attribute2 = await session1.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute2 = await session1.get_timeseries_attribute(attribute_path)
             assert attribute2.expression == new_local_expression
 
             # rollback
             await session1.rollback()
 
             # check that changes are still there
-            attribute3 = await session1.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute3 = await session1.get_timeseries_attribute(attribute_path)
             assert attribute3.expression == new_local_expression
 
         except grpc.RpcError as error:
@@ -436,18 +431,18 @@ async def test_commit(async_connection):
     async with async_connection.create_session() as session2:
         try:
             # check that the change is still there
-            attribute4 = await session2.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute4 = await session2.get_timeseries_attribute(attribute_path)
             assert attribute4.expression == new_local_expression
 
             # change it back to what is was originally
             await session2.update_timeseries_attribute(
-                attribute_path=attribute_path, new_local_expression=old_local_expression)
+                attribute_path, new_local_expression=old_local_expression)
 
             # commit
             await session2.commit()
 
             # check that status has been restored (important to keep db clean)
-            attribute5 = await session2.get_timeseries_attribute(attribute_path=attribute_path)
+            attribute5 = await session2.get_timeseries_attribute(attribute_path)
             assert attribute5.expression == old_local_expression
 
         except grpc.RpcError as error:
@@ -519,7 +514,7 @@ async def test_read_transformed_timeseries_points(
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = await async_session.transform_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).transform(
+        full_name, start_time, end_time).transform(
             resolution, method, timezone)
 
     assert reply_timeseries.is_calculation_expression_result
@@ -586,15 +581,15 @@ async def test_read_transformed_timeseries_points_with_uuid(async_session):
     # first read timeseries UUID (it is set dynamically)
     timeseries = await async_session.read_timeseries_points(start_time=start_time,
                                                             end_time=end_time,
-                                                            mesh_object_id=MeshObjectId.with_full_name(full_name))
+                                                            target=full_name)
     ts_uuid = timeseries.uuid
 
     reply_timeseries_full_name = await async_session.transform_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).transform(
+        full_name, start_time, end_time).transform(
             Timeseries.Resolution.MIN15, transform.Method.SUM)
 
     reply_timeseries_uuid = await async_session.transform_functions(
-        MeshObjectId(uuid_id=ts_uuid), start_time, end_time).transform(
+        full_name, start_time, end_time).transform(
             Timeseries.Resolution.MIN15, transform.Method.SUM)
 
     assert reply_timeseries_full_name.is_calculation_expression_result == reply_timeseries_uuid.is_calculation_expression_result
@@ -602,20 +597,6 @@ async def test_read_transformed_timeseries_points_with_uuid(async_session):
 
     for column_index in range(0, 3):
         assert reply_timeseries_full_name.arrow_table[column_index] == reply_timeseries_uuid.arrow_table[column_index]
-
-
-@pytest.mark.asyncio
-@pytest.mark.database
-async def test_read_timeseries_points_without_specifying_timeseries_should_throw(async_session):
-    """
-    Check that expected exception is thrown when trying to
-    read timeseries without specifying timeseries (by full_name, timskey or uuid_id).
-    """
-    start_time = datetime(2016, 1, 1, 1, 0, 0)
-    end_time = datetime(2016, 1, 1, 9, 0, 0)
-
-    with pytest.raises(TypeError, match=".*need to specify either timskey, uuid_id or full_name.*"):
-        await async_session.read_timeseries_points(start_time, end_time, MeshObjectId())
 
 
 @pytest.mark.asyncio
@@ -630,7 +611,7 @@ async def test_forecast_get_all_forecasts(async_session):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = await async_session.forecast_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_all_forecasts()
+        full_name, start_time, end_time).get_all_forecasts()
     assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
 
 
@@ -653,7 +634,7 @@ async def test_forecast_get_forecast(async_session, forecast_start, available_at
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = await async_session.forecast_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_forecast(
+        full_name, start_time, end_time).get_forecast(
             forecast_start_min, forecast_start_max, available_at_timepoint)
     assert reply_timeseries.is_calculation_expression_result
 
@@ -671,7 +652,7 @@ async def test_history_get_ts_as_of_time(async_session):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = await async_session.history_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_ts_as_of_time(
+        full_name, start_time, end_time).get_ts_as_of_time(
             available_at_timepoint)
     assert reply_timeseries.is_calculation_expression_result
 
@@ -690,7 +671,7 @@ async def test_history_get_ts_historical_versions(async_session, max_number_of_v
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = await async_session.history_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).get_ts_historical_versions(
+        full_name, start_time, end_time).get_ts_historical_versions(
             max_number_of_versions_to_get)
     assert isinstance(reply_timeseries, List) and len(reply_timeseries) == 0
 
@@ -707,7 +688,7 @@ async def test_statistical_sum(async_session):
     _, full_name = get_timeseries_attribute_2()
 
     reply_timeseries = await async_session.statistical_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).sum(search_query='some_query')
+        full_name, start_time, end_time).sum(search_query='some_query')
     assert reply_timeseries.is_calculation_expression_result
 
 
@@ -722,7 +703,7 @@ async def test_statistical_sum_single_timeseries(async_session):
     _, full_name = get_timeseries_attribute_2()
 
     result = await async_session.statistical_functions(
-        MeshObjectId(full_name=full_name), start_time, end_time).sum_single_timeseries()
+        full_name, start_time, end_time).sum_single_timeseries()
     assert isinstance(result, float) and result == 41.0
 
 
@@ -735,7 +716,7 @@ async def test_get_object(async_session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 
-    object = await async_session.get_object(object_path=object_path)
+    object = await async_session.get_object(object_path)
     assert object.name == "SomePowerPlant1"
     assert object.path == object_path
     assert object.type_name == "PlantElementType"
@@ -759,7 +740,7 @@ async def test_get_object_with_full_attribute_info(async_session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 
-    object = await async_session.get_object(object_path=object_path, full_attribute_info=True)
+    object = await async_session.get_object(object_path, full_attribute_info=True)
     for attribute in object.attributes.values():
         assert attribute.name is not None
         assert attribute.path is not None
@@ -781,7 +762,7 @@ async def test_get_object_with_attributes_filter_with_name_mask(async_session):
     attributes_filter = AttributesFilter(name_mask=["StringAtt", "BoolArrayAtt"])
 
     object = await async_session.get_object(
-        object_path=object_path, attributes_filter=attributes_filter)
+        object_path, attributes_filter=attributes_filter)
 
     assert object.attributes['StringAtt'] is not None
     assert object.attributes['BoolArrayAtt'] is not None
@@ -798,7 +779,7 @@ async def test_get_object_with_attributes_filter_with_non_existing_masks(async_s
     attributes_filter = AttributesFilter(namespace_mask=["NON_EXISTING"])
 
     object = await async_session.get_object(
-        object_path=object_path, attributes_filter=attributes_filter)
+        object_path, attributes_filter=attributes_filter)
     assert len(object.attributes) == 0
 
 
@@ -813,7 +794,7 @@ async def test_get_object_with_attributes_filter_with_return_no_attributes(async
     attributes_filter = AttributesFilter(return_no_attributes=True)
 
     object = await async_session.get_object(
-        object_path=object_path, attributes_filter=attributes_filter)
+        object_path, attributes_filter=attributes_filter)
     assert len(object.attributes) == 0
 
 
@@ -826,7 +807,7 @@ async def test_search_objects(async_session):
     start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
     query = "*[.Type=ChimneyElementType]"
 
-    objects = await async_session.search_for_objects(query, start_object_path=start_object_path)
+    objects = await async_session.search_for_objects(start_object_path, query)
     assert len(objects) == 2
 
     for object in objects:
@@ -843,11 +824,11 @@ async def test_create_object(async_session):
     owner_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef"
     new_object_name = "SomeNewPowerPlantChimney"
 
-    new_object = await async_session.create_object(name=new_object_name, owner_attribute_path=owner_attribute_path)
+    new_object = await async_session.create_object(owner_attribute_path, new_object_name)
     assert new_object.name == new_object_name
     assert new_object.path == f"{owner_attribute_path}/{new_object_name}"
 
-    object = await async_session.get_object(object_id=new_object.id)
+    object = await async_session.get_object(new_object.id)
     assert new_object.name == object.name
     assert new_object.path == object.path
     assert new_object.type_name == object.type_name
@@ -866,13 +847,13 @@ async def test_update_object(async_session):
     new_object_name = "SomeNewPowerPlantChimney"
 
     await async_session.update_object(
-        object_path=object_to_update_path,
+        object_to_update_path,
         new_name=new_object_name,
-        new_owner_attribute_path=new_owner_attribute_path)
+        new_owner_attribute=new_owner_attribute_path)
 
     new_object_path = f"{new_owner_attribute_path}/{new_object_name}"
 
-    object = await async_session.get_object(object_path=new_object_path)
+    object = await async_session.get_object(new_object_path)
     assert object.name == new_object_name
     assert object.path == new_object_path
     assert object.owner_path == new_owner_attribute_path
@@ -886,9 +867,9 @@ async def test_delete_object(async_session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2"
 
-    await async_session.delete_object(object_path=object_path)
+    await async_session.delete_object(object_path)
     with pytest.raises(grpc.RpcError, match=r"Object not found:"):
-        await async_session.get_object(object_path=object_path)
+        await async_session.get_object(object_path)
 
 
 @pytest.mark.asyncio
@@ -899,9 +880,9 @@ async def test_recursive_delete_object(async_session):
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 
-    await async_session.delete_object(object_path=object_path, recursive_delete=True)
+    await async_session.delete_object(object_path, recursive_delete=True)
     with pytest.raises(grpc.RpcError, match=r"Object not found:"):
-        await async_session.get_object(object_path=object_path)
+        await async_session.get_object(object_path)
 
 
 @pytest.mark.asyncio
@@ -914,7 +895,7 @@ async def test_get_bool_array_attribute(async_session):
     bool_array_att_path = get_attribute_path_principal() + attribute_name
     bool_array_values = [False, True, False, True, False]
 
-    attribute = await async_session.get_attribute(attribute_path=bool_array_att_path, full_attribute_info=True)
+    attribute = await async_session.get_attribute(bool_array_att_path, full_attribute_info=True)
     assert attribute.path == bool_array_att_path
     assert attribute.name == attribute_name
     assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
@@ -938,7 +919,7 @@ async def test_get_xy_set_attribute(async_session):
     attribute_name = "XYSetAtt"
     xySetAttPath = get_attribute_path_principal() + attribute_name
 
-    attribute = await async_session.get_attribute(attribute_path=xySetAttPath, full_attribute_info=True)
+    attribute = await async_session.get_attribute(xySetAttPath, full_attribute_info=True)
     assert attribute.path == xySetAttPath
     assert attribute.name == attribute_name
     assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
@@ -963,7 +944,7 @@ async def test_get_utc_time_attribute(async_session):
     # your UtcDateTimeAtt in SimpleThermalModel should be populated with this value
     utc_time_value = datetime(2022, 5, 10, 7, 24, 15, tzinfo=tz.UTC)
 
-    attribute = await async_session.get_attribute(attribute_path=utc_date_time_att_path, full_attribute_info=True)
+    attribute = await async_session.get_attribute(utc_date_time_att_path, full_attribute_info=True)
     assert attribute.value == utc_time_value
     assert attribute.path == utc_date_time_att_path
     assert attribute.name == attribute_name
@@ -989,13 +970,13 @@ async def test_get_boolean_attribute(async_session):
     attribute_name = "BoolAtt"
     bool_attribute_path = get_attribute_path_principal() + attribute_name
 
-    attribute = await async_session.get_attribute(attribute_path=bool_attribute_path, full_attribute_info=False)
+    attribute = await async_session.get_attribute(bool_attribute_path, full_attribute_info=False)
     bool_attribute_id = attribute.id
     assert attribute.path == bool_attribute_path
     assert attribute.name == attribute_name
     assert attribute.value == True
     # now check if get by id succeeds as well
-    attribute = await async_session.get_attribute(attribute_id=bool_attribute_id, full_attribute_info=True)
+    attribute = await async_session.get_attribute(bool_attribute_id, full_attribute_info=True)
     assert attribute.path == bool_attribute_path
     assert attribute.name == attribute_name
     assert attribute.value == True
@@ -1043,7 +1024,7 @@ async def test_get_calc_time_series_attribute(async_session):
     attribute_path = get_attribute_path_principal() + attribute_name
     is_local_expression = False
 
-    attribute = await async_session.get_attribute(attribute_path=attribute_path, full_attribute_info=True)
+    attribute = await async_session.get_attribute(attribute_path, full_attribute_info=True)
     verify_time_series_calculation_attribute(attribute=attribute, attribute_info=tuple((expression, is_local_expression)), attribute_name=attribute_name)
 
 
@@ -1057,9 +1038,9 @@ async def test_get_physical_time_series_attribute(async_session):
     attribute_path = get_attribute_path_principal() + attribute_name
 
     base_attribute = await async_session.get_attribute(
-        attribute_path=attribute_path, full_attribute_info=True)
+        attribute_path, full_attribute_info=True)
     timeseries_attribute = await async_session.get_timeseries_attribute(
-        attribute_path=attribute_path, full_attribute_info=True)
+        attribute_path, full_attribute_info=True)
 
     for attribute in [base_attribute, timeseries_attribute]:
         verify_plant_timeseries_attribute(attribute)
@@ -1077,7 +1058,7 @@ async def test_get_string_attribute(async_session):
     default_string_value = "Default string value"
 
     attribute = await async_session.get_attribute(
-        attribute_path=str_attribute_path, full_attribute_info=True)
+        str_attribute_path, full_attribute_info=True)
     assert attribute.path == str_attribute_path
     assert attribute.name == attribute_name
     assert attribute.value == default_string_value
@@ -1119,7 +1100,7 @@ async def test_get_double_attribute(async_session):
     attribute_name = "DblAtt"
     dbl_attribute_path = get_attribute_path_principal() + attribute_name
 
-    attribute = await async_session.get_attribute(attribute_path=dbl_attribute_path, full_attribute_info=True)
+    attribute = await async_session.get_attribute(dbl_attribute_path, full_attribute_info=True)
     verify_double_attribute(attribute=attribute, dbl_attribute_path=dbl_attribute_path, attribute_name=attribute_name)
 
 
@@ -1132,7 +1113,7 @@ async def test_get_rating_curve_attribute(async_session):
     attribute_name = "RatingCurveAtt"
     attribute_path = get_attribute_path_principal() + attribute_name
 
-    attribute = await async_session.get_attribute(attribute_path=attribute_path, full_attribute_info=True)
+    attribute = await async_session.get_attribute(attribute_path, full_attribute_info=True)
     verify_plant_base_attribute(attribute, path=attribute_path, name=attribute_name)
     assert attribute.definition.minimum_cardinality == 1
     assert attribute.definition.maximum_cardinality == 1
@@ -1160,8 +1141,8 @@ async def test_search_multiple_attributes(async_session):
     query = "*[.Name=SomePowerPlant1]." + ",".join(attributes_names)
 
     attributes = await async_session.search_for_attributes(
+        target=start_object_path,
         query=query,
-        start_object_path=start_object_path,
         full_attribute_info=True)
     assert len(attributes) == len(attributes_names)
     for attribute in attributes:
@@ -1184,8 +1165,8 @@ async def test_search_with_absent_attribute(async_session):
     dbl_attribute_path = get_attribute_path_principal() + attributes_names[0]
 
     attributes = await async_session.search_for_attributes(
+        target=start_object_path,
         query=query,
-        start_object_path=start_object_path,
         full_attribute_info=True)
     assert len(attributes) == 1
     verify_double_attribute(attribute=attributes[0], dbl_attribute_path=dbl_attribute_path, attribute_name=attributes_names[0])
@@ -1194,15 +1175,12 @@ async def test_search_with_absent_attribute(async_session):
 async def update_double_attribute(session: AsyncConnection.Session, new_double_value):
     attribute_path = get_attribute_path_principal() + "DblAtt"
 
-    double_attribute = await session.get_attribute(attribute_path=attribute_path)
+    double_attribute = await session.get_attribute(attribute_path)
     assert not math.isclose(new_double_value, double_attribute.value)
 
-    await session.update_simple_attribute(
-        attribute_path=attribute_path,
-        value=new_double_value
-    )
+    await session.update_simple_attribute(attribute_path, new_double_value)
 
-    double_attribute = await session.get_attribute(attribute_path=attribute_path)
+    double_attribute = await session.get_attribute(attribute_path)
     assert math.isclose(new_double_value, double_attribute.value)
 
 
@@ -1216,18 +1194,14 @@ async def test_update_simple_attribute_invalid_request(async_session):
     attribute_path = get_attribute_path_principal() + "BoolArrayAtt"
 
     # boolean array attribute, wrong value type and dimension
-    array_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    array_attribute = await async_session.get_attribute(attribute_path)
     original_values = array_attribute.value
 
     with pytest.raises(grpc.RpcError):
-        await async_session.update_simple_attribute(attribute_path=attribute_path, value=7)
+        await async_session.update_simple_attribute(attribute_path, value=7)
 
-    array_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    array_attribute = await async_session.get_attribute(attribute_path)
     assert array_attribute.value == original_values
-
-    # if no attribute identifier (ID or path) is provided we should get an error
-    with pytest.raises(ValueError):
-        await async_session.update_simple_attribute(value=7)
 
 
 @pytest.mark.asyncio
@@ -1241,12 +1215,12 @@ async def test_update_simple_array_attribute(async_session):
     #boolean array attribute
     new_boolean_array_values = [False, False, True, False, False]
 
-    array_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    array_attribute = await async_session.get_attribute(attribute_path)
     assert array_attribute.value != new_boolean_array_values
 
-    await async_session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_array_values)
+    await async_session.update_simple_attribute(attribute_path, new_boolean_array_values)
 
-    array_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    array_attribute = await async_session.get_attribute(attribute_path)
     assert array_attribute.value == new_boolean_array_values
 
 
@@ -1262,45 +1236,45 @@ async def test_update_single_simple_attribute(async_session):
     # int attribute
     new_int_value = 69
     attribute_path = get_attribute_path_principal() + "Int64Att"
-    int_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    int_attribute = await async_session.get_attribute(attribute_path)
     assert new_int_value != int_attribute.value
 
-    await async_session.update_simple_attribute(attribute_path=attribute_path, value=new_int_value)
+    await async_session.update_simple_attribute(attribute_path, new_int_value)
 
-    int_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    int_attribute = await async_session.get_attribute(attribute_path)
     assert int_attribute.value == new_int_value
 
     # boolean attribute
     new_boolean_value = False
     attribute_path = get_attribute_path_principal() + "BoolAtt"
-    boolean_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    boolean_attribute = await async_session.get_attribute(attribute_path)
     assert new_boolean_value != boolean_attribute.value
 
-    await async_session.update_simple_attribute(attribute_path=attribute_path, value=new_boolean_value)
+    await async_session.update_simple_attribute(attribute_path, new_boolean_value)
 
-    boolean_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    boolean_attribute = await async_session.get_attribute(attribute_path)
     assert boolean_attribute.value == new_boolean_value
 
     # string attribute
     new_string_value = "my test string attribute value"
     attribute_path = get_attribute_path_principal() + "StringAtt"
-    string_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    string_attribute = await async_session.get_attribute(attribute_path)
     assert new_string_value != string_attribute.value
 
-    await async_session.update_simple_attribute(attribute_path=attribute_path, value=new_string_value)
+    await async_session.update_simple_attribute(attribute_path, new_string_value)
 
-    string_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    string_attribute = await async_session.get_attribute(attribute_path)
     assert string_attribute.value == new_string_value
 
     # utcDateTime attribute
     new_utc_value = datetime(2022, 5, 14, 13, 44, 45, 0, tzinfo=tz.UTC)
     attribute_path = get_attribute_path_principal() + "UtcDateTimeAtt"
-    utc_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    utc_attribute = await async_session.get_attribute(attribute_path)
     assert new_utc_value != utc_attribute.value
 
-    await async_session.update_simple_attribute(attribute_path=attribute_path, value=new_utc_value)
+    await async_session.update_simple_attribute(attribute_path, new_utc_value)
 
-    utc_attribute = await async_session.get_attribute(attribute_path=attribute_path)
+    utc_attribute = await async_session.get_attribute(attribute_path)
     assert utc_attribute.value == new_utc_value
 
 

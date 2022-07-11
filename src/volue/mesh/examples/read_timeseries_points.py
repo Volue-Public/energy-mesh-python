@@ -4,7 +4,7 @@ Example showing how to read time series
 
 import uuid
 from datetime import datetime
-from volue.mesh import Connection, MeshObjectId
+from volue.mesh import Connection
 from volue.mesh.examples import _get_connection_info
 
 
@@ -21,17 +21,17 @@ def read_timeseries_points(session: Connection.Session):
     end = datetime(2016, 1, 1, 8, 0, 0)
 
     # Send request to read timeseries based on path
-    timeseries = session.read_timeseries_points(start_time=start,
-                                                end_time=end,
-                                                mesh_object_id=MeshObjectId.with_full_name(timeseries_full_name))
+    timeseries = session.read_timeseries_points(target=timeseries_full_name,
+                                                start_time=start,
+                                                end_time=end)
     print(f"Read {timeseries.number_of_points} points")
 
     # OR
 
     # Send request to read timeseries based on guid
-    timeseries = session.read_timeseries_points(start_time=start,
-                                                end_time=end,
-                                                mesh_object_id=MeshObjectId.with_uuid_id(timeseries_id))
+    timeseries = session.read_timeseries_points(target=timeseries_id,
+                                                start_time=start,
+                                                end_time=end)
     print(f"Read {timeseries.number_of_points} points")
 
 
