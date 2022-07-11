@@ -1206,11 +1206,6 @@ def use_case_21():
 
             # First read the attribute using `get_attribute`.
             # We can get standard information like name, ID, tags, etc.
-            # The only rating curve attribute specific value is the
-            # `definition_name`, which is the name of a RatingCurveDefinition
-            # structure, where all rating curve versions are stored. It is
-            # defined on the model level (not model definition), so this is not
-            # the same as the name of definition from AttributeDefinition.
             rating_curve_attribute = session.get_attribute(
                 attribute_path, full_attribute_info=True)
             print(f"Basic information about the rating curve attribute:\n{rating_curve_attribute}\n")
