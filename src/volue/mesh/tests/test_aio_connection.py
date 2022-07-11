@@ -1117,7 +1117,6 @@ async def test_get_rating_curve_attribute(async_session):
     verify_plant_base_attribute(attribute, path=attribute_path, name=attribute_name)
     assert attribute.definition.minimum_cardinality == 1
     assert attribute.definition.maximum_cardinality == 1
-    assert attribute.definition_name == "TestRatingCurveDefinition"
 
 
 @pytest.mark.asyncio

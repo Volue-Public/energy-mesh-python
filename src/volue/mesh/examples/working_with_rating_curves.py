@@ -16,11 +16,6 @@ def main(address, port, tls_root_cert):
 
         # First read the attribute using `get_attribute`.
         # We can get standard information like name, ID, tags, etc.
-        # Only rating curve attribute specific value is the
-        # `definition_name`, which is the name of a RatingCurveDefinition
-        # structure, where all rating curve versions are stored. It is
-        # defined on the model level (not model definition), so this is not
-        # the same as the name of definition from AttributeDefinition.
         rating_curve_attribute = session.get_attribute(
             rating_curve_attribute_path, full_attribute_info=True)
         print(f"Basic information about the rating curve attribute: {rating_curve_attribute}\n")

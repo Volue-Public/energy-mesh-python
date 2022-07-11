@@ -249,4 +249,3 @@ def verify_plant_base_attribute(attribute: AttributeBase, path: str, name: str):
     assert attribute.definition.description == ""
     assert len(attribute.definition.tags) == 0
     assert attribute.definition.namespace == "SimpleThermalTestRepository"
-    assert attribute.definition.value_type == "RatingCurveAttributeDefinition"
