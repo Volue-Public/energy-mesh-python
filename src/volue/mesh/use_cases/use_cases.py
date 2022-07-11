@@ -1212,7 +1212,7 @@ def use_case_21():
             # defined on the model level (not model definition), so this is not
             # the same as the name of definition from AttributeDefinition.
             rating_curve_attribute = session.get_attribute(
-                attribute_path=attribute_path, full_attribute_info=True)
+                attribute_path, full_attribute_info=True)
             print(f"Basic information about the rating curve attribute:\n{rating_curve_attribute}\n")
 
             # Because the rating curve can potentially contain large amounts of data,
@@ -1224,7 +1224,7 @@ def use_case_21():
 
             print((
                 f"There is/are {len(versions)} rating curve version(s) for the time interval: "
-                f"{start.strftime('%d.%m.%Y')} - {end.strftime('%d.%m.%Y')}:\n"
+                f"{start:%d.%m.%Y} - {end:%d.%m.%Y}:\n"
             ))
             for i, version in enumerate(versions):
                 print(f'Version {i+1}:\n{version}')
