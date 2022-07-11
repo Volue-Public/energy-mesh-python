@@ -293,7 +293,7 @@
 
 <span class="sd">            .. code-block:: python</span>
 
-<span class="sd">                forecast_funcs = session.forecast_functions(MeshObjectId(full_name=full_name), start_time, end_time)</span>
+<span class="sd">                forecast_funcs = session.forecast_functions(full_name, start_time, end_time)</span>
 <span class="sd">                result = forecast_funcs.get_forecast(available_at_timepoint)</span>
 
 <span class="sd">            .. image:: images/calc_get_forecast_writetime.png</span>
@@ -306,7 +306,7 @@
 
 <span class="sd">            .. code-block:: python</span>
 
-<span class="sd">                forecast_funcs = session.forecast_functions(MeshObjectId(full_name=full_name), start_time, end_time)</span>
+<span class="sd">                forecast_funcs = session.forecast_functions(full_name, start_time, end_time)</span>
 <span class="sd">                result = forecast_funcs.get_forecast(forecast_start_min, forecast_start_max)</span>
 
 <span class="sd">            .. image:: images/calc_get_forecast_interval.png</span>

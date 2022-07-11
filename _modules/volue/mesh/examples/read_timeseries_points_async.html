@@ -174,7 +174,6 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">MeshObjectId</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
@@ -193,10 +192,10 @@
 
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
     <span class="n">full_name_timeseries</span><span class="p">,</span> <span class="n">id_timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-                                       <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_full_name</span><span class="p">(</span><span class="n">timeseries_full_name</span><span class="p">)),</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-                                       <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_uuid_id</span><span class="p">(</span><span class="n">timeseries_id</span><span class="p">))</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">),</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using id contains </span><span class="si">{</span><span class="n">full_name_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using full name contains </span><span class="si">{</span><span class="n">id_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>

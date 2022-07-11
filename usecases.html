@@ -227,10 +227,10 @@ $ python -m pip install matplotlib
 <span class="c1"># Use matplotlib to visualize results</span>
 <span class="n">SHOW_PLOT</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="c1"># Save time series to CSV file</span>
-<span class="n">SAVE_TO_CSV</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">SAVE_TO_CSV</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="c1"># Some use cases write new points or update existing objects</span>
 <span class="c1"># Set this flag to True to commit the changes (made in use cases) to Mesh</span>
-<span class="n">COMMIT_CHANGES</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">COMMIT_CHANGES</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="c1"># Which use case to run</span>
 <span class="c1"># [&#39;all&#39;, &#39;flow_drop_2&#39;, &#39;flow_drop_3&#39;, &#39;1&#39; ... &#39;&lt;number_of_use_cases&gt;&#39;]</span>
 <span class="n">RUN_USE_CASE</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
@@ -276,15 +276,15 @@ First the scenario is explained and needed information is given. Then a connecti
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">)</span>
 
             <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-                <span class="n">start_object_id</span><span class="o">=</span><span class="n">start_object_guid</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">search_query</span><span class="p">)</span>
+                <span class="n">start_object_guid</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Search resulted in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2"> object(s) that match(es) the search criteria: </span><span class="si">{</span><span class="n">search_query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># Retrieve time series points connected to the found time series attributes</span>
             <span class="n">path_and_pandas_dataframe</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">number</span><span class="p">,</span> <span class="n">timeseries_attribute</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">):</span>
-                <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                                                            <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
-                                                            <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_uuid_id</span><span class="p">(</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                                            <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                                                            <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">number</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">. </span><span class="se">\n</span><span class="s2">&quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;-----</span><span class="se">\n</span><span class="s2">&quot;</span>
                       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

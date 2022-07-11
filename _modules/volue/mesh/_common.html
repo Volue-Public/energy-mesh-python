@@ -177,7 +177,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">field_mask_pb2</span><span class="p">,</span> <span class="n">timestamp_pb2</span>
@@ -293,11 +293,11 @@
     <span class="sd">&quot;&quot;&quot;Represents a Mesh server user identity.</span>
 
 <span class="sd">    display_name - a human readable name identifying this user. This name</span>
-<span class="sd">    should not be used as an unique identifier for the user as it may be</span>
+<span class="sd">    should not be used as a unique identifier for the user as it may be</span>
 <span class="sd">    identical  between users and change over time.</span>
 
 <span class="sd">    source - security package name where the user identity came from.</span>
-<span class="sd">    It is not an unique identifier of the security package instance.</span>
+<span class="sd">    It is not a unique identifier of the security package instance.</span>
 
 <span class="sd">    identifier - uniquely identifies the user within given `source` instance, but</span>
 <span class="sd">    not necessarily globally. Combining `source` and `identifier` does not guarantee</span>
@@ -345,55 +345,6 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">version</span><span class="o">=</span><span class="n">proto_version_info</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">proto_version_info</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="MeshObjectId"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">MeshObjectId</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;`MeshObjectId` represents a unique way of identifying a Mesh object.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        timskey (int): integer that only applies to a specific physical or virtual time series</span>
-<span class="sd">        uuid_id (uuid.UUID): Universal Unique Identifier for Mesh objects</span>
-<span class="sd">        full_name (str): path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
-<span class="sd">          See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-
-<div class="viewcode-block" id="MeshObjectId.with_timskey"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId.with_timskey">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_timskey</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">timskey</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using a timskey of a Mesh object</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            timskey: integer that only applies to a specific physical or</span>
-<span class="sd">              virtual time series</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">timskey</span>
-        <span class="k">return</span> <span class="n">mesh_object_id</span></div>
-
-<div class="viewcode-block" id="MeshObjectId.with_uuid_id"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId.with_uuid_id">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_uuid_id</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using an uuid of a Mesh object</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            uuid_id: Universal Unique Identifier for Mesh objects</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">uuid_id</span> <span class="o">=</span> <span class="n">uuid_id</span>
-        <span class="k">return</span> <span class="n">mesh_object_id</span></div>
-
-<div class="viewcode-block" id="MeshObjectId.with_full_name"><a class="viewcode-back" href="../../../api.html#volue.mesh.MeshObjectId.with_full_name">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_full_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a `MeshObjectId` using full_name of a Mesh object</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            full_name: path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
-<span class="sd">              See: :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mesh_object_id</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">mesh_object_id</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
-        <span class="k">return</span> <span class="n">mesh_object_id</span></div></div>
 
 
 <div class="viewcode-block" id="XyCurve"><a class="viewcode-back" href="../../../api.html#volue.mesh.XyCurve">[docs]</a><span class="nd">@dataclass</span>
@@ -613,35 +564,55 @@
     <span class="n">writer</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">)</span>
     <span class="n">buffer</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
 
-    <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">_to_proto_mesh_id</span><span class="p">(</span>
-        <span class="nb">id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span><span class="p">),</span>
-        <span class="n">path</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span><span class="p">,</span>
-        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span><span class="p">)</span>
-
     <span class="n">proto_timeseries</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span>
-        <span class="nb">id</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">_to_proto_mesh_id_from_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">),</span>
         <span class="n">resolution</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">resolution</span><span class="p">,</span>
         <span class="n">interval</span><span class="o">=</span><span class="n">_to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
         <span class="n">data</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">to_pybytes</span><span class="p">()</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">proto_timeseries</span>
 
-
-
-<span class="k">def</span> <span class="nf">_to_proto_mesh_id</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_to_proto_mesh_id_from_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
     <span class="n">proto_mesh_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="nb">id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
-    <span class="k">if</span> <span class="n">timeseries_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">timeseries_key</span>
+    <span class="k">if</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span>
+    <span class="k">if</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span>
 
-    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeseries_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;need to specify either path, id or time series key&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to specify either path, id or time series key&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">proto_mesh_id</span>
+
+<span class="k">def</span> <span class="nf">_to_proto_attribute_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Accepts attribute identifiers: path and ID as input.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_to_proto_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">accept_time_series_key</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Accepts object identifiers: path and ID as input.&quot;&quot;&quot;</span>
+    <span class="c1"># For now it is the same as _to_proto_attribute_mesh_id,</span>
+    <span class="c1"># will be useful for:</span>
+    <span class="c1"># https://github.com/PowelAS/sme-mesh-python/issues/267</span>
+    <span class="k">return</span> <span class="n">_to_proto_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">accept_time_series_key</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_to_proto_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">accept_time_series_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Accepts path, ID and time series key as input.&quot;&quot;&quot;</span>
+    <span class="n">proto_mesh_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">target</span>
+    <span class="k">elif</span> <span class="n">accept_time_series_key</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">target</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">accept_time_series_key</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to provide either path (as str), ID (as uuid.UUID) or time series key (as int)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to provide either path (as str) or ID (as uuid.UUID)&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">proto_mesh_id</span>
 

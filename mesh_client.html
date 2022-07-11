@@ -298,7 +298,7 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">MeshObjectId</span><span class="p">,</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
@@ -315,7 +315,7 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
         <span class="c1"># first lets find a time series in our model</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-                <span class="n">query</span><span class="p">,</span> <span class="n">start_object_path</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">)</span>
+                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -372,7 +372,7 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
 
             <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span> <span class="n">mesh_object_id</span><span class="o">=</span><span class="n">MeshObjectId</span><span class="o">.</span><span class="n">with_full_name</span><span class="p">(</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
             <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
@@ -403,7 +403,7 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="c1"># If you are using `LOCAL` or `STANDARD` time zone then make sure</span>
             <span class="c1"># the Mesh server is operating in the same time zone or adjust properly.</span>
             <span class="n">transformed_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
-                <span class="n">MeshObjectId</span><span class="p">(</span><span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+                <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
                     <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
