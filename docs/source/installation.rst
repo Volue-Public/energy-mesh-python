@@ -147,7 +147,7 @@ Setup for developers
     Before committing your changes and creating a Pull Request to Python SDK
     repository make sure the code is correctly formatted, by running::
 
-        poetry run black src\volue\mesh
+        poetry run black .
 
     Most IDEs have options to automate the usage of auto formatters like
     *Black*, e.g.: the formatting can be executed on file save, so you don't
