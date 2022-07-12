@@ -1382,11 +1382,15 @@ for the curve. For <cite>x &lt; x_range_from</cite> for the given version the
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table:</span> <span class="pre">pyarrow.lib.Table</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution:</span> <span class="pre">volue.mesh._timeseries.Timeseries.Resolution</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time:</span> <span class="pre">datetime.datetime</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timskey:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid_id:</span> <span class="pre">&lt;module</span> <span class="pre">'uuid'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/uuid.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a mesh timeserie.</p>
+<dd><p>Represents a Mesh time series.</p>
 <p>Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
 Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
 Flags
 Value is the actual data for the given timestamp.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="timeseries.html"><span class="doc">Time series</span></a></p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.Curve">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries.Curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries.Curve" title="Permalink to this definition">¶</a></dt>
@@ -1427,18 +1431,12 @@ It specifies how the values are laid out relative to each other.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PointFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_timeseries.html#Timeseries.PointFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags" title="Permalink to this definition">¶</a></dt>
-<dd><p>Information about certain action that has been performed on the values and the state.</p>
-<p>32 bit flag setting the status for the point. There are many more options than the ones exposed here.</p>
+<dd><p>Information about certain action that has been performed on the values
+and the state. It is 32 bit flag setting the status for the point. Enum
+values could be used in combination (logical “OR”), e.g.:
+flag = MISSING | SUSPECT</p>
+<p>There are more options than the ones exposed here.</p>
 <p>Default is OK = 0.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>OK</strong> (<em>enum</em>) – </p></li>
-<li><p><strong>MISSING</strong> (<em>enum</em>) – </p></li>
-<li><p><strong>NOT_OK</strong> (<em>enum</em>) – </p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags.MISSING">
 <span class="sig-name descname"><span class="pre">MISSING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67108864</span></em><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags.MISSING" title="Permalink to this definition">¶</a></dt>
@@ -1452,6 +1450,11 @@ It specifies how the values are laid out relative to each other.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags.OK">
 <span class="sig-name descname"><span class="pre">OK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags.OK" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Timeseries.PointFlags.SUSPECT">
+<span class="sig-name descname"><span class="pre">SUSPECT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33554432</span></em><a class="headerlink" href="#volue.mesh.Timeseries.PointFlags.SUSPECT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

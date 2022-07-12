@@ -177,17 +177,20 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
 
 
 <div class="viewcode-block" id="Timeseries"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries">[docs]</a><span class="k">class</span> <span class="nc">Timeseries</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a mesh timeserie.</span>
+    <span class="sd">&quot;&quot;&quot;Represents a Mesh time series.</span>
 
 <span class="sd">    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)</span>
 <span class="sd">    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)</span>
 <span class="sd">    Flags</span>
 <span class="sd">    Value is the actual data for the given timestamp.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        :doc:`timeseries`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Timeseries.Curve"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Curve">[docs]</a>    <span class="k">class</span> <span class="nc">Curve</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -232,20 +235,30 @@
 
 <div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span> <span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Information about certain action that has been performed on the values and the state.</span>
+<span class="sd">        Information about certain action that has been performed on the values</span>
+<span class="sd">        and the state. It is 32 bit flag setting the status for the point. Enum</span>
+<span class="sd">        values could be used in combination (logical &quot;OR&quot;), e.g.:</span>
+<span class="sd">        flag = MISSING | SUSPECT</span>
 
-<span class="sd">        32 bit flag setting the status for the point. There are many more options than the ones exposed here.</span>
+<span class="sd">        There are more options than the ones exposed here.</span>
 
 <span class="sd">        Default is OK = 0.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            OK (enum):</span>
-<span class="sd">            MISSING (enum):</span>
-<span class="sd">            NOT_OK (enum):</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Default value, in most cases it should be used when writing new</span>
+        <span class="c1"># points with correct new values.</span>
         <span class="n">OK</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">NOT_OK</span> <span class="o">=</span> <span class="mh">0x40000000</span>
+        <span class="c1"># Point value is missing, e.g: when reading physical time series in an</span>
+        <span class="c1"># interval where the time series has no values or reading calculation</span>
+        <span class="c1"># time series where all calculation components are missing values for</span>
+        <span class="c1"># the given interval.</span>
         <span class="n">MISSING</span> <span class="o">=</span> <span class="mh">0x04000000</span>
-        <span class="n">NOT_OK</span> <span class="o">=</span> <span class="mh">0x40000000</span></div>
+        <span class="c1"># Point value is suspected, e.g. when reading a calculation time series</span>
+        <span class="c1"># in an interval where at least one component (like physical time series</span>
+        <span class="c1"># points) is missing values. If all calculation components are missing</span>
+        <span class="c1"># values then a MISSING flag is set.</span>
+        <span class="n">SUSPECT</span> <span class="o">=</span> <span class="mh">0x02000000</span></div>
 
     <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">([</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;utc_time&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)),</span>
