@@ -5,17 +5,20 @@ Functionality for working with time series.
 import uuid
 from datetime import datetime, timedelta
 from enum import Enum
+
 import pyarrow as pa
-from volue.mesh.proto.type import resources_pb2
 
 
 class Timeseries:
-    """Represents a mesh timeserie.
+    """Represents a Mesh time series.
 
     Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)
     Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)
     Flags
     Value is the actual data for the given timestamp.
+
+    See Also:
+        :doc:`timeseries`
     """
 
     class Curve(Enum):
@@ -60,20 +63,30 @@ class Timeseries:
 
     class PointFlags(Enum):
         """
-        Information about certain action that has been performed on the values and the state.
+        Information about certain action that has been performed on the values
+        and the state. It is 32 bit flag setting the status for the point. Enum
+        values could be used in combination (logical "OR"), e.g.:
+        flag = MISSING | SUSPECT
 
-        32 bit flag setting the status for the point. There are many more options than the ones exposed here.
+        There are more options than the ones exposed here.
 
         Default is OK = 0.
-
-        Args:
-            OK (enum):
-            MISSING (enum):
-            NOT_OK (enum):
         """
+        # Default value, in most cases it should be used when writing new
+        # points with correct new values.
         OK = 0
-        MISSING = 0x04000000
+
         NOT_OK = 0x40000000
+        # Point value is missing, e.g: when reading physical time series in an
+        # interval where the time series has no values or reading calculation
+        # time series where all calculation components are missing values for
+        # the given interval.
+        MISSING = 0x04000000
+        # Point value is suspected, e.g. when reading a calculation time series
+        # in an interval where at least one component (like physical time series
+        # points) is missing values. If all calculation components are missing
+        # values then a MISSING flag is set.
+        SUSPECT = 0x02000000
 
     schema = pa.schema([
         pa.field('utc_time', pa.timestamp('ms')),
