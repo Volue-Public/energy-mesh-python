@@ -27,10 +27,10 @@ class Timeseries:
         It specifies how the values are laid out relative to each other.
 
         Args:
-            UNKNOWN (enum):
-            STAIRCASESTARTOFSTEP (enum):
-            PIECEWISELINEAR (enum):
-            STAIRCASE (enum):
+            UNKNOWN:
+            STAIRCASESTARTOFSTEP:
+            PIECEWISELINEAR:
+            STAIRCASE:
         """
         UNKNOWN = 0
         STAIRCASESTARTOFSTEP = 1
@@ -43,14 +43,14 @@ class Timeseries:
         It specifies the time interval between each value.
 
         Args:
-            UNSPECIFIED (enum):
-            BREAKPOINT (enum):
-            MIN15 (enum):
-            HOUR (enum):
-            DAY (enum):
-            WEEK (enum):
-            MONTH (enum):
-            YEAR (enum):
+            UNSPECIFIED:
+            BREAKPOINT:
+            MIN15:
+            HOUR:
+            DAY:
+            WEEK:
+            MONTH:
+            YEAR:
         """
         UNSPECIFIED = 0
         BREAKPOINT  = 1
@@ -71,21 +71,24 @@ class Timeseries:
         There are more options than the ones exposed here.
 
         Default is OK = 0.
-        """
-        # Default value, in most cases it should be used when writing new
-        # points with correct new values.
-        OK = 0
 
+        Args:
+            OK: Default value, in most cases it should be used when writing
+                new points with correct new values.
+            NOT_OK:
+            MISSING: Point value is missing, e.g: when reading physical time
+                series in an interval where the time series has no values or
+                reading calculation time series where all calculation
+                components are missing values for the given interval.
+            SUSPECT: Point value is suspected, e.g. when reading a calculation
+                time series in an interval where at least one component (like
+                physical time series points) is missing values. If all
+                calculation components are missing values then a MISSING flag
+                is set.
+        """
+        OK = 0
         NOT_OK = 0x40000000
-        # Point value is missing, e.g: when reading physical time series in an
-        # interval where the time series has no values or reading calculation
-        # time series where all calculation components are missing values for
-        # the given interval.
         MISSING = 0x04000000
-        # Point value is suspected, e.g. when reading a calculation time series
-        # in an interval where at least one component (like physical time series
-        # points) is missing values. If all calculation components are missing
-        # values then a MISSING flag is set.
         SUSPECT = 0x02000000
 
     schema = pa.schema([
@@ -113,17 +116,17 @@ class Timeseries:
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Args:
-            table: the arrow table containing the timestamps, flags and values
-            resolution: the resolution of the time series
-            start_time: the start date and time of the time series interval
-            end_time: the end date and time of the time series interval
-            timskey: integer that only applies to a specific physical or virtual time series
-            uuid_id:  Universal Unique Identifier for Mesh objects
-            full_name: path in the :ref:`Mesh model <mesh_model>`.
+            table: The arrow table containing the timestamps, flags and values.
+            resolution: The resolution of the time series.
+            start_time: The start date and time of the time series interval.
+            end_time: The end date and time of the time series interval.
+            timskey: Integer that only applies to a specific physical or virtual time series.
+            uuid_id: Universal Unique Identifier for Mesh objects.
+            full_name: Path in the :ref:`Mesh model <mesh_model>`.
               See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
 
         Raises:
-            TypeError: Error message raised if PyArrow table schema is invalid
+            TypeError: Error message raised if PyArrow table schema is invalid.
         """
         self.full_name = full_name
         self.uuid = uuid_id
@@ -154,7 +157,7 @@ class Timeseries:
         Number of points inside the time series.
 
         Returns:
-            int: the number of points in the time series
+            The number of points in the time series
         """
         return 0 if self.arrow_table is None else self.arrow_table.num_rows
 
@@ -167,6 +170,6 @@ class Timeseries:
             If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation 'Concepts' for more information.
 
         Returns:
-            bool: true if it is a calculated time series
+            True if it is a calculated time series
         """
         return self.timskey is None and self.uuid is None and self.full_name is None
