@@ -3,25 +3,31 @@ Common classes/enums/etc for Mesh calculation functions.
 """
 
 import datetime
-from dateutil import tz
+import uuid
 from enum import Enum
 from typing import List, Union
-import uuid
+
+from dateutil import tz
 
 from volue.mesh import Timeseries
-from volue.mesh._common import _read_proto_reply, _read_proto_numeric_reply,\
-    _to_proto_guid, _to_proto_mesh_id, _to_protobuf_utcinterval
+from volue.mesh._common import (
+    _read_proto_numeric_reply,
+    _read_proto_reply,
+    _to_proto_guid,
+    _to_proto_mesh_id,
+    _to_protobuf_utcinterval,
+)
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 
 class Timezone(Enum):
     """
-    Timezone specifier
+    Timezone specifier.
 
     Args:
-        LOCAL (enum): Local time zone
-        STANDARD (enum): Local time zone without Daylight Saving Time (DST)
-        UTC (enum): Universal Time Coordinated (UTC)
+        LOCAL: Local time zone.
+        STANDARD: Local time zone without Daylight Saving Time (DST).
+        UTC: Universal Time Coordinated (UTC).
     """
     LOCAL = 0
     STANDARD = 1
@@ -37,10 +43,10 @@ def _convert_datetime_to_mesh_calc_format(input: datetime) -> str:
         'UTC20210917000000000'
 
     Args:
-        input (datetime): the timestamp to be converted
+        input: The timestamp to be converted.
 
     Returns:
-        str:
+        Datetime in Mesh calculator format.
     """
     input_utc_datetime = input
     if input.tzinfo is not None:
@@ -53,13 +59,13 @@ def _convert_datetime_to_mesh_calc_format(input: datetime) -> str:
 
 def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> List[Timeseries]:
     """
-    Helper function for parsing a calculator respons.
+    Helper function for parsing a calculator response.
 
     Args:
-        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
+        response: The gRPC response received from the Mesh server.
 
     Returns:
-        List[Timeseries]: a list of time series
+        A list of time series
     """
     timeseries = _read_proto_reply(response.timeseries_results)
     return timeseries
@@ -67,16 +73,16 @@ def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> L
 
 def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) -> Timeseries:
     """
-    Helper function for parsing a calculator respons.
+    Helper function for parsing a calculator response.
 
     Args:
-        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
-
-    Raises:
-        RuntimeError:  Error message raised if the input is not valid
+        response: The gRPC response received from the Mesh server.
 
     Returns:
-        List[Timeseries]: a single time series
+        A single time series.
+
+    Raises:
+        RuntimeError: Error message raised if the input is not valid.
     """
     timeseries = _read_proto_reply(response.timeseries_results)
     if len(timeseries) != 1:
@@ -87,16 +93,16 @@ def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) ->
 
 def _parse_single_float_response(response: core_pb2.CalculationResponse) -> float:
     """
-    Helper function for parsing a calculator respons.
+    Helper function for parsing a calculator response.
 
     Args:
-        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server
-
-    Raises:
-        RuntimeError:  Error message raised if the input is not valid
+        response: The gRPC response received from the Mesh server.
 
     Returns:
-        float: the value of the calculation respons
+        Result of the calculation.
+
+    Raises:
+        RuntimeError: Error message raised if the input is not valid.
     """
     result = _read_proto_numeric_reply(response.numeric_results)
     if len(result) != 1:
@@ -107,7 +113,7 @@ def _parse_single_float_response(response: core_pb2.CalculationResponse) -> floa
 
 class _Calculation:
     """
-    Base class for all calculations
+    Base class for all calculations.
     """
     def __init__(self,
                  session,
@@ -115,15 +121,14 @@ class _Calculation:
                  start_time: datetime,
                  end_time: datetime):
         """
-
         Args:
-            session: active Mesh session
+            session: Active Mesh session.
             target: Mesh object, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
                 a path in the :ref:`Mesh model <mesh_model>`.
-            start_time: the start date and time of the time series interval
-            end_time: the end date and time of the time series interval
+            start_time: The start date and time of the time series interval.
+            end_time: The end date and time of the time series interval.
         """
         self.session = session
         self.target: Union[uuid.UUID, str, int] = target
@@ -133,16 +138,13 @@ class _Calculation:
     def prepare_request(self, expression: str) -> core_pb2.CalculationRequest:
         """
         Checks that the requirements for a calculation request are met,
-        and constructs a calculation request object
+        and constructs a calculation request object.
 
         Args:
-            expression (str): expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
-
-        Raises:
-            TypeError:  Error message raised if the returned result from the request is not as expected
+            expression: Expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`.
 
         Returns:
-            core_pb2.CalculationRequest:
+            gRPC calculation request.
         """
         request = core_pb2.CalculationRequest(
             session_id=_to_proto_guid(self.session.session_id),
@@ -153,13 +155,14 @@ class _Calculation:
         return request
 
     async def run_async(self, expression: str) -> core_pb2.CalculationResponse:
-        """Run a function using an asynchronous connection.
+        """
+        Run a function using an asynchronous connection.
 
         Args:
-            expression (str): expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
+            expression: Expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`.
 
         Returns:
-            core_pb2.CalculationResponse:
+            gRPC calculation response.
         """
         from volue.mesh.aio import Connection as AsyncConnection
         if not isinstance(self.session, AsyncConnection.Session):
@@ -170,13 +173,14 @@ class _Calculation:
         return response
 
     def run(self, expression: str):
-        """Run a function using a synchronous connection.
+        """
+        Run a function using a synchronous connection.
 
         Args:
-            expression (str): expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`
+            expression: Expression which consists of one or more functions to call. See :ref:`expressions <mesh expression>`.
 
         Returns:
-            core_pb2.CalculationResponse:
+            gRPC calculation response.
         """
         from volue.mesh import Connection
         if not isinstance(self.session, Connection.Session):
