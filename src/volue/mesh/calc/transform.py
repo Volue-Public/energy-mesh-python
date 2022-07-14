@@ -8,6 +8,7 @@ For more information see :ref:`mesh_functions:transform`.
 
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Optional
 
 from volue.mesh import Timeseries
 from volue.mesh.calc.common import (
@@ -47,8 +48,8 @@ class _TransformFunctionsBase(_Calculation, ABC):
     def _transform_expression(self,
                               resolution: Timeseries.Resolution,
                               method: Method,
-                              timezone: Timezone,
-                              search_query: str) -> str:
+                              timezone: Optional[Timezone],
+                              search_query: Optional[str]) -> str:
         """
         Create an expression for `transform`.
 
@@ -84,7 +85,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
                   resolution: Timeseries.Resolution,
                   method: Method,
                   timezone: Timezone = Timezone.UTC,
-                  search_query: str = None) -> Timeseries:
+                  search_query: Optional[str] = None) -> Timeseries:
         """
         Transforms time series from one resolution to another resolution.
 
@@ -119,7 +120,7 @@ class TransformFunctions(_TransformFunctionsBase):
                   resolution: Timeseries.Resolution,
                   method: Method,
                   timezone: Timezone = Timezone.UTC,
-                  search_query: str = None) -> Timeseries:
+                  search_query: Optional[str] = None) -> Timeseries:
         expression = super()._transform_expression(resolution, method, timezone, search_query)
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
@@ -131,7 +132,7 @@ class TransformFunctionsAsync(_TransformFunctionsBase):
                         resolution: Timeseries.Resolution,
                         method: Method,
                         timezone: Timezone = Timezone.UTC,
-                        search_query: str = None) -> Timeseries:
+                        search_query: Optional[str] = None) -> Timeseries:
         expression = super()._transform_expression(resolution, method, timezone, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
