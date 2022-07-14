@@ -2,9 +2,9 @@
 Functionality for working with Mesh objects.
 """
 
+import uuid
 from dataclasses import dataclass, field
 from typing import Dict, Type
-import uuid
 
 from volue.mesh._attribute import AttributeBase, _from_proto_attribute
 from volue.mesh._common import _from_proto_guid
@@ -33,7 +33,7 @@ class Object:
         """Create an `Object` from protobuf Mesh Object.
 
         Args:
-            proto_object (core_pb2.Object): protobuf Object returned from the gRPC methods
+            proto_object: Protobuf Object returned from the gRPC methods.
         """
         object = cls()
         object.id = _from_proto_guid(proto_object.id)

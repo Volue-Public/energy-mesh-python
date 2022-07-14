@@ -9,8 +9,11 @@ For more information see :ref:`mesh_functions:statistical`.
 from abc import ABC, abstractmethod
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import _Calculation, \
-    _parse_single_float_response, _parse_single_timeseries_response
+from volue.mesh.calc.common import (
+    _Calculation,
+    _parse_single_float_response,
+    _parse_single_timeseries_response,
+)
 
 _SINGLE_TIMESERIES_CALC_SYMBOL = 't'
 _ARRAY_OF_TIMESERIES_CALC_SYMBOL = 'T'
@@ -24,11 +27,11 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         Create an expression for `sum`.
 
         Args:
-            input_type_symbol (str): either `t` (for returning a number) or `T` (for returning a time series)
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            input_type_symbol: Either `t` (for returning a number) or `T` (for returning a time series).
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Returns:
-            str: a `sum` expresssion
+            Mesh calculation expression.
         """
         expression = f"## = @SUM(@{input_type_symbol}("
         if search_query:
@@ -46,13 +49,13 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         The resulting time series is equal to the sum of the values for each time interval in the expression.
 
         Args:
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
             The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            :class:`volue.mesh.Timeseries`: a time series with the sum of the values for each time interval in the expression.
+            A time series with the sum of the values for each time interval in the expression.
         """
         pass
 
@@ -62,11 +65,14 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         Calculates the sum of the values of the time series for the required period.
         It returns a number.
 
+        Args:
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+
         Note:
             The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            float: the sum of the values of the time series for the required period
+            The sum of the values of the time series for the required period.
         """
         pass
 
