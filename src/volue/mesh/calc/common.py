@@ -15,7 +15,7 @@ from volue.mesh._common import (
     _read_proto_reply,
     _to_proto_guid,
     _to_proto_mesh_id,
-    _to_protobuf_utcinterval,
+    _to_proto_utcinterval,
 )
 from volue.mesh.proto.core.v1alpha import core_pb2
 
@@ -149,7 +149,7 @@ class _Calculation:
         request = core_pb2.CalculationRequest(
             session_id=_to_proto_guid(self.session.session_id),
             expression=expression,
-            interval=_to_protobuf_utcinterval(self.start_time, self.end_time),
+            interval=_to_proto_utcinterval(self.start_time, self.end_time),
             relative_to=_to_proto_mesh_id(self.target)
         )
         return request
