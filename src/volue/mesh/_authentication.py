@@ -8,6 +8,7 @@ import typing
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
+from typing import Optional
 
 import grpc
 from google import protobuf
@@ -46,7 +47,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             user_principal: Name of an active directory user, e.g.: 'ad\\user.name'.
         """
         service_principal: str
-        user_principal: str = None
+        user_principal: Optional[str] = None
 
     class KerberosTokenIterator():
         """
@@ -65,10 +66,10 @@ class Authentication(grpc.AuthMetadataPlugin):
             self.first_iteration: bool = True
             self.final_response_received: bool = False
             self.response_received = threading.Event()
-            self.server_kerberos_token: bytes = None
+            self.server_kerberos_token: Optional[bytes] = None
             self.service_principal: str = service_principal
             self.user_principal: str = user_principal
-            self.exception: Exception = None
+            self.exception: Optional[Exception] = None
 
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
@@ -159,9 +160,9 @@ class Authentication(grpc.AuthMetadataPlugin):
         """
 
         self.service_principal: str = parameters.service_principal
-        self.user_principal: str = parameters.user_principal
-        self.token: str = None
-        self.token_expiration_date: datetime = None
+        self.user_principal: Optional[str] = parameters.user_principal
+        self.token: Optional[str] = None
+        self.token_expiration_date: Optional[datetime] = None
 
         # create separate channel for getting and refreshing Mesh token
         channel = grpc.secure_channel(
@@ -224,8 +225,8 @@ class Authentication(grpc.AuthMetadataPlugin):
                         raise RuntimeError('Invalid Mesh token duration')
 
                     adjusted_token_duration = token_duration - duration_margin
-                    self.token_expiration_date: datetime = auth_request_call_timestamp + adjusted_token_duration
-                    self.token: str = mesh_response.bearer_token
+                    self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
+                    self.token = mesh_response.bearer_token
         except grpc.RpcError as ex:
             if kerberos_token_iterator.exception is not None:
                 # replace vague RpcError with more detailed exception
