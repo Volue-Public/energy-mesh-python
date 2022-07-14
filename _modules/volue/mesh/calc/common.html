@@ -175,25 +175,31 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_read_proto_reply</span><span class="p">,</span> <span class="n">_read_proto_numeric_reply</span><span class="p">,</span>\
-    <span class="n">_to_proto_guid</span><span class="p">,</span> <span class="n">_to_proto_mesh_id</span><span class="p">,</span> <span class="n">_to_protobuf_utcinterval</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_read_proto_numeric_reply</span><span class="p">,</span>
+    <span class="n">_read_proto_reply</span><span class="p">,</span>
+    <span class="n">_to_proto_guid</span><span class="p">,</span>
+    <span class="n">_to_proto_mesh_id</span><span class="p">,</span>
+    <span class="n">_to_protobuf_utcinterval</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
 
 <div class="viewcode-block" id="Timezone"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.common.Timezone">[docs]</a><span class="k">class</span> <span class="nc">Timezone</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Timezone specifier</span>
+<span class="sd">    Timezone specifier.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        LOCAL (enum): Local time zone</span>
-<span class="sd">        STANDARD (enum): Local time zone without Daylight Saving Time (DST)</span>
-<span class="sd">        UTC (enum): Universal Time Coordinated (UTC)</span>
+<span class="sd">        LOCAL: Local time zone.</span>
+<span class="sd">        STANDARD: Local time zone without Daylight Saving Time (DST).</span>
+<span class="sd">        UTC: Universal Time Coordinated (UTC).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">LOCAL</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">STANDARD</span> <span class="o">=</span> <span class="mi">1</span>
@@ -209,10 +215,10 @@
 <span class="sd">        &#39;UTC20210917000000000&#39;</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input (datetime): the timestamp to be converted</span>
+<span class="sd">        input: The timestamp to be converted.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str:</span>
+<span class="sd">        Datetime in Mesh calculator format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">input_utc_datetime</span> <span class="o">=</span> <span class="nb">input</span>
     <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -225,13 +231,13 @@
 
 <span class="k">def</span> <span class="nf">_parse_timeseries_list_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper function for parsing a calculator respons.</span>
+<span class="sd">    Helper function for parsing a calculator response.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server</span>
+<span class="sd">        response: The gRPC response received from the Mesh server.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Timeseries]: a list of time series</span>
+<span class="sd">        A list of time series</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">_read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">timeseries_results</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timeseries</span>
@@ -239,16 +245,16 @@
 
 <span class="k">def</span> <span class="nf">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper function for parsing a calculator respons.</span>
+<span class="sd">    Helper function for parsing a calculator response.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        RuntimeError:  Error message raised if the input is not valid</span>
+<span class="sd">        response: The gRPC response received from the Mesh server.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Timeseries]: a single time series</span>
+<span class="sd">        A single time series.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: Error message raised if the input is not valid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">_read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">timeseries_results</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -259,16 +265,16 @@
 
 <span class="k">def</span> <span class="nf">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper function for parsing a calculator respons.</span>
+<span class="sd">    Helper function for parsing a calculator response.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        response (core_pb2.CalculationResponse): the gRPC response received from the Mesh server</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        RuntimeError:  Error message raised if the input is not valid</span>
+<span class="sd">        response: The gRPC response received from the Mesh server.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: the value of the calculation respons</span>
+<span class="sd">        Result of the calculation.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: Error message raised if the input is not valid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">_read_proto_numeric_reply</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">numeric_results</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -279,7 +285,7 @@
 
 <span class="k">class</span> <span class="nc">_Calculation</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all calculations</span>
+<span class="sd">    Base class for all calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">session</span><span class="p">,</span>
@@ -287,15 +293,14 @@
                  <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
                  <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="sd">        Args:</span>
-<span class="sd">            session: active Mesh session</span>
+<span class="sd">            session: Active Mesh session.</span>
 <span class="sd">            target: Mesh object, virtual or physical time series the</span>
 <span class="sd">                calculation expression will be evaluated relative to.</span>
 <span class="sd">                It could be a time series key, Universal Unique Identifier or</span>
 <span class="sd">                a path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
-<span class="sd">            start_time: the start date and time of the time series interval</span>
-<span class="sd">            end_time: the end date and time of the time series interval</span>
+<span class="sd">            start_time: The start date and time of the time series interval.</span>
+<span class="sd">            end_time: The end date and time of the time series interval.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
@@ -305,16 +310,13 @@
     <span class="k">def</span> <span class="nf">prepare_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks that the requirements for a calculation request are met,</span>
-<span class="sd">        and constructs a calculation request object</span>
+<span class="sd">        and constructs a calculation request object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            expression (str): expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TypeError:  Error message raised if the returned result from the request is not as expected</span>
+<span class="sd">            expression: Expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            core_pb2.CalculationRequest:</span>
+<span class="sd">            gRPC calculation request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -325,13 +327,14 @@
         <span class="k">return</span> <span class="n">request</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">run_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Run a function using an asynchronous connection.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run a function using an asynchronous connection.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            expression (str): expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`</span>
+<span class="sd">            expression: Expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            core_pb2.CalculationResponse:</span>
+<span class="sd">            gRPC calculation response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">AsyncConnection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
@@ -342,13 +345,14 @@
         <span class="k">return</span> <span class="n">response</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Run a function using a synchronous connection.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run a function using a synchronous connection.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            expression (str): expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`</span>
+<span class="sd">            expression: Expression which consists of one or more functions to call. See :ref:`expressions &lt;mesh expression&gt;`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            core_pb2.CalculationResponse:</span>
+<span class="sd">            gRPC calculation response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
