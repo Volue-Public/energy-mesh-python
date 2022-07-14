@@ -175,13 +175,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
 
-<span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">field_mask_pb2</span><span class="p">,</span> <span class="n">timestamp_pb2</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">field_mask_pb2</span><span class="p">,</span> <span class="n">timestamp_pb2</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
@@ -315,7 +316,7 @@
         <span class="sd">&quot;&quot;&quot;Create a `UserIdentity` from protobuf UserIdentity.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            proto_user_identity: protobuf UserIdentity returned from the gRPC method.</span>
+<span class="sd">            proto_user_identity: Protobuf UserIdentity returned from the gRPC method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">display_name</span><span class="o">=</span><span class="n">proto_user_identity</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span>
@@ -329,7 +330,7 @@
 
 <span class="sd">    version - version number, e.g.: 2.5.2.32</span>
 
-<span class="sd">    name - friendly name of the Mesh server, e.g.: Volue Mesh Server</span>
+<span class="sd">    name - friendly name of the Mesh server, e.g.: Volue Mesh Server.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span>
@@ -440,10 +441,10 @@
 
 
 <span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Convert from Python UUID format to Microsoft&#39;s GUID format.</span>
+    <span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        uuid (uuid.UUID): identifier in Python&#39;s UUID format</span>
+<span class="sd">        uuid: Identifier in Python&#39;s UUID format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -451,10 +452,10 @@
 
 
 <span class="k">def</span> <span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert from Microsoft&#39;s GUID format to UUID format.</span>
+    <span class="sd">&quot;&quot;&quot;Converts from Microsoft&#39;s GUID format to UUID format.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        guid (resources_pb2.Guid): GUID to be converted</span>
+<span class="sd">        guid: GUID to be converted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">guid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -466,7 +467,7 @@
 <span class="sd">    Converts from Timeseries.Curve type to protobuf curve type.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        curve: the curve to convert</span>
+<span class="sd">        curve: The curve to convert.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">proto_curve</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">()</span>
     <span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">UNKNOWN</span>
@@ -485,7 +486,7 @@
 <span class="sd">    Converts from protobuf curve type to Timeseries.Curve type.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        proto_curve: the protobuf curve to convert</span>
+<span class="sd">        proto_curve: The protobuf curve to convert.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">curve</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">UNKNOWN</span>
 
@@ -504,7 +505,7 @@
 <span class="sd">    Converts from protobuf resolution type to Timeseries.Resolution type.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        proto_resolution: the protobuf resolution to convert</span>
+<span class="sd">        proto_resolution: The protobuf resolution to convert.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">resolution</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">UNSPECIFIED</span>
 
@@ -528,14 +529,14 @@
 
 <span class="k">def</span> <span class="nf">_to_protobuf_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert to protobuf UtcInterval.</span>
+<span class="sd">    Converts to protobuf UtcInterval.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        start_time (datetime): start of the interval</span>
-<span class="sd">        end_time (datetime): end of the interval</span>
+<span class="sd">        start_time: Start of the interval.</span>
+<span class="sd">        end_time: End of the interval.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        resources_pb2.UtcInterval</span>
+<span class="sd">        Protobuf UtcInterval.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
     <span class="n">start</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
@@ -550,10 +551,13 @@
 
 <span class="k">def</span> <span class="nf">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a Timeseries to corresponding protobuf Timeseries</span>
+<span class="sd">    Converts a Timeseries to corresponding protobuf Timeseries.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        timeseries: the timeseries to convert</span>
+<span class="sd">        timeseries: The time series to convert.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Protobuf Timeseries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">stream</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
     <span class="n">writer</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">RecordBatchStreamWriter</span><span class="p">(</span>
@@ -633,16 +637,16 @@
 
 <span class="k">def</span> <span class="nf">_read_proto_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a protobuf time series reply from Mesh server into Timeseries</span>
+<span class="sd">    Converts a protobuf time series reply from Mesh server into Timeseries.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: no time series data</span>
+<span class="sd">        reply: The reply from a time series read operation.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[Timeseries]: list of time series extracted from the reply</span>
+<span class="sd">        An array of time series extracted from the reply.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: no time series data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">proto_timeseries</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
@@ -672,13 +676,13 @@
 
 <span class="k">def</span> <span class="nf">_read_proto_numeric_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a protobuf numeric calculation reply from Mesh server into a list of floats</span>
+<span class="sd">    Converts a protobuf numeric calculation reply from Mesh server into an array of floating points values.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation</span>
+<span class="sd">        reply: The reply from a time series read operation.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[float]: list of floats extracted from the reply</span>
+<span class="sd">        An array of floating point values extracted from the reply.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
@@ -686,9 +690,7 @@
     <span class="k">return</span> <span class="n">results</span>
 
 <span class="k">def</span> <span class="nf">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">datetime</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Converts datetime type to protobuf Timestamp type</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Converts datetime type to protobuf Timestamp type.&quot;&quot;&quot;</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
     <span class="n">timestamp</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timestamp</span>

@@ -175,6 +175,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
@@ -201,7 +202,7 @@
         <span class="sd">&quot;&quot;&quot;Create a `TimeseriesResource` from protobuf TimeseriesResource.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            proto_timeseries_resource: protobuf TimeseriesResource returned from the gRPC methods.</span>
+<span class="sd">            proto_timeseries_resource: Protobuf TimeseriesResource returned from the gRPC methods.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">resource</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="n">resource</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">timeseries_key</span>

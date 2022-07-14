@@ -247,8 +247,8 @@
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_all_forecasts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/calc/forecast.html#ForecastFunctions.get_all_forecasts"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get all forecast for a given Mesh object in a time interval.</p>
-<p>The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a></p>
+<dd><p>Get all forecasts for a given Mesh object in a time interval.
+The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a>.</p>
 <p class="rubric">Example</p>
 <p>If interval ‘P’ is given for the Mesh object in the picture below, 10 forecasted time series will be returned.</p>
 <a class="reference internal image-reference" href="_images/calc_get_all_forecasts.png"><img alt="_images/calc_get_all_forecasts.png" src="_images/calc_get_all_forecasts.png" style="width: 400px;" /></a>
@@ -258,13 +258,10 @@
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a>]</p>
+<dd class="field-even"><p>An array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,55 +270,50 @@
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forecast_start_min:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast_start_max:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_at_timepoint:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_query:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/calc/forecast.html#ForecastFunctions.get_forecast"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Get one forecast for a given Mesh object in a time interval.</p>
-<p>The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a></p>
-<p class="rubric">Example</p>
-<p>Use <cite>available_at_timepoint</cite> (t<sub>c</sub>) to get the forecast.</p>
+<p>The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a>.</p>
+<dl>
+<dt>Example 1:</dt><dd><p>Use <cite>available_at_timepoint</cite> (t<sub>c</sub>) to get the forecast.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forecast_funcs</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">forecast_functions</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">forecast_funcs</span><span class="o">.</span><span class="n">get_forecast</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/calc_get_forecast_writetime.png"><img alt="_images/calc_get_forecast_writetime.png" src="_images/calc_get_forecast_writetime.png" style="width: 400px;" /></a>
-<p class="rubric">Example</p>
-<p>Use <cite>forecast_start_min</cite> (t<sub>0min</sub>) and <cite>forecast_start_max</cite> (t<sub>0max</sub>) to get the forecast that starts in that interval.</p>
+</dd>
+<dt>Example 2:</dt><dd><p>Use <cite>forecast_start_min</cite> (t<sub>0min</sub>) and <cite>forecast_start_max</cite> (t<sub>0max</sub>) to get the forecast that starts in that interval.</p>
 <p>Note: This will ignore <cite>start_time</cite> set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forecast_funcs</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">forecast_functions</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">forecast_funcs</span><span class="o">.</span><span class="n">get_forecast</span><span class="p">(</span><span class="n">forecast_start_min</span><span class="p">,</span> <span class="n">forecast_start_max</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/calc_get_forecast_interval.png"><img alt="_images/calc_get_forecast_interval.png" src="_images/calc_get_forecast_interval.png" style="width: 400px;" /></a>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The function can take <cite>available_at_timepoint</cite> without specifying <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The function can take <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite> with or without specifying <cite>available_at_timepoint</cite> to find the relevant forecast instead of using the start of the requested period (defined in <cite>forecast_functions</cite>). It requires that the forecast series’ start is less than or equal to <cite>forecast_start_max</cite> and larger than <cite>forecast_start_min</cite>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_all_forecasts</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
+<ul class="simple">
+<li><p>The function can take <cite>available_at_timepoint</cite> without specifying <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite>.</p></li>
+<li><p>The function can take <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite> with or without specifying <cite>available_at_timepoint</cite> to find the relevant forecast instead of using the start of the requested period (defined in <cite>forecast_functions</cite>). It requires that the forecast series’ start is less than or equal to <cite>forecast_start_max</cite> and larger than <cite>forecast_start_min</cite>.</p></li>
+<li><p>If no forecast series has its start time within the given interval, the function returns a time series with NaN.</p></li>
+<li><p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_all_forecasts</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>forecast_start_min</strong> – forecast must start after this time</p></li>
-<li><p><strong>forecast_start_max</strong> – forecast must start before this time</p></li>
-<li><p><strong>available_at_timepoint</strong> – forecast that  is valid at the given timestamp</p></li>
-<li><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>forecast_start_min</strong> – Forecast must start after this time.</p></li>
+<li><p><strong>forecast_start_max</strong> – Forecast must start before this time.</p></li>
+<li><p><strong>available_at_timepoint</strong> – Forecast that is valid at the given timestamp.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
-<p>For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a></p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series forcast</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series forecast.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -335,8 +327,8 @@
 <dl class="py method">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all_forecasts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/calc/forecast.html#ForecastFunctionsAsync.get_all_forecasts"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Get all forecast for a given Mesh object in a time interval.</p>
-<p>The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a></p>
+<dd><p>Get all forecasts for a given Mesh object in a time interval.
+The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a>.</p>
 <p class="rubric">Example</p>
 <p>If interval ‘P’ is given for the Mesh object in the picture below, 10 forecasted time series will be returned.</p>
 <a class="reference internal image-reference" href="_images/calc_get_all_forecasts.png"><img alt="_images/calc_get_all_forecasts.png" src="_images/calc_get_all_forecasts.png" style="width: 400px;" /></a>
@@ -346,13 +338,10 @@
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a>]</p>
+<dd class="field-even"><p>An array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -361,55 +350,50 @@
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_forecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forecast_start_min:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forecast_start_max:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">available_at_timepoint:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_query:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/calc/forecast.html#ForecastFunctionsAsync.get_forecast"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Get one forecast for a given Mesh object in a time interval.</p>
-<p>The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a></p>
-<p class="rubric">Example</p>
-<p>Use <cite>available_at_timepoint</cite> (t<sub>c</sub>) to get the forecast.</p>
+<p>The Mesh object (‘relative_to’) and the time interval (<cite>start_time</cite> and <cite>end_time</cite>) is set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a>.</p>
+<dl>
+<dt>Example 1:</dt><dd><p>Use <cite>available_at_timepoint</cite> (t<sub>c</sub>) to get the forecast.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forecast_funcs</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">forecast_functions</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">forecast_funcs</span><span class="o">.</span><span class="n">get_forecast</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/calc_get_forecast_writetime.png"><img alt="_images/calc_get_forecast_writetime.png" src="_images/calc_get_forecast_writetime.png" style="width: 400px;" /></a>
-<p class="rubric">Example</p>
-<p>Use <cite>forecast_start_min</cite> (t<sub>0min</sub>) and <cite>forecast_start_max</cite> (t<sub>0max</sub>) to get the forecast that starts in that interval.</p>
+</dd>
+<dt>Example 2:</dt><dd><p>Use <cite>forecast_start_min</cite> (t<sub>0min</sub>) and <cite>forecast_start_max</cite> (t<sub>0max</sub>) to get the forecast that starts in that interval.</p>
 <p>Note: This will ignore <cite>start_time</cite> set by <a class="reference internal" href="api.html#volue.mesh.Connection.Session.forecast_functions" title="volue.mesh.Connection.Session.forecast_functions"><code class="xref py py-func docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.forecast_functions()</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forecast_funcs</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">forecast_functions</span><span class="p">(</span><span class="n">full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">forecast_funcs</span><span class="o">.</span><span class="n">get_forecast</span><span class="p">(</span><span class="n">forecast_start_min</span><span class="p">,</span> <span class="n">forecast_start_max</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/calc_get_forecast_interval.png"><img alt="_images/calc_get_forecast_interval.png" src="_images/calc_get_forecast_interval.png" style="width: 400px;" /></a>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The function can take <cite>available_at_timepoint</cite> without specifying <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The function can take <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite> with or without specifying <cite>available_at_timepoint</cite> to find the relevant forecast instead of using the start of the requested period (defined in <cite>forecast_functions</cite>). It requires that the forecast series’ start is less than or equal to <cite>forecast_start_max</cite> and larger than <cite>forecast_start_min</cite>.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If no forecast series has its start time within the given interval, the function returns a timeseries with NaN.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_all_forecasts</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
+<ul class="simple">
+<li><p>The function can take <cite>available_at_timepoint</cite> without specifying <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite>.</p></li>
+<li><p>The function can take <cite>forecast_start_min</cite> and <cite>forecast_start_min</cite> with or without specifying <cite>available_at_timepoint</cite> to find the relevant forecast instead of using the start of the requested period (defined in <cite>forecast_functions</cite>). It requires that the forecast series’ start is less than or equal to <cite>forecast_start_max</cite> and larger than <cite>forecast_start_min</cite>.</p></li>
+<li><p>If no forecast series has its start time within the given interval, the function returns a time series with NaN.</p></li>
+<li><p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_all_forecasts</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>forecast_start_min</strong> – forecast must start after this time</p></li>
-<li><p><strong>forecast_start_max</strong> – forecast must start before this time</p></li>
-<li><p><strong>available_at_timepoint</strong> – forecast that  is valid at the given timestamp</p></li>
-<li><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>forecast_start_min</strong> – Forecast must start after this time.</p></li>
+<li><p><strong>forecast_start_max</strong> – Forecast must start before this time.</p></li>
+<li><p><strong>available_at_timepoint</strong> – Forecast that is valid at the given timestamp.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
-<p>For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a></p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series forcast</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series forecast.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -434,7 +418,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all forecast functions</p>
+<dd class="field-even"><p>Object containing all forecast functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -455,7 +439,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all forecast functions</p>
+<dd class="field-even"><p>Object containing all forecast functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -475,30 +459,26 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_ts_as_of_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">available_at_timepoint:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_query:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/calc/history.html#HistoryFunctions.get_ts_as_of_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Finds values and status for a timeseries at a given historical time <cite>available_at_timepoint</cite>.</p>
+<dd><p>Finds values and status for a time series at a given historical time <cite>available_at_timepoint</cite>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_ts_as_of_time</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.</p>
+<ul class="simple">
+<li><p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_ts_as_of_time</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p></li>
+<li><p>If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>available_at_timepoint</strong> (<em>datetime</em>) – is valid at the given timestamp</p></li>
-<li><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>available_at_timepoint</strong> – Is valid at the given timestamp.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
 <p>For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series with historical values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -513,8 +493,8 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_number_of_versions_to_get</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the maximum number of time series to return</p></li>
-<li><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>max_number_of_versions_to_get</strong> – Maximum number of time series to return.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -523,8 +503,8 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_ts_historical_versions</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a>]</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An array of time series with historical values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -538,30 +518,26 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_ts_as_of_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">available_at_timepoint:</span> <span class="pre">&lt;module</span> <span class="pre">'datetime'</span> <span class="pre">from</span> <span class="pre">'/usr/lib/python3.8/datetime.py'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_query:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">volue.mesh._timeseries.Timeseries</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/calc/history.html#HistoryFunctionsAsync.get_ts_as_of_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Finds values and status for a timeseries at a given historical time <cite>available_at_timepoint</cite>.</p>
+<dd><p>Finds values and status for a time series at a given historical time <cite>available_at_timepoint</cite>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_ts_as_of_time</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.</p>
+<ul class="simple">
+<li><p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_ts_as_of_time</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p></li>
+<li><p>If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>available_at_timepoint</strong> (<em>datetime</em>) – is valid at the given timestamp</p></li>
-<li><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>available_at_timepoint</strong> – Is valid at the given timestamp.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
 <p>For information about <cite>datetime</cite> arguments and time zones refer to <a class="reference internal" href="mesh_client.html#date-times-and-time-zones"><span class="std std-ref">Date times and time zones</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series with historical values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -576,8 +552,8 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>max_number_of_versions_to_get</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the maximum number of time series to return</p></li>
-<li><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>max_number_of_versions_to_get</strong> – Maximum number of time series to return.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -586,8 +562,8 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <p>The resulting objects from the <cite>search_query</cite> will be used in the <cite>get_ts_historical_versions</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[<a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a>]</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An array of time series with historical values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -612,7 +588,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all history functions</p>
+<dd class="field-even"><p>Object containing all history functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -633,7 +609,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all history functions</p>
+<dd class="field-even"><p>Object containing all history functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -656,7 +632,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 The resulting time series is equal to the sum of the values for each time interval in the expression.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -665,10 +641,7 @@ The resulting time series is equal to the sum of the values for each time interv
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series with the sum of the values for each time interval in the expression.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series with the sum of the values for each time interval in the expression.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -678,16 +651,18 @@ The resulting time series is equal to the sum of the values for each time interv
 <span class="sig-name descname"><span class="pre">sum_single_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/calc/statistical.html#StatisticalFunctions.sum_single_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculates the sum of the values of the time series for the required period.
 It returns a number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The resulting object (single time series) from the <cite>search_query</cite> will be used in the <cite>sum_single_timeseries</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the sum of the values of the time series for the required period</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p>The sum of the values of the time series for the required period.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -705,7 +680,7 @@ It returns a number.</p>
 The resulting time series is equal to the sum of the values for each time interval in the expression.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -714,10 +689,7 @@ The resulting time series is equal to the sum of the values for each time interv
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series with the sum of the values for each time interval in the expression.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series with the sum of the values for each time interval in the expression.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -727,16 +699,18 @@ The resulting time series is equal to the sum of the values for each time interv
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sum_single_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/calc/statistical.html#StatisticalFunctionsAsync.sum_single_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Calculates the sum of the values of the time series for the required period.
 It returns a number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+</dd>
+</dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The resulting object (single time series) from the <cite>search_query</cite> will be used in the <cite>sum_single_timeseries</cite> function, if <cite>search_query</cite> is not set the <cite>relative_to</cite> object will be used.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the sum of the values of the time series for the required period</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p>The sum of the values of the time series for the required period.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -761,7 +735,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all statistical functions</p>
+<dd class="field-even"><p>Object containing all statistical functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -782,7 +756,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all statistical functions</p>
+<dd class="field-even"><p>Object containing all statistical functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -873,10 +847,10 @@ Most transformation methods are available for this latter use.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>resolution</strong> (<a class="reference internal" href="api.html#volue.mesh.Timeseries.Resolution" title="volue.mesh.Timeseries.Resolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries.Resolution</span></code></a>) – the resolution to transform to</p></li>
-<li><p><strong>method</strong> (<a class="reference internal" href="api.html#volue.mesh.calc.transform.Method" title="volue.mesh.calc.transform.Method"><em>Method</em></a>) – what method to use for the transformation</p></li>
-<li><p><strong>timezone</strong> (<a class="reference internal" href="api.html#volue.mesh.calc.common.Timezone" title="volue.mesh.calc.common.Timezone"><em>Timezone</em></a>) – timezone</p></li>
-<li><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>resolution</strong> – The resolution to transform to.</p></li>
+<li><p><strong>method</strong> – What method to use for the transformation.</p></li>
+<li><p><strong>timezone</strong> – What time zone to use for the transformation.</p></li>
+<li><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -886,10 +860,7 @@ Most transformation methods are available for this latter use.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series with transformed values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -915,10 +886,10 @@ Most transformation methods are available for this latter use.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>resolution</strong> (<a class="reference internal" href="api.html#volue.mesh.Timeseries.Resolution" title="volue.mesh.Timeseries.Resolution"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries.Resolution</span></code></a>) – the resolution to transform to</p></li>
-<li><p><strong>method</strong> (<a class="reference internal" href="api.html#volue.mesh.calc.transform.Method" title="volue.mesh.calc.transform.Method"><em>Method</em></a>) – what method to use for the transformation</p></li>
-<li><p><strong>timezone</strong> (<a class="reference internal" href="api.html#volue.mesh.calc.common.Timezone" title="volue.mesh.calc.common.Timezone"><em>Timezone</em></a>) – timezone</p></li>
-<li><p><strong>search_query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a></p></li>
+<li><p><strong>resolution</strong> – The resolution to transform to.</p></li>
+<li><p><strong>method</strong> – What method to use for the transformation.</p></li>
+<li><p><strong>timezone</strong> – What time zone to use for the transformation.</p></li>
+<li><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -928,10 +899,7 @@ Most transformation methods are available for this latter use.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a time series.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api.html#volue.mesh.Timeseries" title="volue.mesh.Timeseries"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Timeseries</span></code></a></p>
+<dd class="field-odd"><p>A time series with transformed values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -956,7 +924,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all transformation functions</p>
+<dd class="field-even"><p>Object containing all transformation functions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -977,7 +945,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>object containing all transformation functions</p>
+<dd class="field-even"><p>Object containing all transformation functions.</p>
 </dd>
 </dl>
 </dd></dl>
