@@ -136,7 +136,7 @@ class AttributeBase:
         """Create an `AttributeBase` from protobuf Mesh Attribute.
 
         Args:
-            proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
+            proto_attribute: protobuf Attribute returned from the gRPC methods.
         """
         attribute = cls()
         attribute._init_from_proto_attribute(proto_attribute)
@@ -147,7 +147,7 @@ class AttributeBase:
         """Initialize an `Attribute` from protobuf Mesh Attribute.
 
         Args:
-            proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
+            proto_attribute: protobuf Attribute returned from the gRPC methods.
         """
         self.id = _from_proto_guid(proto_attribute.id)
         self.path = proto_attribute.path
@@ -255,7 +255,7 @@ class SimpleAttribute(AttributeBase):
         """Create a `SimpleAttribute` from protobuf Mesh Attribute.
 
         Args:
-            proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
+            proto_attribute: protobuf Attribute returned from the gRPC methods.
         """
         attribute = cls()
         super()._init_from_proto_attribute(attribute, proto_attribute)
@@ -327,7 +327,7 @@ class RelationshipAttribute(AttributeBase):
         """Create a `RelationshipAttribute` from protobuf Mesh Attribute.
 
         Args:
-            proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
+            proto_attribute: protobuf Attribute returned from the gRPC methods.
         """
         attribute = cls()
         super()._init_from_proto_attribute(attribute, proto_attribute)
@@ -392,7 +392,7 @@ class TimeseriesAttribute(AttributeBase):
         """Create a `TimeseriesAttribute` from protobuf Mesh Attribute.
 
         Args:
-            proto_attribute (core_pb2.Attribute): protobuf Attribute returned from the gRPC methods.
+            proto_attribute: protobuf Attribute returned from the gRPC methods.
 
         Raises:
             TypeError: Error message raised if collection of time series

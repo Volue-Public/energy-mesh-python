@@ -3,13 +3,14 @@ Common classes/enums/etc. for the Mesh API.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, fields
-import datetime
-from typing import List, Optional, Tuple, Union
-import uuid
 
-from google.protobuf import field_mask_pb2, timestamp_pb2
+import datetime
+import uuid
+from dataclasses import dataclass, fields
+from typing import List, Optional, Tuple, Union
+
 import pyarrow as pa
+from google.protobuf import field_mask_pb2, timestamp_pb2
 
 from volue.mesh import Timeseries
 from volue.mesh.proto.core.v1alpha import core_pb2
@@ -143,7 +144,7 @@ class UserIdentity:
         """Create a `UserIdentity` from protobuf UserIdentity.
 
         Args:
-            proto_user_identity: protobuf UserIdentity returned from the gRPC method.
+            proto_user_identity: Protobuf UserIdentity returned from the gRPC method.
         """
         return cls(
             display_name=proto_user_identity.display_name,
@@ -157,7 +158,7 @@ class VersionInfo:
 
     version - version number, e.g.: 2.5.2.32
 
-    name - friendly name of the Mesh server, e.g.: Volue Mesh Server
+    name - friendly name of the Mesh server, e.g.: Volue Mesh Server.
     """
 
     version: str
@@ -268,10 +269,10 @@ class RatingCurveVersion():
 
 
 def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
-    """Convert from Python UUID format to Microsoft's GUID format.
+    """Converts from Python UUID format to Microsoft's GUID format.
 
     Args:
-        uuid (uuid.UUID): identifier in Python's UUID format
+        uuid: Identifier in Python's UUID format.
     """
     if uuid is None:
         return None
@@ -279,10 +280,10 @@ def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
 
 
 def _from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
-    """Convert from Microsoft's GUID format to UUID format.
+    """Converts from Microsoft's GUID format to UUID format.
 
     Args:
-        guid (resources_pb2.Guid): GUID to be converted
+        guid: GUID to be converted.
     """
     if guid is None:
         return None
@@ -294,7 +295,7 @@ def _to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
     Converts from Timeseries.Curve type to protobuf curve type.
 
     Args:
-        curve: the curve to convert
+        curve: The curve to convert.
     """
     proto_curve = resources_pb2.Curve()
     proto_curve.type = resources_pb2.Curve.UNKNOWN
@@ -313,7 +314,7 @@ def _from_proto_curve_type(proto_curve: resources_pb2.Curve) -> Timeseries.Curve
     Converts from protobuf curve type to Timeseries.Curve type.
 
     Args:
-        proto_curve: the protobuf curve to convert
+        proto_curve: The protobuf curve to convert.
     """
     curve = Timeseries.Curve.UNKNOWN
 
@@ -332,7 +333,7 @@ def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timese
     Converts from protobuf resolution type to Timeseries.Resolution type.
 
     Args:
-        proto_resolution: the protobuf resolution to convert
+        proto_resolution: The protobuf resolution to convert.
     """
     resolution = Timeseries.Resolution.UNSPECIFIED
 
@@ -356,14 +357,14 @@ def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timese
 
 def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resources_pb2.UtcInterval:
     """
-    Convert to protobuf UtcInterval.
+    Converts to protobuf UtcInterval.
 
     Args:
-        start_time (datetime): start of the interval
-        end_time (datetime): end of the interval
+        start_time: Start of the interval.
+        end_time: End of the interval.
 
     Returns:
-        resources_pb2.UtcInterval
+        Protobuf UtcInterval.
     """
     start = timestamp_pb2.Timestamp()
     start.FromDatetime(start_time)
@@ -378,10 +379,13 @@ def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resour
 
 def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     """
-    Convert a Timeseries to corresponding protobuf Timeseries
+    Converts a Timeseries to corresponding protobuf Timeseries.
 
     Args:
-        timeseries: the timeseries to convert
+        timeseries: The time series to convert.
+
+    Returns:
+        Protobuf Timeseries.
     """
     stream = pa.BufferOutputStream()
     writer = pa.ipc.RecordBatchStreamWriter(
@@ -461,16 +465,16 @@ def _to_proto_attribute_masks(attributes_filter: Optional[AttributesFilter]) -> 
 
 def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
     """
-    Converts a protobuf time series reply from Mesh server into Timeseries
+    Converts a protobuf time series reply from Mesh server into Timeseries.
 
     Args:
-        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation
-
-    Raises:
-        ValueError: no time series data
+        reply: The reply from a time series read operation.
 
     Returns:
-        List[Timeseries]: list of time series extracted from the reply
+        An array of time series extracted from the reply.
+
+    Raises:
+        ValueError: no time series data.
     """
     timeseries = []
     for proto_timeseries in reply.timeseries:
@@ -500,13 +504,13 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
 
 def _read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[float]:
     """
-    Converts a protobuf numeric calculation reply from Mesh server into a list of floats
+    Converts a protobuf numeric calculation reply from Mesh server into an array of floating points values.
 
     Args:
-        reply (core_pb2.ReadTimeseriesResponse): the reply from a time series read operation
+        reply: The reply from a time series read operation.
 
     Returns:
-        List[float]: list of floats extracted from the reply
+        An array of floating point values extracted from the reply.
     """
     results = []
     for value in reply.value:
@@ -514,9 +518,7 @@ def _read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[fl
     return results
 
 def _datetime_to_timestamp_pb2(datetime: datetime.datetime):
-    """
-        Converts datetime type to protobuf Timestamp type
-    """
+    """Converts datetime type to protobuf Timestamp type."""
     timestamp = timestamp_pb2.Timestamp()
     timestamp.FromDatetime(datetime)
     return timestamp

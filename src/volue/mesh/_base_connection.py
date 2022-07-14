@@ -1,6 +1,6 @@
 import abc
-from typing import Optional, TypeVar
 import uuid
+from typing import Optional, TypeVar
 
 import grpc
 
@@ -8,7 +8,6 @@ from . import _authentication
 from ._authentication import Authentication
 from ._credentials import Credentials
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
-
 
 C = TypeVar('C', bound='Connection')
 
@@ -43,7 +42,7 @@ class Connection(abc.ABC):
         """Create an insecure gRPC channel.
 
         Derived classes should implement this using either grpc.aio.insecure_channel
-        or grpc.insecure_channel depending on desired behaviour.
+        or grpc.insecure_channel depending on desired behavior.
         """
 
     @staticmethod
@@ -52,7 +51,7 @@ class Connection(abc.ABC):
         """Create a secure gRPC channel.
 
         Derived classes should implement this using either grpc.aio.secure_channel
-        or grpc.secure_channel depending on desired behaviour.
+        or grpc.secure_channel depending on desired behavior.
         """
 
     def __init__(self, host=None, port=None, root_pem_certificate=None,
@@ -61,12 +60,12 @@ class Connection(abc.ABC):
         """Create a connection for communication with Mesh server.
 
         Args:
-            host (str): Mesh server host name in the form an IP or domain name
-            port (int): Mesh server port number for gRPC communication
-            root_pem_certificate (str): PEM-encoded root certificate(s) as a byte string.
+            host: Mesh server host name in the form an IP or domain name
+            port: Mesh server port number for gRPC communication
+            root_pem_certificate: PEM-encoded root certificate(s) as a byte string.
                 If this argument is set then a secured connection will be created,
                 otherwise it will be an insecure connection.
-            authentication_parameters (Authentication.Parameters): TODO
+            authentication_parameters: TODO
 
         Note:
             There are 3 possible connection types:
@@ -200,7 +199,7 @@ class Connection(abc.ABC):
             Does not require an open session.
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -212,7 +211,7 @@ class Connection(abc.ABC):
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not
-                be completed
+                be completed.
         """
 
     @abc.abstractmethod
@@ -224,9 +223,9 @@ class Connection(abc.ABC):
 
         Raises:
             RuntimeError: Error message raised if the input is not valid and
-                the authentication is not configured
+                the authentication is not configured.
             grpc.RpcError: Error message raised if the gRPC request could not
-                be completed
+                be completed.
         """
 
     @abc.abstractmethod
@@ -235,7 +234,7 @@ class Connection(abc.ABC):
 
         Note:
             This is handled locally. No communication with the server is involved.
-            You will need to open the session before it will be created on the Mesh server
+            You will need to open the session before it will be created on the Mesh server.
         """
 
     @abc.abstractmethod
@@ -243,7 +242,7 @@ class Connection(abc.ABC):
         """Create a session with a given session id, the id of the session you are (or want to be) connected to.
 
         Args:
-            session_id (uuid.UUID): The id of the session you are (or want to be) connected to.
+            session_id: The id of the session you are (or want to be) connected to.
 
         Note:
             This is handled locally. No communication with the server is involved.

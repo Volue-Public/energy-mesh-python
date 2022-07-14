@@ -6,13 +6,17 @@ For more information see :ref:`mesh_functions:history`.
 
 """
 
-from abc import ABC, abstractmethod
 import datetime
+from abc import ABC, abstractmethod
 from typing import List
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import _Calculation, _convert_datetime_to_mesh_calc_format, \
-    _parse_timeseries_list_response, _parse_single_timeseries_response
+from volue.mesh.calc.common import (
+    _Calculation,
+    _convert_datetime_to_mesh_calc_format,
+    _parse_single_timeseries_response,
+    _parse_timeseries_list_response,
+)
 
 
 class _HistoryFunctionsBase(_Calculation, ABC):
@@ -25,11 +29,11 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Create an expression for `get_ts_as_of_time`.
 
         Args:
-            available_at_timepoint (datetime): is valid at the given timestamp
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            available_at_timepoint: Is valid at the given timestamp.
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Returns:
-            str: a `get_ts_as_of_time` expression
+            Mesh calculation expression.
         """
         converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(available_at_timepoint)
         expression = f"## = @GetTsAsOfTime(@t("
@@ -45,11 +49,11 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Creates an expression for `get_ts_historical_versions`.
 
         Args:
-            max_number_of_versions_to_get (int): maximum number of time series to return
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            max_number_of_versions_to_get: Maximum number of time series to return.
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Returns:
-            str: a `get_ts_historical_versions` expression
+            Mesh calculation expression.
         """
         expression = f"## = @GetTsHistoricalVersions(@t("
         if search_query:
@@ -65,22 +69,20 @@ class _HistoryFunctionsBase(_Calculation, ABC):
                           available_at_timepoint: datetime,
                           search_query: str = None) -> Timeseries:
         """
-        Finds values and status for a timeseries at a given historical time `available_at_timepoint`.
+        Finds values and status for a time series at a given historical time `available_at_timepoint`.
 
         Note:
-            The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `relative_to` object will be used.
-
-        Note:
-            If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.
+            * The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `relative_to` object will be used.
+            * If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.
 
         Args:
-            available_at_timepoint (datetime): is valid at the given timestamp
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            available_at_timepoint: Is valid at the given timestamp.
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
         Returns:
-             :class:`volue.mesh.Timeseries`: a time series.
+             A time series with historical values.
         """
         pass
 
@@ -99,14 +101,14 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
 
         Args:
-            max_number_of_versions_to_get (int): the maximum number of time series to return
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            max_number_of_versions_to_get: Maximum number of time series to return.
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
             The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            List[:class:`volue.mesh.Timeseries`]:
+            An array of time series with historical values.
         """
         pass
 

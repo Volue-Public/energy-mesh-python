@@ -45,7 +45,7 @@ class Connection(_base_connection.Connection):
             Used by the 'with' statement to open a session when entering 'with'. |coro|
 
             Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
+                grpc.RpcError: Error message raised if the gRPC request could not be completed
             """
             await self.open()
             return self
@@ -55,7 +55,7 @@ class Connection(_base_connection.Connection):
             Used by the 'with' statement to close a session when exiting 'with'. |coro|
 
             Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
+                grpc.RpcError: Error message raised if the gRPC request could not be completed
             """
             await self.close()
 

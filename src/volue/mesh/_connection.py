@@ -43,7 +43,7 @@ class Connection(_base_connection.Connection):
             """
             Used by the 'with' statement to open a session when entering 'with'
             Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
+                grpc.RpcError: Error message raised if the gRPC request could not be completed
             """
             self.open()
             return self
@@ -53,7 +53,7 @@ class Connection(_base_connection.Connection):
             Used by the 'with' statement to close a session when exiting 'with'.
 
             Raises:
-                grpc.RpcError:  Error message raised if the gRPC request could not be completed
+                grpc.RpcError: Error message raised if the gRPC request could not be completed
             """
             self.close()
 

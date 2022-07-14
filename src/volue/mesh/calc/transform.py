@@ -10,7 +10,11 @@ from abc import ABC, abstractmethod
 from enum import Enum
 
 from volue.mesh import Timeseries
-from volue.mesh.calc.common import _Calculation, Timezone, _parse_single_timeseries_response
+from volue.mesh.calc.common import (
+    Timezone,
+    _Calculation,
+    _parse_single_timeseries_response,
+)
 
 
 class Method(Enum):
@@ -38,7 +42,7 @@ class Method(Enum):
 
 
 class _TransformFunctionsBase(_Calculation, ABC):
-    """Base class for all tranformation function classes"""
+    """Base class for all transformation function classes"""
 
     def _transform_expression(self,
                               resolution: Timeseries.Resolution,
@@ -49,17 +53,17 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Create an expression for `transform`.
 
         Args:
-            resolution (:class:`volue.mesh.Timeseries.Resolution`): the resolution to transform to
-            method (Method): what method to use for the transformation
-            timezone (Timezone): timezone
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            resolution: The resolution to transform to.
+            method: What method to use for the transformation.
+            timezone: What time zone to use for the transformation.
+            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Returns:
-            str: a `transformation` expression
+            Mesh calculation expression.
         """
 
         if resolution is Timeseries.Resolution.BREAKPOINT:
-            raise ValueError("'BREAKPOINT' resolution is unsupported for timeseries transformation")
+            raise ValueError("'BREAKPOINT' resolution is unsupported for time series transformation")
 
         expression = f"## = @TRANSFORM(@t("
         if search_query:
@@ -95,16 +99,16 @@ class _TransformFunctionsBase(_Calculation, ABC):
             Most transformation methods are available for this latter use.
 
         Args:
-            resolution (:class:`volue.mesh.Timeseries.Resolution`): the resolution to transform to
-            method (Method): what method to use for the transformation
-            timezone (Timezone): timezone
-            search_query (str): a search formulated using the :doc:`Mesh search language <mesh_search>`
+            resolution: The resolution to transform to.
+            method: What method to use for the transformation.
+            timezone: What time zone to use for the transformation.
+            search_query: a search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
             The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `relative_to` object will be used.
 
         Returns:
-            :class:`volue.mesh.Timeseries`: a time series.
+             A time series with transformed values.
         """
         pass
 

@@ -3,6 +3,7 @@ Functionality for working with time series resources.
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
 
 from volue.mesh import Timeseries
@@ -29,7 +30,7 @@ class TimeseriesResource:
         """Create a `TimeseriesResource` from protobuf TimeseriesResource.
 
         Args:
-            proto_timeseries_resource: protobuf TimeseriesResource returned from the gRPC methods.
+            proto_timeseries_resource: Protobuf TimeseriesResource returned from the gRPC methods.
         """
         resource = cls()
         resource.timeseries_key = proto_timeseries_resource.timeseries_key

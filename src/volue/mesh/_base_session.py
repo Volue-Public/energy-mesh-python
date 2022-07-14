@@ -118,10 +118,10 @@ class Session(abc.ABC):
         Writes time series points for the specified time series in the given interval.
 
         Args:
-            time series (:class:`volue.mesh.Timeseries`): The modified time series
+            timeseries: The modified time series.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -146,7 +146,7 @@ class Session(abc.ABC):
                 object(s) should be returned. By default all attributes are returned.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -173,7 +173,7 @@ class Session(abc.ABC):
                 object(s) should be returned. By default all attributes are returned.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -198,7 +198,7 @@ class Session(abc.ABC):
             information: name, path, ID and value(s).
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -225,7 +225,7 @@ class Session(abc.ABC):
                 :ref:`Mesh model <mesh_model>`.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -243,7 +243,7 @@ class Session(abc.ABC):
                 (owned by the object to be deleted) in the model will also be deleted.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -262,7 +262,7 @@ class Session(abc.ABC):
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -280,9 +280,9 @@ class Session(abc.ABC):
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
             ValueError: Raised if given attribute ID or path points to an attribute of
-                different type than `TimeseriesAttribute`
+                different type than `TimeseriesAttribute`.
         """
 
     @abc.abstractmethod
@@ -306,7 +306,7 @@ class Session(abc.ABC):
                 path, ID and value(s).
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -330,7 +330,7 @@ class Session(abc.ABC):
                 path, ID and value(s).
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -354,7 +354,7 @@ class Session(abc.ABC):
                 bool, float, int, str, datetime or a list of simple types.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -378,7 +378,7 @@ class Session(abc.ABC):
                 argument to 0.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -394,7 +394,7 @@ class Session(abc.ABC):
                 virtual time series.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -416,7 +416,7 @@ class Session(abc.ABC):
             Specify which ever of the new_* fields you want to update.
 
         Raises:
-            grpc.RpcError: Error message raised if the gRPC request could not be completed
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
         """
 
     @abc.abstractmethod
@@ -437,7 +437,7 @@ class Session(abc.ABC):
             end_time: the end date and time of the time series interval
 
         Returns:
-            object containing all forecast functions
+            Object containing all forecast functions.
         """
 
     @abc.abstractmethod
@@ -458,7 +458,7 @@ class Session(abc.ABC):
             end_time: the end date and time of the time series interval
 
         Returns:
-           object containing all history functions
+           Object containing all history functions.
         """
 
     @abc.abstractmethod
@@ -479,7 +479,7 @@ class Session(abc.ABC):
             end_time: the end date and time of the time series interval
 
         Returns:
-            object containing all statistical functions
+            Object containing all statistical functions.
         """
 
     @abc.abstractmethod
@@ -500,7 +500,7 @@ class Session(abc.ABC):
             end_time: the end date and time of the time series interval
 
         Returns:
-            object containing all transformation functions
+            Object containing all transformation functions.
         """
 
     @abc.abstractmethod
