@@ -3,21 +3,18 @@ Performance tests of reading and writing time series with Python SDK.
 The tests are using and extending SimpleThermalTestModel.
 """
 
-from collections import defaultdict
-from datetime import datetime, timedelta
 import random
 import statistics
 import time
+from collections import defaultdict
+from datetime import datetime, timedelta
 from typing import List
-import uuid
 
 import grpc
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import Connection, MeshObjectId, Timeseries
-from volue.mesh._common import _to_proto_guid
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh import Connection, Timeseries
 
 # Ip address for the Mesh server
 HOST = "localhost"
@@ -33,9 +30,9 @@ def _read_timeseries_points(session: Connection.Session, path: str, start_interv
     duration_measurement_start = time.time()
 
     timeseries = session.read_timeseries_points(
+        target=path,
         start_time=start_time,
-        end_time=end_time,
-        mesh_object_id=MeshObjectId.with_full_name(path)
+        end_time=end_time
     )
 
     # useful for debugging purposes
@@ -81,10 +78,10 @@ class PerformanceTestRunner():
     VIRTUAL_TIMESERIES_ATTRIBUTE_NAME = "VtsAtt"
     # Calculation time series attribute name
     CALCULATION_TIMESERIES_ATTRIBUTE_NAME = "TsCalcAtt2"
-    # Physical time series ID (entry in resources)
-    PHYSICAL_TIMESERIES_ID = uuid.UUID("00000004-0001-0000-0000-000000000000")
-    # Virtual time series ID (entry in resources)
-    VIRTUAL_TIMESERIES_ID = uuid.UUID("00000004-000D-0000-0000-000000000000")
+    # Physical time series key
+    PHYSICAL_TIMESERIES_KEY = 2
+    # Virtual time series key
+    VIRTUAL_TIMESERIES_KEY = 4
 
 
     def __init__(self, connection: Connection,
@@ -108,28 +105,24 @@ class PerformanceTestRunner():
             for object_index in range(self._objects_to_create):
                 # create new object
                 new_object_name = f"{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
-                new_object = session.create_object(new_object_name, owner_attribute_path=self.NEW_OBJECT_OWNER_PATH)
+                new_object = session.create_object(target=self.NEW_OBJECT_OWNER_PATH, name=new_object_name)
 
                 # connect physical time series to the correct attribute of the new object
                 physical_time_series_attribute_path = f"{new_object.path}.{self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME}"
-                entry_id = core_pb2.TimeseriesEntryId()
-                entry_id.guid.CopyFrom(_to_proto_guid(self.PHYSICAL_TIMESERIES_ID))
-                session.update_timeseries_attribute(
-                    path=physical_time_series_attribute_path, new_timeseries_entry_id=entry_id)
+                session.update_timeseries_attribute(physical_time_series_attribute_path,
+                    new_timeseries_resource_key=self.PHYSICAL_TIMESERIES_KEY)
 
                 # connect virtual time series to the correct attribute of the new object
                 virtual_time_series_attribute_path = f"{new_object.path}.{self.VIRTUAL_TIMESERIES_ATTRIBUTE_NAME}"
-                entry_id = core_pb2.TimeseriesEntryId()
-                entry_id.guid.CopyFrom(_to_proto_guid(self.VIRTUAL_TIMESERIES_ID))
-                session.update_timeseries_attribute(
-                    path=virtual_time_series_attribute_path, new_timeseries_entry_id=entry_id)
+                session.update_timeseries_attribute(virtual_time_series_attribute_path,
+                    new_timeseries_resource_key=self.VIRTUAL_TIMESERIES_KEY)
 
                 # update expressions in calculation time series to make sure at least
                 # two time series are used for calculation
                 calculation_time_series_attribute_path = f"{new_object.path}.{self.CALCULATION_TIMESERIES_ATTRIBUTE_NAME}"
                 expression = "##= @t('.TsCalcAtt') + @t('.TsRawAtt')\n"
-                session.update_timeseries_attribute(
-                    path=calculation_time_series_attribute_path, new_local_expression=expression)
+                session.update_timeseries_attribute(calculation_time_series_attribute_path,
+                    new_local_expression=expression)
 
                 # write points to physical time series
                 # write maximum number of points from test cases
@@ -146,60 +139,43 @@ class PerformanceTestRunner():
         with self._connection.create_session() as session:
             for object_index in range(self._objects_to_create):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
-                session.delete_object(object_path=object_path, recursive_delete=True)
+                session.delete_object(object_path, recursive_delete=True)
 
             session.commit()
 
-
-    def _read_physical_timeseries(self, time_series_count: int, number_of_points: int):
-        """Test: reading physical time series."""
+    def _read_timeseries(self, attribute_name: str, time_series_count: int, number_of_points: int, test_case_name: str, timeseries_type: str):
         total_duration = 0
 
         with self._connection.create_session() as session:
             for object_index in range(time_series_count):
                 object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
-                time_series_attribute_path = f"{object_path}.{self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME}"
+                time_series_attribute_path = f"{object_path}.{attribute_name}"
 
                 total_duration += _read_timeseries_points(
                     session, time_series_attribute_path, self.START_INTERVAL, number_of_points)
 
-        test_case_name = f"TS1_N{time_series_count}_M{number_of_points}"
         self._results[test_case_name].append(total_duration)
-        print(f'\tRead physical time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
+        print(f'\tRead {timeseries_type} time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
+
+    def _read_physical_timeseries(self, time_series_count: int, number_of_points: int):
+        """Test: reading physical time series."""
+        test_case_name = f"TS1_N{time_series_count}_M{number_of_points}"
+        self._read_timeseries(self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME, time_series_count,
+            number_of_points, test_case_name, timeseries_type="physical")
 
 
     def _read_virtual_timeseries(self, time_series_count: int, number_of_points: int):
         """Test: reading virtual time series."""
-        total_duration = 0
-
-        with self._connection.create_session() as session:
-            for object_index in range(time_series_count):
-                object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
-                time_series_attribute_path = f"{object_path}.{self.VIRTUAL_TIMESERIES_ATTRIBUTE_NAME}"
-
-                total_duration += _read_timeseries_points(
-                    session, time_series_attribute_path, self.START_INTERVAL, number_of_points)
-
         test_case_name = f"TS2_N{time_series_count}_M{number_of_points}"
-        self._results[test_case_name].append(total_duration)
-        print(f'\tRead virtual time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
+        self._read_timeseries(self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME, time_series_count,
+            number_of_points, test_case_name, timeseries_type="virtual")
 
 
     def _read_calculation_timeseries(self, time_series_count: int, number_of_points: int):
         """Test: reading calculation time series."""
-        total_duration = 0
-
-        with self._connection.create_session() as session:
-            for object_index in range(time_series_count):
-                object_path = f"{self.NEW_OBJECT_OWNER_PATH}/{self.NEW_OBJECT_NAME_PREFIX}{object_index}"
-                time_series_attribute_path = f"{object_path}.{self.CALCULATION_TIMESERIES_ATTRIBUTE_NAME}"
-
-                total_duration += _read_timeseries_points(
-                    session, time_series_attribute_path, self.START_INTERVAL, number_of_points)
-
         test_case_name = f"TS3_N{time_series_count}_M{number_of_points}"
-        self._results[test_case_name].append(total_duration)
-        print(f'\tRead calculation time series: {time_series_count} time series count, {number_of_points} points, operation took {round(total_duration, 2)} seconds.')
+        self._read_timeseries(self.PHYSICAL_TIMESERIES_ATTRIBUTE_NAME, time_series_count,
+            number_of_points, test_case_name, timeseries_type="calculation")
 
 
     def _write_physical_timeseries(self, time_series_count: int, number_of_points: int, commit: bool):
