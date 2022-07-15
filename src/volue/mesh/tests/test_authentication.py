@@ -2,11 +2,13 @@
 Tests for volue.mesh.Authentication
 """
 
-import pytest
 import sys
 
-from volue import mesh
+import pytest
+import pytest_asyncio
+
 import volue.mesh.aio
+from volue import mesh
 
 
 @pytest.fixture
@@ -29,7 +31,7 @@ def kerberos_connection(mesh_test_config) -> mesh.Connection:
     connection.revoke_access_token()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def async_kerberos_connection(mesh_test_config) -> mesh.aio.Connection:
     assert mesh_test_config.creds_type == "kerberos"
     connection = mesh.aio.Connection.with_kerberos(mesh_test_config.address, mesh_test_config.tls_root_certs,
