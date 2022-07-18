@@ -204,7 +204,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_object(
         self,
-        target: Optional[Union[uuid.UUID, str]] = None,
+        target: Union[uuid.UUID, str],
         new_name: Optional[str] = None,
         new_owner_attribute: Optional[Union[uuid.UUID, str]] = None
     ) -> None:
