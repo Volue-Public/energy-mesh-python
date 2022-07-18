@@ -12,7 +12,7 @@ from ._common import (AttributesFilter, XyCurve, XySet,
                       RatingCurveSegment, RatingCurveVersion, _read_proto_reply,
                       _to_proto_attribute_masks, _to_proto_guid, _to_proto_attribute_mesh_id,
                       _to_proto_mesh_id, _to_proto_object_mesh_id,
-                      _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_protobuf_utcinterval)
+                      _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_proto_utcinterval)
 from ._object import Object
 from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
@@ -661,7 +661,7 @@ class Session(abc.ABC):
         if start_time is None or end_time is None:
             interval = None
         else:
-            interval = _to_protobuf_utcinterval(start_time, end_time)
+            interval = _to_proto_utcinterval(start_time, end_time)
 
         request = core_pb2.GetXySetsRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -695,7 +695,7 @@ class Session(abc.ABC):
         if start_time is None or end_time is None:
             interval = None
         else:
-            interval = _to_protobuf_utcinterval(start_time, end_time)
+            interval = _to_proto_utcinterval(start_time, end_time)
 
         def to_proto_xy_curve(curve: XyCurve) -> core_pb2.XyCurve:
             return core_pb2.XyCurve(reference_value=curve.z,
@@ -732,7 +732,7 @@ class Session(abc.ABC):
         request = core_pb2.ReadTimeseriesRequest(
             session_id=_to_proto_guid(self.session_id),
             timeseries_id=_to_proto_mesh_id(target),
-            interval=_to_protobuf_utcinterval(start_time, end_time),
+            interval=_to_proto_utcinterval(start_time, end_time),
         )
 
         response = yield request
@@ -999,7 +999,7 @@ class Session(abc.ABC):
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
-        interval = _to_protobuf_utcinterval(start_time, end_time)
+        interval = _to_proto_utcinterval(start_time, end_time)
 
         request = core_pb2.GetRatingCurveVersionsRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -1062,7 +1062,7 @@ class Session(abc.ABC):
         request = core_pb2.UpdateRatingCurveVersionsRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute=_to_proto_attribute_mesh_id(target),
-            interval=_to_protobuf_utcinterval(start_time, end_time),
+            interval=_to_proto_utcinterval(start_time, end_time),
             versions=proto_versions
         )
         return request

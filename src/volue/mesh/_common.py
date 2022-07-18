@@ -355,7 +355,7 @@ def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timese
     return resolution
 
 
-def _to_protobuf_utcinterval(start_time: datetime, end_time: datetime) -> resources_pb2.UtcInterval:
+def _to_proto_utcinterval(start_time: datetime, end_time: datetime) -> resources_pb2.UtcInterval:
     """
     Converts to protobuf UtcInterval.
 
@@ -399,7 +399,7 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     proto_timeseries = core_pb2.Timeseries(
         id=_to_proto_mesh_id_from_timeseries(timeseries),
         resolution=timeseries.resolution,
-        interval=_to_protobuf_utcinterval(start_time=timeseries.start_time, end_time=timeseries.end_time),
+        interval=_to_proto_utcinterval(start_time=timeseries.start_time, end_time=timeseries.end_time),
         data=buffer.to_pybytes()
     )
     return proto_timeseries
