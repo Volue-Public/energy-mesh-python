@@ -187,7 +187,7 @@
     <span class="n">_read_proto_reply</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_mesh_id</span><span class="p">,</span>
-    <span class="n">_to_protobuf_utcinterval</span><span class="p">,</span>
+    <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
@@ -321,7 +321,7 @@
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span>
-            <span class="n">interval</span><span class="o">=</span><span class="n">_to_protobuf_utcinterval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
+            <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
             <span class="n">relative_to</span><span class="o">=</span><span class="n">_to_proto_mesh_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
