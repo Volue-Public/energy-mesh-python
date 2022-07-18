@@ -5,9 +5,8 @@ Functionality for working with Mesh attributes.
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, List, Optional, Type, TypeVar, Union
+from typing import Any, List, Optional, Type, Union
 
 from dateutil import tz
 from google.protobuf import timestamp_pb2
@@ -68,13 +67,13 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute) -> Type[Attribute
             PROTO_DEFINITION_ONE_OF_FIELD_NAME)
 
     if attribute_value_type == 'timeseries_value':
-        attribute = TimeseriesAttribute._from_proto_attribute(proto_attribute)
+        attribute = TimeseriesAttribute(proto_attribute)
     # Relationship attribute is a bit special.
     # It does not have a value, only definition.
     # It will be treated as generic AttributeBase if
     # definition is not a part of the proto message.
     elif attribute_value_type is None and attribute_definition_type == "relationship_definition":
-        attribute = RelationshipAttribute._from_proto_attribute(proto_attribute)
+        attribute = RelationshipAttribute(proto_attribute)
     elif attribute_value_type in (
         "int_value",
         "double_value",
@@ -82,14 +81,13 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute) -> Type[Attribute
         "string_value",
         "utc_time_value",
     ):
-        attribute = SimpleAttribute._from_proto_attribute(proto_attribute)
+        attribute = SimpleAttribute(proto_attribute)
     else:
-        attribute = AttributeBase._from_proto_attribute(proto_attribute)
+        attribute = AttributeBase(proto_attribute)
 
     return attribute
 
 
-@dataclass
 class AttributeBase:
     """Base class for Mesh Attribute.
 
@@ -102,24 +100,24 @@ class AttributeBase:
     :ref:`Mesh attribute <mesh_attribute>`.
     """
 
-    @dataclass
-    class Definition:
+    class AttributeBaseDefinition:
         """Attribute definition common for all kinds of attributes."""
-        id: Optional[uuid.UUID] = None
-        path: Optional[str] = None
-        name: Optional[str] = None
-        description: Optional[str] = None
-        tags: List[str] = field(default_factory=list)
-        namespace: Optional[str] = None
-        value_type: Optional[str] = None
-        minimum_cardinality: Optional[int] = None
-        maximum_cardinality: Optional[int] = None
+        id: uuid.UUID
+        path: str
+        name: str
+        description: str
+        tags: List[str]
+        namespace: str
+        value_type: str
+        minimum_cardinality: int
+        maximum_cardinality: int
 
-        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
-            self.id = _from_proto_guid(proto_definition.id)
+        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+            self.id = _from_proto_guid(proto_definition.id)  # ID will always be present here
             self.path = proto_definition.path
             self.name = proto_definition.name
             self.description = proto_definition.description
+            self.tags = []
             for tag in proto_definition.tags:
                 self.tags.append(tag)
             self.namespace = proto_definition.name_space
@@ -127,37 +125,19 @@ class AttributeBase:
             self.minimum_cardinality = proto_definition.minimum_cardinality
             self.maximum_cardinality = proto_definition.maximum_cardinality
 
-    id: Optional[uuid.UUID] = None
-    path: Optional[str] = None
-    name: Optional[str] = None
-    definition: Optional[Definition] = None
+    id: uuid.UUID
+    path: str
+    name: str
+    definition: Optional[AttributeBaseDefinition] = None
 
-    @classmethod
-    def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
-        """Create an `AttributeBase` from protobuf Mesh Attribute.
-
-        Args:
-            proto_attribute: protobuf Attribute returned from the gRPC methods.
-        """
-        attribute = cls()
-        attribute._init_from_proto_attribute(proto_attribute)
-        return attribute
-
-
-    def _init_from_proto_attribute(self, proto_attribute: core_pb2.Attribute):
-        """Initialize an `Attribute` from protobuf Mesh Attribute.
-
-        Args:
-            proto_attribute: protobuf Attribute returned from the gRPC methods.
-        """
+    def __init__(self, proto_attribute: core_pb2.Attribute):
         self.id = _from_proto_guid(proto_attribute.id)
         self.path = proto_attribute.path
         self.name = proto_attribute.name
 
         # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
-            self.definition = self.Definition()
-            self.definition._init_from_proto_definition(proto_attribute.definition)
+        if proto_attribute.HasField('definition') and self.definition is None:
+            self.definition = self.AttributeBaseDefinition(proto_attribute.definition)
 
 
     def _get_string_representation(self) -> str:
@@ -191,7 +171,6 @@ class AttributeBase:
         )
 
 
-@dataclass
 class SimpleAttribute(AttributeBase):
     """Represents simple Mesh Attributes.
 
@@ -218,16 +197,15 @@ class SimpleAttribute(AttributeBase):
     :ref:`Mesh attribute <mesh_attribute>`.
     """
 
-    @dataclass
-    class Definition(AttributeBase.Definition):
+    class SimpleAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for simple attributes."""
-        default_value: Optional[SIMPLE_TYPE] = None
-        minimum_value: Optional[SIMPLE_TYPE] = None
-        maximum_value: Optional[SIMPLE_TYPE] = None
-        unit_of_measurement: Optional[str] = None
+        default_value: SIMPLE_TYPE
+        minimum_value: SIMPLE_TYPE
+        maximum_value: SIMPLE_TYPE
+        unit_of_measurement: str
 
-        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
-            super()._init_from_proto_definition(proto_definition)
+        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+            super().__init__(proto_definition)
             definition_type_name = proto_definition.WhichOneof(
                 PROTO_DEFINITION_ONE_OF_FIELD_NAME)
             # get the proto message
@@ -246,28 +224,22 @@ class SimpleAttribute(AttributeBase):
             self.unit_of_measurement = _get_field_value(
                 'unit_of_measurement', field_names, definition_type)
 
+    value: SIMPLE_TYPE_OR_COLLECTION
+    definition: Optional[SimpleAttributeDefinition] = None
 
-    value: Optional[SIMPLE_TYPE_OR_COLLECTION] = None
-    definition: Optional[Definition] = None
-
-    @classmethod
-    def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
-        """Create a `SimpleAttribute` from protobuf Mesh Attribute.
-
-        Args:
-            proto_attribute: protobuf Attribute returned from the gRPC methods.
-        """
-        attribute = cls()
-        super()._init_from_proto_attribute(attribute, proto_attribute)
-
+    def __init__(self, proto_attribute: core_pb2.Attribute):
         if proto_attribute.HasField('singular_value'):
-            attribute.value = _get_attribute_value(proto_attribute.singular_value)
+            self.value = _get_attribute_value(proto_attribute.singular_value)
         elif len(proto_attribute.collection_values) > 0:
-            attribute.value = []
+            self.value = []
             for value in proto_attribute.collection_values:
-                attribute.value.append(_get_attribute_value(value))
+                self.value.append(_get_attribute_value(value))
 
-        return attribute
+        # in basic view the definition is not a part of response from Mesh server
+        if proto_attribute.HasField('definition') and self.definition is None:
+            self.definition = self.SimpleAttributeDefinition(proto_attribute.definition)
+
+        super().__init__(proto_attribute)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
@@ -289,7 +261,6 @@ class SimpleAttribute(AttributeBase):
         return message
 
 
-@dataclass
 class RelationshipAttribute(AttributeBase):
     """Represents relationship Mesh Attribute.
 
@@ -308,31 +279,22 @@ class RelationshipAttribute(AttributeBase):
     :ref:`Mesh attribute <mesh_attribute>`.
     """
 
-    @dataclass
-    class Definition(AttributeBase.Definition):
+    class RelationshipAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for relationship attribute."""
 
         object_type: Optional[str] = None
 
-        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
-            super()._init_from_proto_definition(proto_definition)
+        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+            super().__init__(proto_definition)
             self.object_type = proto_definition.relationship_definition.object_type
-            return self
 
+    definition: Optional[RelationshipAttributeDefinition] = None
 
-    definition: Optional[Definition] = None
-
-    @classmethod
-    def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
-        """Create a `RelationshipAttribute` from protobuf Mesh Attribute.
-
-        Args:
-            proto_attribute: protobuf Attribute returned from the gRPC methods.
-        """
-        attribute = cls()
-        super()._init_from_proto_attribute(attribute, proto_attribute)
-
-        return attribute
+    def __init__(self, proto_attribute: core_pb2.Attribute):
+        # in basic view the definition is not a part of response from Mesh server
+        if proto_attribute.HasField('definition') and self.definition is None:
+            self.definition = self.RelationshipAttributeDefinition(proto_attribute.definition)
+        super().__init__(proto_attribute)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
@@ -350,7 +312,6 @@ class RelationshipAttribute(AttributeBase):
         return message
 
 
-@dataclass
 class TimeseriesAttribute(AttributeBase):
     """Represents time series Mesh Attribute.
 
@@ -369,51 +330,45 @@ class TimeseriesAttribute(AttributeBase):
     Refer to documentation for more details:
     :ref:`Mesh attribute <mesh_attribute>`.
     """
-    @dataclass
-    class Definition(AttributeBase.Definition):
+
+    class TimeseriesAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for time series attribute."""
 
-        template_expression: Optional[str] = None
-        unit_of_measurement: Optional[str] = None
+        template_expression: str
+        unit_of_measurement: str
 
-        def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
-            super()._init_from_proto_definition(proto_definition)
+        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+            super().__init__(proto_definition)
             self.template_expression = proto_definition.timeseries_definition.template_expression
             self.unit_of_measurement = proto_definition.timeseries_definition.unit_of_measurement
 
 
+    is_local_expression: bool
+    expression: str
     time_series_resource: Optional[TimeseriesResource] = None
-    is_local_expression: Optional[bool] = None
-    expression: Optional[str] = None
-    definition: Optional[Definition] = None
+    definition: Optional[TimeseriesAttributeDefinition] = None
 
-    @classmethod
-    def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
-        """Create a `TimeseriesAttribute` from protobuf Mesh Attribute.
 
-        Args:
-            proto_attribute: protobuf Attribute returned from the gRPC methods.
-
-        Raises:
-            TypeError: Error message raised if collection of time series
-                attributes is passed as input.
-        """
-        attribute = cls()
-        super()._init_from_proto_attribute(attribute, proto_attribute)
+    def __init__(self, proto_attribute: core_pb2.Attribute):
 
         if proto_attribute.HasField('singular_value'):
             proto_value = proto_attribute.singular_value.timeseries_value
 
             if proto_value.HasField('time_series_resource'):
-                attribute.time_series_resource = TimeseriesResource._from_proto_timeseries_resource(
+                self.time_series_resource = TimeseriesResource._from_proto_timeseries_resource(
                     proto_value.time_series_resource)
 
-            attribute.is_local_expression = proto_value.is_local_expression
-            attribute.expression = proto_value.expression
+            self.is_local_expression = proto_value.is_local_expression
+            self.expression = proto_value.expression
         elif len(proto_attribute.collection_values) > 0:
             raise TypeError('time series collection attribute is not supported')
 
-        return attribute
+        # in basic view the definition is not a part of response from Mesh server
+        if proto_attribute.HasField('definition') and self.definition is None:
+            self.definition = self.TimeseriesAttributeDefinition(proto_attribute.definition)
+
+        super().__init__(proto_attribute)
+
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
