@@ -3,20 +3,21 @@ Functionality for working with Mesh attributes.
 """
 
 from __future__ import annotations
+
+import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from dateutil import tz
-from typing import Any, List, Type, TypeVar, Union
-import uuid
+from typing import Any, List, Optional, Type, TypeVar, Union
 
+from dateutil import tz
 from google.protobuf import timestamp_pb2
 
 from volue.mesh import TimeseriesResource
 from volue.mesh._common import _from_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 
-SIMPLE_TYPE = TypeVar('SIMPLE_TYPE', int, float, bool, str, datetime)
-SIMPLE_TYPE_OR_COLLECTION = Union[SIMPLE_TYPE, List[SIMPLE_TYPE]]
+SIMPLE_TYPE = Union[int, float, bool, str, datetime]
+SIMPLE_TYPE_OR_COLLECTION = Union[SIMPLE_TYPE, List[int], List[float], List[bool], List[str], List[datetime]]
 
 PROTO_VALUE_ONE_OF_FIELD_NAME = 'value_oneof'
 PROTO_DEFINITION_ONE_OF_FIELD_NAME = 'definition_type_oneof'
@@ -104,15 +105,15 @@ class AttributeBase:
     @dataclass
     class Definition:
         """Attribute definition common for all kinds of attributes."""
-        id: uuid = None
-        path: str = None
-        name: str = None
-        description: str = None
+        id: Optional[uuid.UUID] = None
+        path: Optional[str] = None
+        name: Optional[str] = None
+        description: Optional[str] = None
         tags: List[str] = field(default_factory=list)
-        namespace: str = None
-        value_type: str = None
-        minimum_cardinality: int = None
-        maximum_cardinality: int = None
+        namespace: Optional[str] = None
+        value_type: Optional[str] = None
+        minimum_cardinality: Optional[int] = None
+        maximum_cardinality: Optional[int] = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
             self.id = _from_proto_guid(proto_definition.id)
@@ -126,10 +127,10 @@ class AttributeBase:
             self.minimum_cardinality = proto_definition.minimum_cardinality
             self.maximum_cardinality = proto_definition.maximum_cardinality
 
-    id: uuid = None
-    path: str = None
-    name: str = None
-    definition: Definition = None
+    id: Optional[uuid.UUID] = None
+    path: Optional[str] = None
+    name: Optional[str] = None
+    definition: Optional[Definition] = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -220,11 +221,10 @@ class SimpleAttribute(AttributeBase):
     @dataclass
     class Definition(AttributeBase.Definition):
         """Attribute definition for simple attributes."""
-
-        default_value: SIMPLE_TYPE = None
-        minimum_value: SIMPLE_TYPE = None
-        maximum_value: SIMPLE_TYPE = None
-        unit_of_measurement: str = None
+        default_value: Optional[SIMPLE_TYPE] = None
+        minimum_value: Optional[SIMPLE_TYPE] = None
+        maximum_value: Optional[SIMPLE_TYPE] = None
+        unit_of_measurement: Optional[str] = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
             super()._init_from_proto_definition(proto_definition)
@@ -247,8 +247,8 @@ class SimpleAttribute(AttributeBase):
                 'unit_of_measurement', field_names, definition_type)
 
 
-    value: SIMPLE_TYPE_OR_COLLECTION = None
-    definition: Definition = None
+    value: Optional[SIMPLE_TYPE_OR_COLLECTION] = None
+    definition: Optional[Definition] = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -312,7 +312,7 @@ class RelationshipAttribute(AttributeBase):
     class Definition(AttributeBase.Definition):
         """Attribute definition for relationship attribute."""
 
-        object_type: str = None
+        object_type: Optional[str] = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
             super()._init_from_proto_definition(proto_definition)
@@ -320,7 +320,7 @@ class RelationshipAttribute(AttributeBase):
             return self
 
 
-    definition: Definition = None
+    definition: Optional[Definition] = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
@@ -373,8 +373,8 @@ class TimeseriesAttribute(AttributeBase):
     class Definition(AttributeBase.Definition):
         """Attribute definition for time series attribute."""
 
-        template_expression: str = None
-        unit_of_measurement: str = None
+        template_expression: Optional[str] = None
+        unit_of_measurement: Optional[str] = None
 
         def _init_from_proto_definition(self, proto_definition: core_pb2.AttributeDefinition):
             super()._init_from_proto_definition(proto_definition)
@@ -382,10 +382,10 @@ class TimeseriesAttribute(AttributeBase):
             self.unit_of_measurement = proto_definition.timeseries_definition.unit_of_measurement
 
 
-    time_series_resource: TimeseriesResource = None
-    is_local_expression: bool = None
-    expression: str = None
-    definition: Definition = None
+    time_series_resource: Optional[TimeseriesResource] = None
+    is_local_expression: Optional[bool] = None
+    expression: Optional[str] = None
+    definition: Optional[Definition] = None
 
     @classmethod
     def _from_proto_attribute(cls, proto_attribute: core_pb2.Attribute):
