@@ -185,7 +185,7 @@
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timeseries</span><span class="p">,</span> <span class="n">TimeseriesResource</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._attribute</span> <span class="kn">import</span> <span class="n">TimeseriesAttribute</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">AttributesFilter</span>
@@ -375,6 +375,7 @@
     <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
         <span class="n">timeseries_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span>
             <span class="n">timeseries_key</span><span class="o">=</span><span class="n">test_case</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeseries_info</span><span class="p">,</span> <span class="n">TimeseriesResource</span><span class="p">)</span>
         <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">timeseries_key</span>
         <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">path</span>
         <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">name</span>
@@ -542,6 +543,7 @@
             <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">timeseries_attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+            <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">timeseries_attributes</span><span class="p">)</span>
             <span class="c1"># take one and verify</span>
             <span class="n">some_power_plant_ts_attr_path</span> <span class="o">=</span>  <span class="n">get_attribute_path_principal</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;TsRawAtt&quot;</span>
             <span class="n">some_power_plant_ts_attr</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">attr</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">timeseries_attributes</span> <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">some_power_plant_ts_attr_path</span><span class="p">)</span>
@@ -894,13 +896,15 @@
     <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">type_name</span> <span class="o">==</span> <span class="s2">&quot;PlantElementType&quot;</span>
     <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_path</span> <span class="o">==</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">25</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">Object</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="c1"># without full info the definition is not set</span>
-        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span> <span class="ow">is</span> <span class="kc">None</span></div>
+        <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_get_object_with_full_attribute_info"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_get_object_with_full_attribute_info">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -984,7 +988,8 @@
 
     <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SomePowerPlantChimney1&quot;</span> <span class="ow">or</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;SomePowerPlantChimney2&quot;</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span></div>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">Object</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_create_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_create_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -999,13 +1004,15 @@
     <span class="n">new_object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">owner_attribute_path</span><span class="p">,</span> <span class="n">new_object_name</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">new_object_name</span>
     <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">owner_attribute_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">new_object_name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_object</span><span class="p">,</span> <span class="n">Object</span><span class="p">)</span>
 
     <span class="nb">object</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">new_object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">name</span>
     <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">path</span>
     <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">type_name</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">type_name</span>
     <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">owner_id</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span>
-    <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">owner_path</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_path</span></div>
+    <span class="k">assert</span> <span class="n">new_object</span><span class="o">.</span><span class="n">owner_path</span> <span class="o">==</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_path</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">Object</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_update_object"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_aio_connection.test_update_object">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -1068,6 +1075,7 @@
     <span class="n">bool_array_values</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
 
     <span class="n">attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">bool_array_att_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">bool_array_att_path</span>
     <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">attribute_name</span>
     <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;Repository/SimpleThermalTestRepository/PlantElementType/&quot;</span> <span class="o">+</span> <span class="n">attribute_name</span>
@@ -1214,6 +1222,9 @@
     <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span>
         <span class="n">attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base_attribute</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">)</span>
+
     <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="p">[</span><span class="n">base_attribute</span><span class="p">,</span> <span class="n">timeseries_attribute</span><span class="p">]:</span>
         <span class="n">verify_plant_timeseries_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span></div>
 
@@ -1318,6 +1329,7 @@
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">attributes_names</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">attribute</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">attributes_names</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">)</span>
         <span class="n">verify_time_series_calculation_attribute</span><span class="p">(</span><span class="n">attribute</span><span class="o">=</span><span class="n">attribute</span><span class="p">,</span> <span class="n">attribute_info</span><span class="o">=</span><span class="n">attributes_info</span><span class="p">[</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
@@ -1450,7 +1462,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
 </pre></div>
 
            </div>
