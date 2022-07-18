@@ -13,7 +13,7 @@ import grpc
 import pyarrow as pa
 import pytest
 
-from volue.mesh import Timeseries
+from volue.mesh import AttributeBase, Object, Timeseries, TimeseriesResource
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh._attribute import TimeseriesAttribute
 from volue.mesh._common import AttributesFilter
@@ -203,6 +203,7 @@ async def test_get_timeseries_resource(async_session):
     for test_case in test_cases:
         timeseries_info = await async_session.get_timeseries_resource_info(
             timeseries_key=test_case.timeseries_key)
+        assert isinstance(timeseries_info, TimeseriesResource)
         assert timeseries_info.timeseries_key == test_case.timeseries_key
         assert timeseries_info.path == test_case.path
         assert timeseries_info.name == test_case.name
@@ -370,6 +371,7 @@ async def test_search_timeseries_attribute_async(async_session):
             timeseries_attributes = await async_session.search_for_timeseries_attributes(**test_case)
             assert timeseries_attributes is not None
             assert len(timeseries_attributes) == 3
+            assert all(isinstance(attr, TimeseriesAttribute) for attr in timeseries_attributes)
             # take one and verify
             some_power_plant_ts_attr_path =  get_attribute_path_principal() + "TsRawAtt"
             some_power_plant_ts_attr = next(attr for attr in timeseries_attributes if attr.path == some_power_plant_ts_attr_path)
@@ -722,6 +724,7 @@ async def test_get_object(async_session):
     assert object.type_name == "PlantElementType"
     assert object.owner_path == "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
     assert len(object.attributes) == 25
+    assert isinstance(object, Object)
 
     for attribute in object.attributes.values():
         assert attribute.name is not None
@@ -729,6 +732,7 @@ async def test_get_object(async_session):
         assert attribute.id is not None
         # without full info the definition is not set
         assert attribute.definition is None
+        assert isinstance(attribute, AttributeBase)
 
 
 @pytest.mark.asyncio
@@ -813,6 +817,7 @@ async def test_search_objects(async_session):
     for object in objects:
         assert object.name == "SomePowerPlantChimney1" or object.name == "SomePowerPlantChimney2"
         assert len(object.attributes) == 7
+        assert isinstance(object, Object)
 
 
 @pytest.mark.asyncio
@@ -827,6 +832,7 @@ async def test_create_object(async_session):
     new_object = await async_session.create_object(owner_attribute_path, new_object_name)
     assert new_object.name == new_object_name
     assert new_object.path == f"{owner_attribute_path}/{new_object_name}"
+    assert isinstance(new_object, Object)
 
     object = await async_session.get_object(new_object.id)
     assert new_object.name == object.name
@@ -834,6 +840,7 @@ async def test_create_object(async_session):
     assert new_object.type_name == object.type_name
     assert new_object.owner_id == object.owner_id
     assert new_object.owner_path == object.owner_path
+    assert isinstance(object, Object)
 
 
 @pytest.mark.asyncio
@@ -896,6 +903,7 @@ async def test_get_bool_array_attribute(async_session):
     bool_array_values = [False, True, False, True, False]
 
     attribute = await async_session.get_attribute(bool_array_att_path, full_attribute_info=True)
+    assert isinstance(attribute, AttributeBase)
     assert attribute.path == bool_array_att_path
     assert attribute.name == attribute_name
     assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
@@ -1042,6 +1050,9 @@ async def test_get_physical_time_series_attribute(async_session):
     timeseries_attribute = await async_session.get_timeseries_attribute(
         attribute_path, full_attribute_info=True)
 
+    assert isinstance(base_attribute, AttributeBase)
+    assert isinstance(timeseries_attribute, TimeseriesAttribute)
+
     for attribute in [base_attribute, timeseries_attribute]:
         verify_plant_timeseries_attribute(attribute)
 
@@ -1146,6 +1157,7 @@ async def test_search_multiple_attributes(async_session):
     assert len(attributes) == len(attributes_names)
     for attribute in attributes:
         assert attribute.name in attributes_names
+        assert isinstance(attribute, AttributeBase)
         verify_time_series_calculation_attribute(attribute=attribute, attribute_info=attributes_info[attribute.name], attribute_name=attribute.name)
 
 
@@ -1278,4 +1290,4 @@ async def test_update_single_simple_attribute(async_session):
 
 
 if __name__ == '__main__':
-    pytest.main()
+    sys.exit(pytest.main(sys.argv))

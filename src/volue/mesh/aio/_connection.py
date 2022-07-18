@@ -193,7 +193,7 @@ class Connection(_base_connection.Connection):
 
             objects = []
             async for proto_object in self.mesh_service.SearchObjects(request):
-                objects.append(proto_object)
+                objects.append(Object._from_proto_object(proto_object))
             return objects
 
         async def create_object(self, target: Union[uuid.UUID, str], name: str) -> Object:
