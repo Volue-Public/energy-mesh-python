@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import typing
 
 import pytest
+import pytest_asyncio
 
 from volue import mesh
 import volue.mesh.aio
@@ -119,7 +120,7 @@ def async_connection():
                                                  _test_config.krb5_svc, _test_config.krb5_usr)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def async_session(async_connection):
     """Return a :class:`mesh.aio.Connection.Session` for the current test.
 
