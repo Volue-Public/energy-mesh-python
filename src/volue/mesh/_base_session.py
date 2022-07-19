@@ -1,7 +1,7 @@
 import abc
 import dateutil
 import typing
-from typing import List, Optional, Type, Tuple, Union
+from typing import List, Optional, Tuple, Union
 import uuid
 from datetime import datetime
 
@@ -249,7 +249,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_attribute(
         self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
-    ) -> Type[AttributeBase]:
+    ) -> AttributeBase:
         """
         Request information associated with a Mesh :ref:`attribute <mesh_attribute>`
         from the Mesh model.
@@ -291,7 +291,7 @@ class Session(abc.ABC):
         target: Union[uuid.UUID, str],
         query: str,
         full_attribute_info: bool = False
-    ) -> List[Type[AttributeBase]]:
+    ) -> List[AttributeBase]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh
         :ref:`attributes <mesh_attribute>` in the Mesh model.

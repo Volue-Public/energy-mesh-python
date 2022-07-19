@@ -4,7 +4,7 @@ Functionality for synchronously connecting to a Mesh server and working with its
 
 from datetime import datetime
 import typing
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Union
 import uuid
 
 from google import protobuf
@@ -109,7 +109,7 @@ class Connection(_base_connection.Connection):
 
         def get_attribute(
             self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
-        ) -> Type[AttributeBase]:
+        ) -> AttributeBase:
             request = super()._prepare_get_attribute_request(
                 target, full_attribute_info)
             proto_attribute = self.mesh_service.GetAttribute(request)
@@ -128,7 +128,7 @@ class Connection(_base_connection.Connection):
             target: Union[uuid.UUID, str],
             query: str,
             full_attribute_info: bool = False,
-        ) -> List[Type[AttributeBase]]:
+        ) -> List[AttributeBase]:
             request = super()._prepare_search_attributes_request(
                 target, query, full_attribute_info)
 
