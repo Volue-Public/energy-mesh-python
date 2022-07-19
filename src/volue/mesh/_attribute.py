@@ -121,14 +121,13 @@ class AttributeBase:
         self.path: str = proto_attribute.path
         self.name: str = proto_attribute.name
 
-        # For typing hints: "AttributeBaseDefinition | None".
-        # Additionally need to place it first so that type
-        # checkers like`mypy` are able to infer optional type.
         self.definition = None
 
         # in basic view the definition is not a part of response from Mesh server
         if init_definition and proto_attribute.HasField('definition'):
-            self.definition = self.AttributeBaseDefinition(proto_attribute.definition)
+            self.definition: Optional[
+                AttributeBase.AttributeBaseDefinition
+            ] = self.AttributeBaseDefinition(proto_attribute.definition)
 
 
     def _get_string_representation(self) -> str:
@@ -222,10 +221,10 @@ class SimpleAttribute(AttributeBase):
                 self.value.append(_get_attribute_value(value))
 
         # in basic view the definition is not a part of response from Mesh server
-        if not proto_attribute.HasField('definition'):
-            self.definition = None  # for typing hints: "SimpleAttributeDefinition | None"
-        else:
-            self.definition = self.SimpleAttributeDefinition(proto_attribute.definition)
+        if proto_attribute.HasField('definition'):
+            self.definition: Optional[
+                SimpleAttribute.SimpleAttributeDefinition
+            ] = self.SimpleAttributeDefinition(proto_attribute.definition)
 
 
     def __str__(self) -> str:
@@ -277,10 +276,10 @@ class RelationshipAttribute(AttributeBase):
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
         # in basic view the definition is not a part of response from Mesh server
-        if not proto_attribute.HasField('definition'):
-            self.definition = None  # for typing hints: "RelationshipAttributeDefinition | None"
-        else:
-            self.definition = self.RelationshipAttributeDefinition(proto_attribute.definition)
+        if proto_attribute.HasField('definition'):
+            self.definition: Optional[
+                RelationshipAttribute.RelationshipAttributeDefinition
+            ] = self.RelationshipAttributeDefinition(proto_attribute.definition)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
@@ -344,10 +343,10 @@ class TimeseriesAttribute(AttributeBase):
             raise TypeError('time series collection attribute is not supported')
             
         # in basic view the definition is not a part of response from Mesh server
-        if not proto_attribute.HasField('definition'):
-            self.definition = None  # for typing hints: "TimeseriesAttributeDefinition | None"
-        else:
-            self.definition = self.TimeseriesAttributeDefinition(proto_attribute.definition)
+        if proto_attribute.HasField('definition'):
+            self.definition: Optional[
+                TimeseriesAttribute.TimeseriesAttributeDefinition
+            ] = self.TimeseriesAttributeDefinition(proto_attribute.definition)
 
 
     def __str__(self: TimeseriesAttribute) -> str:
