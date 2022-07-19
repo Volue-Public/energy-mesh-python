@@ -176,7 +176,7 @@
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span> <span class="nn">typing</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
@@ -209,7 +209,7 @@
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
                 <span class="n">mesh_service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span>
-                <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span> <span class="n">mesh_service</span><span class="o">=</span><span class="n">mesh_service</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -231,7 +231,7 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Connection.Session.open"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.open">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Connection.Session.open"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.open">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">reply</span></div>
@@ -276,15 +276,15 @@
 <div class="viewcode-block" id="Connection.Session.update_timeseries_resource_info"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.update_timeseries_resource_info">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">update_timeseries_resource_info</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span>
                 <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_timeseries_resource_request</span><span class="p">(</span>
                 <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">new_curve_type</span><span class="p">,</span> <span class="n">new_unit_of_measurement</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateTimeseriesResource</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.get_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="n">AttributeBase</span><span class="p">]:</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeBase</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_get_attribute_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
             <span class="n">proto_attribute</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
@@ -303,7 +303,7 @@
             <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
             <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">AttributeBase</span><span class="p">]]:</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeBase</span><span class="p">]:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_search_attributes_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
 
@@ -334,8 +334,8 @@
 <div class="viewcode-block" id="Connection.Session.update_timeseries_attribute"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.update_timeseries_attribute">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">update_timeseries_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-            <span class="n">new_local_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_local_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_timeseries_attribute_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="p">,</span> <span class="n">new_timeseries_resource_key</span>
@@ -424,8 +424,8 @@
 
 <div class="viewcode-block" id="Connection.Session.get_xy_sets"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.get_xy_sets">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_xy_sets</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">XySet</span><span class="p">]:</span>
             <span class="n">gen</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_xy_sets_impl</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">versions_only</span><span class="p">)</span>
@@ -435,8 +435,8 @@
 
 <div class="viewcode-block" id="Connection.Session.update_xy_sets"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.update_xy_sets">[docs]</a>        <span class="k">async</span> <span class="k">def</span> <span class="nf">update_xy_sets</span><span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-                <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">new_xy_sets</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">XySet</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_xy_sets_request</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">new_xy_sets</span><span class="p">)</span>
@@ -484,7 +484,7 @@
         <span class="k">return</span> <span class="n">UserIdentity</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetUserIdentity</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">()))</span></div>
 
-<div class="viewcode-block" id="Connection.revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.revoke_access_token">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Connection.revoke_access_token"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.revoke_access_token">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Authentication not configured for this connection&#39;</span><span class="p">)</span>
 
@@ -492,10 +492,10 @@
             <span class="n">protobuf</span><span class="o">.</span><span class="n">wrappers_pb2</span><span class="o">.</span><span class="n">StringValue</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">delete_access_token</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Connection.create_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.create_session">[docs]</a>    <span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Session</span><span class="p">]:</span>
+<div class="viewcode-block" id="Connection.create_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.create_session">[docs]</a>    <span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.connect_to_session">[docs]</a>    <span class="k">def</span> <span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.connect_to_session">[docs]</a>    <span class="k">def</span> <span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span></div></div>
 </pre></div>
 

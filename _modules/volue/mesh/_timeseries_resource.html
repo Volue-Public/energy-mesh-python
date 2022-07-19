@@ -187,32 +187,34 @@
 <span class="k">class</span> <span class="nc">TimeseriesResource</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Represents a Mesh time series resource (either physical or virtual).&quot;&quot;&quot;</span>
 
-    <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">temporary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">curve_type</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">virtual_timeseries_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">temporary</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">curve_type</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span>
+    <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span>
+    <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">virtual_timeseries_expression</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_proto_timeseries_resource</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
-        <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_from_proto_timeseries_resource</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create a `TimeseriesResource` from protobuf TimeseriesResource.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            proto_timeseries_resource: Protobuf TimeseriesResource returned from the gRPC methods.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">resource</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">timeseries_key</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">path</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">name</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">temporary</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">temporary</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">curve_type</span> <span class="o">=</span> <span class="n">_from_proto_curve_type</span><span class="p">(</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="p">)</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">_from_proto_resolution</span><span class="p">(</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">resolution</span><span class="p">)</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">unit_of_measurement</span>
-        <span class="n">resource</span><span class="o">.</span><span class="n">virtual_timeseries_expression</span> <span class="o">=</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">virtual_timeseries_expression</span>
+        <span class="n">resource</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">timeseries_key</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">temporary</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">temporary</span><span class="p">,</span>
+            <span class="n">curve_type</span><span class="o">=</span><span class="n">_from_proto_curve_type</span><span class="p">(</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="p">),</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="n">_from_proto_resolution</span><span class="p">(</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">resolution</span><span class="p">),</span>
+            <span class="n">unit_of_measurement</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="p">,</span>
+            <span class="n">virtual_timeseries_expression</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">virtual_timeseries_expression</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">resource</span></div>
 </pre></div>

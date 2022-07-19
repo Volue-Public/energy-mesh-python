@@ -284,9 +284,9 @@
 <span class="sd">            In this case attributes A1 and A2 will be returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">name_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tag_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">namespace_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tag_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">namespace_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">return_no_attributes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="UserIdentity"><a class="viewcode-back" href="../../../api.html#volue.mesh.UserIdentity">[docs]</a><span class="nd">@dataclass</span>
@@ -421,7 +421,7 @@
 <span class="sd">         :doc:`mesh_rating_curve`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_range_from</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
     <span class="n">x_value_segments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RatingCurveSegment</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -440,7 +440,7 @@
         <span class="k">return</span> <span class="n">message</span></div>
 
 
-<span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
 
 <span class="sd">    Args:</span>
@@ -451,7 +451,7 @@
     <span class="k">return</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Converts from Microsoft&#39;s GUID format to UUID format.</span>
 
 <span class="sd">    Args:</span>
@@ -527,7 +527,7 @@
     <span class="k">return</span> <span class="n">resolution</span>
 
 
-<span class="k">def</span> <span class="nf">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts to protobuf UtcInterval.</span>
 
