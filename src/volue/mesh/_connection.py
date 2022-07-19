@@ -4,7 +4,7 @@ Functionality for synchronously connecting to a Mesh server and working with its
 
 from datetime import datetime
 import typing
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Union
 import uuid
 
 from google import protobuf
@@ -35,7 +35,7 @@ class Connection(_base_connection.Connection):
         def __init__(
                 self,
                 mesh_service: core_pb2_grpc.MeshServiceStub,
-                session_id: uuid.UUID = None):
+                session_id: Optional[uuid.UUID] = None):
             super().__init__(session_id=session_id, mesh_service=mesh_service)
 
 
@@ -101,15 +101,15 @@ class Connection(_base_connection.Connection):
         def update_timeseries_resource_info(
                 self,
                 timeseries_key: int,
-                new_curve_type: Timeseries.Curve = None,
-                new_unit_of_measurement: str = None) -> None:
+                new_curve_type: Optional[Timeseries.Curve] = None,
+                new_unit_of_measurement: Optional[str] = None) -> None:
             request = super()._prepare_update_timeseries_resource_request(
                 timeseries_key, new_curve_type, new_unit_of_measurement)
             self.mesh_service.UpdateTimeseriesResource(request)
 
         def get_attribute(
             self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
-        ) -> Type[AttributeBase]:
+        ) -> AttributeBase:
             request = super()._prepare_get_attribute_request(
                 target, full_attribute_info)
             proto_attribute = self.mesh_service.GetAttribute(request)
@@ -128,7 +128,7 @@ class Connection(_base_connection.Connection):
             target: Union[uuid.UUID, str],
             query: str,
             full_attribute_info: bool = False,
-        ) -> List[Type[AttributeBase]]:
+        ) -> List[AttributeBase]:
             request = super()._prepare_search_attributes_request(
                 target, query, full_attribute_info)
 
@@ -160,8 +160,8 @@ class Connection(_base_connection.Connection):
         def update_timeseries_attribute(
             self,
             target: Union[uuid.UUID, str],
-            new_local_expression: str = None,
-            new_timeseries_resource_key: int = None,
+            new_local_expression: Optional[str] = None,
+            new_timeseries_resource_key: Optional[int] = None,
         ) -> None:
             request = super()._prepare_update_timeseries_attribute_request(
                 target, new_local_expression, new_timeseries_resource_key)
@@ -250,8 +250,8 @@ class Connection(_base_connection.Connection):
 
         def get_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],
-                start_time: datetime = None,
-                end_time: datetime = None,
+                start_time: Optional[datetime] = None,
+                end_time: Optional[datetime] = None,
                 versions_only: bool = False
         ) -> typing.List[XySet]:
             gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
@@ -260,8 +260,8 @@ class Connection(_base_connection.Connection):
 
         def update_xy_sets(
                 self, target: typing.Union[uuid.UUID, str],
-                start_time: datetime = None,
-                end_time: datetime = None,
+                start_time: Optional[datetime] = None,
+                end_time: Optional[datetime] = None,
                 new_xy_sets: typing.List[XySet] = []
         ) -> None:
             request = super()._prepare_update_xy_sets_request(target, start_time, end_time, new_xy_sets)
@@ -316,8 +316,8 @@ class Connection(_base_connection.Connection):
             protobuf.wrappers_pb2.StringValue(value=self.auth_metadata_plugin.token))
         self.auth_metadata_plugin.delete_access_token()
 
-    def create_session(self) -> Optional[Session]:
+    def create_session(self) -> Session:
         return self.connect_to_session(session_id=None)
 
-    def connect_to_session(self, session_id: uuid) -> Optional[Session]:
+    def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
         return self.Session(self.mesh_service, session_id)

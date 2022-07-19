@@ -112,9 +112,9 @@ class AttributesFilter:
             In this case attributes A1 and A2 will be returned.
     """
 
-    name_mask: List[str] = None
-    tag_mask: List[str] = None
-    namespace_mask: List[str] = None
+    name_mask: Optional[List[str]] = None
+    tag_mask: Optional[List[str]] = None
+    namespace_mask: Optional[List[str]] = None
     return_no_attributes: bool = False
 
 @dataclass
@@ -249,7 +249,7 @@ class RatingCurveVersion():
          :doc:`mesh_rating_curve`
     """
     x_range_from: float
-    valid_from_time: datetime
+    valid_from_time: datetime.datetime
     x_value_segments: List[RatingCurveSegment]
 
     def __iter__(self):
@@ -268,7 +268,7 @@ class RatingCurveVersion():
         return message
 
 
-def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
+def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[resources_pb2.Guid]:
     """Converts from Python UUID format to Microsoft's GUID format.
 
     Args:
@@ -279,7 +279,7 @@ def _to_proto_guid(uuid: uuid.UUID) -> Optional[resources_pb2.Guid]:
     return resources_pb2.Guid(bytes_le=uuid.bytes_le)
 
 
-def _from_proto_guid(guid: resources_pb2.Guid) -> uuid.UUID:
+def _from_proto_guid(guid: Optional[resources_pb2.Guid]) -> Optional[uuid.UUID]:
     """Converts from Microsoft's GUID format to UUID format.
 
     Args:
@@ -355,7 +355,7 @@ def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timese
     return resolution
 
 
-def _to_proto_utcinterval(start_time: datetime, end_time: datetime) -> resources_pb2.UtcInterval:
+def _to_proto_utcinterval(start_time: datetime.datetime, end_time: datetime.datetime) -> resources_pb2.UtcInterval:
     """
     Converts to protobuf UtcInterval.
 

@@ -34,7 +34,7 @@ class Timezone(Enum):
     UTC = 2
 
 
-def _convert_datetime_to_mesh_calc_format(input: datetime) -> str:
+def _convert_datetime_to_mesh_calc_format(input: datetime.datetime) -> str:
     """
     Converts input datetime to format expected by Mesh calculator.
     Datetime is converted to UTC. If input datetime is time zone naive then it is already treated as UTC.
@@ -118,8 +118,8 @@ class _Calculation:
     def __init__(self,
                  session,
                  target: Union[uuid.UUID, str, int],
-                 start_time: datetime,
-                 end_time: datetime):
+                 start_time: datetime.datetime,
+                 end_time: datetime.datetime):
         """
         Args:
             session: Active Mesh session.
@@ -132,8 +132,8 @@ class _Calculation:
         """
         self.session = session
         self.target: Union[uuid.UUID, str, int] = target
-        self.start_time: datetime = start_time
-        self.end_time: datetime = end_time
+        self.start_time: datetime.datetime = start_time
+        self.end_time: datetime.datetime = end_time
 
     def prepare_request(self, expression: str) -> core_pb2.CalculationRequest:
         """

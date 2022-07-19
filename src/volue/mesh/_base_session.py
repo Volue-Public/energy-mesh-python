@@ -1,7 +1,7 @@
 import abc
 import dateutil
 import typing
-from typing import List, Optional, Type, Tuple, Union
+from typing import List, Optional, Tuple, Union
 import uuid
 from datetime import datetime
 
@@ -40,7 +40,7 @@ class Session(abc.ABC):
                 the :doc:`Mesh server <mesh_server>`.
             session_id: ID of the session you are (or want to be) connected to.
         """
-        self.session_id: uuid = session_id
+        self.session_id: Optional[uuid.UUID] = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
 
 
@@ -204,7 +204,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_object(
         self,
-        target: Optional[Union[uuid.UUID, str]] = None,
+        target: Union[uuid.UUID, str],
         new_name: Optional[str] = None,
         new_owner_attribute: Optional[Union[uuid.UUID, str]] = None
     ) -> None:
@@ -249,7 +249,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_attribute(
         self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
-    ) -> Type[AttributeBase]:
+    ) -> AttributeBase:
         """
         Request information associated with a Mesh :ref:`attribute <mesh_attribute>`
         from the Mesh model.
@@ -291,7 +291,7 @@ class Session(abc.ABC):
         target: Union[uuid.UUID, str],
         query: str,
         full_attribute_info: bool = False
-    ) -> List[Type[AttributeBase]]:
+    ) -> List[AttributeBase]:
         """
         Use the :doc:`Mesh search language <mesh_search>` to find Mesh
         :ref:`attributes <mesh_attribute>` in the Mesh model.
@@ -361,8 +361,8 @@ class Session(abc.ABC):
     def update_timeseries_attribute(
         self,
         target: Union[uuid.UUID, str],
-        new_local_expression: str = None,
-        new_timeseries_resource_key: int = None
+        new_local_expression: Optional[str] = None,
+        new_timeseries_resource_key: Optional[int] = None
     ) -> None:
         """
         Update meta data of an existing Mesh time series attribute's in the Mesh model.
@@ -401,8 +401,8 @@ class Session(abc.ABC):
     def update_timeseries_resource_info(
             self,
             timeseries_key: int,
-            new_curve_type: Timeseries.Curve = None,
-            new_unit_of_measurement: str = None) -> None:
+            new_curve_type: Optional[Timeseries.Curve] = None,
+            new_unit_of_measurement: Optional[str] = None) -> None:
         """
         Update information associated with a physical or virtual time series.
 
@@ -646,7 +646,8 @@ class Session(abc.ABC):
 
     def _get_xy_sets_impl(
             self, target: typing.Union[uuid.UUID, str],
-            start_time: datetime, end_time: datetime,
+            start_time: Optional[datetime],
+            end_time: Optional[datetime],
             versions_only: bool
     ) -> typing.Generator[typing.Any, core_pb2.GetXySetsResponse, None]:
         """Generator implementation of get_xy_sets.
@@ -686,7 +687,8 @@ class Session(abc.ABC):
 
     def _prepare_update_xy_sets_request(
             self, target: typing.Union[uuid.UUID, str],
-            start_time: datetime, end_time: datetime,
+            start_time: Optional[datetime],
+            end_time: Optional[datetime],
             new_xy_sets: typing.List[XySet]
     ) -> core_pb2.UpdateXySetsRequest:
         if (start_time is None) != (end_time is None):
@@ -750,7 +752,7 @@ class Session(abc.ABC):
         self,
         target: Union[uuid.UUID, str],
         full_attribute_info: bool,
-        attributes_filter: AttributesFilter
+        attributes_filter: Optional[AttributesFilter]
     ) -> core_pb2.GetObjectRequest:
         """Create a gRPC `GetObjectRequest`"""
 
@@ -769,7 +771,7 @@ class Session(abc.ABC):
         target: Union[uuid.UUID, str],
         query: str,
         full_attribute_info: bool,
-        attributes_filter: AttributesFilter
+        attributes_filter: Optional[AttributesFilter]
     ) -> core_pb2.SearchObjectsRequest:
         """Create a gRPC `SearchObjectsRequest`"""
 
@@ -799,8 +801,8 @@ class Session(abc.ABC):
     def _prepare_update_object_request(
         self,
         target: Union[uuid.UUID, str],
-        new_name: str,
-        new_owner_attribute: Union[uuid.UUID, str],
+        new_name: Optional[str],
+        new_owner_attribute: Optional[Union[uuid.UUID, str]],
     ) -> core_pb2.UpdateObjectRequest:
         """Create a gRPC `UpdateObjectRequest`"""
 
@@ -895,8 +897,8 @@ class Session(abc.ABC):
     def _prepare_update_timeseries_attribute_request(
         self,
         target: Union[uuid.UUID, str],
-        new_local_expression: str,
-        new_timeseries_resource_key: int
+        new_local_expression: Optional[str],
+        new_timeseries_resource_key: Optional[int]
     ) -> core_pb2.UpdateTimeseriesAttributeRequest:
 
         request = core_pb2.UpdateTimeseriesAttributeRequest(
@@ -941,7 +943,7 @@ class Session(abc.ABC):
     def _to_update_attribute_request_values(
         self,
         value: SIMPLE_TYPE_OR_COLLECTION
-    ) -> Tuple[core_pb2.AttributeValue, List[core_pb2.AttributeValue]]:
+    ) -> Tuple[Optional[core_pb2.AttributeValue], Optional[List[core_pb2.AttributeValue]]]:
         """
             Convert value supplied by the user to singular value/collection values
             expected by the protobuf request.
@@ -962,8 +964,8 @@ class Session(abc.ABC):
     def _prepare_update_timeseries_resource_request(
         self,
         timeseries_key: int,
-        new_curve_type: Timeseries.Curve,
-        new_unit_of_measurement: str
+        new_curve_type: Optional[Timeseries.Curve],
+        new_unit_of_measurement: Optional[str]
     ) -> core_pb2.UpdateTimeseriesResourceRequest:
 
         request = core_pb2.UpdateTimeseriesResourceRequest(
