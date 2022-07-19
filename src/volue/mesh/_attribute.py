@@ -44,7 +44,7 @@ def _get_attribute_value(proto_attribute_value: core_pb2.AttributeValue):
     return proto_value
 
 
-def _from_proto_attribute(proto_attribute: core_pb2.Attribute) -> AttributeBase:
+def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
     """Factory for creating attributes from protobuf Mesh Attribute.
 
     Args:
