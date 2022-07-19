@@ -3,6 +3,7 @@ Tests for volue.mesh.Object.
 """
 
 import sys
+import uuid
 
 import grpc
 import pytest
@@ -10,6 +11,7 @@ import pytest
 from volue.mesh import AttributeBase, AttributesFilter, Object
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+OBJECT_ID = uuid.UUID("0000000A-0001-0000-0000-000000000000")
 
 
 def verify_object_attributes(object: Object, full_info: bool = False):
@@ -35,13 +37,8 @@ def test_get_object(session):
     Check that `get_object` returns specified object with
     all attributes and basic attribute information.
     """
-
-    # ID is auto-generated when creating an object, so
-    # first we need to read it.
-    object_id = session.get_object(OBJECT_PATH).id
-
     # get object by path and ID
-    targets = [OBJECT_PATH, object_id]
+    targets = [OBJECT_PATH, OBJECT_ID]
 
     for target in targets:
         object = session.get_object(target)
@@ -115,11 +112,8 @@ def test_search_objects(session):
     Check that `search_objects` returns correct objects according to specified search query.
     """
     start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
+    start_object_id = uuid.UUID("0000000B-0001-0000-0000-000000000000")
     query = "*[.Type=ChimneyElementType]"
-
-    # ID is auto-generated when creating an object, so
-    # first we need to read it.
-    start_object_id = session.get_object(start_object_path).id
 
     # provide start object by path and ID
     targets = [start_object_path, start_object_id]
@@ -174,12 +168,12 @@ def test_update_object(session):
     Check that `update_object` updates existing object.
     """
     object_to_update_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2"
+    object_to_update_id = uuid.UUID("0000000A-0005-0000-0000-000000000000")
     new_owner_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney1.ChimneyToChimneyRef"
     new_object_name = "SomeNewPowerPlantChimney"
 
-    # ID is auto-generated when creating an object or attribute,
+    # ID is auto-generated when creating an attribute,
     # so first we need to read it.
-    object_to_update_id = session.get_object(object_to_update_path).id
     new_owner_attribute_id = session.get_attribute(new_owner_attribute_path).id
 
     # update object by path and ID
@@ -211,10 +205,7 @@ def test_delete_object(session):
     Check that `delete_object` deletes existing object without children.
     """
     object_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.PlantToChimneyRef/SomePowerPlantChimney2"
-
-    # ID is auto-generated when creating an object, so
-    # first we need to read it.
-    object_id = session.get_object(object_path).id
+    object_id = uuid.UUID("0000000A-0005-0000-0000-000000000000")
 
     # delete object by path and ID
     targets = [object_path, object_id]
@@ -231,13 +222,8 @@ def test_recursive_delete_object(session):
     """
     Check that `delete_object` deletes recursively existing object with children.
     """
-
-    # ID is auto-generated when creating an object, so
-    # first we need to read it.
-    object_id = session.get_object(OBJECT_PATH).id
-
     # delete object by path and ID
-    targets = [OBJECT_PATH, object_id]
+    targets = [OBJECT_PATH, OBJECT_ID]
 
     for target in targets:
         session.delete_object(target, recursive_delete=True)
