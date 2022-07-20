@@ -289,7 +289,7 @@ def test_get_create_object_with_invalid_target(session, invalid_target):
     Check that 'create_object' with invalid target (meaning incorrect owner
     attribute) and 'update_object' with invalid new owner attribute will throw.
     """
-    error_message_regex = "(Owner of the object not found)|(Wrong type of the owner)"
+    error_message_regex = "(O|owner of the object not found)|(Wrong type of the owner)"
 
     with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.create_object(invalid_target, "new_name")
