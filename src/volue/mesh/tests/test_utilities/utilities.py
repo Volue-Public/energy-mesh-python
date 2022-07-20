@@ -5,15 +5,11 @@ Utility functions used by tests
 from dataclasses import dataclass
 from datetime import datetime
 import math
-import socket
-import subprocess
-import sys
-from typing import Union
 import uuid
 
 import pyarrow as pa
 
-from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute, TimeseriesResource
+from volue.mesh import Timeseries, TimeseriesResource
 
 
 @dataclass()
@@ -209,43 +205,3 @@ def get_timeseries_attribute_2():
     )
     full_path = timeseries_attribute.silo + timeseries_attribute.path
     return timeseries_attribute, full_path
-
-def get_attribute_path_principal() -> str:
-    return "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
-
-def verify_plant_timeseries_attribute(attribute: Union[AttributeBase, TimeseriesAttribute],
-    is_definition: bool = True):
-    """Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsRawAtt"""
-
-    attribute_name = "TsRawAtt"
-    attribute_path =  get_attribute_path_principal() + attribute_name
-
-    assert attribute.path == attribute_path
-    assert attribute.name == attribute_name
-    assert attribute.time_series_resource.timeseries_key == 0
-    assert attribute.time_series_resource.temporary == False
-    assert attribute.time_series_resource.curve_type == Timeseries.Curve.PIECEWISELINEAR
-    assert attribute.time_series_resource.resolution == Timeseries.Resolution.HOUR
-    assert attribute.time_series_resource.unit_of_measurement == "Unit2"
-    assert attribute.expression == ""
-    assert attribute.is_local_expression == False
-
-    if is_definition:
-        assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + attribute_name
-        # attribute definition name is the same as attribute name
-        assert attribute.definition.name == attribute_name
-        assert attribute.definition.description == ""
-        assert len(attribute.definition.tags) == 0
-        assert attribute.definition.namespace == "SimpleThermalTestRepository"
-        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
-        assert attribute.definition.minimum_cardinality == 1
-        assert attribute.definition.maximum_cardinality == 1
-        assert attribute.definition.template_expression == ""
-
-def verify_plant_base_attribute(attribute: AttributeBase, path: str, name: str):
-    assert attribute.path == path
-    assert attribute.name == name
-    assert attribute.definition.path == "Repository/SimpleThermalTestRepository/PlantElementType/" + name
-    assert attribute.definition.description == ""
-    assert len(attribute.definition.tags) == 0
-    assert attribute.definition.namespace == "SimpleThermalTestRepository"
