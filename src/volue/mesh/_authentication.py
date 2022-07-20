@@ -4,15 +4,16 @@ Mesh authentication functionality.
 
 import base64
 import threading
+import typing
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
+from typing import Optional
 
 import grpc
 from google import protobuf
 
-from volue.mesh.proto.core.v1alpha import core_pb2
-from volue.mesh.proto.core.v1alpha import core_pb2_grpc
+from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 if platform.startswith('win32'):
     import winkerberos as kerberos
@@ -34,7 +35,6 @@ class Authentication(grpc.AuthMetadataPlugin):
 
     Note:
         Token duration - tokens are valid for **1 hour**. After this time a new token needs to be acquired.
-
     """
 
     @dataclass
@@ -43,11 +43,11 @@ class Authentication(grpc.AuthMetadataPlugin):
         Authentication parameters.
 
         Args:
-            service_principal (str): name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
-            user_principal (str): name of an active directory user, e.g.: 'ad\\user.name'
+            service_principal: Name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com.
+            user_principal: Name of an active directory user, e.g.: 'ad\\user.name'.
         """
         service_principal: str
-        user_principal: str = None
+        user_principal: Optional[str] = None
 
     class KerberosTokenIterator():
         """
@@ -59,17 +59,17 @@ class Authentication(grpc.AuthMetadataPlugin):
         def __init__(self, service_principal: str, user_principal: str):
             """
             Args:
-                service_principal (str): name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com
-                user_principal (str): name of an active directory user, e.g.: 'ad\\user.name'
+                service_principal: Name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com.
+                user_principal: Name of an active directory user, e.g.: 'ad\\user.name'.
             """
             self.krb_context = None
             self.first_iteration: bool = True
             self.final_response_received: bool = False
             self.response_received = threading.Event()
-            self.server_kerberos_token: bytes = None
+            self.server_kerberos_token: Optional[bytes] = None
             self.service_principal: str = service_principal
             self.user_principal: str = user_principal
-            self.exception: Exception = None
+            self.exception: Optional[Exception] = None
 
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
@@ -81,9 +81,8 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         def __next__(self) -> protobuf.wrappers_pb2.BytesValue:
             """
-
             Returns:
-                protobuf.wrappers_pb2.BytesValue: the kerberos token
+                The kerberos token.
             """
             try:
                 if self.first_iteration:
@@ -120,17 +119,17 @@ class Authentication(grpc.AuthMetadataPlugin):
             self.first_iteration = False
             return client_token
 
-        def process_response(self, server_kerberos_token: bytes):
+        def process_response(self, server_kerberos_token: bytes) -> None:
             """
             Sets new response from Mesh with kerberos token to be processed by client.
             
             Args:
-                server_kerberos_token (bytes): the kerberos token
+                server_kerberos_token: The kerberos token.
             """
             self.server_kerberos_token = server_kerberos_token
             self.response_received.set()
 
-        def signal_final_response_received(self):
+        def signal_final_response_received(self) -> None:
             """
             Signals to the iterator that final response from server was received.
             Cancel any preparation (meaning exit wait) as there is no need to prepare next request.
@@ -146,24 +145,24 @@ class Authentication(grpc.AuthMetadataPlugin):
         r"""
         If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: 'HOST/hostname.ad.examplecompany.com'
 
-        If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\\user.name' or r'ad\user.name'
-        
+        If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\\user.name' or r'ad\user.name'.
+
         Note:
             winkerberos converts service principal name if provided in RFC-2078 format. '@' is converted to '/' if there is no '/' character in the service principal name.
 
             E.g.: service@hostname
-            Would be converted to:  service/hostname
+            Would be converted to: service/hostname
 
         Args:
-            parameters (Parameters): authentication parameters
-            target (str): Mesh server host name in the form an IP or domain name
-            channel_credentials (grpc.ChannelCredentials): an encapsulation of the data required to create a secure Channel.
+            parameters: Authentication parameters.
+            target: Mesh server host name in the form an IP or domain name.
+            channel_credentials: An encapsulation of the data required to create a secure Channel.
         """
 
         self.service_principal: str = parameters.service_principal
-        self.user_principal: str = parameters.user_principal
-        self.token: str = None
-        self.token_expiration_date: datetime = None
+        self.user_principal: Optional[str] = parameters.user_principal
+        self.token: Optional[str] = None
+        self.token_expiration_date: Optional[datetime] = None
 
         # create separate channel for getting and refreshing Mesh token
         channel = grpc.secure_channel(
@@ -186,7 +185,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         Checks if current token is still valid.
 
         Returns:
-            bool: if token is valid
+            Flag if token is valid.
         """
         if self.token_expiration_date is None:
             return False
@@ -199,9 +198,9 @@ class Authentication(grpc.AuthMetadataPlugin):
         Gets Mesh token used for authorization in other calls to Mesh server.
 
         Raises:
-            grpc.RpcError:  Error message raised if the gRPC request could not be completed
-            (win)kerberos.GSSError: errors from kerberos
-            RuntimeError: invalid token duration
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+            (win)kerberos.GSSError: Errors from kerberos.
+            RuntimeError: Invalid token duration.
         """
 
         # save current time - will be used to compute token expiration date
@@ -226,8 +225,8 @@ class Authentication(grpc.AuthMetadataPlugin):
                         raise RuntimeError('Invalid Mesh token duration')
 
                     adjusted_token_duration = token_duration - duration_margin
-                    self.token_expiration_date: datetime = auth_request_call_timestamp + adjusted_token_duration
-                    self.token: str = mesh_response.bearer_token
+                    self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
+                    self.token = mesh_response.bearer_token
         except grpc.RpcError as ex:
             if kerberos_token_iterator.exception is not None:
                 # replace vague RpcError with more detailed exception
@@ -245,7 +244,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         self.token_expiration_date = None
 
 
-def authenticate_fake(service: core_pb2_grpc.MeshServiceStub, name: str) -> (str, datetime):
+def authenticate_fake(service: core_pb2_grpc.MeshServiceStub, name: str) -> typing.Tuple[str, datetime]:
     """Authenticate to Mesh with a fake identity.
 
     Requires Mesh configuration. Internal use only.
