@@ -329,6 +329,18 @@ The steps below assume Poetry binary is added to your PATH.</p>
 <p>to drop into a shell with the dependencies available.</p>
 </div></blockquote>
 </li>
+<li><p>For the development we are using <a class="reference external" href="https://github.com/psf/black">Black</a>
+auto formatter. It is added as a development dependency and installed
+automatically by Poetry, so you don’t need to install anything extra.
+Before committing your changes and creating a Pull Request to Python SDK
+repository make sure the code is correctly formatted, by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">poetry</span> <span class="n">run</span> <span class="n">black</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>Most IDEs have options to automate the usage of auto formatters like
+<em>Black</em>, e.g.: the formatting can be executed on file save, so you don’t
+need to make an explicit call like presented above.</p>
+</li>
 </ol>
 <div class="section" id="dependencies">
 <h4>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h4>
