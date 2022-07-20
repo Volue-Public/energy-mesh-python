@@ -234,7 +234,10 @@ def test_update_timeseries_attribute_with_non_existing_timeseries_key(session):
             target
         ).time_series_resource
 
-        with pytest.raises(grpc.RpcError):
+        with pytest.raises(
+            grpc.RpcError,
+            match=f"time series key: {non_existing_timeseries_key} not found",
+        ):
             session.update_timeseries_attribute(
                 target, new_timeseries_resource_key=non_existing_timeseries_key
             )
@@ -255,7 +258,7 @@ def test_update_timeseries_attribute_without_parameters_to_update(session):
     targets = get_targets(session, attribute_name)
 
     for target in targets:
-        with pytest.raises(grpc.RpcError):
+        with pytest.raises(grpc.RpcError, match="nothing is set to be updated"):
             session.update_timeseries_attribute(target)
 
 
@@ -671,7 +674,10 @@ def test_update_simple_attribute_invalid_request(session):
     for target in targets:
         original_values = session.get_attribute(target).value
 
-        with pytest.raises(grpc.RpcError):
+        with pytest.raises(
+            grpc.RpcError,
+            match="Check if you correctly applied the singular value/collection values",
+        ):
             session.update_simple_attribute(target, value=7)
 
         attribute = session.get_attribute(target)
@@ -696,13 +702,15 @@ def test_get_update_attribute_with_invalid_target(session, invalid_target):
     'get_attribute' and 'update_simple_attribute' with invalid target
     (meaning incorrect attribute path or ID) will throw.
     """
-    with pytest.raises(grpc.RpcError):
+    error_message_regex = "(not found)|(Invalid type)"
+
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.get_timeseries_attribute(invalid_target)
-    with pytest.raises(grpc.RpcError):
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.update_timeseries_attribute(invalid_target, new_local_expression="test")
-    with pytest.raises(grpc.RpcError):
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.get_attribute(invalid_target)
-    with pytest.raises(grpc.RpcError):
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.update_simple_attribute(invalid_target, value="test")
 
 
@@ -720,11 +728,12 @@ def test_search_for_attributes_with_invalid_target(session, invalid_target):
     Check that 'search_for_timeseries_attributes' and 'search_for_attributes'
     with invalid target (meaning incorrect start object path or ID) will throw.
     """
+    error_message_regex = "(not found)|(Invalid type)"
     query = "{*}.TsCalcAtt"
 
-    with pytest.raises(grpc.RpcError):
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.search_for_timeseries_attributes(invalid_target, query)
-    with pytest.raises(grpc.RpcError):
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.search_for_attributes(invalid_target, query)
 
 
