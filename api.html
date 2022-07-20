@@ -369,8 +369,8 @@ received from the server.</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>service_principal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com</p></li>
-<li><p><strong>user_principal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of an active directory user, e.g.: ‘aduser.name’</p></li>
+<li><p><strong>service_principal</strong> – Name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com.</p></li>
+<li><p><strong>user_principal</strong> – Name of an active directory user, e.g.: ‘aduser.name’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -378,18 +378,18 @@ received from the server.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.process_response">
-<span class="sig-name descname"><span class="pre">process_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_kerberos_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.process_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.process_response" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">process_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_kerberos_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.process_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.process_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets new response from Mesh with kerberos token to be processed by client.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>server_kerberos_token</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.10)"><em>bytes</em></a>) – the kerberos token</p>
+<dd class="field-odd"><p><strong>server_kerberos_token</strong> – The kerberos token.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received">
-<span class="sig-name descname"><span class="pre">signal_final_response_received</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.signal_final_response_received"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">signal_final_response_received</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.signal_final_response_received"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received" title="Permalink to this definition">¶</a></dt>
 <dd><p>Signals to the iterator that final response from server was received.
 Cancel any preparation (meaning exit wait) as there is no need to prepare next request.</p>
 </dd></dl>
@@ -403,8 +403,8 @@ Cancel any preparation (meaning exit wait) as there is no need to prepare next r
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>service_principal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com</p></li>
-<li><p><strong>user_principal</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of an active directory user, e.g.: ‘aduser.name’</p></li>
+<li><p><strong>service_principal</strong> – Name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com.</p></li>
+<li><p><strong>user_principal</strong> – Name of an active directory user, e.g.: ‘aduser.name’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -415,7 +415,7 @@ Cancel any preparation (meaning exit wait) as there is no need to prepare next r
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters.user_principal">
-<span class="sig-name descname"><span class="pre">user_principal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.Authentication.Parameters.user_principal" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">user_principal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.Authentication.Parameters.user_principal" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -424,19 +424,19 @@ Cancel any preparation (meaning exit wait) as there is no need to prepare next r
 <dt class="sig sig-object py" id="volue.mesh.Authentication.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">volue.mesh._authentication.Authentication.Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.46.2)"><span class="pre">grpc.ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: ‘HOST/hostname.ad.examplecompany.com’</p>
-<p>If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\user.name’ or r’aduser.name’</p>
+<p>If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\user.name’ or r’aduser.name’.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>winkerberos converts service principal name if provided in RFC-2078 format. ‘&#64;’ is converted to ‘/’ if there is no ‘/’ character in the service principal name.</p>
 <p>E.g.: <a class="reference external" href="mailto:service&#37;&#52;&#48;hostname">service<span>&#64;</span>hostname</a>
-Would be converted to:  service/hostname</p>
+Would be converted to: service/hostname</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> (<a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh.Authentication.Parameters"><em>Parameters</em></a>) – authentication parameters</p></li>
-<li><p><strong>target</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Mesh server host name in the form an IP or domain name</p></li>
-<li><p><strong>channel_credentials</strong> (<a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.46.2)"><em>grpc.ChannelCredentials</em></a>) – an encapsulation of the data required to create a secure Channel.</p></li>
+<li><p><strong>parameters</strong> – Authentication parameters.</p></li>
+<li><p><strong>target</strong> – Mesh server host name in the form an IP or domain name.</p></li>
+<li><p><strong>channel_credentials</strong> – An encapsulation of the data required to create a secure Channel.</p></li>
 </ul>
 </dd>
 </dl>
@@ -456,9 +456,9 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p></li>
-<li><p><strong>(</strong><strong>win</strong><strong>)</strong><strong>kerberos.GSSError</strong> – errors from kerberos</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – invalid token duration</p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p></li>
+<li><p><strong>(</strong><strong>win</strong><strong>)</strong><strong>kerberos.GSSError</strong> – Errors from kerberos.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – Invalid token duration.</p></li>
 </ul>
 </dd>
 </dl>
@@ -470,10 +470,7 @@ mesh_service.RevokeAccessToken call is made in Connection classes.</p>
 <dd><p>Checks if current token is still valid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>if token is valid</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dd class="field-odd"><p>Flag if token is valid.</p>
 </dd>
 </dl>
 </dd></dl>
