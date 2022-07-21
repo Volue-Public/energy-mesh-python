@@ -43,7 +43,7 @@ class Method(Enum):
 
 
 class _TransformFunctionsBase(_Calculation, ABC):
-    """Base class for all transformation function classes"""
+    """Base class for all transformation function classes."""
 
     def _transform_expression(self,
                               resolution: Timeseries.Resolution,
@@ -106,7 +106,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
             search_query: a search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
-            The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `relative_to` object will be used.
+            The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `target` will be used.
 
         Returns:
              A time series with transformed values.

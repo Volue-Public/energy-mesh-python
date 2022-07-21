@@ -20,7 +20,7 @@ from volue.mesh.calc.common import (
 
 
 class _HistoryFunctionsBase(_Calculation, ABC):
-    """Base class for all history function classes"""
+    """Base class for all history function classes."""
 
     def _get_ts_as_of_time_expression(self,
                                       available_at_timepoint: datetime,
@@ -72,7 +72,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Finds values and status for a time series at a given historical time `available_at_timepoint`.
 
         Note:
-            * The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `relative_to` object will be used.
+            * The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `target` will be used.
             * If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.
 
         Args:
@@ -105,7 +105,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
             search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
-            The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.
+            The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `target` will be used.
 
         Returns:
             An array of time series with historical values.

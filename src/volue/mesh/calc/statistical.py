@@ -21,7 +21,7 @@ _ARRAY_OF_TIMESERIES_CALC_SYMBOL = 'T'
 
 
 class _StatisticalFunctionsBase(_Calculation, ABC):
-    """Base class for all statistical function classes"""
+    """Base class for all statistical function classes."""
 
     def _sum_expression(self, input_type_symbol: str, search_query: Optional[str]) -> str:
         """
@@ -53,7 +53,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
             search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
-            The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `relative_to` object will be used.
+            The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `target` will be used.
 
         Returns:
             A time series with the sum of the values for each time interval in the expression.
@@ -70,7 +70,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
             search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
 
         Note:
-            The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function, if `search_query` is not set the `relative_to` object will be used.
+            The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function, if `search_query` is not set the `target` will be used.
 
         Returns:
             The sum of the values of the time series for the required period.

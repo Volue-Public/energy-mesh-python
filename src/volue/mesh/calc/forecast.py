@@ -19,7 +19,7 @@ from volue.mesh.calc.common import (
 
 
 class _ForecastFunctionsBase(_Calculation, ABC):
-    """Base class for all forecast function classes"""
+    """Base class for all forecast function classes."""
 
     def _get_all_forecasts_expression(self,
                                       search_query: Optional[str]) -> str:
@@ -91,7 +91,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                           search_query: Optional[str] = None) -> List[Timeseries]:
         """
         Get all forecasts for a given Mesh object in a time interval.
-        The Mesh object ('relative_to') and the time interval (`start_time` and `end_time`) is set by :py:func:`volue.mesh.Connection.Session.forecast_functions`.
+        The `target` and the time interval (`start_time` and `end_time`) are set by :py:func:`volue.mesh.Connection.Session.forecast_functions`.
 
         Example:
             If interval 'P' is given for the Mesh object in the picture below, 10 forecasted time series will be returned.
@@ -100,7 +100,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                :width: 400
 
         Note:
-            The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `relative_to` object will be used.
+            The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `target` will be used.
 
         Args:
             search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
@@ -119,7 +119,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         r"""
         Get one forecast for a given Mesh object in a time interval.
 
-        The Mesh object ('relative_to') and the time interval (`start_time` and `end_time`) is set by :py:func:`volue.mesh.Connection.Session.forecast_functions`.
+        The `target`and the time interval (`start_time` and `end_time`) are set by :py:func:`volue.mesh.Connection.Session.forecast_functions`.
 
         Example 1:
             Use `available_at_timepoint` (t\ :sub:`c`) to get the forecast.
@@ -150,7 +150,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             * The function can take `available_at_timepoint` without specifying `forecast_start_min` and `forecast_start_min`.
             * The function can take `forecast_start_min` and `forecast_start_min` with or without specifying `available_at_timepoint` to find the relevant forecast instead of using the start of the requested period (defined in `forecast_functions`). It requires that the forecast series' start is less than or equal to `forecast_start_max` and larger than `forecast_start_min`.
             * If no forecast series has its start time within the given interval, the function returns a time series with NaN.
-            * The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `relative_to` object will be used.
+            * The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `target` will be used.
 
         Args:
             forecast_start_min: Forecast must start after this time.
