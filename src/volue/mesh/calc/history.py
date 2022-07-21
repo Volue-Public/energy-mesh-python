@@ -6,9 +6,9 @@ For more information see :ref:`mesh_functions:history`.
 
 """
 
-import datetime
 from abc import ABC, abstractmethod
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
 from volue.mesh import Timeseries
 from volue.mesh.calc.common import (
@@ -24,7 +24,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
     def _get_ts_as_of_time_expression(self,
                                       available_at_timepoint: datetime,
-                                      search_query: str) -> str:
+                                      search_query: Optional[str]) -> str:
         """
         Create an expression for `get_ts_as_of_time`.
 
@@ -44,7 +44,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
     def _get_ts_historical_versions_expression(self,
                                                max_number_of_versions_to_get: int,
-                                               search_query: str) -> str:
+                                               search_query: Optional[str]) -> str:
         """
         Creates an expression for `get_ts_historical_versions`.
 
@@ -67,7 +67,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     @abstractmethod
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
-                          search_query: str = None) -> Timeseries:
+                          search_query: Optional[str] = None) -> Timeseries:
         """
         Finds values and status for a time series at a given historical time `available_at_timepoint`.
 
@@ -89,7 +89,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     @abstractmethod
     def get_ts_historical_versions(self,
                                    max_number_of_versions_to_get: int,
-                                   search_query: str = None) -> List[Timeseries]:
+                                   search_query: Optional[str] = None) -> List[Timeseries]:
         """
         Requests an array of a given number of versions of a time series.
 
@@ -117,14 +117,14 @@ class HistoryFunctions(_HistoryFunctionsBase):
     """Class for history functions that should be run synchronously"""
     def get_ts_as_of_time(self,
                           available_at_timepoint: datetime,
-                          search_query: str = None) -> Timeseries:
+                          search_query: Optional[str] = None) -> Timeseries:
         expression = super()._get_ts_as_of_time_expression(available_at_timepoint, search_query)
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
     def get_ts_historical_versions(self,
                                    max_number_of_versions_to_get: int,
-                                   search_query: str = None) -> List[Timeseries]:
+                                   search_query: Optional[str] = None) -> List[Timeseries]:
         expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
         response = super().run(expression)
         return _parse_timeseries_list_response(response)
@@ -134,14 +134,14 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
     """Class for history functions that should be run asynchronously"""
     async def get_ts_as_of_time(self,
                                 available_at_timepoint: datetime,
-                                search_query: str = None) -> Timeseries:
+                                search_query: Optional[str] = None) -> Timeseries:
         expression = super()._get_ts_as_of_time_expression(available_at_timepoint, search_query)
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 
     async def get_ts_historical_versions(self,
                                          max_number_of_versions_to_get: int,
-                                         search_query: str = None) -> List[Timeseries]:
+                                         search_query: Optional[str] = None) -> List[Timeseries]:
         expression = super()._get_ts_historical_versions_expression(max_number_of_versions_to_get, search_query)
         response = await super().run_async(expression)
         return _parse_timeseries_list_response(response)
