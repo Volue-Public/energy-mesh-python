@@ -696,7 +696,7 @@ def test_update_simple_attribute_invalid_request(session):
         uuid.uuid4(),
     ],
 )
-def test_get_update_attribute_with_invalid_target(session, invalid_target):
+def test_get_and_update_attribute_with_invalid_target(session, invalid_target):
     """
     Check that 'get_timeseries_attribute', 'update_timeseries_attribute',
     'get_attribute' and 'update_simple_attribute' with invalid target

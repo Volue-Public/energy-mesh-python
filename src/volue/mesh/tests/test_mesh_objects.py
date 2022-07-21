@@ -284,7 +284,7 @@ def test_object_apis_with_invalid_target(session, invalid_target):
         uuid.uuid4(),
     ],
 )
-def test_get_create_object_with_invalid_target(session, invalid_target):
+def test_create_and_update_object_with_invalid_target(session, invalid_target):
     """
     Check that 'create_object' with invalid target (meaning incorrect owner
     attribute) and 'update_object' with invalid new owner attribute will throw.
