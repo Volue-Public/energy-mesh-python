@@ -212,7 +212,7 @@ def test_delete_object(session):
 
     for target in targets:
         session.delete_object(target)
-        with pytest.raises(grpc.RpcError, match=r"Object not found:"):
+        with pytest.raises(grpc.RpcError, match="Object not found:"):
             session.get_object(target)
         session.rollback()
 
@@ -227,9 +227,74 @@ def test_recursive_delete_object(session):
 
     for target in targets:
         session.delete_object(target, recursive_delete=True)
-        with pytest.raises(grpc.RpcError, match=r"Object not found:"):
+        with pytest.raises(grpc.RpcError, match="Object not found:"):
             session.get_object(target)
         session.rollback()
+
+
+@pytest.mark.database
+def test_delete_object_with_children_without_recursive_flag(session):
+    """
+    Check that `delete_object` will throw when trying to delete existing object
+    with children without `recursive_delete` flag.
+    """
+    targets = [OBJECT_PATH, OBJECT_ID]
+
+    for target in targets:
+        with pytest.raises(grpc.RpcError, match="has child objects"):
+            session.delete_object(target)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize(
+    "invalid_target",
+    [
+        "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef",
+        "non_existing_path",
+        uuid.uuid4(),
+    ],
+)
+def test_object_apis_with_invalid_target(session, invalid_target):
+    """
+    Check that 'get_object', 'search_for_objects', 'update_object' and
+    'delete_object' with invalid target (meaning incorrect object path or ID)
+    will throw.
+    """
+    error_message_regex = "(not found)|(Invalid type)"
+
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
+        session.get_object(invalid_target)
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
+        session.search_for_objects(invalid_target, "{*}.TsCalcAtt")
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
+        session.update_object(invalid_target, new_name="new_name")
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
+        session.delete_object(invalid_target)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize(
+    "invalid_target",
+    [
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1",
+        uuid.UUID("0000000A-0001-0000-0000-000000000000"),
+        "Model/SimpleThermalTestModel/ThermalComponent",
+        uuid.UUID("0000000B-0001-0000-0000-000000000000"),
+        "non_existing_path",
+        uuid.uuid4(),
+    ],
+)
+def test_create_and_update_object_with_invalid_target(session, invalid_target):
+    """
+    Check that 'create_object' with invalid target (meaning incorrect owner
+    attribute) and 'update_object' with invalid new owner attribute will throw.
+    """
+    error_message_regex = "(O|owner of the object not found)|(Wrong type of the owner)"
+
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
+        session.create_object(invalid_target, "new_name")
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
+        session.update_object(OBJECT_PATH, new_owner_attribute=invalid_target)
 
 
 @pytest.mark.asyncio
@@ -242,8 +307,8 @@ async def test_mesh_objects_async(async_session):
 
     objects = await async_session.search_for_objects(start_object_path, query)
     assert len(objects) == 2
+    assert all(isinstance(object, Object) for object in objects)
 
-    test = objects[0].owner_path
     new_object = await async_session.create_object(objects[0].owner_path, "new_object")
     assert isinstance(new_object, Object)
 
@@ -254,7 +319,7 @@ async def test_mesh_objects_async(async_session):
     assert newer_object.name == new_name
 
     await async_session.delete_object(newer_object.path)
-    with pytest.raises(grpc.RpcError, match=r"Object not found:"):
+    with pytest.raises(grpc.RpcError, match="Object not found"):
         await async_session.get_object(newer_object.path)
 
 
