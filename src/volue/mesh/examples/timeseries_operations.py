@@ -79,7 +79,7 @@ def main(address, port, root_pem_certificate):
             end_time = datetime(2016, 5, 4, tzinfo=local_time_zone)
 
             timeseries_read = session.read_timeseries_points(
-                target=timeseries_attribute.path, start_time=start_time, end_time=end_time)
+                target=timeseries_attribute, start_time=start_time, end_time=end_time)
 
             # convert to pandas format
             # the timestamps in PyArrow table are always returned in UTC format
@@ -110,7 +110,7 @@ def main(address, port, root_pem_certificate):
             # If you are using `LOCAL` or `STANDARD` time zone then make sure
             # the Mesh server is operating in the same time zone or adjust properly.
             transformed_timeseries = session.transform_functions(
-                timeseries_attribute.id, start_time, end_time).transform(
+                timeseries_attribute, start_time, end_time).transform(
                     Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.LOCAL)
 
             # convert to pandas format

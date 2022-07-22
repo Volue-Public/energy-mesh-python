@@ -9,6 +9,10 @@ import grpc
 import pytest
 
 from volue.mesh import AttributeBase, AttributesFilter, Object
+from volue.mesh.tests.test_utilities.utilities import (
+    AttributeForTesting,
+    ObjectForTesting,
+)
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 OBJECT_ID = uuid.UUID("0000000A-0001-0000-0000-000000000000")
@@ -272,6 +276,27 @@ def test_object_apis_with_invalid_target(session, invalid_target):
         session.delete_object(invalid_target)
 
 
+@pytest.mark.unittest
+def test_object_apis_with_attribute_as_target(session):
+    """
+    Check that 'get_object', 'search_for_objects', 'update_object' and
+    'delete_object' with attribute as target will throw.
+    """
+    target = AttributeForTesting()
+    error_message_regex = (
+        r"need to provide either path \(as str\), ID \(as uuid\.UUID\) or Mesh object instance"
+    )
+
+    with pytest.raises(TypeError, match=error_message_regex):
+        session.get_object(target)
+    with pytest.raises(TypeError, match=error_message_regex):
+        session.search_for_objects(target, "{*}.TsCalcAtt")
+    with pytest.raises(TypeError, match=error_message_regex):
+        session.update_object(target, new_name="new_name")
+    with pytest.raises(TypeError, match=error_message_regex):
+        session.delete_object(target)
+
+
 @pytest.mark.database
 @pytest.mark.parametrize(
     "invalid_target",
@@ -295,6 +320,20 @@ def test_create_and_update_object_with_invalid_target(session, invalid_target):
         session.create_object(invalid_target, "new_name")
     with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.update_object(OBJECT_PATH, new_owner_attribute=invalid_target)
+
+
+@pytest.mark.unittest
+def test_create_and_update_object_with_attribute_as_target(session):
+    """
+    Check that 'create_object' with object as target and 'update_object' with
+    new owner attribute as object will throw.
+    """
+    target = ObjectForTesting()
+
+    with pytest.raises(TypeError, match=r"need to provide either path \(as str\), ID \(as uuid\.UUID\) or attribute instance"):
+        session.create_object(target, "new_name")
+    with pytest.raises(TypeError, match="invalid new owner attribute"):
+        session.update_object(OBJECT_PATH, new_owner_attribute=target)
 
 
 @pytest.mark.asyncio

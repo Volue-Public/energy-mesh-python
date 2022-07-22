@@ -419,35 +419,6 @@ def _to_proto_mesh_id_from_timeseries(timeseries: Timeseries) -> core_pb2.MeshId
 
     return proto_mesh_id
 
-def _to_proto_attribute_mesh_id(target: Union[uuid.UUID, str]) -> core_pb2.MeshId:
-    """Accepts attribute identifiers: path and ID as input."""
-    return _to_proto_mesh_id(target, accept_time_series_key=False)
-
-def _to_proto_object_mesh_id(target: Union[uuid.UUID, str]) -> core_pb2.MeshId:
-    """Accepts object identifiers: path and ID as input."""
-    # For now it is the same as _to_proto_attribute_mesh_id,
-    # will be useful for:
-    # https://github.com/PowelAS/sme-mesh-python/issues/267
-    return _to_proto_mesh_id(target, accept_time_series_key=False)
-
-def _to_proto_mesh_id(target: Union[uuid.UUID, str, int], accept_time_series_key=True) -> core_pb2.MeshId:
-    """Accepts path, ID and time series key as input."""
-    proto_mesh_id = core_pb2.MeshId()
-
-    if isinstance(target, uuid.UUID):
-        proto_mesh_id.id.CopyFrom(_to_proto_guid(target))
-    elif isinstance(target, str):
-        proto_mesh_id.path = target
-    elif accept_time_series_key and isinstance(target, int):
-        proto_mesh_id.timeseries_key = target
-    else:
-        if accept_time_series_key:
-            raise TypeError("need to provide either path (as str), ID (as uuid.UUID) or time series key (as int)")
-        else:
-            raise TypeError("need to provide either path (as str) or ID (as uuid.UUID)")
-
-    return proto_mesh_id
-
 
 def _to_proto_attribute_masks(attributes_filter: Optional[AttributesFilter]) -> core_pb2.AttributesMasks:
     attributes_masks = core_pb2.AttributesMasks()
