@@ -178,9 +178,9 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="p">(</span>
@@ -192,11 +192,11 @@
 
 
 <span class="k">class</span> <span class="nc">_HistoryFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for all history function classes&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all history function classes.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                       <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                                      <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+                                      <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an expression for `get_ts_as_of_time`.</span>
 
@@ -216,7 +216,7 @@
 
     <span class="k">def</span> <span class="nf">_get_ts_historical_versions_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                                <span class="n">max_number_of_versions_to_get</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                               <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+                                               <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an expression for `get_ts_historical_versions`.</span>
 
@@ -239,12 +239,12 @@
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                           <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                          <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+                          <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Finds values and status for a time series at a given historical time `available_at_timepoint`.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            * The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `relative_to` object will be used.</span>
+<span class="sd">            * The resulting objects from the `search_query` will be used in the `get_ts_as_of_time` function, if `search_query` is not set the `target` will be used.</span>
 <span class="sd">            * If the historical time is earlier than the first write to the series (in the relevant period) then the function returns NaN values.</span>
 
 <span class="sd">        Args:</span>
@@ -261,7 +261,7 @@
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">get_ts_historical_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                    <span class="n">max_number_of_versions_to_get</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                   <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+                                   <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Requests an array of a given number of versions of a time series.</span>
 
@@ -277,7 +277,7 @@
 <span class="sd">            search_query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `relative_to` object will be used.</span>
+<span class="sd">            The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `target` will be used.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An array of time series with historical values.</span>
@@ -289,14 +289,14 @@
     <span class="sd">&quot;&quot;&quot;Class for history functions that should be run synchronously&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="HistoryFunctions.get_ts_as_of_time"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctions.get_ts_as_of_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                           <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                          <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+                          <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HistoryFunctions.get_ts_historical_versions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctions.get_ts_historical_versions">[docs]</a>    <span class="k">def</span> <span class="nf">get_ts_historical_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                    <span class="n">max_number_of_versions_to_get</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                   <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+                                   <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_historical_versions_expression</span><span class="p">(</span><span class="n">max_number_of_versions_to_get</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_timeseries_list_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
@@ -306,14 +306,14 @@
     <span class="sd">&quot;&quot;&quot;Class for history functions that should be run asynchronously&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="HistoryFunctionsAsync.get_ts_as_of_time"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_ts_as_of_time">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ts_as_of_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                 <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-                                <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+                                <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_as_of_time_expression</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HistoryFunctionsAsync.get_ts_historical_versions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.history.HistoryFunctionsAsync.get_ts_historical_versions">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_ts_historical_versions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                          <span class="n">max_number_of_versions_to_get</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                         <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+                                         <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_ts_historical_versions_expression</span><span class="p">(</span><span class="n">max_number_of_versions_to_get</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_timeseries_list_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>

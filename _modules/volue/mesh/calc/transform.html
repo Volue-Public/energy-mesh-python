@@ -215,7 +215,7 @@
 
 
 <span class="k">class</span> <span class="nc">_TransformFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for all transformation function classes&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Base class for all transformation function classes.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_transform_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
@@ -278,7 +278,7 @@
 <span class="sd">            search_query: a search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `relative_to` object will be used.</span>
+<span class="sd">            The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `target` will be used.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">             A time series with transformed values.</span>
