@@ -7,7 +7,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
-import "type/resources.proto";
+import "volue/mesh/proto/type/resources.proto";
 
 
 // Mesh server service
