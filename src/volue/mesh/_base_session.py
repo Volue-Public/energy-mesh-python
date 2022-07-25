@@ -643,6 +643,15 @@ class Session(abc.ABC):
             :doc:`mesh_rating_curve`
         """
 
+    @abc.abstractmethod
+    def get_log_level(self) -> core_pb2.LogLevel:
+        """ Get the current Mesh log level threshold"""
+
+    @abc.abstractmethod
+    def update_log_level(
+            self,
+            new_log_level: core_pb2.LogLevel):
+        """ Set the Mesh log level threshold"""
 
     def _get_xy_sets_impl(
             self, target: typing.Union[uuid.UUID, str],

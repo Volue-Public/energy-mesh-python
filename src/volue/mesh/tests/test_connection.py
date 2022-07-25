@@ -12,12 +12,27 @@ import grpc
 import pyarrow as pa
 import pytest
 
+from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh import Timeseries, TimeseriesResource
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_physical_timeseries, \
     get_virtual_timeseries, get_timeseries_attribute_2, verify_timeseries_2
 
+@pytest.mark.database
+def test_log_level(session):
+
+    new_log_level = core_pb2.LogLevel.critical
+    old_log_level = session.get_log_level()
+
+    assert new_log_level is not old_log_level.log_level
+
+    session.update_log_level(new_log_level)
+    log_level = session.get_log_level()
+
+    assert log_level.log_level is new_log_level
+
+    session.update_log_level(old_log_level.log_level)
 
 @pytest.mark.database
 def test_read_timeseries_points(session):

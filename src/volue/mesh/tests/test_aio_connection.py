@@ -12,12 +12,28 @@ import grpc
 import pyarrow as pa
 import pytest
 
+from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh import Timeseries, TimeseriesResource
 from volue.mesh.calc import transform
 from volue.mesh.calc.common import Timezone
 from volue.mesh.tests.test_utilities.utilities import get_timeseries_2, get_physical_timeseries, \
     get_virtual_timeseries, get_timeseries_attribute_2, verify_timeseries_2
 
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_log_level(async_session):
+
+    new_log_level = core_pb2.LogLevel.critical
+    old_log_level = await async_session.get_log_level()
+
+    assert new_log_level is not old_log_level.log_level
+
+    await async_session.update_log_level(new_log_level)
+    log_level = await async_session.get_log_level()
+
+    assert log_level.log_level is new_log_level
+
+    await async_session.update_log_level(old_log_level.log_level)
 
 @pytest.mark.asyncio
 @pytest.mark.database

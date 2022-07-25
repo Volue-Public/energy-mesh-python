@@ -224,6 +224,14 @@ service MeshService {
   // attribute (`RatingCurveAttribute`).
   // See `UpdateRatingCurveVersionsRequest` for more information.
   rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
+
+    // Get currently set log level threshold
+  // See `GetLogLevelRequest` for more information
+  rpc GetLogLevel(google.protobuf.Empty) returns (GetLogLevelResponse) {}
+
+  // Change log level threshold at runtime
+  // See `UpdateLogLevelRequest` for more information
+  rpc UpdateLogLevel(UpdateLogLevelRequest) returns (UpdateLogLevelResponse) {}
 }
 
 message AuthenticateKerberosResponse {
@@ -1095,4 +1103,26 @@ message RatingCurveVersion {
   google.protobuf.Timestamp from = 1;
   double x_range_from = 2;
   repeated RatingCurveSegment x_value_segments = 3;
+}
+
+enum LogLevel {
+  trace = 0;
+  debug = 1;
+  info = 2;
+  warn = 3;
+  err = 4;
+  critical = 5;
+  off = 6;
+}
+
+message UpdateLogLevelRequest {
+  // log level to set
+  LogLevel new_log_level = 1;
+}
+
+message UpdateLogLevelResponse {}
+
+message GetLogLevelResponse {
+  // log level retrieved from Mesh
+  LogLevel log_level = 1;
 }

@@ -293,6 +293,20 @@ class Connection(_base_connection.Connection):
                 target, start_time, end_time, new_versions)
             await self.mesh_service.UpdateRatingCurveVersions(request)
 
+        async def get_log_level(
+            self
+            ) -> core_pb2.LogLevel:
+            log_level = await self.mesh_service.GetLogLevel(protobuf.empty_pb2.Empty())
+            return log_level
+
+        async def update_log_level(
+            self,
+            new_log_level: core_pb2.LogLevel
+        ):
+            request = core_pb2.UpdateLogLevelRequest()
+            request.new_log_level = new_log_level
+            await self.mesh_service.UpdateLogLevel(request)
+
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):
         return grpc.aio.secure_channel(*args, **kwargs)
