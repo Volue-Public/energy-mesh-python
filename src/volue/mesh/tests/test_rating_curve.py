@@ -69,6 +69,17 @@ def get_new_rating_curve_version(
     return mesh.RatingCurveVersion(x_range_from, valid_from_time, x_value_segments)
 
 
+def get_targets(session):
+    """
+    Return all possible targets for attribute APIs, like: ID or path.
+    ID is always the first element in the returned target list.
+    """
+    # ID is auto-generated when creating an attribute, so
+    # first we need to read it.
+    attribute = session.get_attribute(ATTRIBUTE_PATH)
+    return [attribute.id, ATTRIBUTE_PATH, attribute]
+
+
 @pytest.mark.database
 @pytest.mark.parametrize('start_time',
     [datetime.min, datetime(2000, 1, 1), datetime(2009, 12, 31)])
@@ -143,21 +154,27 @@ def test_get_rating_curve_versions_invalid_input(
 def test_update_rating_curve_versions_remove_one_version(
         session: _base_session.Session):
 
-    session.update_rating_curve_versions(
-        target=ATTRIBUTE_PATH,
-        start_time=datetime(2006, 1, 1),
-        end_time=datetime(2022, 1, 1),
-        new_versions=[]
-    )
+    # provide all possible attribute target types, like path or ID
+    targets = get_targets(session)
 
-    versions = session.get_rating_curve_versions(
-        target=ATTRIBUTE_PATH,
-        start_time=datetime.min,
-        end_time=datetime.max
-    )
+    for target in targets:
+        session.update_rating_curve_versions(
+            target=target,
+            start_time=datetime(2006, 1, 1),
+            end_time=datetime(2022, 1, 1),
+            new_versions=[]
+        )
 
-    assert len(versions) == 1
-    verify_version_1(versions[0])
+        versions = session.get_rating_curve_versions(
+            target=target,
+            start_time=datetime.min,
+            end_time=datetime.max
+        )
+
+        assert len(versions) == 1
+        verify_version_1(versions[0])
+
+        session.rollback()
 
 
 @pytest.mark.database

@@ -22,6 +22,16 @@ def generate_xy_set(seed, valid_from_time=None):
     return mesh.XySet(valid_from_time, curves)
 
 
+def get_targets(session, attribute_path):
+    """
+    Return all possible targets for attribute APIs, like: ID or path.
+    ID is always the first element in the returned target list.
+    """
+    # ID is auto-generated when creating an attribute, so
+    # first we need to read it.
+    attribute = session.get_attribute(attribute_path)
+    return [attribute.id, attribute_path, attribute]
+
 @pytest.mark.database
 def test_get_empty_xy_set_unversioned(session):
     xy_sets = session.get_xy_sets(target=UNVERSIONED_PATH)
@@ -42,26 +52,31 @@ def test_update_xy_sets_unversioned(session):
     # This will not remove the value, but make it empty.
     #
     # In this case this is a no-op.
-    session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[])
 
-    xy_sets = session.get_xy_sets(target=UNVERSIONED_PATH)
-    assert len(xy_sets) == 1
-    assert len(xy_sets[0].xy_curves) == 0
+    # provide all possible attribute target types, like path or ID
+    targets = get_targets(session, UNVERSIONED_PATH)
 
-    # An update with one XY set will set the value of the attribute to that
-    # XY set.
-    value = generate_xy_set(3)
-    session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[value])
+    for target in targets:
+        session.update_xy_sets(target=target, new_xy_sets=[])
 
-    xy_sets = session.get_xy_sets(target=UNVERSIONED_PATH)
-    assert len(xy_sets) == 1
-    assert xy_sets[0] == value
+        xy_sets = session.get_xy_sets(target=target)
+        assert len(xy_sets) == 1
+        assert len(xy_sets[0].xy_curves) == 0
 
-    # Clear the attribute again.
-    session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[])
-    xy_sets = session.get_xy_sets(target=UNVERSIONED_PATH)
-    assert len(xy_sets) == 1
-    assert len(xy_sets[0].xy_curves) == 0
+        # An update with one XY set will set the value of the attribute to that
+        # XY set.
+        value = generate_xy_set(3)
+        session.update_xy_sets(target=target, new_xy_sets=[value])
+
+        xy_sets = session.get_xy_sets(target=target)
+        assert len(xy_sets) == 1
+        assert xy_sets[0] == value
+
+        # Clear the attribute again.
+        session.update_xy_sets(target=target, new_xy_sets=[])
+        xy_sets = session.get_xy_sets(target=target)
+        assert len(xy_sets) == 1
+        assert len(xy_sets[0].xy_curves) == 0
 
 
 @pytest.mark.database

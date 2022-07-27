@@ -10,9 +10,10 @@ from google import protobuf
 from ._attribute import AttributeBase, TimeseriesAttribute, SIMPLE_TYPE_OR_COLLECTION, SIMPLE_TYPE
 from ._common import (AttributesFilter, XyCurve, XySet,
                       RatingCurveSegment, RatingCurveVersion, _read_proto_reply,
-                      _to_proto_attribute_masks, _to_proto_guid, _to_proto_attribute_mesh_id,
-                      _to_proto_mesh_id, _to_proto_object_mesh_id,
+                      _to_proto_attribute_masks, _to_proto_guid,
                       _to_proto_curve_type, _datetime_to_timestamp_pb2, _to_proto_utcinterval)
+
+from ._mesh_id import _to_proto_attribute_mesh_id, _to_proto_object_mesh_id, _to_proto_read_timeseries_mesh_id
 from ._object import Object
 from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
@@ -87,7 +88,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def read_timeseries_points(
         self,
-        target: Union[uuid.UUID, str, int],
+        target: Union[uuid.UUID, str, int, AttributeBase],
         start_time: datetime,
         end_time: datetime
     ) -> Timeseries:
@@ -127,7 +128,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_object(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         full_attribute_info: bool = False,
         attributes_filter: Optional[AttributesFilter] = None
     ) -> Object:
@@ -152,7 +153,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def search_for_objects(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         query: str,
         full_attribute_info: bool = False,
         attributes_filter: Optional[AttributesFilter] = None
@@ -177,7 +178,7 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
-    def create_object(self, target: Union[uuid.UUID, str], name: str) -> Object:
+    def create_object(self, target: Union[uuid.UUID, str, AttributeBase], name: str) -> Object:
         """
         Create new Mesh object in the Mesh model.
         Owner of the new object must be a relationship attribute of Object Collection type.
@@ -204,9 +205,9 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_object(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         new_name: Optional[str] = None,
-        new_owner_attribute: Optional[Union[uuid.UUID, str]] = None
+        new_owner_attribute: Optional[Union[uuid.UUID, str, AttributeBase]] = None
     ) -> None:
         """
         Update an existing Mesh object in the Mesh model.
@@ -230,7 +231,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def delete_object(
-        self, target: Union[uuid.UUID, str], recursive_delete: bool = False
+        self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
     ) -> None:
         """
         Delete an existing Mesh object in the Mesh model.
@@ -248,7 +249,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def get_attribute(
-        self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+        self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool = False
     ) -> AttributeBase:
         """
         Request information associated with a Mesh :ref:`attribute <mesh_attribute>`
@@ -267,7 +268,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def get_timeseries_attribute(
-        self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+        self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool = False
     ) -> TimeseriesAttribute:
         """
         Request information associated with a Mesh :ref:`time series attribute <mesh_attribute>` from the Mesh model.
@@ -288,7 +289,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def search_for_attributes(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         query: str,
         full_attribute_info: bool = False
     ) -> List[AttributeBase]:
@@ -312,7 +313,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def search_for_timeseries_attributes(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         query: str,
         full_attribute_info: bool = False
     ) -> List[TimeseriesAttribute]:
@@ -335,7 +336,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def update_simple_attribute(
-        self, target: Union[uuid.UUID, str], value: SIMPLE_TYPE_OR_COLLECTION
+        self, target: Union[uuid.UUID, str, AttributeBase], value: SIMPLE_TYPE_OR_COLLECTION
     ) -> None:
         """
         Update an existing Mesh simple attribute's value in the Mesh model.
@@ -360,7 +361,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_timeseries_attribute(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, AttributeBase],
         new_local_expression: Optional[str] = None,
         new_timeseries_resource_key: Optional[int] = None
     ) -> None:
@@ -429,7 +430,7 @@ class Session(abc.ABC):
         """Access to :ref:`mesh_functions:Forecast` functions.
 
         Args:
-            target: Mesh object, virtual or physical time series the
+            target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
                 a path in the :ref:`Mesh model <mesh_model>`.
@@ -450,7 +451,7 @@ class Session(abc.ABC):
         """Access to :ref:`mesh_functions:History` functions.
 
         Args:
-            target: Mesh object, virtual or physical time series the
+            target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
                 a path in the :ref:`Mesh model <mesh_model>`.
@@ -471,7 +472,7 @@ class Session(abc.ABC):
         """Access to :ref:`mesh_functions:Statistical` functions.
 
         Args:
-            target: Mesh object, virtual or physical time series the
+            target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
                 a path in the :ref:`Mesh model <mesh_model>`.
@@ -492,7 +493,7 @@ class Session(abc.ABC):
         """Access to :ref:`mesh_functions:Transform` functions.
 
         Args:
-            target: Mesh object, virtual or physical time series the
+            target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
                 a path in the :ref:`Mesh model <mesh_model>`.
@@ -505,7 +506,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def get_xy_sets(
-            self, target: typing.Union[uuid.UUID, str],
+            self, target: typing.Union[uuid.UUID, str, AttributeBase],
             start_time: typing.Optional[datetime], end_time: typing.Optional[datetime],
             versions_only: bool
     ) -> typing.List[XySet]:
@@ -547,7 +548,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def update_xy_sets(
-            self, target: typing.Union[uuid.UUID, str],
+            self, target: typing.Union[uuid.UUID, str, AttributeBase],
             start_time: typing.Optional[datetime], end_time: typing.Optional[datetime],
             new_xy_sets: typing.List[XySet]
     ) -> None:
@@ -586,7 +587,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_rating_curve_versions(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, AttributeBase],
         start_time: datetime,
         end_time: datetime,
         versions_only: bool = False
@@ -619,7 +620,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_rating_curve_versions(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, AttributeBase],
         start_time: datetime,
         end_time: datetime,
         new_versions: List[RatingCurveVersion]
@@ -645,7 +646,7 @@ class Session(abc.ABC):
 
 
     def _get_xy_sets_impl(
-            self, target: typing.Union[uuid.UUID, str],
+            self, target: typing.Union[uuid.UUID, str, AttributeBase],
             start_time: Optional[datetime],
             end_time: Optional[datetime],
             versions_only: bool
@@ -686,7 +687,7 @@ class Session(abc.ABC):
                for proto_xy_set in response.xy_sets]
 
     def _prepare_update_xy_sets_request(
-            self, target: typing.Union[uuid.UUID, str],
+            self, target: typing.Union[uuid.UUID, str, AttributeBase],
             start_time: Optional[datetime],
             end_time: Optional[datetime],
             new_xy_sets: typing.List[XySet]
@@ -723,7 +724,7 @@ class Session(abc.ABC):
         return request
 
     def _read_timeseries_impl(
-        self, target: Union[uuid.UUID, str, int], start_time: datetime, end_time: datetime
+        self, target: Union[uuid.UUID, str, int, AttributeBase], start_time: datetime, end_time: datetime
     ) -> typing.Generator[typing.Any, core_pb2.ReadTimeseriesResponse, None]:
         """Generator implementation of read_timeseries.
 
@@ -733,7 +734,7 @@ class Session(abc.ABC):
 
         request = core_pb2.ReadTimeseriesRequest(
             session_id=_to_proto_guid(self.session_id),
-            timeseries_id=_to_proto_mesh_id(target),
+            timeseries_id=_to_proto_read_timeseries_mesh_id(target),
             interval=_to_proto_utcinterval(start_time, end_time),
         )
 
@@ -750,7 +751,7 @@ class Session(abc.ABC):
 
     def _prepare_get_object_request(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         full_attribute_info: bool,
         attributes_filter: Optional[AttributesFilter]
     ) -> core_pb2.GetObjectRequest:
@@ -768,7 +769,7 @@ class Session(abc.ABC):
 
     def _prepare_search_for_objects_request(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         query: str,
         full_attribute_info: bool,
         attributes_filter: Optional[AttributesFilter]
@@ -787,7 +788,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_create_object_request(
-        self, target: Union[uuid.UUID, str], name: str
+        self, target: Union[uuid.UUID, str, AttributeBase], name: str
     ) -> core_pb2.CreateObjectRequest:
         """Create a gRPC `CreateObjectRequest`"""
 
@@ -800,9 +801,9 @@ class Session(abc.ABC):
 
     def _prepare_update_object_request(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, Object],
         new_name: Optional[str],
-        new_owner_attribute: Optional[Union[uuid.UUID, str]],
+        new_owner_attribute: Optional[Union[uuid.UUID, str, AttributeBase]],
     ) -> core_pb2.UpdateObjectRequest:
         """Create a gRPC `UpdateObjectRequest`"""
 
@@ -834,7 +835,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_delete_object_request(
-        self, target: Union[uuid.UUID, str], recursive_delete: bool
+        self, target: Union[uuid.UUID, str, Object], recursive_delete: bool
     ) -> core_pb2.DeleteObjectRequest:
         """Create a gRPC `DeleteObjectRequest`"""
 
@@ -846,7 +847,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_get_attribute_request(
-        self, target: Union[uuid.UUID, str], full_attribute_info: bool
+        self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool
     ) -> core_pb2.GetAttributeRequest:
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
@@ -860,7 +861,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_search_attributes_request(
-        self, target: Union[uuid.UUID, str], query: str, full_attribute_info: bool
+        self, target: Union[uuid.UUID, str, Object], query: str, full_attribute_info: bool
     ) -> core_pb2.SearchAttributesRequest:
 
         attribute_view = core_pb2.AttributeView.FULL if full_attribute_info else core_pb2.AttributeView.BASIC
@@ -875,7 +876,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_update_simple_attribute_request(
-        self, target: Union[uuid.UUID, str], value: SIMPLE_TYPE_OR_COLLECTION
+        self, target: Union[uuid.UUID, str, AttributeBase], value: SIMPLE_TYPE_OR_COLLECTION
     ) -> core_pb2.UpdateSimpleAttributeRequest:
 
         request = core_pb2.UpdateSimpleAttributeRequest(
@@ -896,7 +897,7 @@ class Session(abc.ABC):
 
     def _prepare_update_timeseries_attribute_request(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, AttributeBase],
         new_local_expression: Optional[str],
         new_timeseries_resource_key: Optional[int]
     ) -> core_pb2.UpdateTimeseriesAttributeRequest:
@@ -987,7 +988,7 @@ class Session(abc.ABC):
 
     def _get_rating_curve_versions_impl(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, AttributeBase],
             start_time: datetime,
             end_time: datetime,
             versions_only: bool
@@ -1028,7 +1029,7 @@ class Session(abc.ABC):
 
     def _prepare_update_rating_curve_versions_request(
         self,
-        target: Union[uuid.UUID, str],
+        target: Union[uuid.UUID, str, AttributeBase],
         start_time: datetime,
         end_time: datetime,
         new_versions: List[RatingCurveVersion]

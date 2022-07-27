@@ -125,8 +125,8 @@ def get_targets(session, attribute_name):
     # ID is auto-generated when creating an attribute, so
     # first we need to read it.
     attribute_path = ATTRIBUTE_PATH_PREFIX + attribute_name
-    attribute_id = session.get_attribute(attribute_path).id
-    return [attribute_id, attribute_path]
+    attribute = session.get_attribute(attribute_path)
+    return [attribute.id, attribute_path, attribute]
 
 
 @pytest.mark.database

@@ -9,14 +9,14 @@ from typing import List, Union
 
 from dateutil import tz
 
-from volue.mesh import Timeseries
+from volue.mesh import AttributeBase, Object, Timeseries
 from volue.mesh._common import (
     _read_proto_numeric_reply,
     _read_proto_reply,
     _to_proto_guid,
-    _to_proto_mesh_id,
     _to_proto_utcinterval,
 )
+from volue.mesh._mesh_id import _to_proto_calculation_target_mesh_id
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 
@@ -117,13 +117,13 @@ class _Calculation:
     """
     def __init__(self,
                  session,
-                 target: Union[uuid.UUID, str, int],
+                 target: Union[uuid.UUID, str, int, AttributeBase, Object],
                  start_time: datetime.datetime,
                  end_time: datetime.datetime):
         """
         Args:
             session: Active Mesh session.
-            target: Mesh object, virtual or physical time series the
+            target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
                 a path in the :ref:`Mesh model <mesh_model>`.
@@ -131,7 +131,7 @@ class _Calculation:
             end_time: The end date and time of the time series interval.
         """
         self.session = session
-        self.target: Union[uuid.UUID, str, int] = target
+        self.target: Union[uuid.UUID, str, int, AttributeBase, Object] = target
         self.start_time: datetime.datetime = start_time
         self.end_time: datetime.datetime = end_time
 
@@ -150,7 +150,7 @@ class _Calculation:
             session_id=_to_proto_guid(self.session.session_id),
             expression=expression,
             interval=_to_proto_utcinterval(self.start_time, self.end_time),
-            relative_to=_to_proto_mesh_id(self.target)
+            relative_to=_to_proto_calculation_target_mesh_id(self.target)
         )
         return request
 

@@ -73,7 +73,7 @@ class Connection(_base_connection.Connection):
 
         def read_timeseries_points(
             self,
-            target: Union[uuid.UUID, str, int],
+            target: Union[uuid.UUID, str, int, AttributeBase],
             start_time: datetime,
             end_time: datetime,
         ) -> Timeseries:
@@ -108,7 +108,7 @@ class Connection(_base_connection.Connection):
             self.mesh_service.UpdateTimeseriesResource(request)
 
         def get_attribute(
-            self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+            self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool = False
         ) -> AttributeBase:
             request = super()._prepare_get_attribute_request(
                 target, full_attribute_info)
@@ -116,7 +116,7 @@ class Connection(_base_connection.Connection):
             return _from_proto_attribute(proto_attribute)
 
         def get_timeseries_attribute(
-            self, target: Union[uuid.UUID, str], full_attribute_info: bool = False
+            self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool = False
         ) -> TimeseriesAttribute:
             attribute = self.get_attribute(target, full_attribute_info)
             if not isinstance(attribute, TimeseriesAttribute):
@@ -125,7 +125,7 @@ class Connection(_base_connection.Connection):
 
         def search_for_attributes(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, Object],
             query: str,
             full_attribute_info: bool = False,
         ) -> List[AttributeBase]:
@@ -141,7 +141,7 @@ class Connection(_base_connection.Connection):
 
         def search_for_timeseries_attributes(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, Object],
             query: str,
             full_attribute_info: bool = False,
         ) -> List[TimeseriesAttribute]:
@@ -150,7 +150,7 @@ class Connection(_base_connection.Connection):
 
         def update_simple_attribute(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, AttributeBase],
             value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
         ) -> None:
             request = super()._prepare_update_simple_attribute_request(
@@ -159,7 +159,7 @@ class Connection(_base_connection.Connection):
 
         def update_timeseries_attribute(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, AttributeBase],
             new_local_expression: Optional[str] = None,
             new_timeseries_resource_key: Optional[int] = None,
         ) -> None:
@@ -169,7 +169,7 @@ class Connection(_base_connection.Connection):
 
         def get_object(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, Object],
             full_attribute_info: bool = False,
             attributes_filter: Optional[AttributesFilter] = None,
         ) -> Object:
@@ -180,7 +180,7 @@ class Connection(_base_connection.Connection):
 
         def search_for_objects(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, Object],
             query: str,
             full_attribute_info: bool = False,
             attributes_filter: Optional[AttributesFilter] = None,
@@ -195,30 +195,30 @@ class Connection(_base_connection.Connection):
                 objects.append(Object._from_proto_object(proto_object))
             return objects
 
-        def create_object(self, target: Union[uuid.UUID, str], name: str) -> Object:
+        def create_object(self, target: Union[uuid.UUID, str, AttributeBase], name: str) -> Object:
             request = super()._prepare_create_object_request(target=target, name=name)
             proto_object = self.mesh_service.CreateObject(request)
             return Object._from_proto_object(proto_object)
 
         def update_object(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, Object],
             new_name: Optional[str] = None,
-            new_owner_attribute: Optional[Union[uuid.UUID, str]] = None,
+            new_owner_attribute: Optional[Union[uuid.UUID, str, AttributeBase]] = None,
         ) -> None:
             request = super()._prepare_update_object_request(
                 target, new_name, new_owner_attribute)
             self.mesh_service.UpdateObject(request)
 
         def delete_object(
-            self, target: Union[uuid.UUID, str], recursive_delete: bool = False
+            self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
         ) -> None:
             request = super()._prepare_delete_object_request(target, recursive_delete)
             self.mesh_service.DeleteObject(request)
 
         def forecast_functions(
             self,
-            target: Union[uuid.UUID, str, int],
+            target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
             end_time: datetime
         ) -> ForecastFunctions:
@@ -226,7 +226,7 @@ class Connection(_base_connection.Connection):
 
         def history_functions(
             self,
-            target: Union[uuid.UUID, str, int],
+            target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
             end_time: datetime
         ) -> HistoryFunctions:
@@ -234,7 +234,7 @@ class Connection(_base_connection.Connection):
 
         def statistical_functions(
             self,
-            target: Union[uuid.UUID, str, int],
+            target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
             end_time: datetime
         ) -> StatisticalFunctions:
@@ -242,14 +242,14 @@ class Connection(_base_connection.Connection):
 
         def transform_functions(
             self,
-            target: Union[uuid.UUID, str, int],
+            target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
             end_time: datetime
         ) -> TransformFunctions:
             return TransformFunctions(self, target, start_time, end_time)
 
         def get_xy_sets(
-                self, target: typing.Union[uuid.UUID, str],
+                self, target: typing.Union[uuid.UUID, str, AttributeBase],
                 start_time: Optional[datetime] = None,
                 end_time: Optional[datetime] = None,
                 versions_only: bool = False
@@ -259,7 +259,7 @@ class Connection(_base_connection.Connection):
             return gen.send(self.mesh_service.GetXySets(request))
 
         def update_xy_sets(
-                self, target: typing.Union[uuid.UUID, str],
+                self, target: typing.Union[uuid.UUID, str, AttributeBase],
                 start_time: Optional[datetime] = None,
                 end_time: Optional[datetime] = None,
                 new_xy_sets: typing.List[XySet] = []
@@ -269,7 +269,7 @@ class Connection(_base_connection.Connection):
 
         def get_rating_curve_versions(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, AttributeBase],
             start_time: datetime,
             end_time: datetime,
             versions_only: bool = False
@@ -280,7 +280,7 @@ class Connection(_base_connection.Connection):
 
         def update_rating_curve_versions(
             self,
-            target: Union[uuid.UUID, str],
+            target: Union[uuid.UUID, str, AttributeBase],
             start_time: datetime,
             end_time: datetime,
             new_versions: List[RatingCurveVersion]
