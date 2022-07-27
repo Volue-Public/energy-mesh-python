@@ -181,14 +181,14 @@
 
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_read_proto_numeric_reply</span><span class="p">,</span>
     <span class="n">_read_proto_reply</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
-    <span class="n">_to_proto_mesh_id</span><span class="p">,</span>
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._mesh_id</span> <span class="kn">import</span> <span class="n">_to_proto_calculation_target_mesh_id</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
 
@@ -289,13 +289,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">session</span><span class="p">,</span>
-                 <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+                 <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
                  <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
                  <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            session: Active Mesh session.</span>
-<span class="sd">            target: Mesh object, virtual or physical time series the</span>
+<span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
 <span class="sd">                calculation expression will be evaluated relative to.</span>
 <span class="sd">                It could be a time series key, Universal Unique Identifier or</span>
 <span class="sd">                a path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
@@ -303,7 +303,7 @@
 <span class="sd">            end_time: The end date and time of the time series interval.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">end_time</span>
 
@@ -322,7 +322,7 @@
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
-            <span class="n">relative_to</span><span class="o">=</span><span class="n">_to_proto_mesh_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+            <span class="n">relative_to</span><span class="o">=</span><span class="n">_to_proto_calculation_target_mesh_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 

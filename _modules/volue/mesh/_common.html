@@ -591,35 +591,6 @@
 
     <span class="k">return</span> <span class="n">proto_mesh_id</span>
 
-<span class="k">def</span> <span class="nf">_to_proto_attribute_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Accepts attribute identifiers: path and ID as input.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_to_proto_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">accept_time_series_key</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Accepts object identifiers: path and ID as input.&quot;&quot;&quot;</span>
-    <span class="c1"># For now it is the same as _to_proto_attribute_mesh_id,</span>
-    <span class="c1"># will be useful for:</span>
-    <span class="c1"># https://github.com/PowelAS/sme-mesh-python/issues/267</span>
-    <span class="k">return</span> <span class="n">_to_proto_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">accept_time_series_key</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">_to_proto_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">accept_time_series_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Accepts path, ID and time series key as input.&quot;&quot;&quot;</span>
-    <span class="n">proto_mesh_id</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">MeshId</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
-        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">target</span>
-    <span class="k">elif</span> <span class="n">accept_time_series_key</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">proto_mesh_id</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">target</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">accept_time_series_key</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to provide either path (as str), ID (as uuid.UUID) or time series key (as int)&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to provide either path (as str) or ID (as uuid.UUID)&quot;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">proto_mesh_id</span>
-
 
 <span class="k">def</span> <span class="nf">_to_proto_attribute_masks</span><span class="p">(</span><span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributesMasks</span><span class="p">:</span>
     <span class="n">attributes_masks</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributesMasks</span><span class="p">()</span>
