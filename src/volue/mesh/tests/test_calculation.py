@@ -186,6 +186,9 @@ def test_read_transformed_timeseries_points(
 
         assert reply_timeseries.is_calculation_expression_result
 
+        # To avoid bloating this test too much check extensively one resolution
+        # i.e. MIN15. For others just make sure the result has at least 1 point
+        # and no error is thrown.
         if resolution in [
             Timeseries.Resolution.HOUR,
             Timeseries.Resolution.DAY,
@@ -193,8 +196,6 @@ def test_read_transformed_timeseries_points(
             Timeseries.Resolution.MONTH,
             Timeseries.Resolution.YEAR,
         ]:
-            # logic for those resolutions is complex and depends on other parameters
-            # make sure the result has at least 1 point and no error is thrown
             assert reply_timeseries.number_of_points >= 1
             return
 
