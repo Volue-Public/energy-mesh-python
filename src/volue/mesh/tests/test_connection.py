@@ -178,59 +178,6 @@ def test_write_timeseries_points_with_different_pyarrow_table_datetime_timezones
 
 
 @pytest.mark.database
-def test_get_timeseries_resource(session):
-    """Check that time series resource can be retrieved."""
-
-    physical_timeseries = get_physical_timeseries()
-    virtual_timeseries = get_virtual_timeseries()
-
-    test_cases = [physical_timeseries, virtual_timeseries]
-
-    for test_case in test_cases:
-        timeseries_info = session.get_timeseries_resource_info(
-            timeseries_key=test_case.timeseries_key)
-        assert isinstance(timeseries_info, TimeseriesResource)
-        assert timeseries_info.timeseries_key == test_case.timeseries_key
-        assert timeseries_info.path == test_case.path
-        assert timeseries_info.name == test_case.name
-        assert timeseries_info.temporary == test_case.temporary
-        assert timeseries_info.curve_type == test_case.curve_type
-        assert timeseries_info.resolution == test_case.resolution
-        assert timeseries_info.unit_of_measurement == test_case.unit_of_measurement
-        #assert timeseries_info.virtual_timeseries_expression == test_case.virtual_timeseries_expression
-
-
-@pytest.mark.database
-def test_update_timeseries_resource(session):
-    """Check that time series resource can be updated."""
-
-    new_curve_type = Timeseries.Curve.STAIRCASESTARTOFSTEP
-    new_unit_of_measurement = "Unit1"
-
-    timeseries = get_physical_timeseries()
-
-    test_id = {"timeseries_key": timeseries.timeseries_key}
-    test_new_curve_type = {"new_curve_type": new_curve_type}
-    test_new_unit_of_measurement = {"new_unit_of_measurement": new_unit_of_measurement}
-    test_cases = [
-        {**test_id, **test_new_curve_type},
-        {**test_id, **test_new_unit_of_measurement},
-        {**test_id, **test_new_curve_type, **test_new_unit_of_measurement}
-    ]
-
-    for test_case in test_cases:
-        session.update_timeseries_resource_info(**test_case)
-        timeseries_info = session.get_timeseries_resource_info(**test_id)
-
-        if "new_curve_type" in test_case:
-            assert timeseries_info.curve_type == new_curve_type
-        if "new_unit_of_measurement" in test_case:
-            assert timeseries_info.unit_of_measurement == new_unit_of_measurement
-
-        session.rollback()
-
-
-@pytest.mark.database
 def test_write_timeseries_points_using_timskey(session):
     """Check that time series can be written to the server using timskey."""
 
