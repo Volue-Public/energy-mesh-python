@@ -349,59 +349,6 @@
         <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="test_get_timeseries_resource"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_get_timeseries_resource">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_get_timeseries_resource</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check that time series resource can be retrieved.&quot;&quot;&quot;</span>
-
-    <span class="n">physical_timeseries</span> <span class="o">=</span> <span class="n">get_physical_timeseries</span><span class="p">()</span>
-    <span class="n">virtual_timeseries</span> <span class="o">=</span> <span class="n">get_virtual_timeseries</span><span class="p">()</span>
-
-    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span><span class="n">physical_timeseries</span><span class="p">,</span> <span class="n">virtual_timeseries</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
-        <span class="n">timeseries_info</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span>
-            <span class="n">timeseries_key</span><span class="o">=</span><span class="n">test_case</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timeseries_info</span><span class="p">,</span> <span class="n">TimeseriesResource</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">timeseries_key</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">timeseries_key</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">path</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">temporary</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">temporary</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">curve_type</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">curve_type</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">resolution</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">resolution</span>
-        <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">test_case</span><span class="o">.</span><span class="n">unit_of_measurement</span></div>
-        <span class="c1">#assert timeseries_info.virtual_timeseries_expression == test_case.virtual_timeseries_expression</span>
-
-
-<div class="viewcode-block" id="test_update_timeseries_resource"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_update_timeseries_resource">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_update_timeseries_resource</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check that time series resource can be updated.&quot;&quot;&quot;</span>
-
-    <span class="n">new_curve_type</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASESTARTOFSTEP</span>
-    <span class="n">new_unit_of_measurement</span> <span class="o">=</span> <span class="s2">&quot;Unit1&quot;</span>
-
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">get_physical_timeseries</span><span class="p">()</span>
-
-    <span class="n">test_id</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;timeseries_key&quot;</span><span class="p">:</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">}</span>
-    <span class="n">test_new_curve_type</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;new_curve_type&quot;</span><span class="p">:</span> <span class="n">new_curve_type</span><span class="p">}</span>
-    <span class="n">test_new_unit_of_measurement</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;new_unit_of_measurement&quot;</span><span class="p">:</span> <span class="n">new_unit_of_measurement</span><span class="p">}</span>
-    <span class="n">test_cases</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span><span class="o">**</span><span class="n">test_id</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_curve_type</span><span class="p">},</span>
-        <span class="p">{</span><span class="o">**</span><span class="n">test_id</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_unit_of_measurement</span><span class="p">},</span>
-        <span class="p">{</span><span class="o">**</span><span class="n">test_id</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_curve_type</span><span class="p">,</span> <span class="o">**</span><span class="n">test_new_unit_of_measurement</span><span class="p">}</span>
-    <span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">test_case</span> <span class="ow">in</span> <span class="n">test_cases</span><span class="p">:</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span><span class="o">**</span><span class="n">test_case</span><span class="p">)</span>
-        <span class="n">timeseries_info</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span><span class="o">**</span><span class="n">test_id</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="s2">&quot;new_curve_type&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">curve_type</span> <span class="o">==</span> <span class="n">new_curve_type</span>
-        <span class="k">if</span> <span class="s2">&quot;new_unit_of_measurement&quot;</span> <span class="ow">in</span> <span class="n">test_case</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">new_unit_of_measurement</span>
-
-        <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="test_write_timeseries_points_using_timskey"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_write_timeseries_points_using_timskey">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
 <span class="k">def</span> <span class="nf">test_write_timeseries_points_using_timskey</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check that time series can be written to the server using timskey.&quot;&quot;&quot;</span>
