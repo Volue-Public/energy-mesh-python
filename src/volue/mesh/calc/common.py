@@ -65,7 +65,7 @@ def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> L
         response: The gRPC response received from the Mesh server.
 
     Returns:
-        A list of time series
+        A list of time series.
     """
     timeseries = _read_proto_reply(response.timeseries_results)
     return timeseries
