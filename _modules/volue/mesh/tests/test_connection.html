@@ -171,104 +171,34 @@
             
   <h1>Source code for volue.mesh.tests.test_connection</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Tests for volue.mesh.Connection</span>
+<span class="sd">Tests for volue.mesh.Connection and volue.mesh.aio.Connection.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="kn">import</span> <span class="nn">grpc</span>
 <span class="kn">import</span> <span class="nn">pytest</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh.tests.test_utilities.utilities</span> <span class="kn">import</span> <span class="n">get_physical_timeseries</span>
+
+<div class="viewcode-block" id="test_get_version"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_get_version">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">server</span>
+<span class="k">def</span> <span class="nf">test_get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the server can respond with its version.&quot;&quot;&quot;</span>
+    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="c1"># if all version numbers are single digits then the version length should be 7</span>
+    <span class="c1"># E.g.: 0.0.0.0</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">7</span>
+    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Volue Mesh Server&quot;</span></div>
 
 
-<div class="viewcode-block" id="test_commit"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_commit">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_commit</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check that commit keeps changes between sessions&quot;&quot;&quot;</span>
-    <span class="n">attribute_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsCalcAtt&quot;</span>
-    <span class="n">new_local_expression</span> <span class="o">=</span> <span class="s2">&quot;something&quot;</span>
-
-    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session1</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># check baseline</span>
-            <span class="n">attribute1</span> <span class="o">=</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
-            <span class="n">old_local_expression</span> <span class="o">=</span> <span class="n">attribute1</span><span class="o">.</span><span class="n">expression</span>
-            <span class="k">assert</span> <span class="n">old_local_expression</span> <span class="o">!=</span> <span class="n">new_local_expression</span>
-
-            <span class="c1"># change something</span>
-            <span class="n">session1</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
-                <span class="n">attribute_path</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="o">=</span><span class="n">new_local_expression</span><span class="p">)</span>
-
-            <span class="c1"># commit</span>
-            <span class="n">session1</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-            <span class="c1"># check that the change is in the session</span>
-            <span class="n">attribute2</span> <span class="o">=</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">attribute2</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
-
-            <span class="c1"># rollback</span>
-            <span class="n">session1</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-            <span class="c1"># check that changes are still there</span>
-            <span class="n">attribute3</span> <span class="o">=</span> <span class="n">session1</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">attribute3</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
-
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not commit changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session2</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># check that the change is still there</span>
-            <span class="n">attribute4</span> <span class="o">=</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">attribute4</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">new_local_expression</span>
-
-            <span class="c1"># change it back to what is was originally</span>
-            <span class="n">session2</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
-                <span class="n">attribute_path</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="o">=</span><span class="n">old_local_expression</span><span class="p">)</span>
-
-            <span class="c1"># commit</span>
-            <span class="n">session2</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-
-            <span class="c1"># check that status has been restored (important to keep db clean)</span>
-            <span class="n">attribute5</span> <span class="o">=</span> <span class="n">session2</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="n">attribute5</span><span class="o">.</span><span class="n">expression</span> <span class="o">==</span> <span class="n">old_local_expression</span>
-
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="n">pytest</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not restore committed changes: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="test_async_get_version"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_async_get_version">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">server</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">test_async_get_version</span><span class="p">(</span><span class="n">async_connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the server can respond with its version.&quot;&quot;&quot;</span>
+    <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">async_connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">7</span>
+    <span class="k">assert</span> <span class="n">version_info</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Volue Mesh Server&quot;</span></div>
 
 
-<div class="viewcode-block" id="test_rollback"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_connection.test_rollback">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">database</span>
-<span class="k">def</span> <span class="nf">test_rollback</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check that rollback discards changes made in the current session.&quot;&quot;&quot;</span>
-
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">get_physical_timeseries</span><span class="p">()</span>
-    <span class="n">new_unit_of_measurement</span> <span class="o">=</span> <span class="s2">&quot;Unit1&quot;</span>
-
-    <span class="c1"># check baseline</span>
-    <span class="n">timeseries_info</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span>
-        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">!=</span> <span class="n">new_unit_of_measurement</span>
-
-    <span class="c1"># change something</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span>
-        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">,</span>
-        <span class="n">new_unit_of_measurement</span><span class="o">=</span><span class="n">new_unit_of_measurement</span><span class="p">)</span>
-
-    <span class="c1"># check that the change is in the session</span>
-    <span class="n">timeseries_info</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span>
-        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">new_unit_of_measurement</span>
-
-    <span class="c1"># rollback</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-    <span class="c1"># check that changes have been discarded</span>
-    <span class="n">timeseries_info</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_resource_info</span><span class="p">(</span>
-        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">!=</span> <span class="n">new_unit_of_measurement</span></div>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
 </pre></div>
 

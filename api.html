@@ -3112,13 +3112,7 @@ Most transformation methods are available for this latter use.</p>
 <dd><p>Check if the server’s socket is open and responding.</p>
 </dd></dl>
 
-<span class="target" id="module-volue.mesh.tests.test_session"></span><p>Tests for volue.mesh.Connection.Session and volue.mesh.aio.Connection.Session</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_async_get_version">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_async_get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_async_get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_async_get_version" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the server can respond with its version. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest-asyncio"><em>pytest-asyncio</em></a>.</p>
-</dd></dl>
-
+<span class="target" id="module-volue.mesh.tests.test_session"></span><p>Tests for volue.mesh.Connection.Session and volue.mesh.aio.Connection.Session.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_async_open_and_close_session">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_async_open_and_close_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_async_open_and_close_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_async_open_and_close_session" title="Permalink to this definition">¶</a></dt>
@@ -3136,15 +3130,27 @@ Most transformation methods are available for this latter use.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_get_version">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_get_version" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the server can respond with its version. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest"><em>pytest</em></a>.</p>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_commit">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that commit keeps changes between sessions</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_open_and_close_session">
 <span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_open_and_close_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_open_and_close_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_open_and_close_session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a session can be opened and closed. Requires <a class="reference external" href="https://github.com/pytest-dev/pytest"><em>pytest</em></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_rollback">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_rollback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_rollback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that rollback discards changes made in the current session.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="volue.mesh.tests.test_session.test_rollback_and_commit_async">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_session.</span></span><span class="sig-name descname"><span class="pre">test_rollback_and_commit_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_session.html#test_rollback_and_commit_async"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_session.test_rollback_and_commit_async" title="Permalink to this definition">¶</a></dt>
+<dd><p>For async run the simplest test, implementation is the same.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -3313,30 +3319,17 @@ series attribute will throw.</p>
 “Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt”</p>
 </dd></dl>
 
-<span class="target" id="module-volue.mesh.tests.test_connection"></span><p>Tests for volue.mesh.Connection</p>
+<span class="target" id="module-volue.mesh.tests.test_connection"></span><p>Tests for volue.mesh.Connection and volue.mesh.aio.Connection.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_commit">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_commit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that commit keeps changes between sessions</p>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_async_get_version">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_async_get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_async_get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_async_get_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the server can respond with its version.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_rollback">
-<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_rollback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_rollback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that rollback discards changes made in the current session.</p>
-</dd></dl>
-
-<span class="target" id="module-volue.mesh.tests.test_aio_connection"></span><p>Tests for volue.mesh.aio</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_commit">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_commit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_commit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that commit keeps changes between sessions</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="volue.mesh.tests.test_aio_connection.test_rollback">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_aio_connection.</span></span><span class="sig-name descname"><span class="pre">test_rollback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">async_session</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_aio_connection.html#test_rollback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_aio_connection.test_rollback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check that rollback discards changes made in the current session.</p>
+<dt class="sig sig-object py" id="volue.mesh.tests.test_connection.test_get_version">
+<span class="sig-prename descclassname"><span class="pre">volue.mesh.tests.test_connection.</span></span><span class="sig-name descname"><span class="pre">test_get_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connection</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/tests/test_connection.html#test_get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.tests.test_connection.test_get_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the server can respond with its version.</p>
 </dd></dl>
 
 <span class="target" id="module-volue.mesh.tests.test_authentication"></span><p>Tests for volue.mesh.Authentication</p>
