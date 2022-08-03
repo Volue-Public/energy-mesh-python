@@ -10,11 +10,24 @@ import uuid
 from google import protobuf
 import grpc
 
-from volue.mesh import Timeseries, AttributesFilter, UserIdentity, VersionInfo, \
-    AttributeBase, TimeseriesAttribute, TimeseriesResource, Object
+from volue.mesh import (
+    Timeseries,
+    AttributesFilter,
+    UserIdentity,
+    VersionInfo,
+    AttributeBase,
+    TimeseriesAttribute,
+    TimeseriesResource,
+    Object,
+)
 from volue.mesh._attribute import _from_proto_attribute
-from volue.mesh._common import (XySet, RatingCurveVersion, _to_proto_guid,
-     _from_proto_guid, _to_proto_timeseries)
+from volue.mesh._common import (
+    XySet,
+    RatingCurveVersion,
+    _to_proto_guid,
+    _from_proto_guid,
+    _to_proto_timeseries,
+)
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
@@ -35,9 +48,10 @@ class Connection(_base_connection.Connection):
         """
 
         def __init__(
-                self,
-                mesh_service: core_pb2_grpc.MeshServiceStub,
-                session_id: Optional[uuid.UUID] = None):
+            self,
+            mesh_service: core_pb2_grpc.MeshServiceStub,
+            session_id: Optional[uuid.UUID] = None,
+        ):
             super().__init__(session_id=session_id, mesh_service=mesh_service)
 
         async def __aenter__(self):
@@ -88,42 +102,55 @@ class Connection(_base_connection.Connection):
             await self.mesh_service.WriteTimeseries(
                 core_pb2.WriteTimeseriesRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    timeseries=_to_proto_timeseries(timeseries)
-                ))
+                    timeseries=_to_proto_timeseries(timeseries),
+                )
+            )
 
         async def get_timeseries_resource_info(
-                self,
-                timeseries_key: int) -> TimeseriesResource:
+            self, timeseries_key: int
+        ) -> TimeseriesResource:
             proto_timeseries_resource = await self.mesh_service.GetTimeseriesResource(
                 core_pb2.GetTimeseriesResourceRequest(
                     session_id=_to_proto_guid(self.session_id),
-                    timeseries_resource_key=timeseries_key
-                ))
-            return TimeseriesResource._from_proto_timeseries_resource(proto_timeseries_resource)
+                    timeseries_resource_key=timeseries_key,
+                )
+            )
+            return TimeseriesResource._from_proto_timeseries_resource(
+                proto_timeseries_resource
+            )
 
         async def update_timeseries_resource_info(
-                self,
-                timeseries_key: int,
-                new_curve_type: Optional[Timeseries.Curve] = None,
-                new_unit_of_measurement: Optional[str] = None) -> None:
+            self,
+            timeseries_key: int,
+            new_curve_type: Optional[Timeseries.Curve] = None,
+            new_unit_of_measurement: Optional[str] = None,
+        ) -> None:
             request = super()._prepare_update_timeseries_resource_request(
-                timeseries_key, new_curve_type, new_unit_of_measurement)
+                timeseries_key, new_curve_type, new_unit_of_measurement
+            )
             await self.mesh_service.UpdateTimeseriesResource(request)
 
         async def get_attribute(
-            self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool = False
+            self,
+            target: Union[uuid.UUID, str, AttributeBase],
+            full_attribute_info: bool = False,
         ) -> AttributeBase:
             request = super()._prepare_get_attribute_request(
-                target, full_attribute_info)
+                target, full_attribute_info
+            )
             proto_attribute = await self.mesh_service.GetAttribute(request)
             return _from_proto_attribute(proto_attribute)
 
         async def get_timeseries_attribute(
-            self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool = False
+            self,
+            target: Union[uuid.UUID, str, AttributeBase],
+            full_attribute_info: bool = False,
         ) -> TimeseriesAttribute:
             attribute = await self.get_attribute(target, full_attribute_info)
             if not isinstance(attribute, TimeseriesAttribute):
-                raise ValueError(f'attribute is not a TimeseriesAttribute, but a {type(attribute).__name__}')
+                raise ValueError(
+                    f"attribute is not a TimeseriesAttribute, but a {type(attribute).__name__}"
+                )
             return attribute
 
         async def search_for_attributes(
@@ -133,7 +160,8 @@ class Connection(_base_connection.Connection):
             full_attribute_info: bool = False,
         ) -> List[AttributeBase]:
             request = super()._prepare_search_attributes_request(
-                target, query, full_attribute_info)
+                target, query, full_attribute_info
+            )
 
             attributes = []
             async for proto_attribute in self.mesh_service.SearchAttributes(request):
@@ -147,16 +175,18 @@ class Connection(_base_connection.Connection):
             full_attribute_info: bool = False,
         ) -> List[TimeseriesAttribute]:
             attributes = await self.search_for_attributes(
-                target, query, full_attribute_info)
-            return list(filter(lambda attr: (isinstance(attr, TimeseriesAttribute)), attributes))
+                target, query, full_attribute_info
+            )
+            return list(
+                filter(lambda attr: (isinstance(attr, TimeseriesAttribute)), attributes)
+            )
 
         async def update_simple_attribute(
             self,
             target: Union[uuid.UUID, str, AttributeBase],
             value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
         ) -> None:
-            request = super()._prepare_update_simple_attribute_request(
-                target, value)
+            request = super()._prepare_update_simple_attribute_request(target, value)
             await self.mesh_service.UpdateSimpleAttribute(request)
 
         async def update_timeseries_attribute(
@@ -177,7 +207,8 @@ class Connection(_base_connection.Connection):
             attributes_filter: Optional[AttributesFilter] = None,
         ) -> Object:
             request = super()._prepare_get_object_request(
-                target, full_attribute_info, attributes_filter)
+                target, full_attribute_info, attributes_filter
+            )
             proto_object = await self.mesh_service.GetObject(request)
             return Object._from_proto_object(proto_object)
 
@@ -189,14 +220,17 @@ class Connection(_base_connection.Connection):
             attributes_filter: Optional[AttributesFilter] = None,
         ) -> List[Object]:
             request = super()._prepare_search_for_objects_request(
-                target, query, full_attribute_info, attributes_filter)
+                target, query, full_attribute_info, attributes_filter
+            )
 
             objects = []
             async for proto_object in self.mesh_service.SearchObjects(request):
                 objects.append(Object._from_proto_object(proto_object))
             return objects
 
-        async def create_object(self, target: Union[uuid.UUID, str, AttributeBase], name: str) -> Object:
+        async def create_object(
+            self, target: Union[uuid.UUID, str, AttributeBase], name: str
+        ) -> Object:
             request = super()._prepare_create_object_request(target=target, name=name)
             proto_object = await self.mesh_service.CreateObject(request)
             return Object._from_proto_object(proto_object)
@@ -222,7 +256,7 @@ class Connection(_base_connection.Connection):
             self,
             target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
-            end_time: datetime
+            end_time: datetime,
         ) -> ForecastFunctionsAsync:
             return ForecastFunctionsAsync(self, target, start_time, end_time)
 
@@ -230,7 +264,7 @@ class Connection(_base_connection.Connection):
             self,
             target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
-            end_time: datetime
+            end_time: datetime,
         ) -> HistoryFunctionsAsync:
             return HistoryFunctionsAsync(self, target, start_time, end_time)
 
@@ -238,7 +272,7 @@ class Connection(_base_connection.Connection):
             self,
             target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
-            end_time: datetime
+            end_time: datetime,
         ) -> StatisticalFunctionsAsync:
             return StatisticalFunctionsAsync(self, target, start_time, end_time)
 
@@ -246,15 +280,16 @@ class Connection(_base_connection.Connection):
             self,
             target: Union[uuid.UUID, str, int, AttributeBase, Object],
             start_time: datetime,
-            end_time: datetime
+            end_time: datetime,
         ) -> TransformFunctionsAsync:
             return TransformFunctionsAsync(self, target, start_time, end_time)
 
         async def get_xy_sets(
-                self, target: typing.Union[uuid.UUID, str, AttributeBase],
-                start_time: Optional[datetime] = None,
-                end_time: Optional[datetime] = None,
-                versions_only: bool = False
+            self,
+            target: typing.Union[uuid.UUID, str, AttributeBase],
+            start_time: Optional[datetime] = None,
+            end_time: Optional[datetime] = None,
+            versions_only: bool = False,
         ) -> typing.List[XySet]:
             gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
             request = next(gen)
@@ -262,12 +297,15 @@ class Connection(_base_connection.Connection):
             return gen.send(response)
 
         async def update_xy_sets(
-                self, target: typing.Union[uuid.UUID, str, AttributeBase],
-                start_time: Optional[datetime] = None,
-                end_time: Optional[datetime] = None,
-                new_xy_sets: typing.List[XySet] = []
+            self,
+            target: typing.Union[uuid.UUID, str, AttributeBase],
+            start_time: Optional[datetime] = None,
+            end_time: Optional[datetime] = None,
+            new_xy_sets: typing.List[XySet] = [],
         ) -> None:
-            request = super()._prepare_update_xy_sets_request(target, start_time, end_time, new_xy_sets)
+            request = super()._prepare_update_xy_sets_request(
+                target, start_time, end_time, new_xy_sets
+            )
             await self.mesh_service.UpdateXySets(request)
 
         async def get_rating_curve_versions(
@@ -275,9 +313,11 @@ class Connection(_base_connection.Connection):
             target: Union[uuid.UUID, str, AttributeBase],
             start_time: datetime,
             end_time: datetime,
-            versions_only: bool = False
+            versions_only: bool = False,
         ) -> List[RatingCurveVersion]:
-            gen = super()._get_rating_curve_versions_impl(target, start_time, end_time, versions_only)
+            gen = super()._get_rating_curve_versions_impl(
+                target, start_time, end_time, versions_only
+            )
             request = next(gen)
             response = await self.mesh_service.GetRatingCurveVersions(request)
             return gen.send(response)
@@ -287,10 +327,11 @@ class Connection(_base_connection.Connection):
             target: Union[uuid.UUID, str, AttributeBase],
             start_time: datetime,
             end_time: datetime,
-            new_versions: List[RatingCurveVersion]
+            new_versions: List[RatingCurveVersion],
         ) -> None:
             request = super()._prepare_update_rating_curve_versions_request(
-                target, start_time, end_time, new_versions)
+                target, start_time, end_time, new_versions
+            )
             await self.mesh_service.UpdateRatingCurveVersions(request)
 
     @staticmethod
@@ -306,18 +347,21 @@ class Connection(_base_connection.Connection):
 
     async def get_version(self) -> VersionInfo:
         return VersionInfo._from_proto(
-            await self.mesh_service.GetVersion(protobuf.empty_pb2.Empty()))
+            await self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
+        )
 
     async def get_user_identity(self) -> UserIdentity:
         return UserIdentity._from_proto(
-            await self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty()))
+            await self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
+        )
 
     async def revoke_access_token(self) -> None:
         if self.auth_metadata_plugin is None:
-            raise RuntimeError('Authentication not configured for this connection')
+            raise RuntimeError("Authentication not configured for this connection")
 
         await self.mesh_service.RevokeAccessToken(
-            protobuf.wrappers_pb2.StringValue(value = self.auth_metadata_plugin.token))
+            protobuf.wrappers_pb2.StringValue(value=self.auth_metadata_plugin.token)
+        )
         self.auth_metadata_plugin.delete_access_token()
 
     def create_session(self) -> Session:

@@ -19,7 +19,9 @@ from volue.mesh.proto.core.v1alpha import core_pb2
 from volue.mesh.proto.type import resources_pb2
 
 TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt"
-TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.TsCalcAtt"
+TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH = (
+    "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.TsCalcAtt"
+)
 TIME_SERIES_START_TIME = datetime(2016, 1, 1, 1)
 TIME_SERIES_END_TIME = datetime(2016, 1, 1, 9)
 
@@ -33,14 +35,15 @@ def get_test_time_series_pyarrow_table(
     # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
     # flags - [pa.uint32]
     # value - [pa.float64]
-    utc_times = pd.date_range(first_point_timestamp, last_point_timestamp, freq="1H").tolist()
+    utc_times = pd.date_range(
+        first_point_timestamp, last_point_timestamp, freq="1H"
+    ).tolist()
     flags = [Timeseries.PointFlags.OK.value] * len(utc_times)
-    points = list(range(10, 10+2*len(utc_times), 2))
+    points = list(range(10, 10 + 2 * len(utc_times), 2))
 
-    arrays = [pa.array(utc_times),
-              pa.array(flags),
-              pa.array(points)]
+    arrays = [pa.array(utc_times), pa.array(flags), pa.array(points)]
     return pa.Table.from_arrays(arrays, schema=Timeseries.schema)
+
 
 def verify_physical_timeseries(reply_timeseries: Timeseries):
     """
@@ -56,7 +59,7 @@ def verify_physical_timeseries(reply_timeseries: Timeseries):
     # check timestamps
     utc_date = reply_timeseries.arrow_table[0]
     for count, item in enumerate(utc_date):
-        assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
+        assert item.as_py() == datetime(2016, 1, 1, count + 1, 0)
 
     # check flags and values
     flags = reply_timeseries.arrow_table[1]
@@ -65,7 +68,11 @@ def verify_physical_timeseries(reply_timeseries: Timeseries):
     for number in range(9):
         if number == 3:
             assert math.isnan(values[3].as_py())
-            assert flags[3].as_py() == Timeseries.PointFlags.NOT_OK.value | Timeseries.PointFlags.MISSING.value
+            assert (
+                flags[3].as_py()
+                == Timeseries.PointFlags.NOT_OK.value
+                | Timeseries.PointFlags.MISSING.value
+            )
         else:
             assert values[number].as_py() == (number + 1) * 100
             assert flags[number].as_py() == Timeseries.PointFlags.OK.value
@@ -82,7 +89,7 @@ def verify_calculation_timeseries(reply_timeseries: Timeseries):
     # check timestamps
     utc_date = reply_timeseries.arrow_table[0]
     for count, item in enumerate(utc_date):
-        assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
+        assert item.as_py() == datetime(2016, 1, 1, count + 1, 0)
 
     # check flags and values
     flags = reply_timeseries.arrow_table[1]
@@ -124,9 +131,13 @@ def test_can_create_timeserie_from_existing_data():
     """Check that a time series can be created from existing data."""
 
     arrays = [
-        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)], type=pa.timestamp('ms')),
+        pa.array(
+            [datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)],
+            type=pa.timestamp("ms"),
+        ),
         pa.array([0, 0, 0], type=pa.uint32()),
-        pa.array([0.0, 0.0, 0.0])]
+        pa.array([0.0, 0.0, 0.0]),
+    ]
     table = pa.Table.from_arrays(arrays=arrays, names=["utc_time", "flags", "value"])
     time_series = Timeseries(table)
     assert time_series.number_of_points == 3
@@ -136,11 +147,15 @@ def test_can_create_timeserie_from_existing_data():
 def test_init_timeseries_with_wrong_pyarrow_table_schema_should_throw():
     """Check that a time series can't be created with invalid PyArrow table schema."""
 
-    arrays = [pa.array(['one', 'two', 'three', 'four', 'five']),
-              pa.array([1, 2, 3, 4, 5]),
-              pa.array([6, 7, 8, 9, 10])]
+    arrays = [
+        pa.array(["one", "two", "three", "four", "five"]),
+        pa.array([1, 2, 3, 4, 5]),
+        pa.array([6, 7, 8, 9, 10]),
+    ]
 
-    table = pa.Table.from_arrays(arrays=arrays, names=["name", "first_list", "second_list"])
+    table = pa.Table.from_arrays(
+        arrays=arrays, names=["name", "first_list", "second_list"]
+    )
     with pytest.raises(TypeError, match="invalid PyArrow table schema"):
         Timeseries(table)
 
@@ -154,22 +169,32 @@ def test_init_timeseries_with_wrong_pyarrow_table_schema_should_throw():
 def test_can_serialize_and_deserialize_write_timeserie_request():
     """Check that timeseries can be de-/serialized."""
 
-    start = datetime(year=2013, month=7, day=25, hour=0, minute=0, second=0)  # 25/07/2013 00:00:00
-    end = datetime(year=2016, month=12, day=25, hour=0, minute=0, second=0)  # 25/12/2016 00:00:00
+    start = datetime(
+        year=2013, month=7, day=25, hour=0, minute=0, second=0
+    )  # 25/07/2013 00:00:00
+    end = datetime(
+        year=2016, month=12, day=25, hour=0, minute=0, second=0
+    )  # 25/12/2016 00:00:00
 
     arrays = [
-        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)]),
+        pa.array(
+            [datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)]
+        ),
         pa.array([0, 0, 0]),
-        pa.array([0.0, 0.0, 0.0])]
+        pa.array([0.0, 0.0, 0.0]),
+    ]
 
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
-    original_timeseries = Timeseries(table=table,
-                                     resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                                     start_time=start, end_time=end,
-                                     timskey=1,
-                                     uuid_id=uuid.uuid4(),
-                                     full_name="some_name")
+    original_timeseries = Timeseries(
+        table=table,
+        resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
+        start_time=start,
+        end_time=end,
+        timskey=1,
+        uuid_id=uuid.uuid4(),
+        full_name="some_name",
+    )
 
     assert original_timeseries.start_time == start
     assert original_timeseries.end_time == end
@@ -178,8 +203,7 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     session_id_original = _to_proto_guid(uuid.uuid4())
 
     original_reply = core_pb2.WriteTimeseriesRequest(
-        session_id=session_id_original,
-        timeseries=original_proto_timeseries
+        session_id=session_id_original, timeseries=original_proto_timeseries
     )
 
     binary_data = original_reply.SerializeToString()
@@ -211,17 +235,22 @@ def test_timeseries_without_explicit_start_end_datetime_will_deduct_it_from_pyar
     """
 
     arrays = [
-        pa.array([datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)]),
+        pa.array(
+            [datetime(2016, 5, 1), datetime(2016, 5, 1, 1), datetime(2016, 5, 1, 2)]
+        ),
         pa.array([0, 0, 0]),
-        pa.array([0.0, 0.0, 0.0])]
+        pa.array([0.0, 0.0, 0.0]),
+    ]
 
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
-    time_series = Timeseries(table=table,
-                             resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                             timskey=1,
-                             uuid_id=uuid.uuid4(),
-                             full_name="some_name")
+    time_series = Timeseries(
+        table=table,
+        resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
+        timskey=1,
+        uuid_id=uuid.uuid4(),
+        full_name="some_name",
+    )
     assert time_series.start_time == datetime(2016, 5, 1)
     assert time_series.end_time == datetime(2016, 5, 1, 2) + timedelta(seconds=1)
 
@@ -233,10 +262,12 @@ def test_timeseries_without_explicit_start_end_datetime_and_pyarrow_table():
     explicitly `start_time`, `end_time` and PyArrow `table` arguments.
     """
 
-    time_series = Timeseries(resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                             timskey=1,
-                             uuid_id=uuid.uuid4(),
-                             full_name="some_name")
+    time_series = Timeseries(
+        resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
+        timskey=1,
+        uuid_id=uuid.uuid4(),
+        full_name="some_name",
+    )
     assert time_series.number_of_points == 0
 
 
@@ -247,17 +278,16 @@ def test_timeseries_without_explicit_start_end_datetime_and_empty_pyarrow_table(
     explicitly `start_time`, `end_time` and PyArrow `table` arguments.
     """
 
-    arrays = [
-        pa.array([]),
-        pa.array([]),
-        pa.array([])]
+    arrays = [pa.array([]), pa.array([]), pa.array([])]
 
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
-    time_series = Timeseries(table=table,
-                             resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
-                             timskey=1,
-                             uuid_id=uuid.uuid4(),
-                             full_name="some_name")
+    time_series = Timeseries(
+        table=table,
+        resolution=resources_pb2.Resolution(type=resources_pb2.Resolution.HOUR),
+        timskey=1,
+        uuid_id=uuid.uuid4(),
+        full_name="some_name",
+    )
     assert time_series.number_of_points == 0
 
 
@@ -276,7 +306,8 @@ def test_read_physical_timeseries_points(session):
 
     for target in targets:
         reply_timeseries = session.read_timeseries_points(
-            target, TIME_SERIES_START_TIME, TIME_SERIES_END_TIME)
+            target, TIME_SERIES_START_TIME, TIME_SERIES_END_TIME
+        )
         verify_physical_timeseries(reply_timeseries)
 
 
@@ -292,7 +323,8 @@ def test_read_calculation_timeseries_points(session):
 
     for target in targets:
         reply_timeseries = session.read_timeseries_points(
-            target, TIME_SERIES_START_TIME, TIME_SERIES_END_TIME)
+            target, TIME_SERIES_START_TIME, TIME_SERIES_END_TIME
+        )
         verify_calculation_timeseries(reply_timeseries)
 
 
@@ -309,7 +341,7 @@ def get_different_time_zone_datetimes(datetime):
     # replace to UTC, because we treat time zone naive datetime as UTC
     datetime_utc = datetime.replace(tzinfo=tz.UTC)
     # now we can convert to different time zones (from time zone aware UTC datetime)
-    datetime_local = datetime_utc.astimezone(tz.gettz('Europe/Warsaw'))
+    datetime_local = datetime_utc.astimezone(tz.gettz("Europe/Warsaw"))
 
     return [
         datetime,  # time zone naive
@@ -319,9 +351,15 @@ def get_different_time_zone_datetimes(datetime):
 
 
 @pytest.mark.database
-@pytest.mark.parametrize("start_time", get_different_time_zone_datetimes(TIME_SERIES_START_TIME))
-@pytest.mark.parametrize("end_time", get_different_time_zone_datetimes(TIME_SERIES_END_TIME))
-def test_read_timeseries_points_with_different_datetime_timezones(session, start_time, end_time):
+@pytest.mark.parametrize(
+    "start_time", get_different_time_zone_datetimes(TIME_SERIES_START_TIME)
+)
+@pytest.mark.parametrize(
+    "end_time", get_different_time_zone_datetimes(TIME_SERIES_END_TIME)
+)
+def test_read_timeseries_points_with_different_datetime_timezones(
+    session, start_time, end_time
+):
     """
     Check that timeseries points read accepts time zone aware and
     naive (treated as UTC) datetimes as input arguments.
@@ -347,7 +385,9 @@ def test_write_timeseries_points(session):
     test_cases = [
         Timeseries(table=new_table, full_name=attribute_path),
         Timeseries(table=new_table, uuid_id=attribute.id),
-        Timeseries(table=new_table, timskey=attribute.time_series_resource.timeseries_key)
+        Timeseries(
+            table=new_table, timskey=attribute.time_series_resource.timeseries_key
+        ),
     ]
 
     for test_case in test_cases:
@@ -379,7 +419,8 @@ def test_write_one_timeseries_point(session):
 
     attribute_path = TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
     session.write_timeseries_points(
-        Timeseries(table=new_table, full_name=attribute_path))
+        Timeseries(table=new_table, full_name=attribute_path)
+    )
 
     reply_timeseries = session.read_timeseries_points(
         target=attribute_path,
@@ -390,15 +431,15 @@ def test_write_one_timeseries_point(session):
     # check timestamps
     utc_date = reply_timeseries.arrow_table[0]
     for count, item in enumerate(utc_date):
-        assert item.as_py() == datetime(2016, 1, 1, count+1, 0)
+        assert item.as_py() == datetime(2016, 1, 1, count + 1, 0)
 
     # check flags and values
     flags = reply_timeseries.arrow_table[1]
     values = reply_timeseries.arrow_table[2]
 
     for number in range(9):
-            assert values[number].as_py() == (number + 1) * 100
-            assert flags[number].as_py() == Timeseries.PointFlags.OK.value
+        assert values[number].as_py() == (number + 1) * 100
+        assert flags[number].as_py() == Timeseries.PointFlags.OK.value
 
 
 def test_write_timeseries_point_from_other_session(connection):
@@ -423,9 +464,12 @@ def test_write_timeseries_point_from_other_session(connection):
     arrays = [pa.array(utc_times), pa.array(flags), pa.array(points)]
     new_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
-    attribute_path_for_writing = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.TsRawAtt"
+    attribute_path_for_writing = (
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.TsRawAtt"
+    )
     writer_session.write_timeseries_points(
-        Timeseries(table=new_table, full_name=attribute_path_for_writing))
+        Timeseries(table=new_table, full_name=attribute_path_for_writing)
+    )
     # commit the changes so that other session will have access to changed data
     writer_session.commit()
 
@@ -446,7 +490,8 @@ def test_write_timeseries_point_from_other_session(connection):
     new_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
     writer_session.write_timeseries_points(
-        Timeseries(table=new_table, full_name=attribute_path_for_writing))
+        Timeseries(table=new_table, full_name=attribute_path_for_writing)
+    )
     writer_session.commit()
 
     # check if we correctly wrote the original values back
@@ -467,7 +512,9 @@ def test_write_timeseries_points_to_calculation_timeseries(session):
     """
 
     new_table = get_test_time_series_pyarrow_table()
-    timeseries = Timeseries(table=new_table, full_name=TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH)
+    timeseries = Timeseries(
+        table=new_table, full_name=TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH
+    )
 
     with pytest.raises(grpc.RpcError, match="Time series not found"):
         session.write_timeseries_points(timeseries)
@@ -480,16 +527,25 @@ def test_write_unsorted_timeseries_points(session):
     series attribute will throw.
     """
 
-    utc_times = [datetime(2020, 1, 1), datetime(2020, 1, 3), datetime(2020, 1, 2), datetime(2020, 1, 4)]
+    utc_times = [
+        datetime(2020, 1, 1),
+        datetime(2020, 1, 3),
+        datetime(2020, 1, 2),
+        datetime(2020, 1, 4),
+    ]
     flags = [Timeseries.PointFlags.OK.value] * len(utc_times)
     points = list(range(len(utc_times)))
 
     arrays = [pa.array(utc_times), pa.array(flags), pa.array(points)]
     new_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
-    timeseries = Timeseries(table=new_table, full_name=TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH)
+    timeseries = Timeseries(
+        table=new_table, full_name=TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
+    )
 
-    with pytest.raises(grpc.RpcError, match="timestamps in the segment are not increasing"):
+    with pytest.raises(
+        grpc.RpcError, match="timestamps in the segment are not increasing"
+    ):
         session.write_timeseries_points(timeseries)
 
 
@@ -515,5 +571,5 @@ async def test_timeseries_async(async_session):
     assert new_table == reply_timeseries.arrow_table
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))

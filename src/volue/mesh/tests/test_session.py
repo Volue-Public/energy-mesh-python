@@ -49,7 +49,9 @@ def test_can_connect_to_existing_session(connection):
     with pytest.raises(grpc.RpcError) as info:
         session.close()
     assert info.type == grpc._channel._InactiveRpcError
-    assert info.value.details() == ('Session with id {} not found.'.format({str(session.session_id).upper()})).replace("'", "")
+    assert info.value.details() == (
+        "Session with id {} not found.".format({str(session.session_id).upper()})
+    ).replace("'", "")
 
 
 @pytest.mark.server
@@ -239,7 +241,8 @@ async def test_rollback_and_commit_async(async_session):
 
     # change it back to what is was originally
     await async_session.update_timeseries_resource_info(
-        timeseries_key=timeseries_key, new_unit_of_measurement=original_unit_of_measurement
+        timeseries_key=timeseries_key,
+        new_unit_of_measurement=original_unit_of_measurement,
     )
 
     # commit
@@ -252,5 +255,5 @@ async def test_rollback_and_commit_async(async_session):
     assert timeseries_info.unit_of_measurement == original_unit_of_measurement
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))

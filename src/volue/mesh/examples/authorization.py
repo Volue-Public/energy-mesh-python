@@ -24,10 +24,13 @@ def main(address, port, root_pem_certificate):
     #       Would be converted to:
     #           service/hostname
     authentication_parameters = Authentication.Parameters(
-        'HOST/example.companyad.company.com')
+        "HOST/example.companyad.company.com"
+    )
 
     print("Synchronous authentication example: ")
-    connection = Connection(address, port, root_pem_certificate, authentication_parameters)
+    connection = Connection(
+        address, port, root_pem_certificate, authentication_parameters
+    )
     user_identity = connection.get_user_identity()
     print(user_identity)
 
@@ -35,8 +38,12 @@ def main(address, port, root_pem_certificate):
     connection.revoke_access_token()
 
     print("Asynchronous authentication example: ")
-    aconnection = AsyncConnection(address, port, root_pem_certificate, authentication_parameters)
-    user_identity = asyncio.get_event_loop().run_until_complete(aconnection.get_user_identity())
+    aconnection = AsyncConnection(
+        address, port, root_pem_certificate, authentication_parameters
+    )
+    user_identity = asyncio.get_event_loop().run_until_complete(
+        aconnection.get_user_identity()
+    )
     print(user_identity)
 
     # revoke no longer used token

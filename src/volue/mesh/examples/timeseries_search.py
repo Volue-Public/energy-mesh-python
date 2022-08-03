@@ -28,10 +28,10 @@ def main(address, port, root_pem_certificate):
 
     # Search for time series attributes using this query
     timeseries_attributes = session.search_for_timeseries_attributes(
-        target=start_object_path,
-        query=query)
+        target=start_object_path, query=query
+    )
 
-    print(f'Number of found time series: {len(timeseries_attributes)}')
+    print(f"Number of found time series: {len(timeseries_attributes)}")
 
     # Close the remote session
     session.close()

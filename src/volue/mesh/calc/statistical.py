@@ -16,14 +16,16 @@ from volue.mesh.calc.common import (
     _parse_single_timeseries_response,
 )
 
-_SINGLE_TIMESERIES_CALC_SYMBOL = 't'
-_ARRAY_OF_TIMESERIES_CALC_SYMBOL = 'T'
+_SINGLE_TIMESERIES_CALC_SYMBOL = "t"
+_ARRAY_OF_TIMESERIES_CALC_SYMBOL = "T"
 
 
 class _StatisticalFunctionsBase(_Calculation, ABC):
     """Base class for all statistical function classes."""
 
-    def _sum_expression(self, input_type_symbol: str, search_query: Optional[str]) -> str:
+    def _sum_expression(
+        self, input_type_symbol: str, search_query: Optional[str]
+    ) -> str:
         """
         Create an expression for `sum`.
 
@@ -80,25 +82,35 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
 
 class StatisticalFunctions(_StatisticalFunctionsBase):
     """Class for statistical functions that should be run synchronously"""
+
     def sum(self, search_query: Optional[str] = None):
-        expression = super()._sum_expression(_ARRAY_OF_TIMESERIES_CALC_SYMBOL, search_query)
+        expression = super()._sum_expression(
+            _ARRAY_OF_TIMESERIES_CALC_SYMBOL, search_query
+        )
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
     def sum_single_timeseries(self, search_query: Optional[str] = None):
-        expression = super()._sum_expression(_SINGLE_TIMESERIES_CALC_SYMBOL, search_query)
+        expression = super()._sum_expression(
+            _SINGLE_TIMESERIES_CALC_SYMBOL, search_query
+        )
         response = super().run(expression)
         return _parse_single_float_response(response)
 
 
 class StatisticalFunctionsAsync(_StatisticalFunctionsBase):
     """Class for statistical functions that should be run asynchronously"""
+
     async def sum(self, search_query: Optional[str] = None):
-        expression = super()._sum_expression(_ARRAY_OF_TIMESERIES_CALC_SYMBOL, search_query)
+        expression = super()._sum_expression(
+            _ARRAY_OF_TIMESERIES_CALC_SYMBOL, search_query
+        )
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)
 
     async def sum_single_timeseries(self, search_query: Optional[str] = None):
-        expression = super()._sum_expression(_SINGLE_TIMESERIES_CALC_SYMBOL, search_query)
+        expression = super()._sum_expression(
+            _SINGLE_TIMESERIES_CALC_SYMBOL, search_query
+        )
         response = await super().run_async(expression)
         return _parse_single_float_response(response)

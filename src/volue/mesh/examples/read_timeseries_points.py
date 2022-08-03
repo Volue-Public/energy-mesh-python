@@ -12,7 +12,9 @@ def read_timeseries_points(session: Connection.Session):
     """Showing how to read timeseries points."""
 
     # Define the timeseries identifiers
-    timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
+    timeseries_full_name = (
+        "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
+    )
     timeseries_id = uuid.UUID("00000003-0003-0000-0000-000000000000")
 
     # Defining a time interval to read timeseries from.
@@ -21,17 +23,17 @@ def read_timeseries_points(session: Connection.Session):
     end = datetime(2016, 1, 1, 8, 0, 0)
 
     # Send request to read timeseries based on path
-    timeseries = session.read_timeseries_points(target=timeseries_full_name,
-                                                start_time=start,
-                                                end_time=end)
+    timeseries = session.read_timeseries_points(
+        target=timeseries_full_name, start_time=start, end_time=end
+    )
     print(f"Read {timeseries.number_of_points} points")
 
     # OR
 
     # Send request to read timeseries based on guid
-    timeseries = session.read_timeseries_points(target=timeseries_id,
-                                                start_time=start,
-                                                end_time=end)
+    timeseries = session.read_timeseries_points(
+        target=timeseries_id, start_time=start, end_time=end
+    )
     print(f"Read {timeseries.number_of_points} points")
 
 

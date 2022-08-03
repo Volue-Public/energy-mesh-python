@@ -10,7 +10,9 @@ async def read_timeseries_points_async(session: Connection.Session):
     """Showing how to read timeseries points."""
 
     # Define the timeseries identifiers
-    timeseries_full_name = "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
+    timeseries_full_name = (
+        "Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw"
+    )
     timeseries_id = uuid.UUID("00000003-0003-0000-0000-000000000000")
 
     # Defining a time interval to read timeseries from.
@@ -21,12 +23,18 @@ async def read_timeseries_points_async(session: Connection.Session):
     # Indicate that these two functions can be run concurrently
     full_name_timeseries, id_timeseries = await asyncio.gather(
         session.read_timeseries_points(
-            target=timeseries_full_name, start_time=start, end_time=end),
+            target=timeseries_full_name, start_time=start, end_time=end
+        ),
         session.read_timeseries_points(
-            target=timeseries_id, start_time=start, end_time=end)
+            target=timeseries_id, start_time=start, end_time=end
+        ),
     )
-    print(f"Timeseries found using id contains {full_name_timeseries.number_of_points}.")
-    print(f"Timeseries found using full name contains {id_timeseries.number_of_points}.")
+    print(
+        f"Timeseries found using id contains {full_name_timeseries.number_of_points}."
+    )
+    print(
+        f"Timeseries found using full name contains {id_timeseries.number_of_points}."
+    )
 
 
 async def main(address, port, root_pem_certificate):

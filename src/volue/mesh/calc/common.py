@@ -29,6 +29,7 @@ class Timezone(Enum):
         STANDARD: Local time zone without Daylight Saving Time (DST).
         UTC: Universal Time Coordinated (UTC).
     """
+
     LOCAL = 0
     STANDARD = 1
     UTC = 2
@@ -57,7 +58,9 @@ def _convert_datetime_to_mesh_calc_format(input: datetime.datetime) -> str:
     return converted_date_str
 
 
-def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> List[Timeseries]:
+def _parse_timeseries_list_response(
+    response: core_pb2.CalculationResponse,
+) -> List[Timeseries]:
     """
     Helper function for parsing a calculator response.
 
@@ -71,7 +74,9 @@ def _parse_timeseries_list_response(response: core_pb2.CalculationResponse) -> L
     return timeseries
 
 
-def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) -> Timeseries:
+def _parse_single_timeseries_response(
+    response: core_pb2.CalculationResponse,
+) -> Timeseries:
     """
     Helper function for parsing a calculator response.
 
@@ -87,7 +92,8 @@ def _parse_single_timeseries_response(response: core_pb2.CalculationResponse) ->
     timeseries = _read_proto_reply(response.timeseries_results)
     if len(timeseries) != 1:
         raise RuntimeError(
-            f"invalid calculation result, expected 1 timeseries, but got {len(timeseries)}")
+            f"invalid calculation result, expected 1 timeseries, but got {len(timeseries)}"
+        )
     return timeseries[0]
 
 
@@ -107,7 +113,8 @@ def _parse_single_float_response(response: core_pb2.CalculationResponse) -> floa
     result = _read_proto_numeric_reply(response.numeric_results)
     if len(result) != 1:
         raise RuntimeError(
-            f"invalid calculation result, expected 1 float value, but got {len(result)}")
+            f"invalid calculation result, expected 1 float value, but got {len(result)}"
+        )
     return result[0]
 
 
@@ -115,11 +122,14 @@ class _Calculation:
     """
     Base class for all calculations.
     """
-    def __init__(self,
-                 session,
-                 target: Union[uuid.UUID, str, int, AttributeBase, Object],
-                 start_time: datetime.datetime,
-                 end_time: datetime.datetime):
+
+    def __init__(
+        self,
+        session,
+        target: Union[uuid.UUID, str, int, AttributeBase, Object],
+        start_time: datetime.datetime,
+        end_time: datetime.datetime,
+    ):
         """
         Args:
             session: Active Mesh session.
@@ -150,7 +160,7 @@ class _Calculation:
             session_id=_to_proto_guid(self.session.session_id),
             expression=expression,
             interval=_to_proto_utcinterval(self.start_time, self.end_time),
-            relative_to=_to_proto_calculation_target_mesh_id(self.target)
+            relative_to=_to_proto_calculation_target_mesh_id(self.target),
         )
         return request
 
@@ -165,8 +175,11 @@ class _Calculation:
             gRPC calculation response.
         """
         from volue.mesh.aio import Connection as AsyncConnection
+
         if not isinstance(self.session, AsyncConnection.Session):
-            raise TypeError('async connection session is required to run async calculations, but got sync session')
+            raise TypeError(
+                "async connection session is required to run async calculations, but got sync session"
+            )
 
         request = self.prepare_request(expression)
         response = await self.session.mesh_service.RunCalculation(request)
@@ -183,8 +196,11 @@ class _Calculation:
             gRPC calculation response.
         """
         from volue.mesh import Connection
+
         if not isinstance(self.session, Connection.Session):
-            raise TypeError('sync connection session is required to run sync calculations, but got async session')
+            raise TypeError(
+                "sync connection session is required to run sync calculations, but got async session"
+            )
 
         request = self.prepare_request(expression)
         response = self.session.mesh_service.RunCalculation(request)

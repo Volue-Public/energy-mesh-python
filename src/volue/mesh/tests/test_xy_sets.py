@@ -17,8 +17,7 @@ VERSIONED_PATH = OBJECT_PATH + ".XYZSeriesAtt"
 
 
 def generate_xy_set(seed, valid_from_time=None):
-    curves = [mesh.XyCurve(z, [(v, -v) for v in range(seed)])
-              for z in range(seed)]
+    curves = [mesh.XyCurve(z, [(v, -v) for v in range(seed)]) for z in range(seed)]
     return mesh.XySet(valid_from_time, curves)
 
 
@@ -31,6 +30,7 @@ def get_targets(session, attribute_path):
     # first we need to read it.
     attribute = session.get_attribute(attribute_path)
     return [attribute.id, attribute_path, attribute]
+
 
 @pytest.mark.database
 def test_get_empty_xy_set_unversioned(session):
@@ -81,12 +81,16 @@ def test_update_xy_sets_unversioned(session):
 
 @pytest.mark.database
 def test_update_xy_sets_unsorted_z(session):
-    curves = [mesh.XyCurve(14.3, []),
-              mesh.XyCurve(3.8, []),
-              mesh.XyCurve(900.4, []),
-              mesh.XyCurve(-100.0, [])]
+    curves = [
+        mesh.XyCurve(14.3, []),
+        mesh.XyCurve(3.8, []),
+        mesh.XyCurve(900.4, []),
+        mesh.XyCurve(-100.0, []),
+    ]
 
-    session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(None, curves)])
+    session.update_xy_sets(
+        target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(None, curves)]
+    )
     xy_sets = session.get_xy_sets(target=UNVERSIONED_PATH)
     assert len(xy_sets) == 1
     # The server always returns sorted z-values.
@@ -95,8 +99,12 @@ def test_update_xy_sets_unsorted_z(session):
 
 @pytest.mark.database
 def test_update_xy_sets_versioned(session):
-    start_time = datetime.datetime.fromisoformat("1965-10-10").replace(tzinfo=dateutil.tz.UTC)
-    end_time = datetime.datetime.fromisoformat("1975-10-10").replace(tzinfo=dateutil.tz.UTC)
+    start_time = datetime.datetime.fromisoformat("1965-10-10").replace(
+        tzinfo=dateutil.tz.UTC
+    )
+    end_time = datetime.datetime.fromisoformat("1975-10-10").replace(
+        tzinfo=dateutil.tz.UTC
+    )
 
     kwargs = {"target": VERSIONED_PATH, "start_time": start_time, "end_time": end_time}
 
@@ -133,8 +141,9 @@ def test_update_xy_sets_versioned(session):
 
     # Add multiple XY sets, multiple operations
     for xy_set in values:
-        session.update_xy_sets(VERSIONED_PATH, xy_set.valid_from_time, end_time,
-                                    new_xy_sets=[xy_set])
+        session.update_xy_sets(
+            VERSIONED_PATH, xy_set.valid_from_time, end_time, new_xy_sets=[xy_set]
+        )
 
     xy_sets = session.get_xy_sets(**kwargs)
     assert xy_sets == values
@@ -169,32 +178,39 @@ def test_update_xy_set_invalid_input_unversioned(session):
         session.update_xy_sets(target=OBJECT_PATH)
 
     # start_time, end_time cannot be used with unversioned attributes
-    with pytest.raises(grpc.RpcError, match="interval must be empty when updating XYSetAttribute"):
-        session.update_xy_sets(target=UNVERSIONED_PATH,
-                                    start_time=now, end_time=now)
+    with pytest.raises(
+        grpc.RpcError, match="interval must be empty when updating XYSetAttribute"
+    ):
+        session.update_xy_sets(target=UNVERSIONED_PATH, start_time=now, end_time=now)
 
     # Multiple XY sets cannot be set on unversioned attributes
     with pytest.raises(grpc.RpcError, match="xy_sets must have zero or one element"):
-        session.update_xy_sets(target=UNVERSIONED_PATH,
-                                    new_xy_sets=[mesh.XySet(None, []), mesh.XySet(None, [])])
+        session.update_xy_sets(
+            target=UNVERSIONED_PATH,
+            new_xy_sets=[mesh.XySet(None, []), mesh.XySet(None, [])],
+        )
 
     # BUG: Mesh 2.5.2 silently ignores valid_from_time, in the future this
     # will cause an error.
-    session.update_xy_sets(target=UNVERSIONED_PATH,
-                                new_xy_sets=[mesh.XySet(now, [])])
+    session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(now, [])])
 
 
 @pytest.mark.database
 def test_update_xy_set_invalid_input_versioned(session):
     # start_time, end_time must be used with versioned attributes
-    with pytest.raises(grpc.RpcError, match="interval must have a value when updating XYZSeriesAttribute"):
+    with pytest.raises(
+        grpc.RpcError,
+        match="interval must have a value when updating XYZSeriesAttribute",
+    ):
         session.update_xy_sets(target=VERSIONED_PATH)
 
     now = datetime.datetime.now(dateutil.tz.UTC)
     later = now + datetime.timedelta(days=365)
 
     # [start_time, end_time) must be a valid interval
-    with pytest.raises(grpc.RpcError, match="UtcInterval .* is invalid, start_time > end_time"):
+    with pytest.raises(
+        grpc.RpcError, match="UtcInterval .* is invalid, start_time > end_time"
+    ):
         session.update_xy_sets(target=VERSIONED_PATH, start_time=later, end_time=now)
 
     kwargs = {"target": VERSIONED_PATH, "start_time": now, "end_time": later}
@@ -210,7 +226,9 @@ def test_update_xy_set_invalid_input_versioned(session):
         session.update_xy_sets(new_xy_sets=[value], **kwargs)
 
     with pytest.raises(grpc.RpcError, match="duplicate reference value"):
-        value = mesh.XySet(now, [mesh.XyCurve(0, []), mesh.XyCurve(1, []), mesh.XyCurve(0, [])])
+        value = mesh.XySet(
+            now, [mesh.XyCurve(0, []), mesh.XyCurve(1, []), mesh.XyCurve(0, [])]
+        )
         session.update_xy_sets(new_xy_sets=[value], **kwargs)
 
     # New XySets must be within interval
@@ -232,7 +250,9 @@ async def test_xy_async(async_session):
 
     # Create an update task, but don't run it.
     new_xy_sets = [generate_xy_set(3)]
-    future_update = async_session.update_xy_sets(UNVERSIONED_PATH, new_xy_sets=new_xy_sets)
+    future_update = async_session.update_xy_sets(
+        UNVERSIONED_PATH, new_xy_sets=new_xy_sets
+    )
 
     # Still empty.
     xy_sets = await async_session.get_xy_sets(UNVERSIONED_PATH)
@@ -246,5 +266,5 @@ async def test_xy_async(async_session):
     assert xy_sets == new_xy_sets
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))

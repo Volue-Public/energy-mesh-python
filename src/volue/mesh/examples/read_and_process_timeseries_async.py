@@ -11,7 +11,8 @@ async def process_timeseries_values(arrow_table):
     # the processing can also be an async IO call
     # to e.g. separate service
     await asyncio.sleep(8)
-    print(f'Processing completed - {len(arrow_table)} points were processed')
+    print(f"Processing completed - {len(arrow_table)} points were processed")
+
 
 async def read_timeseries_points(session, path):
     start_time = datetime(2016, 5, 1)
@@ -22,13 +23,16 @@ async def read_timeseries_points(session, path):
     # while waiting for the read operation to complete
     # (e.g. doing processing for already returned time series)
     timeseries_read = await session.read_timeseries_points(
-        target=path, start_time=start_time, end_time=end_time)
+        target=path, start_time=start_time, end_time=end_time
+    )
 
     return timeseries_read.arrow_table
+
 
 async def handle_timeseries(session, path):
     arrow_table = await read_timeseries_points(session, path)
     await process_timeseries_values(arrow_table)
+
 
 async def main(address, port, root_pem_certificate):
     """
@@ -77,14 +81,19 @@ async def main(address, port, root_pem_certificate):
     async with connection.create_session() as session:
         try:
             timeseries_attributes = await session.search_for_timeseries_attributes(
-                target=start_object_path,
-                query=query)
+                target=start_object_path, query=query
+            )
         except grpc.RpcError as e:
             print(f"Could not find timeseries attribute: {e}")
             return
 
-        print(f'Number of found time series: {len(timeseries_attributes)}')
-        await asyncio.gather(*(handle_timeseries(session, timeseries_attribute.path) for timeseries_attribute in timeseries_attributes))
+        print(f"Number of found time series: {len(timeseries_attributes)}")
+        await asyncio.gather(
+            *(
+                handle_timeseries(session, timeseries_attribute.path)
+                for timeseries_attribute in timeseries_attributes
+            )
+        )
 
 
 if __name__ == "__main__":
