@@ -9,9 +9,17 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
 
-from volue.mesh import (Connection, AttributesFilter, Object,
-    RatingCurveSegment, RatingCurveVersion, Timeseries, TimeseriesResource,
-    XySet, XyCurve)
+from volue.mesh import (
+    Connection,
+    AttributesFilter,
+    Object,
+    RatingCurveSegment,
+    RatingCurveVersion,
+    Timeseries,
+    TimeseriesResource,
+    XySet,
+    XyCurve,
+)
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 
@@ -32,18 +40,20 @@ SAVE_TO_CSV = False
 COMMIT_CHANGES = False
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', 'flow_drop_4', '1' ... '<number_of_use_cases>']
-RUN_USE_CASE = 'all'
+RUN_USE_CASE = "all"
 # Set local time zone to be used in every use case (reads time zone from operating system settings)
 LOCAL_TIME_ZONE = tz.tzlocal()
 # if you want to set explicitly the time zone you can use the following:
-#LOCAL_TIME_ZONE = tz.gettz('Europe/Warsaw')
+# LOCAL_TIME_ZONE = tz.gettz('Europe/Warsaw')
 # if you want to set fixed UTC offset (no DST) you can use the following:
-#LOCAL_TIME_ZONE = timezone(timedelta(hours=1))
+# LOCAL_TIME_ZONE = timezone(timedelta(hours=1))
 
 
-def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
-                    title: str,
-                    style: str = 'plot') -> None:
+def plot_timeseries(
+    identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
+    title: str,
+    style: str = "plot",
+) -> None:
     """Plots a list of pandas dataframes in a figure."""
     if SHOW_PLOT:
         legends = []
@@ -52,36 +62,43 @@ def plot_timeseries(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFra
             timeseries_pandas_dataframe = a_pair[1]
             legends.append(timeseries_identifier)
 
-            data = [timeseries_pandas_dataframe['utc_time'], timeseries_pandas_dataframe['value']]
-            arguments = {'linestyle': '--',
-                         'marker': 'o',
-                         'where': 'post'  # making sure line continues to the right of the value until new value
-                         }
-            if style == 'plot':
+            data = [
+                timeseries_pandas_dataframe["utc_time"],
+                timeseries_pandas_dataframe["value"],
+            ]
+            arguments = {
+                "linestyle": "--",
+                "marker": "o",
+                "where": "post",  # making sure line continues to the right of the value until new value
+            }
+            if style == "plot":
                 plt.plot(*data)
-            elif style == 'step':
+            elif style == "step":
                 plt.step(*data, **arguments)
 
-        plt.ylabel('value')
-        plt.xlabel('local time')
+        plt.ylabel("value")
+        plt.xlabel("local time")
         plt.legend(legends, ncol=2, fontsize=6)
         plt.title(title)
         figure_manager = plt.get_current_fig_manager()
-        figure_manager.window.state('zoomed')  # Fullscreen
+        figure_manager.window.state("zoomed")  # Fullscreen
         plt.show()
 
 
-def save_timeseries_to_csv(identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]],
-                           file_prefix: str) -> None:
+def save_timeseries_to_csv(
+    identifier_and_pandas_dataframes: List[Tuple[Any, pd.DataFrame]], file_prefix: str
+) -> None:
     """
     Saves a pandas dataframe to a CSV file.
     In case of local time the column name will still be called 'utc_time', but the timestamp will be timezone aware.
     """
     if SAVE_TO_CSV:
         for a_pair in identifier_and_pandas_dataframes:
-            timeseries_identifier = str(a_pair[0]).replace('/', '.')
+            timeseries_identifier = str(a_pair[0]).replace("/", ".")
             timeseries_pandas_dataframe = a_pair[1]
-            timeseries_pandas_dataframe.to_csv(file_prefix + '_' + timeseries_identifier + '.csv', index=False)
+            timeseries_pandas_dataframe.to_csv(
+                file_prefix + "_" + timeseries_identifier + ".csv", index=False
+            )
 
 
 def get_timeseries_resource_information(timeseries_resource: TimeseriesResource):
@@ -97,12 +114,10 @@ def get_timeseries_resource_information(timeseries_resource: TimeseriesResource)
 
     expression = timeseries_resource.virtual_timeseries_expression
     if expression is not None and expression != "":
-        message = (
-            f"{message}"
-            f"virtual time series expression: '{expression}'\n"
-        )
+        message = f"{message}" f"virtual time series expression: '{expression}'\n"
 
     return message
+
 
 def get_timeseries_information(timeseries: Timeseries):
     """Create a printable message from a time series."""
@@ -118,6 +133,7 @@ def get_timeseries_information(timeseries: Timeseries):
         f"{timeseries.arrow_table.to_pandas()}"
     )
     return message
+
 
 def get_object_information(object: Object):
     """Create a printable message from an Object."""
@@ -146,7 +162,9 @@ def use_case_1():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 1"
-            start_object_guid = uuid.UUID("801896b0-d448-4299-874a-3ecf8ab0e2d4")  # Model/MeshTEK/Mesh
+            start_object_guid = uuid.UUID(
+                "801896b0-d448-4299-874a-3ecf8ab0e2d4"
+            )  # Model/MeshTEK/Mesh
             search_query = "*[.Type=HydroPlant].Production_operative"
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
@@ -154,26 +172,33 @@ def use_case_1():
             print("--------------------------------------------------------------")
 
             timeseries_attributes = session.search_for_timeseries_attributes(
-                start_object_guid, search_query)
-            print(f"Search resulted in {len(timeseries_attributes)} object(s) that match(es) the search criteria: {search_query}")
+                start_object_guid, search_query
+            )
+            print(
+                f"Search resulted in {len(timeseries_attributes)} object(s) that match(es) the search criteria: {search_query}"
+            )
 
             # Retrieve time series points connected to the found time series attributes
             path_and_pandas_dataframe = []
             for number, timeseries_attribute in enumerate(timeseries_attributes):
-                timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                            start_time=start,
-                                                            end_time=end)
-                print(f"{number + 1}. \n"
-                      f"-----\n"
-                      f"{timeseries_attribute}")
+                timeseries = session.read_timeseries_points(
+                    target=timeseries_attribute.id, start_time=start, end_time=end
+                )
+                print(f"{number + 1}. \n" f"-----\n" f"{timeseries_attribute}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-                path_and_pandas_dataframe.append((timeseries_attribute.path, pandas_dataframe))
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
+                path_and_pandas_dataframe.append(
+                    (timeseries_attribute.path, pandas_dataframe)
+                )
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: {search_query}")
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_1')
+            plot_timeseries(
+                path_and_pandas_dataframe, f"{use_case_name}: {search_query}"
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_1")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -193,7 +218,9 @@ def use_case_2():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 2"
-            start_object_guid = uuid.UUID("801896b0-d448-4299-874a-3ecf8ab0e2d4")  # Model/MeshTEK/Mesh
+            start_object_guid = uuid.UUID(
+                "801896b0-d448-4299-874a-3ecf8ab0e2d4"
+            )  # Model/MeshTEK/Mesh
             search_query = "*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative"
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
@@ -201,26 +228,33 @@ def use_case_2():
             print("--------------------------------------------------------------")
 
             timeseries_attributes = session.search_for_timeseries_attributes(
-                start_object_guid, search_query)
-            print(f"Search resulted in {len(timeseries_attributes)} object(s) that match(es) the search criteria: {search_query}")
+                start_object_guid, search_query
+            )
+            print(
+                f"Search resulted in {len(timeseries_attributes)} object(s) that match(es) the search criteria: {search_query}"
+            )
 
             # Retrieve time series points connected to the found time series attributes
             path_and_pandas_dataframe = []
             for number, timeseries_attribute in enumerate(timeseries_attributes):
-                timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                            start_time=start,
-                                                            end_time=end)
-                print(f"{number + 1}. \n"
-                      f"-----\n"
-                      f"{timeseries_attribute}")
+                timeseries = session.read_timeseries_points(
+                    target=timeseries_attribute.id, start_time=start, end_time=end
+                )
+                print(f"{number + 1}. \n" f"-----\n" f"{timeseries_attribute}")
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-                path_and_pandas_dataframe.append((timeseries_attribute.path, pandas_dataframe))
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
+                path_and_pandas_dataframe.append(
+                    (timeseries_attribute.path, pandas_dataframe)
+                )
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe, f"{use_case_name}: {search_query}")
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_2')
+            plot_timeseries(
+                path_and_pandas_dataframe, f"{use_case_name}: {search_query}"
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_2")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -249,23 +283,31 @@ def use_case_3():
             for timskey in timskeys:
 
                 # Get information about the time series
-                timeseries_resource = session.get_timeseries_resource_info(timeseries_key=timskey)
-                print(f"[{timskey}]: \n"
-                      f"-----\n"
-                      f"{get_timeseries_resource_information(timeseries_resource)}")
+                timeseries_resource = session.get_timeseries_resource_info(
+                    timeseries_key=timskey
+                )
+                print(
+                    f"[{timskey}]: \n"
+                    f"-----\n"
+                    f"{get_timeseries_resource_information(timeseries_resource)}"
+                )
 
                 # Retrieve the time series points in a given interval
-                timeseries = session.read_timeseries_points(target=timskey,
-                                                            start_time=start,
-                                                            end_time=end)
+                timeseries = session.read_timeseries_points(
+                    target=timskey, start_time=start, end_time=end
+                )
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
                 timskey_and_pandas_dataframe.append((timskey, pandas_dataframe))
 
             # Post process data
-            plot_timeseries(timskey_and_pandas_dataframe, f"{use_case_name}: Timskeys: {timskeys}")
-            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_3')
+            plot_timeseries(
+                timskey_and_pandas_dataframe, f"{use_case_name}: Timskeys: {timskeys}"
+            )
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, "use_case_3")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -286,9 +328,7 @@ def use_case_4():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 4"
-            guids = [
-                "ff1db73f-8c8a-42f8-a44a-4bbb420874c1"
-            ]
+            guids = ["ff1db73f-8c8a-42f8-a44a-4bbb420874c1"]
             start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
@@ -298,26 +338,30 @@ def use_case_4():
             for guid in guids:
 
                 # Retrieve the time series points in a given interval
-                timeseries = session.read_timeseries_points(target=uuid.UUID(guid),
-                                                            start_time=start,
-                                                            end_time=end)
+                timeseries = session.read_timeseries_points(
+                    target=uuid.UUID(guid), start_time=start, end_time=end
+                )
 
                 # Retrieve information about the time series attribute
-                timeseries_attribute = session.get_timeseries_attribute(uuid.UUID(guid), full_attribute_info=True)
-                print(f"[{guid}]: \n"
-                      f"-----\n"
-                      f"{timeseries_attribute}")
+                timeseries_attribute = session.get_timeseries_attribute(
+                    uuid.UUID(guid), full_attribute_info=True
+                )
+                print(f"[{guid}]: \n" f"-----\n" f"{timeseries_attribute}")
 
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
                 timskey_and_pandas_dataframe.append((guid, pandas_dataframe))
 
             # Post process data
-            plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: {len(guids)} known guid(s)",
-                            style='step')
-            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4')
+            plot_timeseries(
+                timskey_and_pandas_dataframe,
+                f"{use_case_name}: {len(guids)} known guid(s)",
+                style="step",
+            )
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, "use_case_4")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -347,7 +391,7 @@ def use_case_4b():
             # - ParentObject.has_cProductionAreas/Norge
             paths = [
                 "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production",  # path using only objects
-                "Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1975.Production"  # path using full name (objects and attributes)
+                "Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1975.Production",  # path using full name (objects and attributes)
             ]
             start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
@@ -358,27 +402,29 @@ def use_case_4b():
             for path in paths:
 
                 # Retrieve the time series points in a given interval
-                timeseries = session.read_timeseries_points(target=path,
-                                                            start_time=start,
-                                                            end_time=end)
+                timeseries = session.read_timeseries_points(
+                    target=path, start_time=start, end_time=end
+                )
 
                 # Retrieve information connected to the timeseries
                 timeseries_attribute = session.get_timeseries_attribute(path)
 
-                print(f"[{path}]: \n"
-                      f"-----\n"
-                      f"{timeseries_attribute}")
+                print(f"[{path}]: \n" f"-----\n" f"{timeseries_attribute}")
 
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
                 timskey_and_pandas_dataframe.append((path, pandas_dataframe))
 
             # Post process data
-            plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: {len(paths)} known path(s)",
-                            style='step')
-            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_4b')
+            plot_timeseries(
+                timskey_and_pandas_dataframe,
+                f"{use_case_name}: {len(paths)} known path(s)",
+                style="step",
+            )
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, "use_case_4b")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -400,7 +446,7 @@ def use_case_5():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 5"
-            guid = uuid.UUID('3fd4ed37-2114-4d95-af90-02b96bd993ed')
+            guid = uuid.UUID("3fd4ed37-2114-4d95-af90-02b96bd993ed")
 
             start = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 29, tzinfo=LOCAL_TIME_ZONE)
@@ -411,16 +457,20 @@ def use_case_5():
             print("--------------------------------------------------------------")
 
             # Get time series data before write
-            timeseries_before = session.read_timeseries_points(target=guid,
-                                                               start_time=start,
-                                                               end_time=end)
-            print(f"Before writing points: \n"
-                  f"-----\n"
-                  f"{get_timeseries_information(timeseries=timeseries_before)}")
+            timeseries_before = session.read_timeseries_points(
+                target=guid, start_time=start, end_time=end
+            )
+            print(
+                f"Before writing points: \n"
+                f"-----\n"
+                f"{get_timeseries_information(timeseries=timeseries_before)}"
+            )
 
             pandas_dataframe = timeseries_before.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             timskey_and_pandas_dataframe.append(("before", pandas_dataframe))
 
             # Defining the data we want to write
@@ -437,15 +487,37 @@ def use_case_5():
 
             utc_time = pa.array(timestamps)
             flags = pa.array([0] * 24)  # flag 0 -> Common::TimeseriesPointFlags::Ok
-            new_values = pa.array([11.50, 11.91, 11.88, 11.86, 11.66, 11.73, 11.80, 11.88, 11.97, 9.87, 9.47, 9.05,
-                                   9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00])
+            new_values = pa.array(
+                [
+                    11.50,
+                    11.91,
+                    11.88,
+                    11.86,
+                    11.66,
+                    11.73,
+                    11.80,
+                    11.88,
+                    11.97,
+                    9.87,
+                    9.47,
+                    9.05,
+                    9.20,
+                    9.00,
+                    8.91,
+                    10.62,
+                    12.00,
+                    12.07,
+                    12.00,
+                    11.78,
+                    5.08,
+                    0.00,
+                    0.00,
+                    0.00,
+                ]
+            )
 
             # Write new values
-            new_arrays = [
-                utc_time,
-                flags,
-                new_values
-            ]
+            new_arrays = [utc_time, flags, new_values]
             table = pa.Table.from_arrays(arrays=new_arrays, schema=Timeseries.schema)
             timeseries = Timeseries(table=table, uuid_id=guid)
 
@@ -453,25 +525,31 @@ def use_case_5():
             session.write_timeseries_points(timeseries=timeseries)
 
             # Get time series data before write
-            timeseries_after = session.read_timeseries_points(target=guid,
-                                                              start_time=start,
-                                                              end_time=end)
-            print(f"After writing points: \n"
-                  f"-----\n"
-                  f"{get_timeseries_information(timeseries=timeseries_after)}")
+            timeseries_after = session.read_timeseries_points(
+                target=guid, start_time=start, end_time=end
+            )
+            print(
+                f"After writing points: \n"
+                f"-----\n"
+                f"{get_timeseries_information(timeseries=timeseries_after)}"
+            )
 
             pandas_dataframe = timeseries_after.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             timskey_and_pandas_dataframe.append(("after", pandas_dataframe))
 
             # Commit changes
             if COMMIT_CHANGES:
                 session.commit()
 
-            plot_timeseries(timskey_and_pandas_dataframe,
-                            f"{use_case_name}: Before and after writing")
-            save_timeseries_to_csv(timskey_and_pandas_dataframe, 'use_case_5')
+            plot_timeseries(
+                timskey_and_pandas_dataframe,
+                f"{use_case_name}: Before and after writing",
+            )
+            save_timeseries_to_csv(timskey_and_pandas_dataframe, "use_case_5")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -491,7 +569,7 @@ def use_case_6():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 6"
-            timeseries_attribute_id = '012d70e3-8f40-40af-9c0a-5d84fc239776'
+            timeseries_attribute_id = "012d70e3-8f40-40af-9c0a-5d84fc239776"
             start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
@@ -499,35 +577,44 @@ def use_case_6():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id)
+            )
 
             # Retrieve time series points connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries_original = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                                 start_time=start,
-                                                                 end_time=end)
+            timeseries_original = session.read_timeseries_points(
+                target=timeseries_attribute.id, start_time=start, end_time=end
+            )
             print(timeseries_attribute)
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform time series from breakpoint to hourly
             timeseries_transformed = session.transform_functions(
-                timeseries_attribute.id, start_time=start, end_time=end).transform(
-                    Timeseries.Resolution.HOUR, Transform.Method.AVGI, Timezone.LOCAL)
+                timeseries_attribute.id, start_time=start, end_time=end
+            ).transform(
+                Timeseries.Resolution.HOUR, Transform.Method.AVGI, Timezone.LOCAL
+            )
 
             pandas_dataframe = timeseries_transformed.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: transforming resolution",
-                            style='step')
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_6')
+            plot_timeseries(
+                path_and_pandas_dataframe,
+                f"{use_case_name}: transforming resolution",
+                style="step",
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_6")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -548,7 +635,7 @@ def use_case_7():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 7"
-            timeseries_attribute_id = '7608c9e2-c4fc-4570-b5b2-069f29a34f22'
+            timeseries_attribute_id = "7608c9e2-c4fc-4570-b5b2-069f29a34f22"
             start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
@@ -556,35 +643,42 @@ def use_case_7():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id)
+            )
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries_original = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                                 start_time=start,
-                                                                 end_time=end)
+            timeseries_original = session.read_timeseries_points(
+                target=timeseries_attribute.id, start_time=start, end_time=end
+            )
             print(timeseries_attribute)
 
             pandas_dataframe = timeseries_original.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append((f"original", pandas_dataframe))
 
             # Transform time series from hourly to daily
             timeseries_transformed = session.transform_functions(
-                timeseries_attribute.id, start_time=start, end_time=end).transform(
-                    Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.LOCAL)
+                timeseries_attribute.id, start_time=start, end_time=end
+            ).transform(Timeseries.Resolution.DAY, Transform.Method.AVG, Timezone.LOCAL)
 
             pandas_dataframe = timeseries_transformed.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(("transformed", pandas_dataframe))
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: transforming resolution",
-                            style='step')
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_7')
+            plot_timeseries(
+                path_and_pandas_dataframe,
+                f"{use_case_name}: transforming resolution",
+                style="step",
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_7")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -605,7 +699,7 @@ def use_case_8():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 8"
-            start_object_guid = '36395abf-9a39-40ef-b29c-b1d59db855e3'
+            start_object_guid = "36395abf-9a39-40ef-b29c-b1d59db855e3"
             search_query = "*[.Type=Reservoir].ReservoirVolume_operative"
             start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
@@ -614,19 +708,23 @@ def use_case_8():
 
             # Summarize timeseries
             summarized_timeseries = session.statistical_functions(
-                uuid.UUID(start_object_guid), start_time=start, end_time=end).sum(
-                    search_query=search_query)
+                uuid.UUID(start_object_guid), start_time=start, end_time=end
+            ).sum(search_query=search_query)
 
             path_and_pandas_dataframe = []
             pandas_dataframe = summarized_timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
             path_and_pandas_dataframe.append(("Sum", pandas_dataframe))
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: summarize @SUM(@T('*[.Type=Reservoir].ReservoirVolume_operative'))")
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_8')
+            plot_timeseries(
+                path_and_pandas_dataframe,
+                f"{use_case_name}: summarize @SUM(@T('*[.Type=Reservoir].ReservoirVolume_operative'))",
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_8")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -648,7 +746,7 @@ def use_case_9():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 9"
-            timeseries_attribute_id = '333a4648-bd2a-4331-acd8-ab88e4a1a5f5'
+            timeseries_attribute_id = "333a4648-bd2a-4331-acd8-ab88e4a1a5f5"
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             historical_date = datetime(2021, 9, 7, tzinfo=LOCAL_TIME_ZONE)
@@ -657,37 +755,46 @@ def use_case_9():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id)
+            )
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                        start_time=start,
-                                                        end_time=end)
-            print(f"{timeseries_attribute_id}: \n"
-                  f"-----\n"
-                  f"{timeseries_attribute}")
+            timeseries = session.read_timeseries_points(
+                target=timeseries_attribute.id, start_time=start, end_time=end
+            )
+            print(f"{timeseries_attribute_id}: \n" f"-----\n" f"{timeseries_attribute}")
 
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
+            path_and_pandas_dataframe.append(("Original", pandas_dataframe))
 
             historical_timeseries = session.history_functions(
-                timeseries_attribute.id, start_time=start, end_time=end).get_ts_as_of_time(
-                    available_at_timepoint=historical_date)
+                timeseries_attribute.id, start_time=start, end_time=end
+            ).get_ts_as_of_time(available_at_timepoint=historical_date)
 
             pandas_dataframe = historical_timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append((f'History on {historical_date.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
+            path_and_pandas_dataframe.append(
+                (
+                    f'History on {historical_date.strftime("%Y%m%d%H%M%S")}',
+                    pandas_dataframe,
+                )
+            )
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: historical data",
-                            style='step'
-                            )
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_9')
+            plot_timeseries(
+                path_and_pandas_dataframe,
+                f"{use_case_name}: historical data",
+                style="step",
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_9")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -709,7 +816,7 @@ def use_case_10():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 10"
-            timeseries_attribute_id = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
+            timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             max_number_of_versions_to_get = 5
@@ -718,38 +825,44 @@ def use_case_10():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id)
+            )
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                        start_time=start,
-                                                        end_time=end)
-            print(f"{timeseries_attribute_id}: \n"
-                  f"-----\n"
-                  f"{timeseries_attribute}")
+            timeseries = session.read_timeseries_points(
+                target=timeseries_attribute.id, start_time=start, end_time=end
+            )
+            print(f"{timeseries_attribute_id}: \n" f"-----\n" f"{timeseries_attribute}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
+            path_and_pandas_dataframe.append(("Original", pandas_dataframe))
 
             # Get historical time series
             historical_timeseries = session.history_functions(
-                timeseries_attribute.id, start_time=start, end_time=end).get_ts_historical_versions(
-                    max_number_of_versions_to_get)
+                timeseries_attribute.id, start_time=start, end_time=end
+            ).get_ts_historical_versions(max_number_of_versions_to_get)
 
             for number, timeseries in enumerate(historical_timeseries):
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-                path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
+                path_and_pandas_dataframe.append(
+                    (f"Version {number}", pandas_dataframe)
+                )
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: historical versions",
-                            style='step'
-                            )
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_10')
+            plot_timeseries(
+                path_and_pandas_dataframe,
+                f"{use_case_name}: historical versions",
+                style="step",
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_10")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -770,7 +883,7 @@ def use_case_11():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 11"
-            timeseries_attribute_id = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
+            timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
@@ -778,36 +891,42 @@ def use_case_11():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id)
+            )
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                        start_time=start,
-                                                        end_time=end)
-            print(f"{timeseries_attribute_id}: \n"
-                  f"-----\n"
-                  f"{timeseries_attribute}")
+            timeseries = session.read_timeseries_points(
+                target=timeseries_attribute.id, start_time=start, end_time=end
+            )
+            print(f"{timeseries_attribute_id}: \n" f"-----\n" f"{timeseries_attribute}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
+            path_and_pandas_dataframe.append(("Original", pandas_dataframe))
 
             # Get forecast time series
             forecast_timeseries = session.forecast_functions(
-                timeseries_attribute.id, start_time=start, end_time=end).get_all_forecasts()
+                timeseries_attribute.id, start_time=start, end_time=end
+            ).get_all_forecasts()
 
             for number, timeseries in enumerate(forecast_timeseries):
                 pandas_dataframe = timeseries.arrow_table.to_pandas()
                 # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-                pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-                path_and_pandas_dataframe.append((f'Version {number}', pandas_dataframe))
+                pandas_dataframe["utc_time"] = pd.to_datetime(
+                    pandas_dataframe["utc_time"], utc=True
+                ).dt.tz_convert(LOCAL_TIME_ZONE)
+                path_and_pandas_dataframe.append(
+                    (f"Version {number}", pandas_dataframe)
+                )
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: get all forecasts"
-                            )
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_11')
+            plot_timeseries(
+                path_and_pandas_dataframe, f"{use_case_name}: get all forecasts"
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_11")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -828,7 +947,7 @@ def use_case_12():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 12"
-            timeseries_attribute_id = 'f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd'
+            timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
             start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2021, 10, 12, tzinfo=LOCAL_TIME_ZONE)
             forecast_start_min = datetime(2021, 8, 31, tzinfo=LOCAL_TIME_ZONE)
@@ -839,36 +958,48 @@ def use_case_12():
 
             # Retrieve information about the time series attribute
             timeseries_attribute = session.get_timeseries_attribute(
-                uuid.UUID(timeseries_attribute_id))
+                uuid.UUID(timeseries_attribute_id)
+            )
 
             # Retrieve time series connected to the time series attribute
             path_and_pandas_dataframe = []
-            timeseries = session.read_timeseries_points(target=timeseries_attribute.id,
-                                                        start_time=start,
-                                                        end_time=end)
-            print(f"{timeseries_attribute_id}: \n"
-                  f"-----\n"
-                  f"{timeseries_attribute}")
+            timeseries = session.read_timeseries_points(
+                target=timeseries_attribute.id, start_time=start, end_time=end
+            )
+            print(f"{timeseries_attribute_id}: \n" f"-----\n" f"{timeseries_attribute}")
             pandas_dataframe = timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append(('Original', pandas_dataframe))
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
+            path_and_pandas_dataframe.append(("Original", pandas_dataframe))
 
             # Get forecast time series
             forecast_timeseries = session.forecast_functions(
-                timeseries_attribute.id, start_time=start, end_time=end).get_forecast(
-                    forecast_start_min, forecast_start_max, available_at_timepoint=available_at_timepoint)
+                timeseries_attribute.id, start_time=start, end_time=end
+            ).get_forecast(
+                forecast_start_min,
+                forecast_start_max,
+                available_at_timepoint=available_at_timepoint,
+            )
 
             pandas_dataframe = forecast_timeseries.arrow_table.to_pandas()
             # Post processing: convert to UTC timezone-aware datetime object and then to given time zone
-            pandas_dataframe['utc_time'] = pd.to_datetime(pandas_dataframe['utc_time'], utc=True).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append((f'Forecast for {available_at_timepoint.strftime("%Y%m%d%H%M%S")}', pandas_dataframe))
+            pandas_dataframe["utc_time"] = pd.to_datetime(
+                pandas_dataframe["utc_time"], utc=True
+            ).dt.tz_convert(LOCAL_TIME_ZONE)
+            path_and_pandas_dataframe.append(
+                (
+                    f'Forecast for {available_at_timepoint.strftime("%Y%m%d%H%M%S")}',
+                    pandas_dataframe,
+                )
+            )
 
             # Post process data
-            plot_timeseries(path_and_pandas_dataframe,
-                            f"{use_case_name}: get some forecasts"
-                            )
-            save_timeseries_to_csv(path_and_pandas_dataframe, 'use_case_12')
+            plot_timeseries(
+                path_and_pandas_dataframe, f"{use_case_name}: get some forecasts"
+            )
+            save_timeseries_to_csv(path_and_pandas_dataframe, "use_case_12")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -887,8 +1018,10 @@ def use_case_13():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 13"
-            start_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
-            search_query = '*[.Type=WindPark]'
+            start_object_guid = uuid.UUID(
+                "d9673f4f-d117-4c1e-9ffd-0e533a644728"
+            )  # Model/MeshTEK/Mesh/Norge/Wind
+            search_query = "*[.Type=WindPark]"
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -896,9 +1029,11 @@ def use_case_13():
             objects = session.search_for_objects(start_object_guid, search_query)
 
             for number, object in enumerate(objects):
-                print(f"{number + 1}. \n"
-                      f"-------------------------------------------\n"
-                      f"{get_object_information(object)}")
+                print(
+                    f"{number + 1}. \n"
+                    f"-------------------------------------------\n"
+                    f"{get_object_information(object)}"
+                )
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -918,8 +1053,10 @@ def use_case_14():
     with connection.create_session() as session:
         try:
             use_case_name = "Use case 14"
-            parent_object_guid = uuid.UUID("d9673f4f-d117-4c1e-9ffd-0e533a644728")  # Model/MeshTEK/Mesh/Norge/Wind
-            new_object_type = 'WindPark'
+            parent_object_guid = uuid.UUID(
+                "d9673f4f-d117-4c1e-9ffd-0e533a644728"
+            )  # Model/MeshTEK/Mesh/Norge/Wind
+            new_object_type = "WindPark"
             new_objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
 
             print(f"{use_case_name}:")
@@ -933,24 +1070,33 @@ def use_case_14():
             # First we need to find correct relationship attribute that
             # will serve as owner for the new objects.
             parent_object = session.get_object(
-                parent_object_guid, full_attribute_info=True)
+                parent_object_guid, full_attribute_info=True
+            )
             relationship_attribute_path = None
 
             for attribute in parent_object.attributes.values():
-                if (attribute.definition.value_type == 'ElementCollectionAttributeDefinition' and
-                    attribute.definition.object_type == new_object_type):
+                if (
+                    attribute.definition.value_type
+                    == "ElementCollectionAttributeDefinition"
+                    and attribute.definition.object_type == new_object_type
+                ):
                     relationship_attribute_path = attribute.path
 
             if relationship_attribute_path is None:
-                print(f"Required relationship attribute (type='{new_object_type}') not found")
+                print(
+                    f"Required relationship attribute (type='{new_object_type}') not found"
+                )
                 return
 
             for number, new_object_name in enumerate(new_objects_names):
                 new_object = session.create_object(
-                    relationship_attribute_path, new_object_name)
-                print(f"{number + 1}. \n"
-                      f"-------------------------------------------\n"
-                      f"{get_object_information(new_object)}")
+                    relationship_attribute_path, new_object_name
+                )
+                print(
+                    f"{number + 1}. \n"
+                    f"-------------------------------------------\n"
+                    f"{get_object_information(new_object)}"
+                )
 
             # Commit changes
             if COMMIT_CHANGES:
@@ -999,7 +1145,7 @@ def use_case_16():
 
     Object path:        Model/MeshTEK/Mesh/Norge/Wind/NewWindPark
     New object name:    NewestWindPark
-    
+
     """
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
@@ -1050,10 +1196,12 @@ def use_case_17():
 
             number = 1
             for attribute in object.attributes.values():
-                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
-                    print(f"{number}. \n"
+                if attribute.definition.value_type != "TimeseriesAttributeDefinition":
+                    print(
+                        f"{number}. \n"
                         f"-------------------------------------------\n"
-                        f"{attribute}")
+                        f"{attribute}"
+                    )
                     number += 1
 
         except grpc.RpcError as e:
@@ -1080,21 +1228,27 @@ def use_case_18():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            tags = ['ProductionProperties', 'SystemSettings']
-            namespaces = ['Wind']
-            attributes_filter = AttributesFilter(tag_mask=tags, namespace_mask=namespaces)
+            tags = ["ProductionProperties", "SystemSettings"]
+            namespaces = ["Wind"]
+            attributes_filter = AttributesFilter(
+                tag_mask=tags, namespace_mask=namespaces
+            )
 
-            object = session.get_object(object_guid,
+            object = session.get_object(
+                object_guid,
                 full_attribute_info=True,
-                attributes_filter=attributes_filter)
+                attributes_filter=attributes_filter,
+            )
             print(get_object_information(object))
 
             number = 1
             for attribute in object.attributes.values():
-                if attribute.definition.value_type != 'TimeseriesAttributeDefinition':
-                    print(f"{number}. \n"
+                if attribute.definition.value_type != "TimeseriesAttributeDefinition":
+                    print(
+                        f"{number}. \n"
                         f"-------------------------------------------\n"
-                        f"{attribute}")
+                        f"{attribute}"
+                    )
                     number += 1
 
         except grpc.RpcError as e:
@@ -1121,24 +1275,28 @@ def use_case_19():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            names = ['HubHeight', 'MaxProduction']
+            names = ["HubHeight", "MaxProduction"]
             attributes_filter = AttributesFilter(name_mask=names)
 
             print("Attribute values before update:")
-            object = session.get_object(object_path,
-                attributes_filter=attributes_filter)
+            object = session.get_object(
+                object_path, attributes_filter=attributes_filter
+            )
             for attribute in object.attributes.values():
                 print(attribute)
 
             session.update_simple_attribute(
-                object.attributes['HubHeight'].path, value=100)
+                object.attributes["HubHeight"].path, value=100
+            )
 
             session.update_simple_attribute(
-                object.attributes['MaxProduction'].path, value=50)
+                object.attributes["MaxProduction"].path, value=50
+            )
 
             print("\nAttribute values after update:")
-            object = session.get_object(object_path,
-                attributes_filter=attributes_filter)
+            object = session.get_object(
+                object_path, attributes_filter=attributes_filter
+            )
             for attribute in object.attributes.values():
                 print(attribute)
 
@@ -1168,9 +1326,11 @@ def use_case_20():
             print(f"Attribute value before update: {xy_sets}")
 
             start_time = datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE)
-            new_xy_set = XySet(valid_from_time=start_time,
-                               xy_curves=[XyCurve(0.0, [(1.0, 15), (2.0, 30)])])
-            session .update_xy_sets(target, start_time, datetime.max, [new_xy_set])
+            new_xy_set = XySet(
+                valid_from_time=start_time,
+                xy_curves=[XyCurve(0.0, [(1.0, 15), (2.0, 30)])],
+            )
+            session.update_xy_sets(target, start_time, datetime.max, [new_xy_set])
 
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
             print(f"Attribute value after update: {xy_sets}")
@@ -1207,22 +1367,26 @@ def use_case_21():
             # First read the attribute using `get_attribute`.
             # We can get standard information like name, ID, tags, etc.
             rating_curve_attribute = session.get_attribute(
-                attribute_path, full_attribute_info=True)
-            print(f"Basic information about the rating curve attribute:\n{rating_curve_attribute}\n")
+                attribute_path, full_attribute_info=True
+            )
+            print(
+                f"Basic information about the rating curve attribute:\n{rating_curve_attribute}\n"
+            )
 
             # Because the rating curve can potentially contain large amounts of data,
             # specialized methods exist to handle those values.
             versions = session.get_rating_curve_versions(
-                target=attribute_path,
-                start_time=start,
-                end_time=end)
+                target=attribute_path, start_time=start, end_time=end
+            )
 
-            print((
-                f"There is/are {len(versions)} rating curve version(s) for the time interval: "
-                f"{start:%d.%m.%Y} - {end:%d.%m.%Y}:\n"
-            ))
+            print(
+                (
+                    f"There is/are {len(versions)} rating curve version(s) for the time interval: "
+                    f"{start:%d.%m.%Y} - {end:%d.%m.%Y}:\n"
+                )
+            )
             for i, version in enumerate(versions):
-                print(f'Version {i+1}:\n{version}')
+                print(f"Version {i+1}:\n{version}")
 
         except grpc.RpcError as e:
             print(f"{use_case_name} resulted in an error: {e}")
@@ -1251,10 +1415,10 @@ def use_case_22():
                     valid_from_time=datetime(2017, 5, 1, tzinfo=LOCAL_TIME_ZONE),
                     x_range_from=1.0,
                     x_value_segments=[
-                        RatingCurveSegment( 3,  3, 22.1, -1.1),
-                        RatingCurveSegment( 5,  4, -1.2,  2.7),
-                        RatingCurveSegment(20, 15,  2.5, 34.3)
-                    ]
+                        RatingCurveSegment(3, 3, 22.1, -1.1),
+                        RatingCurveSegment(5, 4, -1.2, 2.7),
+                        RatingCurveSegment(20, 15, 2.5, 34.3),
+                    ],
                 )
             )
             new_versions.append(
@@ -1262,10 +1426,10 @@ def use_case_22():
                     valid_from_time=datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE),
                     x_range_from=1.0,
                     x_value_segments=[
-                        RatingCurveSegment( 2,   5,  0, 1),
-                        RatingCurveSegment( 4,  12, -1, 2),
-                        RatingCurveSegment(10, 100, -2, 3)
-                    ]
+                        RatingCurveSegment(2, 5, 0, 1),
+                        RatingCurveSegment(4, 12, -1, 2),
+                        RatingCurveSegment(10, 100, -2, 3),
+                    ],
                 )
             )
 
@@ -1273,17 +1437,17 @@ def use_case_22():
                 target=attribute_path,
                 start_time=new_versions[0].valid_from_time,
                 end_time=datetime.max,
-                new_versions=new_versions)
+                new_versions=new_versions,
+            )
 
             # Now read it.
             versions = session.get_rating_curve_versions(
-                target=attribute_path,
-                start_time=datetime.min,
-                end_time=datetime.max)
+                target=attribute_path, start_time=datetime.min, end_time=datetime.max
+            )
 
             print("Rating curve versions:")
             for i, version in enumerate(versions):
-                print(f'Version {i+1}:\n{version}')
+                print(f"Version {i+1}:\n{version}")
 
             # Commit changes
             if COMMIT_CHANGES:
@@ -1316,7 +1480,8 @@ def use_case_23():
                 target=attribute_path,
                 start_time=datetime.min,
                 end_time=datetime.max,
-                versions_only=True)
+                versions_only=True,
+            )
 
             # Remove last version by replacing last version
             # interval with empty new version.
@@ -1324,16 +1489,16 @@ def use_case_23():
                 target=attribute_path,
                 start_time=versions[-1].valid_from_time,
                 end_time=datetime.max,
-                new_versions=[])
+                new_versions=[],
+            )
 
             # Now read it.
             versions = session.get_rating_curve_versions(
-                target=attribute_path,
-                start_time=datetime.min,
-                end_time=datetime.max)
+                target=attribute_path, start_time=datetime.min, end_time=datetime.max
+            )
             print("Rating curve versions after removing the last version:")
             for i, version in enumerate(versions):
-                print(f'Version {i+1}:\n{version}')
+                print(f"Version {i+1}:\n{version}")
 
             # Rollback the changes.
             session.rollback()
@@ -1346,17 +1511,17 @@ def use_case_23():
                 target=attribute_path,
                 start_time=datetime.min,
                 end_time=datetime(2019, 1, 1, tzinfo=LOCAL_TIME_ZONE),
-                new_versions=[])
+                new_versions=[],
+            )
 
             # Now read it.
             versions = session.get_rating_curve_versions(
-                target=attribute_path,
-                start_time=datetime.min,
-                end_time=datetime.max)
+                target=attribute_path, start_time=datetime.min, end_time=datetime.max
+            )
 
             print("Rating curve versions after removing the first version:")
             for i, version in enumerate(versions):
-                print(f'Version {i+1}:\n{version}')
+                print(f"Version {i+1}:\n{version}")
 
             # Now remove all versions by replacing the whole time interval
             # [min, max) interval with empty new version.
@@ -1364,12 +1529,12 @@ def use_case_23():
                 target=attribute_path,
                 start_time=datetime.min,
                 end_time=datetime.max,
-                new_versions=[])
+                new_versions=[],
+            )
 
             versions = session.get_rating_curve_versions(
-                target=attribute_path,
-                start_time=datetime.min,
-                end_time=datetime.max)
+                target=attribute_path, start_time=datetime.min, end_time=datetime.max
+            )
 
             if len(versions) == 0:
                 print("Removed all rating curve versions.")
@@ -1387,31 +1552,47 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         RUN_USE_CASE = sys.argv[1]
 
-    ALL_USE_CASE_FUNCTIONS = {key.strip('use_case_'): value for key, value in locals().items() if 'use_case_' in key}
+    ALL_USE_CASE_FUNCTIONS = {
+        key.strip("use_case_"): value
+        for key, value in locals().items()
+        if "use_case_" in key
+    }
 
     if RUN_USE_CASE in ALL_USE_CASE_FUNCTIONS.keys():
         ALL_USE_CASE_FUNCTIONS[RUN_USE_CASE]()
-    elif RUN_USE_CASE == 'all':
+    elif RUN_USE_CASE == "all":
         for _, use_case in ALL_USE_CASE_FUNCTIONS.items():
             use_case()
-    elif RUN_USE_CASE == 'flow_drop_2':
-        flow_drop_2_use_cases = ['1', '2', '3', '4', '4b', '5']
+    elif RUN_USE_CASE == "flow_drop_2":
+        flow_drop_2_use_cases = ["1", "2", "3", "4", "4b", "5"]
         for use_case_key in flow_drop_2_use_cases:
             if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
                 ALL_USE_CASE_FUNCTIONS[use_case_key]()
-    elif RUN_USE_CASE == 'flow_drop_3':
-        flow_drop_3_use_cases = ['6', '7', '8', '9', '10', '11', '12']
+    elif RUN_USE_CASE == "flow_drop_3":
+        flow_drop_3_use_cases = ["6", "7", "8", "9", "10", "11", "12"]
         for use_case_key in flow_drop_3_use_cases:
             if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
                 ALL_USE_CASE_FUNCTIONS[use_case_key]()
-    elif RUN_USE_CASE == 'flow_drop_4':
-        flow_drop_4_use_cases = ['13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23']
+    elif RUN_USE_CASE == "flow_drop_4":
+        flow_drop_4_use_cases = [
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+        ]
         for use_case_key in flow_drop_4_use_cases:
             if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
                 ALL_USE_CASE_FUNCTIONS[use_case_key]()
     else:
-        default_use_case = ALL_USE_CASE_FUNCTIONS['1']
-        print(f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case {default_use_case.__name__}")
+        default_use_case = ALL_USE_CASE_FUNCTIONS["1"]
+        print(
+            f"Invalid use case selected: {RUN_USE_CASE}, selecting default use case {default_use_case.__name__}"
+        )
         default_use_case()
-
-

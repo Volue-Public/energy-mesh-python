@@ -184,7 +184,9 @@
     <span class="sd">&quot;&quot;&quot;Showing how to read timeseries points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the timeseries identifiers</span>
-    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="p">)</span>
     <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;00000003-0003-0000-0000-000000000000&quot;</span><span class="p">)</span>
 
     <span class="c1"># Defining a time interval to read timeseries from.</span>
@@ -193,17 +195,17 @@
     <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Send request to read timeseries based on path</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span>
-                                                <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                                                <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
     <span class="c1"># OR</span>
 
     <span class="c1"># Send request to read timeseries based on guid</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span>
-                                                <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                                                <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span></div>
 
 

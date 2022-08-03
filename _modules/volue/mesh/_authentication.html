@@ -187,9 +187,9 @@
 
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
 
-<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;win32&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;win32&quot;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">winkerberos</span> <span class="k">as</span> <span class="nn">kerberos</span>
-<span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;linux&#39;</span><span class="p">):</span>
+<span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;linux&quot;</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">kerberos</span>
 
 
@@ -218,10 +218,11 @@
 <span class="sd">            service_principal: Name of an active directory service, e.g.: &#39;HOST/hostname.ad.examplecompany.com.</span>
 <span class="sd">            user_principal: Name of an active directory user, e.g.: &#39;ad\\user.name&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">service_principal</span><span class="p">:</span> <span class="nb">str</span>
         <span class="n">user_principal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Authentication.KerberosTokenIterator"><a class="viewcode-back" href="../../../api.html#volue.mesh.Authentication.KerberosTokenIterator">[docs]</a>    <span class="k">class</span> <span class="nc">KerberosTokenIterator</span><span class="p">():</span>
+<div class="viewcode-block" id="Authentication.KerberosTokenIterator"><a class="viewcode-back" href="../../../api.html#volue.mesh.Authentication.KerberosTokenIterator">[docs]</a>    <span class="k">class</span> <span class="nc">KerberosTokenIterator</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Kerberos token iterator to be used with AuthenticateKerberos streaming gRPC.</span>
 <span class="sd">        Sends tokens to be processed by the Mesh server and processes tokens</span>
@@ -246,7 +247,8 @@
             <span class="c1"># there is no need to check status for failures as</span>
             <span class="c1"># kerberos module converts failures to exceptions</span>
             <span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span> <span class="o">=</span> <span class="n">kerberos</span><span class="o">.</span><span class="n">authGSSClientInit</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">service_principal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_principal</span><span class="p">,</span> <span class="n">gssflags</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service_principal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_principal</span><span class="p">,</span> <span class="n">gssflags</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)</span></div>
 
         <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span>
@@ -258,7 +260,7 @@
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_iteration</span><span class="p">:</span>
-                    <span class="n">_</span> <span class="o">=</span> <span class="n">kerberos</span><span class="o">.</span><span class="n">authGSSClientStep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="n">_</span> <span class="o">=</span> <span class="n">kerberos</span><span class="o">.</span><span class="n">authGSSClientStep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">response_received</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">response_received</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -271,16 +273,21 @@
                     <span class="c1"># Note: all base64 characters are ASCII characters,</span>
                     <span class="c1"># so it is safe to decode using ASCII</span>
                     <span class="n">base64_server_kerberos_token</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">server_kerberos_token</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">server_kerberos_token</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
                     <span class="n">_</span> <span class="o">=</span> <span class="n">kerberos</span><span class="o">.</span><span class="n">authGSSClientStep</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span><span class="p">,</span> <span class="n">base64_server_kerberos_token</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span><span class="p">,</span> <span class="n">base64_server_kerberos_token</span>
+                    <span class="p">)</span>
 
                 <span class="c1"># response is base64 encoded</span>
-                <span class="n">base64_client_kerberos_token</span> <span class="o">=</span> <span class="n">kerberos</span><span class="o">.</span><span class="n">authGSSClientResponse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span><span class="p">)</span>
+                <span class="n">base64_client_kerberos_token</span> <span class="o">=</span> <span class="n">kerberos</span><span class="o">.</span><span class="n">authGSSClientResponse</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">krb_context</span>
+                <span class="p">)</span>
 
                 <span class="c1"># Mesh expects it in binary form, so decode it</span>
                 <span class="n">client_token</span> <span class="o">=</span> <span class="n">protobuf</span><span class="o">.</span><span class="n">wrappers_pb2</span><span class="o">.</span><span class="n">BytesValue</span><span class="p">(</span>
-                    <span class="n">value</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">base64_client_kerberos_token</span><span class="p">))</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">base64_client_kerberos_token</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="c1"># store exception and re-throw</span>
                 <span class="c1"># gRPC will raise its own RpcError with vague &quot;Exception iterating requests&quot;</span>
@@ -294,7 +301,7 @@
 <div class="viewcode-block" id="Authentication.KerberosTokenIterator.process_response"><a class="viewcode-back" href="../../../api.html#volue.mesh.Authentication.KerberosTokenIterator.process_response">[docs]</a>        <span class="k">def</span> <span class="nf">process_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_kerberos_token</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Sets new response from Mesh with kerberos token to be processed by client.</span>
-<span class="sd">            </span>
+
 <span class="sd">            Args:</span>
 <span class="sd">                server_kerberos_token: The kerberos token.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -310,10 +317,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">response_received</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div></div>
 
 <div class="viewcode-block" id="Authentication.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Authentication.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">channel_credentials</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ChannelCredentials</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="n">Parameters</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">channel_credentials</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ChannelCredentials</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: &#39;HOST/hostname.ad.examplecompany.com&#39;</span>
 
@@ -337,10 +345,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_date</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># create separate channel for getting and refreshing Mesh token</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
-            <span class="n">credentials</span><span class="o">=</span><span class="n">channel_credentials</span>
-        <span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">channel_credentials</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
         <span class="c1"># get token in initialization to avoid spending</span>
@@ -350,7 +355,7 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span>
-        <span class="n">callback</span><span class="p">(((</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">),),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">callback</span><span class="p">(((</span><span class="s2">&quot;authorization&quot;</span><span class="p">,</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">),),</span> <span class="kc">None</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Authentication.is_token_valid"><a class="viewcode-back" href="../../../api.html#volue.mesh.Authentication.is_token_valid">[docs]</a>    <span class="k">def</span> <span class="nf">is_token_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -380,11 +385,16 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">kerberos_token_iterator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">KerberosTokenIterator</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">service_principal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_principal</span><span class="p">)</span>
-            <span class="n">mesh_responses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">AuthenticateKerberos</span><span class="p">(</span><span class="n">kerberos_token_iterator</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service_principal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_principal</span>
+            <span class="p">)</span>
+            <span class="n">mesh_responses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">AuthenticateKerberos</span><span class="p">(</span>
+                <span class="n">kerberos_token_iterator</span>
+            <span class="p">)</span>
             <span class="k">for</span> <span class="n">mesh_response</span> <span class="ow">in</span> <span class="n">mesh_responses</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">mesh_response</span><span class="o">.</span><span class="n">bearer_token</span><span class="p">:</span>
-                    <span class="n">kerberos_token_iterator</span><span class="o">.</span><span class="n">process_response</span><span class="p">(</span><span class="n">mesh_response</span><span class="o">.</span><span class="n">kerberos_token</span><span class="p">)</span>
+                    <span class="n">kerberos_token_iterator</span><span class="o">.</span><span class="n">process_response</span><span class="p">(</span>
+                        <span class="n">mesh_response</span><span class="o">.</span><span class="n">kerberos_token</span>
+                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">kerberos_token_iterator</span><span class="o">.</span><span class="n">signal_final_response_received</span><span class="p">()</span>
 
@@ -394,10 +404,12 @@
                     <span class="n">token_duration</span> <span class="o">=</span> <span class="n">mesh_response</span><span class="o">.</span><span class="n">token_duration</span><span class="o">.</span><span class="n">ToTimedelta</span><span class="p">()</span>
 
                     <span class="k">if</span> <span class="n">token_duration</span> <span class="o">&lt;=</span> <span class="n">duration_margin</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Invalid Mesh token duration&#39;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid Mesh token duration&quot;</span><span class="p">)</span>
 
                     <span class="n">adjusted_token_duration</span> <span class="o">=</span> <span class="n">token_duration</span> <span class="o">-</span> <span class="n">duration_margin</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="o">=</span> <span class="n">auth_request_call_timestamp</span> <span class="o">+</span> <span class="n">adjusted_token_duration</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">auth_request_call_timestamp</span> <span class="o">+</span> <span class="n">adjusted_token_duration</span>
+                    <span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">mesh_response</span><span class="o">.</span><span class="n">bearer_token</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kerberos_token_iterator</span><span class="o">.</span><span class="n">exception</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -416,7 +428,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="o">=</span> <span class="kc">None</span></div></div>
 
 
-<span class="k">def</span> <span class="nf">authenticate_fake</span><span class="p">(</span><span class="n">service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">authenticate_fake</span><span class="p">(</span>
+    <span class="n">service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Authenticate to Mesh with a fake identity.</span>
 
 <span class="sd">    Requires Mesh configuration. Internal use only.</span>
@@ -433,8 +447,7 @@
 <span class="sd">        grpc.RpcError: If the remote procedure call fails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AuthenticateFakeRequest</span><span class="p">(</span>
-        <span class="n">display_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
-        <span class="n">token_duration</span><span class="o">=</span><span class="n">protobuf</span><span class="o">.</span><span class="n">duration_pb2</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">token_duration</span><span class="o">=</span><span class="n">protobuf</span><span class="o">.</span><span class="n">duration_pb2</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">AuthenticateFake</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
@@ -446,21 +459,23 @@
 
 <span class="sd">    Requires Mesh configuration. Internal use only.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grpc_target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">grpc_credentials</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ChannelCredentials</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">grpc_target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">grpc_credentials</span><span class="p">:</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ChannelCredentials</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
 
-        <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="n">grpc_target</span><span class="p">,</span>
-            <span class="n">credentials</span><span class="o">=</span><span class="n">grpc_credentials</span>
-        <span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">secure_channel</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">grpc_target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">grpc_credentials</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span> <span class="o">=</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span> <span class="o">&lt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span> <span class="o">=</span> <span class="n">authenticate_fake</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">callback</span><span class="p">(((</span><span class="s1">&#39;authorization&#39;</span><span class="p">,</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">),),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration</span> <span class="o">=</span> <span class="n">authenticate_fake</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+            <span class="p">)</span>
+        <span class="n">callback</span><span class="p">(((</span><span class="s2">&quot;authorization&quot;</span><span class="p">,</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">),),</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
            </div>

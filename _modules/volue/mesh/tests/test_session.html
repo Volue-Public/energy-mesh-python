@@ -221,7 +221,9 @@
     <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span><span class="p">)</span> <span class="k">as</span> <span class="n">info</span><span class="p">:</span>
         <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">grpc</span><span class="o">.</span><span class="n">_channel</span><span class="o">.</span><span class="n">_InactiveRpcError</span>
-    <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">details</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="s1">&#39;Session with id </span><span class="si">{}</span><span class="s1"> not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()}))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+    <span class="k">assert</span> <span class="n">info</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">details</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span>
+        <span class="s2">&quot;Session with id </span><span class="si">{}</span><span class="s2"> not found.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()})</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="test_sessions_using_contextmanager"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_session.test_sessions_using_contextmanager">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">server</span>
@@ -411,7 +413,8 @@
 
     <span class="c1"># change it back to what is was originally</span>
     <span class="k">await</span> <span class="n">async_session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span>
-        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries_key</span><span class="p">,</span> <span class="n">new_unit_of_measurement</span><span class="o">=</span><span class="n">original_unit_of_measurement</span>
+        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">timeseries_key</span><span class="p">,</span>
+        <span class="n">new_unit_of_measurement</span><span class="o">=</span><span class="n">original_unit_of_measurement</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># commit</span>
@@ -424,7 +427,7 @@
     <span class="k">assert</span> <span class="n">timeseries_info</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">==</span> <span class="n">original_unit_of_measurement</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
 </pre></div>
 

@@ -189,16 +189,23 @@
 <span class="sd">    Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server.&quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">creds_type</span> <span class="o">==</span> <span class="s2">&quot;kerberos&quot;</span>
     <span class="n">credentials</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Credentials</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs</span><span class="p">)</span>
-    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_svc</span><span class="p">,</span>
-                                                               <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_usr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Authentication</span><span class="p">(</span><span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span><span class="p">)</span></div>
+    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_svc</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_usr</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Authentication</span><span class="p">(</span>
+        <span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">channel_creds</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="kerberos_connection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.kerberos_connection">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">def</span> <span class="nf">kerberos_connection</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">:</span>
     <span class="k">assert</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">creds_type</span> <span class="o">==</span> <span class="s2">&quot;kerberos&quot;</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs</span><span class="p">,</span>
-                                               <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_svc</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_usr</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs</span><span class="p">,</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_svc</span><span class="p">,</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_usr</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">yield</span> <span class="n">connection</span>
     <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
 
@@ -206,8 +213,12 @@
 <div class="viewcode-block" id="async_kerberos_connection"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.async_kerberos_connection">[docs]</a><span class="nd">@pytest_asyncio</span><span class="o">.</span><span class="n">fixture</span>
 <span class="k">async</span> <span class="k">def</span> <span class="nf">async_kerberos_connection</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="p">:</span>
     <span class="k">assert</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">creds_type</span> <span class="o">==</span> <span class="s2">&quot;kerberos&quot;</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span><span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs</span><span class="p">,</span>
-                                                   <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_svc</span><span class="p">,</span> <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_usr</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">tls_root_certs</span><span class="p">,</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_svc</span><span class="p">,</span>
+        <span class="n">mesh_test_config</span><span class="o">.</span><span class="n">krb5_usr</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="k">yield</span> <span class="n">connection</span>
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span></div>
 
@@ -236,7 +247,9 @@
 
 
 <div class="viewcode-block" id="test_auth_metadata_plugin_obtains_correctly_new_token_after_delete"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_authentication.test_auth_metadata_plugin_obtains_correctly_new_token_after_delete">[docs]</a><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">authentication</span>
-<span class="k">def</span> <span class="nf">test_auth_metadata_plugin_obtains_correctly_new_token_after_delete</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">test_auth_metadata_plugin_obtains_correctly_new_token_after_delete</span><span class="p">(</span>
+    <span class="n">auth_metadata_plugin</span><span class="p">,</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if after deleting access token a new one is correctly obtained.&quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">is_token_valid</span><span class="p">()</span>
     <span class="n">previous_token</span> <span class="o">=</span> <span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span>
@@ -287,7 +300,7 @@
     <span class="k">assert</span> <span class="n">user_identity</span><span class="o">.</span><span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
 </pre></div>
 

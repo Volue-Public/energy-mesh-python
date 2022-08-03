@@ -226,7 +226,9 @@
     <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
     <span class="c1"># Try connecting to that session id, if it does not exist, a new one will be created without warning</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span>
+    <span class="p">)</span>
     <span class="c1"># Check which session you are connected to and close it</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you are to connect to: </span><span class="si">{</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

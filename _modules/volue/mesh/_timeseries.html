@@ -205,6 +205,7 @@
 <span class="sd">            PIECEWISELINEAR:</span>
 <span class="sd">            STAIRCASE:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">STAIRCASESTARTOFSTEP</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">PIECEWISELINEAR</span> <span class="o">=</span> <span class="mi">2</span>
@@ -225,14 +226,15 @@
 <span class="sd">            MONTH:</span>
 <span class="sd">            YEAR:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">UNSPECIFIED</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">BREAKPOINT</span>  <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">MIN15</span>       <span class="o">=</span> <span class="mi">2</span>
-        <span class="n">HOUR</span>        <span class="o">=</span> <span class="mi">3</span>
-        <span class="n">DAY</span>         <span class="o">=</span> <span class="mi">4</span>
-        <span class="n">WEEK</span>        <span class="o">=</span> <span class="mi">5</span>
-        <span class="n">MONTH</span>       <span class="o">=</span> <span class="mi">6</span>
-        <span class="n">YEAR</span>        <span class="o">=</span> <span class="mi">7</span></div>
+        <span class="n">BREAKPOINT</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">MIN15</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">HOUR</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">DAY</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">WEEK</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">MONTH</span> <span class="o">=</span> <span class="mi">6</span>
+        <span class="n">YEAR</span> <span class="o">=</span> <span class="mi">7</span></div>
 
 <div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span> <span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -259,26 +261,30 @@
 <span class="sd">                calculation components are missing values then a MISSING flag</span>
 <span class="sd">                is set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">OK</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">NOT_OK</span> <span class="o">=</span> <span class="mh">0x40000000</span>
         <span class="n">MISSING</span> <span class="o">=</span> <span class="mh">0x04000000</span>
         <span class="n">SUSPECT</span> <span class="o">=</span> <span class="mh">0x02000000</span></div>
 
-    <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">([</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;utc_time&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint32</span><span class="p">()),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
-    <span class="p">])</span>  <span class="c1"># The pyarrow schema used for time series points.</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s2">&quot;utc_time&quot;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s2">&quot;ms&quot;</span><span class="p">)),</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s2">&quot;flags&quot;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint32</span><span class="p">()),</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
+        <span class="p">]</span>
+    <span class="p">)</span>  <span class="c1"># The pyarrow schema used for time series points.</span>
 
-<div class="viewcode-block" id="Timeseries.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Resolution</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">timskey</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">uuid_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">full_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-                 <span class="p">):</span>
+<div class="viewcode-block" id="Timeseries.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Resolution</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">timskey</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">uuid_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">full_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A representation of a time series.</span>
 <span class="sd">        If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.</span>
 <span class="sd">        Providing broader time interval (`start_time` and `end_time`) could be used when writing new time series points,</span>
@@ -308,19 +314,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span> <span class="o">!=</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;invalid PyArrow table schema&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid PyArrow table schema&quot;</span><span class="p">)</span>
 
         <span class="c1"># setting start and end time should only take effect when writing time series</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
 
         <span class="k">if</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># end time must be greater than last time point in PyArrow table</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span>
+                    <span class="n">seconds</span><span class="o">=</span><span class="mi">1</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span></div>
 

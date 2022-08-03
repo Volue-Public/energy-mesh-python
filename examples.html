@@ -266,7 +266,8 @@
         <span class="c1"># first lets find a time series in our model</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -275,14 +276,14 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No such time series attribute in the given model/database&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># pick the first time series and do some operations with it</span>
         <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Working on timeseries with path: &#39;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on timeseries with path: &quot;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
         <span class="c1"># check for example the curve type of the connected physical time series</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># now lets write some data to it</span>
         <span class="k">try</span><span class="p">:</span>
@@ -297,18 +298,19 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">):</span>
                 <span class="n">hours</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">24</span>
                 <span class="n">days</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">))</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
+                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">)</span>
+                <span class="p">)</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">days</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
 
             <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
 
-            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span>
-                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span>
-                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
             <span class="n">arrow_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 
-            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span>
+                <span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span>
+            <span class="p">)</span>
             <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -323,7 +325,8 @@
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
 
             <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">)</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+            <span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
             <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
@@ -331,7 +334,9 @@
 
             <span class="c1"># lets convert it back to local time zone</span>
             <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># notice that depending on the local time zone there is a shift in the data</span>
@@ -354,8 +359,8 @@
             <span class="c1"># If you are using `LOCAL` or `STANDARD` time zone then make sure</span>
             <span class="c1"># the Mesh server is operating in the same time zone or adjust properly.</span>
             <span class="n">transformed_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
-                <span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                    <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+                <span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
             <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
@@ -364,7 +369,9 @@
 
             <span class="c1"># lets convert it back to local time zone</span>
             <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># do some further processing</span>
@@ -413,10 +420,13 @@
     <span class="c1">#       Would be converted to:</span>
     <span class="c1">#           service/hostname</span>
     <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
-        <span class="s1">&#39;HOST/example.companyad.company.com&#39;</span><span class="p">)</span>
+        <span class="s2">&quot;HOST/example.companyad.company.com&quot;</span>
+    <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
     <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
 
@@ -424,8 +434,12 @@
     <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
-    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
+        <span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
 
     <span class="c1"># revoke no longer used token</span>
@@ -515,9 +529,9 @@
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-        <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span>
-        <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
+        <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span> <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
     <span class="p">)</span>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
@@ -568,7 +582,9 @@
     <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
     <span class="c1"># Try connecting to that session id, if it does not exist, a new one will be created without warning</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span>
+    <span class="p">)</span>
     <span class="c1"># Check which session you are connected to and close it</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you are to connect to: </span><span class="si">{</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -587,6 +603,7 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 <span class="kn">import</span> <span class="nn">asyncio</span>
+
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Showing how to send get the server version both sequentially and concurrently.&quot;&quot;&quot;</span>
@@ -609,7 +626,6 @@
 
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-
 </pre></div>
 </div>
 </div>
@@ -629,7 +645,9 @@
     <span class="sd">&quot;&quot;&quot;Showing how to read timeseries points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the timeseries identifiers</span>
-    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="p">)</span>
     <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;00000003-0003-0000-0000-000000000000&quot;</span><span class="p">)</span>
 
     <span class="c1"># Defining a time interval to read timeseries from.</span>
@@ -638,17 +656,17 @@
     <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Send request to read timeseries based on path</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span>
-                                                <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                                                <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
     <span class="c1"># OR</span>
 
     <span class="c1"># Send request to read timeseries based on guid</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span>
-                                                <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
-                                                <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Read </span><span class="si">{</span><span class="n">timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 
 
@@ -680,7 +698,9 @@
     <span class="sd">&quot;&quot;&quot;Showing how to read timeseries points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the timeseries identifiers</span>
-    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="p">)</span>
     <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;00000003-0003-0000-0000-000000000000&quot;</span><span class="p">)</span>
 
     <span class="c1"># Defining a time interval to read timeseries from.</span>
@@ -691,12 +711,18 @@
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
     <span class="n">full_name_timeseries</span><span class="p">,</span> <span class="n">id_timeseries</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
         <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">),</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+        <span class="p">),</span>
         <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-            <span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">timeseries_id</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+        <span class="p">),</span>
     <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using id contains </span><span class="si">{</span><span class="n">full_name_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Timeseries found using full name contains </span><span class="si">{</span><span class="n">id_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Timeseries found using id contains </span><span class="si">{</span><span class="n">full_name_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Timeseries found using full name contains </span><span class="si">{</span><span class="n">id_timeseries</span><span class="o">.</span><span class="n">number_of_points</span><span class="si">}</span><span class="s2">.&quot;</span>
+    <span class="p">)</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -726,7 +752,9 @@
     <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the timeseries identifiers</span>
-    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># Defining the data we want to write</span>
     <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
@@ -735,9 +763,12 @@
     <span class="c1"># value - [pa.float64]</span>
     <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+        <span class="p">),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])]</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">]),</span>
+    <span class="p">]</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">)</span>
 
@@ -762,7 +793,6 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-
 </pre></div>
 </div>
 </div>
@@ -780,7 +810,9 @@
     <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the timeseries identifiers</span>
-    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># Defining the data we want to write</span>
     <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
@@ -789,9 +821,12 @@
     <span class="c1"># value - [pa.float64]</span>
     <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+        <span class="p">),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">])]</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">]),</span>
+    <span class="p">]</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">)</span>
 
@@ -851,10 +886,10 @@
 
     <span class="c1"># Search for time series attributes using this query</span>
     <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-        <span class="n">target</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">,</span>
-        <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span>
+    <span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Close the remote session</span>
     <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>

@@ -193,8 +193,7 @@
 <span class="k">class</span> <span class="nc">_ForecastFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all forecast function classes.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_get_all_forecasts_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                      <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_all_forecasts_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an expression for `get_all_forecasts` using a search query.</span>
 
@@ -210,11 +209,13 @@
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">))</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">expression</span>
 
-    <span class="k">def</span> <span class="nf">_get_forecast_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                 <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
-                                 <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
-                                 <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
-                                 <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_forecast_expression</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
+        <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
+        <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an expression for `get_forecasts` using a search query.</span>
 
@@ -229,11 +230,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">forecast_start_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">forecast_start_max</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;parameter `forecast_start_min` is provided, it requires providing also `forecast_start_max`&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;parameter `forecast_start_min` is provided, it requires providing also `forecast_start_max`&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">forecast_start_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">forecast_start_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;parameter `forecast_start_max` is provided, it requires providing also `forecast_start_min`&quot;</span><span class="p">)</span>
+                <span class="s2">&quot;parameter `forecast_start_max` is provided, it requires providing also `forecast_start_min`&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## = @GetForecast(@t(&quot;</span>
         <span class="k">if</span> <span class="n">search_query</span><span class="p">:</span>
@@ -241,15 +244,21 @@
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">)&quot;</span>
 
         <span class="k">if</span> <span class="n">forecast_start_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">converted_forecast_start_min</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="n">forecast_start_min</span><span class="p">)</span>
+            <span class="n">converted_forecast_start_min</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span>
+                <span class="n">forecast_start_min</span>
+            <span class="p">)</span>
             <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">,&#39;</span><span class="si">{</span><span class="n">converted_forecast_start_min</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
 
         <span class="k">if</span> <span class="n">forecast_start_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">converted_forecast_start_max</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="n">forecast_start_max</span><span class="p">)</span>
+            <span class="n">converted_forecast_start_max</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span>
+                <span class="n">forecast_start_max</span>
+            <span class="p">)</span>
             <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">,&#39;</span><span class="si">{</span><span class="n">converted_forecast_start_max</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
 
         <span class="k">if</span> <span class="n">available_at_timepoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">converted_available_at_timepoint</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="n">available_at_timepoint</span><span class="p">)</span>
+            <span class="n">converted_available_at_timepoint</span> <span class="o">=</span> <span class="n">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span>
+                <span class="n">available_at_timepoint</span>
+            <span class="p">)</span>
             <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">,&#39;</span><span class="si">{</span><span class="n">converted_available_at_timepoint</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
@@ -259,8 +268,7 @@
     <span class="c1"># abstractmethod does not take into account if method is async or not</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_all_forecasts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                          <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_all_forecasts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get all forecasts for a given Mesh object in a time interval.</span>
 <span class="sd">        The `target` and the time interval (`start_time` and `end_time`) are set by :py:func:`volue.mesh.Connection.Session.forecast_functions`.</span>
@@ -283,11 +291,13 @@
         <span class="k">pass</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_forecast</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get one forecast for a given Mesh object in a time interval.</span>
 
@@ -341,38 +351,46 @@
 
 <div class="viewcode-block" id="ForecastFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctions">[docs]</a><span class="k">class</span> <span class="nc">ForecastFunctions</span><span class="p">(</span><span class="n">_ForecastFunctionsBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for forecast functions that should be run synchronously&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ForecastFunctions.get_all_forecasts"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctions.get_all_forecasts">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_forecasts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                          <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="ForecastFunctions.get_all_forecasts"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctions.get_all_forecasts">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_forecasts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_all_forecasts_expression</span><span class="p">(</span><span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_timeseries_list_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ForecastFunctions.get_forecast"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctions.get_forecast">[docs]</a>    <span class="k">def</span> <span class="nf">get_forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                     <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                     <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+<div class="viewcode-block" id="ForecastFunctions.get_forecast"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctions.get_forecast">[docs]</a>    <span class="k">def</span> <span class="nf">get_forecast</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_forecast_expression</span><span class="p">(</span>
-            <span class="n">forecast_start_min</span><span class="p">,</span> <span class="n">forecast_start_max</span><span class="p">,</span> <span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+            <span class="n">forecast_start_min</span><span class="p">,</span> <span class="n">forecast_start_max</span><span class="p">,</span> <span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span>
+        <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ForecastFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctionsAsync">[docs]</a><span class="k">class</span> <span class="nc">ForecastFunctionsAsync</span><span class="p">(</span><span class="n">_ForecastFunctionsBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for forecast functions that should be run asynchronously&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="ForecastFunctionsAsync.get_all_forecasts"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctionsAsync.get_all_forecasts">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_all_forecasts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                                <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
+
+<div class="viewcode-block" id="ForecastFunctionsAsync.get_all_forecasts"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctionsAsync.get_all_forecasts">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_all_forecasts</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_all_forecasts_expression</span><span class="p">(</span><span class="n">search_query</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_timeseries_list_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ForecastFunctionsAsync.get_forecast"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctionsAsync.get_forecast">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_forecast</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                           <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+<div class="viewcode-block" id="ForecastFunctionsAsync.get_forecast"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.forecast.ForecastFunctionsAsync.get_forecast">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_forecast</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">forecast_start_min</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">forecast_start_max</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">available_at_timepoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_forecast_expression</span><span class="p">(</span>
-            <span class="n">forecast_start_min</span><span class="p">,</span> <span class="n">forecast_start_max</span><span class="p">,</span> <span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+            <span class="n">forecast_start_min</span><span class="p">,</span> <span class="n">forecast_start_max</span><span class="p">,</span> <span class="n">available_at_timepoint</span><span class="p">,</span> <span class="n">search_query</span>
+        <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 </pre></div>

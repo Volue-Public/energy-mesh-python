@@ -345,10 +345,13 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
     <span class="c1">#       Would be converted to:</span>
     <span class="c1">#           service/hostname</span>
     <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
-        <span class="s1">&#39;HOST/example.companyad.company.com&#39;</span><span class="p">)</span>
+        <span class="s2">&quot;HOST/example.companyad.company.com&quot;</span>
+    <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
     <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
 
@@ -356,8 +359,12 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
     <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
-    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
+        <span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
 
     <span class="c1"># revoke no longer used token</span>

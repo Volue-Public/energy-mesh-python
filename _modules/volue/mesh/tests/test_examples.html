@@ -216,12 +216,12 @@
 
 <div class="viewcode-block" id="pytest_generate_tests"><a class="viewcode-back" href="../../../../api.html#volue.mesh.tests.test_examples.pytest_generate_tests">[docs]</a><span class="k">def</span> <span class="nf">pytest_generate_tests</span><span class="p">(</span><span class="n">metafunc</span><span class="p">):</span>
     <span class="k">if</span> <span class="s2">&quot;example_path&quot;</span> <span class="ow">in</span> <span class="n">metafunc</span><span class="o">.</span><span class="n">fixturenames</span><span class="p">:</span>
-        <span class="n">examples</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;examples&#39;</span><span class="p">)</span>
+        <span class="n">examples</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s2">&quot;examples&quot;</span><span class="p">)</span>
         <span class="n">paths</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">examples</span> <span class="o">+</span> <span class="s2">&quot;/*.py&quot;</span><span class="p">)</span>
         <span class="n">metafunc</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;example_path&quot;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span></div>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">pytest</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">))</span>
 </pre></div>
 

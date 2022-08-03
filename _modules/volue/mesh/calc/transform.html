@@ -204,6 +204,7 @@
 <span class="sd">        MIN: Smallest value in the accumulation period.</span>
 <span class="sd">        MAX: Largest value in the accumulation period.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">SUM</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">SUMI</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">AVG</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># equivalent to MEAN</span>
@@ -217,11 +218,13 @@
 <span class="k">class</span> <span class="nc">_TransformFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for all transformation function classes.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_transform_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                              <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
-                              <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                              <span class="n">timezone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timezone</span><span class="p">],</span>
-                              <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_transform_expression</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timezone</span><span class="p">],</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an expression for `transform`.</span>
 
@@ -236,7 +239,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">BREAKPOINT</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;BREAKPOINT&#39; resolution is unsupported for time series transformation&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;BREAKPOINT&#39; resolution is unsupported for time series transformation&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">expression</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;## = @TRANSFORM(@t(&quot;</span>
         <span class="k">if</span> <span class="n">search_query</span><span class="p">:</span>
@@ -253,11 +258,13 @@
     <span class="c1"># abstractmethod does not take into account if method is async or not</span>
 
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                  <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
-                  <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                  <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
-                  <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transforms time series from one resolution to another resolution.</span>
 
@@ -288,24 +295,34 @@
 
 <div class="viewcode-block" id="TransformFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctions">[docs]</a><span class="k">class</span> <span class="nc">TransformFunctions</span><span class="p">(</span><span class="n">_TransformFunctionsBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for transformation functions that should be run synchronously&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TransformFunctions.transform"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctions.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                  <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
-                  <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                  <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
-                  <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TransformFunctions.transform"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctions.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span>
+            <span class="n">resolution</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span>
+        <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="TransformFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctionsAsync">[docs]</a><span class="k">class</span> <span class="nc">TransformFunctionsAsync</span><span class="p">(</span><span class="n">_TransformFunctionsBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class for transformation functions that should be run asynchronously&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="TransformFunctionsAsync.transform"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctionsAsync.transform">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                        <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
-                        <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-                        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
-                        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span><span class="n">resolution</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TransformFunctionsAsync.transform"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.transform.TransformFunctionsAsync.transform">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+        <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
+        <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span>
+            <span class="n">resolution</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">timezone</span><span class="p">,</span> <span class="n">search_query</span>
+        <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 </pre></div>

@@ -255,9 +255,9 @@
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
     <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
-        <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span>
-        <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
+        <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">),</span> <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
     <span class="p">)</span>
+
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
@@ -315,7 +315,8 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
         <span class="c1"># first lets find a time series in our model</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -324,14 +325,14 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No such time series attribute in the given model/database&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># pick the first time series and do some operations with it</span>
         <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Working on timeseries with path: &#39;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on timeseries with path: &quot;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
         <span class="c1"># check for example the curve type of the connected physical time series</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># now lets write some data to it</span>
         <span class="k">try</span><span class="p">:</span>
@@ -346,18 +347,19 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">):</span>
                 <span class="n">hours</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">24</span>
                 <span class="n">days</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">))</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
+                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">)</span>
+                <span class="p">)</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">days</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
 
             <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
 
-            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span>
-                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span>
-                <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
             <span class="n">arrow_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 
-            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span>
+                <span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span>
+            <span class="p">)</span>
             <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -372,7 +374,8 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
 
             <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">)</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+            <span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
             <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
@@ -380,7 +383,9 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 
             <span class="c1"># lets convert it back to local time zone</span>
             <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># notice that depending on the local time zone there is a shift in the data</span>
@@ -403,8 +408,8 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="c1"># If you are using `LOCAL` or `STANDARD` time zone then make sure</span>
             <span class="c1"># the Mesh server is operating in the same time zone or adjust properly.</span>
             <span class="n">transformed_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
-                <span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
-                    <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+                <span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
 
             <span class="c1"># convert to pandas format</span>
             <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
@@ -413,7 +418,9 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 
             <span class="c1"># lets convert it back to local time zone</span>
             <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">[</span><span class="s1">&#39;utc_time&#39;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># do some further processing</span>
