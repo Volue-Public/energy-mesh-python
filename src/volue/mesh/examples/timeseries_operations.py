@@ -22,7 +22,8 @@ def main(address, port, root_pem_certificate):
         # first lets find a time series in our model
         try:
             timeseries_attributes = session.search_for_timeseries_attributes(
-                start_object_path, query)
+                start_object_path, query
+            )
         except grpc.RpcError as e:
             print(f"Could not find time series attribute: {e}")
             return
@@ -31,14 +32,14 @@ def main(address, port, root_pem_certificate):
             print("No such time series attribute in the given model/database")
             return
 
-        print(f'Number of found time series: {len(timeseries_attributes)}')
+        print(f"Number of found time series: {len(timeseries_attributes)}")
 
         # pick the first time series and do some operations with it
         timeseries_attribute = timeseries_attributes[0]
-        print('Working on timeseries with path: ' + timeseries_attribute.path)
+        print("Working on timeseries with path: " + timeseries_attribute.path)
 
         # check for example the curve type of the connected physical time series
-        print(f'Curve: {timeseries_attribute.time_series_resource.curve_type}')
+        print(f"Curve: {timeseries_attribute.time_series_resource.curve_type}")
 
         # now lets write some data to it
         try:
@@ -53,18 +54,19 @@ def main(address, port, root_pem_certificate):
             for i in range(0, number_of_points):
                 hours = i % 24
                 days = int(i / 24) + 1
-                timestamps.append(datetime(2016, 5, days, hours))  # if no time zone is provided then the timestamp is treated as UTC
+                timestamps.append(
+                    datetime(2016, 5, days, hours)
+                )  # if no time zone is provided then the timestamp is treated as UTC
                 values.append(days * 10)
 
             flags = [Timeseries.PointFlags.OK.value] * number_of_points
 
-            arrays = [
-                pa.array(timestamps),
-                pa.array(flags),
-                pa.array(values)]
+            arrays = [pa.array(timestamps), pa.array(flags), pa.array(values)]
             arrow_table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
 
-            timeseries = Timeseries(table=arrow_table, full_name=timeseries_attribute.path)
+            timeseries = Timeseries(
+                table=arrow_table, full_name=timeseries_attribute.path
+            )
             session.write_timeseries_points(timeseries)
 
         except grpc.RpcError as e:
@@ -79,7 +81,8 @@ def main(address, port, root_pem_certificate):
             end_time = datetime(2016, 5, 4, tzinfo=local_time_zone)
 
             timeseries_read = session.read_timeseries_points(
-                target=timeseries_attribute, start_time=start_time, end_time=end_time)
+                target=timeseries_attribute, start_time=start_time, end_time=end_time
+            )
 
             # convert to pandas format
             # the timestamps in PyArrow table are always returned in UTC format
@@ -87,7 +90,9 @@ def main(address, port, root_pem_certificate):
 
             # lets convert it back to local time zone
             # first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)
-            pandas_series['utc_time'] = pd.to_datetime(pandas_series['utc_time'], utc=True).dt.tz_convert(local_time_zone)
+            pandas_series["utc_time"] = pd.to_datetime(
+                pandas_series["utc_time"], utc=True
+            ).dt.tz_convert(local_time_zone)
             print(pandas_series)
 
             # notice that depending on the local time zone there is a shift in the data
@@ -110,8 +115,8 @@ def main(address, port, root_pem_certificate):
             # If you are using `LOCAL` or `STANDARD` time zone then make sure
             # the Mesh server is operating in the same time zone or adjust properly.
             transformed_timeseries = session.transform_functions(
-                timeseries_attribute, start_time, end_time).transform(
-                    Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.LOCAL)
+                timeseries_attribute, start_time, end_time
+            ).transform(Timeseries.Resolution.DAY, Transform.Method.SUM, Timezone.LOCAL)
 
             # convert to pandas format
             # the timestamps in PyArrow table are always returned in UTC format
@@ -120,7 +125,9 @@ def main(address, port, root_pem_certificate):
 
             # lets convert it back to local time zone
             # first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)
-            pandas_series['utc_time'] = pd.to_datetime(pandas_series['utc_time'], utc=True).dt.tz_convert(local_time_zone)
+            pandas_series["utc_time"] = pd.to_datetime(
+                pandas_series["utc_time"], utc=True
+            ).dt.tz_convert(local_time_zone)
             print(pandas_series)
 
             # do some further processing

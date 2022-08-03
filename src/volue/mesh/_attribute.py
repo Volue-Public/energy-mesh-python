@@ -16,10 +16,13 @@ from volue.mesh._common import _from_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 SIMPLE_TYPE = Union[int, float, bool, str, datetime]
-SIMPLE_TYPE_OR_COLLECTION = Union[SIMPLE_TYPE, List[int], List[float], List[bool], List[str], List[datetime]]
+SIMPLE_TYPE_OR_COLLECTION = Union[
+    SIMPLE_TYPE, List[int], List[float], List[bool], List[str], List[datetime]
+]
 
-PROTO_VALUE_ONE_OF_FIELD_NAME = 'value_oneof'
-PROTO_DEFINITION_ONE_OF_FIELD_NAME = 'definition_type_oneof'
+PROTO_VALUE_ONE_OF_FIELD_NAME = "value_oneof"
+PROTO_DEFINITION_ONE_OF_FIELD_NAME = "definition_type_oneof"
+
 
 def _get_field_value(field_name: str, field_names: set[str], proto_message: Any):
     """
@@ -31,11 +34,14 @@ def _get_field_value(field_name: str, field_names: set[str], proto_message: Any)
     else:
         return None
 
+
 def _get_attribute_value(proto_attribute_value: core_pb2.AttributeValue):
     """Reads attribute value from proto message and coverts to Python type."""
 
-    proto_value = getattr(proto_attribute_value, proto_attribute_value.WhichOneof(
-        PROTO_VALUE_ONE_OF_FIELD_NAME))
+    proto_value = getattr(
+        proto_attribute_value,
+        proto_attribute_value.WhichOneof(PROTO_VALUE_ONE_OF_FIELD_NAME),
+    )
 
     if type(proto_value) is timestamp_pb2.Timestamp:
         # time zone aware datetime as UTC
@@ -54,25 +60,31 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
     attribute_definition_type = None
 
     # check if this is a singular attribute or a collection
-    if proto_attribute.HasField('singular_value'):
+    if proto_attribute.HasField("singular_value"):
         attribute_value_type = proto_attribute.singular_value.WhichOneof(
-            PROTO_VALUE_ONE_OF_FIELD_NAME)
+            PROTO_VALUE_ONE_OF_FIELD_NAME
+        )
     elif len(proto_attribute.collection_values) > 0:
         # it is enough to check only value type of the first element in the collection
         attribute_value_type = proto_attribute.collection_values[0].WhichOneof(
-            PROTO_VALUE_ONE_OF_FIELD_NAME)
+            PROTO_VALUE_ONE_OF_FIELD_NAME
+        )
 
-    if proto_attribute.HasField('definition'):
+    if proto_attribute.HasField("definition"):
         attribute_definition_type = proto_attribute.definition.WhichOneof(
-            PROTO_DEFINITION_ONE_OF_FIELD_NAME)
+            PROTO_DEFINITION_ONE_OF_FIELD_NAME
+        )
 
-    if attribute_value_type == 'timeseries_value':
+    if attribute_value_type == "timeseries_value":
         attribute = TimeseriesAttribute(proto_attribute)
     # Relationship attribute is a bit special.
     # It does not have a value, only definition.
     # It will be treated as generic AttributeBase if
     # definition is not a part of the proto message.
-    elif attribute_value_type is None and attribute_definition_type == "relationship_definition":
+    elif (
+        attribute_value_type is None
+        and attribute_definition_type == "relationship_definition"
+    ):
         attribute = RelationshipAttribute(proto_attribute)
     elif attribute_value_type in (
         "int_value",
@@ -104,7 +116,9 @@ class AttributeBase:
         """Attribute definition common for all kinds of attributes."""
 
         def __init__(self, proto_definition: core_pb2.AttributeDefinition):
-            self.id: uuid.UUID = _from_proto_guid(proto_definition.id)  # ID will always be present here
+            self.id: uuid.UUID = _from_proto_guid(
+                proto_definition.id
+            )  # ID will always be present here
             self.path: str = proto_definition.path
             self.name: str = proto_definition.name
             self.description: str = proto_definition.description
@@ -116,7 +130,9 @@ class AttributeBase:
             self.minimum_cardinality: int = proto_definition.minimum_cardinality
             self.maximum_cardinality: int = proto_definition.maximum_cardinality
 
-    def __init__(self, proto_attribute: core_pb2.Attribute, init_definition: bool = False):
+    def __init__(
+        self, proto_attribute: core_pb2.Attribute, init_definition: bool = False
+    ):
         self.id: uuid.UUID = _from_proto_guid(proto_attribute.id)
         self.path: str = proto_attribute.path
         self.name: str = proto_attribute.name
@@ -124,19 +140,14 @@ class AttributeBase:
         self.definition = None
 
         # in basic view the definition is not a part of response from Mesh server
-        if init_definition and proto_attribute.HasField('definition'):
+        if init_definition and proto_attribute.HasField("definition"):
             self.definition: Optional[
                 AttributeBase.AttributeBaseDefinition
             ] = self.AttributeBaseDefinition(proto_attribute.definition)
 
-
     def _get_string_representation(self) -> str:
         """Get string representation that could be used by subclasses `__str__` method calls."""
-        message = (
-            f"name: {self.name}\n"
-            f"\t id: {self.id}\n"
-            f"\t path: {self.path}"
-        )
+        message = f"name: {self.name}\n" f"\t id: {self.id}\n" f"\t path: {self.path}"
 
         if self.definition is not None:
             message = (
@@ -155,10 +166,7 @@ class AttributeBase:
         return message
 
     def __str__(self) -> str:
-        return (
-            f"AttributeBase:\n"
-            f"\t {self._get_string_representation()}"
-        )
+        return f"AttributeBase:\n" f"\t {self._get_string_representation()}"
 
 
 class SimpleAttribute(AttributeBase):
@@ -193,7 +201,8 @@ class SimpleAttribute(AttributeBase):
         def __init__(self, proto_definition: core_pb2.AttributeDefinition):
             super().__init__(proto_definition)
             definition_type_name = proto_definition.WhichOneof(
-                PROTO_DEFINITION_ONE_OF_FIELD_NAME)
+                PROTO_DEFINITION_ONE_OF_FIELD_NAME
+            )
             # get the proto message
             definition_type = getattr(proto_definition, definition_type_name)
             # read all of the available proto fields
@@ -202,18 +211,22 @@ class SimpleAttribute(AttributeBase):
             # set all possible values
             # if a field does not exist for the given definition type then return `None`
             self.default_value = _get_field_value(
-                'default_value', field_names, definition_type)
+                "default_value", field_names, definition_type
+            )
             self.minimum_value = _get_field_value(
-                'minimum_value', field_names, definition_type)
+                "minimum_value", field_names, definition_type
+            )
             self.maximum_value = _get_field_value(
-                'maximum_value', field_names, definition_type)
+                "maximum_value", field_names, definition_type
+            )
             self.unit_of_measurement: Union[str, None] = _get_field_value(
-                'unit_of_measurement', field_names, definition_type)
+                "unit_of_measurement", field_names, definition_type
+            )
 
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
 
-        if proto_attribute.HasField('singular_value'):
+        if proto_attribute.HasField("singular_value"):
             self.value = _get_attribute_value(proto_attribute.singular_value)
         elif len(proto_attribute.collection_values) > 0:
             self.value = []
@@ -221,19 +234,14 @@ class SimpleAttribute(AttributeBase):
                 self.value.append(_get_attribute_value(value))
 
         # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
+        if proto_attribute.HasField("definition"):
             self.definition: Optional[
                 SimpleAttribute.SimpleAttributeDefinition
             ] = self.SimpleAttributeDefinition(proto_attribute.definition)
 
-
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        message = (
-            f"SimpleAttribute:\n"
-            f"\t {base_message}\n"
-            f"\t value: {self.value}"
-        )
+        message = f"SimpleAttribute:\n" f"\t {base_message}\n" f"\t value: {self.value}"
 
         if self.definition is not None:
             message = (
@@ -272,27 +280,20 @@ class RelationshipAttribute(AttributeBase):
             super().__init__(proto_definition)
             self.object_type: str = proto_definition.relationship_definition.object_type
 
-
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
         # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
+        if proto_attribute.HasField("definition"):
             self.definition: Optional[
                 RelationshipAttribute.RelationshipAttributeDefinition
             ] = self.RelationshipAttributeDefinition(proto_attribute.definition)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        message = (
-            f"RelationshipAttribute:\n"
-            f"\t {base_message}"
-        )
+        message = f"RelationshipAttribute:\n" f"\t {base_message}"
 
         if self.definition is not None:
-            message = (
-                f"{message}\n"
-                f"\t object_type: {self.definition.object_type}"
-            )
+            message = f"{message}\n" f"\t object_type: {self.definition.object_type}"
 
         return message
 
@@ -321,33 +322,40 @@ class TimeseriesAttribute(AttributeBase):
 
         def __init__(self, proto_definition: core_pb2.AttributeDefinition):
             super().__init__(proto_definition)
-            self.template_expression: str = proto_definition.timeseries_definition.template_expression
-            self.unit_of_measurement: str = proto_definition.timeseries_definition.unit_of_measurement
-
+            self.template_expression: str = (
+                proto_definition.timeseries_definition.template_expression
+            )
+            self.unit_of_measurement: str = (
+                proto_definition.timeseries_definition.unit_of_measurement
+            )
 
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
 
-        if proto_attribute.HasField('singular_value'):
+        if proto_attribute.HasField("singular_value"):
             proto_value = proto_attribute.singular_value.timeseries_value
 
-            if proto_value.HasField('time_series_resource'):
-                self.time_series_resource = TimeseriesResource._from_proto_timeseries_resource(
-                    proto_value.time_series_resource)
+            if proto_value.HasField("time_series_resource"):
+                self.time_series_resource = (
+                    TimeseriesResource._from_proto_timeseries_resource(
+                        proto_value.time_series_resource
+                    )
+                )
             else:
-                self.time_series_resource = None  # for typing hints: "TimeseriesResource | None"
+                self.time_series_resource = (
+                    None  # for typing hints: "TimeseriesResource | None"
+                )
 
             self.is_local_expression: bool = proto_value.is_local_expression
             self.expression: str = proto_value.expression
         elif len(proto_attribute.collection_values) > 0:
-            raise TypeError('time series collection attribute is not supported')
-            
+            raise TypeError("time series collection attribute is not supported")
+
         # in basic view the definition is not a part of response from Mesh server
-        if proto_attribute.HasField('definition'):
+        if proto_attribute.HasField("definition"):
             self.definition: Optional[
                 TimeseriesAttribute.TimeseriesAttributeDefinition
             ] = self.TimeseriesAttributeDefinition(proto_attribute.definition)
-
 
     def __str__(self: TimeseriesAttribute) -> str:
         base_message = super()._get_string_representation()

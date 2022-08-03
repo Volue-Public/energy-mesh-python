@@ -33,6 +33,7 @@ class Timeseries:
             PIECEWISELINEAR:
             STAIRCASE:
         """
+
         UNKNOWN = 0
         STAIRCASESTARTOFSTEP = 1
         PIECEWISELINEAR = 2
@@ -53,14 +54,15 @@ class Timeseries:
             MONTH:
             YEAR:
         """
+
         UNSPECIFIED = 0
-        BREAKPOINT  = 1
-        MIN15       = 2
-        HOUR        = 3
-        DAY         = 4
-        WEEK        = 5
-        MONTH       = 6
-        YEAR        = 7
+        BREAKPOINT = 1
+        MIN15 = 2
+        HOUR = 3
+        DAY = 4
+        WEEK = 5
+        MONTH = 6
+        YEAR = 7
 
     class PointFlags(Enum):
         """
@@ -87,26 +89,30 @@ class Timeseries:
                 calculation components are missing values then a MISSING flag
                 is set.
         """
+
         OK = 0
         NOT_OK = 0x40000000
         MISSING = 0x04000000
         SUSPECT = 0x02000000
 
-    schema = pa.schema([
-        pa.field('utc_time', pa.timestamp('ms')),
-        pa.field('flags', pa.uint32()),
-        pa.field('value', pa.float64()),
-    ])  # The pyarrow schema used for time series points.
+    schema = pa.schema(
+        [
+            pa.field("utc_time", pa.timestamp("ms")),
+            pa.field("flags", pa.uint32()),
+            pa.field("value", pa.float64()),
+        ]
+    )  # The pyarrow schema used for time series points.
 
-    def __init__(self,
-                 table: pa.Table = None,
-                 resolution: Optional[Resolution] = None,
-                 start_time: Optional[datetime] = None,
-                 end_time: Optional[datetime] = None,
-                 timskey: Optional[int] = None,
-                 uuid_id: Optional[uuid.UUID] = None,
-                 full_name: Optional[str] = None
-                 ):
+    def __init__(
+        self,
+        table: pa.Table = None,
+        resolution: Optional[Resolution] = None,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
+        timskey: Optional[int] = None,
+        uuid_id: Optional[uuid.UUID] = None,
+        full_name: Optional[str] = None,
+    ):
         """A representation of a time series.
         If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.
         Providing broader time interval (`start_time` and `end_time`) could be used when writing new time series points,
@@ -136,19 +142,21 @@ class Timeseries:
         self.resolution = resolution
 
         if self.arrow_table and self.arrow_table.schema != Timeseries.schema:
-            raise TypeError('invalid PyArrow table schema')
+            raise TypeError("invalid PyArrow table schema")
 
         # setting start and end time should only take effect when writing time series
         if start_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
-                self.start_time = self.arrow_table['utc_time'][0].as_py()
+                self.start_time = self.arrow_table["utc_time"][0].as_py()
         else:
             self.start_time = start_time
 
         if end_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
                 # end time must be greater than last time point in PyArrow table
-                self.end_time = self.arrow_table['utc_time'][-1].as_py() + timedelta(seconds=1)
+                self.end_time = self.arrow_table["utc_time"][-1].as_py() + timedelta(
+                    seconds=1
+                )
         else:
             self.end_time = end_time
 

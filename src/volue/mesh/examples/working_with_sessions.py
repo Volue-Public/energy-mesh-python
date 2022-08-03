@@ -31,7 +31,9 @@ def main(address, port, root_pem_certificate):
     session = connection.connect_to_session(session_id)
     # Try connecting to that session id, if it does not exist, a new one will be created without warning
     session.open()
-    print("3. You have now an open session, either the one you requested or a new one if it did not exist")
+    print(
+        "3. You have now an open session, either the one you requested or a new one if it did not exist"
+    )
     # Check which session you are connected to and close it
     print(f"3. Session id you are to connect to: {session.session_id}")
     session.close()

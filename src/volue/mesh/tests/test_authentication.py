@@ -17,16 +17,23 @@ def auth_metadata_plugin(mesh_test_config):
     Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server."""
     assert mesh_test_config.creds_type == "kerberos"
     credentials = mesh.Credentials(mesh_test_config.tls_root_certs)
-    authentication_parameters = mesh.Authentication.Parameters(mesh_test_config.krb5_svc,
-                                                               mesh_test_config.krb5_usr)
-    return mesh.Authentication(authentication_parameters, mesh_test_config.address, credentials.channel_creds)
+    authentication_parameters = mesh.Authentication.Parameters(
+        mesh_test_config.krb5_svc, mesh_test_config.krb5_usr
+    )
+    return mesh.Authentication(
+        authentication_parameters, mesh_test_config.address, credentials.channel_creds
+    )
 
 
 @pytest.fixture
 def kerberos_connection(mesh_test_config) -> mesh.Connection:
     assert mesh_test_config.creds_type == "kerberos"
-    connection = mesh.Connection.with_kerberos(mesh_test_config.address, mesh_test_config.tls_root_certs,
-                                               mesh_test_config.krb5_svc, mesh_test_config.krb5_usr)
+    connection = mesh.Connection.with_kerberos(
+        mesh_test_config.address,
+        mesh_test_config.tls_root_certs,
+        mesh_test_config.krb5_svc,
+        mesh_test_config.krb5_usr,
+    )
     yield connection
     connection.revoke_access_token()
 
@@ -34,8 +41,12 @@ def kerberos_connection(mesh_test_config) -> mesh.Connection:
 @pytest_asyncio.fixture
 async def async_kerberos_connection(mesh_test_config) -> mesh.aio.Connection:
     assert mesh_test_config.creds_type == "kerberos"
-    connection = mesh.aio.Connection.with_kerberos(mesh_test_config.address, mesh_test_config.tls_root_certs,
-                                                   mesh_test_config.krb5_svc, mesh_test_config.krb5_usr)
+    connection = mesh.aio.Connection.with_kerberos(
+        mesh_test_config.address,
+        mesh_test_config.tls_root_certs,
+        mesh_test_config.krb5_svc,
+        mesh_test_config.krb5_usr,
+    )
     yield connection
     await connection.revoke_access_token()
 
@@ -64,7 +75,9 @@ def test_is_valid_token_returns_false_for_deleted_access_token(auth_metadata_plu
 
 
 @pytest.mark.authentication
-def test_auth_metadata_plugin_obtains_correctly_new_token_after_delete(auth_metadata_plugin):
+def test_auth_metadata_plugin_obtains_correctly_new_token_after_delete(
+    auth_metadata_plugin,
+):
     """Check if after deleting access token a new one is correctly obtained."""
     assert auth_metadata_plugin.is_token_valid()
     previous_token = auth_metadata_plugin.token
@@ -115,5 +128,5 @@ async def test_async_connection_get_user_identity(async_kerberos_connection):
     assert user_identity.identifier is not None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))

@@ -117,6 +117,7 @@ class AttributesFilter:
     namespace_mask: Optional[List[str]] = None
     return_no_attributes: bool = False
 
+
 @dataclass
 class UserIdentity:
     """Represents a Mesh server user identity.
@@ -137,7 +138,7 @@ class UserIdentity:
 
     display_name: str
     source: str
-    identifier : str
+    identifier: str
 
     @classmethod
     def _from_proto(cls, proto_user_identity: core_pb2.UserIdentity) -> UserIdentity:
@@ -149,7 +150,9 @@ class UserIdentity:
         return cls(
             display_name=proto_user_identity.display_name,
             source=proto_user_identity.source,
-            identifier=proto_user_identity.identifier)
+            identifier=proto_user_identity.identifier,
+        )
+
 
 @dataclass
 class VersionInfo:
@@ -171,9 +174,7 @@ class VersionInfo:
         Args:
             proto_version_info: protobuf VersionInfo returned from the gRPC method.
         """
-        return cls(
-            version=proto_version_info.version,
-            name=proto_version_info.name)
+        return cls(version=proto_version_info.version, name=proto_version_info.name)
 
 
 @dataclass
@@ -183,6 +184,7 @@ class XyCurve:
     See Also:
         :doc:`mesh_xy_sets`
     """
+
     z: float
     xy: List[Tuple[float, float]]
 
@@ -201,6 +203,7 @@ class XySet:
     See Also:
         :doc:`mesh_xy_sets`
     """
+
     valid_from_time: Optional[datetime.datetime]
     xy_curves: List[XyCurve]
 
@@ -209,7 +212,7 @@ class XySet:
 
 
 @dataclass
-class RatingCurveSegment():
+class RatingCurveSegment:
     """Represents a rating curve segment.
 
     Contains `a`, `b` and `c` factors for the discharge formula.
@@ -220,6 +223,7 @@ class RatingCurveSegment():
     See Also:
          :doc:`mesh_rating_curve`
     """
+
     x_range_until: float
     factor_a: float
     factor_b: float
@@ -230,14 +234,15 @@ class RatingCurveSegment():
 
     def __str__(self) -> str:
         return (
-            f'x range until={self.x_range_until}, '
-            f'a={self.factor_a}, '
-            f'b={self.factor_b}, '
-            f'c={self.factor_c}\n'
+            f"x range until={self.x_range_until}, "
+            f"a={self.factor_a}, "
+            f"b={self.factor_b}, "
+            f"c={self.factor_c}\n"
         )
 
+
 @dataclass
-class RatingCurveVersion():
+class RatingCurveVersion:
     """Represents a rating curve version.
 
     Contains rating curve segments, timestamp with the time at which the
@@ -248,6 +253,7 @@ class RatingCurveVersion():
     See Also:
          :doc:`mesh_rating_curve`
     """
+
     x_range_from: float
     valid_from_time: datetime.datetime
     x_value_segments: List[RatingCurveSegment]
@@ -257,14 +263,11 @@ class RatingCurveVersion():
 
     def __str__(self) -> str:
         message = (
-            f'Valid from: {self.valid_from_time}\n'
-            f'x range from: {self.x_range_from}\n'
+            f"Valid from: {self.valid_from_time}\n"
+            f"x range from: {self.x_range_from}\n"
         )
         for i, segment in enumerate(self.x_value_segments):
-            message = (
-                f'{message}'
-                f'\tSegment {i+1}: {segment}'
-            )
+            message = f"{message}" f"\tSegment {i+1}: {segment}"
         return message
 
 
@@ -319,16 +322,18 @@ def _from_proto_curve_type(proto_curve: resources_pb2.Curve) -> Timeseries.Curve
     curve = Timeseries.Curve.UNKNOWN
 
     if proto_curve.type == resources_pb2.Curve.PIECEWISELINEAR:
-        curve =  Timeseries.Curve.PIECEWISELINEAR
+        curve = Timeseries.Curve.PIECEWISELINEAR
     elif proto_curve.type == resources_pb2.Curve.STAIRCASE:
-        curve =  Timeseries.Curve.STAIRCASE
+        curve = Timeseries.Curve.STAIRCASE
     elif proto_curve.type == resources_pb2.Curve.STAIRCASESTARTOFSTEP:
         curve = Timeseries.Curve.STAIRCASESTARTOFSTEP
 
     return curve
 
 
-def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timeseries.Resolution:
+def _from_proto_resolution(
+    proto_resolution: resources_pb2.Resolution,
+) -> Timeseries.Resolution:
     """
     Converts from protobuf resolution type to Timeseries.Resolution type.
 
@@ -338,9 +343,9 @@ def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timese
     resolution = Timeseries.Resolution.UNSPECIFIED
 
     if proto_resolution.type == resources_pb2.Resolution.BREAKPOINT:
-        resolution =  Timeseries.Resolution.BREAKPOINT
+        resolution = Timeseries.Resolution.BREAKPOINT
     elif proto_resolution.type == resources_pb2.Resolution.MIN15:
-        resolution =  Timeseries.Resolution.MIN15
+        resolution = Timeseries.Resolution.MIN15
     elif proto_resolution.type == resources_pb2.Resolution.HOUR:
         resolution = Timeseries.Resolution.HOUR
     elif proto_resolution.type == resources_pb2.Resolution.DAY:
@@ -355,7 +360,9 @@ def _from_proto_resolution(proto_resolution: resources_pb2.Resolution) -> Timese
     return resolution
 
 
-def _to_proto_utcinterval(start_time: datetime.datetime, end_time: datetime.datetime) -> resources_pb2.UtcInterval:
+def _to_proto_utcinterval(
+    start_time: datetime.datetime, end_time: datetime.datetime
+) -> resources_pb2.UtcInterval:
     """
     Converts to protobuf UtcInterval.
 
@@ -370,10 +377,7 @@ def _to_proto_utcinterval(start_time: datetime.datetime, end_time: datetime.date
     start.FromDatetime(start_time)
     end = timestamp_pb2.Timestamp()
     end.FromDatetime(end_time)
-    interval = resources_pb2.UtcInterval(
-        start_time=start,
-        end_time=end
-    )
+    interval = resources_pb2.UtcInterval(start_time=start, end_time=end)
     return interval
 
 
@@ -389,8 +393,7 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     """
     stream = pa.BufferOutputStream()
     writer = pa.ipc.RecordBatchStreamWriter(
-        sink=stream,
-        schema=timeseries.arrow_table.schema
+        sink=stream, schema=timeseries.arrow_table.schema
     )
 
     writer.write_table(timeseries.arrow_table)
@@ -399,10 +402,13 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     proto_timeseries = core_pb2.Timeseries(
         id=_to_proto_mesh_id_from_timeseries(timeseries),
         resolution=timeseries.resolution,
-        interval=_to_proto_utcinterval(start_time=timeseries.start_time, end_time=timeseries.end_time),
-        data=buffer.to_pybytes()
+        interval=_to_proto_utcinterval(
+            start_time=timeseries.start_time, end_time=timeseries.end_time
+        ),
+        data=buffer.to_pybytes(),
     )
     return proto_timeseries
+
 
 def _to_proto_mesh_id_from_timeseries(timeseries: Timeseries) -> core_pb2.MeshId:
     proto_mesh_id = core_pb2.MeshId()
@@ -414,25 +420,38 @@ def _to_proto_mesh_id_from_timeseries(timeseries: Timeseries) -> core_pb2.MeshId
     if timeseries.timskey is not None:
         proto_mesh_id.timeseries_key = timeseries.timskey
 
-    if timeseries.uuid is None and timeseries.full_name is None and timeseries.timskey is None:
+    if (
+        timeseries.uuid is None
+        and timeseries.full_name is None
+        and timeseries.timskey is None
+    ):
         raise TypeError("need to specify either path, id or time series key")
 
     return proto_mesh_id
 
 
-def _to_proto_attribute_masks(attributes_filter: Optional[AttributesFilter]) -> core_pb2.AttributesMasks:
+def _to_proto_attribute_masks(
+    attributes_filter: Optional[AttributesFilter],
+) -> core_pb2.AttributesMasks:
     attributes_masks = core_pb2.AttributesMasks()
 
     if attributes_filter is not None:
         if attributes_filter.name_mask is not None:
-            attributes_masks.name_mask.CopyFrom(field_mask_pb2.FieldMask(paths=attributes_filter.name_mask))
+            attributes_masks.name_mask.CopyFrom(
+                field_mask_pb2.FieldMask(paths=attributes_filter.name_mask)
+            )
         if attributes_filter.tag_mask is not None:
-            attributes_masks.tag_mask.CopyFrom(field_mask_pb2.FieldMask(paths=attributes_filter.tag_mask))
+            attributes_masks.tag_mask.CopyFrom(
+                field_mask_pb2.FieldMask(paths=attributes_filter.tag_mask)
+            )
         if attributes_filter.namespace_mask is not None:
-            attributes_masks.namespace_mask.CopyFrom(field_mask_pb2.FieldMask(paths=attributes_filter.namespace_mask))
+            attributes_masks.namespace_mask.CopyFrom(
+                field_mask_pb2.FieldMask(paths=attributes_filter.namespace_mask)
+            )
         attributes_masks.return_no_attributes = attributes_filter.return_no_attributes
 
     return attributes_masks
+
 
 def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
     """
@@ -453,21 +472,24 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
         interval = proto_timeseries.interval
 
         if not proto_timeseries.data:
-            raise ValueError('No data in time series reply for the given interval')
+            raise ValueError("No data in time series reply for the given interval")
 
         reader = pa.ipc.open_stream(proto_timeseries.data)
         table = reader.read_all()
 
         if proto_timeseries.HasField("id"):
             timeseries_id = proto_timeseries.id
-            ts = Timeseries(table, _from_proto_resolution(resolution),
-                            interval.start_time, interval.end_time,
-                            timeseries_id.timeseries_key,
-                            _from_proto_guid(timeseries_id.id),
-                            timeseries_id.path)
+            ts = Timeseries(
+                table,
+                _from_proto_resolution(resolution),
+                interval.start_time,
+                interval.end_time,
+                timeseries_id.timeseries_key,
+                _from_proto_guid(timeseries_id.id),
+                timeseries_id.path,
+            )
         else:
-            ts = Timeseries(table, resolution,
-                            interval.start_time, interval.end_time)
+            ts = Timeseries(table, resolution, interval.start_time, interval.end_time)
 
         timeseries.append(ts)
     return timeseries
@@ -487,6 +509,7 @@ def _read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[fl
     for value in reply.value:
         results.append(value)
     return results
+
 
 def _datetime_to_timestamp_pb2(datetime: datetime.datetime):
     """Converts datetime type to protobuf Timestamp type."""

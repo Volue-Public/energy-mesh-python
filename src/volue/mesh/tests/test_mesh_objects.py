@@ -283,9 +283,7 @@ def test_object_apis_with_attribute_as_target(session):
     'delete_object' with attribute as target will throw.
     """
     target = AttributeForTesting()
-    error_message_regex = (
-        r"need to provide either path \(as str\), ID \(as uuid\.UUID\) or Mesh object instance"
-    )
+    error_message_regex = r"need to provide either path \(as str\), ID \(as uuid\.UUID\) or Mesh object instance"
 
     with pytest.raises(TypeError, match=error_message_regex):
         session.get_object(target)
@@ -330,7 +328,10 @@ def test_create_and_update_object_with_attribute_as_target(session):
     """
     target = ObjectForTesting()
 
-    with pytest.raises(TypeError, match=r"need to provide either path \(as str\), ID \(as uuid\.UUID\) or attribute instance"):
+    with pytest.raises(
+        TypeError,
+        match=r"need to provide either path \(as str\), ID \(as uuid\.UUID\) or attribute instance",
+    ):
         session.create_object(target, "new_name")
     with pytest.raises(TypeError, match="invalid new owner attribute"):
         session.update_object(OBJECT_PATH, new_owner_attribute=target)

@@ -15,9 +15,9 @@ from google import protobuf
 
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 
-if platform.startswith('win32'):
+if platform.startswith("win32"):
     import winkerberos as kerberos
-elif platform.startswith('linux'):
+elif platform.startswith("linux"):
     import kerberos
 
 
@@ -46,10 +46,11 @@ class Authentication(grpc.AuthMetadataPlugin):
             service_principal: Name of an active directory service, e.g.: 'HOST/hostname.ad.examplecompany.com.
             user_principal: Name of an active directory user, e.g.: 'ad\\user.name'.
         """
+
         service_principal: str
         user_principal: Optional[str] = None
 
-    class KerberosTokenIterator():
+    class KerberosTokenIterator:
         """
         Kerberos token iterator to be used with AuthenticateKerberos streaming gRPC.
         Sends tokens to be processed by the Mesh server and processes tokens
@@ -74,7 +75,8 @@ class Authentication(grpc.AuthMetadataPlugin):
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
             _, self.krb_context = kerberos.authGSSClientInit(
-                self.service_principal, self.user_principal, gssflags=0)
+                self.service_principal, self.user_principal, gssflags=0
+            )
 
         def __iter__(self):
             return self
@@ -86,7 +88,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             """
             try:
                 if self.first_iteration:
-                    _ = kerberos.authGSSClientStep(self.krb_context, '')
+                    _ = kerberos.authGSSClientStep(self.krb_context, "")
                 else:
                     self.response_received.wait()
                     self.response_received.clear()
@@ -99,16 +101,21 @@ class Authentication(grpc.AuthMetadataPlugin):
                     # Note: all base64 characters are ASCII characters,
                     # so it is safe to decode using ASCII
                     base64_server_kerberos_token = base64.b64encode(
-                        self.server_kerberos_token).decode('ascii')
+                        self.server_kerberos_token
+                    ).decode("ascii")
                     _ = kerberos.authGSSClientStep(
-                        self.krb_context, base64_server_kerberos_token)
+                        self.krb_context, base64_server_kerberos_token
+                    )
 
                 # response is base64 encoded
-                base64_client_kerberos_token = kerberos.authGSSClientResponse(self.krb_context)
+                base64_client_kerberos_token = kerberos.authGSSClientResponse(
+                    self.krb_context
+                )
 
                 # Mesh expects it in binary form, so decode it
                 client_token = protobuf.wrappers_pb2.BytesValue(
-                    value=base64.b64decode(base64_client_kerberos_token))
+                    value=base64.b64decode(base64_client_kerberos_token)
+                )
             except Exception as ex:
                 # store exception and re-throw
                 # gRPC will raise its own RpcError with vague "Exception iterating requests"
@@ -122,7 +129,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         def process_response(self, server_kerberos_token: bytes) -> None:
             """
             Sets new response from Mesh with kerberos token to be processed by client.
-            
+
             Args:
                 server_kerberos_token: The kerberos token.
             """
@@ -138,10 +145,11 @@ class Authentication(grpc.AuthMetadataPlugin):
             self.response_received.set()
 
     def __init__(
-            self,
-            parameters: Parameters,
-            target: str,
-            channel_credentials: grpc.ChannelCredentials):
+        self,
+        parameters: Parameters,
+        target: str,
+        channel_credentials: grpc.ChannelCredentials,
+    ):
         r"""
         If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: 'HOST/hostname.ad.examplecompany.com'
 
@@ -165,10 +173,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         self.token_expiration_date: Optional[datetime] = None
 
         # create separate channel for getting and refreshing Mesh token
-        channel = grpc.secure_channel(
-            target=target,
-            credentials=channel_credentials
-        )
+        channel = grpc.secure_channel(target=target, credentials=channel_credentials)
         self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
 
         # get token in initialization to avoid spending
@@ -178,7 +183,7 @@ class Authentication(grpc.AuthMetadataPlugin):
     def __call__(self, context, callback):
         if not self.is_token_valid():
             self.get_token()
-        callback((('authorization', 'Bearer ' + self.token),), None)
+        callback((("authorization", "Bearer " + self.token),), None)
 
     def is_token_valid(self) -> bool:
         """
@@ -208,11 +213,16 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         try:
             kerberos_token_iterator = self.KerberosTokenIterator(
-                self.service_principal, self.user_principal)
-            mesh_responses = self.mesh_service.AuthenticateKerberos(kerberos_token_iterator)
+                self.service_principal, self.user_principal
+            )
+            mesh_responses = self.mesh_service.AuthenticateKerberos(
+                kerberos_token_iterator
+            )
             for mesh_response in mesh_responses:
                 if not mesh_response.bearer_token:
-                    kerberos_token_iterator.process_response(mesh_response.kerberos_token)
+                    kerberos_token_iterator.process_response(
+                        mesh_response.kerberos_token
+                    )
                 else:
                     kerberos_token_iterator.signal_final_response_received()
 
@@ -222,10 +232,12 @@ class Authentication(grpc.AuthMetadataPlugin):
                     token_duration = mesh_response.token_duration.ToTimedelta()
 
                     if token_duration <= duration_margin:
-                        raise RuntimeError('Invalid Mesh token duration')
+                        raise RuntimeError("Invalid Mesh token duration")
 
                     adjusted_token_duration = token_duration - duration_margin
-                    self.token_expiration_date = auth_request_call_timestamp + adjusted_token_duration
+                    self.token_expiration_date = (
+                        auth_request_call_timestamp + adjusted_token_duration
+                    )
                     self.token = mesh_response.bearer_token
         except grpc.RpcError as ex:
             if kerberos_token_iterator.exception is not None:
@@ -244,7 +256,9 @@ class Authentication(grpc.AuthMetadataPlugin):
         self.token_expiration_date = None
 
 
-def authenticate_fake(service: core_pb2_grpc.MeshServiceStub, name: str) -> typing.Tuple[str, datetime]:
+def authenticate_fake(
+    service: core_pb2_grpc.MeshServiceStub, name: str
+) -> typing.Tuple[str, datetime]:
     """Authenticate to Mesh with a fake identity.
 
     Requires Mesh configuration. Internal use only.
@@ -261,8 +275,7 @@ def authenticate_fake(service: core_pb2_grpc.MeshServiceStub, name: str) -> typi
         grpc.RpcError: If the remote procedure call fails.
     """
     request = core_pb2.AuthenticateFakeRequest(
-        display_name=name,
-        token_duration=protobuf.duration_pb2.Duration(seconds=3600)
+        display_name=name, token_duration=protobuf.duration_pb2.Duration(seconds=3600)
     )
     now = datetime.now(timezone.utc)
     response = service.AuthenticateFake(request)
@@ -274,18 +287,20 @@ class FakeIdentityPlugin(grpc.AuthMetadataPlugin):
 
     Requires Mesh configuration. Internal use only.
     """
-    def __init__(self, grpc_target: str, grpc_credentials: grpc.ChannelCredentials, name: str):
+
+    def __init__(
+        self, grpc_target: str, grpc_credentials: grpc.ChannelCredentials, name: str
+    ):
         self.name = name
-        self.token: str = ''
+        self.token: str = ""
         self.token_expiration: datetime = datetime.now(timezone.utc)
 
-        channel = grpc.secure_channel(
-            target=grpc_target,
-            credentials=grpc_credentials
-        )
+        channel = grpc.secure_channel(target=grpc_target, credentials=grpc_credentials)
         self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
 
     def __call__(self, context, callback):
         if self.token_expiration < datetime.now(timezone.utc) + timedelta(minutes=1):
-            self.token, self.token_expiration = authenticate_fake(self.mesh_service, self.name)
-        callback((('authorization', 'Bearer ' + self.token),), None)
+            self.token, self.token_expiration = authenticate_fake(
+                self.mesh_service, self.name
+            )
+        callback((("authorization", "Bearer " + self.token),), None)

@@ -32,6 +32,7 @@ class Method(Enum):
         MIN: Smallest value in the accumulation period.
         MAX: Largest value in the accumulation period.
     """
+
     SUM = 0
     SUMI = 1
     AVG = 2  # equivalent to MEAN
@@ -45,11 +46,13 @@ class Method(Enum):
 class _TransformFunctionsBase(_Calculation, ABC):
     """Base class for all transformation function classes."""
 
-    def _transform_expression(self,
-                              resolution: Timeseries.Resolution,
-                              method: Method,
-                              timezone: Optional[Timezone],
-                              search_query: Optional[str]) -> str:
+    def _transform_expression(
+        self,
+        resolution: Timeseries.Resolution,
+        method: Method,
+        timezone: Optional[Timezone],
+        search_query: Optional[str],
+    ) -> str:
         """
         Create an expression for `transform`.
 
@@ -64,7 +67,9 @@ class _TransformFunctionsBase(_Calculation, ABC):
         """
 
         if resolution is Timeseries.Resolution.BREAKPOINT:
-            raise ValueError("'BREAKPOINT' resolution is unsupported for time series transformation")
+            raise ValueError(
+                "'BREAKPOINT' resolution is unsupported for time series transformation"
+            )
 
         expression = f"## = @TRANSFORM(@t("
         if search_query:
@@ -81,11 +86,13 @@ class _TransformFunctionsBase(_Calculation, ABC):
     # abstractmethod does not take into account if method is async or not
 
     @abstractmethod
-    def transform(self,
-                  resolution: Timeseries.Resolution,
-                  method: Method,
-                  timezone: Timezone = Timezone.UTC,
-                  search_query: Optional[str] = None) -> Timeseries:
+    def transform(
+        self,
+        resolution: Timeseries.Resolution,
+        method: Method,
+        timezone: Timezone = Timezone.UTC,
+        search_query: Optional[str] = None,
+    ) -> Timeseries:
         """
         Transforms time series from one resolution to another resolution.
 
@@ -116,23 +123,33 @@ class _TransformFunctionsBase(_Calculation, ABC):
 
 class TransformFunctions(_TransformFunctionsBase):
     """Class for transformation functions that should be run synchronously"""
-    def transform(self,
-                  resolution: Timeseries.Resolution,
-                  method: Method,
-                  timezone: Timezone = Timezone.UTC,
-                  search_query: Optional[str] = None) -> Timeseries:
-        expression = super()._transform_expression(resolution, method, timezone, search_query)
+
+    def transform(
+        self,
+        resolution: Timeseries.Resolution,
+        method: Method,
+        timezone: Timezone = Timezone.UTC,
+        search_query: Optional[str] = None,
+    ) -> Timeseries:
+        expression = super()._transform_expression(
+            resolution, method, timezone, search_query
+        )
         response = super().run(expression)
         return _parse_single_timeseries_response(response)
 
 
 class TransformFunctionsAsync(_TransformFunctionsBase):
     """Class for transformation functions that should be run asynchronously"""
-    async def transform(self,
-                        resolution: Timeseries.Resolution,
-                        method: Method,
-                        timezone: Timezone = Timezone.UTC,
-                        search_query: Optional[str] = None) -> Timeseries:
-        expression = super()._transform_expression(resolution, method, timezone, search_query)
+
+    async def transform(
+        self,
+        resolution: Timeseries.Resolution,
+        method: Method,
+        timezone: Timezone = Timezone.UTC,
+        search_query: Optional[str] = None,
+    ) -> Timeseries:
+        expression = super()._transform_expression(
+            resolution, method, timezone, search_query
+        )
         response = await super().run_async(expression)
         return _parse_single_timeseries_response(response)

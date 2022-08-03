@@ -9,7 +9,7 @@ from ._authentication import Authentication
 from ._credentials import Credentials
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
-C = TypeVar('C', bound='Connection')
+C = TypeVar("C", bound="Connection")
 
 
 class Connection(abc.ABC):
@@ -54,9 +54,15 @@ class Connection(abc.ABC):
         or grpc.secure_channel depending on desired behavior.
         """
 
-    def __init__(self, host=None, port=None, root_pem_certificate=None,
-                 authentication_parameters: Optional[Authentication.Parameters] = None,
-                 channel=None, auth_metadata_plugin=None):
+    def __init__(
+        self,
+        host=None,
+        port=None,
+        root_pem_certificate=None,
+        authentication_parameters: Optional[Authentication.Parameters] = None,
+        channel=None,
+        auth_metadata_plugin=None,
+    ):
         """Create a connection for communication with Mesh server.
 
         Args:
@@ -79,7 +85,7 @@ class Connection(abc.ABC):
             self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
             return
 
-        target = f'{host}:{port}'
+        target = f"{host}:{port}"
 
         # There are 3 possible connection types:
         # - insecure (without TLS)
@@ -88,17 +94,18 @@ class Connection(abc.ABC):
         #   (authentication requires TLS for encrypting auth tokens)
         if not root_pem_certificate:
             # insecure connection (without TLS)
-            channel = self._insecure_grpc_channel(
-                target=target
-            )
+            channel = self._insecure_grpc_channel(target=target)
         else:
             credentials: Credentials = Credentials(root_pem_certificate)
 
             # authentication requires TLS
             if authentication_parameters:
                 self.auth_metadata_plugin = Authentication(
-                    authentication_parameters, target, credentials.channel_creds)
-                call_credentials = grpc.metadata_call_credentials(self.auth_metadata_plugin)
+                    authentication_parameters, target, credentials.channel_creds
+                )
+                call_credentials = grpc.metadata_call_credentials(
+                    self.auth_metadata_plugin
+                )
 
                 composite_credentials = grpc.composite_channel_credentials(
                     credentials.channel_creds,
@@ -107,14 +114,12 @@ class Connection(abc.ABC):
 
                 # connection using TLS and Kerberos authentication
                 channel = self._secure_grpc_channel(
-                    target=target,
-                    credentials=composite_credentials
+                    target=target, credentials=composite_credentials
                 )
             else:
                 # connection using TLS (no Kerberos authentication)
                 channel = self._secure_grpc_channel(
-                    target=target,
-                    credentials=credentials.channel_creds
+                    target=target, credentials=credentials.channel_creds
                 )
 
         self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
@@ -144,8 +149,13 @@ class Connection(abc.ABC):
         return cls(channel=channel)
 
     @classmethod
-    def with_kerberos(cls: C, target: str, root_certificates: Optional[str],
-                      service_principal: str, user_principal: str) -> C:
+    def with_kerberos(
+        cls: C,
+        target: str,
+        root_certificates: Optional[str],
+        service_principal: str,
+        user_principal: str,
+    ) -> C:
         """Creates an encrypted and authenticated connection to a Mesh server.
 
         This call will perform a Kerberos authentication flow towards Active
@@ -175,19 +185,24 @@ class Connection(abc.ABC):
         )
         auth_metadata_plugin = Authentication(auth_params, target, ssl_credentials)
         call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
-        credentials = grpc.composite_channel_credentials(ssl_credentials,
-                                                         call_credentials)
+        credentials = grpc.composite_channel_credentials(
+            ssl_credentials, call_credentials
+        )
         channel = cls._secure_grpc_channel(target, credentials)
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @classmethod
-    def _with_fake_identity(cls, target: str, root_certificates: Optional[str], name: str):
+    def _with_fake_identity(
+        cls, target: str, root_certificates: Optional[str], name: str
+    ):
         ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
         auth_metadata_plugin = _authentication.FakeIdentityPlugin(
             target, ssl_credentials, name
         )
         call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
-        credentials = grpc.composite_channel_credentials(ssl_credentials, call_credentials)
+        credentials = grpc.composite_channel_credentials(
+            ssl_credentials, call_credentials
+        )
         channel = cls._secure_grpc_channel(target, credentials)
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 

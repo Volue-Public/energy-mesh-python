@@ -44,10 +44,10 @@ def test_example(mesh_test_config, example_path):
 
 def pytest_generate_tests(metafunc):
     if "example_path" in metafunc.fixturenames:
-        examples = os.path.join(os.path.dirname(mesh.__file__), 'examples')
+        examples = os.path.join(os.path.dirname(mesh.__file__), "examples")
         paths = glob.glob(examples + "/*.py")
         metafunc.parametrize("example_path", paths)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))

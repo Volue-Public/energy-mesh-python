@@ -12,17 +12,36 @@ import volue.mesh.aio
 
 # pytest magically runs this to add command line options.
 def pytest_addoption(parser):
-    parser.addoption("--address", metavar="ADDRESS", default="localhost:50051",
-                     help="the Mesh server address. Default localhost:50051.")
-    parser.addoption("--creds-type", default="insecure",
-                     choices=["insecure", "tls", "kerberos"],
-                     help="the connection credential type. Default insecure.")
-    parser.addoption("--tls-root-certs", metavar="FILE", default=None,
-                     help="use this PEM formatted root certificate chain file.")
-    parser.addoption("--kerberos-service-principal", metavar="PRINCIPAL", default=None,
-                     help="use this service principal name for Kerberos authentication.")
-    parser.addoption("--kerberos-user-principal", metavar="PRINCIPAL", default=None,
-                     help="use this client principal for Kerberos authentication.")
+    parser.addoption(
+        "--address",
+        metavar="ADDRESS",
+        default="localhost:50051",
+        help="the Mesh server address. Default localhost:50051.",
+    )
+    parser.addoption(
+        "--creds-type",
+        default="insecure",
+        choices=["insecure", "tls", "kerberos"],
+        help="the connection credential type. Default insecure.",
+    )
+    parser.addoption(
+        "--tls-root-certs",
+        metavar="FILE",
+        default=None,
+        help="use this PEM formatted root certificate chain file.",
+    )
+    parser.addoption(
+        "--kerberos-service-principal",
+        metavar="PRINCIPAL",
+        default=None,
+        help="use this service principal name for Kerberos authentication.",
+    )
+    parser.addoption(
+        "--kerberos-user-principal",
+        metavar="PRINCIPAL",
+        default=None,
+        help="use this client principal for Kerberos authentication.",
+    )
 
 
 @dataclass(init=False)
@@ -43,13 +62,19 @@ class TestConfig:
 
         if self.creds_type != "kerberos":
             if self.krb5_svc is not None:
-                raise pytest.UsageError("--kerberos-service-principal can only be used for --creds-type=kerberos connections")
+                raise pytest.UsageError(
+                    "--kerberos-service-principal can only be used for --creds-type=kerberos connections"
+                )
             if self.krb5_usr is not None:
-                raise pytest.UsageError("--kerberos-user-principal can only be used for --creds-type=kerberos connections")
+                raise pytest.UsageError(
+                    "--kerberos-user-principal can only be used for --creds-type=kerberos connections"
+                )
 
         if self.creds_type == "insecure":
             if self.tls_root_certs_path:
-                raise pytest.UsageError("--tls-root-certs cannot be used for --creds-type=insecure connections")
+                raise pytest.UsageError(
+                    "--tls-root-certs cannot be used for --creds-type=insecure connections"
+                )
 
         if self.tls_root_certs_path is not None:
             with open(self.tls_root_certs_path, "rb") as f:
@@ -90,10 +115,16 @@ def connection() -> mesh.Connection:
     if _test_config.creds_type == "insecure":
         return mesh.Connection.insecure(_test_config.address)
     elif _test_config.creds_type == "tls":
-        return mesh.Connection.with_tls(_test_config.address, _test_config.tls_root_certs)
+        return mesh.Connection.with_tls(
+            _test_config.address, _test_config.tls_root_certs
+        )
     elif _test_config.creds_type == "kerberos":
-        return mesh.Connection.with_kerberos(_test_config.address, _test_config.tls_root_certs,
-                                             _test_config.krb5_svc, _test_config.krb5_usr)
+        return mesh.Connection.with_kerberos(
+            _test_config.address,
+            _test_config.tls_root_certs,
+            _test_config.krb5_svc,
+            _test_config.krb5_usr,
+        )
 
 
 @pytest.fixture
@@ -114,10 +145,16 @@ def async_connection():
     if _test_config.creds_type == "insecure":
         return mesh.aio.Connection.insecure(_test_config.address)
     elif _test_config.creds_type == "tls":
-        return mesh.aio.Connection.with_tls(_test_config.address, _test_config.tls_root_certs)
+        return mesh.aio.Connection.with_tls(
+            _test_config.address, _test_config.tls_root_certs
+        )
     elif _test_config.creds_type == "kerberos":
-        return mesh.aio.Connection.with_kerberos(_test_config.address, _test_config.tls_root_certs,
-                                                 _test_config.krb5_svc, _test_config.krb5_usr)
+        return mesh.aio.Connection.with_kerberos(
+            _test_config.address,
+            _test_config.tls_root_certs,
+            _test_config.krb5_svc,
+            _test_config.krb5_usr,
+        )
 
 
 @pytest_asyncio.fixture

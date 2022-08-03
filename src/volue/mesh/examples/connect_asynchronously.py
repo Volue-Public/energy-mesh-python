@@ -24,9 +24,9 @@ async def main(address, port, root_pem_certificate):
     connection = Connection(address, port, root_pem_certificate)
     # Indicate that these two functions can be run concurrently
     await asyncio.gather(
-        get_version(connection),
-        start_and_end_session(connection.create_session())
+        get_version(connection), start_and_end_session(connection.create_session())
     )
+
 
 if __name__ == "__main__":
     address, port, root_pem_certificate = _get_connection_info()
