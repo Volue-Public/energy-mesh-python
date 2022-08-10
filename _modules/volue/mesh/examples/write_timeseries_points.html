@@ -171,21 +171,26 @@
             
   <h1>Source code for volue.mesh.examples.write_timeseries_points</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 
 <div class="viewcode-block" id="write_timeseries_points"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.write_timeseries_points.write_timeseries_points">[docs]</a><span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to write time series points.&quot;&quot;&quot;</span>
 
-    <span class="c1"># Define the timeseries identifiers</span>
-    <span class="n">timeseries_full_name</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;Resource/SimpleThermalTestResourceCatalog/chimney2TimeSeriesRaw&quot;</span>
-    <span class="p">)</span>
+    <span class="c1"># Define the time series identifier, it can be:</span>
+    <span class="c1"># - time series key of a physical time series</span>
+    <span class="c1"># - path of a time series attribute that is connected to a physical time series</span>
+    <span class="c1"># - ID of a time series attribute that is connected to a physical time series</span>
+    <span class="n">timeseries_key</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">timeseries_attribute_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt&quot;</span>
+    <span class="n">timeseries_attribute_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;e5df77a9-8b60-4b0a-aa1b-3c3957c538a0&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Defining the data we want to write</span>
+    <span class="c1"># Defining the data we want to write.</span>
     <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
     <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
     <span class="c1"># flags - [pa.uint32]</span>
@@ -195,24 +200,37 @@
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
         <span class="p">),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">),</span>
         <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">]),</span>
     <span class="p">]</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_full_name</span><span class="p">)</span>
 
-    <span class="c1"># Send request to write timeseries based on timskey</span>
+    <span class="c1"># Send requests to write time series based on timskey.</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">timskey</span><span class="o">=</span><span class="n">timeseries_key</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="o">=</span><span class="n">timeseries</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time series points written using time series key.&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Commit the changes to the database</span>
+    <span class="c1"># Send requests to write time series based on time series attribute path/full_name.</span>
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute_path</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="o">=</span><span class="n">timeseries</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time series points written using time series attribute path.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Send requests to write time series based on time series attribute ID.</span>
+    <span class="c1"># Attribute IDs are auto-generated when an object is created.</span>
+    <span class="c1"># That is why we can&#39;t use any fixed ID in this example and the code is commented out.</span>
+    <span class="c1"># timeseries = Timeseries(table=table, uuid_id=timeseries_attribute_id)</span>
+    <span class="c1"># session.write_timeseries_points(timeseries=timeseries)</span>
+    <span class="c1"># print(&quot;Time series points written using time series attribute ID.&quot;)</span>
+
+    <span class="c1"># Commit the changes to the database.</span>
     <span class="c1"># session.commit()</span>
 
-    <span class="c1"># Or discard changes</span>
+    <span class="c1"># Or discard changes.</span>
     <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../../api.html#volue.mesh.examples.write_timeseries_points.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to write time series points.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
