@@ -278,6 +278,20 @@ class OwnershipRelationAttribute(AttributeBase):
 
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
+
+        self.target_object_ids: List[uuid.UUID] = []
+        if proto_attribute.HasField("singular_value"):
+            self.target_object_ids.append(
+                _from_proto_guid(
+                    proto_attribute.singular_value.ownership_relation_value.target_object_id
+                )
+            )
+        elif len(proto_attribute.collection_values) > 0:
+            for value in proto_attribute.collection_values:
+                self.target_object_ids.append(
+                    _from_proto_guid(value.ownership_relation_value.target_object_id)
+                )
+
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
             self.definition: Optional[
@@ -286,7 +300,11 @@ class OwnershipRelationAttribute(AttributeBase):
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        message = f"OwnershipRelationAttribute:\n" f"\t {base_message}"
+        message = (
+            f"OwnershipRelationAttribute:\n"
+            f"\t {base_message}\n"
+            f"\t target_object_ids: {self.target_object_ids}"
+        )
 
         if self.definition is not None:
             message = (
