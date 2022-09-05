@@ -92,38 +92,6 @@ service MeshService {
   // Write a series of timestamps, flags and values.
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
 
-  // Other timeseries might not be connected to a Mesh model at all, but instead be organized
-  // in some sort of catalog structure.
-  // This kind of metadata is called entry data.
-  rpc GetTimeseriesEntry(GetTimeseriesEntryRequest) returns (TimeseriesEntry) {}
-
-  // Update timeseries entry meta data
-  rpc UpdateTimeseriesEntry(UpdateTimeseriesEntryRequest) returns (UpdateTimeseriesEntryResponse) {}
-
-  // When a timeseries, either calculated or not, is linked to a node in a Mesh model,
-  // some meta data associated with the Mesh model node can be retrieved.
-  // This kind of metadata is called attribute data.
-  rpc GetTimeseriesAttribute(GetTimeseriesAttributeRequest) returns (TimeseriesAttribute) {}
-
-  // Search for timeseries attributes in a given physical model
-  //
-  // The search uses Mesh's query language, which is the same language that's
-  // used in for example Nimbus.
-  //
-  // The result stream is not ordered in any particular way, and the caller
-  // should not expect the ordering of search results to be stable.
-  //
-  // Returns an error if:
-  //
-  // - the session doesn't exist,
-  // - the model doesn't exist,
-  // - the start object doesn't exist, or
-  // - the search query is invalid.
-  //
-  // If the search doesn't find any results an empty stream and an OK status
-  // is returned.
-  rpc SearchTimeseriesAttributes(SearchTimeseriesAttributesRequest) returns (stream TimeseriesAttribute) {}
-
   // Run ad-hoc calculation
   rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
 
@@ -186,6 +154,13 @@ service MeshService {
   // Update existing time series attribute in the model.
   rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (UpdateTimeseriesAttributeResponse) {}
 
+  // Update existing one-to-one or one-to-many link relation (non-versioned)
+  // attributes in the model.
+  rpc UpdateLinkRelationAttribute(UpdateLinkRelationAttributeRequest) returns (UpdateLinkRelationAttributeResponse) {}
+
+  // Update existing versioned one-to-one link relation attribute in the model.
+  rpc UpdateVersionedLinkRelationAttribute(UpdateVersionedLinkRelationAttributeRequest) returns (UpdateVersionedLinkRelationAttributeResponse) {}
+
   // Get time series resource.
   // A time series resource:
   // - can be either physical or virtual time series
@@ -224,6 +199,12 @@ service MeshService {
   // attribute (`RatingCurveAttribute`).
   // See `UpdateRatingCurveVersionsRequest` for more information.
   rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
+
+  // Get the currently set log level threshold
+  rpc GetLogLevel(google.protobuf.Empty) returns (GetLogLevelResponse) {}
+
+  // Change the log level threshold.
+  rpc UpdateLogLevel(UpdateLogLevelRequest) returns (UpdateLogLevelResponse) {}
 }
 
 message AuthenticateKerberosResponse {
@@ -248,9 +229,7 @@ message AuthenticateFakeResponse {
   google.protobuf.Duration token_duration = 2;
 }
 
-message RevokeAccessTokenResponse {
-  // currently empty
-}
+message RevokeAccessTokenResponse {}
 
 message UserIdentity {
   // A human readable name identifying this user. This name should not be
@@ -270,17 +249,11 @@ message UserIdentity {
   string identifier = 3;
 }
 
-message EndSessionResponse {
-  // currently empty
-}
+message EndSessionResponse {}
 
-message CommitResponse {
-  // currently empty
-}
+message CommitResponse {}
 
-message RollbackResponse {
-  // currently empty
-}
+message RollbackResponse {}
 
 message ReadTimeseriesRequest {
   // The server session ID
@@ -311,65 +284,7 @@ message WriteTimeseriesRequest {
   Timeseries timeseries = 2;
 }
 
-message WriteTimeseriesResponse {
-  // currently empty
-}
-
-message GetTimeseriesEntryRequest {
-  // The server session ID
-  volue.mesh.grpc.type.Guid session_id = 1;
-  // Object for identifying a timeseries entry.
-  TimeseriesEntryId entry_id = 2;
-}
-
-message UpdateTimeseriesEntryRequest {
-  // ID of the Mesh server's session in which changes should be applied.
-  volue.mesh.grpc.type.Guid session_id = 1;
-  //
-  TimeseriesEntryId entry_id = 2;
-
-  // Only paths set in the field mask are updated.
-  // (except complex types like Curve, those could be checked if are set)
-  google.protobuf.FieldMask field_mask = 3;
-
-  // All the following are optional.
-  // -------
-  // New path for entry.
-  string new_path = 4;
-  // New curve type of the timeseries.
-  volue.mesh.grpc.type.Curve new_curve_type = 5;
-  // New unit of measurement for the timeseries.
-  string new_unit_of_measurement = 6;
-}
-
-message GetTimeseriesAttributeRequest {
-  // The server session ID
-  volue.mesh.grpc.type.Guid session_id = 1;
-  //
-  string model = 2;
-  //
-  AttributeId attribute_id = 3;
-}
-
-message UpdateTimeseriesEntryResponse {
-  // currently empty
-}
-
-message SearchTimeseriesAttributesRequest {
-   volue.mesh.grpc.type.Guid session_id = 1;
-    // Name of the physical model in which to search.
-    string model_name = 2;
-    // Mesh searches always require a start point for the search.
-    oneof start_object_oneof {
-        // Where to start the search, in the form of a `name.attribute/name.attribute/name`
-        // path. For example `Norway.has_WaterCourse/Orkla`.
-        string start_object_path = 3;
-        // Where to start the search, in the form of a GUID.
-        volue.mesh.grpc.type.Guid start_object_guid = 4;
-    }
-    // Query in Mesh query language format.
-    string query = 5;
-}
+message WriteTimeseriesResponse {}
 
 message CalculationRequest {
     volue.mesh.grpc.type.Guid session_id = 1;
@@ -429,7 +344,7 @@ message CreateObjectRequest {
   string name = 2;
 
   // Owner of the new object.
-  // Owner must be a relationship attribute of Object Collection type.
+  // Owner must be an ownership relation attribute of Object Collection type.
   // E.g.: for `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
@@ -450,16 +365,15 @@ message UpdateObjectRequest {
   string new_name = 4;
 
   // New owner of the object.
-  // Owner must be a relationship attribute of Object or Object Collection type.
+  // Owner must be an ownership relation attribute of Object or Object
+  // Collection type.
   // E.g.: for `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
   MeshId new_owner_id = 5;
 }
 
-message UpdateObjectResponse {
-  // currently empty
-}
+message UpdateObjectResponse {}
 
 message DeleteObjectRequest {
   // ID of the Mesh server's session in which changes should be applied.
@@ -474,9 +388,7 @@ message DeleteObjectRequest {
   bool recursive_delete = 3;
 }
 
-message DeleteObjectResponse {
-  // currently empty
-}
+message DeleteObjectResponse {}
 
 message GetAttributeRequest {
   // The server session ID
@@ -528,9 +440,7 @@ message UpdateSimpleAttributeRequest {
   repeated AttributeValue new_collection_values = 4;
 }
 
-message UpdateSimpleAttributeResponse {
-  // currently empty
-}
+message UpdateSimpleAttributeResponse {}
 
 message UpdateTimeseriesAttributeRequest {
   // ID of the Mesh server's session in which changes should be applied.
@@ -555,9 +465,61 @@ message UpdateTimeseriesAttributeRequest {
   string new_local_expression = 5;
 }
 
-message UpdateTimeseriesAttributeResponse {
-  // currently empty
+message UpdateTimeseriesAttributeResponse {}
+
+// Update request message for one-to-one link relation and one-to-many link
+// relation attributes.
+message UpdateLinkRelationAttributeRequest {
+  // ID of the Mesh server's session in which changes should be applied.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // One-to-one link relation attribute (`ReferenceAttribute`) or one-to-many
+  // link relation attribute (`ReferenceCollectionAttribute`) identifier.
+  MeshId attribute = 2;
+
+  // If set to true for a one-to-many link relation (non-versioned) attribute
+  // (`ReferenceCollectionAttribute`) this will append `target_objects` to
+  // already existing ones.
+  // If set to false then all currently existing target objects will be
+  // replaced by `target_objects`.
+  //
+  // For one-to-one link relation (non-versioned) attribute
+  // (`ReferenceAttribute`) this must set to false.
+  bool append = 3;
+
+  // If updating a one-to-one link relation (non-versioned) attribute
+  // (`ReferenceAttribute`) this must contain zero or one
+  // `target_object_ids`. If there is no `target_object_ids` provided then
+  // currently existing target object will be removed.
+  //
+  // If updating a one-to-many link relation (non-versioned) attribute
+  // (`ReferenceCollectionAttribute`) this may contain zero, one or more
+  // `target_object_ids`s. If there is no `target_object_ids` provided and
+  // `append` is set to false then all currently existing target objects will
+  // be removed.
+  repeated volue.mesh.grpc.type.Guid target_object_ids = 4;
 }
+
+message UpdateLinkRelationAttributeResponse {}
+
+// Update request message for versioned one-to-one link relation attribute.
+message UpdateVersionedLinkRelationAttributeRequest {
+  // ID of the Mesh server's session in which changes should be applied.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // All existing versions inside the interval will be deleted.
+  // Passing a `null` interval is an error.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+
+  // Versioned one-to-one link relation attribute (`ReferenceSeriesAttribute`)
+  // identifier.
+  MeshId attribute = 3;
+
+  // `valid_from_time` of all `versions` must be inside the interval.
+  repeated LinkRelationVersion versions = 4;
+}
+
+message UpdateVersionedLinkRelationAttributeResponse {}
 
 message GetTimeseriesResourceRequest {
   // The server session ID
@@ -586,9 +548,7 @@ message UpdateTimeseriesResourceRequest {
   string new_unit_of_measurement = 5;
 }
 
-message UpdateTimeseriesResourceResponse {
-  // currently empty
-}
+message UpdateTimeseriesResourceResponse {}
 
 message GetRatingCurveVersionsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -644,37 +604,6 @@ message Timeseries {
   bytes data = 4;
 }
 
-message AttributeId {
-  oneof id_oneof {
-    volue.mesh.grpc.type.Guid id = 1;
-    string path = 2;
-  }
-}
-
-message TimeseriesEntryId {
-  // A timeseries entry can be uniquely identified by one the following:
-  oneof id_oneof {
-    // GUID of the timeseries entry.
-    volue.mesh.grpc.type.Guid guid = 1;
-    // Path associated with the entry.
-    string path = 2;
-    // The timeseries key (timskey) of the timeseries.
-    int64 timeseries_key = 3;
-  }
-}
-
-message TimeseriesEntry {
-  volue.mesh.grpc.type.Guid id = 1;
-  // 0 if local session series
-  int64 timeseries_key = 2;
-  // path/tscode???
-  string path = 3;
-  // Local session series if true
-  bool temporary = 4;
-  volue.mesh.grpc.type.Curve curve_type = 5;
-  volue.mesh.grpc.type.Resolution resolution = 6;
-  string unit_of_measurement = 7;
-}
 
 // Information about physical or virtual time series.
 message TimeseriesResource {
@@ -705,18 +634,6 @@ message TimeseriesResource {
 
   // [OUTPUT_ONLY]
   string virtual_timeseries_expression = 8;
-}
-
-message TimeseriesAttribute {
-  volue.mesh.grpc.type.Guid id = 1;
-  // Model path.
-  string path = 2;
-  // A timeseries entry if the attribute refers to one.
-  TimeseriesEntry entry = 3;
-  // A local calculation expression if one is set on this physical node.
-  string local_expression = 4;
-  // Template expression, inherited from the repo type if set.
-  string template_expression = 5;
 }
 
 message NumericResults {
@@ -875,13 +792,15 @@ message AttributeValue {
     google.protobuf.Timestamp utc_time_value = 5;
 
     TimeseriesAttributeValue timeseries_value = 6;
-    RatingCurveAttributeValue rating_curve_value = 7;
+    OwnershipRelationAttributeValue ownership_relation_value = 7;
+    LinkRelationAttributeValue link_relation_value = 8;
+    VersionedLinkRelationAttributeValue versioned_link_relation_value = 9;
   }
 }
 
 message TimeseriesAttributeValue {
-  // Physical or virtual time series identifier from resources
-  // if the attribute refers to one.
+  // Physical or virtual time series from resources if the attribute
+  // refers to one.
   // To disconnect time series attribute from already connected time
   // series resource set `new_timeseries_resource_key` to 0 in the
   // `UpdateTimeseriesAttribute` RPC.
@@ -901,14 +820,21 @@ message TimeseriesAttributeValue {
   bool is_local_expression = 3;
 }
 
-message RatingCurveAttributeValue {
-  // Versions are kept in a RatingCurveDefinition structure.
-  // This is the name of this structure, it is/might be used
-  // by UI applications communicating with Mesh.
-  // Note: It is kept on the model level (not model definition),
-  //       so this is not the same as the name of definition
-  //       from AttributeDefinition.
-  string definition_name = 1;
+message OwnershipRelationAttributeValue {
+  volue.mesh.grpc.type.Guid target_object_id = 1;
+}
+
+message LinkRelationAttributeValue {
+  volue.mesh.grpc.type.Guid target_object_id = 1;
+}
+
+message VersionedLinkRelationAttributeValue {
+  repeated LinkRelationVersion versions = 1;
+}
+
+message LinkRelationVersion {
+  volue.mesh.grpc.type.Guid target_object_id = 1;
+  google.protobuf.Timestamp valid_from_time = 2;
 }
 
 message AttributeDefinition {
@@ -941,7 +867,9 @@ message AttributeDefinition {
 
     TimeseriesAttributeDefinition timeseries_definition = 15;
     XySetsAttributeDefinition xy_table_definition = 16;
-    RelationshipAttributeDefinition relationship_definition = 17;
+    OwnershipRelationAttributeDefinition ownership_relation_definition = 17;
+    // Applicable to all types of link relations.
+    LinkRelationAttributeDefinition link_relation_definition = 18;
   }
 }
 
@@ -995,8 +923,12 @@ message XySetsAttributeDefinition {
   optional XySetAxis z_axis = 4;
 }
 
-message RelationshipAttributeDefinition {
-  string object_type = 1;
+message OwnershipRelationAttributeDefinition {
+  string target_object_type_name = 1;
+}
+
+message LinkRelationAttributeDefinition {
+  string target_object_type_name = 1;
 }
 
 enum AttributeView {
@@ -1011,8 +943,6 @@ enum AttributeView {
   // complete attribute definition.
   FULL = 2;
 }
-
-// TODO: link relation attributes to other objects
 
 // An `XyCurve` is a set of (x, y) pairs.
 message XyCurve {
@@ -1095,4 +1025,24 @@ message RatingCurveVersion {
   google.protobuf.Timestamp from = 1;
   double x_range_from = 2;
   repeated RatingCurveSegment x_value_segments = 3;
+}
+
+enum LogLevel {
+  TRACE = 0;
+  DEBUG = 1;
+  INFO = 2;
+  WARN = 3;
+  ERR = 4;
+  OFF = 5;
+}
+
+message UpdateLogLevelRequest {
+  LogLevel new_log_level = 1;
+}
+
+message UpdateLogLevelResponse {}
+
+message GetLogLevelResponse {
+  // log level retrieved from Mesh
+  LogLevel log_level = 1;
 }

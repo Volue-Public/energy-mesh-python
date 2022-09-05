@@ -190,9 +190,14 @@ def test_update_xy_set_invalid_input_unversioned(session):
             new_xy_sets=[mesh.XySet(None, []), mesh.XySet(None, [])],
         )
 
-    # BUG: Mesh 2.5.2 silently ignores valid_from_time, in the future this
-    # will cause an error.
-    session.update_xy_sets(target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(now, [])])
+    # valid_from_time cannot be set on unversioned attributes
+    with pytest.raises(
+        grpc.RpcError,
+        match="valid_from_time cannot be set when updating unversioned XY set attribute",
+    ):
+        session.update_xy_sets(
+            target=UNVERSIONED_PATH, new_xy_sets=[mesh.XySet(now, [])]
+        )
 
 
 @pytest.mark.database
