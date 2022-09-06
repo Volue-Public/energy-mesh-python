@@ -27,10 +27,8 @@ jobs:
     - name: Install Linux Kerberos dependency
       run: sudo apt-get install -y libkrb5-dev
 
-    - name: Installing poetry
-      uses: abatilo/actions-poetry@v2.0.0
-      with:
-        poetry-version: '1.2.0'
+    - name: Install poetry
+      run: curl -sSL https://install.python-poetry.org | python3 - --version 1.2.0
 
     - name: Build and publish page
       run: |

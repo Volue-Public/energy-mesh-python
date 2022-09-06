@@ -22,7 +22,6 @@ set -o nounset # Fail the script if an unset variable is used.
 repo_dir=$1
 pages_dir=$2
 
-source "$HOME/.poetry/env"
 pushd "$repo_dir"
 poetry install
 poetry run make -C "./docs" html
