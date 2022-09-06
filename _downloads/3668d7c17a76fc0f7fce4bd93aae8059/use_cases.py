@@ -382,11 +382,11 @@ def use_case_4b():
             use_case_name = "Use case 4b"
             # Both paths are pointing to the same time series attribute:
             # - first path includes just object names
-            # - second path includes also relationship attributes (e.g.: has_cAreas pointing to Norge object)
-            # Path including also relationship attributes is called full name.
+            # - second path includes also ownership relation attributes (e.g.: has_cAreas pointing to Norge object)
+            # Path including also ownership relation attributes is called full name.
             # It uniquely identifies an object or attribute we are looking for,
             # because depending on the model it may happen that a parent object has more than one
-            # relationship attribute pointing to objects with the same names, e.g.:
+            # ownership relation attribute pointing to objects with the same names, e.g.:
             # - ParentObject.has_cAreas/Norge
             # - ParentObject.has_cProductionAreas/Norge
             paths = [
@@ -1056,41 +1056,43 @@ def use_case_14():
             parent_object_guid = uuid.UUID(
                 "d9673f4f-d117-4c1e-9ffd-0e533a644728"
             )  # Model/MeshTEK/Mesh/Norge/Wind
-            new_object_type = "WindPark"
+            new_object_type_name = "WindPark"
             new_objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            # Owner of the new object must be a relationship attribute of Object Collection type.
+            # Owner of the new object must be an ownership relation attribute
+            # of Object Collection type.
             # E.g.: for `SomePowerPlant1` object with path:
             # - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
             # Owner will be the `ThermalPowerToPlantRef` attribute.
 
-            # First we need to find correct relationship attribute that
+            # First we need to find correct ownership relation attribute that
             # will serve as owner for the new objects.
             parent_object = session.get_object(
                 parent_object_guid, full_attribute_info=True
             )
-            relationship_attribute_path = None
+            ownership_relation_attribute_path = None
 
             for attribute in parent_object.attributes.values():
                 if (
                     attribute.definition.value_type
                     == "ElementCollectionAttributeDefinition"
-                    and attribute.definition.object_type == new_object_type
+                    and attribute.definition.target_object_type_name
+                    == new_object_type_name
                 ):
-                    relationship_attribute_path = attribute.path
+                    ownership_relation_attribute_path = attribute.path
 
-            if relationship_attribute_path is None:
+            if ownership_relation_attribute_path is None:
                 print(
-                    f"Required relationship attribute (type='{new_object_type}') not found"
+                    f"Required ownership relation attribute (type='{new_object_type_name}') not found"
                 )
                 return
 
             for number, new_object_name in enumerate(new_objects_names):
                 new_object = session.create_object(
-                    relationship_attribute_path, new_object_name
+                    ownership_relation_attribute_path, new_object_name
                 )
                 print(
                     f"{number + 1}. \n"

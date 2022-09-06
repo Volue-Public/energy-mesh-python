@@ -55,8 +55,8 @@ different types. Object definition could be compared to a C++ class.
 
 For example: an object definition could represent a reservoir. It can have
 an attribute definition that represents current water level in a reservoir and
-a relationship attribute definition that represents how water is flowing to
-another object like hydro plant.
+an ownership relation attribute definition that represents how water is flowing
+to another object like hydro plant.
 
 
 .. _mesh_attribute_definition:
@@ -82,8 +82,8 @@ Each attribute definition has:
   (e.g. array of boolean), for singular definitions they are always set to 1
 
 Additionally specific attribute definitions may have additional fields, e.g.:
-time series attribute definition has *template expression* and relationship
-attribute definition has *object type*.
+time series attribute definition has *template expression* and ownership
+relation attribute definition has *target object type name*.
 
 Attribute definition could be compared to a C++ class member.
 
@@ -106,8 +106,8 @@ that represent customer's physical assets.
 In the diagram above object names are written in blue, object value types are
 written in black and there are no attribute shown.
 
-It is possible to create links (via relationship attributes) between objects in
-this tree.
+It is possible to create relations (via link or ownership relation attributes)
+between objects in this tree.
 
 .. _mesh_object:
 
@@ -186,17 +186,17 @@ readability. Here is a list of all attribute types currently supported:
   Definition value types are "TimeseriesAttributeDefinition" for singular value
   or "TimeseriesCollectionAttributeDefinition" for collection of values.
 
-* **Relationship attributes** - connect two objects. The owned object's owner
-  is always a relationship attribute that belongs to some other object. There
-  are two types of relationship attributes:
+* **Ownership relation attributes** - connect two objects. The owned object's
+  owner is always an ownership relation attribute that belongs to some other
+  object. There are two types of ownership relation attributes:
 
     - one-to-one
     - one-to-many
 
-  When creating a new object the owner must be a relationship attribute
-  of one-to-many type. Relationship attribute has defined *object type*
-  (on the attribute definition level) that shows what object value type
-  is accepted to be added as child.
+  When creating a new object the owner must be an ownership relation attribute
+  of one-to-many type. Ownership relation attribute has defined *target object
+  type name* (on the attribute definition level) that shows what object value
+  type is accepted to be added as child.
 
   Definition value types are "ElementAttributeDefinition" for singular value or
   "ElementCollectionAttributeDefinition" for collection of values.
@@ -206,8 +206,8 @@ readability. Here is a list of all attribute types currently supported:
 
   The definition value types are useful for filtering attribute search results.
   For example to list only time series attributes. They are also useful for
-  checking accepted object value types (in relationship attributes) when
-  creating new objects.
+  checking accepted target object value types (in ownership relation
+  attributes) when creating new objects.
 
 
 Attributes are identified by IDs or paths, refer to
@@ -222,16 +222,16 @@ Objects and attributes paths
 
 Objects and attributes are identified by IDs or paths. Path is a string
 uniquely identifying an object in the model and contains all ancestors of
-a given object and optionally their relationship attributes.
+a given object and optionally their ownership relation attributes.
 
 For example the path for the *Innerdalsvannet* reservoir from example diagram
 in :ref:`model <mesh_model>` (object names are written in blue) is::
 
   Model/Mesh/Norway/Vannhusholdning/KVOtilsig/Innerdalsvannet
 
-This is a path where only objects are provided. A path where also relationship
-attributes that connect those objects are provided is called full name.
-For the same *Innerdalsvannet* reservoir the full name path is::
+This is a path where only objects are provided. A path where also ownership
+relation attributes that connect those objects are provided is called full
+name. For the same *Innerdalsvannet* reservoir the full name path is::
 
   Model/Mesh.To_Areas/Norway.To_HydroProduction/Vannhusholdning.To_WaterCourses/KVOtilsig.To_Reservoirs/Innerdalsvannet
 

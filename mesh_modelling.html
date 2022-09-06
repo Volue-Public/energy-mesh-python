@@ -242,8 +242,8 @@ Each asset type is represented by a <strong>Mesh object definition</strong>.</p>
 different types. Object definition could be compared to a C++ class.</p>
 <p>For example: an object definition could represent a reservoir. It can have
 an attribute definition that represents current water level in a reservoir and
-a relationship attribute definition that represents how water is flowing to
-another object like hydro plant.</p>
+an ownership relation attribute definition that represents how water is flowing
+to another object like hydro plant.</p>
 </div>
 <div class="section" id="attribute-definition">
 <span id="mesh-attribute-definition"></span><h2>Attribute definition<a class="headerlink" href="#attribute-definition" title="Permalink to this headline">¶</a></h2>
@@ -265,8 +265,8 @@ a physical time series or virtual time series</p></li>
 (e.g. array of boolean), for singular definitions they are always set to 1</p></li>
 </ul>
 <p>Additionally specific attribute definitions may have additional fields, e.g.:
-time series attribute definition has <em>template expression</em> and relationship
-attribute definition has <em>object type</em>.</p>
+time series attribute definition has <em>template expression</em> and ownership
+relation attribute definition has <em>target object type name</em>.</p>
 <p>Attribute definition could be compared to a C++ class member.</p>
 </div>
 <div class="section" id="model">
@@ -280,8 +280,8 @@ that represent customer’s physical assets.</p>
 <a class="reference internal image-reference" href="_images/physical_hydropower_object_structure.png"><img alt="_images/physical_hydropower_object_structure.png" src="_images/physical_hydropower_object_structure.png" style="width: 400px;" /></a>
 <p>In the diagram above object names are written in blue, object value types are
 written in black and there are no attribute shown.</p>
-<p>It is possible to create links (via relationship attributes) between objects in
-this tree.</p>
+<p>It is possible to create relations (via link or ownership relation attributes)
+between objects in this tree.</p>
 </div>
 <div class="section" id="object">
 <span id="mesh-object"></span><h2>Object<a class="headerlink" href="#object" title="Permalink to this headline">¶</a></h2>
@@ -346,19 +346,19 @@ overwritten for the given attribute in the model (then it stored as
 <p>Definition value types are “TimeseriesAttributeDefinition” for singular value
 or “TimeseriesCollectionAttributeDefinition” for collection of values.</p>
 </li>
-<li><p><strong>Relationship attributes</strong> - connect two objects. The owned object’s owner
-is always a relationship attribute that belongs to some other object. There
-are two types of relationship attributes:</p>
+<li><p><strong>Ownership relation attributes</strong> - connect two objects. The owned object’s
+owner is always an ownership relation attribute that belongs to some other
+object. There are two types of ownership relation attributes:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>one-to-one</p></li>
 <li><p>one-to-many</p></li>
 </ul>
 </div></blockquote>
-<p>When creating a new object the owner must be a relationship attribute
-of one-to-many type. Relationship attribute has defined <em>object type</em>
-(on the attribute definition level) that shows what object value type
-is accepted to be added as child.</p>
+<p>When creating a new object the owner must be an ownership relation attribute
+of one-to-many type. Ownership relation attribute has defined <em>target object
+type name</em> (on the attribute definition level) that shows what object value
+type is accepted to be added as child.</p>
 <p>Definition value types are “ElementAttributeDefinition” for singular value or
 “ElementCollectionAttributeDefinition” for collection of values.</p>
 </li>
@@ -367,8 +367,8 @@ is accepted to be added as child.</p>
 <p class="admonition-title">Note</p>
 <p>The definition value types are useful for filtering attribute search results.
 For example to list only time series attributes. They are also useful for
-checking accepted object value types (in relationship attributes) when
-creating new objects.</p>
+checking accepted target object value types (in ownership relation
+attributes) when creating new objects.</p>
 </div>
 <p>Attributes are identified by IDs or paths, refer to
 <a class="reference internal" href="#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>
@@ -378,15 +378,15 @@ section for more information.</p>
 <span id="mesh-object-attribute-path"></span><h2>Objects and attributes paths<a class="headerlink" href="#objects-and-attributes-paths" title="Permalink to this headline">¶</a></h2>
 <p>Objects and attributes are identified by IDs or paths. Path is a string
 uniquely identifying an object in the model and contains all ancestors of
-a given object and optionally their relationship attributes.</p>
+a given object and optionally their ownership relation attributes.</p>
 <p>For example the path for the <em>Innerdalsvannet</em> reservoir from example diagram
 in <a class="reference internal" href="#mesh-model"><span class="std std-ref">model</span></a> (object names are written in blue) is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Model</span><span class="o">/</span><span class="n">Mesh</span><span class="o">/</span><span class="n">Norway</span><span class="o">/</span><span class="n">Vannhusholdning</span><span class="o">/</span><span class="n">KVOtilsig</span><span class="o">/</span><span class="n">Innerdalsvannet</span>
 </pre></div>
 </div>
-<p>This is a path where only objects are provided. A path where also relationship
-attributes that connect those objects are provided is called full name.
-For the same <em>Innerdalsvannet</em> reservoir the full name path is:</p>
+<p>This is a path where only objects are provided. A path where also ownership
+relation attributes that connect those objects are provided is called full
+name. For the same <em>Innerdalsvannet</em> reservoir the full name path is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Model</span><span class="o">/</span><span class="n">Mesh</span><span class="o">.</span><span class="n">To_Areas</span><span class="o">/</span><span class="n">Norway</span><span class="o">.</span><span class="n">To_HydroProduction</span><span class="o">/</span><span class="n">Vannhusholdning</span><span class="o">.</span><span class="n">To_WaterCourses</span><span class="o">/</span><span class="n">KVOtilsig</span><span class="o">.</span><span class="n">To_Reservoirs</span><span class="o">/</span><span class="n">Innerdalsvannet</span>
 </pre></div>
 </div>
