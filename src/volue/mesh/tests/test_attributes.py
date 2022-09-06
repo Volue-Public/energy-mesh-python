@@ -553,6 +553,92 @@ def test_get_time_series_attribute_with_time_series_resource(
 
 @pytest.mark.database
 @pytest.mark.parametrize("full_attribute_info", [False, True])
+def test_get_one_to_one_ownership_relation_attribute(session, full_attribute_info):
+    """
+    Check that 'get_attribute' with full attribute view retrieves a one-to-one
+    ownership relation attribute.
+    """
+    attribute_name = "SimpleOwnershipAtt"
+
+    targets = get_targets(session, attribute_name)
+    attribute_id = targets[0]
+
+    for target in targets:
+        attribute = session.get_attribute(target, full_attribute_info)
+        verify_plant_base_attribute(
+            attribute, attribute_name, attribute_id, full_attribute_info
+        )
+
+        if full_attribute_info:
+            assert attribute.definition.description == ""
+            assert attribute.definition.value_type == "ElementAttributeDefinition"
+            assert attribute.definition.minimum_cardinality == 1
+            assert attribute.definition.maximum_cardinality == 1
+            assert attribute.definition.target_object_type_name == "ChimneyElementType"
+        else:
+            assert attribute.definition is None
+
+        # SimpleOwnershipAtt is nullable and empty, meaning it has target
+        # object ID set to uuid.UUID("00000000-0000-0000-0000-000000000000").
+        assert attribute.target_object_ids[0] == uuid.UUID(
+            "00000000-0000-0000-0000-000000000000"
+        )
+
+        # check if __str__ is correct
+        print(attribute)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize("full_attribute_info", [False, True])
+def test_get_one_to_many_ownership_relation_attribute(session, full_attribute_info):
+    """
+    Check that 'get_attribute' with full attribute view retrieves a one-to-many
+    ownership relation attribute.
+    """
+    attribute_name = "PlantToChimneyRef"
+
+    targets = get_targets(session, attribute_name)
+    attribute_id = targets[0]
+
+    for target in targets:
+        attribute = session.get_attribute(target, full_attribute_info)
+        verify_plant_base_attribute(
+            attribute, attribute_name, attribute_id, full_attribute_info
+        )
+
+        if full_attribute_info:
+            assert attribute.definition.description == ""
+            assert (
+                attribute.definition.value_type
+                == "ElementCollectionAttributeDefinition"
+            )
+            assert attribute.definition.minimum_cardinality == 0
+            assert attribute.definition.maximum_cardinality == 100
+            assert attribute.definition.target_object_type_name == "ChimneyElementType"
+        else:
+            assert attribute.definition is None
+
+        chimney_1_found = False
+        chimney_2_found = False
+
+        chimney_1_id = uuid.UUID("0000000A-0004-0000-0000-000000000000")
+        chimney_2_id = uuid.UUID("0000000A-0005-0000-0000-000000000000")
+
+        for target_object_id in attribute.target_object_ids:
+            if target_object_id == chimney_1_id:
+                chimney_1_found = True
+            elif target_object_id == chimney_2_id:
+                chimney_2_found = True
+
+        assert chimney_1_found
+        assert chimney_2_found
+
+        # check if __str__ is correct
+        print(attribute)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize("full_attribute_info", [False, True])
 def test_search_multiple_attributes(session, full_attribute_info):
     """
     Check that 'search_for_attributes' with full attribute view retrieves

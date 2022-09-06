@@ -77,15 +77,8 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
 
     if attribute_value_type == "timeseries_value":
         attribute = TimeseriesAttribute(proto_attribute)
-    # Relationship attribute is a bit special.
-    # It does not have a value, only definition.
-    # It will be treated as generic AttributeBase if
-    # definition is not a part of the proto message.
-    elif (
-        attribute_value_type is None
-        and attribute_definition_type == "relationship_definition"
-    ):
-        attribute = RelationshipAttribute(proto_attribute)
+    elif attribute_value_type == "ownership_relation_value":
+        attribute = OwnershipRelationAttribute(proto_attribute)
     elif attribute_value_type in (
         "int_value",
         "double_value",
@@ -255,45 +248,69 @@ class SimpleAttribute(AttributeBase):
         return message
 
 
-class RelationshipAttribute(AttributeBase):
-    """Represents relationship Mesh Attribute.
+class OwnershipRelationAttribute(AttributeBase):
+    """Represents an ownership relation Mesh Attribute.
 
-    Relationship attributes connect two objects.
-    The owned object's owner is always a relationship attribute that
+    Ownership relation attributes connect two objects.
+    The owned object's owner is always an ownership relation attribute that
     belongs to some other object.
 
-    There are two types of relationship attributes (`value_type` is provided in the parenthesis):
+    There are two types of ownership relation attributes
+    (`value_type` is provided in the parenthesis):
     - one-to-one (ElementAttributeDefinition)
     - one-to-many (ElementCollectionAttributeDefinition)
 
-    When creating a new object the owner must be a relationship attribute
-    of one-to-many type (ElementCollectionAttributeDefinition).
+    When creating a new object the owner must be an ownership relation
+    attribute of one-to-many type (ElementCollectionAttributeDefinition).
 
     Refer to documentation for more details:
     :ref:`Mesh attribute <mesh_attribute>`.
     """
 
-    class RelationshipAttributeDefinition(AttributeBase.AttributeBaseDefinition):
-        """Attribute definition for relationship attribute."""
+    class OwnershipRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
+        """Attribute definition for ownership relation attribute."""
 
         def __init__(self, proto_definition: core_pb2.AttributeDefinition):
             super().__init__(proto_definition)
-            self.object_type: str = proto_definition.relationship_definition.object_type
+            self.target_object_type_name: str = (
+                proto_definition.ownership_relation_definition.target_object_type_name
+            )
 
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
+
+        self.target_object_ids: List[uuid.UUID] = []
+        if proto_attribute.HasField("singular_value"):
+            self.target_object_ids.append(
+                _from_proto_guid(
+                    proto_attribute.singular_value.ownership_relation_value.target_object_id
+                )
+            )
+        elif len(proto_attribute.collection_values) > 0:
+            for value in proto_attribute.collection_values:
+                self.target_object_ids.append(
+                    _from_proto_guid(value.ownership_relation_value.target_object_id)
+                )
+
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
             self.definition: Optional[
-                RelationshipAttribute.RelationshipAttributeDefinition
-            ] = self.RelationshipAttributeDefinition(proto_attribute.definition)
+                OwnershipRelationAttribute.OwnershipRelationAttributeDefinition
+            ] = self.OwnershipRelationAttributeDefinition(proto_attribute.definition)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
-        message = f"RelationshipAttribute:\n" f"\t {base_message}"
+        message = (
+            f"OwnershipRelationAttribute:\n"
+            f"\t {base_message}\n"
+            f"\t target_object_ids: {self.target_object_ids}"
+        )
 
         if self.definition is not None:
-            message = f"{message}\n" f"\t object_type: {self.definition.object_type}"
+            message = (
+                f"{message}\n"
+                f"\t target_object_type_name: {self.definition.target_object_type_name}"
+            )
 
         return message
 

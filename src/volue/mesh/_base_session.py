@@ -199,15 +199,17 @@ class Session(abc.ABC):
     ) -> Object:
         """
         Create new Mesh object in the Mesh model.
-        Owner of the new object must be a relationship attribute of Object Collection type.
+        Owner of the new object must be an ownership relation attribute of
+        Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
 
         Owner will be the `ThermalPowerToPlantRef` attribute.
 
         Args:
-            target: Owner of the new object to be created. It must be a relationship attribute of
-                Object Collection type (object value type = "ElementCollectionAttributeDefinition").
+            target: Owner of the new object to be created. It must be a an
+                ownership relation attribute of Object Collection type
+                (object value type = "ElementCollectionAttributeDefinition").
                 It could be a Universal Unique Identifier or a path in the
                 :ref:`Mesh model <mesh_model>`.
             name: Name for the new object to create.
@@ -229,7 +231,8 @@ class Session(abc.ABC):
     ) -> None:
         """
         Update an existing Mesh object in the Mesh model.
-        New owner of the object must be a relationship attribute of Object Collection type.
+        New owner of the object must be an ownership relation attribute of
+        Object Collection type.
         E.g.: for `SomePowerPlant1` object with path:
         - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
 
@@ -238,8 +241,9 @@ class Session(abc.ABC):
                 or a path in the :ref:`Mesh model <mesh_model>`. See:
                 :ref:`objects and attributes paths <mesh_object_attribute_path>`
             new_name: New name for the object.
-            new_owner_attribute: New owner of the object. It must be a relationship attribute of
-                Object Collection type (object value type = "ElementCollectionAttributeDefinition").
+            new_owner_attribute: New owner of the object. It must be an
+                ownership relation attribute of Object Collection type
+                (object value type = "ElementCollectionAttributeDefinition").
                 It could be a Universal Unique Identifier or a path in the
                 :ref:`Mesh model <mesh_model>`.
 
