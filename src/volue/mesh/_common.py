@@ -271,6 +271,34 @@ class RatingCurveVersion:
         return message
 
 
+@dataclass
+class LinkRelationVersion:
+    """Represents a link relation version.
+
+    Contains target object ID and timestamp with the time at which the
+    version becomes active.
+    """
+
+    target_object_id: uuid.UUID
+    valid_from_time: datetime.datetime
+
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
+
+
+@dataclass
+class VersionedLinkRelationEntry:
+    """Represents a versioned link relation entry.
+
+    Contains link relation versions.
+    """
+
+    versions: List[LinkRelationVersion]
+
+    def __iter__(self):
+        return (getattr(self, field.name) for field in fields(self))
+
+
 def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[resources_pb2.Guid]:
     """Converts from Python UUID format to Microsoft's GUID format.
 

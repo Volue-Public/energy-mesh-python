@@ -718,6 +718,110 @@ def test_get_one_to_many_link_relation_attribute(session, full_attribute_info):
 
 @pytest.mark.database
 @pytest.mark.parametrize("full_attribute_info", [False, True])
+def test_get_versioned_one_to_one_link_relation_attribute(session, full_attribute_info):
+    """
+    Check that 'get_attribute' with full attribute view retrieves a versioned
+    one-to-one link relation attribute.
+    """
+    attribute_name = "ReferenceSeriesAtt"
+
+    targets = get_targets(session, attribute_name)
+    attribute_id = targets[0]
+
+    for target in targets:
+        attribute = session.get_attribute(target, full_attribute_info)
+        verify_plant_base_attribute(
+            attribute, attribute_name, attribute_id, full_attribute_info
+        )
+
+        if full_attribute_info:
+            assert attribute.definition.description == ""
+            assert (
+                attribute.definition.value_type == "ReferenceSeriesAttributeDefinition"
+            )
+            assert attribute.definition.minimum_cardinality == 1
+            assert attribute.definition.maximum_cardinality == 1
+            assert attribute.definition.target_object_type_name == "ChimneyElementType"
+        else:
+            assert attribute.definition is None
+
+        assert len(attribute.entries) == 1
+
+        entry = attribute.entries[0]
+        assert len(entry.versions) == 3
+
+        assert entry.versions[0].valid_from_time == datetime(2005, 3, 2, tzinfo=tz.UTC)
+        assert entry.versions[0].target_object_id == CHIMNEY_2_ID
+
+        assert entry.versions[1].valid_from_time == datetime(2015, 6, 3, tzinfo=tz.UTC)
+        assert entry.versions[1].target_object_id == CHIMNEY_1_ID
+
+        assert entry.versions[2].valid_from_time == datetime(2017, 2, 1, tzinfo=tz.UTC)
+        assert entry.versions[2].target_object_id == CHIMNEY_2_ID
+
+        # check if __str__ is correct
+        print(attribute)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize("full_attribute_info", [False, True])
+def test_get_versioned_one_to_many_link_relation_attribute(
+    session, full_attribute_info
+):
+    """
+    Check that 'get_attribute' with full attribute view retrieves a versioned
+    one-to-many link relation attribute.
+    """
+    attribute_name = "ReferenceSeriesCollectionAtt"
+
+    targets = get_targets(session, attribute_name)
+    attribute_id = targets[0]
+
+    for target in targets:
+        attribute = session.get_attribute(target, full_attribute_info)
+        verify_plant_base_attribute(
+            attribute, attribute_name, attribute_id, full_attribute_info
+        )
+
+        if full_attribute_info:
+            assert attribute.definition.description == ""
+            assert (
+                attribute.definition.value_type
+                == "ReferenceSeriesCollectionAttributeDefinition"
+            )
+            assert attribute.definition.minimum_cardinality == 0
+            assert attribute.definition.maximum_cardinality == 10
+            assert attribute.definition.target_object_type_name == "ChimneyElementType"
+        else:
+            assert attribute.definition is None
+
+        assert len(attribute.entries) == 2
+
+        chimney_1_found = False
+        chimney_2_found = False
+
+        for entry in attribute.entries:
+            assert len(entry.versions) == 1
+            if entry.versions[0].target_object_id == CHIMNEY_1_ID:
+                chimney_1_found = True
+                assert entry.versions[0].valid_from_time == datetime(
+                    2020, 7, 8, tzinfo=tz.UTC
+                )
+            elif entry.versions[0].target_object_id == CHIMNEY_2_ID:
+                chimney_2_found = True
+                assert entry.versions[0].valid_from_time == datetime(
+                    2000, 1, 5, tzinfo=tz.UTC
+                )
+
+        assert chimney_1_found
+        assert chimney_2_found
+
+        # check if __str__ is correct
+        print(attribute)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize("full_attribute_info", [False, True])
 def test_search_multiple_attributes(session, full_attribute_info):
     """
     Check that 'search_for_attributes' with full attribute view retrieves
