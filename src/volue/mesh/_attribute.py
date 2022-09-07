@@ -57,7 +57,6 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
         proto_attribute: protobuf Attribute returned from the gRPC methods.
     """
     attribute_value_type = None
-    attribute_definition_type = None
 
     # check if this is a singular attribute or a collection
     if proto_attribute.HasField("singular_value"):
@@ -70,15 +69,12 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
             PROTO_VALUE_ONE_OF_FIELD_NAME
         )
 
-    if proto_attribute.HasField("definition"):
-        attribute_definition_type = proto_attribute.definition.WhichOneof(
-            PROTO_DEFINITION_ONE_OF_FIELD_NAME
-        )
-
     if attribute_value_type == "timeseries_value":
         attribute = TimeseriesAttribute(proto_attribute)
     elif attribute_value_type == "ownership_relation_value":
         attribute = OwnershipRelationAttribute(proto_attribute)
+    elif attribute_value_type == "link_relation_value":
+        attribute = LinkRelationAttribute(proto_attribute)
     elif attribute_value_type in (
         "int_value",
         "double_value",
@@ -302,6 +298,72 @@ class OwnershipRelationAttribute(AttributeBase):
         base_message = super()._get_string_representation()
         message = (
             f"OwnershipRelationAttribute:\n"
+            f"\t {base_message}\n"
+            f"\t target_object_ids: {self.target_object_ids}"
+        )
+
+        if self.definition is not None:
+            message = (
+                f"{message}\n"
+                f"\t target_object_type_name: {self.definition.target_object_type_name}"
+            )
+
+        return message
+
+
+class LinkRelationAttribute(AttributeBase):
+    """Represents a link relation Mesh Attribute.
+
+    Link relation attributes connect two objects, but object pointing to
+    another object does not own it like in `OwnershipRelationAttribute`.
+
+    There are two types of link relation attributes
+    (`value_type` is provided in the parenthesis):
+    - one-to-one (ReferenceAttributeDefinition)
+    - one-to-many (ReferenceCollectionAttributeDefinition)
+
+    There is also a versioned link relation, where the target object can change
+    over time. See `VersionedLinkRelationAttribute`.
+
+    Refer to documentation for more details:
+    :ref:`Mesh attribute <mesh_attribute>`.
+    """
+
+    class LinkRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
+        """Attribute definition for link relation attribute."""
+
+        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+            super().__init__(proto_definition)
+            self.target_object_type_name: str = (
+                proto_definition.link_relation_definition.target_object_type_name
+            )
+
+    def __init__(self, proto_attribute: core_pb2.Attribute):
+        super().__init__(proto_attribute)
+
+        self.target_object_ids: List[uuid.UUID] = []
+        if proto_attribute.HasField("singular_value"):
+            self.target_object_ids.append(
+                _from_proto_guid(
+                    proto_attribute.singular_value.link_relation_value.target_object_id
+                )
+            )
+        elif len(proto_attribute.collection_values) > 0:
+            for value in proto_attribute.collection_values:
+                self.target_object_ids.append(
+                    _from_proto_guid(value.link_relation_value.target_object_id)
+                )
+
+        # in basic view the definition is not a part of response from Mesh server
+        if proto_attribute.HasField("definition"):
+            self.definition: Optional[
+                LinkRelationAttribute.LinkRelationAttributeDefinition
+            ] = self.LinkRelationAttributeDefinition(proto_attribute.definition)
+
+    def __str__(self) -> str:
+        base_message = super()._get_string_representation()
+        message = (
+            f"LinkRelationAttribute:\n"
             f"\t {base_message}\n"
             f"\t target_object_ids: {self.target_object_ids}"
         )

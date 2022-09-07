@@ -15,6 +15,9 @@ from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute
 
 ATTRIBUTE_PATH_PREFIX = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
 
+CHIMNEY_1_ID = uuid.UUID("0000000A-0004-0000-0000-000000000000")
+CHIMNEY_2_ID = uuid.UUID("0000000A-0005-0000-0000-000000000000")
+
 
 def verify_plant_base_attribute(
     attribute: AttributeBase, name: str, id: uuid.UUID, is_definition: bool
@@ -621,13 +624,89 @@ def test_get_one_to_many_ownership_relation_attribute(session, full_attribute_in
         chimney_1_found = False
         chimney_2_found = False
 
-        chimney_1_id = uuid.UUID("0000000A-0004-0000-0000-000000000000")
-        chimney_2_id = uuid.UUID("0000000A-0005-0000-0000-000000000000")
+        for target_object_id in attribute.target_object_ids:
+            if target_object_id == CHIMNEY_1_ID:
+                chimney_1_found = True
+            elif target_object_id == CHIMNEY_2_ID:
+                chimney_2_found = True
+
+        assert chimney_1_found
+        assert chimney_2_found
+
+        # check if __str__ is correct
+        print(attribute)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize("full_attribute_info", [False, True])
+def test_get_one_to_one_link_relation_attribute(session, full_attribute_info):
+    """
+    Check that 'get_attribute' with full attribute view retrieves a one-to-one
+    link relation attribute.
+    """
+    attribute_name = "SimpleReference"
+
+    targets = get_targets(session, attribute_name)
+    attribute_id = targets[0]
+
+    for target in targets:
+        attribute = session.get_attribute(target, full_attribute_info)
+        verify_plant_base_attribute(
+            attribute, attribute_name, attribute_id, full_attribute_info
+        )
+
+        if full_attribute_info:
+            assert attribute.definition.description == ""
+            assert attribute.definition.value_type == "ReferenceAttributeDefinition"
+            assert attribute.definition.minimum_cardinality == 1
+            assert attribute.definition.maximum_cardinality == 1
+            assert attribute.definition.target_object_type_name == "ChimneyElementType"
+        else:
+            assert attribute.definition is None
+
+        assert attribute.target_object_ids[0] == CHIMNEY_2_ID
+
+        # check if __str__ is correct
+        print(attribute)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize("full_attribute_info", [False, True])
+def test_get_one_to_many_link_relation_attribute(session, full_attribute_info):
+    """
+    Check that 'get_attribute' with full attribute view retrieves a one-to-many
+    link relation attribute.
+    """
+    attribute_name = "PlantToChimneyRefCollection"
+
+    targets = get_targets(session, attribute_name)
+    attribute_id = targets[0]
+
+    for target in targets:
+        attribute = session.get_attribute(target, full_attribute_info)
+        verify_plant_base_attribute(
+            attribute, attribute_name, attribute_id, full_attribute_info
+        )
+
+        if full_attribute_info:
+            assert attribute.definition.description == ""
+            assert (
+                attribute.definition.value_type
+                == "ReferenceCollectionAttributeDefinition"
+            )
+            assert attribute.definition.minimum_cardinality == 0
+            assert attribute.definition.maximum_cardinality == 100
+            assert attribute.definition.target_object_type_name == "ChimneyElementType"
+        else:
+            assert attribute.definition is None
+
+        chimney_1_found = False
+        chimney_2_found = False
 
         for target_object_id in attribute.target_object_ids:
-            if target_object_id == chimney_1_id:
+            if target_object_id == CHIMNEY_1_ID:
                 chimney_1_found = True
-            elif target_object_id == chimney_2_id:
+            elif target_object_id == CHIMNEY_2_ID:
                 chimney_2_found = True
 
         assert chimney_1_found
