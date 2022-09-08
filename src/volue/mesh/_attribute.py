@@ -12,7 +12,11 @@ from dateutil import tz
 from google.protobuf import timestamp_pb2
 
 from volue.mesh import TimeseriesResource
-from volue.mesh._common import _from_proto_guid
+from volue.mesh._common import (
+    LinkRelationVersion,
+    VersionedLinkRelationEntry,
+    _from_proto_guid,
+)
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 SIMPLE_TYPE = Union[int, float, bool, str, datetime]
@@ -75,6 +79,8 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
         attribute = OwnershipRelationAttribute(proto_attribute)
     elif attribute_value_type == "link_relation_value":
         attribute = LinkRelationAttribute(proto_attribute)
+    elif attribute_value_type == "versioned_link_relation_value":
+        attribute = VersionedLinkRelationAttribute(proto_attribute)
     elif attribute_value_type in (
         "int_value",
         "double_value",
@@ -366,6 +372,70 @@ class LinkRelationAttribute(AttributeBase):
             f"LinkRelationAttribute:\n"
             f"\t {base_message}\n"
             f"\t target_object_ids: {self.target_object_ids}"
+        )
+
+        if self.definition is not None:
+            message = (
+                f"{message}\n"
+                f"\t target_object_type_name: {self.definition.target_object_type_name}"
+            )
+
+        return message
+
+
+class VersionedLinkRelationAttribute(AttributeBase):
+    """Represents a versioned link relation Mesh Attribute.
+
+    Versioned link relation, which is a link relation where the target object
+    can change over time. It consists of a list of pairs:
+    - Target object identifier.
+    - Timestamp which indicates start of the period where the target object is
+    active (linked to), the target object is active until the next target
+    object in the list, if any, becomes active.
+
+    There are two types of versioned link relation attributes
+    (`value_type` is provided in the parenthesis):
+    - one-to-one (ReferenceSeriesAttributeDefinition)
+    - one-to-many (ReferenceSeriesCollectionAttributeDefinition)
+
+    Refer to documentation for more details:
+    :ref:`Mesh attribute <mesh_attribute>`.
+    """
+
+    def __init__(self, proto_attribute: core_pb2.Attribute):
+        super().__init__(proto_attribute)
+
+        self.entries: List[VersionedLinkRelationEntry] = []
+
+        if proto_attribute.HasField("singular_value"):
+            proto_values = [proto_attribute.singular_value]
+        else:
+            proto_values = proto_attribute.collection_values
+
+        for proto_value in proto_values:
+            versions: List[LinkRelationVersion] = []
+
+            for proto_version in proto_value.versioned_link_relation_value.versions:
+                target_object_id = _from_proto_guid(proto_version.target_object_id)
+                valid_from_time = proto_version.valid_from_time.ToDatetime(tz.UTC)
+                versions.append(LinkRelationVersion(target_object_id, valid_from_time))
+
+            self.entries.append(VersionedLinkRelationEntry(versions))
+
+        # in basic view the definition is not a part of response from Mesh server
+        if proto_attribute.HasField("definition"):
+            self.definition: Optional[
+                LinkRelationAttribute.LinkRelationAttributeDefinition
+            ] = LinkRelationAttribute.LinkRelationAttributeDefinition(
+                proto_attribute.definition
+            )
+
+    def __str__(self) -> str:
+        base_message = super()._get_string_representation()
+        message = (
+            f"VersionedLinkRelationAttribute:\n"
+            f"\t {base_message}\n"
+            f"\t entries: {self.entries}"
         )
 
         if self.definition is not None:
