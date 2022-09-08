@@ -6,6 +6,9 @@ import uuid
 
 from volue.mesh import AttributeBase, Object
 
+CHIMNEY_1_ID = uuid.UUID("0000000A-0004-0000-0000-000000000000")
+CHIMNEY_2_ID = uuid.UUID("0000000A-0005-0000-0000-000000000000")
+
 
 class AttributeForTesting(AttributeBase):
     """

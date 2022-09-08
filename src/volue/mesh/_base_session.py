@@ -401,10 +401,41 @@ class Session(abc.ABC):
                 Identifier or a path in the :ref:`Mesh model <mesh_model>`. See:
                 :ref:`objects and attributes paths <mesh_object_attribute_path>`.
             new_local_expression: New local expression.
-            new_timeseries_resource_key: time series key of a new time series resource
+            new_timeseries_resource_key: Time series key of a new time series resource
                 (physical or virtual) to connect to the time series attribute. To disconnect
                 time series attribute from already connected time series resource set this
                 argument to 0.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+        """
+
+    @abc.abstractmethod
+    def update_link_relation_attribute(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase],
+        new_target_object_ids: List[uuid.UUID],
+        append: bool,
+    ) -> None:
+        """
+        Update an existing Mesh link relation (non-versioned) attribute in the Mesh model.
+
+        Args:
+            target: Mesh one-to-one or one-to-many link relation (non-versioned) attribute
+                to be updated. It could be a Universal Unique Identifier or a path in the
+                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
+                <mesh_object_attribute_path>`.
+            new_target_object_ids: List of objects the link relation will point to. For
+                one-to-one link relation this must contain zero or one `new_target_object_ids`.
+                If there is no `new_target_object_ids` provided then currently existing target
+                object will be removed. If updating a one-to-many link relation attribute
+                this may contain zero, one or more `new_target_object_ids`s. If there is no
+                `new_target_object_ids` provided and `append` is set to `False` then all
+                currently existing target objects will be removed.
+            append: If set to `True` for a one-to-many link relation attribute this will
+                append `target_object_ids` to already existing ones. If set to `False` then
+                all currently existing target objects will be replaced by `target_object_ids`.
+                For one-to-one link relation attribute this must set to `False`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
@@ -995,6 +1026,26 @@ class Session(abc.ABC):
 
         request.field_mask.CopyFrom(
             protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)
+        )
+        return request
+
+    def _prepare_link_relation_attribute_request(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase],
+        new_target_object_ids: List[uuid.UUID],
+        append: bool,
+    ) -> core_pb2.UpdateLinkRelationAttributeRequest:
+
+        proto_target_object_ids = [
+            _to_proto_guid(target_object_id)
+            for target_object_id in new_target_object_ids
+        ]
+
+        request = core_pb2.UpdateLinkRelationAttributeRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute=_to_proto_attribute_mesh_id(target),
+            append=append,
+            target_object_ids=proto_target_object_ids,
         )
         return request
 
