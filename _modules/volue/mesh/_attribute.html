@@ -184,7 +184,11 @@
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">timestamp_pb2</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">TimeseriesResource</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_from_proto_guid</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LinkRelationVersion</span><span class="p">,</span>
+    <span class="n">VersionedLinkRelationEntry</span><span class="p">,</span>
+    <span class="n">_from_proto_guid</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
 <span class="n">SIMPLE_TYPE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]</span>
@@ -247,6 +251,8 @@
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">OwnershipRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="s2">&quot;link_relation_value&quot;</span><span class="p">:</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">LinkRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="s2">&quot;versioned_link_relation_value&quot;</span><span class="p">:</span>
+        <span class="n">attribute</span> <span class="o">=</span> <span class="n">VersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="ow">in</span> <span class="p">(</span>
         <span class="s2">&quot;int_value&quot;</span><span class="p">,</span>
         <span class="s2">&quot;double_value&quot;</span><span class="p">,</span>
@@ -538,6 +544,70 @@
             <span class="sa">f</span><span class="s2">&quot;LinkRelationAttribute:</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="n">base_message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> target_object_ids: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> target_object_type_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">message</span>
+
+
+<span class="k">class</span> <span class="nc">VersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a versioned link relation Mesh Attribute.</span>
+
+<span class="sd">    Versioned link relation, which is a link relation where the target object</span>
+<span class="sd">    can change over time. It consists of a list of pairs:</span>
+<span class="sd">    - Target object identifier.</span>
+<span class="sd">    - Timestamp which indicates start of the period where the target object is</span>
+<span class="sd">    active (linked to), the target object is active until the next target</span>
+<span class="sd">    object in the list, if any, becomes active.</span>
+
+<span class="sd">    There are two types of versioned link relation attributes</span>
+<span class="sd">    (`value_type` is provided in the parenthesis):</span>
+<span class="sd">    - one-to-one (ReferenceSeriesAttributeDefinition)</span>
+<span class="sd">    - one-to-many (ReferenceSeriesCollectionAttributeDefinition)</span>
+
+<span class="sd">    Refer to documentation for more details:</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">VersionedLinkRelationEntry</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
+            <span class="n">proto_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proto_values</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span>
+
+        <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_values</span><span class="p">:</span>
+            <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">proto_version</span> <span class="ow">in</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">versioned_link_relation_value</span><span class="o">.</span><span class="n">versions</span><span class="p">:</span>
+                <span class="n">target_object_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+                <span class="n">valid_from_time</span> <span class="o">=</span> <span class="n">proto_version</span><span class="o">.</span><span class="n">valid_from_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
+                <span class="n">versions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LinkRelationVersion</span><span class="p">(</span><span class="n">target_object_id</span><span class="p">,</span> <span class="n">valid_from_time</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VersionedLinkRelationEntry</span><span class="p">(</span><span class="n">versions</span><span class="p">))</span>
+
+        <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
+        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+                <span class="n">LinkRelationAttribute</span><span class="o">.</span><span class="n">LinkRelationAttributeDefinition</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">LinkRelationAttribute</span><span class="o">.</span><span class="n">LinkRelationAttributeDefinition</span><span class="p">(</span>
+                <span class="n">proto_attribute</span><span class="o">.</span><span class="n">definition</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">base_message</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_string_representation</span><span class="p">()</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;VersionedLinkRelationAttribute:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="n">base_message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> entries: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

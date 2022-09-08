@@ -443,6 +443,31 @@
         <span class="k">return</span> <span class="n">message</span></div>
 
 
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LinkRelationVersion</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a link relation version.</span>
+
+<span class="sd">    Contains target object ID and timestamp with the time at which the</span>
+<span class="sd">    version becomes active.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">target_object_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span>
+    <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">VersionedLinkRelationEntry</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Represents a versioned link relation entry.</span>
+
+<span class="sd">    Contains link relation versions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]</span>
+
+
 <span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
 
