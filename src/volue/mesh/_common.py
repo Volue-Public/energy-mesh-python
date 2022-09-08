@@ -295,9 +295,6 @@ class VersionedLinkRelationEntry:
 
     versions: List[LinkRelationVersion]
 
-    def __iter__(self):
-        return (getattr(self, field.name) for field in fields(self))
-
 
 def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[resources_pb2.Guid]:
     """Converts from Python UUID format to Microsoft's GUID format.

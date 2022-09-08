@@ -408,29 +408,19 @@ class VersionedLinkRelationAttribute(AttributeBase):
         self.entries: List[VersionedLinkRelationEntry] = []
 
         if proto_attribute.HasField("singular_value"):
+            proto_values = [proto_attribute.singular_value]
+        else:
+            proto_values = proto_attribute.collection_values
+
+        for proto_value in proto_values:
             versions: List[LinkRelationVersion] = []
 
-            for (
-                protoVersion
-            ) in proto_attribute.singular_value.versioned_link_relation_value.versions:
-                target_object_id = _from_proto_guid(protoVersion.target_object_id)
-                valid_from_time = protoVersion.valid_from_time.ToDatetime(tz.UTC)
+            for proto_version in proto_value.versioned_link_relation_value.versions:
+                target_object_id = _from_proto_guid(proto_version.target_object_id)
+                valid_from_time = proto_version.valid_from_time.ToDatetime(tz.UTC)
                 versions.append(LinkRelationVersion(target_object_id, valid_from_time))
 
             self.entries.append(VersionedLinkRelationEntry(versions))
-
-        elif len(proto_attribute.collection_values) > 0:
-            for protoValue in proto_attribute.collection_values:
-                versions: List[LinkRelationVersion] = []
-
-                for protoVersion in protoValue.versioned_link_relation_value.versions:
-                    target_object_id = _from_proto_guid(protoVersion.target_object_id)
-                    valid_from_time = protoVersion.valid_from_time.ToDatetime(tz.UTC)
-                    versions.append(
-                        LinkRelationVersion(target_object_id, valid_from_time)
-                    )
-
-                self.entries.append(VersionedLinkRelationEntry(versions))
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
