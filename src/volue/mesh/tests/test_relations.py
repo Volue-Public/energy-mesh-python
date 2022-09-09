@@ -51,7 +51,7 @@ def test_update_one_to_one_link_relation_attribute(session):
 
         attribute = session.get_attribute(target)
         assert len(attribute.target_object_ids) == 1
-        assert attribute.target_object_ids[0] == new_target_object_ids[0]
+        assert attribute.target_object_ids == new_target_object_ids
 
         session.rollback()
 
@@ -244,26 +244,22 @@ def test_update_one_to_many_link_relation_attribute_with_invalid_input(
         )
 
 
-# @pytest.mark.asyncio
-# @pytest.mark.database
-# async def test_update_link_relations_async(async_session):
-#     """For async run the simplest test, implementation is the same."""
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_link_relations_async(async_session):
+    """For async run the simplest test, implementation is the same."""
 
-#     new_table = get_test_time_series_pyarrow_table()
+    attribute_path = ATTRIBUTE_PATH_PREFIX + ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
+    new_target_object_ids = [CHIMNEY_1_ID]
 
-#     attribute_path = TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
+    await async_session.update_link_relation_attribute(
+        target=attribute_path,
+        new_target_object_ids=new_target_object_ids,
+    )
 
-#     await async_session.write_timeseries_points(
-#         Timeseries(table=new_table, full_name=attribute_path)
-#     )
-
-#     reply_timeseries = await async_session.read_timeseries_points(
-#         target=attribute_path,
-#         start_time=TIME_SERIES_START_TIME,
-#         end_time=TIME_SERIES_END_TIME,
-#     )
-
-#     assert new_table == reply_timeseries.arrow_table
+    attribute = await async_session.get_attribute(attribute_path)
+    assert len(attribute.target_object_ids) == 1
+    assert attribute.target_object_ids == new_target_object_ids
 
 
 if __name__ == "__main__":
