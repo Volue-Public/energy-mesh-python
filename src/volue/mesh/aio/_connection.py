@@ -206,7 +206,7 @@ class Connection(_base_connection.Connection):
             new_target_object_ids: List[uuid.UUID],
             append: bool = False,
         ) -> None:
-            request = super()._prepare_link_relation_attribute_request(
+            request = super()._prepare_update_link_relation_attribute_request(
                 target, new_target_object_ids, append
             )
             await self.mesh_service.UpdateLinkRelationAttribute(request)

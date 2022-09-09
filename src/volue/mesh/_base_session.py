@@ -1029,7 +1029,7 @@ class Session(abc.ABC):
         )
         return request
 
-    def _prepare_link_relation_attribute_request(
+    def _prepare_update_link_relation_attribute_request(
         self,
         target: Union[uuid.UUID, str, AttributeBase],
         new_target_object_ids: List[uuid.UUID],
