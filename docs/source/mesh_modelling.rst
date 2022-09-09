@@ -186,9 +186,10 @@ readability. Here is a list of all attribute types currently supported:
   Definition value types are "TimeseriesAttributeDefinition" for singular value
   or "TimeseriesCollectionAttributeDefinition" for collection of values.
 
-* **Ownership relation attributes** - connect two objects. The owned object's
-  owner is always an ownership relation attribute that belongs to some other
-  object. There are two types of ownership relation attributes:
+* **Ownership relation attributes** - represent relations where one object owns
+  another object. The owned object's owner is always an ownership relation
+  attribute that belongs to some other object.
+  There are two types of ownership relation attributes:
 
     - one-to-one
     - one-to-many
@@ -201,13 +202,45 @@ readability. Here is a list of all attribute types currently supported:
   Definition value types are "ElementAttributeDefinition" for singular value or
   "ElementCollectionAttributeDefinition" for collection of values.
 
+  Refer to :doc:`Mesh relations <mesh_relations>` for more information.
+
+* **Link relation attributes** - represent relations where one object may point
+  to another object, but does not own it.
+  There are two types of link relation attributes:
+
+    - one-to-one
+    - one-to-many
+
+  Definition value types are "ReferenceAttributeDefinition" for singular value
+  or "ReferenceCollectionAttributeDefinition" for collection of values.
+
+  Refer to :doc:`Mesh relations <mesh_relations>` for more information.
+
+* **Versioned link relation attributes** - extension of **link relation
+  attributes**, where the target object can change over time.
+  It consists of a list of pairs:
+
+    - Target object ID.
+    - Timestamp which indicates start of the period where the target object is
+      active (linked to), the target object is active until the next target
+      object in the list, if any, becomes active.
+
+  There are two types of versioned link relation attributes:
+
+    - one-to-one
+    - one-to-many
+
+  Definition value types are "ReferenceSeriesAttributeDefinition" for singular
+  value or "ReferenceSeriesCollectionAttributeDefinition" for collection of
+  values.
+
+  Refer to :doc:`Mesh relations <mesh_relations>` for more information.
+
 
 .. note::
 
   The definition value types are useful for filtering attribute search results.
-  For example to list only time series attributes. They are also useful for
-  checking accepted target object value types (in ownership relation
-  attributes) when creating new objects.
+  For example to list only time series attributes.
 
 
 Attributes are identified by IDs or paths, refer to
