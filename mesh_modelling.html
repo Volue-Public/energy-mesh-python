@@ -106,6 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="timeseries.html">Time series</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_relations.html">Relations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_xy_sets.html">XY-sets in Mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
 </ul>
@@ -346,9 +347,10 @@ overwritten for the given attribute in the model (then it stored as
 <p>Definition value types are “TimeseriesAttributeDefinition” for singular value
 or “TimeseriesCollectionAttributeDefinition” for collection of values.</p>
 </li>
-<li><p><strong>Ownership relation attributes</strong> - connect two objects. The owned object’s
-owner is always an ownership relation attribute that belongs to some other
-object. There are two types of ownership relation attributes:</p>
+<li><p><strong>Ownership relation attributes</strong> - represent relations where one object owns
+another object. The owned object’s owner is always an ownership relation
+attribute that belongs to some other object.
+There are two types of ownership relation attributes:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>one-to-one</p></li>
@@ -361,14 +363,49 @@ type name</em> (on the attribute definition level) that shows what object value
 type is accepted to be added as child.</p>
 <p>Definition value types are “ElementAttributeDefinition” for singular value or
 “ElementCollectionAttributeDefinition” for collection of values.</p>
+<p>Refer to <a class="reference internal" href="mesh_relations.html"><span class="doc">Mesh relations</span></a> for more information.</p>
+</li>
+<li><p><strong>Link relation attributes</strong> - represent relations where one object may point
+to another object, but does not own it.
+There are two types of link relation attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>one-to-one</p></li>
+<li><p>one-to-many</p></li>
+</ul>
+</div></blockquote>
+<p>Definition value types are “ReferenceAttributeDefinition” for singular value
+or “ReferenceCollectionAttributeDefinition” for collection of values.</p>
+<p>Refer to <a class="reference internal" href="mesh_relations.html"><span class="doc">Mesh relations</span></a> for more information.</p>
+</li>
+<li><p><strong>Versioned link relation attributes</strong> - extension of <strong>link relation
+attributes</strong>, where the target object can change over time.
+It consists of a list of pairs:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Target object ID.</p></li>
+<li><p>Timestamp which indicates start of the period where the target object is
+active (linked to), the target object is active until the next target
+object in the list, if any, becomes active.</p></li>
+</ul>
+</div></blockquote>
+<p>There are two types of versioned link relation attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>one-to-one</p></li>
+<li><p>one-to-many</p></li>
+</ul>
+</div></blockquote>
+<p>Definition value types are “ReferenceSeriesAttributeDefinition” for singular
+value or “ReferenceSeriesCollectionAttributeDefinition” for collection of
+values.</p>
+<p>Refer to <a class="reference internal" href="mesh_relations.html"><span class="doc">Mesh relations</span></a> for more information.</p>
 </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The definition value types are useful for filtering attribute search results.
-For example to list only time series attributes. They are also useful for
-checking accepted target object value types (in ownership relation
-attributes) when creating new objects.</p>
+For example to list only time series attributes.</p>
 </div>
 <p>Attributes are identified by IDs or paths, refer to
 <a class="reference internal" href="#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>

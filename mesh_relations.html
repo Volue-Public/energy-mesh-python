@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Mesh search language &mdash; volue.mesh 0.0.4 documentation</title>
+  <title>Relations &mdash; volue.mesh 0.0.4 documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Mesh functions" href="mesh_functions.html" />
-    <link rel="prev" title="Time series" href="timeseries.html" /> 
+    <link rel="next" title="XY-sets in Mesh" href="mesh_xy_sets.html" />
+    <link rel="prev" title="Mesh functions" href="mesh_functions.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,13 +95,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="mesh_modelling.html">Mesh object modelling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="timeseries.html">Time series</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Mesh search language</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#query-syntax">Query syntax</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#combining-multiple-search-operations">Combining multiple search operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Relations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ownership-relation">Ownership relation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#link-relation">Link relation</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_relations.html">Relations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_xy_sets.html">XY-sets in Mesh</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
 </ul>
@@ -176,13 +176,13 @@
         
           <li><a href="mesh_concepts.html">Mesh concepts</a> &raquo;</li>
         
-      <li>Mesh search language</li>
+      <li>Relations</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/mesh_search.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/mesh_relations.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -195,63 +195,60 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="mesh-search-language">
-<h1>Mesh search language<a class="headerlink" href="#mesh-search-language" title="Permalink to this headline">¶</a></h1>
-<p>The mesh search language can be used to find mesh objects.</p>
-<p>To be able to search for a mesh object you need to specify which model to search in, where in the model the search should start and the query matching the criteria of the mesh object you are searching for.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Refer to Mesh Python API documentation at <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a> for specific functions that can make use of the search language. E.g. calculation functions defined in <a class="reference internal" href="api.html#module-volue.mesh.calc"><span class="std std-ref">volue.mesh.calc</span></a>.</p>
-</div>
-<div class="section" id="query-syntax">
-<h2>Query syntax<a class="headerlink" href="#query-syntax" title="Permalink to this headline">¶</a></h2>
-<p>A search consists of a traversal, optionally followed by an <a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">attribute</span></a> access (“.AttributeName”). A search takes an object (the start point) as input and produces a set of objects or attributes as output (the result). If the attribute access is specified, the result objects are all attributes (attribute search), otherwise they are all objects (object search).</p>
-<div class="section" id="traversal">
-<h3>Traversal<a class="headerlink" href="#traversal" title="Permalink to this headline">¶</a></h3>
-<p>A traversal describes a set of relative paths in the mesh object structure. It takes a set of objects as an input (the start points) and produces a set of objects as an output (the result) by following the paths from each start point and collecting endpoints. The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on criteria (f.ex. [Criteria] or *[Criteria]). For example, the traversal ‘..’ will output the parent, if it exists, for each input object. Traversals can be combined with operators to form new traversals.</p>
-<a class="reference internal image-reference" href="_images/search1.png"><img alt="_images/search1.png" src="_images/search1.png" style="width: 800px;" /></a>
-</div>
-<div class="section" id="criteria">
-<h3>Criteria<a class="headerlink" href="#criteria" title="Permalink to this headline">¶</a></h3>
-<p>Some traversals are parametrized on criteria (see predicated child walk and child step). The criteria controls which objects the traversal will accept as output, and will either accept an object by outputting true or reject it by outputting false. You can combine criteria with operators to form new criteria (see AND, OR). For example, the traversal ‘[.Name=N]’ will for each input object, output the set of child objects whose name equals ‘N’. The traversal ‘*[.Name=N]’ will for each input object output the set of closest descendant objects whose name is ‘N’.</p>
-<p>Criteria are always enclosed in square brackets, [].</p>
-<p>You may specify options for the criteria within suffix curly brackets {}, for example to ignore case insensitivity on text based comparison. {i} means the search is case insensitive.</p>
-<a class="reference internal image-reference" href="_images/search2.png"><img alt="_images/search2.png" src="_images/search2.png" style="width: 800px;" /></a>
-</div>
-</div>
-<div class="section" id="combining-multiple-search-operations">
-<h2>Combining multiple search operations<a class="headerlink" href="#combining-multiple-search-operations" title="Permalink to this headline">¶</a></h2>
-<p>You can combine search operations with the following operators:</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt><strong>INTERSECTION, &amp;</strong>:</dt><dd><ul>
-<li><p>The result is the intersection between each result set.</p></li>
-<li><p>Syntax: <em>Search1&amp;Search2</em></p></li>
+  <div class="section" id="relations">
+<h1>Relations<a class="headerlink" href="#relations" title="Permalink to this headline">¶</a></h1>
+<p>Objects in Mesh model can relate to each other. Relation between objects is
+done using relation attributes. The relation attribute defines type of the
+relation, target object type and other parameters.</p>
+<a class="reference internal image-reference" href="_images/relations1.png"><img alt="_images/relations1.png" src="_images/relations1.png" style="width: 800px;" /></a>
+<p>There are two groups of relations between objects in Mesh model.</p>
+<div class="section" id="ownership-relation">
+<h2>Ownership relation<a class="headerlink" href="#ownership-relation" title="Permalink to this headline">¶</a></h2>
+<p>Each object is owned by some other object (owner). It is called ownership
+relation.</p>
+<dl class="simple">
+<dt>Ownership relations can be:</dt><dd><ul class="simple">
+<li><p>one-to-one</p></li>
+<li><p>one-to-many (collection): where value of <em>many</em> is in range defined by
+<em>minimum</em> and <em>maximum cardinality</em> on relation <strong>attribute definition</strong> level.</p></li>
 </ul>
 </dd>
 </dl>
-</li>
-<li><dl class="simple">
-<dt><strong>UNION, |</strong>:</dt><dd><ul>
-<li><p>The result is the union between each result set.</p></li>
-<li><p>Syntax: <em>Search1|Search2</em></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><strong>COMPOSITION, /</strong>:</dt><dd><ul>
-<li><p>Uses the output from Search1 as input to Search2.</p></li>
-<li><p>Syntax: <em>Search1/Search2</em></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When using INTERSECTION and UNION between searches, you only use a single character, &amp; or |, respectively. Inside an object criteria, you use double character to specify a logic AND, &amp;&amp;, or logic OR, ||, respectively</p>
+<p>By convention ownership relation attribute names start with ‘has_…’, e.g.:
+<em>has_PowerPlant</em>. Removing an object will remove recursively all of its owned
+objects as well, if there were any.</p>
 </div>
+<div class="section" id="link-relation">
+<h2>Link relation<a class="headerlink" href="#link-relation" title="Permalink to this headline">¶</a></h2>
+<p>Link relation is a relation where one object may point to another object, but
+does not own it. There is also a versioned link relation, which is a link
+relation where the target object can change over time. It consists of a list of
+pairs:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Target object identifier.</p></li>
+<li><p>Timestamp which indicates start of the period where the target object is
+active (linked to), the target object is active until the next target object
+in the list, if any, becomes active.</p></li>
+</ul>
+</div></blockquote>
+<a class="reference internal image-reference" href="_images/versioned_link_relation.png"><img alt="_images/versioned_link_relation.png" src="_images/versioned_link_relation.png" style="width: 800px;" /></a>
+<dl class="simple">
+<dt>There are four types of link relation attributes:</dt><dd><ul class="simple">
+<li><p>one-to-one</p></li>
+<li><p>one-to-many (collection)</p></li>
+<li><p>versioned one-to-one</p></li>
+<li><p>versioned one-to-many (collection)</p></li>
+</ul>
+</dd>
+</dl>
+<p>Similar to <strong>ownership relation</strong> the value of <em>many</em> is in range defined by
+<em>minimum</em> and <em>maximum cardinality</em> on relation attribute definition` level.</p>
+<a class="reference internal image-reference" href="_images/versioned_link_relation_collection.png"><img alt="_images/versioned_link_relation_collection.png" src="_images/versioned_link_relation_collection.png" style="width: 800px;" /></a>
+<p>By convention link relation attribute names start with ‘to_…’, e.g.:
+‘to_EnergyMarket’. Removing an object that had link relations to other objects
+will NOT remove the linked objects.</p>
+<a class="reference internal image-reference" href="_images/relations2.png"><img alt="_images/relations2.png" src="_images/relations2.png" style="width: 800px;" /></a>
 </div>
 </div>
 
@@ -261,8 +258,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mesh_functions.html" class="btn btn-neutral float-right" title="Mesh functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="timeseries.html" class="btn btn-neutral float-left" title="Time series" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mesh_xy_sets.html" class="btn btn-neutral float-right" title="XY-sets in Mesh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mesh_functions.html" class="btn btn-neutral float-left" title="Mesh functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
