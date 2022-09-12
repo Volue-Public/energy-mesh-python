@@ -520,16 +520,16 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">_from_proto_guid</span><span class="p">(</span>
-                    <span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">target_object_id</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">:</span>
+            <span class="n">proto_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">proto_values</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span>
+
+        <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_values</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;target_object_id&quot;</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+                    <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
                 <span class="p">)</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
