@@ -5,6 +5,7 @@ Functionality for working with Mesh attributes.
 from __future__ import annotations
 
 import uuid
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, List, Optional, Union
 
@@ -12,11 +13,7 @@ from dateutil import tz
 from google.protobuf import timestamp_pb2
 
 from volue.mesh import TimeseriesResource
-from volue.mesh._common import (
-    LinkRelationVersion,
-    VersionedLinkRelationEntry,
-    _from_proto_guid,
-)
+from volue.mesh._common import LinkRelationVersion, _from_proto_guid
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 SIMPLE_TYPE = Union[int, float, bool, str, datetime]
@@ -266,7 +263,7 @@ class OwnershipRelationAttribute(AttributeBase):
     attribute of one-to-many type (ElementCollectionAttributeDefinition).
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>`.
+    :ref:`Mesh attribute <mesh_attribute>` and :doc:`mesh_relations`.
     """
 
     class OwnershipRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
@@ -332,7 +329,7 @@ class LinkRelationAttribute(AttributeBase):
     over time. See `VersionedLinkRelationAttribute`.
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>`.
+    :ref:`Mesh attribute <mesh_attribute>` and :doc:`mesh_relations`.
     """
 
     class LinkRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
@@ -399,13 +396,21 @@ class VersionedLinkRelationAttribute(AttributeBase):
     - one-to-many (ReferenceSeriesCollectionAttributeDefinition)
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>`.
+    :ref:`Mesh attribute <mesh_attribute>` and :doc:`mesh_relations`.
     """
+
+    @dataclass
+    class VersionedLinkRelationEntry:
+        """Represents a versioned link relation entry."""
+
+        versions: List[LinkRelationVersion]
 
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
 
-        self.entries: List[VersionedLinkRelationEntry] = []
+        self.entries: List[
+            VersionedLinkRelationAttribute.VersionedLinkRelationEntry
+        ] = []
 
         if proto_attribute.HasField("singular_value"):
             proto_values = [proto_attribute.singular_value]
@@ -420,7 +425,7 @@ class VersionedLinkRelationAttribute(AttributeBase):
                 valid_from_time = proto_version.valid_from_time.ToDatetime(tz.UTC)
                 versions.append(LinkRelationVersion(target_object_id, valid_from_time))
 
-            self.entries.append(VersionedLinkRelationEntry(versions))
+            self.entries.append(self.VersionedLinkRelationEntry(versions))
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):

@@ -5,19 +5,26 @@ Client library for Volue Energy's Mesh software.
 from ._authentication import Authentication
 from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
-from ._attribute import AttributeBase, TimeseriesAttribute
+from ._attribute import (
+    AttributeBase,
+    LinkRelationAttribute,
+    OwnershipRelationAttribute,
+    TimeseriesAttribute,
+    VersionedLinkRelationAttribute,
+)
 from ._object import Object
 from ._common import (
     AttributesFilter,
+    LinkRelationVersion,
+    RatingCurveSegment,
+    RatingCurveVersion,
     UserIdentity,
     VersionInfo,
     XyCurve,
     XySet,
-    RatingCurveSegment,
-    RatingCurveVersion,
 )
-from ._credentials import Credentials
 from ._connection import Connection
+from ._credentials import Credentials
 
 __title__ = "volue.mesh"
 __author__ = "Volue AS"
@@ -27,7 +34,10 @@ __all__ = [
     "Credentials",
     "Connection",
     "AttributeBase",
+    "LinkRelationAttribute",
+    "OwnershipRelationAttribute",
     "TimeseriesAttribute",
+    "VersionedLinkRelationAttribute",
     "Object",
     "Timeseries",
     "TimeseriesResource",
@@ -38,4 +48,5 @@ __all__ = [
     "XySet",
     "RatingCurveSegment",
     "RatingCurveVersion",
+    "LinkRelationVersion",
 ]

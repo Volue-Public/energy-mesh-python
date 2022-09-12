@@ -22,6 +22,7 @@ from volue.mesh import (
 )
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._common import (
+    LinkRelationVersion,
     XySet,
     RatingCurveVersion,
     _to_proto_guid,
@@ -206,6 +207,18 @@ class Connection(_base_connection.Connection):
                 target, new_target_object_ids, append
             )
             self.mesh_service.UpdateLinkRelationAttribute(request)
+
+        def update_versioned_link_relation_attribute(
+            self,
+            target: Union[uuid.UUID, str, AttributeBase],
+            start_time: datetime,
+            end_time: datetime,
+            new_versions: List[LinkRelationVersion],
+        ) -> None:
+            request = super()._prepare_versioned_link_relation_attribute_request(
+                target, start_time, end_time, new_versions
+            )
+            self.mesh_service.UpdateVersionedLinkRelationAttribute(request)
 
         def get_object(
             self,
