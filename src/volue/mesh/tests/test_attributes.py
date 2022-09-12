@@ -13,10 +13,9 @@ from dateutil import tz
 
 from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute
 
-ATTRIBUTE_PATH_PREFIX = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
+from volue.mesh.tests.test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID
 
-CHIMNEY_1_ID = uuid.UUID("0000000A-0004-0000-0000-000000000000")
-CHIMNEY_2_ID = uuid.UUID("0000000A-0005-0000-0000-000000000000")
+ATTRIBUTE_PATH_PREFIX = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
 
 
 def verify_plant_base_attribute(
@@ -621,17 +620,12 @@ def test_get_one_to_many_ownership_relation_attribute(session, full_attribute_in
         else:
             assert attribute.definition is None
 
-        chimney_1_found = False
-        chimney_2_found = False
-
-        for target_object_id in attribute.target_object_ids:
-            if target_object_id == CHIMNEY_1_ID:
-                chimney_1_found = True
-            elif target_object_id == CHIMNEY_2_ID:
-                chimney_2_found = True
-
-        assert chimney_1_found
-        assert chimney_2_found
+        # Check if both chimneys were found - the target object IDs are returned in
+        # no particular order and it may change from one call to another.
+        assert all(
+            target_object_id in [CHIMNEY_1_ID, CHIMNEY_2_ID]
+            for target_object_id in attribute.target_object_ids
+        )
 
         # check if __str__ is correct
         print(attribute)
@@ -700,17 +694,12 @@ def test_get_one_to_many_link_relation_attribute(session, full_attribute_info):
         else:
             assert attribute.definition is None
 
-        chimney_1_found = False
-        chimney_2_found = False
-
-        for target_object_id in attribute.target_object_ids:
-            if target_object_id == CHIMNEY_1_ID:
-                chimney_1_found = True
-            elif target_object_id == CHIMNEY_2_ID:
-                chimney_2_found = True
-
-        assert chimney_1_found
-        assert chimney_2_found
+        # Check if both chimneys were found - the target object IDs are returned in
+        # no particular order and it may change from one call to another.
+        assert all(
+            target_object_id in [CHIMNEY_1_ID, CHIMNEY_2_ID]
+            for target_object_id in attribute.target_object_ids
+        )
 
         # check if __str__ is correct
         print(attribute)

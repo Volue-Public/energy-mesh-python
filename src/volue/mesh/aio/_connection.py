@@ -200,6 +200,17 @@ class Connection(_base_connection.Connection):
             )
             await self.mesh_service.UpdateTimeseriesAttribute(request)
 
+        async def update_link_relation_attribute(
+            self,
+            target: Union[uuid.UUID, str, AttributeBase],
+            new_target_object_ids: List[uuid.UUID],
+            append: bool = False,
+        ) -> None:
+            request = super()._prepare_update_link_relation_attribute_request(
+                target, new_target_object_ids, append
+            )
+            await self.mesh_service.UpdateLinkRelationAttribute(request)
+
         async def get_object(
             self,
             target: Union[uuid.UUID, str, Object],

@@ -348,16 +348,16 @@ class LinkRelationAttribute(AttributeBase):
         super().__init__(proto_attribute)
 
         self.target_object_ids: List[uuid.UUID] = []
+
         if proto_attribute.HasField("singular_value"):
-            self.target_object_ids.append(
-                _from_proto_guid(
-                    proto_attribute.singular_value.link_relation_value.target_object_id
-                )
-            )
-        elif len(proto_attribute.collection_values) > 0:
-            for value in proto_attribute.collection_values:
+            proto_values = [proto_attribute.singular_value]
+        else:
+            proto_values = proto_attribute.collection_values
+
+        for proto_value in proto_values:
+            if proto_value.link_relation_value.HasField("target_object_id"):
                 self.target_object_ids.append(
-                    _from_proto_guid(value.link_relation_value.target_object_id)
+                    _from_proto_guid(proto_value.link_relation_value.target_object_id)
                 )
 
         # in basic view the definition is not a part of response from Mesh server
