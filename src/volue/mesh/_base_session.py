@@ -15,6 +15,7 @@ from ._attribute import (
 )
 from ._common import (
     AttributesFilter,
+    LinkRelationVersion,
     XyCurve,
     XySet,
     RatingCurveSegment,
@@ -439,6 +440,38 @@ class Session(abc.ABC):
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        See Also:
+            :doc:`mesh_relations`
+        """
+
+    @abc.abstractmethod
+    def update_versioned_link_relation_attribute(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase],
+        start_time: datetime,
+        end_time: datetime,
+        new_versions: List[LinkRelationVersion],
+    ) -> None:
+        """
+        Update an existing Mesh versioned one-to-one link relation attribute in
+        the Mesh model.
+
+        Args:
+            target: Mesh one-to-one versioned link relation attribute to be updated.
+                It could be a Universal Unique Identifier or a path in the
+                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
+                <mesh_object_attribute_path>`.
+            start_time: the (inclusive) start of the edit interval.
+            end_time: the (exclusive) end of the edit interval.
+            new_versions: the list of link relation versions to insert.
+                All versions must be within `[start_time, end_time)` interval.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        See Also:
+            :doc:`mesh_relations`
         """
 
     @abc.abstractmethod
@@ -1046,6 +1079,41 @@ class Session(abc.ABC):
             attribute=_to_proto_attribute_mesh_id(target),
             append=append,
             target_object_ids=proto_target_object_ids,
+        )
+        return request
+
+    def _prepare_versioned_link_relation_attribute_request(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase],
+        start_time: datetime,
+        end_time: datetime,
+        new_versions: List[LinkRelationVersion],
+    ) -> core_pb2.UpdateVersionedLinkRelationAttributeRequest:
+
+        if start_time is None or end_time is None:
+            raise TypeError("start_time and end_time must both have a value")
+
+        def to_proto_link_relation_version(
+            version: LinkRelationVersion,
+        ) -> core_pb2.LinkRelationVersion:
+            return core_pb2.LinkRelationVersion(
+                target_object_id=_to_proto_guid(version.target_object_id),
+                valid_from_time=(
+                    None
+                    if version.valid_from_time is None
+                    else _datetime_to_timestamp_pb2(version.valid_from_time)
+                ),
+            )
+
+        proto_versions = [
+            to_proto_link_relation_version(version) for version in new_versions
+        ]
+
+        request = core_pb2.UpdateVersionedLinkRelationAttributeRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute=_to_proto_attribute_mesh_id(target),
+            interval=_to_proto_utcinterval(start_time, end_time),
+            versions=proto_versions,
         )
         return request
 

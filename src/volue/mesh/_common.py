@@ -277,6 +277,9 @@ class LinkRelationVersion:
 
     Contains target object ID and timestamp with the time at which the
     version becomes active.
+
+    See Also:
+         :doc:`mesh_relations`
     """
 
     target_object_id: uuid.UUID
@@ -284,16 +287,6 @@ class LinkRelationVersion:
 
     def __iter__(self):
         return (getattr(self, field.name) for field in fields(self))
-
-
-@dataclass
-class VersionedLinkRelationEntry:
-    """Represents a versioned link relation entry.
-
-    Contains link relation versions.
-    """
-
-    versions: List[LinkRelationVersion]
 
 
 def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[resources_pb2.Guid]:
