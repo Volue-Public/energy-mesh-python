@@ -464,7 +464,7 @@ class Session(abc.ABC):
                 <mesh_object_attribute_path>`.
             start_time: the (inclusive) start of the edit interval.
             end_time: the (exclusive) end of the edit interval.
-            new_versions: the list of rating curve versions to insert.
+            new_versions: the list of link relation versions to insert.
                 All versions must be within `[start_time, end_time)` interval.
 
         Raises:
