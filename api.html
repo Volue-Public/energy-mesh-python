@@ -950,6 +950,10 @@ For one-to-one link relation attribute this must set to <cite>False</cite>.</p><
 <dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1078,6 +1082,33 @@ virtual time series.</p></li>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.Session.update_versioned_link_relation_attribute">
+<span class="sig-name descname"><span class="pre">update_versioned_link_relation_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">volue.mesh._attribute.AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_versions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.LinkRelationVersion" title="volue.mesh._common.LinkRelationVersion"><span class="pre">volue.mesh._common.LinkRelationVersion</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.update_versioned_link_relation_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.update_versioned_link_relation_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an existing Mesh versioned one-to-one link relation attribute in
+the Mesh model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – Mesh one-to-one versioned link relation attribute to be updated.
+It could be a Universal Unique Identifier or a path in the
+<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<li><p><strong>start_time</strong> – the (inclusive) start of the edit interval.</p></li>
+<li><p><strong>end_time</strong> – the (exclusive) end of the edit interval.</p></li>
+<li><p><strong>new_versions</strong> – the list of link relation versions to insert.
+All versions must be within <cite>[start_time, end_time)</cite> interval.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1236,6 +1267,50 @@ You will need to open the session before it will be created on the Mesh server.<
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.LinkRelationAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">LinkRelationAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.Attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#LinkRelationAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.LinkRelationAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a link relation Mesh Attribute.</p>
+<p>Link relation attributes connect two objects, but object pointing to
+another object does not own it like in <cite>OwnershipRelationAttribute</cite>.</p>
+<p>There are two types of link relation attributes
+(<cite>value_type</cite> is provided in the parenthesis):
+- one-to-one (ReferenceAttributeDefinition)
+- one-to-many (ReferenceCollectionAttributeDefinition)</p>
+<p>There is also a versioned link relation, where the target object can change
+over time. See <cite>VersionedLinkRelationAttribute</cite>.</p>
+<p>Refer to documentation for more details:
+<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a> and <a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinkRelationAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#LinkRelationAttribute.LinkRelationAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute definition for link relation attribute.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.LinkRelationVersion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">LinkRelationVersion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_object_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_from_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#LinkRelationVersion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.LinkRelationVersion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a link relation version.</p>
+<p>Contains target object ID and timestamp with the time at which the
+version becomes active.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.LinkRelationVersion.target_object_id">
+<span class="sig-name descname"><span class="pre">target_object_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a></em><a class="headerlink" href="#volue.mesh.LinkRelationVersion.target_object_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.LinkRelationVersion.valid_from_time">
+<span class="sig-name descname"><span class="pre">valid_from_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></em><a class="headerlink" href="#volue.mesh.LinkRelationVersion.valid_from_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Object">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id:</span> <span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner_id:</span> <span class="pre">uuid.UUID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">owner_path:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes:</span> <span class="pre">typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volue.mesh._attribute.AttributeBase]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_object.html#Object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a Mesh Object.</p>
@@ -1276,6 +1351,29 @@ Refer to documentation for more details:
 <dt class="sig sig-object py" id="volue.mesh.Object.type_name">
 <span class="sig-name descname"><span class="pre">type_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#volue.mesh.Object.type_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.OwnershipRelationAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">OwnershipRelationAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.Attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#OwnershipRelationAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.OwnershipRelationAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an ownership relation Mesh Attribute.</p>
+<p>Ownership relation attributes connect two objects.
+The owned object’s owner is always an ownership relation attribute that
+belongs to some other object.</p>
+<p>There are two types of ownership relation attributes
+(<cite>value_type</cite> is provided in the parenthesis):
+- one-to-one (ElementAttributeDefinition)
+- one-to-many (ElementCollectionAttributeDefinition)</p>
+<p>When creating a new object the owner must be an ownership relation
+attribute of one-to-many type (ElementCollectionAttributeDefinition).</p>
+<p>Refer to documentation for more details:
+<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a> and <a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.OwnershipRelationAttribute.OwnershipRelationAttributeDefinition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OwnershipRelationAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#OwnershipRelationAttribute.OwnershipRelationAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.OwnershipRelationAttribute.OwnershipRelationAttributeDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute definition for ownership relation attribute.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1683,6 +1781,35 @@ duplicated user identifiers. However such situation is rather unlikely.</p>
 <dt class="sig sig-object py" id="volue.mesh.VersionInfo.version">
 <span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#volue.mesh.VersionInfo.version" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.VersionedLinkRelationAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">VersionedLinkRelationAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">volue.mesh.proto.core.v1alpha.core_pb2.Attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#VersionedLinkRelationAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.VersionedLinkRelationAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a versioned link relation Mesh Attribute.</p>
+<p>Versioned link relation, which is a link relation where the target object
+can change over time. It consists of a list of pairs:
+- Target object identifier.
+- Timestamp which indicates start of the period where the target object is
+active (linked to), the target object is active until the next target
+object in the list, if any, becomes active.</p>
+<p>There are two types of versioned link relation attributes
+(<cite>value_type</cite> is provided in the parenthesis):
+- one-to-one (ReferenceSeriesAttributeDefinition)
+- one-to-many (ReferenceSeriesCollectionAttributeDefinition)</p>
+<p>Refer to documentation for more details:
+<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a> and <a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VersionedLinkRelationEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">versions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.LinkRelationVersion" title="volue.mesh._common.LinkRelationVersion"><span class="pre">volue.mesh._common.LinkRelationVersion</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#VersionedLinkRelationAttribute.VersionedLinkRelationEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a versioned link relation entry.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry.versions">
+<span class="sig-name descname"><span class="pre">versions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.LinkRelationVersion" title="volue.mesh._common.LinkRelationVersion"><span class="pre">volue.mesh._common.LinkRelationVersion</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry.versions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </dd></dl>
 
@@ -2210,6 +2337,10 @@ For one-to-one link relation attribute this must set to <cite>False</cite>.</p><
 <dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2338,6 +2469,33 @@ virtual time series.</p></li>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.update_versioned_link_relation_attribute">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_versioned_link_relation_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><span class="pre">uuid.UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">volue.mesh._attribute.AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_versions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.LinkRelationVersion" title="volue.mesh._common.LinkRelationVersion"><span class="pre">volue.mesh._common.LinkRelationVersion</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.update_versioned_link_relation_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.update_versioned_link_relation_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update an existing Mesh versioned one-to-one link relation attribute in
+the Mesh model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – Mesh one-to-one versioned link relation attribute to be updated.
+It could be a Universal Unique Identifier or a path in the
+<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<li><p><strong>start_time</strong> – the (inclusive) start of the edit interval.</p></li>
+<li><p><strong>end_time</strong> – the (exclusive) end of the edit interval.</p></li>
+<li><p><strong>new_versions</strong> – the list of link relation versions to insert.
+All versions must be within <cite>[start_time, end_time)</cite> interval.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.46.2)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">

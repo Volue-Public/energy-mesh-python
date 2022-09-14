@@ -194,6 +194,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._attribute</span> <span class="kn">import</span> <span class="n">_from_proto_attribute</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LinkRelationVersion</span><span class="p">,</span>
     <span class="n">XySet</span><span class="p">,</span>
     <span class="n">RatingCurveVersion</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
@@ -378,6 +379,18 @@
                 <span class="n">target</span><span class="p">,</span> <span class="n">new_target_object_ids</span><span class="p">,</span> <span class="n">append</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateLinkRelationAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.Session.update_versioned_link_relation_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_versioned_link_relation_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">update_versioned_link_relation_attribute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+            <span class="n">new_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">],</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_versioned_link_relation_attribute_request</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">new_versions</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateVersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.get_object"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_object">[docs]</a>        <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

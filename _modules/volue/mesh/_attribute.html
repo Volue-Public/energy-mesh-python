@@ -177,6 +177,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -184,11 +185,7 @@
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">timestamp_pb2</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">TimeseriesResource</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">LinkRelationVersion</span><span class="p">,</span>
-    <span class="n">VersionedLinkRelationEntry</span><span class="p">,</span>
-    <span class="n">_from_proto_guid</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">LinkRelationVersion</span><span class="p">,</span> <span class="n">_from_proto_guid</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
 
 <span class="n">SIMPLE_TYPE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]</span>
@@ -422,7 +419,7 @@
         <span class="k">return</span> <span class="n">message</span>
 
 
-<span class="k">class</span> <span class="nc">OwnershipRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
+<div class="viewcode-block" id="OwnershipRelationAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.OwnershipRelationAttribute">[docs]</a><span class="k">class</span> <span class="nc">OwnershipRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents an ownership relation Mesh Attribute.</span>
 
 <span class="sd">    Ownership relation attributes connect two objects.</span>
@@ -438,17 +435,17 @@
 <span class="sd">    attribute of one-to-many type (ElementCollectionAttributeDefinition).</span>
 
 <span class="sd">    Refer to documentation for more details:</span>
-<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;` and :doc:`mesh_relations`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">OwnershipRelationAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
+<div class="viewcode-block" id="OwnershipRelationAttribute.OwnershipRelationAttributeDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.OwnershipRelationAttribute.OwnershipRelationAttributeDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">OwnershipRelationAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Attribute definition for ownership relation attribute.&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">ownership_relation_definition</span><span class="o">.</span><span class="n">target_object_type_name</span>
-            <span class="p">)</span>
+            <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
@@ -486,10 +483,10 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> target_object_type_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="n">message</span></div>
 
 
-<span class="k">class</span> <span class="nc">LinkRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
+<div class="viewcode-block" id="LinkRelationAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.LinkRelationAttribute">[docs]</a><span class="k">class</span> <span class="nc">LinkRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a link relation Mesh Attribute.</span>
 
 <span class="sd">    Link relation attributes connect two objects, but object pointing to</span>
@@ -504,17 +501,17 @@
 <span class="sd">    over time. See `VersionedLinkRelationAttribute`.</span>
 
 <span class="sd">    Refer to documentation for more details:</span>
-<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;` and :doc:`mesh_relations`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">LinkRelationAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
+<div class="viewcode-block" id="LinkRelationAttribute.LinkRelationAttributeDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">LinkRelationAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Attribute definition for link relation attribute.&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">link_relation_definition</span><span class="o">.</span><span class="n">target_object_type_name</span>
-            <span class="p">)</span>
+            <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
@@ -552,10 +549,10 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> target_object_type_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="n">message</span></div>
 
 
-<span class="k">class</span> <span class="nc">VersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
+<div class="viewcode-block" id="VersionedLinkRelationAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.VersionedLinkRelationAttribute">[docs]</a><span class="k">class</span> <span class="nc">VersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Represents a versioned link relation Mesh Attribute.</span>
 
 <span class="sd">    Versioned link relation, which is a link relation where the target object</span>
@@ -571,13 +568,21 @@
 <span class="sd">    - one-to-many (ReferenceSeriesCollectionAttributeDefinition)</span>
 
 <span class="sd">    Refer to documentation for more details:</span>
-<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
+<span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;` and :doc:`mesh_relations`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="VersionedLinkRelationAttribute.VersionedLinkRelationEntry"><a class="viewcode-back" href="../../../api.html#volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry">[docs]</a>    <span class="nd">@dataclass</span>
+    <span class="k">class</span> <span class="nc">VersionedLinkRelationEntry</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Represents a versioned link relation entry.&quot;&quot;&quot;</span>
+
+        <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">VersionedLinkRelationEntry</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span>
+            <span class="n">VersionedLinkRelationAttribute</span><span class="o">.</span><span class="n">VersionedLinkRelationEntry</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
             <span class="n">proto_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="p">]</span>
@@ -592,7 +597,7 @@
                 <span class="n">valid_from_time</span> <span class="o">=</span> <span class="n">proto_version</span><span class="o">.</span><span class="n">valid_from_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
                 <span class="n">versions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LinkRelationVersion</span><span class="p">(</span><span class="n">target_object_id</span><span class="p">,</span> <span class="n">valid_from_time</span><span class="p">))</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">VersionedLinkRelationEntry</span><span class="p">(</span><span class="n">versions</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">VersionedLinkRelationEntry</span><span class="p">(</span><span class="n">versions</span><span class="p">))</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
@@ -616,7 +621,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> target_object_type_name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="n">message</span></div>
 
 
 <div class="viewcode-block" id="TimeseriesAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.TimeseriesAttribute">[docs]</a><span class="k">class</span> <span class="nc">TimeseriesAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
