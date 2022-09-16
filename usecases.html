@@ -216,11 +216,14 @@ $ python -m pip install matplotlib
 <div class="section" id="preferences">
 <h3>Preferences<a class="headerlink" href="#preferences" title="Permalink to this headline">¶</a></h3>
 <p>The first section of the file exposes some configuration options. Edit these to fit your Mesh server setup and preferences.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">RatingCurveVersion</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">Object</span><span class="p">,</span>
+    <span class="n">RatingCurveSegment</span><span class="p">,</span>
+    <span class="n">RatingCurveVersion</span><span class="p">,</span>
     <span class="n">Timeseries</span><span class="p">,</span>
     <span class="n">TimeseriesResource</span><span class="p">,</span>
-    <span class="n">XySet</span><span class="p">,</span>
+    <span class="n">VersionedLinkRelationAttribute</span><span class="p">,</span>
     <span class="n">XyCurve</span><span class="p">,</span>
+    <span class="n">XySet</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
@@ -238,9 +241,6 @@ $ python -m pip install matplotlib
 <span class="c1"># Save time series to CSV file</span>
 <span class="n">SAVE_TO_CSV</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="c1"># Some use cases write new points or update existing objects</span>
-<span class="c1"># Set this flag to True to commit the changes (made in use cases) to Mesh</span>
-<span class="n">COMMIT_CHANGES</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="c1"># Which use case to run</span>
 </pre></div>
 </div>
 </div>
