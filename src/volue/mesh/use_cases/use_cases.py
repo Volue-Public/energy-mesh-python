@@ -1,24 +1,27 @@
-from datetime import datetime, timedelta
 import sys
-from typing import List, Any, Tuple
 import uuid
+from datetime import datetime, timedelta
+from typing import Any, List, Tuple
 
-from dateutil import tz
 import grpc
 import matplotlib.pyplot as plt
 import pandas as pd
 import pyarrow as pa
+from dateutil import tz
 
 from volue.mesh import (
-    Connection,
     AttributesFilter,
+    Connection,
+    LinkRelationAttribute,
+    LinkRelationVersion,
     Object,
     RatingCurveSegment,
     RatingCurveVersion,
     Timeseries,
     TimeseriesResource,
-    XySet,
+    VersionedLinkRelationAttribute,
     XyCurve,
+    XySet,
 )
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
@@ -37,7 +40,7 @@ SHOW_PLOT = True
 SAVE_TO_CSV = False
 # Some use cases write new points or update existing objects
 # Set this flag to True to commit the changes (made in use cases) to Mesh
-COMMIT_CHANGES = False
+COMMIT_CHANGES = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', 'flow_drop_4', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = "all"
@@ -145,6 +148,54 @@ def get_object_information(object: Object):
         f"owner path: '{object.owner_path}', \n"
         f"owner ID: '{object.owner_id}'\n"
     )
+    return message
+
+
+def get_link_relation_attribute_information(
+    attribute: LinkRelationAttribute, session: Connection.Session
+):
+    """Create a printable message from a link relation attribute."""
+    target_object_names = []
+
+    for target_object_id in attribute.target_object_ids:
+        target_object = session.get_object(target_object_id)
+        target_object_names.append(target_object.name)
+
+    return f"Target objects (in no particular order): {target_object_names}"
+
+
+def get_versioned_link_relation_attribute_information(
+    attribute: VersionedLinkRelationAttribute, session: Connection.Session
+):
+    """Create a printable message from a versioned link relation attribute."""
+    message = ""
+
+    for entry_index, entry in enumerate(attribute.entries, 1):
+        message += f"Entry {entry_index}\n"
+        for version_index, version in enumerate(entry.versions, 1):
+            target_object = session.get_object(version.target_object_id)
+
+            valid_from_time_str = ""
+            # If running on Windows and the datetime is before epoch
+            # (1.1.1970 UTC) then we can't use `astimezone` because Windows
+            # `localtime()` does not support it, see discussion:
+            # https://bugs.python.org/issue31327
+            if version.valid_from_time < datetime(1970, 1, 1, tzinfo=tz.UTC):
+                # If the datetime is before 1.1.1970 UTC then print the time
+                # zone info.
+                valid_from_time_str = f"{version.valid_from_time:%Y-%m-%dT%H:%M:%S %Z}"
+            else:
+                # Otherwise convert to local time zone
+                valid_from_time_str = (
+                    f"{version.valid_from_time.astimezone(LOCAL_TIME_ZONE)}"
+                )
+
+            message += (
+                f"\tVersion {version_index}. "
+                f"target object name: {target_object.name}, "
+                f"valid from time: {valid_from_time_str}\n"
+            )
+
     return message
 
 
@@ -1549,6 +1600,162 @@ def use_case_23():
             print(f"{use_case_name} resulted in an error: {e}")
 
 
+def use_case_24():
+    """
+    Scenario:
+    For a specific object of type `WindPark`, named `Bessaker` we want to find
+    all link relations attributes.
+
+    Object path: Model/MeshTEK/Mesh/Norge/Wind/Bessaker
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 24"
+            object_path = "Model/MeshTEK/Mesh/Norge/Wind/Bessaker"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            object = session.get_object(object_path, full_attribute_info=True)
+            print(get_object_information(object))
+
+            number = 1
+            for attribute in object.attributes.values():
+                if isinstance(
+                    attribute, (LinkRelationAttribute, VersionedLinkRelationAttribute)
+                ):
+                    print(
+                        f"{number}. \n"
+                        f"-------------------------------------------\n"
+                        f"{attribute}"
+                    )
+
+                    if isinstance(attribute, VersionedLinkRelationAttribute):
+                        print(
+                            get_versioned_link_relation_attribute_information(
+                                attribute, session
+                            )
+                        )
+
+                    if isinstance(attribute, LinkRelationAttribute):
+                        print(
+                            get_link_relation_attribute_information(attribute, session)
+                        )
+
+                    number += 1
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_25():
+    """
+    Scenario:
+    We want to update specific versioned link relation attribute with new link
+    relation version.
+
+    Attribute path: Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 25"
+            attribute_path = "Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Find target object for the new version.
+            objects = session.search_for_objects(
+                "Model/MeshTEK/Mesh", query="*[.Type=EnergyMarket&&.Name=NO1]"
+            )
+            if len(objects) != 1:
+                raise RuntimeError(
+                    f"invalid result from 'search_for_objects', "
+                    f"expected 1 target object, but got {len(objects)}"
+                )
+            target_object = objects[0]
+
+            new_link_relation_version = LinkRelationVersion(
+                target_object_id=target_object.id,
+                valid_from_time=datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+            )
+
+            session.update_versioned_link_relation_attribute(
+                attribute_path,
+                start_time=new_link_relation_version.valid_from_time,
+                end_time=datetime.max,
+                new_versions=[new_link_relation_version],
+            )
+
+            # Now read it.
+            attribute = session.get_attribute(attribute_path)
+            print(get_versioned_link_relation_attribute_information(attribute, session))
+
+            # Commit changes
+            if COMMIT_CHANGES:
+                session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
+def use_case_26():
+    """
+    Scenario:
+    We want to update specific versioned link relation attribute with another
+    new link relation version.
+
+    Attribute path: Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket
+
+    """
+    connection = Connection(host=HOST, port=PORT)
+    with connection.create_session() as session:
+        try:
+            use_case_name = "Use case 26"
+            attribute_path = "Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket"
+
+            print(f"{use_case_name}:")
+            print("--------------------------------------------------------------")
+
+            # Find target object for the new version.
+            objects = session.search_for_objects(
+                "Model/MeshTEK/Mesh", query="*[.Type=EnergyMarket&&.Name=NO3]"
+            )
+            if len(objects) != 1:
+                raise RuntimeError(
+                    f"invalid result from 'search_for_objects', "
+                    f"expected 1 target object, but got {len(objects)}"
+                )
+            target_object = objects[0]
+
+            new_link_relation_version = LinkRelationVersion(
+                target_object_id=target_object.id,
+                valid_from_time=datetime(2022, 2, 1, tzinfo=LOCAL_TIME_ZONE),
+            )
+
+            session.update_versioned_link_relation_attribute(
+                attribute_path,
+                start_time=new_link_relation_version.valid_from_time,
+                end_time=datetime.max,
+                new_versions=[new_link_relation_version],
+            )
+
+            # Now read it.
+            attribute = session.get_attribute(attribute_path)
+            print(get_versioned_link_relation_attribute_information(attribute, session))
+
+            # Commit changes
+            if COMMIT_CHANGES:
+                session.commit()
+
+        except grpc.RpcError as e:
+            print(f"{use_case_name} resulted in an error: {e}")
+
+
 if __name__ == "__main__":
 
     if len(sys.argv) > 1:
@@ -1588,6 +1795,9 @@ if __name__ == "__main__":
             "21",
             "22",
             "23",
+            "24",
+            "25",
+            "26",
         ]
         for use_case_key in flow_drop_4_use_cases:
             if use_case_key in ALL_USE_CASE_FUNCTIONS.keys():
