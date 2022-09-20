@@ -264,16 +264,17 @@ First the scenario is explained and needed information is given. Then a connecti
 <span class="sd">    Time interval:      1.9.2021 - 1.10.2021</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">use_case_name</span> <span class="o">=</span> <span class="s2">&quot;Use case 1&quot;</span>
+    <span class="n">start_object_guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span>
+        <span class="s2">&quot;801896b0-d448-4299-874a-3ecf8ab0e2d4&quot;</span>
+    <span class="p">)</span>  <span class="c1"># Model/MeshTEK/Mesh</span>
+    <span class="n">search_query</span> <span class="o">=</span> <span class="s2">&quot;*[.Type=HydroPlant].Production_operative&quot;</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">)</span>
+
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">HOST</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">PORT</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">use_case_name</span> <span class="o">=</span> <span class="s2">&quot;Use case 1&quot;</span>
-            <span class="n">start_object_guid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span>
-                <span class="s2">&quot;801896b0-d448-4299-874a-3ecf8ab0e2d4&quot;</span>
-            <span class="p">)</span>  <span class="c1"># Model/MeshTEK/Mesh</span>
-            <span class="n">search_query</span> <span class="o">=</span> <span class="s2">&quot;*[.Type=HydroPlant].Production_operative&quot;</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">)</span>
-            <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">use_case_name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;--------------------------------------------------------------&quot;</span><span class="p">)</span>
 
