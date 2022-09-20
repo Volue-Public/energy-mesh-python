@@ -209,16 +209,17 @@ def use_case_1():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
+    use_case_name = "Use case 1"
+    start_object_guid = uuid.UUID(
+        "801896b0-d448-4299-874a-3ecf8ab0e2d4"
+    )  # Model/MeshTEK/Mesh
+    search_query = "*[.Type=HydroPlant].Production_operative"
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 1"
-            start_object_guid = uuid.UUID(
-                "801896b0-d448-4299-874a-3ecf8ab0e2d4"
-            )  # Model/MeshTEK/Mesh
-            search_query = "*[.Type=HydroPlant].Production_operative"
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -265,16 +266,17 @@ def use_case_2():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
+    use_case_name = "Use case 2"
+    start_object_guid = uuid.UUID(
+        "801896b0-d448-4299-874a-3ecf8ab0e2d4"
+    )  # Model/MeshTEK/Mesh
+    search_query = "*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative"
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 2"
-            start_object_guid = uuid.UUID(
-                "801896b0-d448-4299-874a-3ecf8ab0e2d4"
-            )  # Model/MeshTEK/Mesh
-            search_query = "*[.Type=Area&&.Name=Norge]/To_HydroProduction/To_WaterCourses/To_Reservoirs.ReservoirVolume_operative"
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -320,13 +322,14 @@ def use_case_3():
     Time interval:      1.9.2021 - 1.10.2021
 
     """
+    use_case_name = "Use case 3"
+    timskeys = [530, 536, 537, 543, 556]
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 3"
-            timskeys = [530, 536, 537, 543, 556]
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -375,13 +378,14 @@ def use_case_4():
     Time interval:      10.01.2022 - 27.03.2022
 
     """
+    use_case_name = "Use case 4"
+    guids = ["ff1db73f-8c8a-42f8-a44a-4bbb420874c1"]
+    start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 4"
-            guids = ["ff1db73f-8c8a-42f8-a44a-4bbb420874c1"]
-            start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -427,25 +431,26 @@ def use_case_4b():
     Time interval:      10.01.2022 - 27.03.2022
 
     """
+    use_case_name = "Use case 4b"
+    # Both paths are pointing to the same time series attribute:
+    # - first path includes just object names
+    # - second path includes also ownership relation attributes (e.g.: has_cAreas pointing to Norge object)
+    # Path including also ownership relation attributes is called full name.
+    # It uniquely identifies an object or attribute we are looking for,
+    # because depending on the model it may happen that a parent object has more than one
+    # ownership relation attribute pointing to objects with the same names, e.g.:
+    # - ParentObject.has_cAreas/Norge
+    # - ParentObject.has_cProductionAreas/Norge
+    paths = [
+        "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production",  # path using only objects
+        "Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1975.Production",  # path using full name (objects and attributes)
+    ]
+    start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 4b"
-            # Both paths are pointing to the same time series attribute:
-            # - first path includes just object names
-            # - second path includes also ownership relation attributes (e.g.: has_cAreas pointing to Norge object)
-            # Path including also ownership relation attributes is called full name.
-            # It uniquely identifies an object or attribute we are looking for,
-            # because depending on the model it may happen that a parent object has more than one
-            # ownership relation attribute pointing to objects with the same names, e.g.:
-            # - ParentObject.has_cAreas/Norge
-            # - ParentObject.has_cProductionAreas/Norge
-            paths = [
-                "Model/MeshTEK/Cases/Driva_Short_Opt/Norge/Vannkraft/Driva/Driva/Gjevilvatnet/1975.Production",  # path using only objects
-                "Model/MeshTEK/Cases.has_OptimisationCases/Driva_Short_Opt.has_cAreas/Norge.has_cHydroProduction/Vannkraft.has_cWaterCourses/Driva.has_cProdriskAreas/Driva.has_cProdriskModules/Gjevilvatnet.has_cProdriskScenarios/1975.Production",  # path using full name (objects and attributes)
-            ]
-            start = datetime(2022, 1, 10, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -492,18 +497,18 @@ def use_case_5():
                         9.20, 9.00, 8.91, 10.62, 12.00, 12.07, 12.00, 11.78, 5.08, 0.00, 0.00, 0.00]
 
     """
-    connection = Connection(host=HOST, port=PORT)
+    use_case_name = "Use case 5"
+    guid = uuid.UUID("3fd4ed37-2114-4d95-af90-02b96bd993ed")
 
+    start = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 9, 29, tzinfo=LOCAL_TIME_ZONE)
+
+    resolution = timedelta(hours=1.0)
+    timskey_and_pandas_dataframe = []
+
+    connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 5"
-            guid = uuid.UUID("3fd4ed37-2114-4d95-af90-02b96bd993ed")
-
-            start = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 29, tzinfo=LOCAL_TIME_ZONE)
-
-            resolution = timedelta(hours=1.0)
-            timskey_and_pandas_dataframe = []
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -616,13 +621,14 @@ def use_case_6():
     Time interval:              5.9.2021 - 1.10.2021
 
     """
+    use_case_name = "Use case 6"
+    timeseries_attribute_id = "012d70e3-8f40-40af-9c0a-5d84fc239776"
+    start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 6"
-            timeseries_attribute_id = "012d70e3-8f40-40af-9c0a-5d84fc239776"
-            start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 10, 1, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -682,13 +688,14 @@ def use_case_7():
     Time interval:              5.09.2021 - 15.09.2021
 
     """
+    use_case_name = "Use case 7"
+    timeseries_attribute_id = "7608c9e2-c4fc-4570-b5b2-069f29a34f22"
+    start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 7"
-            timeseries_attribute_id = "7608c9e2-c4fc-4570-b5b2-069f29a34f22"
-            start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -746,14 +753,15 @@ def use_case_8():
     Time interval:              5.9.2021 - 15.9.2021
 
     """
+    use_case_name = "Use case 8"
+    start_object_guid = "36395abf-9a39-40ef-b29c-b1d59db855e3"
+    search_query = "*[.Type=Reservoir].ReservoirVolume_operative"
+    start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 8"
-            start_object_guid = "36395abf-9a39-40ef-b29c-b1d59db855e3"
-            search_query = "*[.Type=Reservoir].ReservoirVolume_operative"
-            start = datetime(2021, 9, 5, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -793,14 +801,15 @@ def use_case_9():
     Calculation expression:     ## = @GetTsAsOfTime(@t('.Inflow'),'20210907000000000')
 
     """
+    use_case_name = "Use case 9"
+    timeseries_attribute_id = "333a4648-bd2a-4331-acd8-ab88e4a1a5f5"
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
+    historical_date = datetime(2021, 9, 7, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 9"
-            timeseries_attribute_id = "333a4648-bd2a-4331-acd8-ab88e4a1a5f5"
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
-            historical_date = datetime(2021, 9, 7, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -863,14 +872,15 @@ def use_case_10():
     Calculation expression:     ## = @GetTsHistoricalVersions(@t('.Inflow'),5)
 
     """
+    use_case_name = "Use case 10"
+    timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
+    max_number_of_versions_to_get = 5
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 10"
-            timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 15, tzinfo=LOCAL_TIME_ZONE)
-            max_number_of_versions_to_get = 5
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -930,13 +940,14 @@ def use_case_11():
     Calculation expression:     ## = @GetAllForecasts(@t('.Inflow'))
 
     """
+    use_case_name = "Use case 11"
+    timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 11"
-            timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 9, 28, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -994,16 +1005,17 @@ def use_case_12():
     Calculation expression:     ## = @GetForecast(@t('.Inflow'),'20210831000000000','20210902000000000','20210901090000000')
 
     """
+    use_case_name = "Use case 12"
+    timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
+    start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
+    end = datetime(2021, 10, 12, tzinfo=LOCAL_TIME_ZONE)
+    forecast_start_min = datetime(2021, 8, 31, tzinfo=LOCAL_TIME_ZONE)
+    forecast_start_max = datetime(2021, 9, 2, tzinfo=LOCAL_TIME_ZONE)
+    available_at_timepoint = datetime(2021, 9, 1, 9, tzinfo=LOCAL_TIME_ZONE)
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 12"
-            timeseries_attribute_id = "f84ab6f7-0c92-4006-8fc3-ffa0c9e2cefd"
-            start = datetime(2021, 9, 1, tzinfo=LOCAL_TIME_ZONE)
-            end = datetime(2021, 10, 12, tzinfo=LOCAL_TIME_ZONE)
-            forecast_start_min = datetime(2021, 8, 31, tzinfo=LOCAL_TIME_ZONE)
-            forecast_start_max = datetime(2021, 9, 2, tzinfo=LOCAL_TIME_ZONE)
-            available_at_timepoint = datetime(2021, 9, 1, 9, tzinfo=LOCAL_TIME_ZONE)
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1065,15 +1077,15 @@ def use_case_13():
     Search expression:  *[.Type=WindPark]
 
     """
+    use_case_name = "Use case 13"
+    start_object_guid = uuid.UUID(
+        "d9673f4f-d117-4c1e-9ffd-0e533a644728"
+    )  # Model/MeshTEK/Mesh/Norge/Wind
+    search_query = "*[.Type=WindPark]"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 13"
-            start_object_guid = uuid.UUID(
-                "d9673f4f-d117-4c1e-9ffd-0e533a644728"
-            )  # Model/MeshTEK/Mesh/Norge/Wind
-            search_query = "*[.Type=WindPark]"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1100,16 +1112,16 @@ def use_case_14():
     New object's type:  WindPark
 
     """
+    use_case_name = "Use case 14"
+    parent_object_guid = uuid.UUID(
+        "d9673f4f-d117-4c1e-9ffd-0e533a644728"
+    )  # Model/MeshTEK/Mesh/Norge/Wind
+    new_object_type_name = "WindPark"
+    new_objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 14"
-            parent_object_guid = uuid.UUID(
-                "d9673f4f-d117-4c1e-9ffd-0e533a644728"
-            )  # Model/MeshTEK/Mesh/Norge/Wind
-            new_object_type_name = "WindPark"
-            new_objects_names = ["NewWindPark", "NewWindPark2", "NewWindPark3"]
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1168,13 +1180,13 @@ def use_case_15():
     Objects to delete:  NewWindPark2, NewWindPark3
 
     """
+    use_case_name = "Use case 15"
+    parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
+    objects_names = ["NewWindPark2", "NewWindPark3"]
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 15"
-            parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
-            objects_names = ["NewWindPark2", "NewWindPark3"]
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1200,14 +1212,14 @@ def use_case_16():
     New object name:    NewestWindPark
 
     """
+    use_case_name = "Use case 16"
+    parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
+    old_object_name = "NewWindPark"
+    new_object_name = "NewestWindPark"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 16"
-            parent_object_path = "Model/MeshTEK/Mesh/Norge/Wind"
-            old_object_name = "NewWindPark"
-            new_object_name = "NewestWindPark"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1235,11 +1247,12 @@ def use_case_17():
     Object path: Model/MeshTEK/Mesh/Norge/Wind/Bessaker which has guid d3c41952-504d-4a47-b06c-c07e901c1c5b
 
     """
+    use_case_name = "Use case 17"
+    object_guid = uuid.UUID("d3c41952-504d-4a47-b06c-c07e901c1c5b")
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 17"
-            object_guid = uuid.UUID("d3c41952-504d-4a47-b06c-c07e901c1c5b")
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -1272,12 +1285,12 @@ def use_case_18():
     Namespace:      Wind
 
     """
+    use_case_name = "Use case 18"
+    object_guid = uuid.UUID("d3c41952-504d-4a47-b06c-c07e901c1c5b")
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 18"
-            object_guid = uuid.UUID("d3c41952-504d-4a47-b06c-c07e901c1c5b")
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1319,12 +1332,12 @@ def use_case_19():
                             MaxProduction (new value = 50)
 
     """
+    use_case_name = "Use case 19"
+    object_path = "Model/MeshTEK/Mesh/Norge/Wind/NewWindPark"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 19"
-            object_path = "Model/MeshTEK/Mesh/Norge/Wind/NewWindPark"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1393,7 +1406,7 @@ def use_case_20():
                 session.commit()
 
         except grpc.RpcError as e:
-            print(f"use case 20 resulted in a error: {e}")
+            print(f"{use_case_name} resulted in an error: {e}")
 
 
 def use_case_21():
@@ -1406,11 +1419,12 @@ def use_case_21():
     Time interval:  10.01.2020 - 27.03.2022
 
     """
+    use_case_name = "Use case 21"
+    attribute_path = "Model/MeshTEK/Mesh/Norge/Målestasjoner/Nidelva/Kobberdammen.HydStationRatingCurve"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 21"
-            attribute_path = "Model/MeshTEK/Mesh/Norge/Målestasjoner/Nidelva/Kobberdammen.HydStationRatingCurve"
             start = datetime(2012, 1, 10, tzinfo=LOCAL_TIME_ZONE)
             end = datetime(2022, 3, 27, tzinfo=LOCAL_TIME_ZONE)
 
@@ -1453,12 +1467,14 @@ def use_case_22():
 
     Attribute path: Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve
     """
+    use_case_name = "Use case 22"
+    attribute_path = (
+        "Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve"
+    )
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 22"
-            attribute_path = "Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1518,12 +1534,14 @@ def use_case_23():
     Attribute path: Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve
 
     """
+    use_case_name = "Use case 23"
+    attribute_path = (
+        "Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve"
+    )
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 23"
-            attribute_path = "Model/MeshTEK/Mesh/Norge/Målestasjoner/Orkla/Svorkmo.HydStationRatingCurve"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1609,11 +1627,12 @@ def use_case_24():
     Object path: Model/MeshTEK/Mesh/Norge/Wind/Bessaker
 
     """
+    use_case_name = "Use case 24"
+    object_path = "Model/MeshTEK/Mesh/Norge/Wind/Bessaker"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 24"
-            object_path = "Model/MeshTEK/Mesh/Norge/Wind/Bessaker"
 
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
@@ -1659,12 +1678,12 @@ def use_case_25():
     Attribute path: Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket
 
     """
+    use_case_name = "Use case 25"
+    attribute_path = "Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 25"
-            attribute_path = "Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1712,12 +1731,12 @@ def use_case_26():
     Attribute path: Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket
 
     """
+    use_case_name = "Use case 26"
+    attribute_path = "Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket"
+
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-            use_case_name = "Use case 26"
-            attribute_path = "Model/MeshTEK/Mesh/Norge/Wind/Vikåsen.to_EnergyMarket"
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
