@@ -57,33 +57,22 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
     Args:
         proto_attribute: protobuf Attribute returned from the gRPC methods.
     """
-    attribute_value_type = None
+    attribute_value_type = proto_attribute.value_type
 
-    # check if this is a singular attribute or a collection
-    if proto_attribute.HasField("singular_value"):
-        attribute_value_type = proto_attribute.singular_value.WhichOneof(
-            PROTO_VALUE_ONE_OF_FIELD_NAME
-        )
-    elif len(proto_attribute.collection_values) > 0:
-        # it is enough to check only value type of the first element in the collection
-        attribute_value_type = proto_attribute.collection_values[0].WhichOneof(
-            PROTO_VALUE_ONE_OF_FIELD_NAME
-        )
-
-    if attribute_value_type == "timeseries_value":
+    if attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_TIMESERIES:
         attribute = TimeseriesAttribute(proto_attribute)
-    elif attribute_value_type == "ownership_relation_value":
+    elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION:
         attribute = OwnershipRelationAttribute(proto_attribute)
-    elif attribute_value_type == "link_relation_value":
+    elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_LINK_RELATION:
         attribute = LinkRelationAttribute(proto_attribute)
-    elif attribute_value_type == "versioned_link_relation_value":
+    elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION:
         attribute = VersionedLinkRelationAttribute(proto_attribute)
     elif attribute_value_type in (
-        "int_value",
-        "double_value",
-        "boolean_value",
-        "string_value",
-        "utc_time_value",
+        core_pb2.ATTRIBUTE_VALUE_TYPE_INT,
+        core_pb2.ATTRIBUTE_VALUE_TYPE_DOUBLE,
+        core_pb2.ATTRIBUTE_VALUE_TYPE_BOOL,
+        core_pb2.ATTRIBUTE_VALUE_TYPE_STRING,
+        core_pb2.ATTRIBUTE_VALUE_TYPE_UTC_TIME,
     ):
         attribute = SimpleAttribute(proto_attribute)
     else:
@@ -118,7 +107,7 @@ class AttributeBase:
             for tag in proto_definition.tags:
                 self.tags.append(tag)
             self.namespace: str = proto_definition.name_space
-            self.value_type: str = proto_definition.value_type
+            self.type_name: str = proto_definition.type_name
             self.minimum_cardinality: int = proto_definition.minimum_cardinality
             self.maximum_cardinality: int = proto_definition.maximum_cardinality
 
@@ -147,12 +136,12 @@ class AttributeBase:
                 f"\t definition name: {self.definition.name}\n"
                 f"\t definition id: {self.definition.id}\n"
                 f"\t definition path: {self.definition.path}\n"
+                f"\t definition type name: {self.definition.type_name}\n"
                 f"\t description: {self.definition.description}\n"
                 f"\t tags: {self.definition.tags}\n"
                 f"\t namespace: {self.definition.namespace}\n"
-                f"\t value_type: {self.definition.value_type}\n"
-                f"\t minimum_cardinality: {self.definition.minimum_cardinality}\n"
-                f"\t maximum_cardinality: {self.definition.maximum_cardinality}"
+                f"\t minimum cardinality: {self.definition.minimum_cardinality}\n"
+                f"\t maximum cardinality: {self.definition.maximum_cardinality}"
             )
 
         return message
@@ -218,12 +207,14 @@ class SimpleAttribute(AttributeBase):
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
 
-        if proto_attribute.HasField("singular_value"):
-            self.value = _get_attribute_value(proto_attribute.singular_value)
-        elif len(proto_attribute.collection_values) > 0:
+        if proto_attribute.value_type_collection:
             self.value = []
-            for value in proto_attribute.collection_values:
-                self.value.append(_get_attribute_value(value))
+            for proto_value in proto_attribute.values:
+                value = _get_attribute_value(proto_value)
+                if value is not None:
+                    self.value.append(value)
+        else:
+            self.value = _get_attribute_value(proto_attribute.values[0])
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
@@ -279,17 +270,11 @@ class OwnershipRelationAttribute(AttributeBase):
         super().__init__(proto_attribute)
 
         self.target_object_ids: List[uuid.UUID] = []
-        if proto_attribute.HasField("singular_value"):
+
+        for value in proto_attribute.values:
             self.target_object_ids.append(
-                _from_proto_guid(
-                    proto_attribute.singular_value.ownership_relation_value.target_object_id
-                )
+                _from_proto_guid(value.ownership_relation_value.target_object_id)
             )
-        elif len(proto_attribute.collection_values) > 0:
-            for value in proto_attribute.collection_values:
-                self.target_object_ids.append(
-                    _from_proto_guid(value.ownership_relation_value.target_object_id)
-                )
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
@@ -346,16 +331,10 @@ class LinkRelationAttribute(AttributeBase):
 
         self.target_object_ids: List[uuid.UUID] = []
 
-        if proto_attribute.HasField("singular_value"):
-            proto_values = [proto_attribute.singular_value]
-        else:
-            proto_values = proto_attribute.collection_values
-
-        for proto_value in proto_values:
-            if proto_value.link_relation_value.HasField("target_object_id"):
-                self.target_object_ids.append(
-                    _from_proto_guid(proto_value.link_relation_value.target_object_id)
-                )
+        for proto_value in proto_attribute.values:
+            self.target_object_ids.append(
+                _from_proto_guid(proto_value.link_relation_value.target_object_id)
+            )
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
@@ -412,12 +391,7 @@ class VersionedLinkRelationAttribute(AttributeBase):
             VersionedLinkRelationAttribute.VersionedLinkRelationEntry
         ] = []
 
-        if proto_attribute.HasField("singular_value"):
-            proto_values = [proto_attribute.singular_value]
-        else:
-            proto_values = proto_attribute.collection_values
-
-        for proto_value in proto_values:
+        for proto_value in proto_attribute.values:
             versions: List[LinkRelationVersion] = []
 
             for proto_version in proto_value.versioned_link_relation_value.versions:
@@ -486,24 +460,24 @@ class TimeseriesAttribute(AttributeBase):
     def __init__(self, proto_attribute: core_pb2.Attribute):
         super().__init__(proto_attribute)
 
-        if proto_attribute.HasField("singular_value"):
-            proto_value = proto_attribute.singular_value.timeseries_value
-
-            if proto_value.HasField("time_series_resource"):
-                self.time_series_resource = (
-                    TimeseriesResource._from_proto_timeseries_resource(
-                        proto_value.time_series_resource
-                    )
-                )
-            else:
-                self.time_series_resource = (
-                    None  # for typing hints: "TimeseriesResource | None"
-                )
-
-            self.is_local_expression: bool = proto_value.is_local_expression
-            self.expression: str = proto_value.expression
-        elif len(proto_attribute.collection_values) > 0:
+        if len(proto_attribute.values) > 1:
             raise TypeError("time series collection attribute is not supported")
+
+        proto_value = proto_attribute.values[0].timeseries_value
+
+        if proto_value.HasField("time_series_resource"):
+            self.time_series_resource = (
+                TimeseriesResource._from_proto_timeseries_resource(
+                    proto_value.time_series_resource
+                )
+            )
+        else:
+            self.time_series_resource = (
+                None  # for typing hints: "TimeseriesResource | None"
+            )
+
+        self.is_local_expression: bool = proto_value.is_local_expression
+        self.expression: str = proto_value.expression
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):

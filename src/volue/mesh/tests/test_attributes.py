@@ -58,7 +58,7 @@ def verify_plant_raw_timeseries_attribute(
 
     if is_definition:
         assert attribute.definition.description == ""
-        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+        assert attribute.definition.type_name == "TimeseriesAttributeDefinition"
         assert attribute.definition.minimum_cardinality == 1
         assert attribute.definition.maximum_cardinality == 1
         assert attribute.definition.template_expression == ""
@@ -76,7 +76,7 @@ def verify_plant_double_attribute(
 
     if is_definition:
         assert attribute.definition.description == ""
-        assert attribute.definition.value_type == "DoubleAttributeDefinition"
+        assert attribute.definition.type_name == "DoubleAttributeDefinition"
         assert attribute.definition.minimum_cardinality == 1
         assert attribute.definition.maximum_cardinality == 1
         assert attribute.definition.default_value == 1000
@@ -111,7 +111,7 @@ def verify_time_series_attribute_with_calculation(
 
     if is_definition:
         assert attribute.definition.description == ""
-        assert attribute.definition.value_type == "TimeseriesAttributeDefinition"
+        assert attribute.definition.type_name == "TimeseriesAttributeDefinition"
         assert attribute.definition.minimum_cardinality == 1
         assert attribute.definition.maximum_cardinality == 1
         assert attribute.definition.template_expression == template_expression
@@ -317,7 +317,7 @@ def test_get_bool_array_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == "Array of bools"
-            assert attribute.definition.value_type == "BooleanArrayAttributeDefinition"
+            assert attribute.definition.type_name == "BooleanArrayAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 0
             assert attribute.definition.maximum_cardinality == 10
         else:
@@ -346,7 +346,7 @@ def test_get_xy_set_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "XYSetAttributeDefinition"
+            assert attribute.definition.type_name == "XYSetAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
         else:
@@ -376,7 +376,7 @@ def test_get_utc_time_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "UtcDateTimeAttributeDefinition"
+            assert attribute.definition.type_name == "UtcDateTimeAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
             assert attribute.definition.default_value == "UTC20220510072415"
@@ -407,7 +407,7 @@ def test_get_boolean_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "BooleanAttributeDefinition"
+            assert attribute.definition.type_name == "BooleanAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
             assert attribute.definition.default_value == True
@@ -437,7 +437,7 @@ def test_get_string_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "StringAttributeDefinition"
+            assert attribute.definition.type_name == "StringAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
             assert attribute.definition.default_value == default_string_value
@@ -485,7 +485,7 @@ def test_get_rating_curve_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "RatingCurveAttributeDefinition"
+            assert attribute.definition.type_name == "RatingCurveAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
         else:
@@ -573,7 +573,7 @@ def test_get_one_to_one_ownership_relation_attribute(session, full_attribute_inf
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "ElementAttributeDefinition"
+            assert attribute.definition.type_name == "ElementAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
             assert attribute.definition.target_object_type_name == "ChimneyElementType"
@@ -611,8 +611,7 @@ def test_get_one_to_many_ownership_relation_attribute(session, full_attribute_in
         if full_attribute_info:
             assert attribute.definition.description == ""
             assert (
-                attribute.definition.value_type
-                == "ElementCollectionAttributeDefinition"
+                attribute.definition.type_name == "ElementCollectionAttributeDefinition"
             )
             assert attribute.definition.minimum_cardinality == 0
             assert attribute.definition.maximum_cardinality == 100
@@ -651,7 +650,7 @@ def test_get_one_to_one_link_relation_attribute(session, full_attribute_info):
 
         if full_attribute_info:
             assert attribute.definition.description == ""
-            assert attribute.definition.value_type == "ReferenceAttributeDefinition"
+            assert attribute.definition.type_name == "ReferenceAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
             assert attribute.definition.target_object_type_name == "ChimneyElementType"
@@ -685,7 +684,7 @@ def test_get_one_to_many_link_relation_attribute(session, full_attribute_info):
         if full_attribute_info:
             assert attribute.definition.description == ""
             assert (
-                attribute.definition.value_type
+                attribute.definition.type_name
                 == "ReferenceCollectionAttributeDefinition"
             )
             assert attribute.definition.minimum_cardinality == 0
@@ -726,7 +725,7 @@ def test_get_versioned_one_to_one_link_relation_attribute(session, full_attribut
         if full_attribute_info:
             assert attribute.definition.description == ""
             assert (
-                attribute.definition.value_type == "ReferenceSeriesAttributeDefinition"
+                attribute.definition.type_name == "ReferenceSeriesAttributeDefinition"
             )
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
@@ -775,7 +774,7 @@ def test_get_versioned_one_to_many_link_relation_attribute(
         if full_attribute_info:
             assert attribute.definition.description == ""
             assert (
-                attribute.definition.value_type
+                attribute.definition.type_name
                 == "ReferenceSeriesCollectionAttributeDefinition"
             )
             assert attribute.definition.minimum_cardinality == 0

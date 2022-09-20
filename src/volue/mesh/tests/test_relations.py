@@ -152,12 +152,7 @@ def test_update_one_to_many_link_relation_attribute_with_empty_target_object(ses
     )
 
     attribute = session.get_attribute(attribute_path)
-    # TODO - fix it, currently all attributes with empty values
-    # (e.g. empty collection attributes) are interpreted as AttributeBase,
-    # so we can't use something like this:
-    # assert len(attribute.target_object_ids) == 0
-    assert isinstance(attribute, AttributeBase)
-    assert not isinstance(attribute, LinkRelationAttribute)
+    assert len(attribute.target_object_ids) == 0
 
 
 @pytest.mark.database
@@ -297,12 +292,8 @@ def test_update_versioned_one_to_one_link_relation_attribute_remove_all_versions
 
     attribute = session.get_attribute(attribute_path)
 
-    # TODO - fix it, currently all attributes with empty values
-    # (e.g. empty collection attributes) are interpreted as AttributeBase,
-    # so we can't use something like this:
-    # assert len(attribute.entries) == 1
-    assert isinstance(attribute, AttributeBase)
-    assert not isinstance(attribute, VersionedLinkRelationAttribute)
+    assert len(attribute.entries) == 1
+    assert len(attribute.entries[0].versions) == 0
 
 
 @pytest.mark.database
@@ -524,12 +515,8 @@ async def test_update_versioned_link_relations_async(async_session):
 
     attribute = await async_session.get_attribute(attribute_path)
 
-    # TODO - fix it, currently all attributes with empty values
-    # (e.g. empty collection attributes) are interpreted as AttributeBase,
-    # so we can't use something like this:
-    # assert len(attribute.entries) == 1
-    assert isinstance(attribute, AttributeBase)
-    assert not isinstance(attribute, VersionedLinkRelationAttribute)
+    assert len(attribute.entries) == 1
+    assert len(attribute.entries[0].versions) == 0
 
 
 if __name__ == "__main__":
