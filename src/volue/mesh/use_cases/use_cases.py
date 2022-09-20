@@ -151,6 +151,22 @@ def get_object_information(object: Object):
     return message
 
 
+def get_versioned_xy_sets_information(xy_sets: List[XySet]):
+    """Create a printable message for versioned XY sets."""
+    message = ""
+
+    for i, xy_set in enumerate(xy_sets, 1):
+        message += (
+            f"XY set version {i} "
+            f"(valid from time: {xy_set.valid_from_time.astimezone(tz=LOCAL_TIME_ZONE):%Y-%m-%dT%H:%M:%S %Z}):\n"
+        )
+
+        for xy_curve in xy_set.xy_curves:
+            message += f"\t{xy_curve}\n"
+
+    return message
+
+
 def get_link_relation_attribute_information(
     attribute: LinkRelationAttribute, session: Connection.Session
 ):
@@ -1389,7 +1405,8 @@ def use_case_20():
             print("--------------------------------------------------------------")
 
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
-            print(f"Attribute value before update: {xy_sets}")
+            print(f"Attribute value before update:")
+            print(get_versioned_xy_sets_information(xy_sets))
 
             start_time = datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE)
             new_xy_set = XySet(
@@ -1399,7 +1416,8 @@ def use_case_20():
             session.update_xy_sets(target, start_time, datetime.max, [new_xy_set])
 
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
-            print(f"Attribute value after update: {xy_sets}")
+            print(f"Attribute value after update:")
+            print(get_versioned_xy_sets_information(xy_sets))
 
             # Commit changes
             if COMMIT_CHANGES:
