@@ -667,7 +667,7 @@ def use_case_6():
             pandas_dataframe["utc_time"] = pd.to_datetime(
                 pandas_dataframe["utc_time"], utc=True
             ).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append((f"original", pandas_dataframe))
+            path_and_pandas_dataframe.append(("original", pandas_dataframe))
 
             # Transform time series from breakpoint to hourly
             timeseries_transformed = session.transform_functions(
@@ -734,7 +734,7 @@ def use_case_7():
             pandas_dataframe["utc_time"] = pd.to_datetime(
                 pandas_dataframe["utc_time"], utc=True
             ).dt.tz_convert(LOCAL_TIME_ZONE)
-            path_and_pandas_dataframe.append((f"original", pandas_dataframe))
+            path_and_pandas_dataframe.append(("original", pandas_dataframe))
 
             # Transform time series from hourly to daily
             timeseries_transformed = session.transform_functions(
@@ -1406,7 +1406,7 @@ def use_case_20():
             print("--------------------------------------------------------------")
 
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
-            print(f"Attribute value before update:")
+            print("Attribute value before update:")
             print(get_versioned_xy_sets_information(xy_sets))
 
             start_time = datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE)
@@ -1417,7 +1417,7 @@ def use_case_20():
             session.update_xy_sets(target, start_time, datetime.max, [new_xy_set])
 
             xy_sets = session.get_xy_sets(target, datetime.min, datetime.max)
-            print(f"Attribute value after update:")
+            print("Attribute value after update:")
             print(get_versioned_xy_sets_information(xy_sets))
 
             # Commit changes
