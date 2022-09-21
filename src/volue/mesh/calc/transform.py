@@ -71,7 +71,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
                 "'BREAKPOINT' resolution is unsupported for time series transformation"
             )
 
-        expression = f"## = @TRANSFORM(@t("
+        expression = "## = @TRANSFORM(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
         expression = f"{expression}), '{resolution.name}', '{method.name}'"

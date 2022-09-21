@@ -7,7 +7,7 @@ from __future__ import annotations
 import datetime
 import uuid
 from dataclasses import dataclass, fields
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 import pyarrow as pa
 from google.protobuf import field_mask_pb2, timestamp_pb2

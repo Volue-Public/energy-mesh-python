@@ -49,12 +49,12 @@ def verify_plant_raw_timeseries_attribute(
     verify_plant_base_attribute(attribute, attribute_name, attribute.id, is_definition)
 
     assert attribute.time_series_resource.timeseries_key == 0
-    assert attribute.time_series_resource.temporary == False
+    assert attribute.time_series_resource.temporary is False
     assert attribute.time_series_resource.curve_type == Timeseries.Curve.PIECEWISELINEAR
     assert attribute.time_series_resource.resolution == Timeseries.Resolution.HOUR
     assert attribute.time_series_resource.unit_of_measurement == "Unit2"
     assert attribute.expression == ""
-    assert attribute.is_local_expression == False
+    assert attribute.is_local_expression is False
 
     if is_definition:
         assert attribute.definition.description == ""
@@ -144,7 +144,7 @@ def test_update_timeseries_attribute_with_expression(session):
     for target in targets:
         original_attribute = session.get_timeseries_attribute(target)
         assert original_attribute.expression != new_local_expression
-        assert original_attribute.is_local_expression == False
+        assert original_attribute.is_local_expression is False
 
         session.update_timeseries_attribute(
             target, new_local_expression=new_local_expression
@@ -155,7 +155,7 @@ def test_update_timeseries_attribute_with_expression(session):
         )
         assert updated_attribute.expression == new_local_expression
         assert updated_attribute.definition.template_expression != new_local_expression
-        assert updated_attribute.is_local_expression == True
+        assert updated_attribute.is_local_expression is True
 
         session.rollback()
 
@@ -380,8 +380,8 @@ def test_get_utc_time_attribute(session, full_attribute_info):
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
             assert attribute.definition.default_value == "UTC20220510072415"
-            assert attribute.definition.minimum_value == None
-            assert attribute.definition.maximum_value == None
+            assert attribute.definition.minimum_value is None
+            assert attribute.definition.maximum_value is None
         else:
             assert attribute.definition is None
 
@@ -410,11 +410,11 @@ def test_get_boolean_attribute(session, full_attribute_info):
             assert attribute.definition.type_name == "BooleanAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
-            assert attribute.definition.default_value == True
+            assert attribute.definition.default_value is True
         else:
             assert attribute.definition is None
 
-        assert attribute.value == True
+        assert attribute.value is True
 
 
 @pytest.mark.database
