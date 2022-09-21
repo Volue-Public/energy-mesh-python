@@ -229,33 +229,22 @@
 <span class="sd">    Args:</span>
 <span class="sd">        proto_attribute: protobuf Attribute returned from the gRPC methods.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">attribute_value_type</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">attribute_value_type</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">value_type</span>
 
-    <span class="c1"># check if this is a singular attribute or a collection</span>
-    <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
-        <span class="n">attribute_value_type</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span>
-            <span class="n">PROTO_VALUE_ONE_OF_FIELD_NAME</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1"># it is enough to check only value type of the first element in the collection</span>
-        <span class="n">attribute_value_type</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span>
-            <span class="n">PROTO_VALUE_ONE_OF_FIELD_NAME</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="s2">&quot;timeseries_value&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_TIMESERIES</span><span class="p">:</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">TimeseriesAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="s2">&quot;ownership_relation_value&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION</span><span class="p">:</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">OwnershipRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="s2">&quot;link_relation_value&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_LINK_RELATION</span><span class="p">:</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">LinkRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="s2">&quot;versioned_link_relation_value&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION</span><span class="p">:</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">VersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="ow">in</span> <span class="p">(</span>
-        <span class="s2">&quot;int_value&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;double_value&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;boolean_value&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;string_value&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;utc_time_value&quot;</span><span class="p">,</span>
+        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_INT</span><span class="p">,</span>
+        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_DOUBLE</span><span class="p">,</span>
+        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_BOOL</span><span class="p">,</span>
+        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_STRING</span><span class="p">,</span>
+        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_UTC_TIME</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">SimpleAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -290,7 +279,7 @@
             <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">name_space</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">value_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">value_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">type_name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">minimum_cardinality</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">minimum_cardinality</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">maximum_cardinality</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">maximum_cardinality</span></div>
 
@@ -319,12 +308,12 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> definition name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> definition id: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> definition path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> definition type name: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">type_name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> description: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> tags: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">tags</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> namespace: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">namespace</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> value_type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">value_type</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> minimum_cardinality: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">minimum_cardinality</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> maximum_cardinality: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">maximum_cardinality</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> minimum cardinality: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">minimum_cardinality</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> maximum cardinality: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">maximum_cardinality</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">message</span>
@@ -390,12 +379,14 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">_get_attribute_value</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">value_type_collection</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_get_attribute_value</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">_get_attribute_value</span><span class="p">(</span><span class="n">proto_value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">_get_attribute_value</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
@@ -451,17 +442,11 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">_from_proto_guid</span><span class="p">(</span>
-                    <span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="o">.</span><span class="n">ownership_relation_value</span><span class="o">.</span><span class="n">target_object_id</span>
-                <span class="p">)</span>
+                <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">ownership_relation_value</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">ownership_relation_value</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
-                <span class="p">)</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
@@ -518,16 +503,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
-            <span class="n">proto_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">proto_values</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span>
-
-        <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_values</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;target_object_id&quot;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
-                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_value</span><span class="o">.</span><span class="n">link_relation_value</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+            <span class="p">)</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
@@ -584,12 +563,7 @@
             <span class="n">VersionedLinkRelationAttribute</span><span class="o">.</span><span class="n">VersionedLinkRelationEntry</span>
         <span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
-            <span class="n">proto_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">proto_values</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span>
-
-        <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_values</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">proto_value</span> <span class="ow">in</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="k">for</span> <span class="n">proto_version</span> <span class="ow">in</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">versioned_link_relation_value</span><span class="o">.</span><span class="n">versions</span><span class="p">:</span>
@@ -658,24 +632,24 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;singular_value&quot;</span><span class="p">):</span>
-            <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">singular_value</span><span class="o">.</span><span class="n">timeseries_value</span>
-
-            <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;time_series_resource&quot;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">_from_proto_timeseries_resource</span><span class="p">(</span>
-                        <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="kc">None</span>  <span class="c1"># for typing hints: &quot;TimeseriesResource | None&quot;</span>
-                <span class="p">)</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_local_expression</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">is_local_expression</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">expression</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">collection_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;time series collection attribute is not supported&quot;</span><span class="p">)</span>
+
+        <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">timeseries_value</span>
+
+        <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;time_series_resource&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">_from_proto_timeseries_resource</span><span class="p">(</span>
+                    <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="kc">None</span>  <span class="c1"># for typing hints: &quot;TimeseriesResource | None&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_local_expression</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">is_local_expression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">expression</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
