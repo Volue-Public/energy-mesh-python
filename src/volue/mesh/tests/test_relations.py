@@ -75,12 +75,7 @@ def test_update_one_to_one_link_relation_attribute_with_empty_target_object(sess
     )
 
     attribute = session.get_attribute(attribute_path)
-    assert len(attribute.target_object_ids) == 1
-    # Empty means it has target object ID set to
-    # uuid.UUID("00000000-0000-0000-0000-000000000000").
-    assert attribute.target_object_ids[0] == uuid.UUID(
-        "00000000-0000-0000-0000-000000000000"
-    )
+    assert len(attribute.target_object_ids) == 0
 
 
 @pytest.mark.database

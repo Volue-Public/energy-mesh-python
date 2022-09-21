@@ -580,11 +580,8 @@ def test_get_one_to_one_ownership_relation_attribute(session, full_attribute_inf
         else:
             assert attribute.definition is None
 
-        # SimpleOwnershipAtt is nullable and empty, meaning it has target
-        # object ID set to uuid.UUID("00000000-0000-0000-0000-000000000000").
-        assert attribute.target_object_ids[0] == uuid.UUID(
-            "00000000-0000-0000-0000-000000000000"
-        )
+        # SimpleOwnershipAtt is nullable and empty
+        assert len(attribute.target_object_ids) == 0
 
         # check if __str__ is correct
         print(attribute)
