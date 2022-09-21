@@ -2,22 +2,21 @@
 Tests for volue.mesh.RatingCurveSegment and volue.mesh.RatingCurveVersion.
 """
 
-from datetime import datetime, timedelta
 import operator
 import sys
+from datetime import datetime, timedelta
 
-from dateutil import tz
 import grpc
 import pytest
+from dateutil import tz
 
 from volue import mesh
 from volue.mesh import _base_session
 
-
 ATTRIBUTE_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.RatingCurveAtt"
 
 
-def generate_rating_curve_version(seed: int, valid_from_time: datetime = None):
+def generate_rating_curve_version(seed: int, valid_from_time: datetime):
     x = 0.0
     segments = []
 

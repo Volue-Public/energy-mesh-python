@@ -38,7 +38,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         converted_available_at_timepoint = _convert_datetime_to_mesh_calc_format(
             available_at_timepoint
         )
-        expression = f"## = @GetTsAsOfTime(@t("
+        expression = "## = @GetTsAsOfTime(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
         expression = f"{expression}),'{converted_available_at_timepoint}')\n"
@@ -57,7 +57,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         Returns:
             Mesh calculation expression.
         """
-        expression = f"## = @GetTsHistoricalVersions(@t("
+        expression = "## = @GetTsHistoricalVersions(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
         expression = f"{expression}),{max_number_of_versions_to_get})\n"

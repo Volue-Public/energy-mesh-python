@@ -31,7 +31,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Returns:
             Mesh calculation expression.
         """
-        expression = f"## = @GetAllForecasts(@t("
+        expression = "## = @GetAllForecasts(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
         expression = f"{expression}))\n"
@@ -66,7 +66,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
                 "parameter `forecast_start_max` is provided, it requires providing also `forecast_start_min`"
             )
 
-        expression = f"## = @GetForecast(@t("
+        expression = "## = @GetForecast(@t("
         if search_query:
             expression = f"{expression}'{search_query}'"
         expression = f"{expression})"
