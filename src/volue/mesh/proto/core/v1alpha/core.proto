@@ -478,10 +478,10 @@ message UpdateLinkRelationAttributeRequest {
   MeshId attribute = 2;
 
   // If set to true for a one-to-many link relation (non-versioned) attribute
-  // (`ReferenceCollectionAttribute`) this will append `target_objects` to
+  // (`ReferenceCollectionAttribute`) this will append `target_object_ids` to
   // already existing ones.
   // If set to false then all currently existing target objects will be
-  // replaced by `target_objects`.
+  // replaced by `target_object_ids`.
   //
   // For one-to-one link relation (non-versioned) attribute
   // (`ReferenceAttribute`) this must set to false.
@@ -777,10 +777,26 @@ message Attribute {
   // `Attribute` message. This is because those attributes have potentially
   // large values, and specialized methods exist to handle those values.
 
-  // Singular type can be e.g.: double attribute or time series attribute
-  AttributeValue singular_value = 5;
-  // Collection of types can be e.g.: collection of double attributes
-  repeated AttributeValue collection_values = 6;
+  repeated AttributeValue values = 5;
+
+  // For nullable or empty collection types no values will be returned. In such
+  // case this `value_type` could be used to check attributes value type.
+  AttributeValueType value_type = 6;
+  // If the `value_type` is a collection then this flag is set to `True`.
+  bool value_type_collection = 7;
+}
+
+enum AttributeValueType {
+  ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = 0;
+  ATTRIBUTE_VALUE_TYPE_INT = 1;
+  ATTRIBUTE_VALUE_TYPE_DOUBLE = 2;
+  ATTRIBUTE_VALUE_TYPE_BOOL = 3;
+  ATTRIBUTE_VALUE_TYPE_STRING = 4;
+  ATTRIBUTE_VALUE_TYPE_UTC_TIME = 5;
+  ATTRIBUTE_VALUE_TYPE_TIMESERIES = 6;
+  ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION = 7;
+  ATTRIBUTE_VALUE_TYPE_LINK_RELATION = 8;
+  ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION = 9;
 }
 
 message AttributeValue {
@@ -849,7 +865,7 @@ message AttributeDefinition {
   // they are concatenated with dots '.', e.g.:
   //   namespace1.namespace2
   string name_space = 6;
-  string value_type = 7;
+  string type_name = 7;
 
   // Specifies minimum and maximum size of a collection of attributes.
   // Minimum and maximum cardinality applies only to a collection of attributes

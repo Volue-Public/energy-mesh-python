@@ -15,9 +15,11 @@ from volue.mesh import (
     LinkRelationAttribute,
     LinkRelationVersion,
     Object,
+    OwnershipRelationAttribute,
     RatingCurveSegment,
     RatingCurveVersion,
     Timeseries,
+    TimeseriesAttribute,
     TimeseriesResource,
     VersionedLinkRelationAttribute,
     XyCurve,
@@ -40,7 +42,7 @@ SHOW_PLOT = True
 SAVE_TO_CSV = False
 # Some use cases write new points or update existing objects
 # Set this flag to True to commit the changes (made in use cases) to Mesh
-COMMIT_CHANGES = True
+COMMIT_CHANGES = False
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', 'flow_drop_4', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = "all"
@@ -761,7 +763,7 @@ def use_case_7():
 def use_case_8():
     """
     Scenario:
-    We want to summarize an array of time series
+    We want to summarize an array of time series.
 
     Start point:                36395abf-9a39-40ef-b29c-b1d59db855e3
     Search expression:          *[.Type=Reservoir].ReservoirVolume_operative
@@ -1156,8 +1158,7 @@ def use_case_14():
 
             for attribute in parent_object.attributes.values():
                 if (
-                    attribute.definition.value_type
-                    == "ElementCollectionAttributeDefinition"
+                    isinstance(attribute, OwnershipRelationAttribute)
                     and attribute.definition.target_object_type_name
                     == new_object_type_name
                 ):
@@ -1278,7 +1279,7 @@ def use_case_17():
 
             number = 1
             for attribute in object.attributes.values():
-                if attribute.definition.value_type != "TimeseriesAttributeDefinition":
+                if not isinstance(attribute, TimeseriesAttribute):
                     print(
                         f"{number}. \n"
                         f"-------------------------------------------\n"
@@ -1325,7 +1326,7 @@ def use_case_18():
 
             number = 1
             for attribute in object.attributes.values():
-                if attribute.definition.value_type != "TimeseriesAttributeDefinition":
+                if not isinstance(attribute, TimeseriesAttribute):
                     print(
                         f"{number}. \n"
                         f"-------------------------------------------\n"
