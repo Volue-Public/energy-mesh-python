@@ -3,6 +3,48 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
+`Mesh Python SDK version 1.0.0 (Release Candidate) <https://github.com/PowelAS/sme-mesh-python/releases/tag/v1.0.0>`_
+*************************************************************************************************************************
+
+------------
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.6.1
+- Python [3.7.1, 3.8 and 3.9]
+- Tested with Mesh server version 2.6.1.X (TODO: update this after testing)
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- Implement XY sets. :issue:`230`
+- Implement link relations. :issue:`229`
+- Implement RatingCurve attribute. :issue:`228`
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- **Enhancement:** Add example with traversing a model using the relation attributes. :issue:`309`
+- **Enhancement:** Support for instances of *Object* and *AttributeBase* as *target* for session methods. :issue:`267`
+- **Enhancement:** Unify arguments of all session methods. :issue:`266`
+- **Enhancement:** Ownership relation attribute improvements. PR :pull:`296`
+- **Enhancement:** Improve examples for reading and writing time series. PR :pull:`293`
+- **Enhancement:** Extend time series point flags. PR :pull:`272`
+- **Fixed:** Attributes with empty values are instantiated as *AttributeBase*. :issue:`306`
+- **Fixed:** Fix argument typing hints in *calc* module. PR :pull:`286`
+- **Fixed:** Fix async *search_for_objects*. PR :pull:`281`
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+::
+
+    python -m pip install --force-reinstall git+https://github.com/PowelAS/sme-mesh-python@v1.0.0
+
+
 `Mesh Python SDK version 0.0.4 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.5>`_
 *************************************************************************************************************************
 
