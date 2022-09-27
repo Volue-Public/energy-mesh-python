@@ -42,7 +42,7 @@ SHOW_PLOT = True
 SAVE_TO_CSV = False
 # Some use cases write new points or update existing objects
 # Set this flag to True to commit the changes (made in use cases) to Mesh
-COMMIT_CHANGES = False
+COMMIT_CHANGES = True
 # Which use case to run
 # ['all', 'flow_drop_2', 'flow_drop_3', 'flow_drop_4', '1' ... '<number_of_use_cases>']
 RUN_USE_CASE = "all"
@@ -1524,7 +1524,12 @@ def use_case_22():
             session.update_rating_curve_versions(
                 target=attribute_path,
                 start_time=new_versions[0].valid_from_time,
-                end_time=datetime.max,
+                # Replacement interval end time is exclusive,
+                # i.e.: <start_time, end_time).
+                # That is why we need to add some small time fraction to make
+                # sure the last version's `valid_from_time` is within the
+                # replacement interval.
+                end_time=new_versions[-1].valid_from_time + timedelta(microseconds=1),
                 new_versions=new_versions,
             )
 
