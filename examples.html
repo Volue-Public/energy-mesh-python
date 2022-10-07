@@ -96,17 +96,21 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#running-examples">Running examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-timeseries-with-pandas">Using timeseries with pandas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#authorization">Authorization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect">Connect</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect-asynchronously">Connect, asynchronously</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#working-with-sessions">Working with sessions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-version">Get version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#read-timeseries">Read timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#read-timeseries-asynchronously">Read timeseries, asynchronously</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#write-timeseries">Write timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#write-timeseries-asynchronously">Write timeseries, asynchronously</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#search-for-timeseries-attributes">Search for timeseries attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#read-time-series">Read time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#read-time-series-asynchronously">Read time series, asynchronously</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#read-and-process-time-series-asynchronously">Read and process time series, asynchronously</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#search-for-time-series-attributes">Search for time series attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#traverse-model">Traverse model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-time-series-with-pandas">Using time series with pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-rating-curves">Working with rating curves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-sessions">Working with sessions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-xy-sets">Working with XY sets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#write-time-series">Write time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#write-time-series-asynchronously">Write time series, asynchronously</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
@@ -235,158 +239,6 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
-    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="using-timeseries-with-pandas">
-<h2>Using timeseries with pandas<a class="headerlink" href="#using-timeseries-with-pandas" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
-
-<span class="kn">import</span> <span class="nn">grpc</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
-
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
-
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
-
-    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Name=SomePowerPlantChimney2].TsRawAtt&quot;</span>  <span class="c1"># make sure only 1 time series is returned</span>
-    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
-
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="c1"># first lets find a time series in our model</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span>
-            <span class="p">)</span>
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No such time series attribute in the given model/database&quot;</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># pick the first time series and do some operations with it</span>
-        <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on timeseries with path: &quot;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-
-        <span class="c1"># check for example the curve type of the connected physical time series</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># now lets write some data to it</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
-            <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
-            <span class="c1"># flags - [pa.uint32]</span>
-            <span class="c1"># value - [pa.float64]</span>
-
-            <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">72</span>
-            <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">):</span>
-                <span class="n">hours</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">24</span>
-                <span class="n">days</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">)</span>
-                <span class="p">)</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
-                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">days</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
-
-            <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
-
-            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
-            <span class="n">arrow_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
-
-            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span>
-                <span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span>
-            <span class="p">)</span>
-            <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
-
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="n">local_time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">tzlocal</span><span class="p">()</span>
-
-        <span class="c1"># now lets read from it</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># lets use local time zone (read from operating system settings)</span>
-            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
-            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
-
-            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
-            <span class="p">)</span>
-
-            <span class="c1"># convert to pandas format</span>
-            <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
-            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-
-            <span class="c1"># lets convert it back to local time zone</span>
-            <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
-                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
-
-            <span class="c1"># notice that depending on the local time zone there is a shift in the data</span>
-            <span class="c1"># e.g. for UTC+2 time zone, first 2 values will be NaN, because writing time series points in the previous step</span>
-            <span class="c1"># is using time zone naive datetime object, so they are treated as UTC.</span>
-
-            <span class="c1"># do some further processing</span>
-
-        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># now lets read transformations from it (transform to days)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transform resolution to days:&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
-            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
-
-            <span class="c1"># Transform function may take optionally a time zone argument.</span>
-            <span class="c1"># Refer to `transform` documentation for more details.</span>
-            <span class="c1"># If you are using `LOCAL` or `STANDARD` time zone then make sure</span>
-            <span class="c1"># the Mesh server is operating in the same time zone or adjust properly.</span>
-            <span class="n">transformed_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
-                <span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
-
-            <span class="c1"># convert to pandas format</span>
-            <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
-            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">transformed_timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
-
-            <span class="c1"># lets convert it back to local time zone</span>
-            <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
-                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
-
-            <span class="c1"># do some further processing</span>
-
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read transformed timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># optionally discard changes</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="c1"># This will search for a given time series, write some data,</span>
-    <span class="c1"># read it and convert to pandas format.</span>
-
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 </pre></div>
@@ -547,55 +399,6 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="working-with-sessions">
-<h2>Working with sessions<a class="headerlink" href="#working-with-sessions" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
-
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing different ways of working with sessions.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Configure the connection you want.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-
-    <span class="c1"># 1. Create a session, open and close session.</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. You now have a new open session&quot;</span><span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="c1"># 2. Create session using the with statement.</span>
-    <span class="c1"># Session will be created, opened and closed within the &#39;with&#39; statement scope</span>
-    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. You now have a new open session&quot;</span><span class="p">)</span>
-
-    <span class="c1"># 3. Connecting to a potentially open session.</span>
-    <span class="c1"># Session ids can be found in the session object:</span>
-    <span class="c1"># session.session_id</span>
-    <span class="c1"># Note: If the session_id is not the id of an open session,</span>
-    <span class="c1"># the server will create a new one for you.</span>
-    <span class="c1"># Set the session id you want to connect to</span>
-    <span class="n">session_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;123e4567-e89b-12d3-a456-556642440000&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you want to connect to: </span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
-    <span class="c1"># Try connecting to that session id, if it does not exist, a new one will be created without warning</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span>
-    <span class="p">)</span>
-    <span class="c1"># Check which session you are connected to and close it</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you are to connect to: </span><span class="si">{</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
-    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="get-version">
 <h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
@@ -629,8 +432,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="read-timeseries">
-<h2>Read timeseries<a class="headerlink" href="#read-timeseries" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="read-time-series">
+<h2>Read time series<a class="headerlink" href="#read-time-series" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -694,8 +497,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="read-timeseries-asynchronously">
-<h2>Read timeseries, asynchronously<a class="headerlink" href="#read-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="read-time-series-asynchronously">
+<h2>Read time series, asynchronously<a class="headerlink" href="#read-time-series-asynchronously" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -760,8 +563,585 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="write-timeseries">
-<h2>Write timeseries<a class="headerlink" href="#write-timeseries" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="read-and-process-time-series-asynchronously">
+<h2>Read and process time series, asynchronously<a class="headerlink" href="#read-and-process-time-series-asynchronously" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">process_timeseries_values</span><span class="p">(</span><span class="n">arrow_table</span><span class="p">):</span>
+    <span class="c1"># the processing can also be an async IO call</span>
+    <span class="c1"># to e.g. separate service</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing completed - </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">arrow_table</span><span class="p">)</span><span class="si">}</span><span class="s2"> points were processed&quot;</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># read operation can be a long running operation</span>
+    <span class="c1"># with asyncio API we can switch to do something else</span>
+    <span class="c1"># while waiting for the read operation to complete</span>
+    <span class="c1"># (e.g. doing processing for already returned time series)</span>
+    <span class="n">timeseries_read</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">timeseries_read</span><span class="o">.</span><span class="n">arrow_table</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">handle_timeseries</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">arrow_table</span> <span class="o">=</span> <span class="k">await</span> <span class="n">read_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">process_timeseries_values</span><span class="p">(</span><span class="n">arrow_table</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Showing how to use asynchronous connection in a real-world scenario.</span>
+<span class="sd">    First multiple time series are returned that match a given query.</span>
+<span class="sd">    Then each time series is read and some processing is applied.</span>
+
+<span class="sd">    Note: Mesh does not yet handle parallel requests, every request is handled</span>
+<span class="sd">          sequentially.</span>
+
+<span class="sd">    This example works with `SimpleThermalTestModel` test model, where 2 time</span>
+<span class="sd">    series are returned for the given query. Assume reading time series takes</span>
+<span class="sd">    10 seconds and processing (or some different computation, e.g.</span>
+<span class="sd">    neural network inference based on that input) takes 8 seconds.</span>
+<span class="sd">    When waiting for the read operation to complete for the second time series</span>
+<span class="sd">    we can already start processing the first time series. See:</span>
+
+<span class="sd">    Tr = 10s (reading)</span>
+<span class="sd">    Tp = 8s  (processing)</span>
+
+<span class="sd">    Asynchronous code (with Mesh handling requests sequentially):</span>
+<span class="sd">    |   Tr1  ||  Tp1 |</span>
+<span class="sd">    ------------------</span>
+<span class="sd">              |   Tr2  ||  Tp2 |</span>
+<span class="sd">              ------------------</span>
+<span class="sd">    ---------- 28s -------------</span>
+
+<span class="sd">    Whereas for synchronous code:</span>
+<span class="sd">    |   Tr1  ||  Tp1 |</span>
+<span class="sd">    ------------------</span>
+<span class="sd">                      |   Tr2  ||  Tp2 |</span>
+<span class="sd">                      ------------------</span>
+<span class="sd">    ---------------  36s ---------------</span>
+
+<span class="sd">    For 2 time series we save ~22% time.</span>
+<span class="sd">    For 10 time series it would be 40% time (108s instead of 180s).</span>
+
+<span class="sd">    Note: the processing could be also done using async IO</span>
+<span class="sd">          (e.g. requests send to different service).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*.TsRawAtt&quot;</span>
+    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find timeseries attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span>
+            <span class="o">*</span><span class="p">(</span>
+                <span class="n">handle_timeseries</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">timeseries_attribute</span> <span class="ow">in</span> <span class="n">timeseries_attributes</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="search-for-time-series-attributes">
+<h2>Search for time series attributes<a class="headerlink" href="#search-for-time-series-attributes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to search for mesh object that returns a time series.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Configure the connection you want</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+
+    <span class="c1"># Create a remote session on the Volue Mesh server</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="c1">###</span>
+    <span class="c1"># Specify what you want to search for</span>
+    <span class="c1">###</span>
+
+    <span class="c1"># The Mesh object to start searching from</span>
+    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
+    <span class="c1"># OR</span>
+    <span class="c1"># start_object_guid = uuid.UUID(&quot;0000000b-0001-0000-0000-000000000000&quot;)  # ThermalComponent</span>
+
+    <span class="c1"># The query expressed using Mesh search language syntax</span>
+    <span class="c1"># Traverse all children (*) of the start object, not case-sensitive ({}) and</span>
+    <span class="c1"># accept all that has an attribute (.) called TsRawAtt</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;{*}.TsRawAtt&quot;</span>
+
+    <span class="c1"># Search for time series attributes using this query</span>
+    <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Close the remote session</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="traverse-model">
+<h2>Traverse model<a class="headerlink" href="#traverse-model" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">add_new_objects_to_the_model</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.ChimneyToChimneyRef&quot;</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;SomeSubChimney1&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;SomeSubChimney2&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Traverses the Mesh model recursively.&quot;&quot;&quot;</span>
+    <span class="nb">object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;..&#39;</span> <span class="o">*</span> <span class="n">depth</span><span class="si">}{</span><span class="nb">object</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">child_id</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span>
+                <span class="n">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to traverse Mesh model.&quot;&quot;&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># The basic model has 1 power plant that has 2 chimneys.</span>
+        <span class="c1"># Add some objects to the model in this session to make</span>
+        <span class="c1"># the example more attractive.</span>
+        <span class="n">add_new_objects_to_the_model</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+        <span class="n">root_object</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1&quot;</span>
+        <span class="n">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">root_object</span><span class="p">)</span>
+
+        <span class="c1"># Excepted output:</span>
+        <span class="c1"># SomePowerPlant1</span>
+        <span class="c1"># ..SomePowerPlantChimney2</span>
+        <span class="c1"># ....SomeSubChimney1</span>
+        <span class="c1"># ....SomeSubChimney2</span>
+        <span class="c1"># ..SomePowerPlantChimney1</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-time-series-with-pandas">
+<h2>Using time series with pandas<a class="headerlink" href="#using-time-series-with-pandas" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Name=SomePowerPlantChimney2].TsRawAtt&quot;</span>  <span class="c1"># make sure only 1 time series is returned</span>
+    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># first lets find a time series in our model</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
+                <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No such time series attribute in the given model/database&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># pick the first time series and do some operations with it</span>
+        <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on timeseries with path: &quot;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># check for example the curve type of the connected physical time series</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># now lets write some data to it</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
+            <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
+            <span class="c1"># flags - [pa.uint32]</span>
+            <span class="c1"># value - [pa.float64]</span>
+
+            <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">72</span>
+            <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">number_of_points</span><span class="p">):</span>
+                <span class="n">hours</span> <span class="o">=</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">24</span>
+                <span class="n">days</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span> <span class="o">/</span> <span class="mi">24</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">days</span><span class="p">,</span> <span class="n">hours</span><span class="p">)</span>
+                <span class="p">)</span>  <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">days</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+
+            <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
+
+            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+            <span class="n">arrow_table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span>
+                <span class="n">table</span><span class="o">=</span><span class="n">arrow_table</span><span class="p">,</span> <span class="n">full_name</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span>
+            <span class="p">)</span>
+            <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">local_time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">tzlocal</span><span class="p">()</span>
+
+        <span class="c1"># now lets read from it</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># lets use local time zone (read from operating system settings)</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+
+            <span class="n">timeseries_read</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+            <span class="p">)</span>
+
+            <span class="c1"># convert to pandas format</span>
+            <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
+            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">timeseries_read</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+
+            <span class="c1"># lets convert it back to local time zone</span>
+            <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
+
+            <span class="c1"># notice that depending on the local time zone there is a shift in the data</span>
+            <span class="c1"># e.g. for UTC+2 time zone, first 2 values will be NaN, because writing time series points in the previous step</span>
+            <span class="c1"># is using time zone naive datetime object, so they are treated as UTC.</span>
+
+            <span class="c1"># do some further processing</span>
+
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># now lets read transformations from it (transform to days)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transform resolution to days:&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
+
+            <span class="c1"># Transform function may take optionally a time zone argument.</span>
+            <span class="c1"># Refer to `transform` documentation for more details.</span>
+            <span class="c1"># If you are using `LOCAL` or `STANDARD` time zone then make sure</span>
+            <span class="c1"># the Mesh server is operating in the same time zone or adjust properly.</span>
+            <span class="n">transformed_timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">transform_functions</span><span class="p">(</span>
+                <span class="n">timeseries_attribute</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span> <span class="n">Transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">SUM</span><span class="p">,</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+
+            <span class="c1"># convert to pandas format</span>
+            <span class="c1"># the timestamps in PyArrow table are always returned in UTC format</span>
+            <span class="n">pandas_series</span> <span class="o">=</span> <span class="n">transformed_timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
+
+            <span class="c1"># lets convert it back to local time zone</span>
+            <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
+
+            <span class="c1"># do some further processing</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read transformed timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># optionally discard changes</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># This will search for a given time series, write some data,</span>
+    <span class="c1"># read it and convert to pandas format.</span>
+
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-rating-curves">
+<h2>Working with rating curves<a class="headerlink" href="#working-with-rating-curves" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">RatingCurveSegment</span><span class="p">,</span> <span class="n">RatingCurveVersion</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
+    <span class="n">rating_curve_attribute_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.RatingCurveAtt&quot;</span>
+
+    <span class="c1"># Defining a time interval to read rating curve versions from.</span>
+    <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2008</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+
+        <span class="c1"># First read the attribute using `get_attribute`.</span>
+        <span class="c1"># We can get standard information like name, ID, tags, etc.</span>
+        <span class="n">rating_curve_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
+            <span class="n">rating_curve_attribute_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Basic information about the rating curve attribute: </span><span class="si">{</span><span class="n">rating_curve_attribute</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Because the rating curve can potentially contain large amounts of data,</span>
+        <span class="c1"># specialized methods exist to handle those values.</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_rating_curve_versions</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">rating_curve_attribute_path</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;Rating curve versions for time interval: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">start_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%Y&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">end_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">.%m.%Y&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">:&quot;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">versions</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">versions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">versions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x_value_segments</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No rating curve versions found. Skip update.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Now for the last version update first segment and add a new one.</span>
+        <span class="n">versions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x_value_segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">factor_b</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.2</span>
+        <span class="n">versions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x_value_segments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">RatingCurveSegment</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">2.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.3</span><span class="p">))</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_rating_curve_versions</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">rating_curve_attribute_path</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="n">versions</span><span class="p">[</span>
+                <span class="mi">0</span>
+            <span class="p">]</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">,</span>  <span class="c1"># use first version `valid_from_time` as start interval</span>
+            <span class="n">end_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">,</span>  <span class="c1"># this is the last version</span>
+            <span class="n">new_versions</span><span class="o">=</span><span class="n">versions</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Read once again.</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_rating_curve_versions</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">rating_curve_attribute_path</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated rating curve versions:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">versions</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Now lets replace last version with new one</span>
+        <span class="n">new_segments</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">RatingCurveSegment</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">),</span>
+            <span class="n">RatingCurveSegment</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.2</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="n">new_version</span> <span class="o">=</span> <span class="n">RatingCurveVersion</span><span class="p">(</span>
+            <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">x_range_from</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+            <span class="n">x_value_segments</span><span class="o">=</span><span class="n">new_segments</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">update_rating_curve_versions</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">rating_curve_attribute_path</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="n">versions</span><span class="p">[</span>
+                <span class="o">-</span><span class="mi">1</span>
+            <span class="p">]</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">,</span>  <span class="c1"># to replace old version use its `valid_from_time` as start interval</span>
+            <span class="n">end_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">,</span>  <span class="c1"># this is the last version</span>
+            <span class="n">new_versions</span><span class="o">=</span><span class="p">[</span><span class="n">new_version</span><span class="p">],</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Read once again.</span>
+        <span class="n">versions</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_rating_curve_versions</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">rating_curve_attribute_path</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated for the second time rating curve versions:&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">versions</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># to commit your changes you need to call:</span>
+        <span class="c1"># session.commit()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-sessions">
+<h2>Working with sessions<a class="headerlink" href="#working-with-sessions" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Showing different ways of working with sessions.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Configure the connection you want.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+
+    <span class="c1"># 1. Create a session, open and close session.</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. You now have a new open session&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># 2. Create session using the with statement.</span>
+    <span class="c1"># Session will be created, opened and closed within the &#39;with&#39; statement scope</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. You now have a new open session&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Connecting to a potentially open session.</span>
+    <span class="c1"># Session ids can be found in the session object:</span>
+    <span class="c1"># session.session_id</span>
+    <span class="c1"># Note: If the session_id is not the id of an open session,</span>
+    <span class="c1"># the server will create a new one for you.</span>
+    <span class="c1"># Set the session id you want to connect to</span>
+    <span class="n">session_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;123e4567-e89b-12d3-a456-556642440000&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you want to connect to: </span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+    <span class="c1"># Try connecting to that session id, if it does not exist, a new one will be created without warning</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span>
+    <span class="p">)</span>
+    <span class="c1"># Check which session you are connected to and close it</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you are to connect to: </span><span class="si">{</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-xy-sets">
+<h2>Working with XY sets<a class="headerlink" href="#working-with-xy-sets" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="n">OBJECT_PATH</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
+<span class="n">UNVERSIONED_PATH</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.XYSetAtt&quot;</span>
+<span class="n">VERSIONED_PATH</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.XYZSeriesAtt&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">c</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># In the default test model both the versioned and the unversioned</span>
+        <span class="c1"># attribute are initially empty. The following two calls are therefore</span>
+        <span class="c1"># expected to return [].</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Getting XY-sets from </span><span class="si">{</span><span class="n">UNVERSIONED_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">xy_sets</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_xy_sets</span><span class="p">(</span><span class="n">UNVERSIONED_PATH</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">xy_sets</span><span class="p">)</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="s2">&quot;1960-01-01&quot;</span><span class="p">)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="s2">&quot;2030-01-01&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Getting XY-sets in interval [</span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">end_time</span><span class="si">}</span><span class="s2">) from </span><span class="si">{</span><span class="n">VERSIONED_PATH</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">xy_sets</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_xy_sets</span><span class="p">(</span><span class="n">VERSIONED_PATH</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received: </span><span class="si">{</span><span class="n">xy_sets</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">sample_xy_set</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">XySet</span><span class="p">(</span>
+            <span class="kc">None</span><span class="p">,</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="p">[(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">10.3</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">15.9</span><span class="p">)])]</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updating XY-set at </span><span class="si">{</span><span class="n">UNVERSIONED_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_xy_sets</span><span class="p">(</span><span class="n">UNVERSIONED_PATH</span><span class="p">,</span> <span class="n">new_xy_sets</span><span class="o">=</span><span class="p">[</span><span class="n">sample_xy_set</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Replacing XY-set versions in interval [</span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">end_time</span><span class="si">}</span><span class="s2">) with one version at </span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">sample_xy_set</span><span class="o">.</span><span class="n">valid_from_time</span> <span class="o">=</span> <span class="n">start_time</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_xy_sets</span><span class="p">(</span><span class="n">VERSIONED_PATH</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="p">[</span><span class="n">sample_xy_set</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Getting XY-sets from </span><span class="si">{</span><span class="n">UNVERSIONED_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">xy_sets</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_xy_sets</span><span class="p">(</span><span class="n">UNVERSIONED_PATH</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received: </span><span class="si">{</span><span class="n">xy_sets</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Getting XY-sets in interval [</span><span class="si">{</span><span class="n">start_time</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">end_time</span><span class="si">}</span><span class="s2">) from </span><span class="si">{</span><span class="n">VERSIONED_PATH</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">xy_sets</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_xy_sets</span><span class="p">(</span><span class="n">VERSIONED_PATH</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received: </span><span class="si">{</span><span class="n">xy_sets</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="write-time-series">
+<h2>Write time series<a class="headerlink" href="#write-time-series" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -835,8 +1215,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="write-timeseries-asynchronously">
-<h2>Write timeseries, asynchronously<a class="headerlink" href="#write-timeseries-asynchronously" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="write-time-series-asynchronously">
+<h2>Write time series, asynchronously<a class="headerlink" href="#write-time-series-asynchronously" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -909,53 +1289,6 @@
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="search-for-timeseries-attributes">
-<h2>Search for timeseries attributes<a class="headerlink" href="#search-for-timeseries-attributes" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
-
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to search for mesh object that returns a time series.&quot;&quot;&quot;</span>
-
-    <span class="c1"># Configure the connection you want</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-
-    <span class="c1"># Create a remote session on the Volue Mesh server</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-
-    <span class="c1">###</span>
-    <span class="c1"># Specify what you want to search for</span>
-    <span class="c1">###</span>
-
-    <span class="c1"># The Mesh object to start searching from</span>
-    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
-    <span class="c1"># OR</span>
-    <span class="c1"># start_object_guid = uuid.UUID(&quot;0000000b-0001-0000-0000-000000000000&quot;)  # ThermalComponent</span>
-
-    <span class="c1"># The query expressed using Mesh search language syntax</span>
-    <span class="c1"># Traverse all children (*) of the start object, not case-sensitive ({}) and</span>
-    <span class="c1"># accept all that has an attribute (.) called TsRawAtt</span>
-    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;{*}.TsRawAtt&quot;</span>
-
-    <span class="c1"># Search for time series attributes using this query</span>
-    <span class="n">timeseries_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_timeseries_attributes</span><span class="p">(</span>
-        <span class="n">target</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span>
-    <span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Close the remote session</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
-    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
