@@ -13,11 +13,6 @@ Quickstart
 .. literalinclude:: /../../src/volue/mesh/examples/quickstart.py
    :language: python
 
-Using timeseries with pandas
-********************************
-.. literalinclude:: /../../src/volue/mesh/examples/timeseries_operations.py
-   :language: python
-
 Authorization
 *****************
 .. literalinclude:: /../../src/volue/mesh/examples/authorization.py
@@ -33,41 +28,63 @@ Connect, asynchronously
 .. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
    :language: python
 
-Working with sessions
-*************************
-.. literalinclude:: /../../src/volue/mesh/examples/working_with_sessions.py
-   :language: python
-
 Get version
 ************
 .. literalinclude:: /../../src/volue/mesh/examples/get_version.py
    :language: python
 
-
-Read timeseries
-***************
+Read time series
+*****************
 .. literalinclude:: /../../src/volue/mesh/examples/read_timeseries_points.py
    :language: python
 
-
-Read timeseries, asynchronously
-*******************************
+Read time series, asynchronously
+********************************
 .. literalinclude:: /../../src/volue/mesh/examples/read_timeseries_points_async.py
    :language: python
 
+Read and process time series, asynchronously
+********************************************
+.. literalinclude:: /../../src/volue/mesh/examples/read_and_process_timeseries_async.py
+   :language: python
 
-Write timeseries
+Search for time series attributes
+*********************************
+.. literalinclude:: /../../src/volue/mesh/examples/timeseries_search.py
+   :language: python
+
+Traverse model
+*****************
+.. literalinclude:: /../../src/volue/mesh/examples/traverse_model.py
+   :language: python
+
+Using time series with pandas
+*****************************
+.. literalinclude:: /../../src/volue/mesh/examples/timeseries_operations.py
+   :language: python
+
+Working with rating curves
+**************************
+.. literalinclude:: /../../src/volue/mesh/examples/working_with_rating_curves.py
+   :language: python
+
+Working with sessions
+*********************
+.. literalinclude:: /../../src/volue/mesh/examples/working_with_sessions.py
+   :language: python
+
+Working with XY sets
+********************
+.. literalinclude:: /../../src/volue/mesh/examples/xy_sets.py
+   :language: python
+
+Write time series
 *****************
 .. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points.py
    :language: python
 
-
-Write timeseries, asynchronously
-********************************
+Write time series, asynchronously
+*********************************
 .. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points_async.py
    :language: python
 
-Search for timeseries attributes
-**********************************
-.. literalinclude:: /../../src/volue/mesh/examples/timeseries_search.py
-   :language: python
