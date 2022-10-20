@@ -13,7 +13,7 @@ Compatible with
 
 - Mesh server version >= 2.6.1
 - Python [3.7.1, 3.8 and 3.9]
-- Tested with Mesh server version 2.6.1.X (TODO: update this after testing)
+- Tested with Mesh server version 2.6.1.8
 
 New features
 ~~~~~~~~~~~~~~~~~~
