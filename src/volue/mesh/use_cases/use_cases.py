@@ -1344,13 +1344,13 @@ def use_case_19():
     We want to update 2 attributes of a specific, existing object of type
     `WindPark`, named `NewestWindPark`.
 
-    Object path:            Model/MeshTEK/Mesh/Norge/Wind/NewWindPark
+    Object path:            Model/MeshTEK/Mesh/Norge/Wind/NewestWindPark
     Attributes to update:   HubHeight (new value = 100)
                             MaxProduction (new value = 50)
 
     """
     use_case_name = "Use case 19"
-    object_path = "Model/MeshTEK/Mesh/Norge/Wind/NewWindPark"
+    object_path = "Model/MeshTEK/Mesh/Norge/Wind/NewestWindPark"
 
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
