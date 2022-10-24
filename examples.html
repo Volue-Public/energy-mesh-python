@@ -106,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#search-for-time-series-attributes">Search for time series attributes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#traverse-model">Traverse model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-time-series-with-pandas">Using time series with pandas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-model-objects-and-attributes">Working with model (objects and attributes)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#working-with-rating-curves">Working with rating curves</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#working-with-sessions">Working with sessions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#working-with-xy-sets">Working with XY sets</a></li>
@@ -915,6 +916,92 @@
 
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-model-objects-and-attributes">
+<h2>Working with model (objects and attributes)<a class="headerlink" href="#working-with-model-objects-and-attributes" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributesFilter</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
+    <span class="n">root_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
+
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+
+        <span class="c1"># Root object has an ownership relation attribute that point to objects</span>
+        <span class="c1"># of &quot;PlantElementType&quot; type. We want to add new object of this type.</span>
+        <span class="n">root_object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">root_object_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># First get the ownership attribute:</span>
+        <span class="c1"># If we know the name of the attribute we can use:</span>
+        <span class="n">ownership_relation_attribute</span> <span class="o">=</span> <span class="n">root_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;ThermalPowerToPlantRef&quot;</span><span class="p">]</span>
+
+        <span class="c1"># If we don&#39;t know the name, but only the type of the target object</span>
+        <span class="c1"># (the object it points to):</span>
+        <span class="c1"># Note: This requires `full_attribute_info` flag set to True when</span>
+        <span class="c1">#       calling `get_object` or `get_attribute`.</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">root_object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">attribute</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">target_object_type_name</span> <span class="o">==</span> <span class="s2">&quot;PlantElementType&quot;</span>
+            <span class="p">):</span>
+                <span class="n">ownership_relation_attribute</span> <span class="o">=</span> <span class="n">attribute</span>
+
+        <span class="n">new_object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">create_object</span><span class="p">(</span>
+            <span class="n">ownership_relation_attribute</span><span class="p">,</span> <span class="s2">&quot;SomeNewPowerPlant&quot;</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New object created: </span><span class="si">{</span><span class="n">new_object</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">int_attribute</span> <span class="o">=</span> <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;Int64Att&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Object returned by `create_object` contains all attributes with basic</span>
+        <span class="c1"># information.</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;One of the new object&#39;s attributes (basic information):&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">int_attribute</span><span class="p">)</span>
+
+        <span class="c1"># Now let&#39;s attribute&#39;s value.</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_simple_attribute</span><span class="p">(</span><span class="n">int_attribute</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+        <span class="c1"># Check updated value, but this time get also more information like</span>
+        <span class="c1"># attribute definition. Use either:</span>
+        <span class="c1"># - `get_object` with `full_attribute_info` flag</span>
+        <span class="c1"># - `get_attribute` with `full_attribute_info` flag</span>
+        <span class="n">attribute_with_full_info</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
+            <span class="n">int_attribute</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;One of the new object&#39;s attributes (full information):&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">attribute_with_full_info</span><span class="p">)</span>
+
+        <span class="c1"># We can also filter attributes by e.g. name.</span>
+        <span class="n">object_with_filtered_attributes</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span>
+            <span class="n">new_object</span><span class="p">,</span>
+            <span class="n">attributes_filter</span><span class="o">=</span><span class="n">AttributesFilter</span><span class="p">(</span><span class="n">name_mask</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DblAtt&quot;</span><span class="p">,</span> <span class="s2">&quot;StringAtt&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Filtered attributes count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">object_with_filtered_attributes</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Now lets change the object name.</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_object</span><span class="p">(</span><span class="n">new_object</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;NewNamePowerPlant&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Object&#39;s name changed.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Delete the updated object.</span>
+        <span class="c1"># Because we changed object&#39;s name, we can&#39;t provide old `Object`</span>
+        <span class="c1"># instance as it is still having the old object name.</span>
+        <span class="c1"># Use object&#39;s ID instead or provide the path to the object explicitly.</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">new_object</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Object deleted.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># To commit your changes you need to call:</span>
+        <span class="c1"># session.commit()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
