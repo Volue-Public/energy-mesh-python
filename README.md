@@ -4,10 +4,10 @@
 
 
 Mesh Python SDK is a client library used to communicate with Volue Energy's Mesh server. Please refer to:
-- [Quickstart](https://vigilant-eureka-e3845ca2.pages.github.io/quickstart.html)
-- [Installation](https://vigilant-eureka-e3845ca2.pages.github.io/installation.html)
-- [Examples](https://vigilant-eureka-e3845ca2.pages.github.io/examples.html)
+- [Quickstart](https://volue-public.github.io/energy-mesh-python/quickstart.html)
+- [Installation](https://volue-public.github.io/energy-mesh-python/installation.html)
+- [Examples](https://volue-public.github.io/energy-mesh-python/examples.html)
 - [Issue Tracker](https://github.com/PowelAS/sme-mesh-python/issues)
-- [How to do development](https://vigilant-eureka-e3845ca2.pages.github.io/installation.html#setup-for-developers)
+- [How to do development](https://volue-public.github.io/energy-mesh-python/installation.html#setup-for-developers)
 
-:blue_book: [Documentation](https://vigilant-eureka-e3845ca2.pages.github.io/)
+:blue_book: [Documentation](https://volue-public.github.io/energy-mesh-python/)
