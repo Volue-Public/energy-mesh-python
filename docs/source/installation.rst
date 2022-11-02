@@ -25,7 +25,7 @@ Git is a version control system. To be able to follow along using this guide you
 GitHub
 **********
 
-GitHub is a cloud based storage for git repositories. The Mesh Python SDK is hosted on `GitHub <https://github.com/PowelAS/sme-mesh-python>`_.
+GitHub is a cloud based storage for git repositories. The Mesh Python SDK is hosted on `GitHub <https://github.com/Volue-Public/energy-mesh-python>`_.
 
 To be able to access the code you will need a GitHub user and that user needs to be given access by Volue.
 
@@ -98,7 +98,7 @@ Setup for users (recommended)
 
 As a user you can install the Mesh Python SDK using Python's standard package manager system `pip <https://packaging.python.org/en/latest/tutorials/installing-packages/>`_::
 
-    python -m pip install git+https://github.com/PowelAS/sme-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python
 
 .. note::
     See :doc:`versions` if you need a specific Mesh version.
@@ -111,7 +111,7 @@ Setup for developers
 
 #. Clone the repository::
 
-    git clone https://github.com/PowelAS/sme-mesh-python.git
+    git clone https://github.com/Volue-Public/energy-mesh-python.git
 
 #. Install Poetry:
 

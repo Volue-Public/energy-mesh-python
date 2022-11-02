@@ -86,8 +86,8 @@ def setup(app):
 
 # Options for: sphinx.ext.extlinks
 extlinks = {
-    "issue": ("https://github.com/PowelAS/sme-mesh-python/issues/%s", "[%s]"),
-    "pull": ("https://github.com/PowelAS/sme-mesh-python/pull/%s", "[%s]"),
+    "issue": ("https://github.com/Volue-Public/energy-mesh-python/issues/%s", "[%s]"),
+    "pull": ("https://github.com/Volue-Public/energy-mesh-python/pull/%s", "[%s]"),
 }
 
 # Options for: sphinx.ext.intersphinx
