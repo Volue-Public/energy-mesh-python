@@ -14,7 +14,7 @@ Installation quickstart
 
 Using pip::
 
-    python -m pip install git+https://github.com/PowelAS/sme-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python
 
 Recommended way is to use pip with a virtual environment. For more information refer to :doc:`installation`.
 

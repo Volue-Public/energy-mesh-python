@@ -55,7 +55,7 @@ Mesh server is configured by Volue consultants. In case of any configuration pro
 I think I found a bug or I have a feature request.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the `discussion board <https://github.com/PowelAS/sme-mesh-python/discussions>`_ and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_.
+If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the `discussion board <https://github.com/Volue-Public/energy-mesh-python/discussions>`_ and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in `issue tracker <https://github.com/Volue-Public/energy-mesh-python/issues>`_.
 
 
 I need more help.

@@ -5,8 +5,8 @@ description = ""
 license = "Proprietary"
 authors = ["Volue AS"]
 readme = "README.md"
-homepage = "https://github.com/PowelAS/sme-mesh-python"
-repository = "https://github.com/PowelAS/sme-mesh-python"
+homepage = "https://github.com/Volue-Public/energy-mesh-python"
+repository = "https://github.com/Volue-Public/energy-mesh-python"
 packages = [
     { include = "volue", from = "src" }
 ]
