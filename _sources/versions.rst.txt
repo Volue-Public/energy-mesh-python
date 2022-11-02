@@ -3,8 +3,8 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-`Mesh Python SDK version 1.0.0 (Release Candidate) <https://github.com/PowelAS/sme-mesh-python/releases/tag/v1.0.0>`_
-*************************************************************************************************************************
+`Mesh Python SDK version 1.0.0 (Release Candidate) <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.0.0>`_
+*****************************************************************************************************************************
 
 ------------
 
@@ -42,10 +42,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/PowelAS/sme-mesh-python@v1.0.0
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.0.0
 
 
-`Mesh Python SDK version 0.0.4 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.5>`_
+`Mesh Python SDK version 0.0.4 (alpha) <https://github.com/Volue-Public/energy-mesh-python/releases/tag/Mesh_v2.5>`_
 *************************************************************************************************************************
 
 ------------
@@ -87,10 +87,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/PowelAS/sme-mesh-python@Mesh_v2.5
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@Mesh_v2.5
 
 
-`Mesh Python SDK version 0.0.3 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.3>`_
+`Mesh Python SDK version 0.0.3 (alpha) <https://github.com/Volue-Public/energy-mesh-python/releases/tag/Mesh_v2.3>`_
 *************************************************************************************************************************
 
 ------------
@@ -133,11 +133,11 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/PowelAS/sme-mesh-python@Mesh_v2.3
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@Mesh_v2.3
 
 
 
-`Mesh Python SDK version 0.0.2 (alpha) <https://github.com/PowelAS/sme-mesh-python/releases/tag/Mesh_v2.2>`_
+`Mesh Python SDK version 0.0.2 (alpha) <https://github.com/Volue-Public/energy-mesh-python/releases/tag/Mesh_v2.2>`_
 *************************************************************************************************************************
 
 ------------
@@ -182,5 +182,5 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/PowelAS/sme-mesh-python@Mesh_v2.2
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@Mesh_v2.2
 

@@ -37,7 +37,7 @@ Getting help
 If you're having trouble, these resources might help.
 
 - Try the :doc:`faq` first.
-- Report bugs in the `issue tracker <https://github.com/PowelAS/sme-mesh-python/issues>`_
+- Report bugs in the `issue tracker <https://github.com/Volue-Public/energy-mesh-python/issues>`_
 
 .. toctree::
    :caption: Welcome
