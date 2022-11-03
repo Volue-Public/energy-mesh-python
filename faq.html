@@ -100,6 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#connection-errors">Connection errors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#i-get-a-grpc-error">I get a gRPC error.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong">I get a SSL_ERROR_SSL. What am I doing wrong?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a><ul>
@@ -196,14 +197,15 @@
 <ul>
 <li><p><a class="reference internal" href="#i-get-a-grpc-error" id="id2">I get a gRPC error.</a></p></li>
 <li><p><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" id="id3">I get a SSL_ERROR_SSL. What am I doing wrong?</a></p></li>
+<li><p><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" id="id4">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#other" id="id4">Other</a></p>
+<li><p><a class="reference internal" href="#other" id="id5">Other</a></p>
 <ul>
-<li><p><a class="reference internal" href="#i-ran-the-tests-and-one-or-more-of-them-failed" id="id5">I ran the tests and one or more of them failed.</a></p></li>
-<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id6">Mesh server gRPC configuration</a></p></li>
-<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id7">I think I found a bug or I have a feature request.</a></p></li>
-<li><p><a class="reference internal" href="#i-need-more-help" id="id8">I need more help.</a></p></li>
+<li><p><a class="reference internal" href="#i-ran-the-tests-and-one-or-more-of-them-failed" id="id6">I ran the tests and one or more of them failed.</a></p></li>
+<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id7">Mesh server gRPC configuration</a></p></li>
+<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id8">I think I found a bug or I have a feature request.</a></p></li>
+<li><p><a class="reference internal" href="#i-need-more-help" id="id9">I need more help.</a></p></li>
 </ul>
 </li>
 </ul>
@@ -231,24 +233,120 @@
 </div>
 <p>If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.</p>
 </div>
+<div class="section" id="i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux">
+<h3><a class="toc-backref" href="#id4">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux</a><a class="headerlink" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" title="Permalink to this headline">¶</a></h3>
+<p>This error can have multiple causes. Some things to check are:</p>
+<ol class="arabic simple">
+<li><p>Is pip upgraded to the latest version?</p></li>
+<li><p>In particular if there is a problem with building wheel for <cite>kerberos</cite>
+dependency, make sure that <cite>libkrb5-dev</cite>, <cite>python3-dev</cite> and <cite>gcc</cite> are
+installed. For example:</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libkrb5</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span><span class="mf">.10</span><span class="o">-</span><span class="n">dev</span> <span class="n">gcc</span>
+</pre></div>
+</div>
+<p>We are automatically verifying that Mesh Python SDK is working for all
+supported Python versions using GitHub Actions. Please take a look at the
+GitHub Action workflow file to see how are we preparing Windows and Ubuntu
+environments:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Usage</span><span class="w"></span>
+
+<span class="nt">on</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">master</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">master</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
+
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span><span class="w"></span>
+
+<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">checkout_and_use</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="c1"># Only windows-2019 hosts have wsl enabled</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">windows-2019</span><span class="w"></span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">3.7</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3.8</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3.9</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3.10&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"></span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repo</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v2</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.python-version }}</span><span class="w"></span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout GitHub action</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PowelAS/sme-run-mesh-service</span><span class="w"></span>
+<span class="w">          </span><span class="nt">ref</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span><span class="w"></span>
+<span class="w">          </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.OAUTH_TOKEN }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.github/actions</span><span class="w"></span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and run Mesh server</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">download-mesh-server</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.OAUTH_TOKEN }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">MESH_SERVICE_TAG</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v2.6.1.8&#39;</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1"># run one example before installing pytest packages and pandas</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and test Python SDK (Windows)</span><span class="w"></span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">          </span><span class="no">python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span><span class="w"></span>
+<span class="w">          </span><span class="no">python ./repo/src/volue/mesh/examples/get_version.py</span><span class="w"></span>
+<span class="w">          </span><span class="no">if ($LASTEXITCODE) { exit $LASTEXITCODE }</span><span class="w"></span>
+<span class="w">          </span><span class="no">python -m pip install pytest pytest-asyncio pandas</span><span class="w"></span>
+<span class="w">          </span><span class="no">python -m pytest --pyargs volue.mesh.tests -m &quot;not authentication&quot;</span><span class="w"></span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Ubuntu 20.04 (wsl1)</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Vampire/setup-wsl@v1</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ubuntu-20.04</span><span class="w"></span>
+<span class="w">          </span><span class="nt">set-as-default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">update</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1"># run one example before installing pytest packages and pandas</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and test Python SDK (Ubuntu 20.04)</span><span class="w"></span>
+<span class="w">        </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wsl-bash {0}</span><span class="w"></span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo apt-get update</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo apt-get install --yes software-properties-common</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo add-apt-repository --yes ppa:deadsnakes/ppa</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo apt-get install --yes python${{ matrix.python-version }}</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo apt-get install --yes python${{ matrix.python-version }}-distutils</span><span class="w"></span>
+<span class="w">          </span><span class="no">curl -sS https://bootstrap.pypa.io/get-pip.py | python${{ matrix.python-version }}</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo apt-get install --yes libkrb5-dev gcc</span><span class="w"></span>
+<span class="w">          </span><span class="no">sudo apt-get install --yes python${{ matrix.python-version }}-dev</span><span class="w"></span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span><span class="w"></span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py</span><span class="w"></span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install pytest pytest-asyncio pandas</span><span class="w"></span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m &quot;not authentication&quot;</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="other">
-<h2><a class="toc-backref" href="#id4">Other</a><a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Other</a><a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
 <p>If neither of the above suggestions helped.</p>
 <div class="section" id="i-ran-the-tests-and-one-or-more-of-them-failed">
-<h3><a class="toc-backref" href="#id5">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this headline">¶</a></h3>
 <p>If you ran the <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a> and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in <a class="reference internal" href="tests.html#run-tests"><span class="std std-ref">Run tests</span></a>.</p>
 </div>
 <div class="section" id="mesh-server-grpc-configuration">
-<h3><a class="toc-backref" href="#id6">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this headline">¶</a></h3>
 <p>Mesh server is configured by Volue consultants. In case of any configuration problems or change requests (like turning on authentication) please contact your Volue consultant.</p>
 </div>
 <div class="section" id="i-think-i-found-a-bug-or-i-have-a-feature-request">
-<h3><a class="toc-backref" href="#id7">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this headline">¶</a></h3>
 <p>If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/discussions">discussion board</a> and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues">issue tracker</a>.</p>
 </div>
 <div class="section" id="i-need-more-help">
-<h3><a class="toc-backref" href="#id8">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this headline">¶</a></h3>
 <p>If you have a more pressing issue or if your issue includes confidential information, you should contact Volue’s customer service.</p>
 </div>
 </div>
