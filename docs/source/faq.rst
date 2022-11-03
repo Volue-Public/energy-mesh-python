@@ -35,6 +35,28 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
 
+I get error with building dependencies when installing `volue.mesh` on Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This error can have multiple causes. Some things to check are:
+
+#. Is pip upgraded to the latest version?
+#. In particular if there is a problem with building wheel for `kerberos`
+   dependency, make sure that `libkrb5-dev`, `python3-dev` and `gcc` are
+   installed. For example:
+
+::
+
+  sudo apt-get install libkrb5-dev python3.10-dev gcc
+
+We are automatically verifying that Mesh Python SDK is working for all
+supported Python versions using GitHub Actions. Please take a look at the
+GitHub Action workflow file to see how are we preparing Windows and Ubuntu
+environments:
+
+.. literalinclude:: /../../.github/workflows/usage.yml
+   :language: yaml
+
 Other
 *****
 

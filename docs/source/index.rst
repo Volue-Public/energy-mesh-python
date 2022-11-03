@@ -29,7 +29,7 @@ Prerequisites
 **************
 
 - Mesh server with gRPC enabled.
-- Python [3.7.1, 3.8, 3.9]
+- Python [3.7.1, 3.8, 3.9, 3.10]
 
 Getting help
 ---------------
