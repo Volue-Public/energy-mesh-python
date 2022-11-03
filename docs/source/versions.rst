@@ -20,6 +20,9 @@ New features
 
 - Support for Python 3.10
 
+.. warning::
+    Python 3.7.1 support will dropped in the next Mesh Python SDK release.
+
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
