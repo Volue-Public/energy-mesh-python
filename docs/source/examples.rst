@@ -63,6 +63,11 @@ Using time series with pandas
 .. literalinclude:: /../../src/volue/mesh/examples/timeseries_operations.py
    :language: python
 
+Working with link relations
+***************************
+.. literalinclude:: /../../src/volue/mesh/examples/working_with_link_relations.py
+   :language: python
+
 Working with model (objects and attributes)
 *******************************************
 .. literalinclude:: /../../src/volue/mesh/examples/working_with_model.py
