@@ -14,7 +14,6 @@ def main(address, port, tls_root_cert):
 
     connection = Connection(address, port, tls_root_cert)
     with connection.create_session() as session:
-
         # First read the attribute using `get_attribute`.
         # We can get standard information like name, ID, tags, etc.
         rating_curve_attribute = session.get_attribute(

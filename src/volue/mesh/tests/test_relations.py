@@ -74,7 +74,6 @@ def test_update_one_to_one_link_relation_attribute_with_empty_target_object(sess
 
 @pytest.mark.database
 def test_update_one_to_one_link_relation_attribute_invalid_input(session):
-
     attribute_path = ATTRIBUTE_PATH_PREFIX + ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
 
     # `append` can't be used with one-to-one link relations
@@ -240,7 +239,6 @@ def test_update_versioned_one_to_one_link_relation_attribute_remove_one_version(
     targets = get_targets(session, VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME)
 
     for target in targets:
-
         session.update_versioned_link_relation_attribute(
             target=target,
             start_time=datetime(2004, 1, 1),

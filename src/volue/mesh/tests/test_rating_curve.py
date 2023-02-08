@@ -136,7 +136,6 @@ def test_get_rating_curve_versions_with_versions_only(session: _base_session.Ses
 
 @pytest.mark.database
 def test_get_rating_curve_versions_invalid_input(session: _base_session.Session):
-
     # [start_time, end_time) must be a valid interval
     with pytest.raises(
         grpc.RpcError, match="UtcInterval .* is invalid, start_time > end_time"
@@ -152,7 +151,6 @@ def test_get_rating_curve_versions_invalid_input(session: _base_session.Session)
 def test_update_rating_curve_versions_remove_one_version(
     session: _base_session.Session,
 ):
-
     # provide all possible attribute target types, like path or ID
     targets = get_targets(session)
 
@@ -178,7 +176,6 @@ def test_update_rating_curve_versions_remove_one_version(
 def test_update_rating_curve_versions_remove_all_versions(
     session: _base_session.Session,
 ):
-
     session.update_rating_curve_versions(
         target=ATTRIBUTE_PATH,
         start_time=datetime.min,

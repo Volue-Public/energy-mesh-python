@@ -974,7 +974,6 @@ class Session(abc.ABC):
     def _prepare_get_attribute_request(
         self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool
     ) -> core_pb2.GetAttributeRequest:
-
         attribute_view = (
             core_pb2.AttributeView.FULL
             if full_attribute_info
@@ -995,7 +994,6 @@ class Session(abc.ABC):
         query: str,
         full_attribute_info: bool,
     ) -> core_pb2.SearchAttributesRequest:
-
         attribute_view = (
             core_pb2.AttributeView.FULL
             if full_attribute_info
@@ -1016,7 +1014,6 @@ class Session(abc.ABC):
         target: Union[uuid.UUID, str, AttributeBase],
         value: SIMPLE_TYPE_OR_COLLECTION,
     ) -> core_pb2.UpdateSimpleAttributeRequest:
-
         request = core_pb2.UpdateSimpleAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=_to_proto_attribute_mesh_id(target),
@@ -1042,7 +1039,6 @@ class Session(abc.ABC):
         new_local_expression: Optional[str],
         new_timeseries_resource_key: Optional[int],
     ) -> core_pb2.UpdateTimeseriesAttributeRequest:
-
         request = core_pb2.UpdateTimeseriesAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=_to_proto_attribute_mesh_id(target),
@@ -1068,7 +1064,6 @@ class Session(abc.ABC):
         new_target_object_ids: List[uuid.UUID],
         append: bool,
     ) -> core_pb2.UpdateLinkRelationAttributeRequest:
-
         proto_target_object_ids = [
             _to_proto_guid(target_object_id)
             for target_object_id in new_target_object_ids
@@ -1089,7 +1084,6 @@ class Session(abc.ABC):
         end_time: datetime,
         new_versions: List[LinkRelationVersion],
     ) -> core_pb2.UpdateVersionedLinkRelationAttributeRequest:
-
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
@@ -1120,7 +1114,6 @@ class Session(abc.ABC):
     def _to_proto_singular_attribute_value(
         self, v: SIMPLE_TYPE
     ) -> core_pb2.AttributeValue:
-
         att_value = core_pb2.AttributeValue()
         if type(v) is int:
             att_value.int_value = v
@@ -1166,7 +1159,6 @@ class Session(abc.ABC):
         new_curve_type: Optional[Timeseries.Curve],
         new_unit_of_measurement: Optional[str],
     ) -> core_pb2.UpdateTimeseriesResourceRequest:
-
         request = core_pb2.UpdateTimeseriesResourceRequest(
             session_id=_to_proto_guid(self.session_id),
             timeseries_resource_key=timeseries_key,
@@ -1242,7 +1234,6 @@ class Session(abc.ABC):
         end_time: datetime,
         new_versions: List[RatingCurveVersion],
     ) -> core_pb2.UpdateRatingCurveVersionsRequest:
-
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
