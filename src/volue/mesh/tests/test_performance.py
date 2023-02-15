@@ -70,7 +70,6 @@ def _write_timeseries_points(
 
 
 class PerformanceTestRunner:
-
     # Prefix of new objects created for testing purposes
     NEW_OBJECT_NAME_PREFIX = "TestPowerPlant"
     # Prefix of new objects created for testing purposes
@@ -97,7 +96,6 @@ class PerformanceTestRunner:
         test_case_number_of_points: List[int],
         test_iterations: int,
     ):
-
         self._connection = connection
         self._test_case_number_of_timeseries = test_case_number_of_timeseries
         self._test_case_number_of_points = test_case_number_of_points
@@ -301,7 +299,6 @@ class PerformanceTestRunner:
 
 
 if __name__ == "__main__":
-
     number_of_timeseries = [100, 1000]
     number_of_points = [1, 100, 500, 1000, 10000]
     iterations = 5

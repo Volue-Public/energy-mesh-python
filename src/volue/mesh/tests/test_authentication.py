@@ -14,7 +14,8 @@ from volue import mesh
 @pytest.fixture
 def auth_metadata_plugin(mesh_test_config):
     """Yields Authentication object. No clean-up is done (it requires Connection object)
-    Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server."""
+    Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server.
+    """
     assert mesh_test_config.creds_type == "kerberos"
     credentials = mesh.Credentials(mesh_test_config.tls_root_certs)
     authentication_parameters = mesh.Authentication.Parameters(

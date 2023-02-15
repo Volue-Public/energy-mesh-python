@@ -197,10 +197,8 @@ def versioned_one_to_many_link_relation_example(session: Connection.Session):
 
 
 def main(address, port, tls_root_cert):
-
     connection = Connection(address, port, tls_root_cert)
     with connection.create_session() as session:
-
         one_to_one_link_relation_example(session)
         one_to_many_link_relation_example(session)
         versioned_one_to_one_link_relation_example(session)

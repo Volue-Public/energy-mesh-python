@@ -7,7 +7,6 @@ def main(address, port, tls_root_cert):
 
     connection = Connection(address, port, tls_root_cert)
     with connection.create_session() as session:
-
         # Root object has an ownership relation attribute that point to objects
         # of "PlantElementType" type. We want to add new object of this type.
         root_object = session.get_object(root_object_path, full_attribute_info=True)

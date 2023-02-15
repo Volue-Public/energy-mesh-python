@@ -35,7 +35,8 @@ def test_can_connect_to_existing_session(connection):
     1. Create a session.
     2. Connect to the session using a new object.
     3. Close using the new session object.
-    4. Try to close the old session object, which should no longer be alive on the server."""
+    4. Try to close the old session object, which should no longer be alive on the server.
+    """
     session = connection.create_session()
     session.open()
     assert session.session_id is not None

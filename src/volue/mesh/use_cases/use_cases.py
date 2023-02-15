@@ -353,7 +353,6 @@ def use_case_3():
 
             timskey_and_pandas_dataframe = []
             for timskey in timskeys:
-
                 # Get information about the time series
                 timeseries_resource = session.get_timeseries_resource_info(
                     timeseries_key=timskey
@@ -409,7 +408,6 @@ def use_case_4():
 
             timskey_and_pandas_dataframe = []
             for guid in guids:
-
                 # Retrieve the time series points in a given interval
                 timeseries = session.read_timeseries_points(
                     target=uuid.UUID(guid), start_time=start, end_time=end
@@ -474,7 +472,6 @@ def use_case_4b():
 
             timskey_and_pandas_dataframe = []
             for path in paths:
-
                 # Retrieve the time series points in a given interval
                 timeseries = session.read_timeseries_points(
                     target=path, start_time=start, end_time=end
@@ -1270,7 +1267,6 @@ def use_case_17():
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1657,7 +1653,6 @@ def use_case_24():
     connection = Connection(host=HOST, port=PORT)
     with connection.create_session() as session:
         try:
-
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
@@ -1800,7 +1795,6 @@ def use_case_26():
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) > 1:
         RUN_USE_CASE = sys.argv[1]
 
