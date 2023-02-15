@@ -194,14 +194,14 @@
 
 
 <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
@@ -209,7 +209,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks sequentially.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks sequentially.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
     <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
@@ -235,14 +235,14 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to get the server version.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to get the server version.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
@@ -250,7 +250,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks concurrently.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks concurrently.&quot;&quot;&quot;</span>
     <span class="c1"># Creating a connection, but not sending any requests yet</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
@@ -305,7 +305,7 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
 
     <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Name=SomePowerPlantChimney2].TsRawAtt&quot;</span>  <span class="c1"># make sure only 1 time series is returned</span>
     <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>

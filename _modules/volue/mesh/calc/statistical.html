@@ -193,12 +193,12 @@
 
 
 <span class="k">class</span> <span class="nc">_StatisticalFunctionsBase</span><span class="p">(</span><span class="n">_Calculation</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for all statistical function classes.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all statistical function classes.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_sum_expression</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">input_type_symbol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an expression for `sum`.</span>
 
 <span class="sd">        Args:</span>
@@ -219,7 +219,7 @@
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the sum of all of the series in an array of time series.</span>
 <span class="sd">        The resulting time series is equal to the sum of the values for each time interval in the expression.</span>
 
@@ -236,7 +236,7 @@
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the sum of the values of the time series for the required period.</span>
 <span class="sd">        It returns a number.</span>
 
@@ -253,7 +253,7 @@
 
 
 <div class="viewcode-block" id="StatisticalFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions">[docs]</a><span class="k">class</span> <span class="nc">StatisticalFunctions</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run synchronously&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run synchronously&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="StatisticalFunctions.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">[docs]</a>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span>
@@ -271,7 +271,7 @@
 
 
 <div class="viewcode-block" id="StatisticalFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync">[docs]</a><span class="k">class</span> <span class="nc">StatisticalFunctionsAsync</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run asynchronously&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run asynchronously&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="StatisticalFunctionsAsync.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span>

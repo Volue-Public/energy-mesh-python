@@ -214,7 +214,7 @@
 
 <div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection">[docs]</a><span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">_base_connection</span><span class="o">.</span><span class="n">Connection</span><span class="p">):</span>
 <div class="viewcode-block" id="Connection.Session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session">[docs]</a>    <span class="k">class</span> <span class="nc">Session</span><span class="p">(</span><span class="n">_base_session</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This class supports the with statement, because it&#39;s a contextmanager.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -226,7 +226,7 @@
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span> <span class="n">mesh_service</span><span class="o">=</span><span class="n">mesh_service</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Used by the &#39;with&#39; statement to open a session when entering &#39;with&#39;</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
@@ -235,7 +235,7 @@
             <span class="k">return</span> <span class="bp">self</span>
 
         <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Used by the &#39;with&#39; statement to close a session when exiting &#39;with&#39;.</span>
 
 <span class="sd">            Raises:</span>

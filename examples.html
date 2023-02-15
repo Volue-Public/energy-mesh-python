@@ -203,7 +203,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to run examples.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to run examples.&quot;&quot;&quot;</span>
 
     <span class="c1"># Run individual examples:</span>
     <span class="n">quickstart</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
@@ -222,7 +222,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing the quickest way to get started.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing the quickest way to get started.&quot;&quot;&quot;</span>
 
     <span class="c1"># Configure the connection you want</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
@@ -256,7 +256,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
 
     <span class="c1"># If Mesh gRPC server is running as a service user,</span>
     <span class="c1"># for example LocalSystem, NetworkService or a user account</span>
@@ -320,14 +320,14 @@
 
 
 <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
@@ -335,7 +335,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks sequentially.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks sequentially.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
     <span class="n">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
     <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
@@ -363,14 +363,14 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to get the server version.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to get the server version.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
@@ -378,7 +378,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks concurrently.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks concurrently.&quot;&quot;&quot;</span>
     <span class="c1"># Creating a connection, but not sending any requests yet</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
     <span class="c1"># Indicate that these two functions can be run concurrently</span>
@@ -411,7 +411,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to send get the server version both sequentially and concurrently.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to send get the server version both sequentially and concurrently.&quot;&quot;&quot;</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous get version: &quot;</span><span class="p">)</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
@@ -444,7 +444,7 @@
 
 
 <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to read time series points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to read time series points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the time series identifier, it can be:</span>
     <span class="c1"># - time series key of a physical time series</span>
@@ -486,7 +486,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to get time series points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to get time series points.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
@@ -510,7 +510,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points_async</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to read time series points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to read time series points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the time series identifier, it can be:</span>
     <span class="c1"># - time series key of a physical time series</span>
@@ -552,7 +552,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to get time series points asynchronously.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to get time series points asynchronously.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
@@ -604,7 +604,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Showing how to use asynchronous connection in a real-world scenario.</span>
 <span class="sd">    First multiple time series are returned that match a given query.</span>
 <span class="sd">    Then each time series is read and some processing is applied.</span>
@@ -678,7 +678,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to search for mesh object that returns a time series.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to search for mesh object that returns a time series.&quot;&quot;&quot;</span>
 
     <span class="c1"># Configure the connection you want</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
@@ -731,9 +731,9 @@
 
 
 <span class="k">def</span> <span class="nf">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Traverses the Mesh model recursively.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Traverses the Mesh model recursively.&quot;&quot;&quot;</span>
     <span class="nb">object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;..&#39;</span> <span class="o">*</span> <span class="n">depth</span><span class="si">}{</span><span class="nb">object</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;..&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">depth</span><span class="si">}{</span><span class="nb">object</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">):</span>
@@ -742,7 +742,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to traverse Mesh model.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to traverse Mesh model.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
@@ -784,7 +784,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
 
     <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Name=SomePowerPlantChimney2].TsRawAtt&quot;</span>  <span class="c1"># make sure only 1 time series is returned</span>
     <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
@@ -1030,7 +1030,7 @@
 <span class="k">def</span> <span class="nf">get_versioned_link_relation_attribute_information</span><span class="p">(</span>
     <span class="n">attribute</span><span class="p">:</span> <span class="n">VersionedLinkRelationAttribute</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span>
 <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create a printable message from a versioned link relation attribute.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a printable message from a versioned link relation attribute.&quot;&quot;&quot;</span>
     <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
     <span class="k">for</span> <span class="n">entry_index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">entries</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
@@ -1121,10 +1121,8 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
-
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-
         <span class="n">one_to_one_link_relation_example</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
         <span class="n">one_to_many_link_relation_example</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
         <span class="n">versioned_one_to_one_link_relation_example</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
@@ -1151,7 +1149,6 @@
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-
         <span class="c1"># Root object has an ownership relation attribute that point to objects</span>
         <span class="c1"># of &quot;PlantElementType&quot; type. We want to add new object of this type.</span>
         <span class="n">root_object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">root_object_path</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1244,7 +1241,6 @@
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-
         <span class="c1"># First read the attribute using `get_attribute`.</span>
         <span class="c1"># We can get standard information like name, ID, tags, etc.</span>
         <span class="n">rating_curve_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
@@ -1342,7 +1338,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing different ways of working with sessions.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing different ways of working with sessions.&quot;&quot;&quot;</span>
 
     <span class="c1"># Configure the connection you want.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
@@ -1460,7 +1456,7 @@
 
 
 <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to write time series points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to write time series points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the time series identifier, it can be:</span>
     <span class="c1"># - time series key of a physical time series</span>
@@ -1510,7 +1506,7 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to write time series points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to write time series points.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
@@ -1537,7 +1533,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
 
     <span class="c1"># Define the time series identifier, it can be:</span>
     <span class="c1"># - time series key of a physical time series</span>
@@ -1587,7 +1583,7 @@
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to write timeseries points.&quot;&quot;&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>

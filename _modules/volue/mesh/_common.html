@@ -191,7 +191,7 @@
 
 <div class="viewcode-block" id="AttributesFilter"><a class="viewcode-back" href="../../../api.html#volue.mesh.AttributesFilter">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">AttributesFilter</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Defines what attributes need to be returned in response message.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines what attributes need to be returned in response message.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        Name mask:</span>
@@ -292,7 +292,7 @@
 
 <div class="viewcode-block" id="UserIdentity"><a class="viewcode-back" href="../../../api.html#volue.mesh.UserIdentity">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">UserIdentity</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a Mesh server user identity.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a Mesh server user identity.</span>
 
 <span class="sd">    display_name - a human readable name identifying this user. This name</span>
 <span class="sd">    should not be used as a unique identifier for the user as it may be</span>
@@ -314,7 +314,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_user_identity</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">UserIdentity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserIdentity</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a `UserIdentity` from protobuf UserIdentity.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `UserIdentity` from protobuf UserIdentity.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            proto_user_identity: Protobuf UserIdentity returned from the gRPC method.</span>
@@ -328,7 +328,7 @@
 
 <div class="viewcode-block" id="VersionInfo"><a class="viewcode-back" href="../../../api.html#volue.mesh.VersionInfo">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">VersionInfo</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a Mesh server version information.</span>
 
 <span class="sd">    version - version number, e.g.: 2.5.2.32</span>
@@ -341,7 +341,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_version_info</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VersionInfo</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a `VersionInfo` from protobuf VersionInfo.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `VersionInfo` from protobuf VersionInfo.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            proto_version_info: protobuf VersionInfo returned from the gRPC method.</span>
@@ -351,7 +351,7 @@
 
 <div class="viewcode-block" id="XyCurve"><a class="viewcode-back" href="../../../api.html#volue.mesh.XyCurve">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">XyCurve</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A list of (x, y) pairs, indexed by a reference/z value.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A list of (x, y) pairs, indexed by a reference/z value.</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        :doc:`mesh_xy_sets`</span>
@@ -366,7 +366,7 @@
 
 <div class="viewcode-block" id="XySet"><a class="viewcode-back" href="../../../api.html#volue.mesh.XySet">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">XySet</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A set of XY-curves.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A set of XY-curves.</span>
 
 <span class="sd">    If this set is part of a versioned XY-set attribute (:code:`XYZSeriesAttribute`)</span>
 <span class="sd">    the :code:`valid_from_time` field contains a datetime with the start of the validity</span>
@@ -385,7 +385,7 @@
 
 <div class="viewcode-block" id="RatingCurveSegment"><a class="viewcode-back" href="../../../api.html#volue.mesh.RatingCurveSegment">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">RatingCurveSegment</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a rating curve segment.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a rating curve segment.</span>
 
 <span class="sd">    Contains `a`, `b` and `c` factors for the discharge formula.</span>
 <span class="sd">    Additionally each segment `i` stores a 64 bit floating point</span>
@@ -415,7 +415,7 @@
 
 <div class="viewcode-block" id="RatingCurveVersion"><a class="viewcode-back" href="../../../api.html#volue.mesh.RatingCurveVersion">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">RatingCurveVersion</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a rating curve version.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a rating curve version.</span>
 
 <span class="sd">    Contains rating curve segments, timestamp with the time at which the</span>
 <span class="sd">    version becomes active and a threshold indicating the minimal `x` value</span>
@@ -445,7 +445,7 @@
 
 <div class="viewcode-block" id="LinkRelationVersion"><a class="viewcode-back" href="../../../api.html#volue.mesh.LinkRelationVersion">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">LinkRelationVersion</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a link relation version.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a link relation version.</span>
 
 <span class="sd">    Contains target object ID and timestamp with the time at which the</span>
 <span class="sd">    version becomes active.</span>
@@ -462,7 +462,7 @@
 
 
 <span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        uuid: Identifier in Python&#39;s UUID format.</span>
@@ -473,7 +473,7 @@
 
 
 <span class="k">def</span> <span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Converts from Microsoft&#39;s GUID format to UUID format.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Microsoft&#39;s GUID format to UUID format.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        guid: GUID to be converted.</span>
@@ -484,7 +484,7 @@
 
 
 <span class="k">def</span> <span class="nf">_to_proto_curve_type</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts from Timeseries.Curve type to protobuf curve type.</span>
 
 <span class="sd">    Args:</span>
@@ -503,7 +503,7 @@
 
 
 <span class="k">def</span> <span class="nf">_from_proto_curve_type</span><span class="p">(</span><span class="n">proto_curve</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts from protobuf curve type to Timeseries.Curve type.</span>
 
 <span class="sd">    Args:</span>
@@ -524,7 +524,7 @@
 <span class="k">def</span> <span class="nf">_from_proto_resolution</span><span class="p">(</span>
     <span class="n">proto_resolution</span><span class="p">:</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts from protobuf resolution type to Timeseries.Resolution type.</span>
 
 <span class="sd">    Args:</span>
@@ -553,7 +553,7 @@
 <span class="k">def</span> <span class="nf">_to_proto_utcinterval</span><span class="p">(</span>
     <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts to protobuf UtcInterval.</span>
 
 <span class="sd">    Args:</span>
@@ -572,7 +572,7 @@
 
 
 <span class="k">def</span> <span class="nf">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a Timeseries to corresponding protobuf Timeseries.</span>
 
 <span class="sd">    Args:</span>
@@ -644,7 +644,7 @@
 
 
 <span class="k">def</span> <span class="nf">_read_proto_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a protobuf time series reply from Mesh server into Timeseries.</span>
 
 <span class="sd">    Args:</span>
@@ -686,7 +686,7 @@
 
 
 <span class="k">def</span> <span class="nf">_read_proto_numeric_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a protobuf numeric calculation reply from Mesh server into an array of floating points values.</span>
 
 <span class="sd">    Args:</span>
@@ -702,7 +702,7 @@
 
 
 <span class="k">def</span> <span class="nf">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">datetime</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts datetime type to protobuf Timestamp type.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts datetime type to protobuf Timestamp type.&quot;&quot;&quot;</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
     <span class="n">timestamp</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timestamp</span>

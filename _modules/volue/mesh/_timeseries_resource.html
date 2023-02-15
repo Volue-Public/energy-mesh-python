@@ -186,7 +186,7 @@
 
 <div class="viewcode-block" id="TimeseriesResource"><a class="viewcode-back" href="../../../api.html#volue.mesh.TimeseriesResource">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">TimeseriesResource</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Represents a Mesh time series resource (either physical or virtual).&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a Mesh time series resource (either physical or virtual).&quot;&quot;&quot;</span>
 
     <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">path</span><span class="p">:</span> <span class="nb">str</span>
@@ -201,7 +201,7 @@
     <span class="k">def</span> <span class="nf">_from_proto_timeseries_resource</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a `TimeseriesResource` from protobuf TimeseriesResource.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `TimeseriesResource` from protobuf TimeseriesResource.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            proto_timeseries_resource: Protobuf TimeseriesResource returned from the gRPC methods.</span>
