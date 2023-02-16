@@ -404,6 +404,7 @@ def test_write_timeseries_points(session):
         session.rollback()
 
 
+@pytest.mark.database
 def test_write_one_timeseries_point(session):
     """
     Check that writing one time series point succeeds and does not affect
@@ -442,6 +443,7 @@ def test_write_one_timeseries_point(session):
         assert flags[number].as_py() == Timeseries.PointFlags.OK.value
 
 
+@pytest.mark.database
 def test_write_timeseries_point_from_other_session(connection):
     """
     Check that writing one time series point succeeds and that a dependent
@@ -453,6 +455,16 @@ def test_write_timeseries_point_from_other_session(connection):
     reader_session = connection.create_session()
     writer_session.open()
     reader_session.open()
+
+    # first read in one session a calculation time series
+    reply_timeseries = reader_session.read_timeseries_points(
+        target=TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH,
+        start_time=datetime(2016, 1, 1, 1),
+        end_time=datetime(2016, 1, 1, 4),
+    )
+    # it is a piecewise linear time series, so for approximation purposes Mesh
+    # returns also one point after the requested interval
+    assert reply_timeseries.number_of_points == 4
 
     point_new_value = 50
 
@@ -473,7 +485,7 @@ def test_write_timeseries_point_from_other_session(connection):
     # commit the changes so that other session will have access to changed data
     writer_session.commit()
 
-    # now read a calculation time series
+    # now read a calculation time series again
     reply_timeseries = reader_session.read_timeseries_points(
         target=TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH,
         start_time=new_point_timestamp,
