@@ -22,7 +22,7 @@ include = [
 python = ">=3.7.1,<3.11"  # pandas requires python 3.7.1 or above, numpy (one of the dependencies) requires python below 3.11
 grpcio = "^1.37.0"
 pyarrow = ">=7.0.0"
-protobuf = "^3.20.1"
+protobuf = ">=3.20.1"
 winkerberos = { version = "^0.8.0", markers = "sys_platform == 'win32'" }
 kerberos = { version = "^1.3.1", markers = "sys_platform == 'linux'" }
 python-dateutil = "^2.8.2"
