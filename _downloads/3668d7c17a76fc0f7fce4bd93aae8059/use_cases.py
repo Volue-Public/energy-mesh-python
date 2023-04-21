@@ -1140,8 +1140,8 @@ def use_case_14():
             print(f"{use_case_name}:")
             print("--------------------------------------------------------------")
 
-            # Owner of the new object must be an ownership relation attribute
-            # of Object Collection type.
+            # Owner of the new object must be a one-to-one or one-to-many
+            # ownership relation attribute.
             # E.g.: for `SomePowerPlant1` object with path:
             # - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
             # Owner will be the `ThermalPowerToPlantRef` attribute.
