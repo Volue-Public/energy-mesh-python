@@ -344,7 +344,7 @@ message CreateObjectRequest {
   string name = 2;
 
   // Owner of the new object.
-  // Owner must be an ownership relation attribute of Object Collection type.
+  // Owner must be an ownership relation attribute.
   // E.g.: for `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
