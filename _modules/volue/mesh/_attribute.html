@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>volue.mesh._attribute &mdash; volue.mesh 1.1.0 documentation</title>
+  <title>volue.mesh._attribute &mdash; volue.mesh 1.1.1 documentation</title>
   
 
   
@@ -635,21 +635,22 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;time series collection attribute is not supported&quot;</span><span class="p">)</span>
 
-        <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">timeseries_value</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">proto_value</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">timeseries_value</span>
 
-        <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;time_series_resource&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">_from_proto_timeseries_resource</span><span class="p">(</span>
-                    <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource</span>
+            <span class="k">if</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;time_series_resource&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">_from_proto_timeseries_resource</span><span class="p">(</span>
+                        <span class="n">proto_value</span><span class="o">.</span><span class="n">time_series_resource</span>
+                    <span class="p">)</span>
                 <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="kc">None</span>  <span class="c1"># for typing hints: &quot;TimeseriesResource | None&quot;</span>
-            <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="kc">None</span>  <span class="c1"># for typing hints: &quot;TimeseriesResource | None&quot;</span>
+                <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_local_expression</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">is_local_expression</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">expression</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_local_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">is_local_expression</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">expression</span>
 
         <span class="c1"># in basic view the definition is not a part of response from Mesh server</span>
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;definition&quot;</span><span class="p">):</span>
