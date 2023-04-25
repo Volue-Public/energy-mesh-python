@@ -463,21 +463,22 @@ class TimeseriesAttribute(AttributeBase):
         if len(proto_attribute.values) > 1:
             raise TypeError("time series collection attribute is not supported")
 
-        proto_value = proto_attribute.values[0].timeseries_value
+        if len(proto_attribute.values) == 1:
+            proto_value = proto_attribute.values[0].timeseries_value
 
-        if proto_value.HasField("time_series_resource"):
-            self.time_series_resource = (
-                TimeseriesResource._from_proto_timeseries_resource(
-                    proto_value.time_series_resource
+            if proto_value.HasField("time_series_resource"):
+                self.time_series_resource = (
+                    TimeseriesResource._from_proto_timeseries_resource(
+                        proto_value.time_series_resource
+                    )
                 )
-            )
-        else:
-            self.time_series_resource = (
-                None  # for typing hints: "TimeseriesResource | None"
-            )
+            else:
+                self.time_series_resource = (
+                    None  # for typing hints: "TimeseriesResource | None"
+                )
 
-        self.is_local_expression: bool = proto_value.is_local_expression
-        self.expression: str = proto_value.expression
+            self.is_local_expression: Optional[bool] = proto_value.is_local_expression
+            self.expression: Optional[str] = proto_value.expression
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
