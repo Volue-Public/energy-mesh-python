@@ -5,7 +5,7 @@ from typing import Optional, TypeVar
 import grpc
 
 from . import _authentication
-from ._authentication import Authentication
+from ._authentication import Authentication, ExternalAccessTokenPlugin
 from ._credentials import Credentials
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
@@ -15,23 +15,28 @@ C = TypeVar("C", bound="Connection")
 class Connection(abc.ABC):
     """A connection to a Mesh server.
 
-    There are three primary types of connections, insecure, TLS encrypted,
-    and Kerberos authenticated (with TLS encryption). These can be
-    instantiated as follows::
+    There are four primary types of connections, insecure, TLS encrypted,
+    Kerberos authenticated (with TLS encryption) and with providing externally
+    obtained token (with TLS encryption).
+    These can be instantiated as follows::
 
         insecure = mesh.Connection.insecure('localhost:50051')
         tls = mesh.Connection.with_tls('localhost:50051', root_certificates)
         kerberos = mesh.Connection.with_kerberos('localhost',
-                                                 root_certificates,'
+                                                 root_certificates,
                                                  'HOST/hostname.ad.examplecompany.com',
                                                  'ad\\user.name')
+        kerberos = mesh.Connection.with_external_access_token('localhost',
+                                                              root_certificates,
+                                                              'eyJ0eXAiOi...')
 
     The target address uses `gRPC Name Resolution <naming>`_. In general this
     means that 'host:port' works as expected.
 
-    See :py:meth:`Connection.insecure()`, :py:meth:`Connection.with_tls`,
-    and :py:meth:`Connection.with_kerberos` for more information on the
-    connection variants.
+    See :py:meth:`Connection.insecure()`, :py:meth:`Connection.with_tls()`,
+    :py:meth:`Connection.with_kerberos()` and
+    :py:meth:`Connection.with_external_access_token()` for more information on
+    the connection variants.
 
     .. _naming: https://github.com/grpc/grpc/blob/master/doc/naming.md
     """
@@ -74,10 +79,11 @@ class Connection(abc.ABC):
             authentication_parameters: TODO
 
         Note:
-            There are 3 possible connection types:
+            There are 4 possible connection types:
             - insecure (without TLS)
             - with TLS
             - with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)
+            - with TLS and externally obtained access tokens (requires TLS for encrypting access tokens)
         """
         self.auth_metadata_plugin = auth_metadata_plugin
 
@@ -87,11 +93,13 @@ class Connection(abc.ABC):
 
         target = f"{host}:{port}"
 
-        # There are 3 possible connection types:
+        # There are 4 possible connection types:
         # - insecure (without TLS)
         # - with TLS
         # - with TLS and Kerberos authentication
         #   (authentication requires TLS for encrypting auth tokens)
+        # - with TLS and externally obtained access tokens
+        #   (requires TLS for encrypting access tokens)
         if not root_pem_certificate:
             # insecure connection (without TLS)
             channel = self._insecure_grpc_channel(target=target)
@@ -192,6 +200,33 @@ class Connection(abc.ABC):
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @classmethod
+    def with_external_access_token(
+        cls: C, target: str, root_certificates: Optional[str], access_token: str
+    ) -> C:
+        """Creates an encrypted connection to a Mesh server and will add
+        provided access token to authorization header to each server request.
+
+        This is used for setups with external identity providers that generate
+        access tokens to the Mesh server.
+
+        Args:
+            target: The server address.
+            root_certificates: The PEM-encoded TLS root certificates as a byte
+                string, or None to retrieve them from a default location chosen
+                by the gRPC runtime.
+            access_token: Token obtained externally, used to get access to Mesh
+                server.
+        """
+        ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
+        auth_metadata_plugin = ExternalAccessTokenPlugin(access_token)
+        call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
+        credentials = grpc.composite_channel_credentials(
+            ssl_credentials, call_credentials
+        )
+        channel = cls._secure_grpc_channel(target, credentials)
+        return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
+
+    @classmethod
     def _with_fake_identity(
         cls, target: str, root_certificates: Optional[str], name: str
     ):
@@ -225,6 +260,24 @@ class Connection(abc.ABC):
             Does not require an open session.
 
         Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not
+                be completed.
+        """
+
+    @abc.abstractmethod
+    def update_external_access_token(self, access_token: str) -> None:
+        """Updates external access token used for connection to Mesh.
+
+        Args:
+            access_token: New access token to be added to authorization header
+                to each server request.
+
+        Note:
+            Does not require an open session.
+
+        Raises:
+            RuntimeError: Error message raised if the input is not valid and
+                the OAuth is not configured.
             grpc.RpcError: Error message raised if the gRPC request could not
                 be completed.
         """

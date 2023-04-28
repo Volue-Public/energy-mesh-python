@@ -1,5 +1,5 @@
 """
-Mesh authentication functionality.
+Mesh authentication and authorization functionality.
 """
 
 import base64
@@ -304,3 +304,21 @@ class FakeIdentityPlugin(grpc.AuthMetadataPlugin):
                 self.mesh_service, self.name
             )
         callback((("authorization", "Bearer " + self.token),), None)
+
+
+class ExternalAccessTokenPlugin(grpc.AuthMetadataPlugin):
+    """
+    A grpc.AuthMetadataPlugin for Mesh connection using external access tokens.
+    """
+
+    def __init__(self, token: str):
+        self.token: str = token
+
+    def __call__(self, context, callback):
+        callback((("authorization", "Bearer " + self.token),), None)
+
+    def update_access_token(self, token: str):
+        """
+        Updates currently set access token to new value.
+        """
+        self.token = token
