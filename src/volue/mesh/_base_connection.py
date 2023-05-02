@@ -26,9 +26,9 @@ class Connection(abc.ABC):
                                                  root_certificates,
                                                  'HOST/hostname.ad.examplecompany.com',
                                                  'ad\\user.name')
-        kerberos = mesh.Connection.with_external_access_token('localhost',
-                                                              root_certificates,
-                                                              'eyJ0eXAiOi...')
+        token = mesh.Connection.with_external_access_token('localhost',
+                                                           root_certificates,
+                                                           'eyJ0eXAiOi...')
 
     The target address uses `gRPC Name Resolution <naming>`_. In general this
     means that 'host:port' works as expected.
@@ -276,10 +276,8 @@ class Connection(abc.ABC):
             Does not require an open session.
 
         Raises:
-            RuntimeError: Error message raised if the input is not valid and
-                the OAuth is not configured.
-            grpc.RpcError: Error message raised if the gRPC request could not
-                be completed.
+            RuntimeError: Error message raised if the connection is not using
+                external access token.
         """
 
     @abc.abstractmethod
@@ -290,8 +288,8 @@ class Connection(abc.ABC):
             Does not require an open session.
 
         Raises:
-            RuntimeError: Error message raised if the input is not valid and
-                the authentication is not configured.
+            RuntimeError: Error message raised if the connection is not using
+                Kerberos authentication.
             grpc.RpcError: Error message raised if the gRPC request could not
                 be completed.
         """
