@@ -1,4 +1,3 @@
-import grpc
 from datetime import datetime
 
 from volue.mesh import Connection
@@ -31,7 +30,7 @@ def main(address, port, root_pem_certificate):
 
         # For long running sessions it may be necessary to refresh the access
         # token.
-        # Other possibility would be to catch groc.RpcError with status code
+        # Other possibility would be to catch grpc.RpcError with status code
         # UNAUTHENTICATED and then get new access token and update it in the
         # Mesh connection using `update_external_access_token`.
         connection.update_external_access_token("my_new_access_token")
