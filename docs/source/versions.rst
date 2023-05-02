@@ -3,8 +3,8 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-`Mesh Python SDK version 1.1.1 (Release Candidate) <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.1.0>`_
-*****************************************************************************************************************************
+`Mesh Python SDK version 1.1.1 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.1.1>`_
+*********************************************************************************************************
 
 ------------
 
@@ -31,7 +31,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.1.0
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.1.1
 
 
 `Mesh Python SDK version 1.0.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.0.0>`_
