@@ -11,6 +11,7 @@ from google import protobuf
 import grpc
 
 from volue.mesh import (
+    Authentication,
     Timeseries,
     AttributesFilter,
     UserIdentity,
@@ -21,6 +22,7 @@ from volue.mesh import (
     Object,
 )
 from volue.mesh._attribute import _from_proto_attribute
+from volue.mesh._authentication import ExternalAccessTokenPlugin
 from volue.mesh._common import (
     LinkRelationVersion,
     XySet,
@@ -375,8 +377,20 @@ class Connection(_base_connection.Connection):
             self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         )
 
+    def update_external_access_token(self, access_token: str) -> None:
+        if (
+            self.auth_metadata_plugin is None
+            or type(self.auth_metadata_plugin) is not ExternalAccessTokenPlugin
+        ):
+            raise RuntimeError("connection is not using external access token mode")
+
+        self.auth_metadata_plugin.update_access_token(access_token)
+
     def revoke_access_token(self) -> None:
-        if self.auth_metadata_plugin is None:
+        if (
+            self.auth_metadata_plugin is None
+            or type(self.auth_metadata_plugin) is not Authentication
+        ):
             raise RuntimeError("Authentication not configured for this connection")
 
         self.mesh_service.RevokeAccessToken(
