@@ -183,6 +183,7 @@
 <span class="kn">import</span> <span class="nn">grpc</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Authentication</span><span class="p">,</span>
     <span class="n">Timeseries</span><span class="p">,</span>
     <span class="n">AttributesFilter</span><span class="p">,</span>
     <span class="n">UserIdentity</span><span class="p">,</span>
@@ -193,6 +194,7 @@
     <span class="n">Object</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._attribute</span> <span class="kn">import</span> <span class="n">_from_proto_attribute</span>
+<span class="kn">from</span> <span class="nn">volue.mesh._authentication</span> <span class="kn">import</span> <span class="n">ExternalAccessTokenPlugin</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">LinkRelationVersion</span><span class="p">,</span>
     <span class="n">XySet</span><span class="p">,</span>
@@ -547,8 +549,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">GetUserIdentity</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="Connection.update_external_access_token"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.update_external_access_token">[docs]</a>    <span class="k">def</span> <span class="nf">update_external_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ExternalAccessTokenPlugin</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;connection is not using external access token mode&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">update_access_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Connection.revoke_access_token"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.revoke_access_token">[docs]</a>    <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Authentication</span>
+        <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Authentication not configured for this connection&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RevokeAccessToken</span><span class="p">(</span>
