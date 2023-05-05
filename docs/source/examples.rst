@@ -28,6 +28,11 @@ Connect, asynchronously
 .. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
    :language: python
 
+Connect using external access token
+***********************************
+.. literalinclude:: /../../src/volue/mesh/examples/connect_using_external_access_token.py
+   :language: python
+
 Get version
 ************
 .. literalinclude:: /../../src/volue/mesh/examples/get_version.py

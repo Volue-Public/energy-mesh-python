@@ -7,7 +7,12 @@ from volue.mesh.examples import _get_connection_info
 def main(address, port, root_pem_certificate):
     """
     Showing how to authorize to gRPC Mesh server using externally obtained
-    access token, e.g: a OAuth JWT.
+    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope
+    for this example.
+
+    Depending on your environment, e.g.: Azure AD, using libraries like
+    Microsoft Authentication Library (MSAL) for getting the tokens is
+    suggested.
     """
 
     token = "my_token"
@@ -38,7 +43,7 @@ def main(address, port, root_pem_certificate):
 
 if __name__ == "__main__":
     # This requires Mesh server to be running with enabled TLS and OAuth options.
-    # Obtaining access token is out of the scope of this example.
+    # Obtaining access token is out of the scope for this example.
 
     address, port, root_pem_certificate = _get_connection_info()
     # main(address, port, root_pem_certificate)
