@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>External authorization &mdash; volue.mesh 1.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tests" href="tests.html" />
+    <link rel="prev" title="Kerberos" href="kerberos.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="authentication.html">Client authentication</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kerberos.html">Kerberos</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">External authorization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#token-format">Token format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#internals">Internals</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="authentication.html">Client authentication</a> &raquo;</li>
+        
+      <li>External authorization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/external_auth.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="external-authorization">
+<h1>External authorization<a class="headerlink" href="#external-authorization" title="Permalink to this headline">¶</a></h1>
+<p>A Mesh server may be protected by an external authorization server, where the
+clients like Python SDK authenticate and request access tokens. Tokens obtained
+from the external authorization server are then sent in the <cite>Authorization</cite>
+header when making a call to the Mesh API.</p>
+<p>This is required by the Mesh server if <em>OAuth</em> is enabled for the gRPC
+interface in the Mesh configuration file.</p>
+<p>For security reasons authentication also requires TLS to be enabled, and
+you might therefore need Mesh’s TLS certificate in the below examples.</p>
+<div class="section" id="token-format">
+<h2>Token format<a class="headerlink" href="#token-format" title="Permalink to this headline">¶</a></h2>
+<p>Mesh supports OAuth 2.0 JSON Web Token (JWT) access tokens. They need to meet
+the following requirements:</p>
+<ul class="simple">
+<li><p>The access token signed using RSA algorithm.</p></li>
+<li><p>Authorization is done using <cite>roles</cite> claim that must be part of the access
+token.</p></li>
+<li><p>User’s claims: <cite>name</cite> and <cite>oid</cite> must be part of the access token.</p></li>
+</ul>
+<p>Azure Active Directory (Azure AD) supports all OAuth 2.0 flows.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+<span class="c1"># Most certificates won&#39;t work with IP addresses, therefore</span>
+<span class="c1"># you&#39;ll need to be able to resolve the Mesh server by name,</span>
+<span class="c1"># either through your DNS configuration, or through /etc/hosts.</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_access_token&quot;</span>  <span class="c1"># obtain it from authorization server</span>
+
+<span class="c1"># mesh.domain.com is the address of the Mesh server.</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
+    <span class="s2">&quot;mesh.domain.com:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">token</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>For more complex example please refer to <em>connect_using_external_access_token.py</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Showing how to authorize to gRPC Mesh server using externally obtained</span>
+<span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
+<span class="sd">    for this example.</span>
+
+<span class="sd">    Depending on your environment, e.g.: Azure AD, using libraries like</span>
+<span class="sd">    Microsoft Authentication Library (MSAL) for getting the tokens is</span>
+<span class="sd">    suggested.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_token&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># Print user information contained in the access token.</span>
+        <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+        <span class="c1"># Read some time series data.</span>
+        <span class="c1"># This requires the user has time series read permissions.</span>
+        <span class="n">timeseries_key</span> <span class="o">=</span> <span class="mi">1388</span>
+        <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+            <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+
+        <span class="c1"># For long running sessions it may be necessary to refresh the access</span>
+        <span class="c1"># token.</span>
+        <span class="c1"># Other possibility would be to catch grpc.RpcError with status code</span>
+        <span class="c1"># UNAUTHENTICATED and then get new access token and update it in the</span>
+        <span class="c1"># Mesh connection using `update_external_access_token`.</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">update_external_access_token</span><span class="p">(</span><span class="s2">&quot;my_new_access_token&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># This requires Mesh server to be running with enabled TLS and OAuth options.</span>
+    <span class="c1"># Obtaining access token is out of the scope for this example.</span>
+
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="c1"># main(address, port, root_pem_certificate)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="internals">
+<h2>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h2>
+<p>Mesh validates <strong>access tokens</strong> that are sent with every call to the server.
+Validation means checking token’s:</p>
+<ul class="simple">
+<li><p>RSA signature</p></li>
+<li><p>integrity - to make sure no one tampered with it</p></li>
+<li><p>expiration time</p></li>
+<li><p>claims like audience, scope, etc.</p></li>
+</ul>
+<p>Additionally it checks if user is permitted to access given API by checking the
+<cite>roles</cite> claim in the access token.</p>
+<p>Access tokens have an expiration time, after which they’re no longer valid, and
+a new access token is required. To provide new access token create either a new
+connection or use <a class="reference internal" href="api.html#volue.mesh.Connection.update_external_access_token" title="volue.mesh.Connection.update_external_access_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.update_external_access_token()</span></code></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tests.html" class="btn btn-neutral float-right" title="Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kerberos.html" class="btn btn-neutral float-left" title="Kerberos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Examples &mdash; volue.mesh 1.1.1 documentation</title>
+  <title>Examples &mdash; volue.mesh 1.2.0 documentation</title>
   
 
   
@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Authentication" href="authentication.html" />
+    <link rel="next" title="Client authentication" href="authentication.html" />
     <link rel="prev" title="Use cases" href="usecases.html" /> 
 </head>
 
@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#authorization">Authorization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect">Connect</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect-asynchronously">Connect, asynchronously</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connect-using-external-access-token">Connect using external access token</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-version">Get version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#read-time-series">Read time series</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#read-time-series-asynchronously">Read time series, asynchronously</a></li>
@@ -115,7 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#write-time-series-asynchronously">Write time series, asynchronously</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
@@ -398,6 +399,60 @@
 <span class="c1"># 2. Server version is 1.12.5.0-dev</span>
 <span class="c1"># B. Ending session</span>
 <span class="c1"># Done</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="connect-using-external-access-token">
+<h2>Connect using external access token<a class="headerlink" href="#connect-using-external-access-token" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Showing how to authorize to gRPC Mesh server using externally obtained</span>
+<span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
+<span class="sd">    for this example.</span>
+
+<span class="sd">    Depending on your environment, e.g.: Azure AD, using libraries like</span>
+<span class="sd">    Microsoft Authentication Library (MSAL) for getting the tokens is</span>
+<span class="sd">    suggested.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_token&quot;</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span>
+    <span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># Print user information contained in the access token.</span>
+        <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+        <span class="c1"># Read some time series data.</span>
+        <span class="c1"># This requires the user has time series read permissions.</span>
+        <span class="n">timeseries_key</span> <span class="o">=</span> <span class="mi">1388</span>
+        <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+            <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
+
+        <span class="c1"># For long running sessions it may be necessary to refresh the access</span>
+        <span class="c1"># token.</span>
+        <span class="c1"># Other possibility would be to catch grpc.RpcError with status code</span>
+        <span class="c1"># UNAUTHENTICATED and then get new access token and update it in the</span>
+        <span class="c1"># Mesh connection using `update_external_access_token`.</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">update_external_access_token</span><span class="p">(</span><span class="s2">&quot;my_new_access_token&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># This requires Mesh server to be running with enabled TLS and OAuth options.</span>
+    <span class="c1"># Obtaining access token is out of the scope for this example.</span>
+
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="c1"># main(address, port, root_pem_certificate)</span>
 </pre></div>
 </div>
 </div>
@@ -1604,7 +1659,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="authentication.html" class="btn btn-neutral float-right" title="Authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="authentication.html" class="btn btn-neutral float-right" title="Client authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="usecases.html" class="btn btn-neutral float-left" title="Use cases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

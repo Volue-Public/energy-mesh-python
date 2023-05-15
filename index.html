@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Welcome to Mesh Python SDK &mdash; volue.mesh 1.1.1 documentation</title>
+  <title>Welcome to Mesh Python SDK &mdash; volue.mesh 1.2.0 documentation</title>
   
 
   
@@ -93,7 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
@@ -184,7 +184,7 @@ communicate with Volue Energy’s Mesh server.</p>
 <li><p><strong>Quickstart:</strong> <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart guide</span></a></p></li>
 <li><p><strong>Installation:</strong> <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a></p></li>
 <li><p><strong>Examples:</strong> <a class="reference internal" href="examples.html"><span class="doc">Examples</span></a> | <a class="reference internal" href="tests.html"><span class="doc">Tests</span></a></p></li>
-<li><p><strong>Authentication:</strong> <a class="reference internal" href="authentication.html"><span class="doc">Authentication</span></a></p></li>
+<li><p><strong>Authentication:</strong> <a class="reference internal" href="authentication.html"><span class="doc">Client authentication</span></a></p></li>
 <li><p><strong>How to do development</strong> <a class="reference internal" href="installation.html#setup-for-developers"><span class="std std-ref">Setup for developers</span></a></p></li>
 </ul>
 <div class="section" id="features">
@@ -258,6 +258,7 @@ communicate with Volue Energy’s Mesh server.</p>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#authorization">Authorization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#connect">Connect</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#connect-asynchronously">Connect, asynchronously</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#connect-using-external-access-token">Connect using external access token</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#get-version">Get version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#read-time-series">Read time series</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#read-time-series-asynchronously">Read time series, asynchronously</a></li>
@@ -274,11 +275,20 @@ communicate with Volue Energy’s Mesh server.</p>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#write-time-series-asynchronously">Write time series, asynchronously</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="authentication.html#windows-kerberos">Windows Kerberos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="authentication.html#mit-kerberos-linux-macos">MIT Kerberos (Linux/MacOS)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="authentication.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="authentication.html#internals">Internals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kerberos.html">Kerberos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kerberos.html#windows-kerberos">Windows Kerberos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kerberos.html#mit-kerberos-linux-macos">MIT Kerberos (Linux/MacOS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kerberos.html#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kerberos.html#internals">Internals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="external_auth.html">External authorization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="external_auth.html#token-format">Token format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="external_auth.html#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="external_auth.html#internals">Internals</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a><ul>

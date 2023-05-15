@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Kerberos &mdash; volue.mesh 1.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="External authorization" href="external_auth.html" />
+    <link rel="prev" title="Client authentication" href="authentication.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usecases.html">Use cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="authentication.html">Client authentication</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Kerberos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#windows-kerberos">Windows Kerberos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mit-kerberos-linux-macos">MIT Kerberos (Linux/MacOS)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#internals">Internals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="external_auth.html">External authorization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="authentication.html">Client authentication</a> &raquo;</li>
+        
+      <li>Kerberos</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/kerberos.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="kerberos">
+<h1>Kerberos<a class="headerlink" href="#kerberos" title="Permalink to this headline">¶</a></h1>
+<p>When connecting to Mesh using the Python SDK you might need to authenticate
+using Kerberos. This is required by the Mesh server if Kerberos is enabled
+for the gRPC interface in the Mesh configuration file.</p>
+<p>For security reasons authentication also requires TLS to be enabled, and
+you might therefore need Mesh’s TLS certificate in the below examples.</p>
+<div class="section" id="windows-kerberos">
+<h2>Windows Kerberos<a class="headerlink" href="#windows-kerberos" title="Permalink to this headline">¶</a></h2>
+<p>If you are on Windows as an Active Directory domain user Kerberos
+authentication is relatively simple. You only need to find the service
+principal name the Mesh service is running under. If Mesh is running as a
+machine user the service principal name will usually be
+<code class="docutils literal notranslate"><span class="pre">HOST/full.qualified.domain.name</span></code> or <code class="docutils literal notranslate"><span class="pre">HOST/f.q.d.n&#64;DOMAIN.COM</span></code> but it might
+be different in your environment. Determining the service principal name for
+the Mesh service is out of scope for this guide.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span><span class="s2">&quot;mesh.local:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
+                                           <span class="s2">&quot;HOST/mesh.local@DOMAIN.COM&quot;</span><span class="p">,</span> <span class="s2">&quot;user@DOMAIN.COM&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mit-kerberos-linux-macos">
+<h2>MIT Kerberos (Linux/MacOS)<a class="headerlink" href="#mit-kerberos-linux-macos" title="Permalink to this headline">¶</a></h2>
+<p>When running on Linux or MacOS our world quickly becomes more complicated.
+In most configurations the system will not be aware of the Active Directory
+configuration, and you will not be logged in as a domain user. We therefore
+have to complete a number of steps to make Kerberos credentials available
+to the Python SDK.</p>
+<p>This is a quickstart guide designed to help you get started, but MIT Kerberos
+and Active Directory are both complex topics with numerous possible
+configurations, and it is not unlikely that you will need to do some debugging
+at one or more of the steps below.</p>
+<p>Before we get started you’ll need to find the network address(es) of the Active
+Directory (AD) Key Distribution Center (KDC), the AD domain name, credentials
+for your AD user, the service principal name for the Mesh service, and the TLS
+certificate of the Mesh server. Your IT/Operations department might be able to
+assist with this, or you can try to investigate yourself.</p>
+<p>In this guide we’re going to assume that the domain name also resolves to the
+domain controller and the KDC.</p>
+<p>To get the domain name from a domain joined Windows computer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REM</span> <span class="n">Get</span> <span class="n">the</span> <span class="n">AD</span> <span class="n">domain</span> <span class="n">name</span><span class="o">.</span>
+
+<span class="o">&gt;</span> <span class="nb">set</span> <span class="n">USERDNSDOMAIN</span>
+<span class="n">USERDDNSOMAIN</span><span class="o">=</span><span class="n">DOMAIN</span><span class="o">.</span><span class="n">COM</span>
+
+<span class="n">REM</span> <span class="n">Get</span> <span class="n">a</span> <span class="n">bit</span> <span class="n">more</span> <span class="n">information</span> <span class="n">about</span> <span class="n">the</span> <span class="n">domain</span> <span class="n">controller</span><span class="o">.</span>
+<span class="n">REM</span> <span class="n">You</span> <span class="n">should</span> <span class="n">note</span> <span class="n">down</span> <span class="n">the</span> <span class="n">IP</span> <span class="n">address</span> <span class="n">here</span><span class="o">.</span>
+
+<span class="o">&gt;</span> <span class="n">nltest</span> <span class="o">/</span><span class="n">dsgetdc</span><span class="p">:</span><span class="n">DOMAIN</span><span class="o">.</span><span class="n">COM</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>At this stage it’s a good idea to test if the domain controller is reachable
+from your Linux machine. All the following Linux examples run on Ubuntu 20.04
+LTS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Ideally your DNS setup includes the domain controller. This will
+# make the following steps significantly easier. If this command
+# fails it might be a good idea to add the IP address of the
+# domain controller(s) to your list of DNS servers.
+
+$ ping domain.com       # Or the address of a domain controller.
+
+# You can also use the IP directly, but we would recommend against
+# it.
+
+$ ping 172.20.101.20
+</pre></div>
+</div>
+<p>If the above commands both failed, your network will not allow Kerberos
+authentication, and you will have to resolve your network issues.</p>
+<p>Then we should see if we’re able to connect to the KDC on the Kerberos port. By
+default the Kerberos protocol will communicate on port 88. If this fails you
+will have to work with your IT/Operations department to resolve the issue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ netcat -vz domain.com 88
+Connection to domain.com 88 port [tcp/kerberos] succeeded!
+</pre></div>
+</div>
+<p>If everything has gone well up until this point it’s time to install MIT
+Kerberos. On your distribution the MIT Kerberos package names might be different:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install krb5-user krb-config libkrb5-dev
+</pre></div>
+</div>
+<p>Then we’ll need to configure MIT Kerberos:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cat /etc/krb5.conf
+[libdefaults]
+        default_realm = DOMAIN.COM
+
+[realms]
+        DOMAIN.COM = {
+                kdc = domain.com
+                admin_server = domain.com
+        }
+
+[domain_realm]
+        .domain.com = DOMAIN.COM
+        domain.com = DOMAIN.COM
+</pre></div>
+</div>
+<p>And finally we can get a ticket granting ticket from the KDC. If this
+works you’ve successfully performed your first Kerberos authentication:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ kinit -V user@DOMAIN.COM
+Using default cache: /tmp/krb5cc_1000
+Using principal: user@DOMAIN.COM
+Password for user@DOMAIN.COM: ****
+Authenticated to Kerberos v5
+</pre></div>
+</div>
+<p>The newly generated ticket granting ticket will be used when the Mesh
+Python SDK authenticates to the Mesh server. As long as that ticket is
+available on the client you will not have to retype your password.
+To destroy the ticket run <code class="docutils literal notranslate"><span class="pre">kdestroy</span></code>.</p>
+<p>Finally, we can connect to the Mesh server from Python.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+
+<span class="c1"># Most certificates won&#39;t work with IP addresses, therefore</span>
+<span class="c1"># you&#39;ll need to be able to resolve the Mesh server by name,</span>
+<span class="c1"># either through your DNS configuration, or through /etc/hosts.</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="c1"># mesh.domain.com is the address of the Mesh server.</span>
+<span class="c1"># HOST/... is the service principal name, and user@DOMAIN.COM</span>
+<span class="c1"># is the user principal name.</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
+    <span class="s2">&quot;mesh.domain.com:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
+    <span class="s2">&quot;HOST/mesh.domain.com@DOMAIN.COM&quot;</span><span class="p">,</span> <span class="s2">&quot;user@DOMAIN.COM&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Please refer to example <em>authorization.py</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
+
+    <span class="c1"># If Mesh gRPC server is running as a service user,</span>
+    <span class="c1"># for example LocalSystem, NetworkService or a user account</span>
+    <span class="c1"># with a registered service principal name then it is enough</span>
+    <span class="c1"># to provide hostname as service principal, e.g.:</span>
+    <span class="c1">#   &#39;HOST/hostname.ad.examplecompany.com&#39;</span>
+    <span class="c1"># If Mesh gRPC server is running as a user account without</span>
+    <span class="c1"># registered service principal name then it is enough to provide</span>
+    <span class="c1"># user account name running Mesh server as service principal, e.g.:</span>
+    <span class="c1">#   &#39;ad\\user.name&#39; or r&#39;ad\user.name&#39;</span>
+    <span class="c1"># Note: winkerberos converts service principal name if provided in</span>
+    <span class="c1">#       RFC-2078 format. &#39;@&#39; is converted to &#39;/&#39; if there is no &#39;/&#39;</span>
+    <span class="c1">#       character in the service principal name. E.g.:</span>
+    <span class="c1">#           service@hostname</span>
+    <span class="c1">#       Would be converted to:</span>
+    <span class="c1">#           service/hostname</span>
+    <span class="n">authentication_parameters</span> <span class="o">=</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+        <span class="s2">&quot;HOST/example.companyad.company.com&quot;</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+    <span class="c1"># revoke no longer used token</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example: &quot;</span><span class="p">)</span>
+    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
+        <span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+    <span class="c1"># revoke no longer used token</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">())</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># This will authenticate Python client (receive authorization token from Mesh),</span>
+    <span class="c1"># then send gRPC request that requires authorization (e.g.: GetUserIdentity)</span>
+    <span class="c1"># and print the result. If your user name info is printed, you have successfully</span>
+    <span class="c1"># communicated with the server.</span>
+    <span class="c1">#</span>
+    <span class="c1"># This requires Mesh server to be running with enabled TLS and Kerberos options.</span>
+
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+<span class="c1">#    main(address, port, root_pem_certificate)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="internals">
+<h2>Internals<a class="headerlink" href="#internals" title="Permalink to this headline">¶</a></h2>
+<p>Mesh authentication is based on <strong>authorization tokens</strong>. When authentication
+is enabled most network calls to Mesh will require one of these tokens to
+succeed. To get an authorization token the client is required to make a call
+to an authentication endpoint, such as the <code class="docutils literal notranslate"><span class="pre">AuthenticateKerberos</span></code> gRPC
+method. Authentication endpoints perform the necessary authentication steps,
+and if successful return an authorization token that can be used for future
+calls.</p>
+<p>Authorization tokens have an expiration time, after which they’re no longer
+valid, and a new authentication call and a new token is required. At the
+time of writing most authorization tokens are valid for one hour, but this
+is subject to change.</p>
+<p>When creating a Mesh connection with authentication enabled in the Python SDK
+authentication calls and authorization tokens will be handled transparently
+through the <code class="docutils literal notranslate"><span class="pre">_authentication</span></code> module. This module will perform authentication
+calls when a new token is required, and add authorization tokens to calls
+that require them.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="external_auth.html" class="btn btn-neutral float-right" title="External authorization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="authentication.html" class="btn btn-neutral float-left" title="Client authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2022, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
