@@ -2,10 +2,10 @@
 External authorization
 ======================
 
-Mesh server could be protected by external authorization server, where the
+A Mesh server may be protected by an external authorization server, where the
 clients like Python SDK authenticate and request access tokens. Tokens obtained
-from external authorization servers are then send in the `Authorization` header
-when making a call to the Mesh API.
+from the external authorization server are then sent in the `Authorization`
+header when making a call to the Mesh API.
 
 This is required by the Mesh server if *OAuth* is enabled for the gRPC
 interface in the Mesh configuration file.
@@ -20,7 +20,7 @@ Token format
 Mesh supports OAuth 2.0 JSON Web Token (JWT) access tokens. They need to meet
 the following requirements:
 
-- Access token signed using RSA algorithm.
+- The access token signed using RSA algorithm.
 - Authorization is done using `roles` claim that must be part of the access
   token.
 - User's claims: `name` and `oid` must be part of the access token.
@@ -58,7 +58,7 @@ For more complex example please refer to *connect_using_external_access_token.py
 Internals
 *********
 
-Mesh validates **access tokens** that are send with every call to the server.
+Mesh validates **access tokens** that are sent with every call to the server.
 Validation means checking token's:
 
 - RSA signature
