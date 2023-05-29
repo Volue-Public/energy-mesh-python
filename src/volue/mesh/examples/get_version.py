@@ -1,22 +1,37 @@
-from volue.mesh.aio import Connection as AsyncConnection
+import asyncio
+
 from volue.mesh import Connection
+from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh.examples import _get_connection_info
 
-import asyncio
+
+def sync_get_version(address, port, root_pem_certificate):
+    print("Synchronous get version:")
+    connection = Connection(address, port, root_pem_certificate)
+    version_info = connection.get_version()
+    print(version_info.version)
+
+
+async def async_get_version(
+    address,
+    port,
+    root_pem_certificate,
+):
+    print("Asynchronous get version:")
+    connection = AsyncConnection(address, port, root_pem_certificate)
+    version_info = await connection.get_version()
+    print(version_info.version)
 
 
 def main(address, port, root_pem_certificate):
     """Showing how to send get the server version both sequentially and concurrently."""
 
-    print("Synchronous get version: ")
-    connection = Connection(address, port, root_pem_certificate)
-    version_info = connection.get_version()
-    print(version_info.version)
-
-    print("Asynchronous get version: ")
-    connection = AsyncConnection(address, port, root_pem_certificate)
-    version_info = asyncio.get_event_loop().run_until_complete(connection.get_version())
-    print(version_info.version)
+    sync_get_version(
+        address,
+        port,
+        root_pem_certificate,
+    )
+    asyncio.run(async_get_version(address, port, root_pem_certificate))
 
 
 if __name__ == "__main__":

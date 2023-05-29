@@ -5,6 +5,31 @@ from volue.mesh import Authentication, Connection
 from volue.mesh.examples import _get_connection_info
 
 
+def sync_auth(address, port, root_pem_certificate, authentication_parameters):
+    print("Synchronous authentication example: ")
+    connection = Connection(
+        address, port, root_pem_certificate, authentication_parameters
+    )
+    user_identity = connection.get_user_identity()
+    print(user_identity)
+
+    # revoke no longer used token
+    connection.revoke_access_token()
+
+
+async def async_auth(address, port, root_pem_certificate, authentication_parameters):
+    print("Asynchronous authentication example:")
+    connection = AsyncConnection(
+        address, port, root_pem_certificate, authentication_parameters
+    )
+
+    user_identity = await connection.get_user_identity()
+    print(user_identity)
+
+    # revoke no longer used token
+    await connection.revoke_access_token()
+
+
 def main(address, port, root_pem_certificate):
     """Showing how to authorize to gRPC Mesh server."""
 
@@ -27,27 +52,10 @@ def main(address, port, root_pem_certificate):
         "HOST/example.companyad.company.com"
     )
 
-    print("Synchronous authentication example: ")
-    connection = Connection(
-        address, port, root_pem_certificate, authentication_parameters
+    sync_auth(address, port, root_pem_certificate, authentication_parameters)
+    asyncio.run(
+        async_auth(address, port, root_pem_certificate, authentication_parameters)
     )
-    user_identity = connection.get_user_identity()
-    print(user_identity)
-
-    # revoke no longer used token
-    connection.revoke_access_token()
-
-    print("Asynchronous authentication example: ")
-    aconnection = AsyncConnection(
-        address, port, root_pem_certificate, authentication_parameters
-    )
-    user_identity = asyncio.get_event_loop().run_until_complete(
-        aconnection.get_user_identity()
-    )
-    print(user_identity)
-
-    # revoke no longer used token
-    asyncio.get_event_loop().run_until_complete(aconnection.revoke_access_token())
 
 
 if __name__ == "__main__":
