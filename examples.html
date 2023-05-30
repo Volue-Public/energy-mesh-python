@@ -256,6 +256,31 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
 
+<span class="k">def</span> <span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+    <span class="c1"># revoke no longer used token</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example:&quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="p">)</span>
+
+    <span class="n">user_identity</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
+
+    <span class="c1"># revoke no longer used token</span>
+    <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
+
+
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
 
@@ -278,27 +303,10 @@
         <span class="s2">&quot;HOST/example.companyad.company.com&quot;</span>
     <span class="p">)</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
+    <span class="n">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="n">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
-
-    <span class="c1"># revoke no longer used token</span>
-    <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example: &quot;</span><span class="p">)</span>
-    <span class="n">aconnection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span>
-    <span class="p">)</span>
-    <span class="n">user_identity</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
-        <span class="n">aconnection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">()</span>
-    <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">user_identity</span><span class="p">)</span>
-
-    <span class="c1"># revoke no longer used token</span>
-    <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">aconnection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">())</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -458,25 +466,40 @@
 </div>
 <div class="section" id="get-version">
 <h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
-<span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="k">def</span> <span class="nf">sync_get_version</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous get version:&quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">async_get_version</span><span class="p">(</span>
+    <span class="n">address</span><span class="p">,</span>
+    <span class="n">port</span><span class="p">,</span>
+    <span class="n">root_pem_certificate</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous get version:&quot;</span><span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+    <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to send get the server version both sequentially and concurrently.&quot;&quot;&quot;</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous get version: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous get version: &quot;</span><span class="p">)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">AsyncConnection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
-    <span class="n">version_info</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">sync_get_version</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span>
+        <span class="n">port</span><span class="p">,</span>
+        <span class="n">root_pem_certificate</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_get_version</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">))</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
