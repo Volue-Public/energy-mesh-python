@@ -276,7 +276,7 @@ def test_object_apis_with_invalid_target(session, invalid_target):
         session.delete_object(invalid_target)
 
 
-@pytest.mark.unittest
+@pytest.mark.server
 def test_object_apis_with_attribute_as_target(session):
     """
     Check that 'get_object', 'search_for_objects', 'update_object' and
@@ -320,7 +320,7 @@ def test_create_and_update_object_with_invalid_target(session, invalid_target):
         session.update_object(OBJECT_PATH, new_owner_attribute=invalid_target)
 
 
-@pytest.mark.unittest
+@pytest.mark.server
 def test_create_and_update_object_with_attribute_as_target(session):
     """
     Check that 'create_object' with object as target and 'update_object' with
