@@ -4,7 +4,7 @@ Functionality for working with Mesh objects.
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Dict
+from typing import Dict, Optional
 
 from volue.mesh._attribute import AttributeBase, _from_proto_attribute
 from volue.mesh._common import _from_proto_guid
@@ -24,8 +24,8 @@ class Object:
     path: str
     name: str
     type_name: str
-    owner_id: uuid.UUID
-    owner_path: str
+    owner_id: Optional[uuid.UUID]
+    owner_path: Optional[str]
     attributes: Dict[str, AttributeBase] = field(default_factory=dict)
 
     @classmethod
@@ -35,13 +35,23 @@ class Object:
         Args:
             proto_object: Protobuf Object returned from the gRPC methods.
         """
+
+        owner_id = (
+            _from_proto_guid(proto_object.owner_id.id)
+            if proto_object.HasField("owner_id")
+            else None
+        )
+        owner_path = (
+            proto_object.owner_id.path if proto_object.HasField("owner_id") else None
+        )
+
         object = cls(
             id=_from_proto_guid(proto_object.id),
             path=proto_object.path,
             name=proto_object.name,
             type_name=proto_object.type_name,
-            owner_id=_from_proto_guid(proto_object.owner_id.id),
-            owner_path=proto_object.owner_id.path,
+            owner_id=owner_id,
+            owner_path=owner_path,
         )
 
         # no particular order of attributes and objects returned from Mesh is guaranteed
