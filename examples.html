@@ -752,22 +752,20 @@
 <div class="section" id="search-for-time-series-attributes">
 <h2>Search for time series attributes<a class="headerlink" href="#search-for-time-series-attributes" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to search for mesh object that returns a time series.&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">search_method_1</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method uses `search_for_timeseries_attributes` function.</span>
+<span class="sd">    Wildcard search expression for attributes is not supported, meaning we</span>
+<span class="sd">    can&#39;t get all time series attributes using simply &quot;*&quot; search expression.</span>
 
-    <span class="c1"># Configure the connection you want</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+<span class="sd">    Useful e.g.: when searching for attributes with known names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Search method 1&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Create a remote session on the Volue Mesh server</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-
-    <span class="c1">###</span>
     <span class="c1"># Specify what you want to search for</span>
-    <span class="c1">###</span>
 
     <span class="c1"># The Mesh object to start searching from</span>
     <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
@@ -785,9 +783,81 @@
     <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">timeseries_attributes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
-    <span class="c1"># Close the remote session</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">search_method_2</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method uses `search_for_objects` function with wildcard search</span>
+<span class="sd">    expression (&quot;*&quot;) that returns all objects.</span>
+<span class="sd">    Useful when you want to traverse the complete model.</span>
+
+<span class="sd">    Additionally here we show how to distinguish if time series attribute has</span>
+<span class="sd">    a time series calculation expression defined or a physical time series</span>
+<span class="sd">    connected to it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Search method 2&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Provide root object/model as the start object to run the search.</span>
+    <span class="c1"># Root objects/models do not contain any attributes.</span>
+    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel&quot;</span>
+
+    <span class="c1"># Returns every object.</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
+
+    <span class="c1"># Depending on the model size this may take long time to complete.</span>
+    <span class="n">objects</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found objects: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">objects</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nb">object</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+                <span class="c1"># If time series resource is set, then it means a physical</span>
+                <span class="c1"># time series is connected to the attribute.</span>
+                <span class="k">if</span> <span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> has physical time series connected with time series key </span><span class="si">{</span><span class="n">attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">timeseries_key</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">search_method_3</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method uses `get_object` function.</span>
+<span class="sd">    Useful when you want to traverse a subset of the model from a given node,</span>
+<span class="sd">    but not root object/model. Models do not contain attributes, so you won&#39;t</span>
+<span class="sd">    be able to traverse the child objects using ownership attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Search method 3&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">traverse_child_objects</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="nb">object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">child_id</span> <span class="ow">in</span> <span class="n">attribute</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span>
+                    <span class="n">traverse_child_objects</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">child_id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1&quot;</span>
+    <span class="n">traverse_child_objects</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">object_path</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to search for Mesh time series attributes in various ways.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Configure the connection you want.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
+
+    <span class="c1"># Create a remote session on the Volue Mesh server.</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">search_method_1</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="n">search_method_2</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="n">search_method_3</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
