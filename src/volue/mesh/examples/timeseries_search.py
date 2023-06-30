@@ -5,7 +5,9 @@ from volue.mesh import Connection, OwnershipRelationAttribute, TimeseriesAttribu
 def search_method_1(session: Connection.Session):
     """
     This method uses `search_for_timeseries_attributes` function.
-    Wildcard search expression for attributes is not supported.
+    Wildcard search expression for attributes is not supported, meaning we
+    can't get all time series attributes using simply "*" search expression.
+
     Useful e.g.: when searching for attributes with known names.
     """
     print("Search method 1")
