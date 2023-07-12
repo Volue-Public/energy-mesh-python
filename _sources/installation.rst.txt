@@ -35,7 +35,7 @@ If you don't have a GitHub user you can `join here <https://github.com/join>`_.
 Python
 **********
 
-Mesh Python SDK works with Python 3.7.1, 3.8, 3.9 and 3.10. Support for earlier and later versions is not provided due to dependencies.
+Mesh Python SDK works with Python 3.8, 3.9, 3.10 and 3.11. Support for earlier and later versions is not provided due to dependencies.
 
 #. Download and install (Windows):
 
