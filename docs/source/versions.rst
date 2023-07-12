@@ -3,7 +3,7 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-`Mesh Python SDK version 1.2.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.2.0>`_
+`Mesh Python SDK version 1.2.1 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.2.1>`_
 *********************************************************************************************************
 
 ------------
@@ -19,6 +19,11 @@ New features
 
 - Connection using external access token (e.g.: OAuth JWT access token) (:pull:`347` and :pull:`349`)
 
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- **Fixed:** Parsing root objects. :pull:`354`
+
 .. warning::
     Python 3.7.1 support will dropped in the next Mesh Python SDK release.
 
@@ -29,7 +34,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.2.0
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.2.1
 
 
 `Mesh Python SDK version 1.1.1 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.1.1>`_
@@ -48,7 +53,11 @@ New features
 ~~~~~~~~~~~~~~~~~~
 
 - Support for Python 3.10 :pull:`93`
-- Fix reading empty time series attributes :issue:`346`
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- **Fixed:** Reading empty time series attributes :issue:`346`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
