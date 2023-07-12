@@ -730,7 +730,8 @@ class Session(abc.ABC):
             start_time: the (inclusive) start of the edit interval.
             end_time: the (exclusive) end of the edit interval.
             new_versions: the list of rating curve versions to insert.
-                All versions must be within `[start_time, end_time)` interval.
+                All versions must be within `[start_time, end_time)` interval
+                and sorted by `valid_from_time`.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
