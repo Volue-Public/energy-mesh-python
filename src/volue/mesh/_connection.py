@@ -222,6 +222,13 @@ class Connection(_base_connection.Connection):
             )
             self.mesh_service.UpdateVersionedLinkRelationAttribute(request)
 
+        def list_models(
+            self,
+        ) -> List[Object]:
+            gen = super()._list_models_impl()
+            request = next(gen)
+            return gen.send(self.mesh_service.ListModels(request))
+
         def get_object(
             self,
             target: Union[uuid.UUID, str, Object],

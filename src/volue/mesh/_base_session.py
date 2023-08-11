@@ -143,6 +143,18 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
+    def list_models(
+        self,
+    ) -> List[Object]:
+        """
+        List all :ref:`Mesh models <mesh_model>`.
+        Model is a root object that does not have an owner.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+        """
+
+    @abc.abstractmethod
     def get_object(
         self,
         target: Union[uuid.UUID, str, Object],
@@ -161,7 +173,7 @@ class Session(abc.ABC):
                 of attributes owned by the object will be returned, otherwise only name,
                 path, ID and value(s).
             attributes_filter: Filtering criteria for what attributes owned by
-                object(s) should be returned. By default all attributes are returned.
+                object should be returned. By default all attributes are returned.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
@@ -864,6 +876,25 @@ class Session(abc.ABC):
             )
 
         yield timeseries[0]
+
+    def _list_models_impl(
+        self,
+    ) -> typing.Generator[typing.Any, core_pb2.ListModelsResponse, None]:
+        """Generator implementation of list_models.
+
+        Yields the protobuf request, receives the protobuf response, and yields
+        the final result.
+        """
+
+        request = core_pb2.ListModelsRequest(
+            session_id=_to_proto_guid(self.session_id),
+        )
+
+        response = yield request
+
+        yield [
+            Object._from_proto_object(proto_object) for proto_object in response.models
+        ]
 
     def _prepare_get_object_request(
         self,
