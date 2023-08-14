@@ -2,15 +2,9 @@ from volue.mesh import Connection, OwnershipRelationAttribute
 from volue.mesh.examples import _get_connection_info
 
 
-def add_new_objects_to_the_model(session: Connection.Session):
-    target = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.ChimneyToChimneyRef"
-    session.create_object(target, "SomeSubChimney1")
-    session.create_object(target, "SomeSubChimney2")
-
-
 def traverse_model(session: Connection.Session, target, depth=0):
     """Traverses the Mesh model recursively."""
-    object = session.get_object(target, full_attribute_info=True)
+    object = session.get_object(target)
     print(f"{'..' * depth}{object.name}")
 
     for attr in object.attributes.values():
@@ -24,20 +18,16 @@ def main(address, port, root_pem_certificate):
     connection = Connection(address, port, root_pem_certificate)
 
     with connection.create_session() as session:
-        # The basic model has 1 power plant that has 2 chimneys.
-        # Add some objects to the model in this session to make
-        # the example more attractive.
-        add_new_objects_to_the_model(session)
-
-        root_object = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1"
-        traverse_model(session, root_object)
+        models = session.list_models()
+        for model in models:
+            traverse_model(session, model.id)
 
         # Excepted output:
-        # SomePowerPlant1
-        # ..SomePowerPlantChimney2
-        # ....SomeSubChimney1
-        # ....SomeSubChimney2
-        # ..SomePowerPlantChimney1
+        # Model
+        # ..ChildObject1
+        # ....SubChildObject1
+        # ....SubChildObject2
+        # ..ChildObject2
 
 
 if __name__ == "__main__":
