@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>API documentation &mdash; volue.mesh 1.3.0 documentation</title>
+  <title>API documentation &mdash; volue.mesh 1.4.0 documentation</title>
   
 
   
@@ -616,7 +616,7 @@ or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-mo
 of attributes owned by the object will be returned, otherwise only name,
 path, ID and value(s).</p></li>
 <li><p><strong>attributes_filter</strong> – Filtering criteria for what attributes owned by
-object(s) should be returned. By default all attributes are returned.</p></li>
+object should be returned. By default all attributes are returned.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -757,6 +757,18 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Object containing all history functions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.Session.list_models">
+<span class="sig-name descname"><span class="pre">list_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">volue.mesh._object.Object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.list_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.list_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh models</span></a>.
+Model is a root object that does not have an owner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.57.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2026,7 +2038,7 @@ or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-mo
 of attributes owned by the object will be returned, otherwise only name,
 path, ID and value(s).</p></li>
 <li><p><strong>attributes_filter</strong> – Filtering criteria for what attributes owned by
-object(s) should be returned. By default all attributes are returned.</p></li>
+object should be returned. By default all attributes are returned.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -2167,6 +2179,18 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Object containing all history functions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.list_models">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">volue.mesh._object.Object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.list_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.list_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh models</span></a>.
+Model is a root object that does not have an owner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.57.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
 </dd>
 </dl>
 </dd></dl>

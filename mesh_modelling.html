@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Mesh object modelling &mdash; volue.mesh 1.3.0 documentation</title>
+  <title>Mesh object modelling &mdash; volue.mesh 1.4.0 documentation</title>
   
 
   
@@ -277,7 +277,9 @@ can build a <strong>model</strong> of their infrastructure by creating instances
 their specific assets. For example water courses named ‘Driva’, ‘Lundesokna’,
 reservoirs named ‘Innerdalsvannet’, ‘Storfossdammen’ and so on. The resulting
 <strong>model</strong> is a tree where all the nodes are Mesh objects from the Mesh model
-that represent customer’s physical assets.</p>
+that represent customer’s physical assets. The root (top-level) object, is
+called model. It is the same as other regular objects, except it does not have
+an owner.</p>
 <a class="reference internal image-reference" href="_images/physical_hydropower_object_structure.png"><img alt="_images/physical_hydropower_object_structure.png" src="_images/physical_hydropower_object_structure.png" style="width: 400px;" /></a>
 <p>In the diagram above object names are written in blue, object value types are
 written in black and there are no attribute shown.</p>
