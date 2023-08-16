@@ -581,7 +581,8 @@ message UpdateRatingCurveVersionsRequest {
   MeshId attribute = 3;
 
   // Update rating curve versions for rating curve attribute. The `from` of all
-  // versions must be inside the interval.
+  // versions must be inside the interval. All versions must be sorted by
+  // `from`.
   repeated RatingCurveVersion versions = 4;
 }
 

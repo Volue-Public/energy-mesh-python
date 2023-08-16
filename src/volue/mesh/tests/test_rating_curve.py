@@ -364,23 +364,15 @@ def test_update_rating_curve_versions_unsorted_versions(session: _base_session.S
         generate_rating_curve_version(2, datetime(1992, 1, 1)),
         generate_rating_curve_version(4, datetime(1997, 1, 1)),
     ]
-    session.update_rating_curve_versions(
-        target=ATTRIBUTE_PATH,
-        start_time=datetime(1990, 1, 1),
-        end_time=datetime(1999, 12, 1),
-        new_versions=new_versions,
-    )
 
-    updated_versions = session.get_rating_curve_versions(
-        target=ATTRIBUTE_PATH, start_time=datetime.min, end_time=datetime.max
-    )
-
-    assert len(updated_versions) == 5
-    assert updated_versions[0:3] == sorted(
-        new_versions, key=operator.attrgetter("valid_from_time")
-    )
-    verify_version_1(updated_versions[3])
-    verify_version_2(updated_versions[4])
+    # Starting with Mesh 2.10 the new rating curve versions must be sorted.
+    with pytest.raises(grpc.RpcError, match="new rating curve versions are not sorted"):
+        session.update_rating_curve_versions(
+            target=ATTRIBUTE_PATH,
+            start_time=datetime(1990, 1, 1),
+            end_time=datetime(1999, 12, 1),
+            new_versions=new_versions,
+        )
 
 
 @pytest.mark.database
