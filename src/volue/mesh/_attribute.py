@@ -214,7 +214,10 @@ class SimpleAttribute(AttributeBase):
                 if value is not None:
                     self.value.append(value)
         else:
-            self.value = _get_attribute_value(proto_attribute.values[0])
+            if len(proto_attribute.values) > 0:
+                self.value = _get_attribute_value(proto_attribute.values[0])
+            else:
+                self.value = None
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
