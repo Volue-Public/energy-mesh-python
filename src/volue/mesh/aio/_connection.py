@@ -226,6 +226,14 @@ class Connection(_base_connection.Connection):
             )
             await self.mesh_service.UpdateVersionedLinkRelationAttribute(request)
 
+        async def list_models(
+            self,
+        ) -> List[Object]:
+            gen = super()._list_models_impl()
+            request = next(gen)
+            response = await self.mesh_service.ListModels(request)
+            return gen.send(response)
+
         async def get_object(
             self,
             target: Union[uuid.UUID, str, Object],

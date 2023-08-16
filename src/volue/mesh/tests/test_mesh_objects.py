@@ -8,7 +8,12 @@ import uuid
 import grpc
 import pytest
 
-from volue.mesh import AttributeBase, AttributesFilter, Object
+from volue.mesh import (
+    AttributeBase,
+    AttributesFilter,
+    Object,
+    OwnershipRelationAttribute,
+)
 from volue.mesh.tests.test_utilities.utilities import (
     AttributeForTesting,
     ObjectForTesting,
@@ -108,6 +113,58 @@ def test_get_object_with_attributes_filter_with_return_no_attributes(session):
 
     object = session.get_object(OBJECT_PATH, attributes_filter=attributes_filter)
     assert len(object.attributes) == 0
+
+
+@pytest.mark.database
+def test_list_models(session):
+    """
+    Check that `list_models` list all existing models.
+    """
+    models = session.list_models()
+    expected = ["SimpleThermalTestModel", "Utility"]
+    model_names = [model.name for model in models]
+
+    # there is no guarantee of order of the returned models
+    assert sorted(model_names) == expected
+
+    # check that each model
+    for model in models:
+        # has one attribute and it is an ownership relation attribute
+        assert len(model.attributes) == 1
+        assert isinstance(
+            list(model.attributes.values())[0], OwnershipRelationAttribute
+        )
+
+        # does not have an owner
+        assert model.owner_id is None
+        assert model.owner_path is None
+
+        # additionally check that other properties are set
+        assert model.name is not None
+        assert model.type_name is not None
+        assert model.path is not None
+        assert model.id is not None
+
+
+@pytest.mark.database
+def test_get_model_as_object(session):
+    """
+    Check that model (root object) can be read using `get_object`.
+    """
+    model_path = "Model/SimpleThermalTestModel"
+
+    model = session.get_object(model_path, full_attribute_info=True)
+
+    assert model.name == "SimpleThermalTestModel"
+    assert model.type_name == "SimpleThermalTestRepository"
+    assert model.path == model_path
+    assert model.id is not None
+
+    assert len(model.attributes) == 1
+    assert isinstance(list(model.attributes.values())[0], OwnershipRelationAttribute)
+
+    assert model.owner_id is None
+    assert model.owner_path is None
 
 
 @pytest.mark.database

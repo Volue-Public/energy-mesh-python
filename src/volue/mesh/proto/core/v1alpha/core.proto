@@ -7,6 +7,7 @@ import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/struct.proto";
 import "volue/mesh/proto/type/resources.proto";
 
 
@@ -75,6 +76,8 @@ service MeshService {
   // Rollback changes that are in the server's session but not in the database yet.
   rpc Rollback(volue.mesh.grpc.type.Guid) returns (RollbackResponse) {}
 
+  rpc ExtendSession(volue.mesh.grpc.type.Guid) returns (ExtendSessionResponse) {}
+
   // Timeseries
   // -------------------------------
   // In its simplest form a timeseries is just a table of timestamps, flags and values.
@@ -89,11 +92,16 @@ service MeshService {
   // Get a series of timestamps, flags and values.
   rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
 
+  rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
+
   // Write a series of timestamps, flags and values.
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
 
   // Run ad-hoc calculation
   rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
+
+  // List all models.
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {}
 
   // Get specific object from the model.
   rpc GetObject(GetObjectRequest) returns (Object) {}
@@ -180,6 +188,14 @@ service MeshService {
   // Get the Mesh server version information.
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
+  // Get the Mesh server health information. 
+  // This function is not stable. Both signature and response content are subjects to change
+  rpc GetHealthStatus(google.protobuf.Empty) returns (google.protobuf.Struct) {}
+
+  // Get the Mesh server configuration. 
+  // This function is not stable. Both signature and response content are subjects to change
+  rpc GetConfiguration(google.protobuf.Empty) returns (google.protobuf.Struct) {}
+
   // Get zero or more `XySet`s from an XY-set attribute (`XYSetAttribute`) or
   // a versioned XY-set attribute (`XYZSeriesAttribute`). See `GetXySetsRequest`
   // for more information.
@@ -205,6 +221,30 @@ service MeshService {
 
   // Change the log level threshold.
   rpc UpdateLogLevel(UpdateLogLevelRequest) returns (UpdateLogLevelResponse) {}
+
+  // Copy time series from one part of Mesh model to another part of the model.
+  // This method copies time series values from a set of time series (source) to another set of time series (target).
+  // The input defines the root nodes of source hierarchy and target hierarchy.
+  // In case these root nodes are different, the match between source series and target series is 
+  // done by comparison of relative path to series attribute in source and target hierarchy.
+  //
+  // The function supports a mapping description that enables these operations:
+  // - Copy to *another* attribute on the same object as the source series.
+  // - Copy to *another* attribute on the matching object in the target hierarchy.
+  // - Copy time series from a source hierarchy to a target identified by a general search/navigation spec on the mapping definition.
+  //
+  // In case mapping is enabled, the root nodes for source and target may be the same.
+  rpc CopyTimeseriesBetweenObjects(CopyTimeseriesBetweenObjectsRequest) returns (CopyTimeseriesBetweenObjectsResponse) {}
+
+  // Resources part of Mesh structure is not bound to a specific model definition or model.
+  // It is organized by hierarchies of catalogs, like a file system. 
+  // A catalog may contain different type of resource objects. The most common types are Timeseries, Binary files and Text files
+  // This interface targets the Text files and provides functions to Read/Write/List text resources.
+
+  rpc ListTextResources(ListTextResourcesRequest) returns (ListTextResourcesResponse) {}
+  rpc GetTextResource(GetTextResourceRequest) returns (GetTextResourceResponse) {}
+  rpc WriteTextResource(WriteTextResourceRequest) returns (WriteTextResourceResponse) {}
+
 }
 
 message AuthenticateKerberosResponse {
@@ -251,6 +291,10 @@ message UserIdentity {
 
 message EndSessionResponse {}
 
+message ExtendSessionResponse {
+    google.protobuf.Duration expires_in = 1;
+}
+
 message CommitResponse {}
 
 message RollbackResponse {}
@@ -267,6 +311,14 @@ message ReadTimeseriesRequest {
   // Should we then return the actual point (outside our interval),
   // or a "fake"/virtual point inside our interval?
   // TODO: bool allow_virtual_points?
+}
+
+message ReadTimeseriesStreamRequest{
+  // The server session ID
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  repeated MeshId timeseries_id = 2;
+  volue.mesh.grpc.type.UtcInterval interval = 3;
 }
 
 message ReadTimeseriesResponse {
@@ -299,6 +351,15 @@ message CalculationResponse {
         NumericResults numeric_results = 2;
         StringResults string_results = 3;
     }
+}
+
+message ListModelsRequest {
+  // The server session ID.
+  volue.mesh.grpc.type.Guid session_id = 1;
+}
+
+message ListModelsResponse {
+  repeated Object models = 1;
 }
 
 message GetObjectRequest {
@@ -1063,3 +1124,132 @@ message GetLogLevelResponse {
   // log level retrieved from Mesh
   LogLevel log_level = 1;
 }
+
+message AttributePair {
+
+    // A time series attribute name.
+    string source_attribute_name = 1;
+
+    // The target can either be a direct name or a search/navigation spec.
+    oneof target_attribute {
+        // Use name when the target attribute is found by internal lookup on target object.
+        string target_attribute_name = 2;
+
+        // Use search when the target attribute is found by general search from target object.
+        // To accept a search based mapping, the result of the search must be 1 time series attribute.
+
+        // The attribute search expression may contain a macro named $ObjName to make search more specific.
+        // The value of the macro is associated with the source object name.
+        // By using this macro it is possible to reach out to target series in a more generic way.
+        // Example: ../../*[.Type=Asset&&.Name=$ObjName&&...Name=C3].Ts1
+        // When at a source object having a name CA1, the search string will be expanded to ../../*[.Type=Asset&&.Name=CA1&&...Name=C3].Ts1
+        // Because the structure of the source and target hierarchy normally is the same, this will narrow the search.
+        string target_attribute_search = 3;
+    }
+}
+// Mapping details
+message TypeAttributeMapping {
+
+    // The Mesh object type name.
+    // When specified, only time series that match this filter will be considered for copy.
+    string object_type_name = 1;
+
+    // Mapping between time series source attribute name and target name.
+    // Target name may be a search expression.
+    repeated AttributePair attribute_mapping = 2;
+}
+
+message CopyTimeseriesBetweenObjectsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // If interval is not supplied, the request will do a tentative operation
+  // which logs what time series will be copied if a valid interval is given.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+  
+  // Identify the root object of the Source hierarchy (path or guid)
+  MeshId source = 3;
+  // Identify the root object of the Target hierarchy (path or guid)
+  // In case attribute mapping is enabled the source and target may refer to same object
+  MeshId target = 4;
+
+  // Optional: Defines which part of source hierarchy to copy and potentially also where to copy.
+  // In case this mapping is not specified the operation copies everything that matches general criteria.
+  // General criteria: source series can provide values (ts binding or expression) and target series can be persisted.
+  repeated TypeAttributeMapping mapping = 5;
+}
+
+message CopyTimeseriesBetweenObjectsResponse {
+
+    // Number of source series considered.
+    int64 source_series_count = 1;
+
+    // Number of target series considered.
+    int64 target_series_count = 2;
+
+    // The number of series that will be copied if input interval is defined.
+    // When this value is > 0 the operations were successful.
+    int64 match_series_count = 3;
+}
+
+// A text resource in Mesh can be compared with a text file located at a given catalog.
+// The API supports reading, writing and browsing such Mesh resource objects.
+
+message ListTextResourcesRequest {
+    volue.mesh.grpc.type.Guid session_id = 1;
+
+    // The catalog in which we are looking for Text resources (files).
+    // In case the option `include_subcatalogs` is true, this catalog is treated as the root 
+    // of a hierarchical search.
+    MeshId catalog = 2;
+    
+    // Empty, simple "contains" pattern or a regular expression.
+    // In case it is empty, all Text resources are added to reply list.
+    // Else, the system will try to look for a Text resource which contains the `name_mask` value.
+    // For instance ".json" will match "AB.json", "A.jsonB" etc  (contains somewhere in the name gives match).
+    // If contain operation fails, the system tries to match the name of the Text resource with the `name_mask` value as a regular expression.
+    string name_mask = 3;
+    
+    // Include search for matches in subcatalogs
+    bool include_subcatalogs = 4;
+}
+
+message ListTextResourcesResponse {
+    // Resources that match request
+    repeated MeshId resources = 1;
+}
+
+message GetTextResourceRequest {
+    volue.mesh.grpc.type.Guid session_id = 1;
+
+    // The path must lead to an existing Text Resource
+    // If MeshId contains a GUID, the system will resolve that GUID and do not try the MeshId path definition.
+    // A text path has the following format:
+    // Resource/Catalog1/CatalogX/SomeTextResourceName
+    MeshId resource = 2;
+}
+
+message GetTextResourceResponse {
+    volue.mesh.grpc.type.Guid id = 1;
+    string path = 2;
+    // The contents of the Text resource 
+    string text = 3;
+}
+
+message WriteTextResourceRequest {
+    volue.mesh.grpc.type.Guid session_id = 1;
+
+    // The path may lead to an existing Text Resource
+    // Or, in case allow_create is true, the resource will be created
+    // This may create new catalogs, all or from a certain level
+    // The first part must be Resource, the last part is taken to be the Text resource name
+    // Resource/SomeTextResourceName is not accepted
+    MeshId resource = 2;
+    
+    // If set to false the target must be an existing text resource
+    bool allow_create = 3;
+
+    // The contents
+    string text = 4;
+}
+
+message WriteTextResourceResponse {}

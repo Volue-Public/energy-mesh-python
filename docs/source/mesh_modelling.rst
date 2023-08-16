@@ -98,7 +98,9 @@ can build a **model** of their infrastructure by creating instances matching
 their specific assets. For example water courses named 'Driva', 'Lundesokna',
 reservoirs named 'Innerdalsvannet', 'Storfossdammen' and so on. The resulting
 **model** is a tree where all the nodes are Mesh objects from the Mesh model
-that represent customer's physical assets.
+that represent customer's physical assets. The root (top-level) object, is
+called model. It is the same as other regular objects, except it does not have
+an owner.
 
 .. image:: images/physical_hydropower_object_structure.png
    :width: 400
