@@ -85,14 +85,13 @@ class Connection(_base_connection.Connection):
             self.session_id = _from_proto_guid(reply)
 
             self.stop_worker_thread.clear()
-            self.worker_thread: _base_session.Session.WorkerThread = (
-                super().WorkerThread(self, asyncio.get_running_loop())
-            )
+            self.worker_thread = super().WorkerThread(self, asyncio.get_running_loop())
             self.worker_thread.start()
 
         async def close(self) -> None:
-            self.stop_worker_thread.set()
-            self.worker_thread.join()
+            if self.worker_thread is not None:
+                self.stop_worker_thread.set()
+                self.worker_thread.join()
 
             await self.mesh_service.EndSession(_to_proto_guid(self.session_id))
             self.session_id = None

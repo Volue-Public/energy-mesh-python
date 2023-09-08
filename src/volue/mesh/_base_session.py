@@ -62,7 +62,8 @@ class Session(abc.ABC):
             self.event_loop: Optional[asyncio.AbstractEventLoop] = event_loop
 
         def run(self):
-            asyncio.set_event_loop(self.event_loop)
+            if self.event_loop is not None:
+                asyncio.set_event_loop(self.event_loop)
 
             while not self.session.stop_worker_thread.wait(
                 EXTEND_SESSION_LIFETIME_INTERVAL_IN_SECS
@@ -111,12 +112,15 @@ class Session(abc.ABC):
         """
         self.session_id: Optional[uuid.UUID] = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
+
         self.stop_worker_thread: threading.Event = threading.Event()
+        self.worker_thread: Optional[Session.WorkerThread] = None
 
     @abc.abstractmethod
     def open(self) -> None:
         """
         Request to open a session on the Mesh server.
+        An opened session must be closed using the same `Session` object.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed
