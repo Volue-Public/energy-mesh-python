@@ -83,7 +83,6 @@ class Connection(_base_connection.Connection):
         async def open(self) -> None:
             reply = await self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply)
-            return reply
 
             self.stop_worker_thread.clear()
             self.worker_thread: _base_session.Session.WorkerThread = (

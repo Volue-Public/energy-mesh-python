@@ -26,7 +26,7 @@ Currently the session timeout for gRPC sessions is set to 5 minutes.
 The session timeout is counted from the moment where handling of the last
 request made using that session was completed. So, if you are using a session
 for longer period than the session timeout, but you are actively making calls
-to for example read time series points, then the session will not timeout.
+to, for example read time series points, then the session will not timeout.
 
 In cases where a session needs to be preserved, but the inactivity periods are
 longer, then the user needs to make explicit calls using that session.
