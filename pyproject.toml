@@ -47,6 +47,7 @@ markers = [
     "examples: Tests that run the examples.",
     "unittest: Tests that do NOT require a mesh server.",
     "authentication: Tests that require a running mesh server with Kerberos authentication.",
+    "long: Long tests, longer than a minute.",
 ]
 
 [build-system]

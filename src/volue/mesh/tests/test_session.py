@@ -1,11 +1,17 @@
 """
 Tests for volue.mesh.Connection.Session and volue.mesh.aio.Connection.Session.
 """
+import asyncio
 import sys
 from time import sleep
 
 import grpc
 import pytest
+
+# After this timeout an inactive session must be closed by the server.
+# gRPC session timeout + ping interval + minimal margin:
+# 5 mins + 1 min + 1 sec
+SESSION_LIFETIME_EXTENSION_TESTS_SLEEP_VALUE_IN_SECS = 361
 
 
 @pytest.mark.server
@@ -254,6 +260,94 @@ async def test_rollback_and_commit_async(async_session):
         timeseries_key=timeseries_key
     )
     assert timeseries_info.unit_of_measurement == original_unit_of_measurement
+
+
+@pytest.mark.server
+@pytest.mark.long
+def test_session_lifetime_auto_extension_ctx_manager(connection):
+    """
+    Check if an inactive session lifetime is automatically extended.
+    Session is created using `with` statement.
+    """
+
+    # open session using 'with' statement
+    with connection.create_session() as session:
+        sleep(SESSION_LIFETIME_EXTENSION_TESTS_SLEEP_VALUE_IN_SECS)
+
+        # make some call, if the session is inactive then we will get an error
+        session.list_models()
+
+
+@pytest.mark.server
+@pytest.mark.long
+def test_sessions_lifetime_auto_extension(connection):
+    """
+    Check if inactive sessions lifetime is automatically extended.
+    """
+
+    session_1 = connection.create_session()
+    session_2 = connection.create_session()
+
+    # just to spice things up
+    session_1.open()
+    session_1.close()
+
+    session_1.open()
+    session_2.open()
+
+    sleep(SESSION_LIFETIME_EXTENSION_TESTS_SLEEP_VALUE_IN_SECS)
+
+    # make some calls, if the sessions are inactive then we will get an error
+    session_1.list_models()
+    session_2.list_models()
+
+    session_1.close()
+    session_2.close()
+
+
+@pytest.mark.server
+@pytest.mark.asyncio
+@pytest.mark.long
+async def test_async_session_lifetime_auto_extension_ctx_manager(async_connection):
+    """
+    Check if an inactive session lifetime is automatically extended.
+    Session is created using `with` statement.
+    """
+
+    # open session using 'with' statement
+    async with async_connection.create_session() as session:
+        await asyncio.sleep(SESSION_LIFETIME_EXTENSION_TESTS_SLEEP_VALUE_IN_SECS)
+
+        # make some call, if the session is inactive then we will get an error
+        await session.list_models()
+
+
+@pytest.mark.server
+@pytest.mark.asyncio
+@pytest.mark.long
+async def test_async_sessions_lifetime_auto_extension(async_connection):
+    """
+    Check if inactive sessions lifetime is automatically extended.
+    """
+
+    session_1 = async_connection.create_session()
+    session_2 = async_connection.create_session()
+
+    # just to spice things up
+    await session_1.open()
+    await session_1.close()
+
+    await session_1.open()
+    await session_2.open()
+
+    await asyncio.sleep(SESSION_LIFETIME_EXTENSION_TESTS_SLEEP_VALUE_IN_SECS)
+
+    # make some calls, if the sessions are inactive then we will get an error
+    await session_1.list_models()
+    await session_2.list_models()
+
+    await session_1.close()
+    await session_2.close()
 
 
 if __name__ == "__main__":

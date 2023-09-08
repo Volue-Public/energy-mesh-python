@@ -73,11 +73,23 @@ class Connection(_base_connection.Connection):
             """
             self.close()
 
+        def _extend_lifetime(self) -> None:
+            self.mesh_service.ExtendSession(_to_proto_guid(self.session_id))
+
         def open(self) -> None:
             reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply)
 
+            self.stop_worker_thread.clear()
+            self.worker_thread: _base_session.Session.WorkerThread = (
+                super().WorkerThread(self)
+            )
+            self.worker_thread.start()
+
         def close(self) -> None:
+            self.stop_worker_thread.set()
+            self.worker_thread.join()
+
             self.mesh_service.EndSession(_to_proto_guid(self.session_id))
             self.session_id = None
 
