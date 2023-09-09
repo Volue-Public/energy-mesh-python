@@ -16,7 +16,7 @@ jobs:
       matrix:
         python-version: [3.8, 3.9, "3.10", 3.11]
       fail-fast: false
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - uses: actions/checkout@v2
