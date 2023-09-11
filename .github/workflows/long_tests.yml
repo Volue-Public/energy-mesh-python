@@ -1,11 +1,8 @@
-name: Development
+name: Long tests
 
 on:
-
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  schedule:
+    - cron: '0 3 * * *'
 
   workflow_dispatch:
 
@@ -17,18 +14,22 @@ jobs:
       matrix:
         python-version: [3.8, 3.9, "3.10", 3.11]
       fail-fast: false
-    timeout-minutes: 60
+    timeout-minutes: 90
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+      - name: Check if branch changed
+        run: |
+          echo "NEW_COMMITS=$(git log --since '1 day ago' --oneline | wc -l)" >> "$GITHUB_ENV"
       - name: Install dev environment
+        if: ${{ env.NEW_COMMITS > 0 }}
         uses: ./.github/workflows/install_dev_env
         with:
           python-version: ${{ matrix.python-version }}
           token: ${{ secrets.OAUTH_TOKEN }}
-      - name: Run tests
-        if: ${{ success() }}
+      - name: Run long tests
+        if: ${{ success() && env.NEW_COMMITS > 0 }}
         working-directory: ${{ github.workspace }}
         run: |
-          poetry run pytest -m "not authentication and not long"
+          poetry run pytest -m "long"
