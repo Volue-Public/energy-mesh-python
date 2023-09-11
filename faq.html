@@ -300,7 +300,7 @@ environments:</p>
 <span class="w">          </span><span class="no">python ./repo/src/volue/mesh/examples/get_version.py</span>
 <span class="w">          </span><span class="no">if ($LASTEXITCODE) { exit $LASTEXITCODE }</span>
 <span class="w">          </span><span class="no">python -m pip install pytest pytest-asyncio pandas</span>
-<span class="w">          </span><span class="no">python -m pytest --pyargs volue.mesh.tests -m &quot;not authentication&quot;</span>
+<span class="w">          </span><span class="no">python -m pytest --pyargs volue.mesh.tests -m &quot;not authentication and not long&quot;</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Ubuntu 20.04 (wsl1)</span>
 <span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Vampire/setup-wsl@v1</span>
@@ -325,7 +325,7 @@ environments:</p>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install pytest pytest-asyncio pandas</span>
-<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m &quot;not authentication&quot;</span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m &quot;not authentication and not long&quot;</span>
 </pre></div>
 </div>
 </div>
