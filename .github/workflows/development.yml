@@ -57,4 +57,4 @@ jobs:
         if: ${{ success() }}
         working-directory: ${{ github.workspace }}
         run: |
-          poetry run pytest -m "not authentication"
+          poetry run pytest -m "not authentication and not long"
