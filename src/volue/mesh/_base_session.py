@@ -57,7 +57,7 @@ class Session(abc.ABC):
         ):
             super().__init__()
             # no resources are acquired, no need to do explicit clean-up
-            self.setDaemon(True)
+            self.daemon = True
             self.session: Session = session
             self.event_loop: Optional[asyncio.AbstractEventLoop] = event_loop
 
