@@ -12,3 +12,4 @@ Mesh concepts
    mesh_relations
    mesh_xy_sets
    mesh_rating_curve
+   mesh_session
