@@ -1,6 +1,9 @@
 # Python SDK for Mesh
 
-[![Development](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/development.yml/badge.svg?branch=master)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/development.yml) [![Usage](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/usage.yml/badge.svg?branch=master)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/usage.yml) [![GitHub pages](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/pages.yml/badge.svg)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/pages.yml)  
+[![Long tests](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/long_tests.yml/badge.svg?branch=master)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/long_tests.yml) 
+[![Development](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/development.yml/badge.svg?branch=master)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/development.yml) 
+[![Usage](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/usage.yml/badge.svg?branch=master)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/usage.yml) 
+[![GitHub pages](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/pages.yml/badge.svg)](https://github.com/Volue-Public/energy-mesh-python/actions/workflows/pages.yml)  
 
 
 Mesh Python SDK is a client library used to communicate with Volue Energy's Mesh server. Please refer to:
