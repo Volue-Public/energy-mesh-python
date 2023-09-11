@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Session &mdash; volue.mesh 1.4.0 documentation</title>
+  <title>Mesh session &mdash; volue.mesh 1.4.0 documentation</title>
   
 
   
@@ -94,7 +94,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="mesh_server.html">Mesh server</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Session</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Mesh session</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#timeout">Timeout</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_client.html">Mesh Python SDK</a></li>
@@ -166,7 +169,7 @@
         
           <li><a href="mesh_server.html">Mesh server</a> &raquo;</li>
         
-      <li>Session</li>
+      <li>Mesh session</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -185,8 +188,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="session">
-<h1>Session<a class="headerlink" href="#session" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="mesh-session">
+<h1>Mesh session<a class="headerlink" href="#mesh-session" title="Permalink to this headline">¶</a></h1>
 <p>A session can be viewed as temporary workspace where changes will not be affected by, or affect other users, that work with the system until changes are committed and pushed out of the session and into where shared resources are stored.</p>
 <p>A Mesh server will normally have many separate sessions open at any given time. Using the Python API is just on way of working with sessions. A session should be created and closed after finishing work.</p>
 <p>When a session has been created the user can interact with the Mesh model, search for and retrieve data (like time series or information about object) and perform calculations using <a class="reference internal" href="mesh_functions.html"><span class="doc">functions</span></a> among other things.</p>
@@ -238,6 +241,28 @@
     <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">)</span>
 </pre></div>
+</div>
+<div class="section" id="timeout">
+<h2>Timeout<a class="headerlink" href="#timeout" title="Permalink to this headline">¶</a></h2>
+<p>Each session that has been <strong>inactive</strong> for some period of time will be
+automatically closed on the server side. This period is called session timeout.
+Currently the session timeout for gRPC sessions is set to 5 minutes.</p>
+<p>The session timeout is counted from the moment where handling of the last
+request made using that session was completed. So, if you are using a session
+for longer period than the session timeout, but you are actively making calls
+to, for example read time series points, then the session will not timeout.</p>
+<p>In cases where a session needs to be preserved, but the inactivity periods are
+longer, then the user needs to make explicit calls using that session.</p>
+<p>To make working with Mesh via Python SDK more user-friendly the extension of
+session lifetime is handled automatically by the Mesh Python SDK. So as long
+as you have an opened session, the Python SDK will send automatically calls to
+extend the session lifetime in the background.</p>
+<p>In very limited and special use case where you want to connect to already
+existing and opened session via <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection.connect_to_session
+Python SDK will not automatically extend the lifetime of the session. In such
+case the user needs to make explicit calls. This is because tracking of an open
+session that needs automatic lifetime extension is started when it is open via
+Python’s <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection.Session object.</p>
 </div>
 </div>
 

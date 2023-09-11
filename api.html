@@ -776,7 +776,8 @@ Model is a root object that does not have an owner.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.open">
 <span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request to open a session on the Mesh server.</p>
+<dd><p>Request to open a session on the Mesh server.
+An opened session must be closed using the same <cite>Session</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.57.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
@@ -2198,7 +2199,8 @@ Model is a root object that does not have an owner.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.open">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.open"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request to open a session on the Mesh server.</p>
+<dd><p>Request to open a session on the Mesh server.
+An opened session must be closed using the same <cite>Session</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.57.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed</p>
