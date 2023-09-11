@@ -1,33 +1,36 @@
+from __future__ import annotations
+
 import abc
-import dateutil
+import asyncio
+import threading
 import typing
-from typing import List, Optional, Tuple, Union
 import uuid
 from datetime import datetime
+from typing import List, Optional, Tuple, Union
 
+import dateutil
 from google import protobuf
 
 from ._attribute import (
+    SIMPLE_TYPE,
+    SIMPLE_TYPE_OR_COLLECTION,
     AttributeBase,
     TimeseriesAttribute,
-    SIMPLE_TYPE_OR_COLLECTION,
-    SIMPLE_TYPE,
 )
 from ._common import (
     AttributesFilter,
     LinkRelationVersion,
-    XyCurve,
-    XySet,
     RatingCurveSegment,
     RatingCurveVersion,
+    XyCurve,
+    XySet,
+    _datetime_to_timestamp_pb2,
     _read_proto_reply,
     _to_proto_attribute_masks,
-    _to_proto_guid,
     _to_proto_curve_type,
-    _datetime_to_timestamp_pb2,
+    _to_proto_guid,
     _to_proto_utcinterval,
 )
-
 from ._mesh_id import (
     _to_proto_attribute_mesh_id,
     _to_proto_object_mesh_id,
@@ -36,17 +39,63 @@ from ._mesh_id import (
 from ._object import Object
 from ._timeseries import Timeseries
 from ._timeseries_resource import TimeseriesResource
-
 from .calc.forecast import ForecastFunctions
 from .calc.history import HistoryFunctions
 from .calc.statistical import StatisticalFunctions
 from .calc.transform import TransformFunctions
-
 from .proto.core.v1alpha import core_pb2, core_pb2_grpc
+
+EXTEND_SESSION_LIFETIME_INTERVAL_IN_SECS = 150
 
 
 class Session(abc.ABC):
+    class WorkerThread(threading.Thread):
+        def __init__(
+            self,
+            session: Session,
+            event_loop: Optional[asyncio.AbstractEventLoop] = None,
+        ):
+            super().__init__()
+            # no resources are acquired, no need to do explicit clean-up
+            self.setDaemon(True)
+            self.session: Session = session
+            self.event_loop: Optional[asyncio.AbstractEventLoop] = event_loop
+
+        def run(self):
+            if self.event_loop is not None:
+                asyncio.set_event_loop(self.event_loop)
+
+            while not self.session.stop_worker_thread.wait(
+                EXTEND_SESSION_LIFETIME_INTERVAL_IN_SECS
+            ):
+                try:
+                    if self.event_loop is not None:
+                        extend_lifetime_coroutine: typing.Coroutine[
+                            typing.Any, typing.Any, None
+                        ] = self.session._extend_lifetime()
+                        asyncio.run_coroutine_threadsafe(
+                            extend_lifetime_coroutine, self.event_loop
+                        ).result()
+                    else:
+                        self.session._extend_lifetime()
+                except Exception as e:
+                    # In case of an exception just add more descriptive
+                    # message and exit the worker thread.
+                    raise RuntimeError(
+                        f"session {self.session.session_id} worker thread exception"
+                    ) from e
+
     """Represents a session to a Mesh server."""
+
+    def _extend_lifetime(self) -> None:
+        """
+        Request to extend session lifetime on the Mesh server.
+        This is used internally by the Mesh Python SDK and the user does not
+        need to call it explicitly.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed
+        """
 
     def __init__(
         self,
@@ -64,10 +113,14 @@ class Session(abc.ABC):
         self.session_id: Optional[uuid.UUID] = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
 
+        self.stop_worker_thread: threading.Event = threading.Event()
+        self.worker_thread: Optional[Session.WorkerThread] = None
+
     @abc.abstractmethod
     def open(self) -> None:
         """
         Request to open a session on the Mesh server.
+        An opened session must be closed using the same `Session` object.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed

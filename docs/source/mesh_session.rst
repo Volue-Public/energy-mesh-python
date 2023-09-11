@@ -1,5 +1,5 @@
-Session
----------------------------
+Mesh session
+------------
 
 A session can be viewed as temporary workspace where changes will not be affected by, or affect other users, that work with the system until changes are committed and pushed out of the session and into where shared resources are stored.
 
@@ -14,3 +14,31 @@ Trying to connect to a session with a session id that is no longer valid will re
 The following example shows some different ways of working with sessions.
 
 .. literalinclude:: /../../src/volue/mesh/examples/working_with_sessions.py
+
+
+Timeout
+~~~~~~~
+
+Each session that has been **inactive** for some period of time will be
+automatically closed on the server side. This period is called session timeout.
+Currently the session timeout for gRPC sessions is set to 5 minutes.
+
+The session timeout is counted from the moment where handling of the last
+request made using that session was completed. So, if you are using a session
+for longer period than the session timeout, but you are actively making calls
+to, for example read time series points, then the session will not timeout.
+
+In cases where a session needs to be preserved, but the inactivity periods are
+longer, then the user needs to make explicit calls using that session.
+
+To make working with Mesh via Python SDK more user-friendly the extension of
+session lifetime is handled automatically by the Mesh Python SDK. So as long
+as you have an opened session, the Python SDK will send automatically calls to
+extend the session lifetime in the background.
+
+In very limited and special use case where you want to connect to already
+existing and opened session via :ref:`api:volue.mesh`.Connection.connect_to_session
+Python SDK will not automatically extend the lifetime of the session. In such
+case the user needs to make explicit calls. This is because tracking of an open
+session that needs automatic lifetime extension is started when it is open via
+Python's :ref:`api:volue.mesh`.Connection.Session object.
