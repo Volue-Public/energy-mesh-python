@@ -3,6 +3,40 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
+`Mesh Python SDK version 1.4.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.4.0>`_
+*********************************************************************************************************
+
+------------
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.10
+- Python [3.8 3.9, 3.10 and 3.11]
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- Implement automatic session lifetime extension :pull:`368`
+- Implement functionality to get model names :issue:`356`
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- **Fixed:** Handling simple attributes without any values. :pull:`364`
+- Versions must be sorted in update_rating_curve_versions :pull:`358`
+
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+::
+
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.4.0
+
+
 `Mesh Python SDK version 1.3.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.3.0>`_
 *********************************************************************************************************
 
