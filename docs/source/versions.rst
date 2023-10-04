@@ -3,6 +3,36 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
+Mesh Python SDK version 1.5.0-dev
+*********************************
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.10 **(may change)**
+- Python [3.8 3.9, 3.10 and 3.11] **(may change)**
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- TBD
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- Use prebuilt `winkerberos` wheel for Python 3.11 :issue:`378`
+
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+::
+
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+
+
 `Mesh Python SDK version 1.4.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.4.0>`_
 *********************************************************************************************************
 
