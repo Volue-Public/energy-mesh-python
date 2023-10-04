@@ -3,6 +3,7 @@ from volue.mesh.examples import _get_connection_info
 
 leaves = []
 
+
 def traverse_model_top_down(session: Connection.Session, target, depth=0):
     """Traverses the Mesh model recursively."""
     object = session.get_object(target)
@@ -45,17 +46,13 @@ def main(address, port, root_pem_certificate):
             # ....SubChildObject2
             # ..ChildObject2
             print()
-            for leaf in leaves:
-                traverse_model_bottom_up(session, leaf.id, model)
+            traverse_model_bottom_up(session, leaves[0].id, model)
+            print()
             # Excepted output:
             # ....SubChildObject1
             # ..ChildObject1
             # Model
-            # ....SubChildObject2
-            # ..ChildObject1
-            # Model
-            # ..ChildObject2
-            # Model
+
 
 if __name__ == "__main__":
     address, port, root_pem_certificate = _get_connection_info()
