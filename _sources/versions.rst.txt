@@ -36,6 +36,14 @@ See instructions at :ref:`Setup for users` and use the following:
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.4.0
 
+.. warning::
+    For Python 3.11 on Windows do not use Git BASH for installing Mesh Python
+    SDK. You may get an error when building `wheel` for `winkerberos` which is
+    one of Mesh Python SDK dependencies.
+
+    For Python 3.11 on Windows make sure you have Microsoft Visual C++ 14.0 or greater installed.
+    Get it with `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_.
+
 
 `Mesh Python SDK version 1.3.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.3.0>`_
 *********************************************************************************************************
@@ -64,6 +72,14 @@ See instructions at :ref:`Setup for users` and use the following:
 ::
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.3.0
+
+.. warning::
+    For Python 3.11 on Windows do not use Git BASH for installing Mesh Python
+    SDK. You may get an error when building `wheel` for `winkerberos` which is
+    one of Mesh Python SDK dependencies.
+
+    For Python 3.11 on Windows make sure you have Microsoft Visual C++ 14.0 or greater installed.
+    Get it with `Microsoft C++ Build Tools <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_.
 
 
 `Mesh Python SDK version 1.2.1 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.2.1>`_
