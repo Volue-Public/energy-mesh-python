@@ -846,6 +846,8 @@ message Attribute {
   AttributeValueType value_type = 6;
   // If the `value_type` is a collection then this flag is set to `True`.
   bool value_type_collection = 7;
+
+  MeshId owner_id = 8;
 }
 
 enum AttributeValueType {

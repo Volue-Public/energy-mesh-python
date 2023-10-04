@@ -1,16 +1,32 @@
 from volue.mesh import Connection, OwnershipRelationAttribute
 from volue.mesh.examples import _get_connection_info
 
+leaves = []
 
-def traverse_model(session: Connection.Session, target, depth=0):
+def traverse_model_top_down(session: Connection.Session, target, depth=0):
     """Traverses the Mesh model recursively."""
     object = session.get_object(target)
     print(f"{'..' * depth}{object.name}")
+    leaf = True
 
     for attr in object.attributes.values():
         if isinstance(attr, OwnershipRelationAttribute):
             for child_id in attr.target_object_ids:
-                traverse_model(session, child_id, depth + 1)
+                leaf = False
+                traverse_model_top_down(session, child_id, depth + 1)
+    if leaf:
+        leaves.append(object)
+
+
+def traverse_model_bottom_up(session: Connection.Session, target, model):
+    object = session.get_object(target)
+    depth = object.path.count('/') - 1
+    print(f"{'..' * depth}{object.name}")
+    if object.owner_id == model.id:
+        print(model.name)
+        return
+    attribute = session.get_attribute(object.owner_id)
+    traverse_model_bottom_up(session, attribute.owner_id, model)
 
 
 def main(address, port, root_pem_certificate):
@@ -20,15 +36,26 @@ def main(address, port, root_pem_certificate):
     with connection.create_session() as session:
         models = session.list_models()
         for model in models:
-            traverse_model(session, model.id)
-
-        # Excepted output:
-        # Model
-        # ..ChildObject1
-        # ....SubChildObject1
-        # ....SubChildObject2
-        # ..ChildObject2
-
+            leaves.clear()
+            traverse_model_top_down(session, model.id)
+            # Excepted output:
+            # Model
+            # ..ChildObject1
+            # ....SubChildObject1
+            # ....SubChildObject2
+            # ..ChildObject2
+            print()
+            for leaf in leaves:
+                traverse_model_bottom_up(session, leaf.id, model)
+            # Excepted output:
+            # ....SubChildObject1
+            # ..ChildObject1
+            # Model
+            # ....SubChildObject2
+            # ..ChildObject1
+            # Model
+            # ..ChildObject2
+            # Model
 
 if __name__ == "__main__":
     address, port, root_pem_certificate = _get_connection_info()

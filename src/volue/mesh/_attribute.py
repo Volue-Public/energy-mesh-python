@@ -117,6 +117,14 @@ class AttributeBase:
         self.id: uuid.UUID = _from_proto_guid(proto_attribute.id)
         self.path: str = proto_attribute.path
         self.name: str = proto_attribute.name
+        self.owner_id = (
+            _from_proto_guid(proto_attribute.owner_id.id)
+            if proto_attribute.HasField("owner_id")
+            else None
+        )
+        self.owner_path = (
+            proto_attribute.owner_id.path if proto_attribute.HasField("owner_id") else None
+        )
 
         self.definition = None
 
