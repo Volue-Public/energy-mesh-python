@@ -55,7 +55,7 @@ def test_can_connect_to_existing_session(connection):
     same_session.close()
     # Closing a session on the server is not a blocking call,
     # so there is not telling how long closing a session will take.
-    sleep(1)
+    sleep(61)
     with pytest.raises(grpc.RpcError) as info:
         session.close()
     assert info.type == grpc._channel._InactiveRpcError
