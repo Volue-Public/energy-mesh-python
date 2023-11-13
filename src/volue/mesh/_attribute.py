@@ -68,11 +68,11 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
     elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION:
         attribute = VersionedLinkRelationAttribute(proto_attribute)
     elif attribute_value_type in (
-        core_pb2.ATTRIBUTE_VALUE_TYPE_INT,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_DOUBLE,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_BOOL,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_STRING,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_UTC_TIME,
+            core_pb2.ATTRIBUTE_VALUE_TYPE_INT,
+            core_pb2.ATTRIBUTE_VALUE_TYPE_DOUBLE,
+            core_pb2.ATTRIBUTE_VALUE_TYPE_BOOL,
+            core_pb2.ATTRIBUTE_VALUE_TYPE_STRING,
+            core_pb2.ATTRIBUTE_VALUE_TYPE_UTC_TIME,
     ):
         attribute = SimpleAttribute(proto_attribute)
     else:
@@ -112,7 +112,7 @@ class AttributeBase:
             self.maximum_cardinality: int = proto_definition.maximum_cardinality
 
     def __init__(
-        self, proto_attribute: core_pb2.Attribute, init_definition: bool = False
+            self, proto_attribute: core_pb2.Attribute, init_definition: bool = False
     ):
         self.id: uuid.UUID = _from_proto_guid(proto_attribute.id)
         self.path: str = proto_attribute.path
