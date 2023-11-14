@@ -21,7 +21,7 @@ def traverse_model_top_down(session: Connection.Session, target, depth=0):
 
 def traverse_model_bottom_up(session: Connection.Session, target, model):
     object = session.get_object(target)
-    depth = object.path.count('/') - 1
+    depth = object.path.count("/") - 1
     print(f"{'..' * depth}{object.name}")
     if object.owner_id == model.id:
         print(model.name)
