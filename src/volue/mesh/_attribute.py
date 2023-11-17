@@ -117,6 +117,8 @@ class AttributeBase:
         self.id: uuid.UUID = _from_proto_guid(proto_attribute.id)
         self.path: str = proto_attribute.path
         self.name: str = proto_attribute.name
+        # owner_id field is always set starting from Mesh 2.11
+        # TODO: Remove the check if the owner_id field exists when we move to support Mesh >= 2.11
         self.owner_id = (
             _from_proto_guid(proto_attribute.owner_id.id)
             if proto_attribute.HasField("owner_id")
