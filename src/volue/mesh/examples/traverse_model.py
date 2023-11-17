@@ -38,6 +38,8 @@ def main(address, port, root_pem_certificate):
         models = session.list_models()
         for model in models:
             leaves.clear()
+            print(f"\nModel: '{model.name}'")
+            print("Top-bottom traversal:")
             traverse_model_top_down(session, model.id)
             # Excepted output:
             # Model
@@ -45,9 +47,8 @@ def main(address, port, root_pem_certificate):
             # ....SubChildObject1
             # ....SubChildObject2
             # ..ChildObject2
-            print()
+            print("\nBottom-top traversal:")
             traverse_model_bottom_up(session, leaves[0].id, model)
-            print()
             # Excepted output:
             # ....SubChildObject1
             # ..ChildObject1
