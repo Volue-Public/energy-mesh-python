@@ -27,6 +27,11 @@ def verify_plant_base_attribute(
     assert attribute.path == path
     assert attribute.name == name
     assert attribute.id == id
+    assert attribute.owner_id == uuid.UUID("0000000a-0001-0000-0000-000000000000")
+    assert (
+        attribute.owner_path
+        == "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
+    )
 
     if is_definition:
         assert (
