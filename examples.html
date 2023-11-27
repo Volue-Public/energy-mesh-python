@@ -871,16 +871,33 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
+<span class="n">leaves</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="k">def</span> <span class="nf">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">traverse_model_top_down</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Traverses the Mesh model recursively.&quot;&quot;&quot;</span>
     <span class="nb">object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;..&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">depth</span><span class="si">}{</span><span class="nb">object</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">leaf</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">child_id</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span>
-                <span class="n">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">leaf</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">traverse_model_top_down</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">child_id</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">leaf</span><span class="p">:</span>
+        <span class="n">leaves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">traverse_model_bottom_up</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+    <span class="nb">object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;..&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">depth</span><span class="si">}{</span><span class="nb">object</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="n">attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="nb">object</span><span class="o">.</span><span class="n">owner_id</span><span class="p">)</span>
+    <span class="n">traverse_model_bottom_up</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">owner_id</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -890,14 +907,22 @@
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">models</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
-            <span class="n">traverse_model</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-
-        <span class="c1"># Excepted output:</span>
-        <span class="c1"># Model</span>
-        <span class="c1"># ..ChildObject1</span>
-        <span class="c1"># ....SubChildObject1</span>
-        <span class="c1"># ....SubChildObject2</span>
-        <span class="c1"># ..ChildObject2</span>
+            <span class="n">leaves</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model: &#39;</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top-bottom traversal:&quot;</span><span class="p">)</span>
+            <span class="n">traverse_model_top_down</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="c1"># Excepted output:</span>
+            <span class="c1"># Model</span>
+            <span class="c1"># ..ChildObject1</span>
+            <span class="c1"># ....SubChildObject1</span>
+            <span class="c1"># ....SubChildObject2</span>
+            <span class="c1"># ..ChildObject2</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Bottom-top traversal:&quot;</span><span class="p">)</span>
+            <span class="n">traverse_model_bottom_up</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">leaves</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+            <span class="c1"># Excepted output:</span>
+            <span class="c1"># ....SubChildObject1</span>
+            <span class="c1"># ..ChildObject1</span>
+            <span class="c1"># Model</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
