@@ -289,8 +289,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">name</span>
-        <span class="c1"># owner_id field is always set starting from Mesh 2.11</span>
-        <span class="c1"># TODO: Remove the check if the owner_id field exists when we move to support Mesh &gt;= 2.11</span>
+        <span class="c1"># owner_id field is always set starting from Mesh 2.13</span>
+        <span class="c1"># TODO: Remove the check if the owner_id field exists when we move to support Mesh &gt;= 2.13</span>
+        <span class="c1"># See: https://github.com/Volue/energy-mesh/pull/4755</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">owner_id</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;owner_id&quot;</span><span class="p">)</span>
