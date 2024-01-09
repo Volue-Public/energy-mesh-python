@@ -30,7 +30,9 @@ from volue.mesh._common import (
     _to_proto_guid,
     _from_proto_guid,
     _to_proto_timeseries,
+    _to_proto_utcinterval,
 )
+from volue.mesh._mesh_id import _to_proto_object_mesh_id
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
@@ -373,6 +375,33 @@ class Connection(_base_connection.Connection):
                 target, start_time, end_time, new_versions
             )
             self.mesh_service.UpdateRatingCurveVersions(request)
+
+        def run_simulation(
+            self,
+            model: str,
+            case_group: str,
+            case: str,
+            start_time: datetime,
+            end_time: datetime,
+            resolution: Timeseries.Resolution,
+            scenario: int,
+            return_datasets: bool,
+        ) -> typing.Iterator[None]:
+            if start_time is None or end_time is None:
+                raise TypeError("start_time and end_time must both have a value")
+
+            simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
+
+            request = core_pb2.SimulationRequest(
+                session_id=_to_proto_guid(self.session_id),
+                simulation=_to_proto_object_mesh_id(simulation),
+                interval=_to_proto_utcinterval(start_time, end_time),
+                scenario=scenario,
+                return_datasets=return_datasets,
+            )
+
+            for response in self.mesh_service.RunHydroSimulation(request):
+                yield None
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):
