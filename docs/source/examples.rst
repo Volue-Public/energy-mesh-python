@@ -103,3 +103,8 @@ Write time series, asynchronously
 .. literalinclude:: /../../src/volue/mesh/examples/write_timeseries_points_async.py
    :language: python
 
+Run simulations
+***************
+.. literalinclude:: /../../src/volue/mesh/examples/run_simulation.py
+   :language: python
+
