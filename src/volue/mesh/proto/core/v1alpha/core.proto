@@ -245,7 +245,9 @@ service MeshService {
   rpc GetTextResource(GetTextResourceRequest) returns (GetTextResourceResponse) {}
   rpc WriteTextResource(WriteTextResourceRequest) returns (WriteTextResourceResponse) {}
 
+  // Experimental HydSim API, very unstable.
   rpc RunHydroSimulation(SimulationRequest) returns (stream SimulationResponse) {}
+  rpc RunInflowCalculation(SimulationRequest) returns (stream SimulationResponse) {}
 }
 
 message AuthenticateKerberosResponse {

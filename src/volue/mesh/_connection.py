@@ -403,6 +403,36 @@ class Connection(_base_connection.Connection):
             for response in self.mesh_service.RunHydroSimulation(request):
                 yield None
 
+        def run_inflow_calculation(
+            self,
+            model: str,
+            area: str,
+            water_course: str,
+            start_time: datetime,
+            end_time: datetime,
+        ) -> typing.Iterator[None]:
+            if start_time is None or end_time is None:
+                raise TypeError("start_time and end_time must both have a value")
+
+            targets = self.search_for_objects(
+                f"Model/{model}/Mesh.To_Areas/{area}",
+                f"To_HydroProduction/To_WaterCourses/@[.Name={water_course}]",
+            )
+
+            if len(targets) != 1:
+                raise ValueError(f"expected one water course, found {len(targets)}")
+
+            request = core_pb2.SimulationRequest(
+                session_id=_to_proto_guid(self.session_id),
+                simulation=_to_proto_object_mesh_id(targets[0].id),
+                interval=_to_proto_utcinterval(start_time, end_time),
+                scenario=0,
+                return_datasets=False,
+            )
+
+            for response in self.mesh_service.RunInflowCalculation(request):
+                yield None
+
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):
         return grpc.secure_channel(*args, **kwargs)
