@@ -573,6 +573,36 @@
             <span class="p">)</span>
 
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RunHydroSimulation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Connection.Session.run_inflow_calculation"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.run_inflow_calculation">[docs]</a>        <span class="k">def</span> <span class="nf">run_inflow_calculation</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">area</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">water_course</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+
+            <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/Mesh.To_Areas/</span><span class="si">{</span><span class="n">area</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;To_HydroProduction/To_WaterCourses/@[.Name=</span><span class="si">{</span><span class="n">water_course</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;expected one water course, found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SimulationRequest</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                <span class="n">simulation</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
+                <span class="n">scenario</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RunInflowCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="kc">None</span></div></div>
 
     <span class="nd">@staticmethod</span>
