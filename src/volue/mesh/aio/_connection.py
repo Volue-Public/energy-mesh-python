@@ -31,7 +31,9 @@ from volue.mesh._common import (
     _to_proto_guid,
     _from_proto_guid,
     _to_proto_timeseries,
+    _to_proto_utcinterval,
 )
+from volue.mesh._mesh_id import _to_proto_object_mesh_id
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
@@ -378,6 +380,64 @@ class Connection(_base_connection.Connection):
                 target, start_time, end_time, new_versions
             )
             await self.mesh_service.UpdateRatingCurveVersions(request)
+
+        async def run_simulation(
+            self,
+            model: str,
+            case: str,
+            start_time: datetime,
+            end_time: datetime,
+            resolution: Timeseries.Resolution,
+            scenario: int,
+            return_datasets: bool,
+        ) -> typing.AsyncIterator[None]:
+            if start_time is None or end_time is None:
+                raise TypeError("start_time and end_time must both have a value")
+
+            case_group, case_name = case.split("/", maxsplit=1)
+
+            simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
+
+            request = core_pb2.SimulationRequest(
+                session_id=_to_proto_guid(self.session_id),
+                simulation=_to_proto_object_mesh_id(simulation),
+                interval=_to_proto_utcinterval(start_time, end_time),
+                scenario=scenario,
+                return_datasets=return_datasets,
+            )
+
+            async for response in self.mesh_service.RunHydroSimulation(request):
+                yield None
+
+        async def run_inflow_calculation(
+            self,
+            model: str,
+            area: str,
+            water_course: str,
+            start_time: datetime,
+            end_time: datetime,
+        ) -> typing.AsyncIterator[None]:
+            if start_time is None or end_time is None:
+                raise TypeError("start_time and end_time must both have a value")
+
+            targets = await self.search_for_objects(
+                f"Model/{model}/Mesh.To_Areas/{area}",
+                f"To_HydroProduction/To_WaterCourses/@[.Name={water_course}]",
+            )
+
+            if len(targets) != 1:
+                raise ValueError(f"expected one water course, found {len(targets)}")
+
+            request = core_pb2.SimulationRequest(
+                session_id=_to_proto_guid(self.session_id),
+                simulation=_to_proto_object_mesh_id(targets[0].id),
+                interval=_to_proto_utcinterval(start_time, end_time),
+                scenario=0,
+                return_datasets=False,
+            )
+
+            async for response in self.mesh_service.RunInflowCalculation(request):
+                yield None
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):
