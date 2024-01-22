@@ -379,7 +379,6 @@ class Connection(_base_connection.Connection):
         def run_simulation(
             self,
             model: str,
-            case_group: str,
             case: str,
             start_time: datetime,
             end_time: datetime,
@@ -390,7 +389,9 @@ class Connection(_base_connection.Connection):
             if start_time is None or end_time is None:
                 raise TypeError("start_time and end_time must both have a value")
 
-            simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
+            case_group, case_name = case.split("/", maxsplit=1)
+
+            simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
 
             request = core_pb2.SimulationRequest(
                 session_id=_to_proto_guid(self.session_id),
