@@ -551,7 +551,6 @@
 <div class="viewcode-block" id="Connection.Session.run_simulation"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.run_simulation">[docs]</a>        <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">case_group</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -562,7 +561,9 @@
             <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
 
-            <span class="n">simulation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case</span><span class="si">}</span><span class="s2">.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation&quot;</span>
+            <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">simulation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation&quot;</span>
 
             <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SimulationRequest</span><span class="p">(</span>
                 <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
