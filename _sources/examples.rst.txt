@@ -108,8 +108,18 @@ Run simulations
 .. literalinclude:: /../../src/volue/mesh/examples/run_simulation.py
    :language: python
 
+Run simulations, asynchronously
+*******************************
+.. literalinclude:: /../../src/volue/mesh/examples/run_simulation_async.py
+   :language: python
+
 Run inflow calculations
 ***********************
 .. literalinclude:: /../../src/volue/mesh/examples/run_inflow_calculation.py
    :language: python
 
+
+Run inflow calculations, asynchronously
+***************************************
+.. literalinclude:: /../../src/volue/mesh/examples/run_inflow_calculation_async.py
+   :language: python
