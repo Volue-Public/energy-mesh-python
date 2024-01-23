@@ -627,7 +627,7 @@
 <div class="viewcode-block" id="Connection.revoke_access_token"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.revoke_access_token">[docs]</a>    <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Authentication</span>
+            <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span> <span class="ow">is</span> <span class="n">ExternalAccessTokenPlugin</span>
         <span class="p">):</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Authentication not configured for this connection&quot;</span><span class="p">)</span>
 

@@ -477,6 +477,14 @@
             <span class="p">)</span>
         <span class="n">callback</span><span class="p">(((</span><span class="s2">&quot;authorization&quot;</span><span class="p">,</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">),),</span> <span class="kc">None</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">delete_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes (resets) current Mesh token if no longer needed.</span>
+<span class="sd">        mesh_service.RevokeAccessToken call is made in Connection classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_expiration_date</span> <span class="o">=</span> <span class="kc">None</span>
+
 
 <span class="k">class</span> <span class="nc">ExternalAccessTokenPlugin</span><span class="p">(</span><span class="n">grpc</span><span class="o">.</span><span class="n">AuthMetadataPlugin</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
