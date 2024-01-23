@@ -305,6 +305,14 @@ class FakeIdentityPlugin(grpc.AuthMetadataPlugin):
             )
         callback((("authorization", "Bearer " + self.token),), None)
 
+    def delete_access_token(self):
+        """
+        Deletes (resets) current Mesh token if no longer needed.
+        mesh_service.RevokeAccessToken call is made in Connection classes.
+        """
+        self.token = None
+        self.token_expiration_date = None
+
 
 class ExternalAccessTokenPlugin(grpc.AuthMetadataPlugin):
     """
