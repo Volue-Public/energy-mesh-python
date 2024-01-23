@@ -391,21 +391,9 @@ class Connection(_base_connection.Connection):
             scenario: int,
             return_datasets: bool,
         ) -> typing.AsyncIterator[None]:
-            if start_time is None or end_time is None:
-                raise TypeError("start_time and end_time must both have a value")
-
-            case_group, case_name = case.split("/", maxsplit=1)
-
-            simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
-
-            request = core_pb2.SimulationRequest(
-                session_id=_to_proto_guid(self.session_id),
-                simulation=_to_proto_object_mesh_id(simulation),
-                interval=_to_proto_utcinterval(start_time, end_time),
-                scenario=scenario,
-                return_datasets=return_datasets,
+            request = self._prepare_run_simulation_request(
+                model, case, start_time, end_time, resolution, scenario, return_datasets
             )
-
             async for response in self.mesh_service.RunHydroSimulation(request):
                 yield None
 
