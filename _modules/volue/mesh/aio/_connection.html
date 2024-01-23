@@ -563,21 +563,9 @@
             <span class="n">scenario</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
-
-            <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-            <span class="n">simulation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation&quot;</span>
-
-            <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SimulationRequest</span><span class="p">(</span>
-                <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
-                <span class="n">simulation</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span>
-                <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
-                <span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_run_simulation_request</span><span class="p">(</span>
+                <span class="n">model</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">return_datasets</span>
             <span class="p">)</span>
-
             <span class="k">async</span> <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RunHydroSimulation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="kc">None</span></div>
 

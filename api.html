@@ -831,7 +831,40 @@ the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span cl
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.run_simulation">
 <span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries.Resolution" title="volue.mesh._timeseries.Timeseries.Resolution"><span class="pre">volue.mesh._timeseries.Timeseries.Resolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.run_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.run_simulation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Run a hydro simulation using HydSim on the Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The name of the Mesh model in which the simulation case exists.</p></li>
+<li><p><strong>case</strong> – The names of the case group and simulation case in the form
+‘CaseGroup/CaseName’.</p></li>
+<li><p><strong>start_time</strong> – The (inclusive) start of the simulation interval.</p></li>
+<li><p><strong>end_time</strong> – The (exclusive) end of the simulation interval.</p></li>
+<li><p><strong>resolution</strong> – The resolution of the simulation. Can be left undefined
+to use the default resolution defined in the simulation case.
+<strong>Unimplemented.</strong></p></li>
+<li><p><strong>scenario</strong> – The scenario(s) to run. <strong>Unimplemented.</strong></p></li>
+<li><p><strong>return_datasets</strong> – <strong>Unimplemented.</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>An iterator of <cite>None</cite>. In future versions this iterator will yield
+log messages, datasets, and potentially more. The simulation is
+done when the iterator is exhausted.</p>
+<p>Exhausting the iterator without an exception does not guarantee
+that the simulation completed successfully. To determine that
+you must analyze the simulation’s result time series and the
+log messages from the server.</p>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.60.0)"><strong>grpc.RpcError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.search_for_attributes">
@@ -2264,7 +2297,40 @@ the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span cl
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.run_simulation">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime.datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries.Resolution" title="volue.mesh._timeseries.Timeseries.Resolution"><span class="pre">volue.mesh._timeseries.Timeseries.Resolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.12)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.run_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.run_simulation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Run a hydro simulation using HydSim on the Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The name of the Mesh model in which the simulation case exists.</p></li>
+<li><p><strong>case</strong> – The names of the case group and simulation case in the form
+‘CaseGroup/CaseName’.</p></li>
+<li><p><strong>start_time</strong> – The (inclusive) start of the simulation interval.</p></li>
+<li><p><strong>end_time</strong> – The (exclusive) end of the simulation interval.</p></li>
+<li><p><strong>resolution</strong> – The resolution of the simulation. Can be left undefined
+to use the default resolution defined in the simulation case.
+<strong>Unimplemented.</strong></p></li>
+<li><p><strong>scenario</strong> – The scenario(s) to run. <strong>Unimplemented.</strong></p></li>
+<li><p><strong>return_datasets</strong> – <strong>Unimplemented.</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>An iterator of <cite>None</cite>. In future versions this iterator will yield
+log messages, datasets, and potentially more. The simulation is
+done when the iterator is exhausted.</p>
+<p>Exhausting the iterator without an exception does not guarantee
+that the simulation completed successfully. To determine that
+you must analyze the simulation’s result time series and the
+log messages from the server.</p>
+</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.60.0)"><strong>grpc.RpcError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.search_for_attributes">
