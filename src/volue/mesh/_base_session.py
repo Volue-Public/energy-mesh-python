@@ -805,6 +805,46 @@ class Session(abc.ABC):
             :doc:`mesh_rating_curve`
         """
 
+    @abc.abstractmethod
+    def run_simulation(
+        self,
+        model: str,
+        case: str,
+        start_time: datetime,
+        end_time: datetime,
+        resolution: Timeseries.Resolution,
+        scenario: int,
+        return_datasets: bool,
+    ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+        """Run a hydro simulation using HydSim on the Mesh server.
+
+        Args:
+            model: The name of the Mesh model in which the simulation case exists.
+            case: The names of the case group and simulation case in the form
+                'CaseGroup/CaseName'.
+            start_time: The (inclusive) start of the simulation interval.
+            end_time: The (exclusive) end of the simulation interval.
+            resolution: The resolution of the simulation. Can be left undefined
+                to use the default resolution defined in the simulation case.
+                **Unimplemented.**
+            scenario: The scenario(s) to run. **Unimplemented.**
+            return_datasets: **Unimplemented.**
+
+        Returns:
+            An iterator of `None`. In future versions this iterator will yield
+            log messages, datasets, and potentially more. The simulation is
+            done when the iterator is exhausted.
+
+            Exhausting the iterator without an exception does not guarantee
+            that the simulation completed successfully. To determine that
+            you must analyze the simulation's result time series and the
+            log messages from the server.
+
+        Raises:
+            TypeError
+            grpc.RpcError
+        """
+
     def _get_xy_sets_impl(
         self,
         target: typing.Union[uuid.UUID, str, AttributeBase],
@@ -1363,3 +1403,27 @@ class Session(abc.ABC):
             versions=proto_versions,
         )
         return request
+
+    def _prepare_run_simulation_request(
+        self,
+        model: str,
+        case: str,
+        start_time: datetime,
+        end_time: datetime,
+        resolution: Timeseries.Resolution,
+        scenario: int,
+        return_datasets: bool,
+    ) -> core_pb2.SimulationRequest:
+        if start_time is None or end_time is None:
+            raise TypeError("start_time and end_time must both have a value")
+
+        case_group, case_name = case.split("/", maxsplit=1)
+        simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
+
+        return core_pb2.SimulationRequest(
+            session_id=_to_proto_guid(self.session_id),
+            simulation=_to_proto_object_mesh_id(simulation),
+            interval=_to_proto_utcinterval(start_time, end_time),
+            scenario=scenario,
+            return_datasets=return_datasets,
+        )
