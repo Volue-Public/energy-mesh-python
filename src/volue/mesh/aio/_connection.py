@@ -460,7 +460,7 @@ class Connection(_base_connection.Connection):
     async def revoke_access_token(self) -> None:
         if (
             self.auth_metadata_plugin is None
-            or type(self.auth_metadata_plugin) is not Authentication
+            or type(self.auth_metadata_plugin) is ExternalAccessTokenPlugin
         ):
             raise RuntimeError("Authentication not configured for this connection")
 
