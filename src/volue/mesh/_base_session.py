@@ -845,6 +845,40 @@ class Session(abc.ABC):
             grpc.RpcError
         """
 
+    @abc.abstractmethod
+    def run_inflow_calculation(
+        self,
+        model: str,
+        area: str,
+        water_course: str,
+        start_time: datetime,
+        end_time: datetime,
+    ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+        """Run an inflow calculation using HydSim on the Mesh server.
+
+        Args:
+            model: The name of the Mesh model in which the inflow calculation
+                exists.
+            area: The area of the water course to calculate.
+            water_course: The water course to calculate.
+            start_time: The (inclusive) start of the calculation interval.
+            end_time: The (exclusive) end of the calculation interval.
+
+        Returns:
+            An iterator of `None`. In future versions this iterator will yield
+            log messages, datasets, and potentially more. The calculation is
+            done when the iterator is exhausted.
+
+            Exhausting the iterator without an exception does not guarantee
+            that the calculation completed successfully. To determine that
+            you must analyze the calculation's result time series and the
+            log messages from the server.
+
+        Raises:
+            TypeError
+            grpc.RpcError
+        """
+
     def _get_xy_sets_impl(
         self,
         target: typing.Union[uuid.UUID, str, AttributeBase],
@@ -1426,4 +1460,21 @@ class Session(abc.ABC):
             interval=_to_proto_utcinterval(start_time, end_time),
             scenario=scenario,
             return_datasets=return_datasets,
+        )
+
+    def _prepare_run_inflow_calculation_request(
+        self, targets: List[Object], start_time: datetime, end_time: datetime
+    ) -> core_pb2.SimulationRequest:
+        if start_time is None or end_time is None:
+            raise TypeError("start_time and end_time must both have a value")
+
+        if len(targets) != 1:
+            raise ValueError(f"expected one water course, found {len(targets)}")
+
+        return core_pb2.SimulationRequest(
+            session_id=_to_proto_guid(self.session_id),
+            simulation=_to_proto_object_mesh_id(targets[0].id),
+            interval=_to_proto_utcinterval(start_time, end_time),
+            scenario=0,
+            return_datasets=False,
         )
