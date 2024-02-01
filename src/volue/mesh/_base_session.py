@@ -5,7 +5,7 @@ import asyncio
 import threading
 import typing
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional, Tuple, Union
 
 import dateutil
@@ -812,11 +812,14 @@ class Session(abc.ABC):
         case: str,
         start_time: datetime,
         end_time: datetime,
-        resolution: Timeseries.Resolution,
-        scenario: int,
-        return_datasets: bool,
+        *,
+        resolution: timedelta = None,
+        scenario: int = None,
+        return_datasets: bool = False,
     ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
         """Run a hydro simulation using HydSim on the Mesh server.
+
+        This function is experimental and subject to larger changes.
 
         Args:
             model: The name of the Mesh model in which the simulation case exists.
@@ -824,10 +827,12 @@ class Session(abc.ABC):
                 'CaseGroup/CaseName'.
             start_time: The (inclusive) start of the simulation interval.
             end_time: The (exclusive) end of the simulation interval.
-            resolution: The resolution of the simulation. Can be left undefined
-                to use the default resolution defined in the simulation case.
-                **Unimplemented.**
-            scenario: The scenario(s) to run. **Unimplemented.**
+            resolution: The resolution of the simulation. The default resolution
+                of the simulation case is used if this is left as `None`.
+                Officially supported resolutions are 5, 10, 15, and 60 minutes,
+                but other resolutions may work. **Unimplemented.**
+            scenario: The scenario(s) to run. All scenarios are run if left as
+                `None`. **Unimplemented.**
             return_datasets: **Unimplemented.**
 
         Returns:
