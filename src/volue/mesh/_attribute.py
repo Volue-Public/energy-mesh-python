@@ -135,9 +135,9 @@ class AttributeBase:
 
         # in basic view the definition is not a part of response from Mesh server
         if init_definition and proto_attribute.HasField("definition"):
-            self.definition: Optional[
-                AttributeBase.AttributeBaseDefinition
-            ] = self.AttributeBaseDefinition(proto_attribute.definition)
+            self.definition: Optional[AttributeBase.AttributeBaseDefinition] = (
+                self.AttributeBaseDefinition(proto_attribute.definition)
+            )
 
     def _get_string_representation(self) -> str:
         """Get string representation that could be used by subclasses `__str__` method calls."""
@@ -234,9 +234,9 @@ class SimpleAttribute(AttributeBase):
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
-            self.definition: Optional[
-                SimpleAttribute.SimpleAttributeDefinition
-            ] = self.SimpleAttributeDefinition(proto_attribute.definition)
+            self.definition: Optional[SimpleAttribute.SimpleAttributeDefinition] = (
+                self.SimpleAttributeDefinition(proto_attribute.definition)
+            )
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()

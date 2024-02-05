@@ -1,6 +1,7 @@
 """
 Tests for volue.mesh.Connection.Session and volue.mesh.aio.Connection.Session.
 """
+
 import asyncio
 import sys
 from time import sleep
