@@ -2,7 +2,7 @@
 Functionality for synchronously connecting to a Mesh server and working with its sessions.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import typing
 from typing import List, Optional, Union
 import uuid
@@ -382,9 +382,10 @@ class Connection(_base_connection.Connection):
             case: str,
             start_time: datetime,
             end_time: datetime,
-            resolution: Timeseries.Resolution,
-            scenario: int,
-            return_datasets: bool,
+            *,
+            resolution: timedelta = None,
+            scenario: int = None,
+            return_datasets: bool = False,
         ) -> typing.Iterator[None]:
             request = self._prepare_run_simulation_request(
                 model, case, start_time, end_time, resolution, scenario, return_datasets

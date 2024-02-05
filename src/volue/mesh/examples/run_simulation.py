@@ -19,7 +19,7 @@ def sync_run_simulation(address, port, root_pem_certificate):
 
         try:
             for response in session.run_simulation(
-                "Mesh", "Cases/Demo", start_time, end_time, None, 0, False
+                "Mesh", "Cases/Demo", start_time, end_time
             ):
                 pass
             print("done")
@@ -39,7 +39,7 @@ async def async_run_simulation(address, port, root_pem_certificate):
 
         try:
             async for response in session.run_simulation(
-                "Mesh", "Cases/Demo", start_time, end_time, None, 0, False
+                "Mesh", "Cases/Demo", start_time, end_time
             ):
                 pass
             print("done")
