@@ -11,4 +11,3 @@ __pycache__/
 .idea/
 .vscode/
 src/volue/mesh/tests/.pytest_cache
-src/volue/mesh/use_cases/*.csv
