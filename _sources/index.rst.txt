@@ -45,7 +45,6 @@ If you're having trouble, these resources might help.
    quickstart
    installation
    introduction_to_mesh
-   usecases
    examples
    authentication
    tests
