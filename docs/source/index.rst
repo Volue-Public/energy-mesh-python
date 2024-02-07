@@ -45,6 +45,7 @@ If you're having trouble, these resources might help.
    quickstart
    installation
    introduction_to_mesh
+   hydsim
    examples
    authentication
    tests

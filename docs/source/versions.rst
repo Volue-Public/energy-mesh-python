@@ -15,7 +15,9 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBD
+- Experimental support for running hydro simulations and inflow calculations on the Mesh Server.
+  See :doc:`hydsim`.
+
 
 Changes
 ~~~~~~~~~~~~~~~~~~
