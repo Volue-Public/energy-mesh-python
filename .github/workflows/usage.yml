@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-2019
     strategy:
       matrix:
-        python-version: [3.8, 3.9, "3.10", 3.11]
+        python-version: [3.9, "3.10", 3.11, 3.12]
       fail-fast: false
     timeout-minutes: 90
 
@@ -71,6 +71,7 @@ jobs:
           curl -sS https://bootstrap.pypa.io/get-pip.py | python${{ matrix.python-version }}
           sudo apt-get install --yes libkrb5-dev gcc
           sudo apt-get install --yes python${{ matrix.python-version }}-dev
+          python${{ matrix.python-version }} -m pip install --upgrade setuptools
           python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}
           python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py
           python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.1 pandas
