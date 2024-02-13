@@ -41,4 +41,4 @@ runs:
       id: download-mesh-server
       with:
         GITHUB_TOKEN: ${{ inputs.token }}
-        MESH_SERVICE_TAG: 'v2.11.0.13'
+        MESH_SERVICE_TAG: 'v2.12.0.13'
