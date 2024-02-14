@@ -3,6 +3,35 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
+Mesh Python SDK version 1.6.0-dev
+*********************************
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.12 **(may change)**
+- Python [3.8, 3.9, 3.10, 3.11] **(may change)**
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+::
+
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+
+
 `Mesh Python SDK version 1.5.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.5.0>`_
 *********************************************************************************************************
 
@@ -10,14 +39,13 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.12
-- Python [3.8 3.9, 3.10, 3.11]
+- Python [3.8, 3.9, 3.10, 3.11]
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
 - Experimental support for running hydro simulations and inflow calculations on the Mesh Server.
   See :doc:`hydsim`.
-
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -46,7 +74,7 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.10
-- Python [3.8 3.9, 3.10, 3.11]
+- Python [3.8, 3.9, 3.10, 3.11]
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -59,7 +87,6 @@ Changes
 
 - **Fixed:** Handling simple attributes without any values. :pull:`364`
 - Versions must be sorted in update_rating_curve_versions :pull:`358`
-
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,7 +115,7 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.9
-- Python [3.8 3.9, 3.10, 3.11]
+- Python [3.8, 3.9, 3.10, 3.11]
 
 New features
 ~~~~~~~~~~~~~~~~~~
