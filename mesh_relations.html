@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -197,14 +199,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="relations">
-<h1>Relations<a class="headerlink" href="#relations" title="Permalink to this headline">¶</a></h1>
+<h1>Relations<a class="headerlink" href="#relations" title="Permalink to this heading">¶</a></h1>
 <p>Objects in Mesh model can relate to each other. Relation between objects is
 done using relation attributes. The relation attribute defines type of the
 relation, target object type and other parameters.</p>
 <a class="reference internal image-reference" href="_images/relations1.png"><img alt="_images/relations1.png" src="_images/relations1.png" style="width: 800px;" /></a>
 <p>There are two groups of relations between objects in Mesh model.</p>
 <div class="section" id="ownership-relation">
-<h2>Ownership relation<a class="headerlink" href="#ownership-relation" title="Permalink to this headline">¶</a></h2>
+<h2>Ownership relation<a class="headerlink" href="#ownership-relation" title="Permalink to this heading">¶</a></h2>
 <p>Each object is owned by some other object (owner). It is called ownership
 relation.</p>
 <dl class="simple">
@@ -220,7 +222,7 @@ relation.</p>
 objects as well, if there were any.</p>
 </div>
 <div class="section" id="link-relation">
-<h2>Link relation<a class="headerlink" href="#link-relation" title="Permalink to this headline">¶</a></h2>
+<h2>Link relation<a class="headerlink" href="#link-relation" title="Permalink to this heading">¶</a></h2>
 <p>Link relation is a relation where one object may point to another object, but
 does not own it. There is also a versioned link relation, which is a link
 relation where the target object can change over time. It consists of a list of

@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -198,14 +200,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="xy-sets-in-mesh">
-<h1>XY-sets in Mesh<a class="headerlink" href="#xy-sets-in-mesh" title="Permalink to this headline">¶</a></h1>
+<h1>XY-sets in Mesh<a class="headerlink" href="#xy-sets-in-mesh" title="Permalink to this heading">¶</a></h1>
 <p>An XY-set is a set of two-dimensional curves. Mesh supports storing XY-sets in
 XY-set XY-set attributes, which can be versioned or unversioned. This document
 will explain what XY-curves and XY-sets are, how Mesh XY-set attributes are
 structured, and how you can use the Mesh Python SDK to access the XY-sets in
 those attributes.</p>
 <div class="section" id="xy-curves">
-<h2>XY-curves<a class="headerlink" href="#xy-curves" title="Permalink to this headline">¶</a></h2>
+<h2>XY-curves<a class="headerlink" href="#xy-curves" title="Permalink to this heading">¶</a></h2>
 <p>An <strong>XY curve</strong> is a set of <cite>(x, y)</cite> pairs where <cite>x</cite> and <cite>y</cite> are 64 bit
 floating point values.</p>
 <table class="docutils align-default">
@@ -235,7 +237,7 @@ floating point values.</p>
 </table>
 </div>
 <div class="section" id="xy-sets">
-<h2>XY-sets<a class="headerlink" href="#xy-sets" title="Permalink to this headline">¶</a></h2>
+<h2>XY-sets<a class="headerlink" href="#xy-sets" title="Permalink to this heading">¶</a></h2>
 <p>An <strong>XY set</strong> is a set of XY curves, each curve indexed by a 64 bit floating
 point reference value. These reference values are sometimes called Z. We often
 visualize <strong>XY sets</strong> like so:</p>
@@ -366,7 +368,7 @@ X, Y, and Z. For example if we have the following axis definitions…</p>
 </table>
 </div>
 <div class="section" id="accessing-xy-set-values-using-the-python-sdk">
-<h2>Accessing XY-set values using the Python SDK<a class="headerlink" href="#accessing-xy-set-values-using-the-python-sdk" title="Permalink to this headline">¶</a></h2>
+<h2>Accessing XY-set values using the Python SDK<a class="headerlink" href="#accessing-xy-set-values-using-the-python-sdk" title="Permalink to this heading">¶</a></h2>
 <p>XY-sets and XY-curves are represented in Python by the <a class="reference internal" href="api.html#volue.mesh.XySet" title="volue.mesh.XySet"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.XySet</span></code></a>
 and <a class="reference internal" href="api.html#volue.mesh.XyCurve" title="volue.mesh.XyCurve"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.XyCurve</span></code></a> classes. See their respective documentation for
 more information.</p>

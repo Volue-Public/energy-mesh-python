@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -184,7 +186,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="mesh-python-sdk">
-<h1>Mesh Python SDK<a class="headerlink" href="#mesh-python-sdk" title="Permalink to this headline">¶</a></h1>
+<h1>Mesh Python SDK<a class="headerlink" href="#mesh-python-sdk" title="Permalink to this heading">¶</a></h1>
 <p>The Mesh Python SDK can create a client which is able to communicate with a Mesh server using <a class="reference external" href="https://grpc.io/">gRPC</a>. <a class="reference external" href="https://en.wikipedia.org/wiki/Remote_procedure_call">Remote procedure calls</a> is a way of sending requests and responses over a network. The request is serialized, using <a class="reference external" href="https://developers.google.com/protocol-buffers">protocol buffers (aka proto)</a> and packaged then sent to the server which processes the request and sends back a response.</p>
 <p>Depending on the request it may take a long time to process by the server. In such cases the client may use package <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a> which is implemented using the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
 <p>This concept of concurrency can be demonstrated using the following examples. Notice the output of the different examples: 1, 2, A, B vs 1, A, 2, B.</p>
@@ -274,7 +276,7 @@
 </div>
 <p>As time series data can potentially be large <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> is used to optimize memory sharing.</p>
 <div class="section" id="date-times-and-time-zones">
-<h2>Date times and time zones<a class="headerlink" href="#date-times-and-time-zones" title="Permalink to this headline">¶</a></h2>
+<h2>Date times and time zones<a class="headerlink" href="#date-times-and-time-zones" title="Permalink to this heading">¶</a></h2>
 <p>The Mesh Python SDK can accept either time zone naive (no time zone information is provided) or time zone aware date time objects.
 All time zone naive date time objects are treated as UTC. Time zone aware date time objects are converted to UTC by the Mesh Python SDK before sending to Mesh server.</p>
 <div class="admonition note">

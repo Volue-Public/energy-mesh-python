@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -198,10 +200,10 @@
            <div itemprop="articleBody">
             
   <div class="section" id="examples">
-<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
 <p>This section contains code examples. These examples are packaged with the Mesh Python SDK and can be accessed when the package is installed.</p>
 <div class="section" id="running-examples">
-<h2>Running examples<a class="headerlink" href="#running-examples" title="Permalink to this headline">¶</a></h2>
+<h2>Running examples<a class="headerlink" href="#running-examples" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">quickstart</span><span class="p">,</span> <span class="n">_get_connection_info</span>
 
 
@@ -219,7 +221,7 @@
 </div>
 </div>
 <div class="section" id="quickstart">
-<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
@@ -250,7 +252,7 @@
 </div>
 </div>
 <div class="section" id="authorization">
-<h2>Authorization<a class="headerlink" href="#authorization" title="Permalink to this headline">¶</a></h2>
+<h2>Authorization<a class="headerlink" href="#authorization" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
@@ -325,7 +327,7 @@
 </div>
 </div>
 <div class="section" id="connect">
-<h2>Connect<a class="headerlink" href="#connect" title="Permalink to this headline">¶</a></h2>
+<h2>Connect<a class="headerlink" href="#connect" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
@@ -367,7 +369,7 @@
 </div>
 </div>
 <div class="section" id="connect-asynchronously">
-<h2>Connect, asynchronously<a class="headerlink" href="#connect-asynchronously" title="Permalink to this headline">¶</a></h2>
+<h2>Connect, asynchronously<a class="headerlink" href="#connect-asynchronously" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
@@ -413,7 +415,7 @@
 </div>
 </div>
 <div class="section" id="connect-using-external-access-token">
-<h2>Connect using external access token<a class="headerlink" href="#connect-using-external-access-token" title="Permalink to this headline">¶</a></h2>
+<h2>Connect using external access token<a class="headerlink" href="#connect-using-external-access-token" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
@@ -467,7 +469,7 @@
 </div>
 </div>
 <div class="section" id="get-version">
-<h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this headline">¶</a></h2>
+<h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
@@ -515,7 +517,7 @@
 </div>
 </div>
 <div class="section" id="read-time-series">
-<h2>Read time series<a class="headerlink" href="#read-time-series" title="Permalink to this headline">¶</a></h2>
+<h2>Read time series<a class="headerlink" href="#read-time-series" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -580,7 +582,7 @@
 </div>
 </div>
 <div class="section" id="read-time-series-asynchronously">
-<h2>Read time series, asynchronously<a class="headerlink" href="#read-time-series-asynchronously" title="Permalink to this headline">¶</a></h2>
+<h2>Read time series, asynchronously<a class="headerlink" href="#read-time-series-asynchronously" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -646,7 +648,7 @@
 </div>
 </div>
 <div class="section" id="read-and-process-time-series-asynchronously">
-<h2>Read and process time series, asynchronously<a class="headerlink" href="#read-and-process-time-series-asynchronously" title="Permalink to this headline">¶</a></h2>
+<h2>Read and process time series, asynchronously<a class="headerlink" href="#read-and-process-time-series-asynchronously" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -752,7 +754,7 @@
 </div>
 </div>
 <div class="section" id="search-for-time-series-attributes">
-<h2>Search for time series attributes<a class="headerlink" href="#search-for-time-series-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Search for time series attributes<a class="headerlink" href="#search-for-time-series-attributes" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span>
 
@@ -869,7 +871,7 @@
 </div>
 </div>
 <div class="section" id="traverse-model">
-<h2>Traverse model<a class="headerlink" href="#traverse-model" title="Permalink to this headline">¶</a></h2>
+<h2>Traverse model<a class="headerlink" href="#traverse-model" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
@@ -934,7 +936,7 @@
 </div>
 </div>
 <div class="section" id="using-time-series-with-pandas">
-<h2>Using time series with pandas<a class="headerlink" href="#using-time-series-with-pandas" title="Permalink to this headline">¶</a></h2>
+<h2>Using time series with pandas<a class="headerlink" href="#using-time-series-with-pandas" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
@@ -1086,7 +1088,7 @@
 </div>
 </div>
 <div class="section" id="working-with-link-relations">
-<h2>Working with link relations<a class="headerlink" href="#working-with-link-relations" title="Permalink to this headline">¶</a></h2>
+<h2>Working with link relations<a class="headerlink" href="#working-with-link-relations" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
@@ -1304,7 +1306,7 @@
 </div>
 </div>
 <div class="section" id="working-with-model-objects-and-attributes">
-<h2>Working with model (objects and attributes)<a class="headerlink" href="#working-with-model-objects-and-attributes" title="Permalink to this headline">¶</a></h2>
+<h2>Working with model (objects and attributes)<a class="headerlink" href="#working-with-model-objects-and-attributes" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributesFilter</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 
@@ -1389,7 +1391,7 @@
 </div>
 </div>
 <div class="section" id="working-with-rating-curves">
-<h2>Working with rating curves<a class="headerlink" href="#working-with-rating-curves" title="Permalink to this headline">¶</a></h2>
+<h2>Working with rating curves<a class="headerlink" href="#working-with-rating-curves" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">RatingCurveSegment</span><span class="p">,</span> <span class="n">RatingCurveVersion</span>
@@ -1496,7 +1498,7 @@
 </div>
 </div>
 <div class="section" id="working-with-sessions">
-<h2>Working with sessions<a class="headerlink" href="#working-with-sessions" title="Permalink to this headline">¶</a></h2>
+<h2>Working with sessions<a class="headerlink" href="#working-with-sessions" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
@@ -1545,7 +1547,7 @@
 </div>
 </div>
 <div class="section" id="working-with-xy-sets">
-<h2>Working with XY sets<a class="headerlink" href="#working-with-xy-sets" title="Permalink to this headline">¶</a></h2>
+<h2>Working with XY sets<a class="headerlink" href="#working-with-xy-sets" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
 
 <span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
@@ -1610,7 +1612,7 @@
 </div>
 </div>
 <div class="section" id="write-time-series">
-<h2>Write time series<a class="headerlink" href="#write-time-series" title="Permalink to this headline">¶</a></h2>
+<h2>Write time series<a class="headerlink" href="#write-time-series" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -1685,7 +1687,7 @@
 </div>
 </div>
 <div class="section" id="write-time-series-asynchronously">
-<h2>Write time series, asynchronously<a class="headerlink" href="#write-time-series-asynchronously" title="Permalink to this headline">¶</a></h2>
+<h2>Write time series, asynchronously<a class="headerlink" href="#write-time-series-asynchronously" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -1762,7 +1764,7 @@
 </div>
 </div>
 <div class="section" id="run-simulations">
-<h2>Run simulations<a class="headerlink" href="#run-simulations" title="Permalink to this headline">¶</a></h2>
+<h2>Run simulations<a class="headerlink" href="#run-simulations" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
@@ -1820,7 +1822,7 @@
 </div>
 </div>
 <div class="section" id="run-inflow-calculations">
-<h2>Run inflow calculations<a class="headerlink" href="#run-inflow-calculations" title="Permalink to this headline">¶</a></h2>
+<h2>Run inflow calculations<a class="headerlink" href="#run-inflow-calculations" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 

@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -191,10 +193,10 @@
            <div itemprop="articleBody">
             
   <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p>To be able to communicate with a Mesh server using the Mesh Python SDK some initial setup is needed. Here we suggest one possible setup.</p>
 <div class="section" id="git">
-<h2>Git<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h2>
+<h2>Git<a class="headerlink" href="#git" title="Permalink to this heading">¶</a></h2>
 <p>Git is a version control system. To be able to follow along using this guide you will need git to be able to install the Mesh Python SDK.</p>
 <ol class="arabic">
 <li><p>Download and install:</p>
@@ -217,13 +219,13 @@ $ git config --global user.email &quot;email_address&quot;
 </ol>
 </div>
 <div class="section" id="github">
-<h2>GitHub<a class="headerlink" href="#github" title="Permalink to this headline">¶</a></h2>
+<h2>GitHub<a class="headerlink" href="#github" title="Permalink to this heading">¶</a></h2>
 <p>GitHub is a cloud based storage for git repositories. The Mesh Python SDK is hosted on <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python">GitHub</a>.</p>
 <p>To be able to access the code you will need a GitHub user and that user needs to be given access by Volue.</p>
 <p>If you don’t have a GitHub user you can <a class="reference external" href="https://github.com/join">join here</a>.</p>
 </div>
 <div class="section" id="python">
-<h2>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h2>
+<h2>Python<a class="headerlink" href="#python" title="Permalink to this heading">¶</a></h2>
 <p>Mesh Python SDK works with Python 3.8, 3.9, 3.10 and 3.11. Support for earlier and later versions is not provided due to dependencies.</p>
 <ol class="arabic">
 <li><p>Download and install (Windows):</p>
@@ -238,11 +240,11 @@ $ git config --global user.email &quot;email_address&quot;
 </ol>
 </div>
 <div class="section" id="development-environment">
-<h2>Development environment<a class="headerlink" href="#development-environment" title="Permalink to this headline">¶</a></h2>
+<h2>Development environment<a class="headerlink" href="#development-environment" title="Permalink to this heading">¶</a></h2>
 <p>To be able to use the Mesh Python SDK to communicate with a Mesh Server or to do development you will need to write Python code that uses the functionality in the Mesh Python package.</p>
 <p>There are many ways to do this, but here we present one of them.</p>
 <div class="section" id="pycharm">
-<h3>PyCharm<a class="headerlink" href="#pycharm" title="Permalink to this headline">¶</a></h3>
+<h3>PyCharm<a class="headerlink" href="#pycharm" title="Permalink to this heading">¶</a></h3>
 <p>PyCharm is an IDE designed to write and execute Python code.</p>
 <p>When working with multiple python projects they may depend on different python versions and/or versions of external libraries. For this purpose, the standard library comes with a concept called <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">Virtual Environments and Packages</a> to help maintain these separate versions.</p>
 <ol class="arabic">
@@ -280,11 +282,11 @@ $ git config --global user.email &quot;email_address&quot;
 </div>
 </div>
 <div class="section" id="mesh-python-sdk">
-<h2>Mesh Python SDK<a class="headerlink" href="#mesh-python-sdk" title="Permalink to this headline">¶</a></h2>
+<h2>Mesh Python SDK<a class="headerlink" href="#mesh-python-sdk" title="Permalink to this heading">¶</a></h2>
 <p>Depending on how you intend to use the Mesh Python SDK there are two ways to install it.</p>
 <p>If you intend to use it to communicate with a Mesh Server you are a user. If you intend to contribute to development of the SDK you are a developer.</p>
 <div class="section" id="setup-for-users-recommended">
-<span id="setup-for-users"></span><h3>Setup for users (recommended)<a class="headerlink" href="#setup-for-users-recommended" title="Permalink to this headline">¶</a></h3>
+<span id="setup-for-users"></span><h3>Setup for users (recommended)<a class="headerlink" href="#setup-for-users-recommended" title="Permalink to this heading">¶</a></h3>
 <p>As a user you can install the Mesh Python SDK using Python’s standard package manager system <a class="reference external" href="https://packaging.python.org/en/latest/tutorials/installing-packages/">pip</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Volue</span><span class="o">-</span><span class="n">Public</span><span class="o">/</span><span class="n">energy</span><span class="o">-</span><span class="n">mesh</span><span class="o">-</span><span class="n">python</span>
 </pre></div>
@@ -295,7 +297,7 @@ $ git config --global user.email &quot;email_address&quot;
 </div>
 </div>
 <div class="section" id="setup-for-developers">
-<span id="id2"></span><h3>Setup for developers<a class="headerlink" href="#setup-for-developers" title="Permalink to this headline">¶</a></h3>
+<span id="id2"></span><h3>Setup for developers<a class="headerlink" href="#setup-for-developers" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic">
 <li><p>Clone the repository:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Volue</span><span class="o">-</span><span class="n">Public</span><span class="o">/</span><span class="n">energy</span><span class="o">-</span><span class="n">mesh</span><span class="o">-</span><span class="n">python</span><span class="o">.</span><span class="n">git</span>
@@ -343,7 +345,7 @@ need to make an explicit call like presented above.</p>
 </li>
 </ol>
 <div class="section" id="dependencies">
-<h4>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h4>
+<h4>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading">¶</a></h4>
 <p>The Mesh Python SDK depends on the Python standard library, but also <a class="reference external" href="https://grpc.io/">gRPC</a> and <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a>.</p>
 <p>These dependencies are managed, installed and referenced by the library using <a class="reference external" href="https://python-poetry.org/docs/">Poetry</a>. So no additional dependencies should be needed after running the pip install, unless you want to run the tests that come with the SDK, then see <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a>.</p>
 </div>

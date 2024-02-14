@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -189,7 +191,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="frequently-asked-questions">
-<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this heading">¶</a></h1>
 <p>This is a list of frequently asked questions regarding the Mesh Python SDK.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -211,10 +213,10 @@
 </ul>
 </div>
 <div class="section" id="connection-errors">
-<h2><a class="toc-backref" href="#id1">Connection errors</a><a class="headerlink" href="#connection-errors" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Connection errors</a><a class="headerlink" href="#connection-errors" title="Permalink to this heading">¶</a></h2>
 <p>When trying to connect to a Volue Mesh server you might get some errors if things are not set up correctly.</p>
 <div class="section" id="i-get-a-grpc-error">
-<h3><a class="toc-backref" href="#id2">I get a gRPC error.</a><a class="headerlink" href="#i-get-a-grpc-error" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id2">I get a gRPC error.</a><a class="headerlink" href="#i-get-a-grpc-error" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">failed</span> <span class="n">to</span> <span class="n">connect</span> <span class="n">to</span> <span class="nb">all</span> <span class="n">addresses</span>
 </pre></div>
 </div>
@@ -227,14 +229,14 @@
 </ol>
 </div>
 <div class="section" id="i-get-a-ssl-error-ssl-what-am-i-doing-wrong">
-<h3><a class="toc-backref" href="#id3">I get a SSL_ERROR_SSL. What am I doing wrong?</a><a class="headerlink" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id3">I get a SSL_ERROR_SSL. What am I doing wrong?</a><a class="headerlink" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" title="Permalink to this heading">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E0903</span> <span class="mi">09</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mf">59.667000000</span> <span class="mi">29912</span> <span class="n">src</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">tsi</span><span class="o">/</span><span class="n">ssl_transport_security</span><span class="o">.</span><span class="n">cc</span><span class="p">:</span><span class="mi">1468</span><span class="p">]</span> <span class="n">Handshake</span> <span class="n">failed</span> <span class="k">with</span> <span class="n">fatal</span> <span class="n">error</span> <span class="n">SSL_ERROR_SSL</span><span class="p">:</span> <span class="n">error</span><span class="p">:</span><span class="mi">100000</span><span class="n">f7</span><span class="p">:</span><span class="n">SSL</span> <span class="n">routines</span><span class="p">:</span><span class="n">OPENSSL_internal</span><span class="p">:</span><span class="n">WRONG_VERSION_NUMBER</span><span class="o">.</span>
 </pre></div>
 </div>
 <p>If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.</p>
 </div>
 <div class="section" id="i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux">
-<h3><a class="toc-backref" href="#id4">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux</a><a class="headerlink" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux</a><a class="headerlink" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" title="Permalink to this heading">¶</a></h3>
 <p>This error can have multiple causes. Some things to check are:</p>
 <ol class="arabic simple">
 <li><p>Is pip upgraded to the latest version?</p></li>
@@ -265,7 +267,7 @@ environments:</p>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">windows-2019</span>
 <span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">3.8</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3.9</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3.10&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3.11</span><span class="p p-Indicator">]</span>
+<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">3.9</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;3.10&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3.11</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3.12</span><span class="p p-Indicator">]</span>
 <span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="w">    </span><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 
@@ -322,6 +324,7 @@ environments:</p>
 <span class="w">          </span><span class="no">curl -sS https://bootstrap.pypa.io/get-pip.py | python${{ matrix.python-version }}</span>
 <span class="w">          </span><span class="no">sudo apt-get install --yes libkrb5-dev gcc</span>
 <span class="w">          </span><span class="no">sudo apt-get install --yes python${{ matrix.python-version }}-dev</span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install --upgrade setuptools</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.1 pandas</span>
@@ -331,22 +334,22 @@ environments:</p>
 </div>
 </div>
 <div class="section" id="other">
-<h2><a class="toc-backref" href="#id5">Other</a><a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Other</a><a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h2>
 <p>If neither of the above suggestions helped.</p>
 <div class="section" id="i-ran-the-tests-and-one-or-more-of-them-failed">
-<h3><a class="toc-backref" href="#id6">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this heading">¶</a></h3>
 <p>If you ran the <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a> and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in <a class="reference internal" href="tests.html#run-tests"><span class="std std-ref">Run tests</span></a>.</p>
 </div>
 <div class="section" id="mesh-server-grpc-configuration">
-<h3><a class="toc-backref" href="#id7">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this heading">¶</a></h3>
 <p>Mesh server is configured by Volue consultants. In case of any configuration problems or change requests (like turning on authentication) please contact your Volue consultant.</p>
 </div>
 <div class="section" id="i-think-i-found-a-bug-or-i-have-a-feature-request">
-<h3><a class="toc-backref" href="#id8">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this heading">¶</a></h3>
 <p>If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/discussions">discussion board</a> and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues">issue tracker</a>.</p>
 </div>
 <div class="section" id="i-need-more-help">
-<h3><a class="toc-backref" href="#id9">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this heading">¶</a></h3>
 <p>If you have a more pressing issue or if your issue includes confidential information, you should contact Volue’s customer service.</p>
 </div>
 </div>

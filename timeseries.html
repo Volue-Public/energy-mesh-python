@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -199,14 +201,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="time-series">
-<h1>Time series<a class="headerlink" href="#time-series" title="Permalink to this headline">¶</a></h1>
+<h1>Time series<a class="headerlink" href="#time-series" title="Permalink to this heading">¶</a></h1>
 <p>The primary data retrieved from the Mesh server is time series. A time series
 is a sequence of data points that occur in successive order over some period of
 time. They can represent different kinds of data depending on its properties.
 For example: how much power a hydro plant generates at any given time or how
 much water passes a gate per hour can be represented as a time series.</p>
 <div class="section" id="mesh-time-series">
-<h2>Mesh time series<a class="headerlink" href="#mesh-time-series" title="Permalink to this headline">¶</a></h2>
+<h2>Mesh time series<a class="headerlink" href="#mesh-time-series" title="Permalink to this heading">¶</a></h2>
 <p>Each point in Mesh time series contains the following fields:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -247,7 +249,7 @@ including <a class="reference external" href="https://arrow.apache.org/docs/pyth
 <a class="reference external" href="https://arrow.apache.org/docs/python/pandas.html">pandas</a>.</p>
 </div>
 <div class="section" id="resolution">
-<h2>Resolution<a class="headerlink" href="#resolution" title="Permalink to this headline">¶</a></h2>
+<h2>Resolution<a class="headerlink" href="#resolution" title="Permalink to this heading">¶</a></h2>
 <p>The resolution defines time step of the time series points. Some examples are
 hourly or daily resolutions. A special type of resolution is <strong>breakpoint</strong>. It
 means there is no time step restriction and points can be provided for any
@@ -255,10 +257,10 @@ timestamps.</p>
 <a class="reference internal image-reference" href="_images/mesh_timeseries_resolution.png"><img alt="Mesh time series resolution example" src="_images/mesh_timeseries_resolution.png" style="width: 800px;" /></a>
 </div>
 <div class="section" id="types">
-<h2>Types<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h2>
+<h2>Types<a class="headerlink" href="#types" title="Permalink to this heading">¶</a></h2>
 <p>There are 3 main types of time series in Mesh.</p>
 <div class="section" id="physical-time-series">
-<span id="mesh-physical-time-series"></span><h3>Physical time series<a class="headerlink" href="#physical-time-series" title="Permalink to this headline">¶</a></h3>
+<span id="mesh-physical-time-series"></span><h3>Physical time series<a class="headerlink" href="#physical-time-series" title="Permalink to this heading">¶</a></h3>
 <p>Physical time series are stored (e.g.: in database) as points with timestamps,
 flags and values. They are identified by unique <strong>time series keys</strong> and have
 meta-information like:</p>
@@ -272,7 +274,7 @@ meta-information like:</p>
 a calculation.</p>
 </div>
 <div class="section" id="virtual-time-series">
-<span id="mesh-virtual-time-series"></span><h3>Virtual time series<a class="headerlink" href="#virtual-time-series" title="Permalink to this headline">¶</a></h3>
+<span id="mesh-virtual-time-series"></span><h3>Virtual time series<a class="headerlink" href="#virtual-time-series" title="Permalink to this heading">¶</a></h3>
 <p>Virtual time series do not contain actual data points but an expression that is
 used to compute data points as result. The
 <a class="reference internal" href="#mesh-calc-expressions"><span class="std std-ref">expression</span></a> may reference other virtual or
@@ -288,7 +290,7 @@ in a storage called <em>resources</em>.</p>
 </div>
 </div>
 <div class="section" id="calculation-time-series">
-<h3>Calculation time series<a class="headerlink" href="#calculation-time-series" title="Permalink to this headline">¶</a></h3>
+<h3>Calculation time series<a class="headerlink" href="#calculation-time-series" title="Permalink to this heading">¶</a></h3>
 <p>Calculation time series is similar to virtual time series, but they are
 a newer concept and are more flexible. They do not contain actual data points
 but an <a class="reference internal" href="#mesh-calc-expressions"><span class="std std-ref">expression</span></a> that may reference other time
@@ -308,7 +310,7 @@ double.</p>
 </div>
 </div>
 <div class="section" id="expressions">
-<span id="mesh-calc-expressions"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this headline">¶</a></h2>
+<span id="mesh-calc-expressions"></span><h2>Expressions<a class="headerlink" href="#expressions" title="Permalink to this heading">¶</a></h2>
 <p>Virtual or calculation time series expressions can use also functions like sum
 all values in a time series, find values and status for a time series at
 a given historical time, transform time series values from one resolution to

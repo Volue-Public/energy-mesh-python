@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -184,7 +186,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="mesh-server">
-<h1>Mesh server<a class="headerlink" href="#mesh-server" title="Permalink to this headline">¶</a></h1>
+<h1>Mesh server<a class="headerlink" href="#mesh-server" title="Permalink to this heading">¶</a></h1>
 <p>The Volue Mesh server is an application built to handle incoming requests from clients. One way of handling such requests is by <a class="reference external" href="https://en.wikipedia.org/wiki/Remote_procedure_call">remote procedure calls</a>. The Mesh Python SDK is able to connect to the Mesh server using <a class="reference external" href="https://grpc.io/">gRPC</a>. The server has to be configured to listen for this kind of communication. To be able to connect you need the Mesh server’s IP address and the port open for RPC calls.</p>
 <p>Communication with the server can either be insecure or secured by encryption. The Mesh server supports <a class="reference external" href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS (transport layer security)</a> which is a protocol designed to provide communication’s security over a computer network through the use of certificates.</p>
 <p>Access to the server can be further secured by requiring users to <a class="reference internal" href="authentication.html"><span class="doc">authenticate</span></a> with an <a class="reference external" href="https://en.wikipedia.org/wiki/Active_Directory">active directory (AD)</a> service. The user will then be authorized to access data based on the permissions set in AD. Authorized user will get an access token from Mesh server. This requires that communication with the server is secured using encryption as explained above.</p>

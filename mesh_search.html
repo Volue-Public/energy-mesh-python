@@ -35,7 +35,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
     
@@ -197,7 +199,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="mesh-search-language">
-<h1>Mesh search language<a class="headerlink" href="#mesh-search-language" title="Permalink to this headline">¶</a></h1>
+<h1>Mesh search language<a class="headerlink" href="#mesh-search-language" title="Permalink to this heading">¶</a></h1>
 <p>The mesh search language can be used to find mesh objects.</p>
 <p>To be able to search for a mesh object you need to specify which model to search in, where in the model the search should start and the query matching the criteria of the mesh object you are searching for.</p>
 <div class="admonition note">
@@ -205,15 +207,15 @@
 <p>Refer to Mesh Python API documentation at <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a> for specific functions that can make use of the search language. E.g. calculation functions defined in <a class="reference internal" href="api.html#module-volue.mesh.calc"><span class="std std-ref">volue.mesh.calc</span></a>.</p>
 </div>
 <div class="section" id="query-syntax">
-<h2>Query syntax<a class="headerlink" href="#query-syntax" title="Permalink to this headline">¶</a></h2>
+<h2>Query syntax<a class="headerlink" href="#query-syntax" title="Permalink to this heading">¶</a></h2>
 <p>A search consists of a traversal, optionally followed by an <a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">attribute</span></a> access (“.AttributeName”). A search takes an object (the start point) as input and produces a set of objects or attributes as output (the result). If the attribute access is specified, the result objects are all attributes (attribute search), otherwise they are all objects (object search).</p>
 <div class="section" id="traversal">
-<h3>Traversal<a class="headerlink" href="#traversal" title="Permalink to this headline">¶</a></h3>
+<h3>Traversal<a class="headerlink" href="#traversal" title="Permalink to this heading">¶</a></h3>
 <p>A traversal describes a set of relative paths in the mesh object structure. It takes a set of objects as an input (the start points) and produces a set of objects as an output (the result) by following the paths from each start point and collecting endpoints. The start point is used to form a set and input into the traversal. The attribute access is applied to the output of the traversal. Some of the traversals are parametrized on criteria (f.ex. [Criteria] or *[Criteria]). For example, the traversal ‘..’ will output the parent, if it exists, for each input object. Traversals can be combined with operators to form new traversals.</p>
 <a class="reference internal image-reference" href="_images/search1.png"><img alt="_images/search1.png" src="_images/search1.png" style="width: 800px;" /></a>
 </div>
 <div class="section" id="criteria">
-<h3>Criteria<a class="headerlink" href="#criteria" title="Permalink to this headline">¶</a></h3>
+<h3>Criteria<a class="headerlink" href="#criteria" title="Permalink to this heading">¶</a></h3>
 <p>Some traversals are parametrized on criteria (see predicated child walk and child step). The criteria controls which objects the traversal will accept as output, and will either accept an object by outputting true or reject it by outputting false. You can combine criteria with operators to form new criteria (see AND, OR). For example, the traversal ‘[.Name=N]’ will for each input object, output the set of child objects whose name equals ‘N’. The traversal ‘*[.Name=N]’ will for each input object output the set of closest descendant objects whose name is ‘N’.</p>
 <p>Criteria are always enclosed in square brackets, [].</p>
 <p>You may specify options for the criteria within suffix curly brackets {}, for example to ignore case insensitivity on text based comparison. {i} means the search is case insensitive.</p>
@@ -221,7 +223,7 @@
 </div>
 </div>
 <div class="section" id="combining-multiple-search-operations">
-<h2>Combining multiple search operations<a class="headerlink" href="#combining-multiple-search-operations" title="Permalink to this headline">¶</a></h2>
+<h2>Combining multiple search operations<a class="headerlink" href="#combining-multiple-search-operations" title="Permalink to this heading">¶</a></h2>
 <p>You can combine search operations with the following operators:</p>
 <ul class="simple">
 <li><dl class="simple">
