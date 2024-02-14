@@ -10,12 +10,15 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.12 **(may change)**
-- Python [3.8, 3.9, 3.10, 3.11] **(may change)**
+- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for Python 3.12 :pull:`413`
+
+.. warning::
+    Python 3.8 is no longer supported.
 
 Changes
 ~~~~~~~~~~~~~~~~~~
