@@ -187,6 +187,7 @@ class Session(abc.ABC):
     def write_timeseries_points(self, timeseries: Timeseries) -> None:
         """
         Writes time series points for the specified time series in the given interval.
+        Resolution of the time series does not need to be set when writing time series.
 
         Args:
             timeseries: The modified time series.
@@ -567,7 +568,7 @@ class Session(abc.ABC):
             timeseries_key: integer that only applies to a specific physical or
                 virtual time series.
             new_curve_type: set new  curve type.
-            new_unit_of_measurement: set new  unit of measurement.
+            new_unit_of_measurement: set new unit of measurement.
 
         Note:
             Specify which ever of the new_* fields you want to update.

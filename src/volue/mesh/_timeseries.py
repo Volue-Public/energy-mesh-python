@@ -124,7 +124,7 @@ class Timeseries:
 
         Args:
             table: The arrow table containing the timestamps, flags and values.
-            resolution: The resolution of the time series.
+            resolution: The resolution of the time series. Does not need to be set when writing time series.
             start_time: The start date and time of the time series interval.
             end_time: The end date and time of the time series interval.
             timskey: Integer that only applies to a specific physical or virtual time series.
