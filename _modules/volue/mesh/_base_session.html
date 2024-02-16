@@ -361,6 +361,7 @@
     <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Writes time series points for the specified time series in the given interval.</span>
+<span class="sd">        Resolution of the time series does not need to be set when writing time series.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            timeseries: The modified time series.</span>
@@ -741,7 +742,7 @@
 <span class="sd">            timeseries_key: integer that only applies to a specific physical or</span>
 <span class="sd">                virtual time series.</span>
 <span class="sd">            new_curve_type: set new  curve type.</span>
-<span class="sd">            new_unit_of_measurement: set new  unit of measurement.</span>
+<span class="sd">            new_unit_of_measurement: set new unit of measurement.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            Specify which ever of the new_* fields you want to update.</span>

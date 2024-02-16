@@ -1349,7 +1349,7 @@ argument to 0.</p></li>
 <li><p><strong>timeseries_key</strong> – integer that only applies to a specific physical or
 virtual time series.</p></li>
 <li><p><strong>new_curve_type</strong> – set new  curve type.</p></li>
-<li><p><strong>new_unit_of_measurement</strong> – set new  unit of measurement.</p></li>
+<li><p><strong>new_unit_of_measurement</strong> – set new unit of measurement.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1433,7 +1433,8 @@ within <code class="code docutils literal notranslate"><span class="pre">[start_
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.write_timeseries_points">
 <span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes time series points for the specified time series in the given interval.</p>
+<dd><p>Writes time series points for the specified time series in the given interval.
+Resolution of the time series does not need to be set when writing time series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>timeseries</strong> – The modified time series.</p>
@@ -1915,7 +1916,7 @@ then all old points on May 1st and 3rd will be removed and new points will be se
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>table</strong> – The arrow table containing the timestamps, flags and values.</p></li>
-<li><p><strong>resolution</strong> – The resolution of the time series.</p></li>
+<li><p><strong>resolution</strong> – The resolution of the time series. Does not need to be set when writing time series.</p></li>
 <li><p><strong>start_time</strong> – The start date and time of the time series interval.</p></li>
 <li><p><strong>end_time</strong> – The end date and time of the time series interval.</p></li>
 <li><p><strong>timskey</strong> – Integer that only applies to a specific physical or virtual time series.</p></li>
@@ -2847,7 +2848,7 @@ argument to 0.</p></li>
 <li><p><strong>timeseries_key</strong> – integer that only applies to a specific physical or
 virtual time series.</p></li>
 <li><p><strong>new_curve_type</strong> – set new  curve type.</p></li>
-<li><p><strong>new_unit_of_measurement</strong> – set new  unit of measurement.</p></li>
+<li><p><strong>new_unit_of_measurement</strong> – set new unit of measurement.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2931,7 +2932,8 @@ within <code class="code docutils literal notranslate"><span class="pre">[start_
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.write_timeseries_points">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_timeseries_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeseries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries" title="volue.mesh._timeseries.Timeseries"><span class="pre">Timeseries</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.write_timeseries_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.write_timeseries_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes time series points for the specified time series in the given interval.</p>
+<dd><p>Writes time series points for the specified time series in the given interval.
+Resolution of the time series does not need to be set when writing time series.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>timeseries</strong> – The modified time series.</p>
