@@ -4,7 +4,7 @@ from datetime import datetime
 import pyarrow as pa
 
 from volue.mesh import Connection, Timeseries
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def write_timeseries_points(session: Connection.Session):
@@ -66,5 +66,5 @@ def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     main(address, port, root_pem_certificate)

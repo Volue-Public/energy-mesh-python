@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from volue.mesh import Connection, RatingCurveSegment, RatingCurveVersion
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def main(address, port, tls_root_cert):
@@ -98,5 +98,5 @@ def main(address, port, tls_root_cert):
 
 
 if __name__ == "__main__":
-    args = _get_connection_info()
+    args = helpers.get_connection_info()
     main(*args)

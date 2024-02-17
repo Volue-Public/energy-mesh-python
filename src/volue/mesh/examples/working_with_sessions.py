@@ -1,5 +1,5 @@
 import uuid
-from volue.mesh.examples import _get_connection_info
+import helpers
 from volue.mesh import Connection
 
 
@@ -40,5 +40,5 @@ def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     main(address, port, root_pem_certificate)

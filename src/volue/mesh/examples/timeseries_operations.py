@@ -8,7 +8,7 @@ import pyarrow as pa
 from volue.mesh import Connection, Timeseries
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def main(address, port, root_pem_certificate):
@@ -143,5 +143,5 @@ if __name__ == "__main__":
     # This will search for a given time series, write some data,
     # read it and convert to pandas format.
 
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     main(address, port, root_pem_certificate)

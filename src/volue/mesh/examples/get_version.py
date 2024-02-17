@@ -2,7 +2,7 @@ import asyncio
 
 from volue.mesh import Connection
 from volue.mesh.aio import Connection as AsyncConnection
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def sync_get_version(address, port, root_pem_certificate):
@@ -39,5 +39,5 @@ if __name__ == "__main__":
     # If some sensible version info is printed, you have successfully
     # communicated with the server.
 
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     main(address, port, root_pem_certificate)

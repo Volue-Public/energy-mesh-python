@@ -2,7 +2,7 @@ import datetime
 
 from volue import mesh
 
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
@@ -56,5 +56,5 @@ def main(address, port, tls_root_cert):
 
 
 if __name__ == "__main__":
-    args = _get_connection_info()
+    args = helpers.get_connection_info()
     main(*args)

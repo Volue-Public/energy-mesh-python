@@ -4,7 +4,7 @@ from datetime import datetime
 import grpc
 
 from volue.mesh.aio import Connection
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 async def process_timeseries_values(arrow_table):
@@ -97,5 +97,5 @@ async def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     asyncio.run(main(address, port, root_pem_certificate))

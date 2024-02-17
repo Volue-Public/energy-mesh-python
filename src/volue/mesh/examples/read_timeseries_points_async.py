@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 from volue.mesh.aio import Connection
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 async def read_timeseries_points_async(session: Connection.Session):
@@ -57,5 +57,5 @@ async def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     asyncio.run(main(address, port, root_pem_certificate))

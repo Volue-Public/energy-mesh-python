@@ -1,6 +1,6 @@
 import asyncio
 from volue.mesh.aio import Connection
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 async def get_version(connection):
@@ -29,7 +29,7 @@ async def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     asyncio.run(main(address, port, root_pem_certificate))
     print("Done")
 

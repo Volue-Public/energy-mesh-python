@@ -1,11 +1,7 @@
-"""
-Examples are written in a way that is meant to show how to use a certain feature of the API.
-"""
-
 import sys
 
 
-def _get_connection_info():
+def get_connection_info():
     """Helper function to set hand over connection info to examples."""
     address = "localhost:50051"
     root_pem_certificate = ""

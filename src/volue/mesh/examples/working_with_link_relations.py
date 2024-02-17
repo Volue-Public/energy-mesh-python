@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from dateutil import tz
 
 from volue.mesh import Connection, LinkRelationVersion, VersionedLinkRelationAttribute
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 ONE_TO_ONE_PATH = OBJECT_PATH + ".SimpleReference"
@@ -209,5 +209,5 @@ def main(address, port, tls_root_cert):
 
 
 if __name__ == "__main__":
-    args = _get_connection_info()
+    args = helpers.get_connection_info()
     main(*args)
