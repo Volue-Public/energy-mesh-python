@@ -444,6 +444,82 @@ def test_write_one_timeseries_point(session):
 
 
 @pytest.mark.database
+def test_remove_timeseries_points(session):
+    empty_table = Timeseries.schema.empty_table()
+
+    attribute_path = TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
+    session.write_timeseries_points(
+        Timeseries(
+            table=empty_table,
+            start_time=TIME_SERIES_START_TIME,
+            end_time=TIME_SERIES_END_TIME + timedelta(hours=1),
+            full_name=attribute_path,
+        )
+    )
+
+    reply_timeseries = session.read_timeseries_points(
+        target=attribute_path,
+        start_time=TIME_SERIES_START_TIME,
+        end_time=TIME_SERIES_END_TIME,
+    )
+
+    # check timestamps
+    utc_date = reply_timeseries.arrow_table[0]
+    for count, item in enumerate(utc_date):
+        assert item.as_py() == datetime(2016, 1, 1, count + 1, 0)
+
+    # check flags and values
+    flags = reply_timeseries.arrow_table[1]
+    values = reply_timeseries.arrow_table[2]
+
+    for i in range(9):
+        assert math.isnan(values[i].as_py())
+        assert flags[i].as_py() == Timeseries.PointFlags.MISSING.value
+
+
+@pytest.mark.database
+def test_remove_timeseries_points_without_providing_write_interval(session):
+    empty_table = Timeseries.schema.empty_table()
+
+    attribute_path = TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
+
+    with pytest.raises(
+        AttributeError,
+        match="'Timeseries' object has no attribute 'start_time'",
+    ):
+        session.write_timeseries_points(
+            Timeseries(
+                table=empty_table,
+                end_time=TIME_SERIES_END_TIME + timedelta(hours=1),
+                full_name=attribute_path,
+            )
+        )
+
+    with pytest.raises(
+        AttributeError,
+        match="'Timeseries' object has no attribute 'start_time'",
+    ):
+        session.write_timeseries_points(
+            Timeseries(
+                table=empty_table,
+                full_name=attribute_path,
+            )
+        )
+
+    with pytest.raises(
+        AttributeError,
+        match="'Timeseries' object has no attribute 'end_time'",
+    ):
+        session.write_timeseries_points(
+            Timeseries(
+                table=empty_table,
+                start_time=TIME_SERIES_START_TIME,
+                full_name=attribute_path,
+            )
+        )
+
+
+@pytest.mark.database
 def test_write_timeseries_point_from_other_session(connection):
     """
     Check that writing one time series point succeeds and that a dependent
