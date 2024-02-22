@@ -3,11 +3,6 @@ Examples
 
 This section contains code examples. These examples are packaged with the Mesh Python SDK and can be accessed when the package is installed.
 
-Running examples
-*****************
-.. literalinclude:: /../../src/volue/mesh/examples/run_examples.py
-   :language: python
-
 Quickstart
 *****************
 .. literalinclude:: /../../src/volue/mesh/examples/quickstart.py

@@ -231,7 +231,7 @@ token.</p></li>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.examples</span> <span class="kn">import</span> <span class="n">_get_connection_info</span>
+<span class="kn">import</span> <span class="nn">helpers</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -275,7 +275,7 @@ token.</p></li>
     <span class="c1"># This requires Mesh server to be running with enabled TLS and OAuth options.</span>
     <span class="c1"># Obtaining access token is out of the scope for this example.</span>
 
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">_get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
     <span class="c1"># main(address, port, root_pem_certificate)</span>
 </pre></div>
 </div>
