@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from volue.mesh import Connection
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def main(address, port, root_pem_certificate):
@@ -45,5 +45,5 @@ if __name__ == "__main__":
     # This requires Mesh server to be running with enabled TLS and OAuth options.
     # Obtaining access token is out of the scope for this example.
 
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     # main(address, port, root_pem_certificate)

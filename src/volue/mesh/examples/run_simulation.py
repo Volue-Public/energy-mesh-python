@@ -4,7 +4,7 @@ from datetime import datetime
 from volue import mesh
 import volue.mesh.aio
 
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def sync_run_simulation(address, port, root_pem_certificate):
@@ -48,6 +48,6 @@ async def async_run_simulation(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
     sync_run_simulation(address, port, root_pem_certificate)
     asyncio.run(async_run_simulation(address, port, root_pem_certificate))

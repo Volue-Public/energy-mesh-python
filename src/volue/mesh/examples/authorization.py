@@ -2,7 +2,7 @@ import asyncio
 
 from volue.mesh.aio import Connection as AsyncConnection
 from volue.mesh import Authentication, Connection
-from volue.mesh.examples import _get_connection_info
+import helpers
 
 
 def sync_auth(address, port, root_pem_certificate, authentication_parameters):
@@ -66,5 +66,5 @@ if __name__ == "__main__":
     #
     # This requires Mesh server to be running with enabled TLS and Kerberos options.
 
-    address, port, root_pem_certificate = _get_connection_info()
+    address, port, root_pem_certificate = helpers.get_connection_info()
 #    main(address, port, root_pem_certificate)
