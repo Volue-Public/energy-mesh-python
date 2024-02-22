@@ -40,20 +40,48 @@ def sync_write_timeseries_points(address, port, root_pem_certificate):
     print("Synchronous write time series points:")
     connection = mesh.Connection(address, port, root_pem_certificate)
 
-    table = get_pa_table_with_time_series_points()
-
     with connection.create_session() as session:
-        # Send requests to write time series based on timskey.
+        table = get_pa_table_with_time_series_points()
+
+        # Send request to write time series based on time series key.
         timeseries = mesh.Timeseries(table=table, timskey=timeseries_key)
         session.write_timeseries_points(timeseries=timeseries)
         print("Time series points written using time series key.")
 
-        # Send requests to write time series based on time series attribute path/full_name.
-        timeseries = mesh.Timeseries(table=table, full_name=timeseries_attribute_path)
+        # To only remove time series points we need to provide an empty PyArrow table, but with correct schema.
+        empty_table = mesh.Timeseries.schema.empty_table()
+
+        # If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.
+        # Because we are providing empty table we must specify them explicitly.
+        # For this interval all existing points will be removed.
+        #
+        # End time is exclusive so from the 3 points written by timeseries key,
+        # 2 points will be removed by this call.
+        #
+        # Send request to write time series based on time series attribute path/full_name.
+        timeseries = mesh.Timeseries(
+            table=empty_table,
+            start_time=datetime(2016, 1, 1, 1),
+            end_time=datetime(2016, 1, 1, 3),
+            full_name=timeseries_attribute_path,
+        )
         session.write_timeseries_points(timeseries=timeseries)
         print("Time series points written using time series attribute path.")
 
-        # Send requests to write time series based on time series attribute ID.
+        # Let's check it. We should get just one point.
+        # Note:
+        # - the `timeseries_attribute_path` and `timeseries_key` both point to the same time series attribute.
+        # - the `end_time` in `read_timeseries_points` is also exclusive,
+        #   but for time series with linear curve type Mesh is also returning one point after the interval.
+        timeseries = session.read_timeseries_points(
+            target=timeseries_key,
+            start_time=datetime(2016, 1, 1, 1),
+            end_time=datetime(2016, 1, 1, 3),
+        )
+        print(f"Read {timeseries.number_of_points} points using time series key.")
+        print(timeseries.arrow_table.to_pandas())
+
+        # Send request to write time series based on time series attribute ID.
         # Attribute IDs are auto-generated when an object is created.
         # That is why we can't use any fixed ID in this example and the code will throw.
         try:
@@ -79,20 +107,48 @@ async def async_write_timeseries_points(
     print("Asynchronous write time series points:")
     connection = mesh.aio.Connection(address, port, root_pem_certificate)
 
-    table = get_pa_table_with_time_series_points()
-
     async with connection.create_session() as session:
-        # Send requests to write time series based on timskey.
+        table = get_pa_table_with_time_series_points()
+
+        # Send request to write time series based on time series key.
         timeseries = mesh.Timeseries(table=table, timskey=timeseries_key)
         await session.write_timeseries_points(timeseries=timeseries)
         print("Time series points written using time series key.")
 
-        # Send requests to write time series based on time series attribute path/full_name.
-        timeseries = mesh.Timeseries(table=table, full_name=timeseries_attribute_path)
+        # To only remove time series points we need to provide an empty PyArrow table, but with correct schema.
+        empty_table = mesh.Timeseries.schema.empty_table()
+
+        # If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.
+        # Because we are providing empty table we must specify them explicitly.
+        # For this interval all existing points will be removed.
+        #
+        # End time is exclusive so from the 3 points written by timeseries key,
+        # 2 points will be removed by this call.
+        #
+        # Send request to write time series based on time series attribute path/full_name.
+        timeseries = mesh.Timeseries(
+            table=empty_table,
+            start_time=datetime(2016, 1, 1, 1),
+            end_time=datetime(2016, 1, 1, 3),
+            full_name=timeseries_attribute_path,
+        )
         await session.write_timeseries_points(timeseries=timeseries)
         print("Time series points written using time series attribute path.")
 
-        # Send requests to write time series based on time series attribute ID.
+        # Let's check it. We should get just one point.
+        # Note:
+        # - the `timeseries_attribute_path` and `timeseries_key` both point to the same time series attribute.
+        # - the `end_time` in `read_timeseries_points` is also exclusive,
+        #   but for time series with linear curve type Mesh is also returning one point after the interval.
+        timeseries = await session.read_timeseries_points(
+            target=timeseries_key,
+            start_time=datetime(2016, 1, 1, 1),
+            end_time=datetime(2016, 1, 1, 3),
+        )
+        print(f"Read {timeseries.number_of_points} points using time series key.")
+        print(timeseries.arrow_table.to_pandas())
+
+        # Send request to write time series based on time series attribute ID.
         # Attribute IDs are auto-generated when an object is created.
         # That is why we can't use any fixed ID in this example and the code will throw.
         try:
