@@ -38,7 +38,7 @@ def main(address, port, tls_root_cert):
         print("One of the new object's attributes (basic information):")
         print(int_attribute)
 
-        # Now let's attribute's value.
+        # Now let's update attribute's value.
         session.update_simple_attribute(int_attribute, 100)
 
         # Check updated value, but this time get also more information like
