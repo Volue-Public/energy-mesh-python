@@ -296,6 +296,10 @@
 
 <span class="sd">        For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.</span>
 
+<span class="sd">        To only remove existing time series points without writing any new ones:</span>
+<span class="sd">        - Provide empty PyArrow table with schema (table = Timeseries.schema.empty_table())</span>
+<span class="sd">        - Provide explicitly the interval for points removal by specifying `start_time` and `end_time`.</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            table: The arrow table containing the timestamps, flags and values.</span>
 <span class="sd">            resolution: The resolution of the time series. Does not need to be set when writing time series.</span>
