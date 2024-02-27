@@ -3,14 +3,14 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-Mesh Python SDK version 1.6.0-dev
-*********************************
+Mesh Python SDK version 1.6.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.6.0>`_
+*********************************************************************************************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.12 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
+- Mesh server version >= 2.12
+- Python [3.9, 3.10, 3.11, 3.12]
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -23,7 +23,8 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Add example and documentation on removing time series points using `write_timeseries_points`. :pull:`422`
+- Add example with searching calculation expressions. :pull:`418`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,7 +33,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.6.0
 
 
 `Mesh Python SDK version 1.5.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.5.0>`_
