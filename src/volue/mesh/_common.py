@@ -13,7 +13,7 @@ import pyarrow as pa
 from google.protobuf import field_mask_pb2, timestamp_pb2
 
 from volue.mesh import Timeseries
-from volue.mesh.proto import core, type
+from volue.mesh.proto import type
 from volue.mesh.proto.core.v1alpha import core_pb2
 
 
@@ -168,9 +168,7 @@ class VersionInfo:
     name: str
 
     @classmethod
-    def _from_proto(
-        cls, proto_version_info: core.v1alpha.resources_pb2.VersionInfo
-    ) -> VersionInfo:
+    def _from_proto(cls, proto_version_info: core_pb2.VersionInfo) -> VersionInfo:
         """Create a `VersionInfo` from protobuf VersionInfo.
 
         Args:
@@ -401,9 +399,7 @@ def _to_proto_utcinterval(
     return interval
 
 
-def _to_proto_timeseries(
-    timeseries: Timeseries,
-) -> core.v1alpha.resources_pb2.Timeseries:
+def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     """
     Converts a Timeseries to corresponding protobuf Timeseries.
 
@@ -421,7 +417,7 @@ def _to_proto_timeseries(
     writer.write_table(timeseries.arrow_table)
     buffer = stream.getvalue()
 
-    proto_timeseries = core.v1alpha.resources_pb2.Timeseries(
+    proto_timeseries = core_pb2.Timeseries(
         id=_to_proto_mesh_id_from_timeseries(timeseries),
         resolution=timeseries.resolution,
         interval=_to_proto_utcinterval(
@@ -456,8 +452,8 @@ def _to_proto_mesh_id_from_timeseries(
 
 def _to_proto_attribute_masks(
     attributes_filter: Optional[AttributesFilter],
-) -> core.v1alpha.resources_pb2.AttributesMasks:
-    attributes_masks = core.v1alpha.resources_pb2.AttributesMasks()
+) -> core_pb2.AttributesMasks:
+    attributes_masks = core_pb2.AttributesMasks()
 
     if attributes_filter is not None:
         if attributes_filter.name_mask is not None:

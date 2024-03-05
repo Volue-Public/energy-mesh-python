@@ -4,11 +4,10 @@ from typing import Optional, TypeVar
 
 import grpc
 
-from volue.mesh.proto import core
-
 from . import _authentication
 from ._authentication import Authentication, ExternalAccessTokenPlugin
 from ._credentials import Credentials
+from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 C = TypeVar("C", bound="Connection")
 
@@ -89,7 +88,7 @@ class Connection(abc.ABC):
         self.auth_metadata_plugin = auth_metadata_plugin
 
         if channel is not None:
-            self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
+            self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
             return
 
         target = f"{host}:{port}"
@@ -131,7 +130,7 @@ class Connection(abc.ABC):
                     target=target, credentials=credentials.channel_creds
                 )
 
-        self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
+        self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
 
     @classmethod
     def insecure(cls: C, target: str) -> C:
@@ -243,7 +242,7 @@ class Connection(abc.ABC):
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @abc.abstractmethod
-    def get_version(self) -> core.v1alpha.resources_pb2.VersionInfo:
+    def get_version(self) -> core_pb2.VersionInfo:
         """Request version information of the connected Mesh server.
 
         Note:
@@ -254,7 +253,7 @@ class Connection(abc.ABC):
         """
 
     @abc.abstractmethod
-    def get_user_identity(self) -> core.v1alpha.core_pb2.UserIdentity:
+    def get_user_identity(self) -> core_pb2.UserIdentity:
         """Request information about the user authorized to work with the Mesh server.
 
         Note:

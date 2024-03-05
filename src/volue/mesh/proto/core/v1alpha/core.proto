@@ -5,10 +5,9 @@ package volue.mesh.grpc.core.v1alpha;
 import "google/protobuf/empty.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/struct.proto";
-
-import "volue/mesh/proto/core/v1alpha/resources.proto";
 import "volue/mesh/proto/type/resources.proto";
 
 
@@ -87,7 +86,7 @@ service MeshService {
   // are generated using calculations which can be based on an arbitrary set of data.
   // Timeseries can be organized in a structure which resembles catalogs and thus can have a
   // path associated with it. They can also potentially be linked to a node in a Mesh model and with
-  // that get a path that represents the nodes position in the Mesh model. More metadata like unit
+  // that get a path that represents the nodes position in the Mesh model. More meta data like unit
   // of measurement, curve type and so on can also be linked to the timeseries.
 
   // Get a series of timestamps, flags and values.
@@ -118,9 +117,6 @@ service MeshService {
   // is returned.
   rpc SearchObjects(SearchObjectsRequest) returns (stream Object) {}
 
-  // Search for `Object`s, i.e.: instances of a given `ObjectDefinition`.
-  rpc SearchObjectsByDefinition(SearchObjectsByDefinitionRequest) returns (stream Object) {}
-
   // Create new object in the model.
   // In the first step user sets owner and name of the new object.
   // In case of success, the create operation returns OK status and newly
@@ -131,15 +127,13 @@ service MeshService {
   // `AttributeView::BASIC`.
   rpc CreateObject(CreateObjectRequest) returns (Object) {}
 
-  rpc CreateModel(CreateModelRequest) returns (Object) {}
-
   // Update existing object in the model.
   // User may rename an object or change its owner.
   // To update object's attributes use proper update attributes RPCs,
   // e.g.: `UpdateSimpleAttribute` or `UpdateTimeseriesAttribute`.
   rpc UpdateObject(UpdateObjectRequest) returns (UpdateObjectResponse) {}
 
-  // Delete existing object from the model.
+  // Delete existing object in the model.
   rpc DeleteObject(DeleteObjectRequest) returns (DeleteObjectResponse) {}
 
   // Get specific attribute from the model.
@@ -155,10 +149,6 @@ service MeshService {
   // If the search doesn't find any results an empty stream and an OK status
   // is returned.
   rpc SearchAttributes(SearchAttributesRequest) returns (stream Attribute) {}
-
-  // Search for enumeration attributes, enumeration attribute definitions and
-  // enumeration attriubte types that are using specific enumeration value.
-  rpc SearchEnumerationValueUsages(SearchEnumerationValueUsagesRequest) returns (stream EnumerationValueUsage) {}
 
   // Update value(s) of existing simple attribute in the model.
   // Simple attribute is a singular type or collection of the following types:
@@ -179,8 +169,6 @@ service MeshService {
   // Update existing versioned one-to-one link relation attribute in the model.
   rpc UpdateVersionedLinkRelationAttribute(UpdateVersionedLinkRelationAttributeRequest) returns (UpdateVersionedLinkRelationAttributeResponse) {}
 
-  rpc UpdateEnumerationAttribute(UpdateEnumerationAttributeRequest) returns (UpdateEnumerationAttributeResponse) {}
-
   // Get time series resource.
   // A time series resource:
   // - can be either physical or virtual time series
@@ -188,8 +176,8 @@ service MeshService {
   // - is identified by time series key or path within Resource catalog
   //
   // Physical time series has data (timestamps, values and flags) and
-  // metadata (e.g.: curve type, resolution, etc.).
-  // Virtual time series has metadata but instead of timestamps, values and
+  // meta data (e.g.: curve type, resolution, etc.).
+  // Virtual time series has meta data but instead of timestamps, values and
   // flags it has defined an expression to calculate time series data
   // (similar to calculation time series) but is stored in the resources.
   rpc GetTimeseriesResource(GetTimeseriesResourceRequest) returns (TimeseriesResource) {}
@@ -200,12 +188,12 @@ service MeshService {
   // Get the Mesh server version information.
   rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
 
-  // Get the Mesh server health information.
-  // This function is not stable. Both signature and response content are subjects to change.
+  // Get the Mesh server health information. 
+  // This function is not stable. Both signature and response content are subjects to change
   rpc GetHealthStatus(google.protobuf.Empty) returns (google.protobuf.Struct) {}
 
-  // Get the Mesh server configuration.
-  // This function is not stable. Both signature and response content are subjects to change.
+  // Get the Mesh server configuration. 
+  // This function is not stable. Both signature and response content are subjects to change
   rpc GetConfiguration(google.protobuf.Empty) returns (google.protobuf.Struct) {}
 
   // Get zero or more `XySet`s from an XY-set attribute (`XYSetAttribute`) or
@@ -371,10 +359,6 @@ message CalculationResponse {
 message ListModelsRequest {
   // The server session ID.
   volue.mesh.grpc.type.Guid session_id = 1;
-
-  // If set then only models that are instances of given model definition are
-  // returned. Otherwise all models are returned.
-  volue.mesh.grpc.type.MeshId model_definition_id = 2;
 }
 
 message ListModelsResponse {
@@ -416,35 +400,6 @@ message SearchObjectsRequest {
   AttributeView attribute_view = 5;
 }
 
-message SearchObjectsByDefinitionRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId object_definition_id = 2;
-
-  // Defines what `Object`s information should be included in the response.
-  // If not set all information will be included.
-  //
-  // An array containing `Object` message field names to be returned in the
-  // response.
-  // For example to return only ID and path:
-  //   field_mask = ['id', 'path']
-  google.protobuf.FieldMask object_field_mask = 3;
-
-  // If the object field mask (3) has also `attributes` set then additionally
-  // user can set masks that define what attributes for the objects should be
-  // returned in the response message.
-  // If no attribute mask is set then all attributes will be returned.
-  AttributesMasks attributes_masks = 4;
-
-  // If the object field mask (3) has also `attributes` set then additionally
-  // user can define what attribute information should be included in response.
-  //
-  // An array containing `Attribute` message field names to be returned in the
-  // response.
-  // For example to return only ID and definition:
-  //   field_mask = ['id', 'definition']
-  google.protobuf.FieldMask attribute_field_mask = 5;
-}
-
 message CreateObjectRequest {
   // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -458,15 +413,6 @@ message CreateObjectRequest {
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
   volue.mesh.grpc.type.MeshId owner_id = 3;
-}
-
-message CreateModelRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Name of the new model.
-  string name = 2;
-
-  volue.mesh.grpc.type.MeshId model_definition_id = 3;
 }
 
 message UpdateObjectRequest {
@@ -533,19 +479,6 @@ message SearchAttributesRequest {
   AttributeView attribute_view = 4;
 }
 
-message SearchEnumerationValueUsagesRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId enumeration_value_id = 2;
-
-  // Defines what attribute information should be included in the response.
-  // If not set all information will be included.
-  //
-  // An array containing `Attribute`/`AttributeDefinition`/`AttributeType` message field names to be returned in the response.
-  // For example to return only ID, name and attribute definition (definition only applies to the `Attribute` type):
-  //   field_mask = ['id', 'name', 'definition']
-  google.protobuf.FieldMask field_mask = 3;
-}
-
 message UpdateSimpleAttributeRequest {
   // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -593,12 +526,6 @@ message UpdateTimeseriesAttributeRequest {
   // To disconnect time series attribute from already connected time
   // series resource set `new_timeseries_resource_key` to 0.
   int64 new_timeseries_resource_key = 4;
-
-  // Sets new local epxression. To remove local expression set
-  // `new_local_expression` to empty string. When there is no local expression,
-  // then the template expression is used.
-  //
-  // For more information refer to `TimeseriesAttributeValue`.
   string new_local_expression = 5;
 }
 
@@ -658,14 +585,6 @@ message UpdateVersionedLinkRelationAttributeRequest {
 
 message UpdateVersionedLinkRelationAttributeResponse {}
 
-message UpdateEnumerationAttributeRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId attribute_id = 2;
-  volue.mesh.grpc.type.MeshId new_value = 3;
-}
-
-message UpdateEnumerationAttributeResponse {}
-
 message GetTimeseriesResourceRequest {
   // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -690,7 +609,6 @@ message UpdateTimeseriesResourceRequest {
   google.protobuf.FieldMask field_mask = 3;
 
   volue.mesh.grpc.type.Curve new_curve_type = 4;
-  // TODO: change type to `volue.mesh.grpc.type.Guid`
   string new_unit_of_measurement = 5;
 }
 
@@ -733,6 +651,396 @@ message UpdateRatingCurveVersionsRequest {
 }
 
 message UpdateRatingCurveVersionsResponse {}
+
+message Timeseries {
+  volue.mesh.grpc.type.MeshId id = 1;
+
+  // Resolution/spacing for this timeseries.
+  volue.mesh.grpc.type.Resolution resolution = 2;
+
+  // Time interval for this timeseries.
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+
+  // Data contains an Apache Arrow byte representation of the timeseries points.
+  // Stored in the following columns:
+  // 0: (uint64) utc_time
+  // 1: (uint32) flags
+  // 2: (double) value
+  bytes data = 4;
+}
+
+
+// Information about physical or virtual time series.
+message TimeseriesResource {
+  // Unique identifier for physical or virtual time series.
+  // Set to 0 if it is a local session time series.
+  // This is the only field that could be used for updating 
+  // time series attribute with new time series resource.
+  int64 timeseries_key = 1;
+
+  // [OUTPUT_ONLY]
+  string path = 2;
+
+  // [OUTPUT_ONLY]
+  string name = 3;
+
+  // Set to true if it is a local session time series.
+  // [OUTPUT_ONLY]
+  bool temporary = 4;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.type.Curve curve_type = 5;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.type.Resolution resolution = 6;
+
+  // [OUTPUT_ONLY]
+  string unit_of_measurement = 7;
+
+  // [OUTPUT_ONLY]
+  string virtual_timeseries_expression = 8;
+}
+
+message NumericResults {
+    repeated double value = 1;
+}
+
+message StringResults {
+    repeated string value = 1;
+}
+
+// Version information for the Mesh server.
+message VersionInfo {
+  string version = 1;
+  // Friendly name of the Mesh server, e.g.: Volue Mesh Server
+  string name = 2;
+}
+
+// Defines what attributes need to be returned in response message.
+message AttributesMasks {
+  // Attribute name uniquely identifies attribute within given object.
+  // If set then only attributes set in the field mask are read.
+  // If any other mask: tag or namespace or `return_no_attributes`
+  // flag is also set then an error will be returned.
+  // The attribute name provided in the mask must be equal to
+  // the actual attribute name in the model.
+  // Note: Regular expressions are not supported.
+  // See examples below for more details.
+  google.protobuf.FieldMask name_mask = 1;
+
+  // Each attribute can have zero, one or more tags.
+  // If the tag mask is set then only attributes with
+  // at least one tag set in the field mask are read.
+  // If multiple tags are provided then all attributes having
+  // at least one of them are returned (logical OR).
+  // If name mask or `return_no_attributes` flag is also set
+  // then an error will be returned.
+  // It is allowed to have both: tag mask and namespace mask set.
+  // Note: Regular expressions are not supported.
+  // See examples below for more details.
+  google.protobuf.FieldMask tag_mask = 2;
+
+  // Each attribute can have zero, one or more namespaces.
+  // If the namespace mask is set then only attributes with
+  // at least one namespace set in the field mask are read.
+  // If multiple namespaces are provided in the mask then all
+  // attributes having at least one of them are returned (logical OR).
+  // Namespace mask does not accept entries with namespaces
+  // concatenated with dots '.'. Each namespace mask entry must
+  // be a separate namespace.
+  // If name mask or `return_no_attributes` flag is also set
+  // then an error will be returned.
+  // It is allowed to have both: tag mask and namespace mask set.
+  // Note: Regular expressions are not supported.
+  // See examples below for more details.
+  google.protobuf.FieldMask namespace_mask = 3;
+
+  // If set to true then no attributes will be returned.
+  // If any mask: name, tag or namespace is also set
+  // then an error will be returned.
+  // Default value is false (default value for bool in proto3 is false).
+  bool return_no_attributes = 4;
+
+  // Multiple attributes may have the same tag or namespace.
+  // If both: tag_mask and namespace_masks are provided then only attributes
+  // that meet both criteria are returned (intersection/logical AND).
+  //
+  // Example 1:
+  //    Arg:      `name_mask` is set to "Price,Volume,Production"
+  //    Response: All attributes with names "Price", "Volume" or "Production"
+  //              will be returned.
+  //
+  // Example 2:
+  //    Arg:      `tag_mask` is set to "ProductionAttributes,LocationAttributes"
+  //    Response: All attributes with tag name "ProductionAttributes" or
+  //              "LocationAttributes" will be returned.
+  //    Note:     If attributes A1, A2 have tag "ProductionAttributes" and A3
+  //              has "LocationAttributes" then all three attributes
+  //              (A1, A2 and A3) will be returned.
+  //              Exactly the same rules apply to `namespace_mask`.
+  //
+  // Example 3:
+  //    Arg:      `namespace_mask` is set to "Hydro,Wind".
+  //    Response: All attributes with namespace "Hydro" or "Wind" will be returned.
+  //    Note:     Suppose there are the following attributes:
+  //              - A1 (namespace "EnergySystem.Hydro")
+  //              - A2 (namespace "EnergySystem.Wind")
+  //              - A3 (namespace "EnergySystem.Carbon")
+  //              - A4 (namespace "EnergySystem.Hydro.Small")
+  //              - A5 (namespace "Hydro.Normal")
+  //              In this case attributes A1, A2, A4 and A5 will be returned.
+  //
+  // Example 4:
+  //    Arg:      `tag_mask` is set to "ProductionAttributes",
+  //              `namespace_mask` is set to "Hydro,Wind".
+  //    Response: All attributes with tag name "ProductionAttributes" and
+  //              namespace "Hydro" or "Wind" will be returned.
+  //    Note:     Suppose there are the following attributes:
+  //              - A1 (tag "ProductionAttributes", namespace "EnergySystem.Hydro")
+  //              - A2 (tag "ProductionAttributes", namespace "EnergySystem.Wind")
+  //              - A3 (tag "ProductionAttributes", namespace "EnergySystem.Carbon")
+  //              - A4 (tag "LocationAttributes", namespace "EnergySystem.Hydro")
+  //              - A5 (tag "LocationAttributes", namespace "EnergySystem.Wind")
+  //              In this case attributes A1 and A2 will be returned.
+  //
+  //  Note: If no masks are provided then all attributes will be returned.
+}
+
+message Object {
+  volue.mesh.grpc.type.Guid id = 1;
+  string path = 2;
+  string name = 3;
+  string type_name = 4;
+
+  // Relation attribute owning given object, e.g.:
+  //   For `SomePowerPlant1` object with path:
+  //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
+  //   Owner will be the `ThermalPowerToPlantRef` attribute.
+  //
+  // Mesh models are also represented as objects. They are top level objects
+  // without owners, so `owner_id` field for models is not set.
+  volue.mesh.grpc.type.MeshId owner_id = 5;
+  repeated Attribute attributes = 6;
+}
+
+message Attribute {
+  // ID of the attribute in the model.
+  volue.mesh.grpc.type.Guid id = 1;
+
+  string path = 2;
+  string name = 3;
+  AttributeDefinition definition = 4;
+
+  // Some attribute types, such as XY-sets, do not include their values in the
+  // `Attribute` message. This is because those attributes have potentially
+  // large values, and specialized methods exist to handle those values.
+
+  repeated AttributeValue values = 5;
+
+  // For nullable or empty collection types no values will be returned. In such
+  // case this `value_type` could be used to check attributes value type.
+  AttributeValueType value_type = 6;
+  // If the `value_type` is a collection then this flag is set to `True`.
+  bool value_type_collection = 7;
+
+  volue.mesh.grpc.type.MeshId owner_id = 8;
+}
+
+enum AttributeValueType {
+  ATTRIBUTE_VALUE_TYPE_UNSPECIFIED = 0;
+  ATTRIBUTE_VALUE_TYPE_INT = 1;
+  ATTRIBUTE_VALUE_TYPE_DOUBLE = 2;
+  ATTRIBUTE_VALUE_TYPE_BOOL = 3;
+  ATTRIBUTE_VALUE_TYPE_STRING = 4;
+  ATTRIBUTE_VALUE_TYPE_UTC_TIME = 5;
+  ATTRIBUTE_VALUE_TYPE_TIMESERIES = 6;
+  ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION = 7;
+  ATTRIBUTE_VALUE_TYPE_LINK_RELATION = 8;
+  ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION = 9;
+}
+
+message AttributeValue {
+  oneof value_oneof {
+    int64 int_value = 1;
+    double double_value = 2;
+    bool boolean_value = 3;
+    string string_value = 4;
+    google.protobuf.Timestamp utc_time_value = 5;
+
+    TimeseriesAttributeValue timeseries_value = 6;
+    OwnershipRelationAttributeValue ownership_relation_value = 7;
+    LinkRelationAttributeValue link_relation_value = 8;
+    VersionedLinkRelationAttributeValue versioned_link_relation_value = 9;
+  }
+}
+
+message TimeseriesAttributeValue {
+  // Physical or virtual time series from resources if the attribute
+  // refers to one.
+  // To disconnect time series attribute from already connected time
+  // series resource set `new_timeseries_resource_key` to 0 in the
+  // `UpdateTimeseriesAttribute` RPC.
+  // To update curve type or resolution use `UpdateTimeseriesResource` RPC.
+  TimeseriesResource time_series_resource = 1;
+
+  // Expression that is actually used by the time series attribute.
+  // It uses local expression if set, otherwise template expression
+  // (defined in TimeseriesAttributeDefinition) will be used.
+  // When updating expression the new value will always be assigned
+  // to local expression.
+  // Note: Local expression is set on the object level in the model.
+  string expression = 2;
+
+  // Flag indicating expression that is actually used is a local expression.
+  // [OUTPUT_ONLY]
+  bool is_local_expression = 3;
+}
+
+message OwnershipRelationAttributeValue {
+  volue.mesh.grpc.type.Guid target_object_id = 1;
+}
+
+message LinkRelationAttributeValue {
+  volue.mesh.grpc.type.Guid target_object_id = 1;
+}
+
+message VersionedLinkRelationAttributeValue {
+  repeated LinkRelationVersion versions = 1;
+}
+
+message LinkRelationVersion {
+  volue.mesh.grpc.type.Guid target_object_id = 1;
+  google.protobuf.Timestamp valid_from_time = 2;
+}
+
+message AttributeDefinition {
+  volue.mesh.grpc.type.Guid id = 1;
+  string path = 2;
+  string name = 3;
+
+  string description = 4;
+  repeated string tags = 5;
+
+  // If an attribute has more than one namespace,
+  // they are concatenated with dots '.', e.g.:
+  //   namespace1.namespace2
+  string name_space = 6;
+  string type_name = 7;
+
+  // Specifies minimum and maximum size of a collection of attributes.
+  // Minimum and maximum cardinality applies only to a collection of attributes
+  // e.g.: collection of double attributes
+  // For singular types both minimum and maximum cardinality is set to 1.
+  int64 minimum_cardinality = 8;
+  int64 maximum_cardinality = 9;
+
+  oneof definition_type_oneof {
+    Int64AttributeDefinition int_definition = 10;
+    DoubleAttributeDefinition double_definition = 11;
+    BooleanAttributeDefinition boolean_definition = 12;
+    StringAttributeDefinition string_definition = 13;
+    UtcTimeAttributeDefinition utc_time_definition = 14;
+
+    TimeseriesAttributeDefinition timeseries_definition = 15;
+    XySetsAttributeDefinition xy_table_definition = 16;
+    OwnershipRelationAttributeDefinition ownership_relation_definition = 17;
+    // Applicable to all types of link relations.
+    LinkRelationAttributeDefinition link_relation_definition = 18;
+  }
+}
+
+message Int64AttributeDefinition {
+  int64 default_value = 1;
+  int64 minimum_value = 2;
+  int64 maximum_value = 3;
+  string unit_of_measurement = 4;
+}
+
+message DoubleAttributeDefinition {
+  double default_value = 1;
+  double minimum_value = 2;
+  double maximum_value = 3;
+  string unit_of_measurement = 4;
+}
+
+message BooleanAttributeDefinition {
+  bool default_value = 1;
+}
+
+message StringAttributeDefinition {
+  string default_value = 1;
+}
+
+message UtcTimeAttributeDefinition {
+  string default_value = 1;
+  string minimum_value = 2;
+  string maximum_value = 3;
+}
+
+message TimeseriesAttributeDefinition {
+  string template_expression = 1;
+  string unit_of_measurement = 2;
+}
+
+// Describes an axis in a `XySet`.
+message XySetAxis {
+  string description = 1;
+  string unit_of_measurement = 2;
+}
+
+message XySetsAttributeDefinition {
+  // XYSetAttribute if not versioned. XYZSeriesAttribute if versioned.
+  bool versioned = 1;
+
+  XySetAxis x_axis = 2;
+  XySetAxis y_axis = 3;
+
+  // Reference values/z values, if applicable.
+  optional XySetAxis z_axis = 4;
+}
+
+message OwnershipRelationAttributeDefinition {
+  string target_object_type_name = 1;
+}
+
+message LinkRelationAttributeDefinition {
+  string target_object_type_name = 1;
+}
+
+enum AttributeView {
+  // Not specified, equivalent to BASIC.
+  OBJECT_VIEW_UNSPECIFIED = 0;
+
+  // Response will include attribute's ID, name, path and value(s).
+  // The default value.
+  BASIC = 1;
+
+  // Response will include attribute's ID, name, path, value(s) and
+  // complete attribute definition.
+  FULL = 2;
+}
+
+// An `XyCurve` is a set of (x, y) pairs.
+message XyCurve {
+  // The reference value of this curve. Also known as the z value.
+  double reference_value = 1;
+
+  // Always equal length.
+  repeated double x_values = 2;
+  repeated double y_values = 3;
+}
+
+// An `XySet` is a set of `XyCurve`s indexed by reference values, also known as
+// z values.
+message XySet {
+  // If this `XySet` is a part of a versioned XY set attribute in Mesh
+  // `valid_from_time` will contain the start of the active period for
+  // this `XySet`. Otherwise `valid_from_time` will be null.
+  google.protobuf.Timestamp valid_from_time = 1;
+
+  // A list of `XyCurve`s in this `XySet`. Always sorted by `reference_value`.
+  repeated XyCurve xy_curves = 3;
+}
 
 // A request for the `XySet`s in an interval, or in the case of `XYSet` attributes
 // the single `XySet` owned by that attribute.
@@ -781,6 +1089,28 @@ message UpdateXySetsRequest {
 }
 
 message UpdateXySetsResponse {}
+
+message RatingCurveSegment {
+  double x_range_until = 1;
+  double factor_a = 2;
+  double factor_b = 3;
+  double factor_c = 4;
+}
+
+message RatingCurveVersion {
+  google.protobuf.Timestamp from = 1;
+  double x_range_from = 2;
+  repeated RatingCurveSegment x_value_segments = 3;
+}
+
+enum LogLevel {
+  TRACE = 0;
+  DEBUG = 1;
+  INFO = 2;
+  WARN = 3;
+  ERR = 4;
+  OFF = 5;
+}
 
 message UpdateLogLevelRequest {
   LogLevel new_log_level = 1;
