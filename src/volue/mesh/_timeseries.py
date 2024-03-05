@@ -48,6 +48,7 @@ class Timeseries:
             UNSPECIFIED:
             BREAKPOINT:
             MIN15:
+            MIN30:
             HOUR:
             DAY:
             WEEK:
@@ -63,6 +64,7 @@ class Timeseries:
         WEEK = 5
         MONTH = 6
         YEAR = 7
+        MIN30 = 8
 
     class PointFlags(Enum):
         """

@@ -145,6 +145,7 @@ def test_preparing_transform_request_with_timezone_should_add_this_parameter_to_
     "resolution, expected_number_of_points",
     [
         (Timeseries.Resolution.MIN15, 33),
+        (Timeseries.Resolution.MIN30, 17),
         (Timeseries.Resolution.HOUR, 9),
         (Timeseries.Resolution.DAY, 1),
         (Timeseries.Resolution.WEEK, 1),
