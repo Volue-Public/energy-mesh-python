@@ -185,6 +185,9 @@
 <span class="kn">import</span> <span class="nn">dateutil</span>
 <span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
 
+<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">core</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
+
 <span class="kn">from</span> <span class="nn">._attribute</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">SIMPLE_TYPE</span><span class="p">,</span>
     <span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
@@ -217,7 +220,6 @@
 <span class="kn">from</span> <span class="nn">.calc.history</span> <span class="kn">import</span> <span class="n">HistoryFunctions</span>
 <span class="kn">from</span> <span class="nn">.calc.statistical</span> <span class="kn">import</span> <span class="n">StatisticalFunctions</span>
 <span class="kn">from</span> <span class="nn">.calc.transform</span> <span class="kn">import</span> <span class="n">TransformFunctions</span>
-<span class="kn">from</span> <span class="nn">.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
 
 <span class="n">EXTEND_SESSION_LIFETIME_INTERVAL_IN_SECS</span> <span class="o">=</span> <span class="mi">150</span>
 
@@ -1091,7 +1093,7 @@
 
         <span class="n">response</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">request</span>
 
-        <span class="k">def</span> <span class="nf">get_valid_from_time</span><span class="p">(</span><span class="n">proto</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">get_valid_from_time</span><span class="p">(</span><span class="n">proto</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">proto</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;valid_from_time&quot;</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">proto</span><span class="o">.</span><span class="n">valid_from_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1128,21 +1130,23 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">interval</span> <span class="o">=</span> <span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_xy_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">XyCurve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">(</span>
+        <span class="k">def</span> <span class="nf">to_proto_xy_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">XyCurve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">(</span>
                 <span class="n">reference_value</span><span class="o">=</span><span class="n">curve</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
                 <span class="n">x_values</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xy</span><span class="p">],</span>
                 <span class="n">y_values</span><span class="o">=</span><span class="p">[</span><span class="n">y</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xy</span><span class="p">],</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_xy_set</span><span class="p">(</span><span class="n">xy_set</span><span class="p">:</span> <span class="n">XySet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">to_proto_xy_set</span><span class="p">(</span><span class="n">xy_set</span><span class="p">:</span> <span class="n">XySet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">:</span>
             <span class="n">valid_from_time</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">xy_set</span><span class="o">.</span><span class="n">valid_from_time</span> <span class="ow">is</span> <span class="kc">None</span>
                 <span class="k">else</span> <span class="n">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">xy_set</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">xy_curves</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_proto_xy_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">)</span> <span class="k">for</span> <span class="n">curve</span> <span class="ow">in</span> <span class="n">xy_set</span><span class="o">.</span><span class="n">xy_curves</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">(</span><span class="n">valid_from_time</span><span class="o">=</span><span class="n">valid_from_time</span><span class="p">,</span> <span class="n">xy_curves</span><span class="o">=</span><span class="n">xy_curves</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">(</span>
+                <span class="n">valid_from_time</span><span class="o">=</span><span class="n">valid_from_time</span><span class="p">,</span> <span class="n">xy_curves</span><span class="o">=</span><span class="n">xy_curves</span>
+            <span class="p">)</span>
 
         <span class="n">xy_sets</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_proto_xy_set</span><span class="p">(</span><span class="n">xy_set</span><span class="p">)</span> <span class="k">for</span> <span class="n">xy_set</span> <span class="ow">in</span> <span class="n">new_xy_sets</span><span class="p">]</span>
 
@@ -1212,9 +1216,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `GetObjectRequest`&quot;&quot;&quot;</span>
 
         <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
             <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
+            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
         <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetObjectRequest</span><span class="p">(</span>
@@ -1235,9 +1239,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `SearchObjectsRequest`&quot;&quot;&quot;</span>
 
         <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
             <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
+            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
         <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchObjectsRequest</span><span class="p">(</span>
@@ -1314,9 +1318,9 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">:</span>
         <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
             <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
+            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
         <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">(</span>
@@ -1334,9 +1338,9 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchAttributesRequest</span><span class="p">:</span>
         <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
+            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
             <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
+            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
         <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchAttributesRequest</span><span class="p">(</span>
@@ -1428,8 +1432,8 @@
 
         <span class="k">def</span> <span class="nf">to_proto_link_relation_version</span><span class="p">(</span>
             <span class="n">version</span><span class="p">:</span> <span class="n">LinkRelationVersion</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">LinkRelationVersion</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LinkRelationVersion</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LinkRelationVersion</span><span class="p">(</span>
                 <span class="n">target_object_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">),</span>
                 <span class="n">valid_from_time</span><span class="o">=</span><span class="p">(</span>
                     <span class="kc">None</span>
@@ -1452,8 +1456,8 @@
 
     <span class="k">def</span> <span class="nf">_to_proto_singular_attribute_value</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">SIMPLE_TYPE</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">:</span>
-        <span class="n">att_value</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">()</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">:</span>
+        <span class="n">att_value</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
             <span class="n">att_value</span><span class="o">.</span><span class="n">int_value</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">:</span>
@@ -1474,7 +1478,8 @@
     <span class="k">def</span> <span class="nf">_to_update_attribute_request_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SIMPLE_TYPE_OR_COLLECTION</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
-        <span class="n">Optional</span><span class="p">[</span><span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">]]</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">],</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">]],</span>
     <span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert value supplied by the user to singular value/collection values</span>
@@ -1578,8 +1583,8 @@
 
         <span class="k">def</span> <span class="nf">to_proto_rating_curve_segment</span><span class="p">(</span>
             <span class="n">segment</span><span class="p">:</span> <span class="n">RatingCurveSegment</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">RatingCurveSegment</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">RatingCurveSegment</span><span class="p">(</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">RatingCurveSegment</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">RatingCurveSegment</span><span class="p">(</span>
                 <span class="n">x_range_until</span><span class="o">=</span><span class="n">segment</span><span class="o">.</span><span class="n">x_range_until</span><span class="p">,</span>
                 <span class="n">factor_a</span><span class="o">=</span><span class="n">segment</span><span class="o">.</span><span class="n">factor_a</span><span class="p">,</span>
                 <span class="n">factor_b</span><span class="o">=</span><span class="n">segment</span><span class="o">.</span><span class="n">factor_b</span><span class="p">,</span>
@@ -1588,13 +1593,13 @@
 
         <span class="k">def</span> <span class="nf">to_proto_rating_curve_version</span><span class="p">(</span>
             <span class="n">version</span><span class="p">:</span> <span class="n">RatingCurveVersion</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">RatingCurveVersion</span><span class="p">:</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">RatingCurveVersion</span><span class="p">:</span>
             <span class="n">proto_segments</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">to_proto_rating_curve_segment</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">version</span><span class="o">.</span><span class="n">x_value_segments</span>
             <span class="p">]</span>
 
-            <span class="n">proto_version</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">RatingCurveVersion</span><span class="p">(</span>
+            <span class="n">proto_version</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">RatingCurveVersion</span><span class="p">(</span>
                 <span class="n">x_range_from</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="n">x_range_from</span><span class="p">,</span> <span class="n">x_value_segments</span><span class="o">=</span><span class="n">proto_segments</span>
             <span class="p">)</span>
 

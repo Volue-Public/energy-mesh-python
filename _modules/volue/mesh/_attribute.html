@@ -188,7 +188,7 @@
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">TimeseriesResource</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">LinkRelationVersion</span><span class="p">,</span> <span class="n">_from_proto_guid</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">core</span><span class="p">,</span> <span class="n">model_definition</span>
 
 <span class="n">SIMPLE_TYPE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">datetime</span><span class="p">]</span>
 <span class="n">SIMPLE_TYPE_OR_COLLECTION</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
@@ -210,7 +210,9 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span> <span class="nf">_get_attribute_value</span><span class="p">(</span><span class="n">proto_attribute_value</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_attribute_value</span><span class="p">(</span>
+    <span class="n">proto_attribute_value</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads attribute value from proto message and coverts to Python type.&quot;&quot;&quot;</span>
 
     <span class="n">proto_value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
@@ -225,7 +227,7 @@
     <span class="k">return</span> <span class="n">proto_value</span>
 
 
-<span class="k">def</span> <span class="nf">_from_proto_attribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_from_proto_attribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Factory for creating attributes from protobuf Mesh Attribute.</span>
 
 <span class="sd">    Args:</span>
@@ -233,20 +235,32 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attribute_value_type</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">value_type</span>
 
-    <span class="k">if</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_TIMESERIES</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">attribute_value_type</span>
+        <span class="o">==</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_TIMESERIES</span>
+    <span class="p">):</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">TimeseriesAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">attribute_value_type</span>
+        <span class="o">==</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION</span>
+    <span class="p">):</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">OwnershipRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_LINK_RELATION</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">attribute_value_type</span>
+        <span class="o">==</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_LINK_RELATION</span>
+    <span class="p">):</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">LinkRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="o">==</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="n">attribute_value_type</span>
+        <span class="o">==</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION</span>
+    <span class="p">):</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">VersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">attribute_value_type</span> <span class="ow">in</span> <span class="p">(</span>
-        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_INT</span><span class="p">,</span>
-        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_DOUBLE</span><span class="p">,</span>
-        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_BOOL</span><span class="p">,</span>
-        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_STRING</span><span class="p">,</span>
-        <span class="n">core_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_UTC_TIME</span><span class="p">,</span>
+        <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_INT</span><span class="p">,</span>
+        <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_DOUBLE</span><span class="p">,</span>
+        <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_BOOL</span><span class="p">,</span>
+        <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_STRING</span><span class="p">,</span>
+        <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">ATTRIBUTE_VALUE_TYPE_UTC_TIME</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">attribute</span> <span class="o">=</span> <span class="n">SimpleAttribute</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -270,7 +284,10 @@
 <div class="viewcode-block" id="AttributeBase.AttributeBaseDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.AttributeBase.AttributeBaseDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">AttributeBaseDefinition</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute definition common for all kinds of attributes.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">proto_definition</span><span class="p">:</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">id</span>
             <span class="p">)</span>  <span class="c1"># ID will always be present here</span>
@@ -286,7 +303,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">maximum_cardinality</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">maximum_cardinality</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">,</span> <span class="n">init_definition</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">,</span>
+        <span class="n">init_definition</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">path</span>
@@ -366,7 +385,10 @@
     <span class="k">class</span> <span class="nc">SimpleAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute definition for simple attributes.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">proto_definition</span><span class="p">:</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="n">definition_type_name</span> <span class="o">=</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span>
                 <span class="n">PROTO_DEFINITION_ONE_OF_FIELD_NAME</span>
@@ -391,7 +413,7 @@
                 <span class="s2">&quot;unit_of_measurement&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">definition_type</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">proto_attribute</span><span class="o">.</span><span class="n">value_type_collection</span><span class="p">:</span>
@@ -450,13 +472,16 @@
 <div class="viewcode-block" id="OwnershipRelationAttribute.OwnershipRelationAttributeDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.OwnershipRelationAttribute.OwnershipRelationAttributeDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">OwnershipRelationAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute definition for ownership relation attribute.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">proto_definition</span><span class="p">:</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">ownership_relation_definition</span><span class="o">.</span><span class="n">target_object_type_name</span>
             <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -510,13 +535,16 @@
 <div class="viewcode-block" id="LinkRelationAttribute.LinkRelationAttributeDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">LinkRelationAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute definition for link relation attribute.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">proto_definition</span><span class="p">:</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">target_object_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">link_relation_definition</span><span class="o">.</span><span class="n">target_object_type_name</span>
             <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -574,7 +602,7 @@
 
         <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span>
@@ -638,7 +666,10 @@
 <div class="viewcode-block" id="TimeseriesAttribute.TimeseriesAttributeDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.TimeseriesAttribute.TimeseriesAttributeDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">TimeseriesAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute definition for time series attribute.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_definition</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">proto_definition</span><span class="p">:</span> <span class="n">model_definition</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeDefinition</span><span class="p">,</span>
+        <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_definition</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">template_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">template_expression</span>
@@ -647,7 +678,7 @@
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">unit_of_measurement</span>
             <span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">proto_attribute</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
