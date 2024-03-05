@@ -13,8 +13,8 @@ import pyarrow as pa
 from google.protobuf import field_mask_pb2, timestamp_pb2
 
 from volue.mesh import Timeseries
+from volue.mesh.proto import type
 from volue.mesh.proto.core.v1alpha import core_pb2
-from volue.mesh.proto.type import resources_pb2
 
 
 @dataclass
@@ -289,7 +289,7 @@ class LinkRelationVersion:
         return (getattr(self, field.name) for field in fields(self))
 
 
-def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[resources_pb2.Guid]:
+def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[type.resources_pb2.Guid]:
     """Converts from Python UUID format to Microsoft's GUID format.
 
     Args:
@@ -297,10 +297,10 @@ def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[resources_pb2.Guid]:
     """
     if uuid is None:
         return None
-    return resources_pb2.Guid(bytes_le=uuid.bytes_le)
+    return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
 
 
-def _from_proto_guid(guid: Optional[resources_pb2.Guid]) -> Optional[uuid.UUID]:
+def _from_proto_guid(guid: Optional[type.resources_pb2.Guid]) -> Optional[uuid.UUID]:
     """Converts from Microsoft's GUID format to UUID format.
 
     Args:
@@ -311,26 +311,26 @@ def _from_proto_guid(guid: Optional[resources_pb2.Guid]) -> Optional[uuid.UUID]:
     return uuid.UUID(bytes_le=guid.bytes_le)
 
 
-def _to_proto_curve_type(curve: Timeseries.Curve) -> resources_pb2.Curve:
+def _to_proto_curve_type(curve: Timeseries.Curve) -> type.resources_pb2.Curve:
     """
     Converts from Timeseries.Curve type to protobuf curve type.
 
     Args:
         curve: The curve to convert.
     """
-    proto_curve = resources_pb2.Curve()
-    proto_curve.type = resources_pb2.Curve.UNKNOWN
+    proto_curve = type.resources_pb2.Curve()
+    proto_curve.type = type.resources_pb2.Curve.UNKNOWN
     if curve == Timeseries.Curve.PIECEWISELINEAR:
-        proto_curve.type = resources_pb2.Curve.PIECEWISELINEAR
+        proto_curve.type = type.resources_pb2.Curve.PIECEWISELINEAR
     elif curve == Timeseries.Curve.STAIRCASE:
-        proto_curve.type = resources_pb2.Curve.STAIRCASE
+        proto_curve.type = type.resources_pb2.Curve.STAIRCASE
     elif curve == Timeseries.Curve.STAIRCASESTARTOFSTEP:
-        proto_curve.type = resources_pb2.Curve.STAIRCASESTARTOFSTEP
+        proto_curve.type = type.resources_pb2.Curve.STAIRCASESTARTOFSTEP
 
     return proto_curve
 
 
-def _from_proto_curve_type(proto_curve: resources_pb2.Curve) -> Timeseries.Curve:
+def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.Curve:
     """
     Converts from protobuf curve type to Timeseries.Curve type.
 
@@ -339,18 +339,18 @@ def _from_proto_curve_type(proto_curve: resources_pb2.Curve) -> Timeseries.Curve
     """
     curve = Timeseries.Curve.UNKNOWN
 
-    if proto_curve.type == resources_pb2.Curve.PIECEWISELINEAR:
+    if proto_curve.type == type.resources_pb2.Curve.PIECEWISELINEAR:
         curve = Timeseries.Curve.PIECEWISELINEAR
-    elif proto_curve.type == resources_pb2.Curve.STAIRCASE:
+    elif proto_curve.type == type.resources_pb2.Curve.STAIRCASE:
         curve = Timeseries.Curve.STAIRCASE
-    elif proto_curve.type == resources_pb2.Curve.STAIRCASESTARTOFSTEP:
+    elif proto_curve.type == type.resources_pb2.Curve.STAIRCASESTARTOFSTEP:
         curve = Timeseries.Curve.STAIRCASESTARTOFSTEP
 
     return curve
 
 
 def _from_proto_resolution(
-    proto_resolution: resources_pb2.Resolution,
+    proto_resolution: type.resources_pb2.Resolution,
 ) -> Timeseries.Resolution:
     """
     Converts from protobuf resolution type to Timeseries.Resolution type.
@@ -360,19 +360,19 @@ def _from_proto_resolution(
     """
     resolution = Timeseries.Resolution.UNSPECIFIED
 
-    if proto_resolution.type == resources_pb2.Resolution.BREAKPOINT:
+    if proto_resolution.type == type.resources_pb2.Resolution.BREAKPOINT:
         resolution = Timeseries.Resolution.BREAKPOINT
-    elif proto_resolution.type == resources_pb2.Resolution.MIN15:
+    elif proto_resolution.type == type.resources_pb2.Resolution.MIN15:
         resolution = Timeseries.Resolution.MIN15
-    elif proto_resolution.type == resources_pb2.Resolution.HOUR:
+    elif proto_resolution.type == type.resources_pb2.Resolution.HOUR:
         resolution = Timeseries.Resolution.HOUR
-    elif proto_resolution.type == resources_pb2.Resolution.DAY:
+    elif proto_resolution.type == type.resources_pb2.Resolution.DAY:
         resolution = Timeseries.Resolution.DAY
-    elif proto_resolution.type == resources_pb2.Resolution.WEEK:
+    elif proto_resolution.type == type.resources_pb2.Resolution.WEEK:
         resolution = Timeseries.Resolution.WEEK
-    elif proto_resolution.type == resources_pb2.Resolution.MONTH:
+    elif proto_resolution.type == type.resources_pb2.Resolution.MONTH:
         resolution = Timeseries.Resolution.MONTH
-    elif proto_resolution.type == resources_pb2.Resolution.YEAR:
+    elif proto_resolution.type == type.resources_pb2.Resolution.YEAR:
         resolution = Timeseries.Resolution.YEAR
 
     return resolution
@@ -380,7 +380,7 @@ def _from_proto_resolution(
 
 def _to_proto_utcinterval(
     start_time: datetime.datetime, end_time: datetime.datetime
-) -> resources_pb2.UtcInterval:
+) -> type.resources_pb2.UtcInterval:
     """
     Converts to protobuf UtcInterval.
 
@@ -395,7 +395,7 @@ def _to_proto_utcinterval(
     start.FromDatetime(start_time)
     end = timestamp_pb2.Timestamp()
     end.FromDatetime(end_time)
-    interval = resources_pb2.UtcInterval(start_time=start, end_time=end)
+    interval = type.resources_pb2.UtcInterval(start_time=start, end_time=end)
     return interval
 
 
@@ -428,8 +428,10 @@ def _to_proto_timeseries(timeseries: Timeseries) -> core_pb2.Timeseries:
     return proto_timeseries
 
 
-def _to_proto_mesh_id_from_timeseries(timeseries: Timeseries) -> core_pb2.MeshId:
-    proto_mesh_id = core_pb2.MeshId()
+def _to_proto_mesh_id_from_timeseries(
+    timeseries: Timeseries,
+) -> type.resources_pb2.MeshId:
+    proto_mesh_id = type.resources_pb2.MeshId()
 
     if timeseries.uuid is not None:
         proto_mesh_id.id.CopyFrom(_to_proto_guid(timeseries.uuid))

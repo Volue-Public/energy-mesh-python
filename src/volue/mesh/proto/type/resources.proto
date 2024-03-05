@@ -10,6 +10,7 @@ message Guid {
 }
 
 // Time interval for specifying a section of a timeseries.
+// It is a left-closed, right-open interval, i.e.: [start_time, end_time).
 message UtcInterval {
   google.protobuf.Timestamp start_time = 1;
   google.protobuf.Timestamp end_time = 2;
@@ -26,6 +27,7 @@ message Resolution {
     WEEK                   = 5;
     MONTH                  = 6;
     YEAR                   = 7;
+    MIN30                  = 8;
   }
   ResolutionType type = 1;
 }
@@ -39,4 +41,14 @@ message Curve {
     STAIRCASE            = 3;
   }
   CurveType type = 1;
+}
+
+// Every field uniquely identifies a Mesh Object, Attribute or other types.
+// For request messages it is enough to provide just one of the fields:
+// ID, path or time series key.
+// Note: time series key is applicable only for resource time series: physical or virtual.
+message MeshId {
+  optional Guid id = 1;
+  optional string path = 2;
+  optional int64 timeseries_key = 3;
 }
