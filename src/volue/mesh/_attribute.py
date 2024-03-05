@@ -14,7 +14,7 @@ from google.protobuf import timestamp_pb2
 
 from volue.mesh import TimeseriesResource
 from volue.mesh._common import LinkRelationVersion, _from_proto_guid
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto import core, model_definition
 
 SIMPLE_TYPE = Union[int, float, bool, str, datetime]
 SIMPLE_TYPE_OR_COLLECTION = Union[
@@ -36,7 +36,9 @@ def _get_field_value(field_name: str, field_names: set[str], proto_message: Any)
         return None
 
 
-def _get_attribute_value(proto_attribute_value: core_pb2.AttributeValue):
+def _get_attribute_value(
+    proto_attribute_value: core.v1alpha.resources_pb2.AttributeValue,
+):
     """Reads attribute value from proto message and coverts to Python type."""
 
     proto_value = getattr(
@@ -51,7 +53,7 @@ def _get_attribute_value(proto_attribute_value: core_pb2.AttributeValue):
     return proto_value
 
 
-def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
+def _from_proto_attribute(proto_attribute: core.v1alpha.resources_pb2.Attribute):
     """Factory for creating attributes from protobuf Mesh Attribute.
 
     Args:
@@ -59,20 +61,32 @@ def _from_proto_attribute(proto_attribute: core_pb2.Attribute):
     """
     attribute_value_type = proto_attribute.value_type
 
-    if attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_TIMESERIES:
+    if (
+        attribute_value_type
+        == model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_TIMESERIES
+    ):
         attribute = TimeseriesAttribute(proto_attribute)
-    elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION:
+    elif (
+        attribute_value_type
+        == model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION
+    ):
         attribute = OwnershipRelationAttribute(proto_attribute)
-    elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_LINK_RELATION:
+    elif (
+        attribute_value_type
+        == model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_LINK_RELATION
+    ):
         attribute = LinkRelationAttribute(proto_attribute)
-    elif attribute_value_type == core_pb2.ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION:
+    elif (
+        attribute_value_type
+        == model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION
+    ):
         attribute = VersionedLinkRelationAttribute(proto_attribute)
     elif attribute_value_type in (
-        core_pb2.ATTRIBUTE_VALUE_TYPE_INT,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_DOUBLE,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_BOOL,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_STRING,
-        core_pb2.ATTRIBUTE_VALUE_TYPE_UTC_TIME,
+        model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_INT,
+        model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_DOUBLE,
+        model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_BOOL,
+        model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_STRING,
+        model_definition.v1alpha.resources_pb2.ATTRIBUTE_VALUE_TYPE_UTC_TIME,
     ):
         attribute = SimpleAttribute(proto_attribute)
     else:
@@ -96,7 +110,10 @@ class AttributeBase:
     class AttributeBaseDefinition:
         """Attribute definition common for all kinds of attributes."""
 
-        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+        def __init__(
+            self,
+            proto_definition: model_definition.v1alpha.resources_pb2.AttributeDefinition,
+        ):
             self.id: uuid.UUID = _from_proto_guid(
                 proto_definition.id
             )  # ID will always be present here
@@ -112,7 +129,9 @@ class AttributeBase:
             self.maximum_cardinality: int = proto_definition.maximum_cardinality
 
     def __init__(
-        self, proto_attribute: core_pb2.Attribute, init_definition: bool = False
+        self,
+        proto_attribute: core.v1alpha.resources_pb2.Attribute,
+        init_definition: bool = False,
     ):
         self.id: uuid.UUID = _from_proto_guid(proto_attribute.id)
         self.path: str = proto_attribute.path
@@ -192,7 +211,10 @@ class SimpleAttribute(AttributeBase):
     class SimpleAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for simple attributes."""
 
-        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+        def __init__(
+            self,
+            proto_definition: model_definition.v1alpha.resources_pb2.AttributeDefinition,
+        ):
             super().__init__(proto_definition)
             definition_type_name = proto_definition.WhichOneof(
                 PROTO_DEFINITION_ONE_OF_FIELD_NAME
@@ -217,7 +239,7 @@ class SimpleAttribute(AttributeBase):
                 "unit_of_measurement", field_names, definition_type
             )
 
-    def __init__(self, proto_attribute: core_pb2.Attribute):
+    def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)
 
         if proto_attribute.value_type_collection:
@@ -276,13 +298,16 @@ class OwnershipRelationAttribute(AttributeBase):
     class OwnershipRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for ownership relation attribute."""
 
-        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+        def __init__(
+            self,
+            proto_definition: model_definition.v1alpha.resources_pb2.AttributeDefinition,
+        ):
             super().__init__(proto_definition)
             self.target_object_type_name: str = (
                 proto_definition.ownership_relation_definition.target_object_type_name
             )
 
-    def __init__(self, proto_attribute: core_pb2.Attribute):
+    def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)
 
         self.target_object_ids: List[uuid.UUID] = []
@@ -336,13 +361,16 @@ class LinkRelationAttribute(AttributeBase):
     class LinkRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for link relation attribute."""
 
-        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+        def __init__(
+            self,
+            proto_definition: model_definition.v1alpha.resources_pb2.AttributeDefinition,
+        ):
             super().__init__(proto_definition)
             self.target_object_type_name: str = (
                 proto_definition.link_relation_definition.target_object_type_name
             )
 
-    def __init__(self, proto_attribute: core_pb2.Attribute):
+    def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)
 
         self.target_object_ids: List[uuid.UUID] = []
@@ -400,7 +428,7 @@ class VersionedLinkRelationAttribute(AttributeBase):
 
         versions: List[LinkRelationVersion]
 
-    def __init__(self, proto_attribute: core_pb2.Attribute):
+    def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)
 
         self.entries: List[
@@ -464,7 +492,10 @@ class TimeseriesAttribute(AttributeBase):
     class TimeseriesAttributeDefinition(AttributeBase.AttributeBaseDefinition):
         """Attribute definition for time series attribute."""
 
-        def __init__(self, proto_definition: core_pb2.AttributeDefinition):
+        def __init__(
+            self,
+            proto_definition: model_definition.v1alpha.resources_pb2.AttributeDefinition,
+        ):
             super().__init__(proto_definition)
             self.template_expression: str = (
                 proto_definition.timeseries_definition.template_expression
@@ -473,7 +504,7 @@ class TimeseriesAttribute(AttributeBase):
                 proto_definition.timeseries_definition.unit_of_measurement
             )
 
-    def __init__(self, proto_attribute: core_pb2.Attribute):
+    def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)
 
         if len(proto_attribute.values) > 1:

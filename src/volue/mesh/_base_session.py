@@ -11,6 +11,9 @@ from typing import List, Optional, Tuple, Union
 import dateutil
 from google import protobuf
 
+from volue.mesh.proto import core
+from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
+
 from ._attribute import (
     SIMPLE_TYPE,
     SIMPLE_TYPE_OR_COLLECTION,
@@ -43,7 +46,6 @@ from .calc.forecast import ForecastFunctions
 from .calc.history import HistoryFunctions
 from .calc.statistical import StatisticalFunctions
 from .calc.transform import TransformFunctions
-from .proto.core.v1alpha import core_pb2, core_pb2_grpc
 
 EXTEND_SESSION_LIFETIME_INTERVAL_IN_SECS = 150
 
@@ -917,7 +919,7 @@ class Session(abc.ABC):
 
         response = yield request
 
-        def get_valid_from_time(proto: core_pb2.XySet):
+        def get_valid_from_time(proto: core.v1alpha.resources_pb2.XySet):
             if proto.HasField("valid_from_time"):
                 return proto.valid_from_time.ToDatetime(dateutil.tz.UTC)
             else:
@@ -954,21 +956,23 @@ class Session(abc.ABC):
         else:
             interval = _to_proto_utcinterval(start_time, end_time)
 
-        def to_proto_xy_curve(curve: XyCurve) -> core_pb2.XyCurve:
-            return core_pb2.XyCurve(
+        def to_proto_xy_curve(curve: XyCurve) -> core.v1alpha.resources_pb2.XyCurve:
+            return core.v1alpha.resources_pb2.XyCurve(
                 reference_value=curve.z,
                 x_values=[x for (x, _) in curve.xy],
                 y_values=[y for (_, y) in curve.xy],
             )
 
-        def to_proto_xy_set(xy_set: XySet) -> core_pb2.XySet:
+        def to_proto_xy_set(xy_set: XySet) -> core.v1alpha.resources_pb2.XySet:
             valid_from_time = (
                 None
                 if xy_set.valid_from_time is None
                 else _datetime_to_timestamp_pb2(xy_set.valid_from_time)
             )
             xy_curves = [to_proto_xy_curve(curve) for curve in xy_set.xy_curves]
-            return core_pb2.XySet(valid_from_time=valid_from_time, xy_curves=xy_curves)
+            return core.v1alpha.resources_pb2.XySet(
+                valid_from_time=valid_from_time, xy_curves=xy_curves
+            )
 
         xy_sets = [to_proto_xy_set(xy_set) for xy_set in new_xy_sets]
 
@@ -1038,9 +1042,9 @@ class Session(abc.ABC):
         """Create a gRPC `GetObjectRequest`"""
 
         attribute_view = (
-            core_pb2.AttributeView.FULL
+            core.v1alpha.resources_pb2.AttributeView.FULL
             if full_attribute_info
-            else core_pb2.AttributeView.BASIC
+            else core.v1alpha.resources_pb2.AttributeView.BASIC
         )
 
         request = core_pb2.GetObjectRequest(
@@ -1061,9 +1065,9 @@ class Session(abc.ABC):
         """Create a gRPC `SearchObjectsRequest`"""
 
         attribute_view = (
-            core_pb2.AttributeView.FULL
+            core.v1alpha.resources_pb2.AttributeView.FULL
             if full_attribute_info
-            else core_pb2.AttributeView.BASIC
+            else core.v1alpha.resources_pb2.AttributeView.BASIC
         )
 
         request = core_pb2.SearchObjectsRequest(
@@ -1140,9 +1144,9 @@ class Session(abc.ABC):
         self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool
     ) -> core_pb2.GetAttributeRequest:
         attribute_view = (
-            core_pb2.AttributeView.FULL
+            core.v1alpha.resources_pb2.AttributeView.FULL
             if full_attribute_info
-            else core_pb2.AttributeView.BASIC
+            else core.v1alpha.resources_pb2.AttributeView.BASIC
         )
 
         request = core_pb2.GetAttributeRequest(
@@ -1160,9 +1164,9 @@ class Session(abc.ABC):
         full_attribute_info: bool,
     ) -> core_pb2.SearchAttributesRequest:
         attribute_view = (
-            core_pb2.AttributeView.FULL
+            core.v1alpha.resources_pb2.AttributeView.FULL
             if full_attribute_info
-            else core_pb2.AttributeView.BASIC
+            else core.v1alpha.resources_pb2.AttributeView.BASIC
         )
 
         request = core_pb2.SearchAttributesRequest(
@@ -1254,8 +1258,8 @@ class Session(abc.ABC):
 
         def to_proto_link_relation_version(
             version: LinkRelationVersion,
-        ) -> core_pb2.LinkRelationVersion:
-            return core_pb2.LinkRelationVersion(
+        ) -> core.v1alpha.resources_pb2.LinkRelationVersion:
+            return core.v1alpha.resources_pb2.LinkRelationVersion(
                 target_object_id=_to_proto_guid(version.target_object_id),
                 valid_from_time=(
                     None
@@ -1278,8 +1282,8 @@ class Session(abc.ABC):
 
     def _to_proto_singular_attribute_value(
         self, v: SIMPLE_TYPE
-    ) -> core_pb2.AttributeValue:
-        att_value = core_pb2.AttributeValue()
+    ) -> core.v1alpha.resources_pb2.AttributeValue:
+        att_value = core.v1alpha.resources_pb2.AttributeValue()
         if type(v) is int:
             att_value.int_value = v
         elif type(v) is float:
@@ -1300,7 +1304,8 @@ class Session(abc.ABC):
     def _to_update_attribute_request_values(
         self, value: SIMPLE_TYPE_OR_COLLECTION
     ) -> Tuple[
-        Optional[core_pb2.AttributeValue], Optional[List[core_pb2.AttributeValue]]
+        Optional[core.v1alpha.resources_pb2.AttributeValue],
+        Optional[List[core.v1alpha.resources_pb2.AttributeValue]],
     ]:
         """
         Convert value supplied by the user to singular value/collection values
@@ -1404,8 +1409,8 @@ class Session(abc.ABC):
 
         def to_proto_rating_curve_segment(
             segment: RatingCurveSegment,
-        ) -> core_pb2.RatingCurveSegment:
-            return core_pb2.RatingCurveSegment(
+        ) -> core.v1alpha.resources_pb2.RatingCurveSegment:
+            return core.v1alpha.resources_pb2.RatingCurveSegment(
                 x_range_until=segment.x_range_until,
                 factor_a=segment.factor_a,
                 factor_b=segment.factor_b,
@@ -1414,13 +1419,13 @@ class Session(abc.ABC):
 
         def to_proto_rating_curve_version(
             version: RatingCurveVersion,
-        ) -> core_pb2.RatingCurveVersion:
+        ) -> core.v1alpha.resources_pb2.RatingCurveVersion:
             proto_segments = [
                 to_proto_rating_curve_segment(segment)
                 for segment in version.x_value_segments
             ]
 
-            proto_version = core_pb2.RatingCurveVersion(
+            proto_version = core.v1alpha.resources_pb2.RatingCurveVersion(
                 x_range_from=version.x_range_from, x_value_segments=proto_segments
             )
 
