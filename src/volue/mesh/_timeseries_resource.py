@@ -9,7 +9,7 @@ from typing import Optional
 
 from volue.mesh import Timeseries
 from volue.mesh._common import _from_proto_curve_type, _from_proto_resolution
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto import core
 
 
 @dataclass
@@ -27,7 +27,7 @@ class TimeseriesResource:
 
     @classmethod
     def _from_proto_timeseries_resource(
-        cls, proto_timeseries_resource: core_pb2.TimeseriesResource
+        cls, proto_timeseries_resource: core.v1alpha.resources_pb2.TimeseriesResource
     ) -> TimeseriesResource:
         """Create a `TimeseriesResource` from protobuf TimeseriesResource.
 

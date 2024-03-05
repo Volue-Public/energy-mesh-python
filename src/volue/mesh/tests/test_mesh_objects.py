@@ -25,7 +25,7 @@ OBJECT_ID = uuid.UUID("0000000A-0001-0000-0000-000000000000")
 
 def verify_object_attributes(object: Object, full_info: bool = False):
     """Verifies all attributes of SomePowerPlant1 object."""
-    assert len(object.attributes) == 31
+    assert len(object.attributes) == 32
 
     for attribute in object.attributes.values():
         assert isinstance(attribute, AttributeBase)
