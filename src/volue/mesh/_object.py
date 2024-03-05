@@ -8,7 +8,7 @@ from typing import Dict, Optional
 
 from volue.mesh._attribute import AttributeBase, _from_proto_attribute
 from volue.mesh._common import _from_proto_guid
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto import core
 
 
 @dataclass
@@ -29,7 +29,7 @@ class Object:
     attributes: Dict[str, AttributeBase] = field(default_factory=dict)
 
     @classmethod
-    def _from_proto_object(cls, proto_object: core_pb2.Object):
+    def _from_proto_object(cls, proto_object: core.v1alpha.resources_pb2.Object):
         """Create an `Object` from protobuf Mesh Object.
 
         Args:
