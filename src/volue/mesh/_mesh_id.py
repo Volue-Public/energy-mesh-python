@@ -7,12 +7,12 @@ from typing import Union
 
 from volue.mesh import AttributeBase, Object
 from volue.mesh._common import _to_proto_guid
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto import type
 
 
 def _to_proto_attribute_mesh_id(
     target: Union[uuid.UUID, str, AttributeBase]
-) -> core_pb2.MeshId:
+) -> type.resources_pb2.MeshId:
     """
     Accepts attribute identifiers (path and ID) and attribute instance as
     input.
@@ -25,7 +25,9 @@ def _to_proto_attribute_mesh_id(
     return _to_proto_mesh_id(target)
 
 
-def _to_proto_object_mesh_id(target: Union[uuid.UUID, str, Object]) -> core_pb2.MeshId:
+def _to_proto_object_mesh_id(
+    target: Union[uuid.UUID, str, Object]
+) -> type.resources_pb2.MeshId:
     """
     Accepts object identifiers (path and ID) and object instance as input.
     """
@@ -39,7 +41,7 @@ def _to_proto_object_mesh_id(target: Union[uuid.UUID, str, Object]) -> core_pb2.
 
 def _to_proto_read_timeseries_mesh_id(
     target: Union[uuid.UUID, str, int, AttributeBase]
-) -> core_pb2.MeshId:
+) -> type.resources_pb2.MeshId:
     """
     Accepts identifiers for reading time series:
     path, ID, time series key and time series attribute instance as input.
@@ -54,7 +56,7 @@ def _to_proto_read_timeseries_mesh_id(
 
 def _to_proto_calculation_target_mesh_id(
     target: Union[uuid.UUID, str, int, AttributeBase, Object]
-) -> core_pb2.MeshId:
+) -> type.resources_pb2.MeshId:
     """
     Accepts identifiers for calculation target (`relative_to` in gRPC):
     path, ID, time series key and attribute or object instance as input.
@@ -69,9 +71,9 @@ def _to_proto_calculation_target_mesh_id(
 
 def _to_proto_mesh_id(
     target: Union[uuid.UUID, str, int, AttributeBase, Object]
-) -> core_pb2.MeshId:
+) -> type.resources_pb2.MeshId:
     """Accepts path, ID and time series key as input."""
-    proto_mesh_id = core_pb2.MeshId()
+    proto_mesh_id = type.resources_pb2.MeshId()
 
     if isinstance(target, AttributeBase) or isinstance(target, Object):
         proto_mesh_id.id.CopyFrom(_to_proto_guid(target.id))

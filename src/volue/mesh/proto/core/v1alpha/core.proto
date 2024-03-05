@@ -306,7 +306,7 @@ message ReadTimeseriesRequest {
   // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  MeshId timeseries_id = 2;
+  volue.mesh.grpc.type.MeshId timeseries_id = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
 
   // if we request points from a breakpoint series, the actual points
@@ -320,7 +320,7 @@ message ReadTimeseriesStreamRequest{
   // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  repeated MeshId timeseries_id = 2;
+  repeated volue.mesh.grpc.type.MeshId timeseries_id = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
 }
 
@@ -345,7 +345,7 @@ message CalculationRequest {
     volue.mesh.grpc.type.Guid session_id = 1;
     string expression = 2;
     volue.mesh.grpc.type.UtcInterval interval = 3;
-    MeshId relative_to = 4;
+    volue.mesh.grpc.type.MeshId relative_to = 4;
 }
 
 message CalculationResponse {
@@ -370,7 +370,7 @@ message GetObjectRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // ID or path of object to be returned.
-  MeshId object_id = 2;
+  volue.mesh.grpc.type.MeshId object_id = 2;
 
   // Masks that define what attributes for the given object should be returned
   // in the response message.
@@ -386,7 +386,7 @@ message SearchObjectsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Mesh searches always require a start point for the search.
-  MeshId start_object_id = 2;
+  volue.mesh.grpc.type.MeshId start_object_id = 2;
 
   // Query in Mesh query language format.
   string query = 3;
@@ -412,7 +412,7 @@ message CreateObjectRequest {
   // E.g.: for `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
-  MeshId owner_id = 3;
+  volue.mesh.grpc.type.MeshId owner_id = 3;
 }
 
 message UpdateObjectRequest {
@@ -420,7 +420,7 @@ message UpdateObjectRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Identifier of the object to be updated.
-  MeshId object_id = 2;
+  volue.mesh.grpc.type.MeshId object_id = 2;
 
   // Only paths set in the field mask are updated.
   google.protobuf.FieldMask field_mask = 3;
@@ -434,7 +434,7 @@ message UpdateObjectRequest {
   // E.g.: for `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
-  MeshId new_owner_id = 5;
+  volue.mesh.grpc.type.MeshId new_owner_id = 5;
 }
 
 message UpdateObjectResponse {}
@@ -444,7 +444,7 @@ message DeleteObjectRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Object to be deleted.
-  MeshId object_id = 2;
+  volue.mesh.grpc.type.MeshId object_id = 2;
 
   // If set to true then all child objects (owned by the object to be deleted)
   // in the model will also be deleted.
@@ -459,7 +459,7 @@ message GetAttributeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // ID or path of attribute to be returned.
-  MeshId attribute_id = 2;
+  volue.mesh.grpc.type.MeshId attribute_id = 2;
 
   // Defines what attribute information should be included in response.
   AttributeView attribute_view = 3;
@@ -470,7 +470,7 @@ message SearchAttributesRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Mesh searches always require a start point for the search.
-  MeshId start_object_id = 2;
+  volue.mesh.grpc.type.MeshId start_object_id = 2;
 
   // Query in Mesh query language format.
   string query = 3;
@@ -483,7 +483,7 @@ message UpdateSimpleAttributeRequest {
   // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  MeshId attribute_id = 2;
+  volue.mesh.grpc.type.MeshId attribute_id = 2;
 
   // Simple attribute value example:
   //   To update a string attribute value set
@@ -510,7 +510,7 @@ message UpdateTimeseriesAttributeRequest {
   // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  MeshId attribute_id = 2;
+  volue.mesh.grpc.type.MeshId attribute_id = 2;
 
   // An array containing field names to be updated.
   // For example to update a time series attribute local expression and
@@ -539,7 +539,7 @@ message UpdateLinkRelationAttributeRequest {
 
   // One-to-one link relation attribute (`ReferenceAttribute`) or one-to-many
   // link relation attribute (`ReferenceCollectionAttribute`) identifier.
-  MeshId attribute = 2;
+  volue.mesh.grpc.type.MeshId attribute = 2;
 
   // If set to true for a one-to-many link relation (non-versioned) attribute
   // (`ReferenceCollectionAttribute`) this will append `target_object_ids` to
@@ -577,7 +577,7 @@ message UpdateVersionedLinkRelationAttributeRequest {
 
   // Versioned one-to-one link relation attribute (`ReferenceSeriesAttribute`)
   // identifier.
-  MeshId attribute = 3;
+  volue.mesh.grpc.type.MeshId attribute = 3;
 
   // `valid_from_time` of all `versions` must be inside the interval.
   repeated LinkRelationVersion versions = 4;
@@ -627,7 +627,7 @@ message GetRatingCurveVersionsRequest {
   bool versions_only = 3;
 
   // The ID of a rating curve attribute (`RatingCurveAttribute`).
-  MeshId attribute = 4;
+  volue.mesh.grpc.type.MeshId attribute = 4;
 }
 
 message GetRatingCurveVersionsResponse {
@@ -642,7 +642,7 @@ message UpdateRatingCurveVersionsRequest {
   volue.mesh.grpc.type.UtcInterval interval = 2;
 
   // The ID of a rating curve attribute (`RatingCurveAttribute`).
-  MeshId attribute = 3;
+  volue.mesh.grpc.type.MeshId attribute = 3;
 
   // Update rating curve versions for rating curve attribute. The `from` of all
   // versions must be inside the interval. All versions must be sorted by
@@ -653,7 +653,7 @@ message UpdateRatingCurveVersionsRequest {
 message UpdateRatingCurveVersionsResponse {}
 
 message Timeseries {
-  MeshId id = 1;
+  volue.mesh.grpc.type.MeshId id = 1;
 
   // Resolution/spacing for this timeseries.
   volue.mesh.grpc.type.Resolution resolution = 2;
@@ -714,16 +714,6 @@ message VersionInfo {
   string version = 1;
   // Friendly name of the Mesh server, e.g.: Volue Mesh Server
   string name = 2;
-}
-
-// Every field uniquely identifies a Mesh Object, Attribute or other types.
-// For request messages it is enough to provide just one of the fields:
-// ID, path or time series key.
-// Note: time series key is applicable only for resource time series: physical or virtual.
-message MeshId {
-  optional volue.mesh.grpc.type.Guid id = 1;
-  optional string path = 2;
-  optional int64 timeseries_key = 3;
 }
 
 // Defines what attributes need to be returned in response message.
@@ -826,7 +816,10 @@ message Object {
   //   For `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
-  MeshId owner_id = 5;
+  //
+  // Mesh models are also represented as objects. They are top level objects
+  // without owners, so `owner_id` field for models is not set.
+  volue.mesh.grpc.type.MeshId owner_id = 5;
   repeated Attribute attributes = 6;
 }
 
@@ -850,7 +843,7 @@ message Attribute {
   // If the `value_type` is a collection then this flag is set to `True`.
   bool value_type_collection = 7;
 
-  MeshId owner_id = 8;
+  volue.mesh.grpc.type.MeshId owner_id = 8;
 }
 
 enum AttributeValueType {
@@ -1066,7 +1059,7 @@ message GetXySetsRequest {
 
   // The ID of a versioned XY set attribute (`XYZSeriesAttribute`) or a non-versioned
   // XY set attribute (`XYSetAttribute`).
-  MeshId attribute = 4;
+  volue.mesh.grpc.type.MeshId attribute = 4;
 }
 
 message GetXySetsResponse {
@@ -1084,7 +1077,7 @@ message UpdateXySetsRequest {
 
   // The ID of a versioned XY set attribute (`XYZSeriesAttribute`) or a non-versioned
   // XY set attribute (`XYSetAttribute`).
-  MeshId attribute = 3;
+  volue.mesh.grpc.type.MeshId attribute = 3;
 
   // If updating a versioned XY set attribute (`XYZSeriesAttribute`) the `XySet`s
   // in `xy_sets` will be inserted in the XY set series. The `valid_from_time` of all
@@ -1172,15 +1165,20 @@ message CopyTimeseriesBetweenObjectsRequest {
   volue.mesh.grpc.type.UtcInterval interval = 2;
   
   // Identify the root object of the Source hierarchy (path or guid)
-  MeshId source = 3;
+  volue.mesh.grpc.type.MeshId source = 3;
+  // If scenario name is specified, the source series must be bound to a scenario object
+  // To categorize an object as a scenario object follow a convention where
+  // a) The object itself has name == scenario_name
+  // b) The owner object (OwnerElement) has a object type name ending with Scenario
+  string scenario_name = 4;
   // Identify the root object of the Target hierarchy (path or guid)
   // In case attribute mapping is enabled the source and target may refer to same object
-  MeshId target = 4;
+  volue.mesh.grpc.type.MeshId target = 5;
 
   // Optional: Defines which part of source hierarchy to copy and potentially also where to copy.
   // In case this mapping is not specified the operation copies everything that matches general criteria.
   // General criteria: source series can provide values (ts binding or expression) and target series can be persisted.
-  repeated TypeAttributeMapping mapping = 5;
+  repeated TypeAttributeMapping mapping = 6;
 }
 
 message CopyTimeseriesBetweenObjectsResponse {
@@ -1205,7 +1203,7 @@ message ListTextResourcesRequest {
     // The catalog in which we are looking for Text resources (files).
     // In case the option `include_subcatalogs` is true, this catalog is treated as the root 
     // of a hierarchical search.
-    MeshId catalog = 2;
+    volue.mesh.grpc.type.MeshId catalog = 2;
     
     // Empty, simple "contains" pattern or a regular expression.
     // In case it is empty, all Text resources are added to reply list.
@@ -1220,7 +1218,7 @@ message ListTextResourcesRequest {
 
 message ListTextResourcesResponse {
     // Resources that match request
-    repeated MeshId resources = 1;
+    repeated volue.mesh.grpc.type.MeshId resources = 1;
 }
 
 message GetTextResourceRequest {
@@ -1230,7 +1228,7 @@ message GetTextResourceRequest {
     // If MeshId contains a GUID, the system will resolve that GUID and do not try the MeshId path definition.
     // A text path has the following format:
     // Resource/Catalog1/CatalogX/SomeTextResourceName
-    MeshId resource = 2;
+    volue.mesh.grpc.type.MeshId resource = 2;
 }
 
 message GetTextResourceResponse {
@@ -1248,7 +1246,7 @@ message WriteTextResourceRequest {
     // This may create new catalogs, all or from a certain level
     // The first part must be Resource, the last part is taken to be the Text resource name
     // Resource/SomeTextResourceName is not accepted
-    MeshId resource = 2;
+    volue.mesh.grpc.type.MeshId resource = 2;
     
     // If set to false the target must be an existing text resource
     bool allow_create = 3;
@@ -1261,7 +1259,7 @@ message WriteTextResourceResponse {}
 
 message SimulationRequest {
     volue.mesh.grpc.type.Guid session_id = 1;
-    MeshId simulation = 2;
+    volue.mesh.grpc.type.MeshId simulation = 2;
     volue.mesh.grpc.type.UtcInterval interval = 3;
     volue.mesh.grpc.type.Resolution resolution = 4;
     int32 scenario = 5;
