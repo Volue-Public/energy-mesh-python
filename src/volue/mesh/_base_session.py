@@ -13,6 +13,7 @@ from google import protobuf
 
 from volue.mesh.proto import core
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
 
 from ._attribute import (
     SIMPLE_TYPE,
@@ -102,6 +103,7 @@ class Session(abc.ABC):
     def __init__(
         self,
         mesh_service: core_pb2_grpc.MeshServiceStub,
+        hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
         session_id: Optional[uuid.UUID] = None,
     ):
         """
@@ -114,6 +116,7 @@ class Session(abc.ABC):
         """
         self.session_id: Optional[uuid.UUID] = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
+        self.hydsim_service: hydsim_pb2_grpc.HydsimServiceStub = hydsim_service
 
         self.stop_worker_thread: threading.Event = threading.Event()
         self.worker_thread: Optional[Session.WorkerThread] = None
@@ -1458,14 +1461,14 @@ class Session(abc.ABC):
         resolution: Timeseries.Resolution,
         scenario: int,
         return_datasets: bool,
-    ) -> core_pb2.SimulationRequest:
+    ) -> hydsim_pb2.SimulationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
         case_group, case_name = case.split("/", maxsplit=1)
         simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
 
-        return core_pb2.SimulationRequest(
+        return hydsim_pb2.SimulationRequest(
             session_id=_to_proto_guid(self.session_id),
             simulation=_to_proto_object_mesh_id(simulation),
             interval=_to_proto_utcinterval(start_time, end_time),
@@ -1475,14 +1478,14 @@ class Session(abc.ABC):
 
     def _prepare_run_inflow_calculation_request(
         self, targets: List[Object], start_time: datetime, end_time: datetime
-    ) -> core_pb2.SimulationRequest:
+    ) -> hydsim_pb2.SimulationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
         if len(targets) != 1:
             raise ValueError(f"expected one water course, found {len(targets)}")
 
-        return core_pb2.SimulationRequest(
+        return hydsim_pb2.SimulationRequest(
             session_id=_to_proto_guid(self.session_id),
             simulation=_to_proto_object_mesh_id(targets[0].id),
             interval=_to_proto_utcinterval(start_time, end_time),
