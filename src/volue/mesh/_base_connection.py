@@ -4,7 +4,7 @@ from typing import Optional, TypeVar
 
 import grpc
 
-from volue.mesh.proto import core
+from volue.mesh.proto import core, hydsim
 
 from . import _authentication
 from ._authentication import Authentication, ExternalAccessTokenPlugin
@@ -90,6 +90,9 @@ class Connection(abc.ABC):
 
         if channel is not None:
             self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
+            self.hydsim_service = hydsim.v1alpha.hydsim_pb2_grpc.HydsimServiceStub(
+                channel
+            )
             return
 
         target = f"{host}:{port}"
@@ -132,6 +135,7 @@ class Connection(abc.ABC):
                 )
 
         self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
+        self.hydsim_service = hydsim.v1alpha.hydsim_pb2_grpc.HydsimServiceStub(channel)
 
     @classmethod
     def insecure(cls: C, target: str) -> C:

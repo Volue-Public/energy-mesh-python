@@ -38,6 +38,7 @@ from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
 from volue.mesh.calc.transform import TransformFunctions
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 
 from . import _base_connection
 from . import _base_session
@@ -53,9 +54,14 @@ class Connection(_base_connection.Connection):
         def __init__(
             self,
             mesh_service: core_pb2_grpc.MeshServiceStub,
+            hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
             session_id: Optional[uuid.UUID] = None,
         ):
-            super().__init__(session_id=session_id, mesh_service=mesh_service)
+            super().__init__(
+                session_id=session_id,
+                mesh_service=mesh_service,
+                hydsim_service=hydsim_service,
+            )
 
         def __enter__(self):
             """
@@ -390,7 +396,7 @@ class Connection(_base_connection.Connection):
             request = self._prepare_run_simulation_request(
                 model, case, start_time, end_time, resolution, scenario, return_datasets
             )
-            for response in self.mesh_service.RunHydroSimulation(request):
+            for response in self.hydsim_service.RunHydroSimulation(request):
                 yield None
 
         def run_inflow_calculation(
@@ -408,7 +414,7 @@ class Connection(_base_connection.Connection):
             request = self._prepare_run_inflow_calculation_request(
                 targets, start_time, end_time
             )
-            for response in self.mesh_service.RunInflowCalculation(request):
+            for response in self.hydsim_service.RunInflowCalculation(request):
                 yield None
 
     @staticmethod
@@ -457,4 +463,4 @@ class Connection(_base_connection.Connection):
         return self.connect_to_session(session_id=None)
 
     def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
-        return self.Session(self.mesh_service, session_id)
+        return self.Session(self.mesh_service, self.hydsim_service, session_id)

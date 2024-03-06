@@ -256,10 +256,6 @@ service MeshService {
   rpc ListTextResources(ListTextResourcesRequest) returns (ListTextResourcesResponse) {}
   rpc GetTextResource(GetTextResourceRequest) returns (GetTextResourceResponse) {}
   rpc WriteTextResource(WriteTextResourceRequest) returns (WriteTextResourceResponse) {}
-
-  // Experimental HydSim API, very unstable.
-  rpc RunHydroSimulation(SimulationRequest) returns (stream SimulationResponse) {}
-  rpc RunInflowCalculation(SimulationRequest) returns (stream SimulationResponse) {}
 }
 
 message AuthenticateKerberosResponse {
@@ -926,14 +922,3 @@ message WriteTextResourceRequest {
 }
 
 message WriteTextResourceResponse {}
-
-message SimulationRequest {
-    volue.mesh.grpc.type.Guid session_id = 1;
-    volue.mesh.grpc.type.MeshId simulation = 2;
-    volue.mesh.grpc.type.UtcInterval interval = 3;
-    volue.mesh.grpc.type.Resolution resolution = 4;
-    int32 scenario = 5;
-    bool return_datasets = 6;
-}
-
-message SimulationResponse {}

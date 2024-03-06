@@ -124,7 +124,7 @@ message EnumerationAttributeValue {
 message AttributesMasks {
   // Attribute name uniquely identifies attribute within given object.
   // If set then only attributes set in the field mask are read.
-  // If any other mask: tag or namespace or `return_no_attributes`
+  // If tag or namespace mask, `types` field or `return_no_attributes`
   // flag is also set then an error will be returned.
   // The attribute name provided in the mask must be equal to
   // the actual attribute name in the model.
@@ -137,8 +137,8 @@ message AttributesMasks {
   // at least one tag set in the field mask are read.
   // If multiple tags are provided then all attributes having
   // at least one of them are returned (logical OR).
-  // If name mask or `return_no_attributes` flag is also set
-  // then an error will be returned.
+  // If name mask, `types` field or `return_no_attributes` flag
+  // is also set then an error will be returned.
   // It is allowed to have both: tag mask and namespace mask set.
   // Note: Regular expressions are not supported.
   // See examples below for more details.
@@ -152,18 +152,27 @@ message AttributesMasks {
   // Namespace mask does not accept entries with namespaces
   // concatenated with dots '.'. Each namespace mask entry must
   // be a separate namespace.
-  // If name mask or `return_no_attributes` flag is also set
-  // then an error will be returned.
+  // If name mask, `types` field or `return_no_attributes` flag
+  // is also set then an error will be returned.
   // It is allowed to have both: tag mask and namespace mask set.
   // Note: Regular expressions are not supported.
   // See examples below for more details.
   google.protobuf.FieldMask namespace_mask = 3;
 
   // If set to true then no attributes will be returned.
-  // If any mask: name, tag or namespace is also set
-  // then an error will be returned.
+  // If any mask: name, tag or namespace or `types` field
+  // is also set then an error will be returned.
   // Default value is false (default value for bool in proto3 is false).
   bool return_no_attributes = 4;
+
+  // Each attribute has single AttributeValueType.
+  // If the `types` field is set then only attributes with
+  // matching AttributeValueTypes will be returned.
+  // If any other mask: name, tag or namespace or `return_no_attributes`
+  // flag is also set then an error will be returned.
+  // ATTRIBUTE_VALUE_TYPE_UNSPECIFIED cannot be used for specifying type.
+  // See examples below for more details.
+  repeated volue.mesh.grpc.model_definition.v1alpha.AttributeValueType types = 5;
 
   // Multiple attributes may have the same tag or namespace.
   // If both: tag_mask and namespace_masks are provided then only attributes
@@ -206,6 +215,11 @@ message AttributesMasks {
   //              - A4 (tag "LocationAttributes", namespace "EnergySystem.Hydro")
   //              - A5 (tag "LocationAttributes", namespace "EnergySystem.Wind")
   //              In this case attributes A1 and A2 will be returned.
+  //
+  // Example 5:
+  //    Arg:      `types` is set to ATTRIBUTE_VALUE_TYPE_INT, ATTRIBUTE_VALUE_TYPE_STRING
+  //    Response: All attributes with AttributeValueType equal to ATTRIBUTE_VALUE_TYPE_INT
+  //              or ATTRIBUTE_VALUE_TYPE_STRING will be returned.
   //
   //  Note: If no masks are provided then all attributes will be returned.
 }
