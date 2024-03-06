@@ -366,6 +366,8 @@ def _from_proto_resolution(
         resolution = Timeseries.Resolution.BREAKPOINT
     elif proto_resolution.type == type.resources_pb2.Resolution.MIN15:
         resolution = Timeseries.Resolution.MIN15
+    elif proto_resolution.type == type.resources_pb2.Resolution.MIN30:
+        resolution = Timeseries.Resolution.MIN30
     elif proto_resolution.type == type.resources_pb2.Resolution.HOUR:
         resolution = Timeseries.Resolution.HOUR
     elif proto_resolution.type == type.resources_pb2.Resolution.DAY:
