@@ -14,7 +14,10 @@ from google import protobuf
 from volue.mesh.proto import core, model_definition
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
-from volue.mesh.proto.model_definition.v1alpha import model_definition_pb2_grpc
+from volue.mesh.proto.model_definition.v1alpha import (
+    model_definition_pb2,
+    model_definition_pb2_grpc,
+)
 
 from ._attribute import (
     SIMPLE_TYPE,
@@ -1497,3 +1500,20 @@ class Session(abc.ABC):
             scenario=0,
             return_datasets=False,
         )
+
+    def _get_unit_of_measurement_id_by_name(
+        self,
+        unit_of_measurement: str,
+        list_response: model_definition_pb2.ListUnitsOfMeasurementResponse,
+    ) -> type.resources_pb2.Guid:
+        new_unit_of_measurement_id = None
+
+        for proto_unit in list_response.units_of_measurement:
+            if proto_unit.name == unit_of_measurement:
+                new_unit_of_measurement_id = proto_unit.id
+                break
+
+        if new_unit_of_measurement_id is None:
+            raise ValueError("invalid unit of measurement provided")
+
+        return new_unit_of_measurement_id
