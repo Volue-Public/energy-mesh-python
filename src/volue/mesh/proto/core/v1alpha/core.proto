@@ -680,14 +680,20 @@ message UpdateTimeseriesResourceRequest {
   // An array containing field names to be updated.
   // For example to update a time series resource curve type and
   // unit of measurement:
-  //   field_mask = ['new_curve_type', 'new_unit_of_measurement']
+  //   field_mask = ['new_curve_type', 'new_unit_of_measurement_id']
   //   new_curve_type = CurveType::PIECEWISELINEAR
-  //   new_unit_of_measurement = 'new unit'
+  //   new_unit_of_measurement_id = ID of the unit of measurement.
+  //
+  // All units of measurements can be listed using model definition service
+  // `ListUnitsOfMeasurement` RPC.
   google.protobuf.FieldMask field_mask = 3;
 
   volue.mesh.grpc.type.Curve new_curve_type = 4;
-  // TODO: change type to `volue.mesh.grpc.type.Guid`
-  string new_unit_of_measurement = 5;
+
+  // To clear the unit of measurement leave the `new_unit_of_measurement_id`
+  // field empty (not ID with only zeros), but provide `new_unit_of_measurement_id`
+  // string in the field mask.
+  volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 5;
 }
 
 message UpdateTimeseriesResourceResponse {}

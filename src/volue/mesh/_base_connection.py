@@ -4,7 +4,7 @@ from typing import Optional, TypeVar
 
 import grpc
 
-from volue.mesh.proto import core, hydsim
+from volue.mesh.proto import core, hydsim, model_definition
 
 from . import _authentication
 from ._authentication import Authentication, ExternalAccessTokenPlugin
@@ -90,6 +90,9 @@ class Connection(abc.ABC):
 
         if channel is not None:
             self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
+            self.model_definition_service = model_definition.v1alpha.model_definition_pb2_grpc.ModelDefinitionServiceStub(
+                channel
+            )
             self.hydsim_service = hydsim.v1alpha.hydsim_pb2_grpc.HydsimServiceStub(
                 channel
             )
@@ -135,6 +138,9 @@ class Connection(abc.ABC):
                 )
 
         self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
+        self.model_definition_service = model_definition.v1alpha.model_definition_pb2_grpc.ModelDefinitionServiceStub(
+            channel
+        )
         self.hydsim_service = hydsim.v1alpha.hydsim_pb2_grpc.HydsimServiceStub(channel)
 
     @classmethod

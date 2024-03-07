@@ -11,9 +11,10 @@ from typing import List, Optional, Tuple, Union
 import dateutil
 from google import protobuf
 
-from volue.mesh.proto import core
+from volue.mesh.proto import core, model_definition
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
+from volue.mesh.proto.model_definition.v1alpha import model_definition_pb2_grpc
 
 from ._attribute import (
     SIMPLE_TYPE,
@@ -103,6 +104,7 @@ class Session(abc.ABC):
     def __init__(
         self,
         mesh_service: core_pb2_grpc.MeshServiceStub,
+        model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
         hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
         session_id: Optional[uuid.UUID] = None,
     ):
@@ -116,6 +118,9 @@ class Session(abc.ABC):
         """
         self.session_id: Optional[uuid.UUID] = session_id
         self.mesh_service: core_pb2_grpc.MeshServiceStub = mesh_service
+        self.model_definition_service: (
+            model_definition_pb2_grpc.ModelDefinitionServiceStub
+        ) = model_definition_service
         self.hydsim_service: hydsim_pb2_grpc.HydsimServiceStub = hydsim_service
 
         self.stop_worker_thread: threading.Event = threading.Event()
@@ -1330,7 +1335,7 @@ class Session(abc.ABC):
         self,
         timeseries_key: int,
         new_curve_type: Optional[Timeseries.Curve],
-        new_unit_of_measurement: Optional[str],
+        new_unit_of_measurement_id: Optional[type.resources_pb2.Guid],
     ) -> core_pb2.UpdateTimeseriesResourceRequest:
         request = core_pb2.UpdateTimeseriesResourceRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -1342,9 +1347,9 @@ class Session(abc.ABC):
             fields_to_update.append("new_curve_type")
             request.new_curve_type.CopyFrom(_to_proto_curve_type(new_curve_type))
 
-        if new_unit_of_measurement is not None:
-            fields_to_update.append("new_unit_of_measurement")
-            request.new_unit_of_measurement = new_unit_of_measurement
+        if new_unit_of_measurement_id is not None:
+            fields_to_update.append("new_unit_of_measurement_id")
+            request.new_unit_of_measurement_id.CopyFrom(new_unit_of_measurement_id)
 
         request.field_mask.CopyFrom(
             protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)

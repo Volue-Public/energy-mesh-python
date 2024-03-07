@@ -142,6 +142,7 @@ service ModelDefinitionService {
   rpc DeleteAttributeDefinition(DeleteAttributeDefinitionRequest) returns (DeleteAttributeDefinitionResponse) {}
 
 
+  rpc ListModelDefinitions(ListModelDefinitionsRequest) returns (ListModelDefinitionsResponse) {}
   // Model definition is also a namespace.
   // Search for namespaces or model definitions.
   rpc SearchNamespaces(SearchNamespacesRequest) returns (stream Namespace) {}
@@ -548,6 +549,12 @@ message UpdateSimpleAttributeTypeRequest {
   string new_description = 5;
   string new_expression = 6;
 
+  // All units of measurement can be listed using `ListUnitsOfMeasurement` RPC.
+  //
+  // To clear the unit of measurement leave the `new_unit_of_measurement_id`
+  // field empty (not ID with only zeros), but provide `new_unit_of_measurement_id`
+  // string in the field mask.
+  //
   // The new unit of measurement will be set also for all existing attribute
   // definitions and attributes based on the given attribute type.
   // Valid only for integer and double attributes.
@@ -573,6 +580,12 @@ message UpdateTimeseriesAttributeTypeRequest {
   string new_name = 4;
   string new_description = 5;
 
+  // All units of measurement can be listed using `ListUnitsOfMeasurement` RPC.
+  //
+  // To clear the unit of measurement leave the `new_unit_of_measurement_id`
+  // field empty (not ID with only zeros), but provide `new_unit_of_measurement_id`
+  // string in the field mask.
+  //
   // The new unit of measurement will be set also for all existing attribute
   // definitions and attributes based on the given attribute type.
   volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 6;
@@ -610,13 +623,30 @@ message DeleteAttributeTypeRequest {
 
 message DeleteAttributeTypeResponse {}
 
+message ListModelDefinitionsRequest{
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Defines what model definition information should be included in the
+  // response. If not set all information will be included.
+  // Model definition is a namespace.
+  //
+  // An array containing `Namespace` message field names to be
+  // returned in the response.
+  // For example to return only ID, name and children:
+  //   field_mask = ['id', 'name', 'children']
+  google.protobuf.FieldMask field_mask = 2;
+}
+
+message ListModelDefinitionsResponse {
+  // Model definition is a namespace.
+  repeated Namespace model_definitions = 1;
+}
+
 message SearchNamespacesRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the namespaces to be searched for.
   // It is either a namespace OR model definition (which is also a namespace).
-  //
-  // When listing all model definitions this MUST NOT be set.
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   // If set to true then all child namespaces will be also included in the

@@ -102,16 +102,14 @@ message Int64AttributeDefinition {
   int64 default_value = 1;
   int64 minimum_value = 2;
   int64 maximum_value = 3;
-  // TODO: change type to `UnitOfMeasurement` message
-  string unit_of_measurement = 4;
+  volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 4;
 }
 
 message DoubleAttributeDefinition {
   double default_value = 1;
   double minimum_value = 2;
   double maximum_value = 3;
-  // TODO: change type to `UnitOfMeasurement` message
-  string unit_of_measurement = 4;
+  volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 4;
 }
 
 message BooleanAttributeDefinition {
@@ -130,8 +128,7 @@ message UtcTimeAttributeDefinition {
 
 message TimeseriesAttributeDefinition {
   string template_expression = 1;
-  // TODO: change type to `UnitOfMeasurement` message
-  string unit_of_measurement = 2;
+  volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 2;
 }
 
 // Describes an axis in a `XySet`.
