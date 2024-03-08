@@ -213,6 +213,10 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.transform</span> <span class="kn">import</span> <span class="n">TransformFunctions</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.hydsim.v1alpha</span> <span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.model_definition.v1alpha</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">model_definition_pb2</span><span class="p">,</span>
+    <span class="n">model_definition_pb2_grpc</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_base_connection</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_base_session</span>
@@ -228,12 +232,14 @@
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">mesh_service</span><span class="p">:</span> <span class="n">core_pb2_grpc</span><span class="o">.</span><span class="n">MeshServiceStub</span><span class="p">,</span>
+            <span class="n">model_definition_service</span><span class="p">:</span> <span class="n">model_definition_pb2_grpc</span><span class="o">.</span><span class="n">ModelDefinitionServiceStub</span><span class="p">,</span>
             <span class="n">hydsim_service</span><span class="p">:</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">,</span>
             <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
                 <span class="n">mesh_service</span><span class="o">=</span><span class="n">mesh_service</span><span class="p">,</span>
+                <span class="n">model_definition_service</span><span class="o">=</span><span class="n">model_definition_service</span><span class="p">,</span>
                 <span class="n">hydsim_service</span><span class="o">=</span><span class="n">hydsim_service</span><span class="p">,</span>
             <span class="p">)</span>
 
@@ -317,8 +323,23 @@
             <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="n">new_unit_of_measurement_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">new_unit_of_measurement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">list_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span><span class="o">.</span><span class="n">ListUnitsOfMeasurement</span><span class="p">(</span>
+                    <span class="n">model_definition_pb2</span><span class="o">.</span><span class="n">ListUnitsOfMeasurementRequest</span><span class="p">(</span>
+                        <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">new_unit_of_measurement_id</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_unit_of_measurement_id_by_name</span><span class="p">(</span>
+                        <span class="n">new_unit_of_measurement</span><span class="p">,</span> <span class="n">list_response</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_timeseries_resource_request</span><span class="p">(</span>
-                <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">new_curve_type</span><span class="p">,</span> <span class="n">new_unit_of_measurement</span>
+                <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">new_curve_type</span><span class="p">,</span> <span class="n">new_unit_of_measurement_id</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">UpdateTimeseriesResource</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
@@ -637,7 +658,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.connect_to_session">[docs]</a>    <span class="k">def</span> <span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="p">,</span> <span class="n">session_id</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mesh_service</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="p">,</span>
+            <span class="n">session_id</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

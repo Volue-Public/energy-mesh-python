@@ -409,9 +409,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">maximum_value</span> <span class="o">=</span> <span class="n">_get_field_value</span><span class="p">(</span>
                 <span class="s2">&quot;maximum_value&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">definition_type</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_field_value</span><span class="p">(</span>
-                <span class="s2">&quot;unit_of_measurement&quot;</span><span class="p">,</span> <span class="n">field_names</span><span class="p">,</span> <span class="n">definition_type</span>
-            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="s2">&quot;unit_of_measurement&quot;</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="n">definition_type</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
@@ -674,9 +676,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">template_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">template_expression</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">unit_of_measurement</span>
-            <span class="p">)</span></div>
+
+            <span class="k">if</span> <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;unit_of_measurement&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">proto_definition</span><span class="o">.</span><span class="n">timeseries_definition</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="o">.</span><span class="n">name</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
