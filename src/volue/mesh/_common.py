@@ -481,7 +481,7 @@ def _to_proto_attribute_masks(
 
 def _to_proto_attribute_field_mask(
     full_attribute_info: bool,
-) -> field_mask_pb2.FieldMask:
+) -> Optional[field_mask_pb2.FieldMask]:
     if full_attribute_info is True:
         return None
     return field_mask_pb2.FieldMask(
