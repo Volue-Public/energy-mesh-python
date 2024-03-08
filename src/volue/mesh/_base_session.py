@@ -1145,7 +1145,7 @@ class Session(abc.ABC):
     def _prepare_get_attribute_request(
         self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool
     ) -> core_pb2.GetAttributeRequest:
-        
+
         request = core_pb2.GetAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=_to_proto_attribute_mesh_id(target),
