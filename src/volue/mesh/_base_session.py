@@ -1149,7 +1149,7 @@ class Session(abc.ABC):
         request = core_pb2.GetAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=_to_proto_attribute_mesh_id(target),
-            field_mask=_to_proto_attribute_field_mask(full_attribute_info)
+            field_mask=_to_proto_attribute_field_mask(full_attribute_info),
         )
 
         return request
@@ -1165,7 +1165,7 @@ class Session(abc.ABC):
             session_id=_to_proto_guid(self.session_id),
             start_object_id=_to_proto_object_mesh_id(target),
             query=query,
-            field_mask=_to_proto_attribute_field_mask(full_attribute_info)
+            field_mask=_to_proto_attribute_field_mask(full_attribute_info),
         )
 
         return request
