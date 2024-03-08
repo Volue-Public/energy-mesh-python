@@ -14,10 +14,7 @@ from google import protobuf
 from volue.mesh.proto import core, model_definition
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
-from volue.mesh.proto.model_definition.v1alpha import (
-    model_definition_pb2,
-    model_definition_pb2_grpc,
-)
+from volue.mesh.proto.model_definition.v1alpha import model_definition_pb2_grpc
 
 from ._attribute import (
     SIMPLE_TYPE,

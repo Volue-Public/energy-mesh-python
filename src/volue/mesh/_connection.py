@@ -158,11 +158,14 @@ class Connection(_base_connection.Connection):
                         session_id=_to_proto_guid(self.session_id)
                     )
                 )
-                new_unit_of_measurement_id = (
-                    super()._get_unit_of_measurement_id_by_name(
-                        new_unit_of_measurement, list_response
-                    )
-                )
+
+                for proto_unit in list_response.units_of_measurement:
+                    if proto_unit.name == new_unit_of_measurement:
+                        new_unit_of_measurement_id = proto_unit.id
+                        break
+
+                if new_unit_of_measurement_id is None:
+                    raise ValueError("invalid unit of measurement provided")
 
             request = super()._prepare_update_timeseries_resource_request(
                 timeseries_key, new_curve_type, new_unit_of_measurement_id
