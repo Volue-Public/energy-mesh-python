@@ -235,9 +235,11 @@ class SimpleAttribute(AttributeBase):
             self.maximum_value = _get_field_value(
                 "maximum_value", field_names, definition_type
             )
-            self.unit_of_measurement: Union[str, None] = _get_field_value(
-                "unit_of_measurement", field_names, definition_type
-            )
+
+            if "unit_of_measurement" in field_names:
+                self.unit_of_measurement = definition_type.unit_of_measurement.name
+            else:
+                self.unit_of_measurement = None
 
     def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)
@@ -500,9 +502,13 @@ class TimeseriesAttribute(AttributeBase):
             self.template_expression: str = (
                 proto_definition.timeseries_definition.template_expression
             )
-            self.unit_of_measurement: str = (
-                proto_definition.timeseries_definition.unit_of_measurement
-            )
+
+            if proto_definition.timeseries_definition.HasField("unit_of_measurement"):
+                self.unit_of_measurement = (
+                    proto_definition.timeseries_definition.unit_of_measurement.name
+                )
+            else:
+                self.unit_of_measurement = None
 
     def __init__(self, proto_attribute: core.v1alpha.resources_pb2.Attribute):
         super().__init__(proto_attribute)

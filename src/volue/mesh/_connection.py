@@ -39,6 +39,10 @@ from volue.mesh.calc.statistical import StatisticalFunctions
 from volue.mesh.calc.transform import TransformFunctions
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
+from volue.mesh.proto.model_definition.v1alpha import (
+    model_definition_pb2,
+    model_definition_pb2_grpc,
+)
 
 from . import _base_connection
 from . import _base_session
@@ -54,12 +58,14 @@ class Connection(_base_connection.Connection):
         def __init__(
             self,
             mesh_service: core_pb2_grpc.MeshServiceStub,
+            model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
             hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
             session_id: Optional[uuid.UUID] = None,
         ):
             super().__init__(
                 session_id=session_id,
                 mesh_service=mesh_service,
+                model_definition_service=model_definition_service,
                 hydsim_service=hydsim_service,
             )
 
@@ -143,8 +149,23 @@ class Connection(_base_connection.Connection):
             new_curve_type: Optional[Timeseries.Curve] = None,
             new_unit_of_measurement: Optional[str] = None,
         ) -> None:
+
+            new_unit_of_measurement_id = None
+
+            if new_unit_of_measurement is not None:
+                list_response = self.model_definition_service.ListUnitsOfMeasurement(
+                    model_definition_pb2.ListUnitsOfMeasurementRequest(
+                        session_id=_to_proto_guid(self.session_id)
+                    )
+                )
+                new_unit_of_measurement_id = (
+                    super()._get_unit_of_measurement_id_by_name(
+                        new_unit_of_measurement, list_response
+                    )
+                )
+
             request = super()._prepare_update_timeseries_resource_request(
-                timeseries_key, new_curve_type, new_unit_of_measurement
+                timeseries_key, new_curve_type, new_unit_of_measurement_id
             )
             self.mesh_service.UpdateTimeseriesResource(request)
 
@@ -463,4 +484,9 @@ class Connection(_base_connection.Connection):
         return self.connect_to_session(session_id=None)
 
     def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
-        return self.Session(self.mesh_service, self.hydsim_service, session_id)
+        return self.Session(
+            self.mesh_service,
+            self.model_definition_service,
+            self.hydsim_service,
+            session_id,
+        )

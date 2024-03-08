@@ -37,7 +37,7 @@ def get_virtual_timeseries():
         temporary=False,
         curve_type=Timeseries.Curve.PIECEWISELINEAR,
         resolution=Timeseries.Resolution.HOUR,
-        unit_of_measurement="",
+        unit_of_measurement=None,
         path=f"Resource/SimpleThermalTestResourceCatalog/{ts_name}",
         name=ts_name,
         virtual_timeseries_expression="## = 5\n",
@@ -113,7 +113,7 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
         timeseries_key
     ).unit_of_measurement
 
-    with pytest.raises(grpc.RpcError, match="Invalid unit of measurement provided"):
+    with pytest.raises(ValueError, match="invalid unit of measurement provided"):
         session.update_timeseries_resource_info(
             timeseries_key, new_unit_of_measurement=non_existing_unit_of_measurement
         )
