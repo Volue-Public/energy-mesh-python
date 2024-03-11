@@ -295,19 +295,6 @@ message XySet {
   repeated XyCurve xy_curves = 3;
 }
 
-enum AttributeView {
-  // Not specified, equivalent to BASIC.
-  OBJECT_VIEW_UNSPECIFIED = 0;
-
-  // Response will include attribute's ID, name, path and value(s).
-  // The default value.
-  BASIC = 1;
-
-  // Response will include attribute's ID, name, path, value(s) and
-  // complete attribute definition.
-  FULL = 2;
-}
-
 message EnumerationValueUsage {
   oneof usage_oneof {
     Attribute attribute = 1;

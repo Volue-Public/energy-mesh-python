@@ -479,6 +479,24 @@ def _to_proto_attribute_masks(
     return attributes_masks
 
 
+def _to_proto_attribute_field_mask(
+    full_attribute_info: bool,
+) -> Optional[field_mask_pb2.FieldMask]:
+    if full_attribute_info is True:
+        return None
+    return field_mask_pb2.FieldMask(
+        paths=[
+            "id",
+            "path",
+            "name",
+            "values",
+            "value_type",
+            "value_type_collection",
+            "owner_id",
+        ]
+    )
+
+
 def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
     """
     Converts a protobuf time series reply from Mesh server into Timeseries.

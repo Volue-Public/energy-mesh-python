@@ -127,8 +127,7 @@ service MeshService {
   // created object with all of the attributes set to default values.
   // Then the user may update the attributes with proper update attributes
   // RPCs, e.g.: `UpdateSimpleAttribute` or `UpdateTimeseriesAttribute`.
-  // Note: Returned object has all attributes (no mask applied) and
-  // `AttributeView::BASIC`.
+  // Note: Returned object has all attributes (no masks applied).
   rpc CreateObject(CreateObjectRequest) returns (Object) {}
 
   rpc CreateModel(CreateModelRequest) returns (Object) {}
@@ -371,6 +370,15 @@ message ListModelsRequest {
   // If set then only models that are instances of given model definition are
   // returned. Otherwise all models are returned.
   volue.mesh.grpc.type.MeshId model_definition_id = 2;
+
+  // Defines what model information should be included in the response.
+  // If not set all information will be included.
+  //
+  // An array containing `Object` message field names to be returned in the
+  // response.
+  // For example to return only ID and path:
+  //   field_mask = ['id', 'path']
+  google.protobuf.FieldMask object_field_mask = 3;
 }
 
 message ListModelsResponse {
@@ -384,13 +392,29 @@ message GetObjectRequest {
   // ID or path of object to be returned.
   volue.mesh.grpc.type.MeshId object_id = 2;
 
-  // Masks that define what attributes for the given object should be returned
-  // in the response message.
-  // If not set then all attributes will be returned.
-  AttributesMasks attributes_masks = 3;
+  // Defines what `Object`s information should be included in the response.
+  // If not set all information will be included.
+  //
+  // An array containing `Object` message field names to be returned in the
+  // response.
+  // For example to return only ID and path:
+  //   field_mask = ['id', 'path']
+  google.protobuf.FieldMask object_field_mask = 3;
 
-  // Defines what attribute information should be included in response.
-  AttributeView attribute_view = 4;
+  // If the object field mask (3) has also `attributes` set then additionally
+  // user can set masks that define what attributes for the given object should
+  // be returned in the response message.
+  // If no attribute mask is set then all attributes will be returned.
+  AttributesMasks attributes_masks = 4;
+
+  // If the object field mask (3) has also `attributes` set then additionally
+  // user can define what attribute information should be included in response.
+  //
+  // An array containing `Attribute` message field names to be returned in the
+  // response.
+  // For example to return only ID and definition:
+  //   field_mask = ['id', 'definition']
+  google.protobuf.FieldMask attribute_field_mask = 5;
 }
 
 message SearchObjectsRequest {
@@ -403,13 +427,29 @@ message SearchObjectsRequest {
   // Query in Mesh query language format.
   string query = 3;
 
-  // Masks that define what attributes for the given object should be returned
-  // in the response message.
-  // If not set then all attributes will be returned.
-  AttributesMasks attributes_masks = 4;
+  // Defines what `Object`s information should be included in the response.
+  // If not set all information will be included.
+  //
+  // An array containing `Object` message field names to be returned in the
+  // response.
+  // For example to return only ID and path:
+  //   field_mask = ['id', 'path']
+  google.protobuf.FieldMask object_field_mask = 4;
 
-  // Defines what attribute information should be included in response.
-  AttributeView attribute_view = 5;
+  // If the object field mask (4) has also `attributes` set then additionally
+  // user can set masks that define what attributes for the objects should be
+  // returned in the response message.
+  // If no attribute mask is set then all attributes will be returned.
+  AttributesMasks attributes_masks = 5;
+
+  // If the object field mask (4) has also `attributes` set then additionally
+  // user can define what attribute information should be included in response.
+  //
+  // An array containing `Attribute` message field names to be returned in the
+  // response.
+  // For example to return only ID and definition:
+  //   field_mask = ['id', 'definition']
+  google.protobuf.FieldMask attribute_field_mask = 6;
 }
 
 message SearchObjectsByDefinitionRequest {
@@ -511,8 +551,14 @@ message GetAttributeRequest {
   // ID or path of attribute to be returned.
   volue.mesh.grpc.type.MeshId attribute_id = 2;
 
-  // Defines what attribute information should be included in response.
-  AttributeView attribute_view = 3;
+  // Defines what `Attribute`s information should be included in the response.
+  // If not set all information will be included.
+  //
+  // An array containing `Attribute` message field names to be returned in the
+  // response.
+  // For example to return only ID and path:
+  //   field_mask = ['id', 'path']
+  google.protobuf.FieldMask field_mask = 3;
 }
 
 message SearchAttributesRequest {
@@ -525,8 +571,14 @@ message SearchAttributesRequest {
   // Query in Mesh query language format.
   string query = 3;
 
-  // Defines what attribute information should be included in response.
-  AttributeView attribute_view = 4;
+  // Defines what `Attribute`s information should be included in the response.
+  // If not set all information will be included.
+  //
+  // An array containing `Attribute` message field names to be returned in the
+  // response.
+  // For example to return only ID and path:
+  //   field_mask = ['id', 'path']
+  google.protobuf.FieldMask field_mask = 4;
 }
 
 message SearchEnumerationValueUsagesRequest {
