@@ -653,6 +653,24 @@
     <span class="k">return</span> <span class="n">attributes_masks</span>
 
 
+<span class="k">def</span> <span class="nf">_to_proto_attribute_field_mask</span><span class="p">(</span>
+    <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">full_attribute_info</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span>
+        <span class="n">paths</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;path&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;values&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;value_type&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;value_type_collection&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;owner_id&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">_read_proto_reply</span><span class="p">(</span><span class="n">reply</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a protobuf time series reply from Mesh server into Timeseries.</span>

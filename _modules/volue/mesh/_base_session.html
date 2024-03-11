@@ -209,6 +209,7 @@
     <span class="n">_datetime_to_timestamp_pb2</span><span class="p">,</span>
     <span class="n">_read_proto_reply</span><span class="p">,</span>
     <span class="n">_to_proto_attribute_masks</span><span class="p">,</span>
+    <span class="n">_to_proto_attribute_field_mask</span><span class="p">,</span>
     <span class="n">_to_proto_curve_type</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
@@ -1226,17 +1227,12 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetObjectRequest</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `GetObjectRequest`&quot;&quot;&quot;</span>
 
-        <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
-            <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
-        <span class="p">)</span>
-
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetObjectRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">object_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">attributes_masks</span><span class="o">=</span><span class="n">_to_proto_attribute_masks</span><span class="p">(</span><span class="n">attributes_filter</span><span class="p">),</span>
-            <span class="n">attribute_view</span><span class="o">=</span><span class="n">attribute_view</span><span class="p">,</span>
+            <span class="n">attribute_field_mask</span><span class="o">=</span><span class="n">_to_proto_attribute_field_mask</span><span class="p">(</span><span class="n">full_attribute_info</span><span class="p">),</span>
+            <span class="n">object_field_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
@@ -1249,17 +1245,12 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchObjectsRequest</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `SearchObjectsRequest`&quot;&quot;&quot;</span>
 
-        <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
-            <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
-        <span class="p">)</span>
-
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchObjectsRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">start_object_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">attributes_masks</span><span class="o">=</span><span class="n">_to_proto_attribute_masks</span><span class="p">(</span><span class="n">attributes_filter</span><span class="p">),</span>
-            <span class="n">attribute_view</span><span class="o">=</span><span class="n">attribute_view</span><span class="p">,</span>
+            <span class="n">attribute_field_mask</span><span class="o">=</span><span class="n">_to_proto_attribute_field_mask</span><span class="p">(</span><span class="n">full_attribute_info</span><span class="p">),</span>
+            <span class="n">object_field_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
@@ -1328,16 +1319,11 @@
     <span class="k">def</span> <span class="nf">_prepare_get_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">:</span>
-        <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
-            <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
-        <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">attribute_id</span><span class="o">=</span><span class="n">_to_proto_attribute_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
-            <span class="n">attribute_view</span><span class="o">=</span><span class="n">attribute_view</span><span class="p">,</span>
+            <span class="n">field_mask</span><span class="o">=</span><span class="n">_to_proto_attribute_field_mask</span><span class="p">(</span><span class="n">full_attribute_info</span><span class="p">),</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">request</span>
@@ -1348,17 +1334,12 @@
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchAttributesRequest</span><span class="p">:</span>
-        <span class="n">attribute_view</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">FULL</span>
-            <span class="k">if</span> <span class="n">full_attribute_info</span>
-            <span class="k">else</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">AttributeView</span><span class="o">.</span><span class="n">BASIC</span>
-        <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchAttributesRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">start_object_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
-            <span class="n">attribute_view</span><span class="o">=</span><span class="n">attribute_view</span><span class="p">,</span>
+            <span class="n">field_mask</span><span class="o">=</span><span class="n">_to_proto_attribute_field_mask</span><span class="p">(</span><span class="n">full_attribute_info</span><span class="p">),</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">request</span>
