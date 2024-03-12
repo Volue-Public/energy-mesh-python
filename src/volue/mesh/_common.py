@@ -59,6 +59,12 @@ class AttributesFilter:
             Note: Regular expressions are not supported.
             See examples below for more details.
 
+        `return_no_attributes` flag:
+            If set to True then no attributes will be returned.
+            If any mask: name, tag or namespace is also set
+            then an error will be returned.
+            Default value is False.
+
     Multiple attributes may have the same tag or namespace.
     If both: `tag_mask` and `namespace_mask` are provided then only attributes
     that meet both criteria are returned (intersection/logical AND).
