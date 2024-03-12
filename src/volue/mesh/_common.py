@@ -53,17 +53,11 @@ class AttributesFilter:
             Namespace mask does not accept entries with namespaces
             concatenated with dots '.'. Each namespace mask entry must
             be a separate namespace.
-            If name mask or `return_no_attributes` flag is also set
+            If name mask flag is also set
             then an error will be returned.
             It is allowed to have both: tag mask and namespace mask set.
             Note: Regular expressions are not supported.
             See examples below for more details.
-
-        `return_no_attributes` flag:
-            If set to True then no attributes will be returned.
-            If any mask: name, tag or namespace is also set
-            then an error will be returned.
-            Default value is False.
 
     Multiple attributes may have the same tag or namespace.
     If both: `tag_mask` and `namespace_mask` are provided then only attributes
@@ -462,6 +456,9 @@ def _to_proto_attribute_masks(
     attributes_masks = core.v1alpha.resources_pb2.AttributesMasks()
 
     if attributes_filter is not None:
+        if attributes_filter.return_no_attributes is True:
+            return None
+
         if attributes_filter.name_mask is not None:
             attributes_masks.name_mask.CopyFrom(
                 field_mask_pb2.FieldMask(paths=attributes_filter.name_mask)
@@ -474,14 +471,23 @@ def _to_proto_attribute_masks(
             attributes_masks.namespace_mask.CopyFrom(
                 field_mask_pb2.FieldMask(paths=attributes_filter.namespace_mask)
             )
-        attributes_masks.return_no_attributes = attributes_filter.return_no_attributes
 
     return attributes_masks
 
+def _object_to_proto_field_mask_no_attribute(attributes_filter: Optional[AttributesFilter]) -> Optional[field_mask_pb2.FieldMask]:
+    if attributes_filter == None or attributes_filter.return_no_attributes is False:
+        return None
+    fields = [field.name for field in core.v1alpha.resources_pb2.Object.DESCRIPTOR.fields]
+    fields.remove("attributes")
+    return field_mask_pb2.FieldMask(paths=fields)
+    
 
 def _to_proto_attribute_field_mask(
     full_attribute_info: bool,
+    attributes_filter: Optional[AttributesFilter] = None
 ) -> Optional[field_mask_pb2.FieldMask]:
+    if attributes_filter is not None and attributes_filter.return_no_attributes is True:
+            return None
     if full_attribute_info is True:
         return None
     return field_mask_pb2.FieldMask(

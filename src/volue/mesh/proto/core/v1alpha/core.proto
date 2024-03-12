@@ -90,21 +90,16 @@ service MeshService {
   // that get a path that represents the nodes position in the Mesh model. More metadata like unit
   // of measurement, curve type and so on can also be linked to the timeseries.
 
-  // Get a series of timestamps, flags and values.
   rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
-
   rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
 
-  // Write a series of timestamps, flags and values.
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
 
   // Run ad-hoc calculation
   rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
 
-  // List all models.
   rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {}
 
-  // Get specific object from the model.
   rpc GetObject(GetObjectRequest) returns (Object) {}
 
   // Search for objects from the model.
@@ -138,10 +133,8 @@ service MeshService {
   // e.g.: `UpdateSimpleAttribute` or `UpdateTimeseriesAttribute`.
   rpc UpdateObject(UpdateObjectRequest) returns (UpdateObjectResponse) {}
 
-  // Delete existing object from the model.
   rpc DeleteObject(DeleteObjectRequest) returns (DeleteObjectResponse) {}
 
-  // Get specific attribute from the model.
   rpc GetAttribute(GetAttributeRequest) returns (Attribute) {}
 
   // Search for attributes from the model.
@@ -155,10 +148,6 @@ service MeshService {
   // is returned.
   rpc SearchAttributes(SearchAttributesRequest) returns (stream Attribute) {}
 
-  // Search for enumeration attributes, enumeration attribute definitions and
-  // enumeration attriubte types that are using specific enumeration value.
-  rpc SearchEnumerationValueUsages(SearchEnumerationValueUsagesRequest) returns (stream EnumerationValueUsage) {}
-
   // Update value(s) of existing simple attribute in the model.
   // Simple attribute is a singular type or collection of the following types:
   // - double
@@ -168,7 +157,6 @@ service MeshService {
   // - UTC time
   rpc UpdateSimpleAttribute(UpdateSimpleAttributeRequest) returns (UpdateSimpleAttributeResponse) {}
 
-  // Update existing time series attribute in the model.
   rpc UpdateTimeseriesAttribute(UpdateTimeseriesAttributeRequest) returns (UpdateTimeseriesAttributeResponse) {}
 
   // Update existing one-to-one or one-to-many link relation (non-versioned)
@@ -177,8 +165,6 @@ service MeshService {
 
   // Update existing versioned one-to-one link relation attribute in the model.
   rpc UpdateVersionedLinkRelationAttribute(UpdateVersionedLinkRelationAttributeRequest) returns (UpdateVersionedLinkRelationAttributeResponse) {}
-
-  rpc UpdateEnumerationAttribute(UpdateEnumerationAttributeRequest) returns (UpdateEnumerationAttributeResponse) {}
 
   // Get time series resource.
   // A time series resource:
@@ -193,7 +179,6 @@ service MeshService {
   // (similar to calculation time series) but is stored in the resources.
   rpc GetTimeseriesResource(GetTimeseriesResourceRequest) returns (TimeseriesResource) {}
 
-  // Update existing time series resource.
   rpc UpdateTimeseriesResource(UpdateTimeseriesResourceRequest) returns (UpdateTimeseriesResourceResponse) {}
 
   // Get the Mesh server version information.
@@ -310,7 +295,6 @@ message CommitResponse {}
 message RollbackResponse {}
 
 message ReadTimeseriesRequest {
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   volue.mesh.grpc.type.MeshId timeseries_id = 2;
@@ -324,7 +308,6 @@ message ReadTimeseriesRequest {
 }
 
 message ReadTimeseriesStreamRequest{
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   repeated volue.mesh.grpc.type.MeshId timeseries_id = 2;
@@ -364,7 +347,6 @@ message CalculationResponse {
 }
 
 message ListModelsRequest {
-  // The server session ID.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // If set then only models that are instances of given model definition are
@@ -386,7 +368,6 @@ message ListModelsResponse {
 }
 
 message GetObjectRequest {
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // ID or path of object to be returned.
@@ -418,7 +399,6 @@ message GetObjectRequest {
 }
 
 message SearchObjectsRequest {
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Mesh searches always require a start point for the search.
@@ -482,7 +462,6 @@ message SearchObjectsByDefinitionRequest {
 }
 
 message CreateObjectRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Name of the new object.
@@ -506,7 +485,6 @@ message CreateModelRequest {
 }
 
 message UpdateObjectRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Identifier of the object to be updated.
@@ -530,7 +508,6 @@ message UpdateObjectRequest {
 message UpdateObjectResponse {}
 
 message DeleteObjectRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Object to be deleted.
@@ -545,7 +522,6 @@ message DeleteObjectRequest {
 message DeleteObjectResponse {}
 
 message GetAttributeRequest {
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // ID or path of attribute to be returned.
@@ -562,7 +538,6 @@ message GetAttributeRequest {
 }
 
 message SearchAttributesRequest {
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Mesh searches always require a start point for the search.
@@ -581,21 +556,7 @@ message SearchAttributesRequest {
   google.protobuf.FieldMask field_mask = 4;
 }
 
-message SearchEnumerationValueUsagesRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId enumeration_value_id = 2;
-
-  // Defines what attribute information should be included in the response.
-  // If not set all information will be included.
-  //
-  // An array containing `Attribute`/`AttributeDefinition`/`AttributeType` message field names to be returned in the response.
-  // For example to return only ID, name and attribute definition (definition only applies to the `Attribute` type):
-  //   field_mask = ['id', 'name', 'definition']
-  google.protobuf.FieldMask field_mask = 3;
-}
-
 message UpdateSimpleAttributeRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   volue.mesh.grpc.type.MeshId attribute_id = 2;
@@ -622,7 +583,6 @@ message UpdateSimpleAttributeRequest {
 message UpdateSimpleAttributeResponse {}
 
 message UpdateTimeseriesAttributeRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   volue.mesh.grpc.type.MeshId attribute_id = 2;
@@ -655,7 +615,6 @@ message UpdateTimeseriesAttributeResponse {}
 // Update request message for one-to-one link relation and one-to-many link
 // relation attributes.
 message UpdateLinkRelationAttributeRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // One-to-one link relation attribute (`ReferenceAttribute`) or one-to-many
@@ -689,7 +648,6 @@ message UpdateLinkRelationAttributeResponse {}
 
 // Update request message for versioned one-to-one link relation attribute.
 message UpdateVersionedLinkRelationAttributeRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // All existing versions inside the interval will be deleted.
@@ -706,16 +664,7 @@ message UpdateVersionedLinkRelationAttributeRequest {
 
 message UpdateVersionedLinkRelationAttributeResponse {}
 
-message UpdateEnumerationAttributeRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId attribute_id = 2;
-  volue.mesh.grpc.type.MeshId new_value = 3;
-}
-
-message UpdateEnumerationAttributeResponse {}
-
 message GetTimeseriesResourceRequest {
-  // The server session ID
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Time series key of the time series resource to be returned.
@@ -723,7 +672,6 @@ message GetTimeseriesResourceRequest {
 }
 
 message UpdateTimeseriesResourceRequest {
-  // ID of the Mesh server's session in which changes should be applied.
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Time series key of the time series resource to be updated.
