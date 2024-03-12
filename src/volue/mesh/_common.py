@@ -53,7 +53,7 @@ class AttributesFilter:
             Namespace mask does not accept entries with namespaces
             concatenated with dots '.'. Each namespace mask entry must
             be a separate namespace.
-            If name mask flag is also set
+            If name mask or `return_no_attributes` flag is also set
             then an error will be returned.
             It is allowed to have both: tag mask and namespace mask set.
             Note: Regular expressions are not supported.
@@ -475,7 +475,7 @@ def _to_proto_attribute_masks(
     return attributes_masks
 
 def _object_to_proto_field_mask_no_attribute(attributes_filter: Optional[AttributesFilter]) -> Optional[field_mask_pb2.FieldMask]:
-    if attributes_filter == None or attributes_filter.return_no_attributes is False:
+    if attributes_filter is None or attributes_filter.return_no_attributes is False:
         return None
     fields = [field.name for field in core.v1alpha.resources_pb2.Object.DESCRIPTOR.fields]
     fields.remove("attributes")
@@ -487,9 +487,11 @@ def _to_proto_attribute_field_mask(
     attributes_filter: Optional[AttributesFilter] = None
 ) -> Optional[field_mask_pb2.FieldMask]:
     if attributes_filter is not None and attributes_filter.return_no_attributes is True:
-            return None
+        return None
+    
     if full_attribute_info is True:
         return None
+    
     return field_mask_pb2.FieldMask(
         paths=[
             "id",
