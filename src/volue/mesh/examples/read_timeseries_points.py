@@ -1,8 +1,9 @@
 import uuid
 from datetime import datetime
 
-from volue.mesh import Connection
 import helpers
+
+from volue.mesh import Connection
 
 
 def read_timeseries_points(session: Connection.Session):

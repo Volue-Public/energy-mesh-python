@@ -1,5 +1,6 @@
-from volue.mesh import Connection
 import helpers
+
+from volue.mesh import Connection
 
 
 def get_version(connection):

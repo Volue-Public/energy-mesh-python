@@ -1,9 +1,8 @@
 import datetime
 
-from volue import mesh
-
 import helpers
 
+from volue import mesh
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 UNVERSIONED_PATH = OBJECT_PATH + ".XYSetAtt"

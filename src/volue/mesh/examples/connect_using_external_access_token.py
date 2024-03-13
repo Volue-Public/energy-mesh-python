@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from volue.mesh import Connection
 import helpers
+
+from volue.mesh import Connection
 
 
 def main(address, port, root_pem_certificate):

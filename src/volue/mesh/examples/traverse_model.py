@@ -1,5 +1,6 @@
-from volue.mesh import Connection, OwnershipRelationAttribute
 import helpers
+
+from volue.mesh import Connection, OwnershipRelationAttribute
 
 leaves = []
 

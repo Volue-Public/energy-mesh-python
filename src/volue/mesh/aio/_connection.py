@@ -3,33 +3,36 @@ Functionality for asynchronously connecting to a Mesh server and working with it
 """
 
 import asyncio
-from datetime import datetime, timedelta
 import typing
-from typing import List, Optional, Union
 import uuid
+from datetime import datetime, timedelta
+from typing import List, Optional, Union
 
-from google import protobuf
 import grpc
+from google import protobuf
 
 from volue.mesh import (
-    Authentication,
-    Timeseries,
-    AttributesFilter,
-    UserIdentity,
-    VersionInfo,
     AttributeBase,
+    AttributesFilter,
+    Authentication,
+    LinkRelationVersion,
+    Object,
+    Timeseries,
     TimeseriesAttribute,
     TimeseriesResource,
-    Object,
-    LinkRelationVersion,
+    UserIdentity,
+    VersionInfo,
+    _attribute,
+    _base_connection,
+    _base_session,
 )
-from volue.mesh._authentication import ExternalAccessTokenPlugin
 from volue.mesh._attribute import _from_proto_attribute
+from volue.mesh._authentication import ExternalAccessTokenPlugin
 from volue.mesh._common import (
-    XySet,
     RatingCurveVersion,
-    _to_proto_guid,
+    XySet,
     _from_proto_guid,
+    _to_proto_guid,
     _to_proto_timeseries,
     _to_proto_utcinterval,
 )
@@ -44,10 +47,6 @@ from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
 )
-
-from volue.mesh import _base_connection
-from volue.mesh import _base_session
-from volue.mesh import _attribute
 
 
 class Connection(_base_connection.Connection):
@@ -153,7 +152,6 @@ class Connection(_base_connection.Connection):
             new_curve_type: Optional[Timeseries.Curve] = None,
             new_unit_of_measurement: Optional[str] = None,
         ) -> None:
-
             new_unit_of_measurement_id = None
 
             if new_unit_of_measurement is not None:

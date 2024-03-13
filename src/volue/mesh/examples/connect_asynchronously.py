@@ -1,6 +1,8 @@
 import asyncio
-from volue.mesh.aio import Connection
+
 import helpers
+
+from volue.mesh.aio import Connection
 
 
 async def get_version(connection):

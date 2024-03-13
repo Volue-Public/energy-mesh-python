@@ -1,8 +1,9 @@
 import asyncio
 
+import helpers
+
 from volue.mesh import Connection
 from volue.mesh.aio import Connection as AsyncConnection
-import helpers
 
 
 def sync_get_version(address, port, root_pem_certificate):

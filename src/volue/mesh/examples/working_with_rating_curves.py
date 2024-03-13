@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from volue.mesh import Connection, RatingCurveSegment, RatingCurveVersion
 import helpers
+
+from volue.mesh import Connection, RatingCurveSegment, RatingCurveVersion
 
 
 def main(address, port, tls_root_cert):

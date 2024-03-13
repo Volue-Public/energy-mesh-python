@@ -1,8 +1,9 @@
 import asyncio
 
-from volue.mesh.aio import Connection as AsyncConnection
-from volue.mesh import Authentication, Connection
 import helpers
+
+from volue.mesh import Authentication, Connection
+from volue.mesh.aio import Connection as AsyncConnection
 
 
 def sync_auth(address, port, root_pem_certificate, authentication_parameters):

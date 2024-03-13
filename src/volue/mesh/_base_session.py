@@ -33,13 +33,13 @@ from ._common import (
     XyCurve,
     XySet,
     _datetime_to_timestamp_pb2,
+    _object_to_proto_field_mask,
     _read_proto_reply,
-    _to_proto_attribute_masks,
     _to_proto_attribute_field_mask,
+    _to_proto_attribute_masks,
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_utcinterval,
-    _object_to_proto_field_mask,
 )
 from ._mesh_id import (
     _to_proto_attribute_mesh_id,
@@ -1150,7 +1150,6 @@ class Session(abc.ABC):
     def _prepare_get_attribute_request(
         self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool
     ) -> core_pb2.GetAttributeRequest:
-
         request = core_pb2.GetAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute_id=_to_proto_attribute_mesh_id(target),
@@ -1165,7 +1164,6 @@ class Session(abc.ABC):
         query: str,
         full_attribute_info: bool,
     ) -> core_pb2.SearchAttributesRequest:
-
         request = core_pb2.SearchAttributesRequest(
             session_id=_to_proto_guid(self.session_id),
             start_object_id=_to_proto_object_mesh_id(target),

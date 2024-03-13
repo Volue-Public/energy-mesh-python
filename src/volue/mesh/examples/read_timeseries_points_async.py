@@ -2,8 +2,9 @@ import asyncio
 import uuid
 from datetime import datetime
 
-from volue.mesh.aio import Connection
 import helpers
+
+from volue.mesh.aio import Connection
 
 
 async def read_timeseries_points_async(session: Connection.Session):

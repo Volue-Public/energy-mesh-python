@@ -1,15 +1,13 @@
 import datetime
 import operator
-
-import dateutil
 import sys
 import uuid
 
+import dateutil
 import grpc
 import pytest
 
 from volue import mesh
-
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 UNVERSIONED_PATH = OBJECT_PATH + ".XYSetAtt"
