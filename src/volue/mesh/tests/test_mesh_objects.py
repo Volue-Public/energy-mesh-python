@@ -25,7 +25,7 @@ OBJECT_ID = uuid.UUID("0000000A-0001-0000-0000-000000000000")
 
 def verify_object_attributes(object: Object, full_info: bool = False):
     """Verifies all attributes of SomePowerPlant1 object."""
-    assert len(object.attributes) == 32
+    assert len(object.attributes) == 31
 
     for attribute in object.attributes.values():
         assert isinstance(attribute, AttributeBase)
@@ -321,7 +321,7 @@ def test_object_apis_with_invalid_target(session, invalid_target):
     'delete_object' with invalid target (meaning incorrect object path or ID)
     will throw.
     """
-    error_message_regex = "(not found)|(Invalid type)"
+    error_message_regex = "(not found)|(invalid type)"
 
     with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.get_object(invalid_target)
