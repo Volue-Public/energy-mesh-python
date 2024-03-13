@@ -69,7 +69,6 @@ message AttributeValue {
     LinkRelationAttributeValue link_relation_value = 8;
     VersionedLinkRelationAttributeValue versioned_link_relation_value = 9;
 
-    EnumerationAttributeValue enumeration_value = 10;
     // There are separate RPCs for handling XY set and rating curve attribute
     // values, see:
     // - GetXySets
@@ -115,17 +114,12 @@ message LinkRelationVersion {
   volue.mesh.grpc.type.Guid target_object_id = 1;
   google.protobuf.Timestamp valid_from_time = 2;
 }
-
-message EnumerationAttributeValue {
-    volue.mesh.grpc.model_definition.v1alpha.EnumerationValue value = 1;
-}
-
 // Defines what attributes need to be returned in response message.
 message AttributesMasks {
   // Attribute name uniquely identifies attribute within given object.
   // If set then only attributes set in the field mask are read.
-  // If tag or namespace mask, `types` field or `return_no_attributes`
-  // flag is also set then an error will be returned.
+  // If tag, namespace mask or `types` field is also set then an error will be
+  // returned.
   // The attribute name provided in the mask must be equal to
   // the actual attribute name in the model.
   // Note: Regular expressions are not supported.
@@ -137,8 +131,7 @@ message AttributesMasks {
   // at least one tag set in the field mask are read.
   // If multiple tags are provided then all attributes having
   // at least one of them are returned (logical OR).
-  // If name mask, `types` field or `return_no_attributes` flag
-  // is also set then an error will be returned.
+  // If name mask or `types` field is also set then an error will be returned.
   // It is allowed to have both: tag mask and namespace mask set.
   // Note: Regular expressions are not supported.
   // See examples below for more details.
@@ -152,27 +145,20 @@ message AttributesMasks {
   // Namespace mask does not accept entries with namespaces
   // concatenated with dots '.'. Each namespace mask entry must
   // be a separate namespace.
-  // If name mask, `types` field or `return_no_attributes` flag
-  // is also set then an error will be returned.
+  // If name mask or `types` field is also set then an error will be returned.
   // It is allowed to have both: tag mask and namespace mask set.
   // Note: Regular expressions are not supported.
   // See examples below for more details.
   google.protobuf.FieldMask namespace_mask = 3;
 
-  // If set to true then no attributes will be returned.
-  // If any mask: name, tag or namespace or `types` field
-  // is also set then an error will be returned.
-  // Default value is false (default value for bool in proto3 is false).
-  bool return_no_attributes = 4;
-
   // Each attribute has single AttributeValueType.
   // If the `types` field is set then only attributes with
   // matching AttributeValueTypes will be returned.
-  // If any other mask: name, tag or namespace or `return_no_attributes`
-  // flag is also set then an error will be returned.
+  // If any other mask: name, tag or namespace is also set then an error will
+  // be returned.
   // ATTRIBUTE_VALUE_TYPE_UNSPECIFIED cannot be used for specifying type.
   // See examples below for more details.
-  repeated volue.mesh.grpc.model_definition.v1alpha.AttributeValueType types = 5;
+  repeated volue.mesh.grpc.model_definition.v1alpha.AttributeValueType types = 4;
 
   // Multiple attributes may have the same tag or namespace.
   // If both: tag_mask and namespace_masks are provided then only attributes
@@ -293,14 +279,6 @@ message XySet {
 
   // A list of `XyCurve`s in this `XySet`. Always sorted by `reference_value`.
   repeated XyCurve xy_curves = 3;
-}
-
-message EnumerationValueUsage {
-  oneof usage_oneof {
-    Attribute attribute = 1;
-    volue.mesh.grpc.model_definition.v1alpha.AttributeType attribute_type = 2;
-    volue.mesh.grpc.model_definition.v1alpha.AttributeDefinition attribute_definition = 3;
-  }
 }
 
 message RatingCurveSegment {

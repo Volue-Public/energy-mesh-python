@@ -474,16 +474,34 @@ def _to_proto_attribute_masks(
             attributes_masks.namespace_mask.CopyFrom(
                 field_mask_pb2.FieldMask(paths=attributes_filter.namespace_mask)
             )
-        attributes_masks.return_no_attributes = attributes_filter.return_no_attributes
 
     return attributes_masks
 
 
-def _to_proto_attribute_field_mask(
-    full_attribute_info: bool,
+def _object_to_proto_field_mask(
+    attributes_filter: Optional[AttributesFilter],
 ) -> Optional[field_mask_pb2.FieldMask]:
-    if full_attribute_info is True:
+    if attributes_filter is None or not attributes_filter.return_no_attributes:
         return None
+    fields = [
+        field.name for field in core.v1alpha.resources_pb2.Object.DESCRIPTOR.fields
+    ]
+    fields.remove("attributes")
+    return field_mask_pb2.FieldMask(paths=fields)
+
+
+def _to_proto_attribute_field_mask(
+    full_attribute_info: bool, attributes_filter: Optional[AttributesFilter] = None
+) -> Optional[field_mask_pb2.FieldMask]:
+    # If attributes_filter.return_no_attributes is set to True we must not provide attribute field mask,
+    # at the same time we can't expect user to provide full_attribute_info set to True. It would be very counter intuitive
+    # to request no attributes and have to explicitly request full attributes info.
+    if attributes_filter is not None and attributes_filter.return_no_attributes:
+        return None
+
+    if full_attribute_info:
+        return None
+
     return field_mask_pb2.FieldMask(
         paths=[
             "id",
