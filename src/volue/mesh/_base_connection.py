@@ -8,7 +8,6 @@ from volue.mesh.proto import core, hydsim, model_definition
 
 from . import _authentication
 from ._authentication import Authentication, ExternalAccessTokenPlugin
-from ._credentials import Credentials
 
 C = TypeVar("C", bound="Connection")
 
@@ -111,19 +110,21 @@ class Connection(abc.ABC):
             # insecure connection (without TLS)
             channel = self._insecure_grpc_channel(target=target)
         else:
-            credentials: Credentials = Credentials(root_pem_certificate)
+            channel_credentials = grpc.ssl_channel_credentials(
+                root_certificates=root_pem_certificate
+            )
 
             # authentication requires TLS
             if authentication_parameters:
                 self.auth_metadata_plugin = Authentication(
-                    authentication_parameters, target, credentials.channel_creds
+                    authentication_parameters, target, channel_credentials
                 )
                 call_credentials = grpc.metadata_call_credentials(
                     self.auth_metadata_plugin
                 )
 
                 composite_credentials = grpc.composite_channel_credentials(
-                    credentials.channel_creds,
+                    channel_credentials,
                     call_credentials,
                 )
 
@@ -134,7 +135,7 @@ class Connection(abc.ABC):
             else:
                 # connection using TLS (no Kerberos authentication)
                 channel = self._secure_grpc_channel(
-                    target=target, credentials=credentials.channel_creds
+                    target=target, credentials=channel_credentials
                 )
 
         self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
