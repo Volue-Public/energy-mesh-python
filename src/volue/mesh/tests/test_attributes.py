@@ -19,7 +19,11 @@ ATTRIBUTE_PATH_PREFIX = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPo
 
 
 def verify_plant_base_attribute(
-    attribute: AttributeBase, name: str, id: uuid.UUID, is_definition: bool
+    attribute: AttributeBase,
+    name: str,
+    id: uuid.UUID,
+    is_definition: bool,
+    check_tags: bool = False,
 ):
     path = ATTRIBUTE_PATH_PREFIX + name
 
@@ -40,8 +44,9 @@ def verify_plant_base_attribute(
         )
         # attribute definition name is the same as attribute name
         assert attribute.definition.name == name
-        assert len(attribute.definition.tags) == 0
         assert attribute.definition.namespace == "SimpleThermalTestRepository"
+        if check_tags:
+            assert len(attribute.definition.tags) == 0
     else:
         assert attribute.definition is None
 
@@ -77,7 +82,7 @@ def verify_plant_double_attribute(
     id: uuid.UUID,
     is_definition: bool,
 ):
-    verify_plant_base_attribute(attribute, name, id, is_definition)
+    verify_plant_base_attribute(attribute, name, id, is_definition, False)
 
     if is_definition:
         assert attribute.definition.description == ""
@@ -88,6 +93,9 @@ def verify_plant_double_attribute(
         assert attribute.definition.minimum_value == -sys.float_info.max
         assert attribute.definition.maximum_value == sys.float_info.max
         assert attribute.definition.unit_of_measurement is None
+
+        assert len(attribute.definition.tags) == 2
+        assert sorted(attribute.definition.tags) == ["Tag1", "Tag3"]
     else:
         assert attribute.definition is None
 
@@ -987,7 +995,7 @@ def test_search_for_attributes_with_invalid_target(session, invalid_target):
     Check that 'search_for_timeseries_attributes' and 'search_for_attributes'
     with invalid target (meaning incorrect start object path or ID) will throw.
     """
-    error_message_regex = "(not found)|(Invalid type)"
+    error_message_regex = "(not found)|(invalid type)"
     query = "{*}.TsCalcAtt"
 
     with pytest.raises(grpc.RpcError, match=error_message_regex):

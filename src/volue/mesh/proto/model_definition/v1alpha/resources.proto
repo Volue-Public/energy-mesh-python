@@ -9,10 +9,6 @@ import "volue/mesh/proto/type/resources.proto";
 
 
 message AttributeType {
-  message EnumerationValues {
-    repeated EnumerationValue values = 1;
-  }
-
   volue.mesh.grpc.type.Guid id = 1;
   string path = 2;
   string name = 3;
@@ -32,8 +28,6 @@ message AttributeType {
   optional volue.mesh.grpc.type.MeshId target_object_definition_id = 9;
   // For integer, double, bool, string, UTC time, XY set attribute types.
   optional string expression = 10;
-  // For enumeration attributes types.
-  optional EnumerationValues enumeration_values = 11;
 }
 
 enum AttributeValueType {
@@ -47,9 +41,8 @@ enum AttributeValueType {
   ATTRIBUTE_VALUE_TYPE_OWNERSHIP_RELATION = 7;
   ATTRIBUTE_VALUE_TYPE_LINK_RELATION = 8;
   ATTRIBUTE_VALUE_TYPE_VERSIONED_LINK_RELATION = 9;
-  ATTRIBUTE_VALUE_TYPE_ENUMERATION = 10;
-  ATTRIBUTE_VALUE_TYPE_RATING_CURVE = 11;
-  ATTRIBUTE_VALUE_TYPE_XY_SET = 12;
+  ATTRIBUTE_VALUE_TYPE_RATING_CURVE = 10;
+  ATTRIBUTE_VALUE_TYPE_XY_SET = 11;
 }
 
 message AttributeDefinition {
@@ -59,7 +52,7 @@ message AttributeDefinition {
 
   string description = 4;
   // Tags are inherited from the attribute type.
-  repeated string tags = 5;
+  repeated Tag tags = 5;
 
   // If an attribute definition has more than one namespace,
   // they are concatenated with dots '.', e.g.:
@@ -89,8 +82,7 @@ message AttributeDefinition {
     OwnershipRelationAttributeDefinition ownership_relation_definition = 17;
     // Applicable to all types of link relations.
     LinkRelationAttributeDefinition link_relation_definition = 18;
-    EnumerationAttributeDefinition enumeration_definition = 19;
-    RatingCurveAttributeDefinition rating_curve_definition = 20;
+    RatingCurveAttributeDefinition rating_curve_definition = 19;
   }
 
   volue.mesh.grpc.type.MeshId attribute_type_id = 1000;
@@ -156,10 +148,6 @@ message OwnershipRelationAttributeDefinition {
 message LinkRelationAttributeDefinition {
   string target_object_type_name = 1;
   volue.mesh.grpc.type.MeshId target_object_definition_id = 2;
-}
-
-message EnumerationAttributeDefinition {
-  EnumerationValue default_value = 1;
 }
 
 message RatingCurveAttributeDefinition {
@@ -243,26 +231,6 @@ message TagUsage {
   }
 }
 
-message Enumeration {
-  volue.mesh.grpc.type.Guid id = 1;
-  string path = 2;
-  string name = 3;
-  string description = 4;
-
-  repeated EnumerationValue values = 5;
-}
-
-message EnumerationValue {
-  // ID AND PATH MUST NOT be set when creating new enumeration values via
-  // `CreateEnumerationAttributeType`, `UpdateEnumerationAttributeType` or
-  // `CreateEnumerationValue`.
-  volue.mesh.grpc.type.Guid id = 1;
-  string path = 2;
-
-  string name = 3;
-  string description = 4;
-}
-
 message UnitOfMeasurement {
   volue.mesh.grpc.type.Guid id = 1;
   string name = 2;
@@ -273,6 +241,8 @@ message UnitOfMeasurement {
 //
 // Extended metadata is a pair: category name and a JSON object (expressed in
 // protobuf as `google.protobuf.Struct`).
+//
+// JSON object when serialized to string cannot exceed 4000 characters.
 //
 // If a given attribute definition, object definition or namespace has more
 // than one extended metadata, then the category names must be unique.

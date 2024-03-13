@@ -33,9 +33,7 @@ import "volue/mesh/proto/type/resources.proto";
 //
 //   Every `attribute definition` that is based on an attribute type will
 //   inherit name, description and unit of measurement (if applicable) of
-//   that attribute type. For enumeration attribute types the definitions
-//   will also inherit default value if not provided explicitly when creating
-//   the attribute definition.
+//   that attribute type.
 //
 //   Updates of all above mentioned properties (name, description and unit of
 //   measurement) can be done on attribute definition level. In such case the
@@ -52,9 +50,9 @@ import "volue/mesh/proto/type/resources.proto";
 //   one of the following types:
 //   - String, boolean, int, double or UTC time. These are known as
 //     _simple types_.
-//   - XY set, enumeration, rating curve or `time series attribute` (time
-//     series can be a calculation or a reference to a `physical time series`
-//     or `virtual time series` from resource). These are known as
+//   - XY set, rating curve or `time series attribute` (time series can be
+//     a calculation or a reference to a `physical time series` or
+//     `virtual time series` from resource). These are known as
 //     _complex types_.
 //   - Ownership or link relation to an object definition.
 //
@@ -86,7 +84,6 @@ service ModelDefinitionService {
   rpc SearchAttributeTypes(SearchAttributeTypesRequest) returns (stream AttributeType) {}
   rpc GetAttributeType(GetAttributeTypeRequest) returns (AttributeType) {}
 
-  rpc CreateEnumerationAttributeType(CreateEnumerationAttributeTypeRequest) returns (AttributeType) {}
   rpc CreateLinkRelationAttributeType(CreateRelationAttributeTypeRequest) returns (AttributeType) {}
   rpc CreateOwnershipRelationAttributeType(CreateRelationAttributeTypeRequest) returns (AttributeType) {}
   rpc CreateRatingCurveAttributeType(CreateRatingCurveAttributeTypeRequest) returns (AttributeType) {}
@@ -94,7 +91,6 @@ service ModelDefinitionService {
   rpc CreateTimeseriesAttributeType(CreateTimeseriesAttributeTypeRequest) returns (AttributeType) {}
   rpc CreateXySetAttributeType(CreateXySetAttributeTypeRequest) returns (AttributeType) {}
 
-  rpc UpdateEnumerationAttributeType(UpdateEnumerationAttributeTypeRequest) returns (UpdateAttributeTypeResponse) {}
   rpc UpdateRatingCurveAttributeType(UpdateRatingCurveAttributeTypeRequest) returns (UpdateAttributeTypeResponse) {}
   // Update existing ownership or link relation attribute type.
   rpc UpdateRelationAttributeType(UpdateRelationAttributeTypeRequest) returns (UpdateAttributeTypeResponse) {}
@@ -123,7 +119,6 @@ service ModelDefinitionService {
   // When an attribute definition is added to an object definition it
   // will be visible in all objects' in the model.
 
-  rpc AddEnumerationAttributeDefinition(AddEnumerationAttributeDefinitionRequest) returns (AttributeDefinition) {}
   rpc AddRatingCurveAttributeDefinition(AddRatingCurveAttributeDefinitionRequest) returns (AttributeDefinition) {}
   rpc AddLinkRelationAttributeDefinition(AddLinkRelationAttributeDefinitionRequest) returns (AttributeDefinition) {}
   rpc AddOwnershipRelationAttributeDefinition(AddOwnershipRelationAttributeDefinitionRequest) returns (AttributeDefinition) {}
@@ -131,7 +126,6 @@ service ModelDefinitionService {
   rpc AddTimeseriesAttributeDefinition(AddTimeseriesAttributeDefinitionRequest) returns (AttributeDefinition) {}
   rpc AddXySetAttributeDefinition(AddXySetAttributeDefinitionRequest) returns (AttributeDefinition) {}
 
-  rpc UpdateEnumerationAttributeDefinition(UpdateEnumerationAttributeDefinitionRequest) returns (UpdateAttributeDefinitionResponse) {}
   rpc UpdateRatingCurveAttributeDefinition(UpdateRatingCurveAttributeDefinitionRequest) returns (UpdateAttributeDefinitionResponse) {}
   // Update existing ownership or link relation attribute type.
   rpc UpdateRelationAttributeDefinition(UpdateRelationAttributeDefinitionRequest) returns (UpdateAttributeDefinitionResponse) {}
@@ -161,46 +155,17 @@ service ModelDefinitionService {
   // `DeleteAttributeDefinition` or `DeleteNamespace` RPCs.
   rpc DeleteNamespace(DeleteNamespaceRequest) returns (DeleteNamespaceResponse) {}
 
-  // Tag is a special type of enumeration that can be added to attribute
-  // types and object definitions for grouping and filtering purposes.
+  // Tags can be added to attribute types and object definitions for grouping
+  // and filtering purposes.
 
-  // List all tags in the given model definition.
-  rpc ListTags(ListTagsRequest) returns (ListTagsResponse) {}
-
-  // Get specific tag from the model definition.
-  rpc GetTag(GetTagRequest) returns (Tag) {}
-
+  rpc CreateTag(CreateTagRequest) returns (Tag) {}
   // Search for `AttributeType`s or `ObjectDefinition`s that are using
   // specific tag.
   rpc SearchTagUsages(SearchTagUsagesRequest) returns (stream TagUsage) {}
-
-  // Create new tag in the given model definition.
-  rpc CreateTag(CreateTagRequest) returns (Tag) {}
-
-  // Update existing tag in the model definition.
+  rpc ListTags(ListTagsRequest) returns (ListTagsResponse) {}
+  rpc GetTag(GetTagRequest) returns (Tag) {}
   rpc UpdateTag(UpdateTagRequest) returns (UpdateTagResponse) {}
-
-  // Delete existing tag from the model definition.
   rpc DeleteTag(DeleteTagRequest) returns (DeleteTagResponse) {}
-
-  rpc GetEnumerationValue(GetEnumerationValueRequest) returns (EnumerationValue) {}
-
-  // Create new enumeration value in a given enumeration attribute type.
-  rpc CreateEnumerationValue(CreateEnumerationValueRequest) returns (EnumerationValue) {}
-
-  // Update existing enumeration value in a given enumeration attribute type.
-  rpc UpdateEnumerationValue(UpdateEnumerationValueRequest) returns (UpdateEnumerationValueResponse) {}
-
-  // Delete existing enumeration value from a given enumeration attribute type.
-  //
-  // If the given enumeration value is used in some enumeration attribute,
-  // then the delete operation will not succeed. In such cases the user should
-  // use `SearchEnumerationValueUsages` RPC to get list of all enumeration
-  // attributes and then use `UpdateEnumerationAttribute`,
-  // `UpdateEnumerationAttributeDefinition` or `UpdateEnumerationAttributeType`
-  // to change the enumeration value the attribute, attribute definition or
-  // attribute type is using.
-  rpc DeleteEnumerationValue(DeleteEnumerationValueRequest) returns (DeleteEnumerationValueResponse) {}
 
   rpc ListUnitsOfMeasurement(ListUnitsOfMeasurementRequest) returns (ListUnitsOfMeasurementResponse) {}
 
@@ -366,24 +331,6 @@ message GetAttributeTypeRequest {
   google.protobuf.FieldMask field_mask = 3;
 }
 
-message CreateEnumerationAttributeTypeRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Namespace OR model definition (which is also a namespace).
-  volue.mesh.grpc.type.MeshId name_space_id = 2;
-
-  string name = 3;
-  string description = 4;
-
-  repeated EnumerationValue values = 5;
-
-  // Zero based index of the default value in values.
-  int32 default_value_index = 6;
-
-  // List of tags that will be added to the attribute definition.
-  repeated volue.mesh.grpc.type.Guid tag_ids = 7;
-}
-
 message CreateRelationAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
@@ -464,31 +411,6 @@ message CreateXySetAttributeTypeRequest {
   string description = 4;
   string expression = 5;
   repeated volue.mesh.grpc.type.Guid tag_ids = 6;
-}
-
-message UpdateEnumerationAttributeTypeRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // ID of the attribute type to be updated.
-  volue.mesh.grpc.type.MeshId attribute_type_id = 2;
-
-  // Only paths set in the field mask are updated.
-  // For example to update attributes's type name:
-  //   field_mask = ['new_name']
-  //   new_name = 'new name'
-  google.protobuf.FieldMask field_mask = 3;
-
-  // The new name will be set also for all existing attribute definitions and
-  // attributes based on the given attribute type.
-  string new_name = 4;
-  string new_description = 5;
-
-  repeated EnumerationValue new_values = 6;
-
-  // Zero based index of the new default value in values.
-  int32 new_default_value_index = 7;
-
-  repeated volue.mesh.grpc.type.Guid new_tag_ids = 8;
 }
 
 message UpdateRatingCurveAttributeTypeRequest {
@@ -664,20 +586,6 @@ message SearchNamespacesRequest {
   google.protobuf.FieldMask field_mask = 4;
 }
 
-message AddEnumerationAttributeDefinitionRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // ID of the attribute type serving as a base for the attribute definition to be added.
-  volue.mesh.grpc.type.MeshId attribute_type_id = 2;
-
-  // ID of the object definition to connect to.
-  volue.mesh.grpc.type.MeshId object_definition_id = 3;
-
-  // If `description` is empty, the attribute type's description value is used.
-  string description = 4;
-  volue.mesh.grpc.type.MeshId default_enumeration_value_id = 5;
-}
-
 message AddRatingCurveAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
@@ -771,23 +679,6 @@ message AddXySetAttributeDefinitionRequest {
   optional XySetAxis z_axis = 7;
 
   bool versioned = 8;
-}
-
-message UpdateEnumerationAttributeDefinitionRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // ID of the attribute definition to be updated.
-  volue.mesh.grpc.type.MeshId attribute_definition_id = 2;
-
-  // Only paths set in the field mask are updated.
-  // For example to update attributes's type description:
-  //   field_mask = ['new_description']
-  //   new_description = 'new description'
-  google.protobuf.FieldMask field_mask = 3;
-
-  string new_description = 4;
-
-  volue.mesh.grpc.type.MeshId new_default_value_id = 5;
 }
 
 message UpdateRatingCurveAttributeDefinitionRequest {
@@ -1017,86 +908,6 @@ message DeleteTagRequest {
 
 message DeleteTagResponse {}
 
-message ListEnumerationsRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Namespace OR model definition (which is also a namespace).
-  volue.mesh.grpc.type.MeshId name_space_id = 2;
-}
-
-message ListEnumerationsResponse {
-  repeated Enumeration enumerations = 1;
-}
-
-message GetEnumerationRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId enumeration_id = 2;
-}
-
-message SearchEnumerationUsagesRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId enumeration_id = 2;
-
-  // Defines what attribute definition information should be included in the
-  // response. If not set all information will be included.
-  //
-  // An array containing `AttributeDefinition` message field names to be
-  // returned in the response.
-  // For example to return only ID, name and enumeration attribute definition
-  // specific information (i.e.: `EnumerationAttributeDefinition`):
-  //   field_mask = ['id', 'name', 'definition']
-  google.protobuf.FieldMask field_mask = 3;
-}
-
-message DeleteEnumerationRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Identifier of the enumeration to be deleted.
-  volue.mesh.grpc.type.MeshId enumeration_id = 2;
-}
-
-message DeleteEnumerationResponse {}
-
-message GetEnumerationValueRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId enumeration_value_id = 2;
-}
-
-message CreateEnumerationValueRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Identifier of the enumeration attribute type where the value will be added.
-  volue.mesh.grpc.type.MeshId enumeration_attribute_type_id = 2;
-  EnumerationValue new_value = 3;
-}
-
-message UpdateEnumerationValueRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // ID of the enumeration value to be updated.
-  volue.mesh.grpc.type.MeshId enumeration_value_id = 2;
-
-  // Only paths set in the field mask are updated.
-  // For example to update enumeration's value name:
-  //   field_mask = ['new_name']
-  //   new_name = 'new enumeration value name'
-  google.protobuf.FieldMask field_mask = 3;
-
-  string new_name = 4;
-  string new_description = 5;
-}
-
-message UpdateEnumerationValueResponse {}
-
-message DeleteEnumerationValueRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // ID of the enumeration value to be deleted.
-  volue.mesh.grpc.type.MeshId enumeration_value_id = 2;
-}
-
-message DeleteEnumerationValueResponse {}
-
 message ListUnitsOfMeasurementRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 }
@@ -1106,9 +917,11 @@ message ListUnitsOfMeasurementResponse {
 }
 
 message GetExtendedMetadataRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
   // Identifier of the attribute defintion, object definition or namespace to
   // get the extended metadata from.
-  volue.mesh.grpc.type.MeshId id = 1;
+  volue.mesh.grpc.type.MeshId id = 2;
 }
 
 message GetExtendedMetadataResponse {
@@ -1116,13 +929,15 @@ message GetExtendedMetadataResponse {
 }
 
 message SetExtendedMetadataRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
   // Identifier of the attribute defintion, object definition or namespace
   // where the extended metadata should be set.
-  volue.mesh.grpc.type.MeshId id = 1;
+  volue.mesh.grpc.type.MeshId id = 2;
 
   // List of extended metadata that will be added to the given target.
   // If set then all old extended metadata will be replaced by the new ones.
-  repeated ExtendedMetadata metadata = 2;
+  repeated ExtendedMetadata metadata = 3;
 }
 
 message SetExtendedMetadataResponse {}

@@ -122,7 +122,7 @@ class AttributeBase:
             self.description: str = proto_definition.description
             self.tags: List[str] = []
             for tag in proto_definition.tags:
-                self.tags.append(tag)
+                self.tags.append(tag.name)
             self.namespace: str = proto_definition.name_space
             self.type_name: str = proto_definition.type_name
             self.minimum_cardinality: int = proto_definition.minimum_cardinality
