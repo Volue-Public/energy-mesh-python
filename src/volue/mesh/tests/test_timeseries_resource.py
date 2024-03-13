@@ -40,7 +40,7 @@ def get_virtual_timeseries():
         unit_of_measurement=None,
         path=f"Resource/SimpleThermalTestResourceCatalog/{ts_name}",
         name=ts_name,
-        virtual_timeseries_expression="## = 5\n",
+        virtual_timeseries_expression="##= %'/SimpleThermalTestResourceCatalog/plantTimeSeriesRaw' + 3\n",
     )
     return test_timeseries
 
@@ -63,12 +63,14 @@ def test_get_timeseries_resource(session, timeseries):
     assert timeseries_info.curve_type == timeseries.curve_type
     assert timeseries_info.resolution == timeseries.resolution
     assert timeseries_info.unit_of_measurement == timeseries.unit_of_measurement
-    # TODO: Enable once SimpleThermalModel could be populated with VTS
-    #      expressions (serialization version needs to be at least 24).
-    # if timeseries.virtual_timeseries_expression is None:
-    #     assert timeseries_info.virtual_timeseries_expression == ""
-    # else:
-    #     assert timeseries_info.virtual_timeseries_expression == timeseries.virtual_timeseries_expression
+
+    if timeseries.virtual_timeseries_expression is None:
+        assert timeseries_info.virtual_timeseries_expression == ""
+    else:
+        assert (
+            timeseries_info.virtual_timeseries_expression
+            == timeseries.virtual_timeseries_expression
+        )
 
 
 @pytest.mark.database
