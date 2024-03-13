@@ -39,7 +39,7 @@ from ._common import (
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_utcinterval,
-    _object_to_proto_field_mask_no_attribute,
+    _object_to_proto_field_mask,
 )
 from ._mesh_id import (
     _to_proto_attribute_mesh_id,
@@ -1061,7 +1061,7 @@ class Session(abc.ABC):
             attribute_field_mask=_to_proto_attribute_field_mask(
                 full_attribute_info, attributes_filter
             ),
-            object_field_mask=_object_to_proto_field_mask_no_attribute(
+            object_field_mask=_object_to_proto_field_mask(
                 attributes_filter
             ),
         )
@@ -1083,7 +1083,7 @@ class Session(abc.ABC):
             attribute_field_mask=_to_proto_attribute_field_mask(
                 full_attribute_info, attributes_filter
             ),
-            object_field_mask=_object_to_proto_field_mask_no_attribute(
+            object_field_mask=_object_to_proto_field_mask(
                 attributes_filter
             ),
             query=query,

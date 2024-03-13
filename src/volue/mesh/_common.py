@@ -462,9 +462,6 @@ def _to_proto_attribute_masks(
     attributes_masks = core.v1alpha.resources_pb2.AttributesMasks()
 
     if attributes_filter is not None:
-        if attributes_filter.return_no_attributes is True:
-            return None
-
         if attributes_filter.name_mask is not None:
             attributes_masks.name_mask.CopyFrom(
                 field_mask_pb2.FieldMask(paths=attributes_filter.name_mask)
@@ -481,10 +478,10 @@ def _to_proto_attribute_masks(
     return attributes_masks
 
 
-def _object_to_proto_field_mask_no_attribute(
+def _object_to_proto_field_mask(
     attributes_filter: Optional[AttributesFilter],
 ) -> Optional[field_mask_pb2.FieldMask]:
-    if attributes_filter is None or attributes_filter.return_no_attributes is False:
+    if attributes_filter is None or not attributes_filter.return_no_attributes:
         return None
     fields = [
         field.name for field in core.v1alpha.resources_pb2.Object.DESCRIPTOR.fields
@@ -496,10 +493,13 @@ def _object_to_proto_field_mask_no_attribute(
 def _to_proto_attribute_field_mask(
     full_attribute_info: bool, attributes_filter: Optional[AttributesFilter] = None
 ) -> Optional[field_mask_pb2.FieldMask]:
-    if attributes_filter is not None and attributes_filter.return_no_attributes is True:
+    # If attributes_filter.return_no_attributes is set to True we must not provide attribute field mask,
+    # at the same time we can't expect user to provide full_attribute_info==True. It would be very counter intuitive
+    # to request no attributes and have to explicitly request full attributes info
+    if attributes_filter is not None and attributes_filter.return_no_attributes:
         return None
 
-    if full_attribute_info is True:
+    if full_attribute_info:
         return None
 
     return field_mask_pb2.FieldMask(
