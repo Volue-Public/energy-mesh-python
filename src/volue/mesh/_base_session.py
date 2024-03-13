@@ -1061,9 +1061,7 @@ class Session(abc.ABC):
             attribute_field_mask=_to_proto_attribute_field_mask(
                 full_attribute_info, attributes_filter
             ),
-            object_field_mask=_object_to_proto_field_mask(
-                attributes_filter
-            ),
+            object_field_mask=_object_to_proto_field_mask(attributes_filter),
         )
         return request
 
@@ -1083,9 +1081,7 @@ class Session(abc.ABC):
             attribute_field_mask=_to_proto_attribute_field_mask(
                 full_attribute_info, attributes_filter
             ),
-            object_field_mask=_object_to_proto_field_mask(
-                attributes_filter
-            ),
+            object_field_mask=_object_to_proto_field_mask(attributes_filter),
             query=query,
         )
         return request

@@ -494,8 +494,8 @@ def _to_proto_attribute_field_mask(
     full_attribute_info: bool, attributes_filter: Optional[AttributesFilter] = None
 ) -> Optional[field_mask_pb2.FieldMask]:
     # If attributes_filter.return_no_attributes is set to True we must not provide attribute field mask,
-    # at the same time we can't expect user to provide full_attribute_info==True. It would be very counter intuitive
-    # to request no attributes and have to explicitly request full attributes info
+    # at the same time we can't expect user to provide full_attribute_info set to True. It would be very counter intuitive
+    # to request no attributes and have to explicitly request full attributes info.
     if attributes_filter is not None and attributes_filter.return_no_attributes:
         return None
 
