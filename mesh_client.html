@@ -191,8 +191,9 @@
 <p>Depending on the request it may take a long time to process by the server. In such cases the client may use package <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a> which is implemented using the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
 <p>This concept of concurrency can be demonstrated using the following examples. Notice the output of the different examples: 1, 2, A, B vs 1, A, 2, B.</p>
 <p>Using <a class="reference internal" href="api.html#module-volue.mesh"><span class="std std-ref">volue.mesh</span></a>.Connection:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -232,8 +233,10 @@
 </div>
 <p>Using <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -294,16 +297,16 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 </div>
 <p>Please refer to the example <cite>timeseries_operations.py</cite> to learn how to work with time zones. Presented below:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">helpers</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>

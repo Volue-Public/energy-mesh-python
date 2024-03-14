@@ -203,6 +203,7 @@
 <div class="section" id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
+
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
@@ -235,9 +236,10 @@
 <h2>Authorization<a class="headerlink" href="#authorization" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Connection</span>
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">Connection</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
 
 
 <span class="k">def</span> <span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">authentication_parameters</span><span class="p">):</span>
@@ -308,8 +310,9 @@
 </div>
 <div class="section" id="connect">
 <h2>Connect<a class="headerlink" href="#connect" title="Permalink to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -351,8 +354,10 @@
 <div class="section" id="connect-asynchronously">
 <h2>Connect, asynchronously<a class="headerlink" href="#connect-asynchronously" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
+
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
@@ -398,8 +403,9 @@
 <h2>Connect using external access token<a class="headerlink" href="#connect-using-external-access-token" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -452,9 +458,10 @@
 <h2>Get version<a class="headerlink" href="#get-version" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 
+<span class="kn">import</span> <span class="nn">helpers</span>
+
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
 
 
 <span class="k">def</span> <span class="nf">sync_get_version</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -501,8 +508,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
@@ -567,8 +575,9 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">read_timeseries_points_async</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
@@ -633,9 +642,9 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">helpers</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">process_timeseries_values</span><span class="p">(</span><span class="n">arrow_table</span><span class="p">):</span>
@@ -736,6 +745,7 @@
 <div class="section" id="search-for-time-series-attributes">
 <h2>Search for time series attributes<a class="headerlink" href="#search-for-time-series-attributes" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
+
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span>
 
 
@@ -852,8 +862,9 @@
 </div>
 <div class="section" id="traverse-model">
 <h2>Traverse model<a class="headerlink" href="#traverse-model" title="Permalink to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
 
 <span class="n">leaves</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -918,16 +929,16 @@
 <div class="section" id="using-time-series-with-pandas">
 <h2>Using time series with pandas<a class="headerlink" href="#using-time-series-with-pandas" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span> <span class="nn">helpers</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc</span> <span class="kn">import</span> <span class="n">transform</span> <span class="k">as</span> <span class="n">Transform</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.common</span> <span class="kn">import</span> <span class="n">Timezone</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -1071,10 +1082,10 @@
 <h2>Working with link relations<a class="headerlink" href="#working-with-link-relations" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
+<span class="kn">import</span> <span class="nn">helpers</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">LinkRelationVersion</span><span class="p">,</span> <span class="n">VersionedLinkRelationAttribute</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
 
 <span class="n">OBJECT_PATH</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
 <span class="n">ONE_TO_ONE_PATH</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.SimpleReference&quot;</span>
@@ -1287,8 +1298,9 @@
 </div>
 <div class="section" id="working-with-model-objects-and-attributes">
 <h2>Working with model (objects and attributes)<a class="headerlink" href="#working-with-model-objects-and-attributes" title="Permalink to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributesFilter</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
-<span class="kn">import</span> <span class="nn">helpers</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributesFilter</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
@@ -1374,8 +1386,9 @@
 <h2>Working with rating curves<a class="headerlink" href="#working-with-rating-curves" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">RatingCurveSegment</span><span class="p">,</span> <span class="n">RatingCurveVersion</span>
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">RatingCurveSegment</span><span class="p">,</span> <span class="n">RatingCurveVersion</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
@@ -1480,7 +1493,9 @@
 <div class="section" id="working-with-sessions">
 <h2>Working with sessions<a class="headerlink" href="#working-with-sessions" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+
 <span class="kn">import</span> <span class="nn">helpers</span>
+
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
@@ -1530,10 +1545,9 @@
 <h2>Working with XY sets<a class="headerlink" href="#working-with-xy-sets" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
-
 <span class="kn">import</span> <span class="nn">helpers</span>
 
+<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
 <span class="n">OBJECT_PATH</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1&quot;</span>
 <span class="n">UNVERSIONED_PATH</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.XYSetAtt&quot;</span>
@@ -1597,13 +1611,11 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
+<span class="kn">import</span> <span class="nn">helpers</span>
 <span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 <span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
-
-<span class="kn">import</span> <span class="nn">helpers</span>
-
+<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
 <span class="c1"># Define the time series identifier, it can be:</span>
 <span class="c1"># - time series key of a physical time series</span>
@@ -1778,10 +1790,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
-
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
+<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
 
 <span class="k">def</span> <span class="nf">sync_run_simulation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
@@ -1836,10 +1848,10 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
-<span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
-
 <span class="kn">import</span> <span class="nn">helpers</span>
+
+<span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
+<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
 
 <span class="k">def</span> <span class="nf">sync_run_inflow_calculation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>

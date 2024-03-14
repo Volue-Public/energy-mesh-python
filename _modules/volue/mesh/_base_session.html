@@ -207,13 +207,13 @@
     <span class="n">XyCurve</span><span class="p">,</span>
     <span class="n">XySet</span><span class="p">,</span>
     <span class="n">_datetime_to_timestamp_pb2</span><span class="p">,</span>
+    <span class="n">_object_to_proto_field_mask</span><span class="p">,</span>
     <span class="n">_read_proto_reply</span><span class="p">,</span>
-    <span class="n">_to_proto_attribute_masks</span><span class="p">,</span>
     <span class="n">_to_proto_attribute_field_mask</span><span class="p">,</span>
+    <span class="n">_to_proto_attribute_masks</span><span class="p">,</span>
     <span class="n">_to_proto_curve_type</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
-    <span class="n">_object_to_proto_field_mask</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">._mesh_id</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">_to_proto_attribute_mesh_id</span><span class="p">,</span>
@@ -1324,7 +1324,6 @@
     <span class="k">def</span> <span class="nf">_prepare_get_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">:</span>
-
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">attribute_id</span><span class="o">=</span><span class="n">_to_proto_attribute_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
@@ -1339,7 +1338,6 @@
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchAttributesRequest</span><span class="p">:</span>
-
         <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">SearchAttributesRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">start_object_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
