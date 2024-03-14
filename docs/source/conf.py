@@ -1,9 +1,10 @@
+import os
+import sys
+
 import sphinx_rtd_theme
 
 # -- Path setup --------------------------------------------------------------
 
-import os
-import sys
 
 ROOT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..")
 VOLUE_FOLDER = os.path.join(ROOT_FOLDER, "src", "volue")

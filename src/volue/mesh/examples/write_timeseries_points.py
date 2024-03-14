@@ -2,13 +2,11 @@ import asyncio
 import uuid
 from datetime import datetime
 
+import helpers
 import pyarrow as pa
 
-from volue import mesh
 import volue.mesh.aio
-
-import helpers
-
+from volue import mesh
 
 # Define the time series identifier, it can be:
 # - time series key of a physical time series

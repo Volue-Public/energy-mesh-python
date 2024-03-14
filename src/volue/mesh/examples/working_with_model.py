@@ -1,5 +1,6 @@
-from volue.mesh import AttributesFilter, Connection, OwnershipRelationAttribute
 import helpers
+
+from volue.mesh import AttributesFilter, Connection, OwnershipRelationAttribute
 
 
 def main(address, port, tls_root_cert):

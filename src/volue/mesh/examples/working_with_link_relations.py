@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 
+import helpers
 from dateutil import tz
 
 from volue.mesh import Connection, LinkRelationVersion, VersionedLinkRelationAttribute
-import helpers
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 ONE_TO_ONE_PATH = OBJECT_PATH + ".SimpleReference"

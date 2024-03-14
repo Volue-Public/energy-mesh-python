@@ -1,5 +1,6 @@
-from volue.mesh import Connection, OwnershipRelationAttribute, TimeseriesAttribute
 import helpers
+
+from volue.mesh import Connection, OwnershipRelationAttribute, TimeseriesAttribute
 
 keyword = "Income"
 local_expressions = {}

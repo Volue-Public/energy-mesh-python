@@ -2,9 +2,9 @@ import asyncio
 from datetime import datetime
 
 import grpc
+import helpers
 
 from volue.mesh.aio import Connection
-import helpers
 
 
 async def process_timeseries_values(arrow_table):
