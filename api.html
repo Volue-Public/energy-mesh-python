@@ -138,10 +138,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.update_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.update_external_access_token()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#volue.mesh.Credentials"><code class="docutils literal notranslate"><span class="pre">Credentials</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Credentials.__init__"><code class="docutils literal notranslate"><span class="pre">Credentials.__init__()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#volue.mesh.LinkRelationAttribute"><code class="docutils literal notranslate"><span class="pre">LinkRelationAttribute</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition"><code class="docutils literal notranslate"><span class="pre">LinkRelationAttribute.LinkRelationAttributeDefinition</span></code></a></li>
 </ul>
@@ -1547,22 +1543,6 @@ to each server request.</p>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – Error message raised if the connection is not using
     external access token.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.Credentials">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Credentials</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_pem_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_credentials.html#Credentials"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Security details for connecting to a Mesh server.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Credentials.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_pem_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_credentials.html#Credentials.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Credentials.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>root_pem_certificate</strong> – PEM-encoded root certificate(s) as a byte string. If this argument is set then a secured connection will be created, otherwise it will be an insecure connection.</p>
 </dd>
 </dl>
 </dd></dl>
