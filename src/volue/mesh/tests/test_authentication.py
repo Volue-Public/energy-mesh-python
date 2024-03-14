@@ -4,6 +4,7 @@ Tests for volue.mesh.Authentication
 
 import sys
 
+import grpc
 import pytest
 import pytest_asyncio
 
@@ -17,12 +18,14 @@ def auth_metadata_plugin(mesh_test_config):
     Note: Depending on the test-case there will be some tokens left (not revoked) in Mesh server.
     """
     assert mesh_test_config.creds_type == "kerberos"
-    credentials = mesh.Credentials(mesh_test_config.tls_root_certs)
+    channel_credentials = grpc.ssl_channel_credentials(
+        root_certificates=mesh_test_config.tls_root_certs
+    )
     authentication_parameters = mesh.Authentication.Parameters(
         mesh_test_config.krb5_svc, mesh_test_config.krb5_usr
     )
     return mesh.Authentication(
-        authentication_parameters, mesh_test_config.address, credentials.channel_creds
+        authentication_parameters, mesh_test_config.address, channel_credentials
     )
 
 

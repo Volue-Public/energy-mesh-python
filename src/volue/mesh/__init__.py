@@ -24,14 +24,12 @@ from ._common import (
     XySet,
 )
 from ._connection import Connection
-from ._credentials import Credentials
 
 __title__ = "volue.mesh"
 __author__ = "Volue AS"
 
 __all__ = [
     "Authentication",
-    "Credentials",
     "Connection",
     "AttributeBase",
     "LinkRelationAttribute",
