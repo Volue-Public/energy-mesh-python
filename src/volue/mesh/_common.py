@@ -5,6 +5,7 @@ Common classes/enums/etc. for the Mesh API.
 from __future__ import annotations
 
 import datetime
+import logging
 import uuid
 from dataclasses import dataclass, fields
 from typing import List, Optional, Tuple
@@ -289,6 +290,33 @@ class LinkRelationVersion:
 
     def __iter__(self):
         return (getattr(self, field.name) for field in fields(self))
+
+
+@dataclass
+class LogMessage:
+    """Represents a log message from the Mesh server.
+
+    These are returned as a response from hydro simulations and inflow
+    calculations.
+    """
+
+    level: int
+    message: str
+
+    @classmethod
+    def _from_proto(cls, proto):
+        if proto.level == type.resources_pb2.LogLevel.TRACE:
+            level = logging.DEBUG
+        elif proto.level == type.resources_pb2.LogLevel.DEBUG:
+            level = logging.DEBUG
+        elif proto.level == type.resources_pb2.LogLevel.INFO:
+            level = logging.INFO
+        elif proto.level == type.resources_pb2.LogLevel.WARN:
+            level = logging.WARNING
+        elif proto.level == type.resources_pb2.LogLevel.ERR:
+            level = logging.ERROR
+
+        return cls(level, proto.message)
 
 
 def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[type.resources_pb2.Guid]:

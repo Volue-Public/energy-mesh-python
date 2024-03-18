@@ -21,7 +21,10 @@ def sync_run_inflow_calculation(address, port, root_pem_certificate):
             for response in session.run_inflow_calculation(
                 "Mesh", "Area", "WaterCourse", start_time, end_time
             ):
-                pass
+                if isinstance(response, mesh.LogMessage):
+                    print(
+                        f"[{logging.getLevelName(response.level)}] {response.message}"
+                    )
             print("done")
         except Exception as e:
             print(f"failed to run inflow calculation: {e}")
@@ -41,7 +44,10 @@ async def async_run_inflow_calculation(address, port, root_pem_certificate):
             async for response in session.run_inflow_calculation(
                 "Mesh", "Area", "WaterCourse", start_time, end_time
             ):
-                pass
+                if isinstance(response, mesh.LogMessage):
+                    print(
+                        f"[{logging.getLevelName(response.level)}] {response.message}"
+                    )
             print("done")
         except Exception as e:
             print(f"failed to run inflow calculation: {e}")
