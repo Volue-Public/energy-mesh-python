@@ -1810,7 +1810,10 @@
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span>
                 <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span> <span class="s2">&quot;Cases/Demo&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
             <span class="p">):</span>
-                <span class="k">pass</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to run simulation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1830,7 +1833,10 @@
             <span class="k">async</span> <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span>
                 <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span> <span class="s2">&quot;Cases/Demo&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
             <span class="p">):</span>
-                <span class="k">pass</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to run simulation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1868,7 +1874,10 @@
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">run_inflow_calculation</span><span class="p">(</span>
                 <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span> <span class="s2">&quot;Area&quot;</span><span class="p">,</span> <span class="s2">&quot;WaterCourse&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
             <span class="p">):</span>
-                <span class="k">pass</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to run inflow calculation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1888,7 +1897,10 @@
             <span class="k">async</span> <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">run_inflow_calculation</span><span class="p">(</span>
                 <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span> <span class="s2">&quot;Area&quot;</span><span class="p">,</span> <span class="s2">&quot;WaterCourse&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
             <span class="p">):</span>
-                <span class="k">pass</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to run inflow calculation: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

@@ -179,6 +179,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
@@ -463,6 +464,33 @@
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="LogMessage"><a class="viewcode-back" href="../../../api.html#volue.mesh.LogMessage">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">LogMessage</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a log message from the Mesh server.</span>
+
+<span class="sd">    These are returned as a response from hydro simulations and inflow</span>
+<span class="sd">    calculations.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">proto</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">TRACE</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+        <span class="k">elif</span> <span class="n">proto</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+        <span class="k">elif</span> <span class="n">proto</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+        <span class="k">elif</span> <span class="n">proto</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">WARN</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
+        <span class="k">elif</span> <span class="n">proto</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">LogLevel</span><span class="o">.</span><span class="n">ERR</span><span class="p">:</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
