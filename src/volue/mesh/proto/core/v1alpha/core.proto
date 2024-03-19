@@ -785,14 +785,14 @@ message UpdateXySetsRequest {
 message UpdateXySetsResponse {}
 
 message UpdateLogLevelRequest {
-  LogLevel new_log_level = 1;
+  volue.mesh.grpc.type.LogLevel new_log_level = 1;
 }
 
 message UpdateLogLevelResponse {}
 
 message GetLogLevelResponse {
   // log level retrieved from Mesh
-  LogLevel log_level = 1;
+  volue.mesh.grpc.type.LogLevel log_level = 1;
 }
 
 message AttributePair {

@@ -52,3 +52,12 @@ message MeshId {
   optional string path = 2;
   optional int64 timeseries_key = 3;
 }
+
+enum LogLevel {
+  TRACE = 0;
+  DEBUG = 1;
+  INFO = 2;
+  WARN = 3;
+  ERR = 4;
+  OFF = 5;
+}

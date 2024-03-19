@@ -16,6 +16,7 @@ from ._object import Object
 from ._common import (
     AttributesFilter,
     LinkRelationVersion,
+    LogMessage,
     RatingCurveSegment,
     RatingCurveVersion,
     UserIdentity,
@@ -33,6 +34,7 @@ __all__ = [
     "Connection",
     "AttributeBase",
     "LinkRelationAttribute",
+    "LogMessage",
     "OwnershipRelationAttribute",
     "TimeseriesAttribute",
     "VersionedLinkRelationAttribute",

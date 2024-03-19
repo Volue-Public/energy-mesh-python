@@ -19,4 +19,13 @@ message SimulationRequest {
     bool return_datasets = 6;
 }
 
-message SimulationResponse {}
+message SimulationLog {
+  volue.mesh.grpc.type.LogLevel level = 1;
+  string message = 2;
+}
+
+message SimulationResponse {
+  oneof response_oneof {
+    SimulationLog log_message = 1;
+  }
+}

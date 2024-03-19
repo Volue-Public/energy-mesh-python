@@ -308,12 +308,3 @@ message NumericResults {
 message StringResults {
   repeated string value = 1;
 }
-
-enum LogLevel {
-  TRACE = 0;
-  DEBUG = 1;
-  INFO = 2;
-  WARN = 3;
-  ERR = 4;
-  OFF = 5;
-}

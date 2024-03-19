@@ -16,6 +16,7 @@ from volue.mesh import (
     AttributesFilter,
     Authentication,
     LinkRelationVersion,
+    LogMessage,
     Object,
     Timeseries,
     TimeseriesAttribute,
@@ -423,7 +424,10 @@ class Connection(_base_connection.Connection):
                 model, case, start_time, end_time, resolution, scenario, return_datasets
             )
             async for response in self.hydsim_service.RunHydroSimulation(request):
-                yield None
+                if response.HasField("log_message"):
+                    yield LogMessage._from_proto(response.log_message)
+                else:
+                    yield None
 
         async def run_inflow_calculation(
             self,
@@ -441,7 +445,10 @@ class Connection(_base_connection.Connection):
                 targets, start_time, end_time
             )
             async for response in self.hydsim_service.RunInflowCalculation(request):
-                yield None
+                if response.HasField("log_message"):
+                    yield LogMessage._from_proto(response.log_message)
+                else:
+                    yield None
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):
