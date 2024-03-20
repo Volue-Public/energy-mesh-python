@@ -848,7 +848,8 @@ class Session(abc.ABC):
                 Officially supported resolutions are 5, 10, 15, and 60 minutes,
                 but other resolutions may work. **Unimplemented.**
             scenario: The scenario(s) to run. All scenarios are run if left as
-                `None`. **Unimplemented.**
+                `None`, no scenarios are run if set as -1, and a specific
+                numbered scenario is run if set as the number of that scenario.
             return_datasets: **Unimplemented.**
 
         Returns:
