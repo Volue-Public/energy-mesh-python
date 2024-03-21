@@ -450,6 +450,24 @@ class Connection(_base_connection.Connection):
                 else:
                     yield None
 
+        async def get_mc_file(
+            self,
+            model: str,
+            case: str,
+            start_time: datetime,
+            end_time: datetime,
+        ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+            request = self._prepare_get_mc_file_request(
+                model, case, start_time, end_time
+            )
+            async for response in self.hydsim_service.GetMcFile(request):
+                if response.HasField("log_message"):
+                    yield LogMessage._from_proto(response.log_message)
+                elif response.HasField("mc_file"):
+                    yield response.mc_file
+                else:
+                    yield None
+
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):
         return grpc.aio.secure_channel(*args, **kwargs)

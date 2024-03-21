@@ -1,14 +1,12 @@
 HydSim
 ------
 
-The Mesh Python SDK includes experimental functionality to run hydro simulations and inflow
-calculations using HydSim on the Mesh server. This functionality is under development.
-Therefore, it is subject to change in future releases. Planned but not yet implemented functionality
-includes:
+The Mesh Python SDK includes experimental functionality to run hydro simulations, run inflow
+calculations and generate inputs for Marginal Cost using HydSim on the Mesh server. This
+functionality is under development. Therefore, it is subject to change in future releases.
+Planned but not yet implemented functionality includes:
 
 - Selection the resolution to use.
-- Selecting specific scenarios to run.
-- Iterating over the log messages generated on the server.
 - Retrieve datasets from the simulation. These are used by Volue for debugging.
 
 The functionality may be used both through a synchronous
@@ -24,6 +22,9 @@ API documentation
    :noindex:
 
 .. automethod:: volue.mesh._base_session.Session.run_inflow_calculation
+   :noindex:
+
+.. automethod:: volue.mesh._base_session.Session.get_mc_file
    :noindex:
 
 

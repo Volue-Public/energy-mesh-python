@@ -39,7 +39,7 @@ from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
 from volue.mesh.calc.transform import TransformFunctions
 from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
-from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
 from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
@@ -439,6 +439,24 @@ class Connection(_base_connection.Connection):
             for response in self.hydsim_service.RunInflowCalculation(request):
                 if response.HasField("log_message"):
                     yield LogMessage._from_proto(response.log_message)
+                else:
+                    yield None
+
+        def get_mc_file(
+            self,
+            model: str,
+            case: str,
+            start_time: datetime,
+            end_time: datetime,
+        ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+            request = self._prepare_get_mc_file_request(
+                model, case, start_time, end_time
+            )
+            for response in self.hydsim_service.GetMcFile(request):
+                if response.HasField("log_message"):
+                    yield LogMessage._from_proto(response.log_message)
+                elif response.HasField("mc_file"):
+                    yield response.mc_file
                 else:
                     yield None
 
