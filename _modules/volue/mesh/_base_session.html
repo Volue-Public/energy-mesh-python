@@ -1075,6 +1075,32 @@
 <span class="sd">            grpc.RpcError</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
+<div class="viewcode-block" id="Session.get_mc_file"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.get_mc_file">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_mc_file</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate Marginal Cost input using HydSim on the Mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model: The name of the Mesh model in which the simulation case exists.</span>
+<span class="sd">            case: The names of the case group and simulation case in the form</span>
+<span class="sd">                &#39;CaseGroup/CaseName&#39;.</span>
+<span class="sd">            start_time: The (inclusive) start of the simulation interval.</span>
+<span class="sd">            end_time: The (exclusive) end of the simulation interval.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            An iterator of `LogMessage`s followed by a single `str`. The final</span>
+<span class="sd">            string is the Marginal Cost input.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError</span>
+<span class="sd">            grpc.RpcError</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
     <span class="k">def</span> <span class="nf">_get_xy_sets_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
@@ -1658,6 +1684,27 @@
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
             <span class="n">scenario</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">return_datasets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_prepare_get_mc_file_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+
+        <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">optimisation_case</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">SimulationRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">simulation</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">optimisation_case</span><span class="p">),</span>
+            <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_unit_of_measurement_id_by_name</span><span class="p">(</span>

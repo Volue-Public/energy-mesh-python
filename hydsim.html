@@ -182,14 +182,12 @@
             
   <div class="section" id="hydsim">
 <h1>HydSim<a class="headerlink" href="#hydsim" title="Permalink to this heading">¶</a></h1>
-<p>The Mesh Python SDK includes experimental functionality to run hydro simulations and inflow
-calculations using HydSim on the Mesh server. This functionality is under development.
-Therefore, it is subject to change in future releases. Planned but not yet implemented functionality
-includes:</p>
+<p>The Mesh Python SDK includes experimental functionality to run hydro simulations, run inflow
+calculations and generate inputs for Marginal Cost using HydSim on the Mesh server. This
+functionality is under development. Therefore, it is subject to change in future releases.
+Planned but not yet implemented functionality includes:</p>
 <ul class="simple">
 <li><p>Selection the resolution to use.</p></li>
-<li><p>Selecting specific scenarios to run.</p></li>
-<li><p>Iterating over the log messages generated on the server.</p></li>
 <li><p>Retrieve datasets from the simulation. These are used by Volue for debugging.</p></li>
 </ul>
 <p>The functionality may be used both through a synchronous
@@ -264,6 +262,33 @@ that the calculation completed successfully. To determine that
 you must analyze the calculation’s result time series and the
 log messages from the server.</p>
 </p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.12)"><strong>TypeError</strong></a> – </p></li>
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.62.0)"><strong>grpc.RpcError</strong></a> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">get_mc_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.12)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.get_mc_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Generate Marginal Cost input using HydSim on the Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The name of the Mesh model in which the simulation case exists.</p></li>
+<li><p><strong>case</strong> – The names of the case group and simulation case in the form
+‘CaseGroup/CaseName’.</p></li>
+<li><p><strong>start_time</strong> – The (inclusive) start of the simulation interval.</p></li>
+<li><p><strong>end_time</strong> – The (exclusive) end of the simulation interval.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An iterator of <cite>LogMessage`s followed by a single `str</cite>. The final
+string is the Marginal Cost input.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">

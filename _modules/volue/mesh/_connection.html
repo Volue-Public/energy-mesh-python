@@ -213,7 +213,7 @@
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.statistical</span> <span class="kn">import</span> <span class="n">StatisticalFunctions</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.transform</span> <span class="kn">import</span> <span class="n">TransformFunctions</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span><span class="p">,</span> <span class="n">core_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.hydsim.v1alpha</span> <span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.hydsim.v1alpha</span> <span class="kn">import</span> <span class="n">hydsim_pb2</span><span class="p">,</span> <span class="n">hydsim_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.proto.model_definition.v1alpha</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">model_definition_pb2</span><span class="p">,</span>
     <span class="n">model_definition_pb2_grpc</span><span class="p">,</span>
@@ -613,6 +613,24 @@
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="o">.</span><span class="n">RunInflowCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;log_message&quot;</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">LogMessage</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">log_message</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Connection.Session.get_mc_file"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_mc_file">[docs]</a>        <span class="k">def</span> <span class="nf">get_mc_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]]:</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_get_mc_file_request</span><span class="p">(</span>
+                <span class="n">model</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="o">.</span><span class="n">GetMcFile</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;log_message&quot;</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">LogMessage</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">log_message</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;mc_file&quot;</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">response</span><span class="o">.</span><span class="n">mc_file</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="kc">None</span></div></div>
 
