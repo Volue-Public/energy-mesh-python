@@ -8,15 +8,40 @@ import "volue/mesh/proto/type/resources.proto";
 service HydsimService {
   rpc RunHydroSimulation(SimulationRequest) returns (stream SimulationResponse) {}
   rpc RunInflowCalculation(SimulationRequest) returns (stream SimulationResponse) {}
+
+  // Generate an input file for Marginal Cost from an optimisation case using
+  // HydSim.
+  //
+  // `session_id` must be set to a valid session, `simulation` must be set to
+  // an optimisation case, and `interval` is the interval to use. The other
+  // arguments are unused.
+  //
+  // The return stream will include all the log messages from generating the
+  // file, and then end with the JSON contents of the file.
+  rpc GetMcFile(SimulationRequest) returns (stream SimulationResponse) {}
 }
 
 message SimulationRequest {
-    volue.mesh.grpc.type.Guid session_id = 1;
-    volue.mesh.grpc.type.MeshId simulation = 2;
-    volue.mesh.grpc.type.UtcInterval interval = 3;
-    volue.mesh.grpc.type.Resolution resolution = 4;
-    int32 scenario = 5;
-    bool return_datasets = 6;
+  // The session to use, must be set to the ID of an active session.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The optimisation case to use for `RunHydroSimulation` and `GetMcFile` and
+  // the watercourse to use for `RunInflowCalculation`.
+  volue.mesh.grpc.type.MeshId simulation = 2;
+
+  // The interval to use for all HydsimService methods.
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+
+  // The resolution to use for `RunHydroSimulation`, not used for
+  // `RunInflowCalculation` or `GetMcFile`.
+  volue.mesh.grpc.type.Resolution resolution = 4;
+
+  // The scenario to use for `RunHydroSimulation`, not used for
+  // `RunInflowCalculation` or `GetMcFile`.
+  int32 scenario = 5;
+
+  // Whether to return datasets, **unimplemented**.
+  bool return_datasets = 6;
 }
 
 message SimulationLog {
@@ -27,5 +52,6 @@ message SimulationLog {
 message SimulationResponse {
   oneof response_oneof {
     SimulationLog log_message = 1;
+    string mc_file = 3;
   }
 }

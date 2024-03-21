@@ -901,6 +901,32 @@ class Session(abc.ABC):
             grpc.RpcError
         """
 
+    @abc.abstractmethod
+    def get_mc_file(
+        self,
+        model: str,
+        case: str,
+        start_time: datetime,
+        end_time: datetime,
+    ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+        """Generate Marginal Cost input using HydSim on the Mesh server.
+
+        Args:
+            model: The name of the Mesh model in which the simulation case exists.
+            case: The names of the case group and simulation case in the form
+                'CaseGroup/CaseName'.
+            start_time: The (inclusive) start of the simulation interval.
+            end_time: The (exclusive) end of the simulation interval.
+
+        Returns:
+            An iterator of `LogMessage`s followed by a single `str`. The final
+            string is the Marginal Cost input.
+
+        Raises:
+            TypeError
+            grpc.RpcError
+        """
+
     def _get_xy_sets_impl(
         self,
         target: typing.Union[uuid.UUID, str, AttributeBase],
@@ -1484,6 +1510,27 @@ class Session(abc.ABC):
             interval=_to_proto_utcinterval(start_time, end_time),
             scenario=0,
             return_datasets=False,
+        )
+
+    def _prepare_get_mc_file_request(
+        self,
+        model: str,
+        case: str,
+        start_time: datetime,
+        end_time: datetime,
+    ):
+        if start_time is None or end_time is None:
+            raise TypeError("start_time and end_time must both have a value")
+
+        case_group, case_name = case.split("/", maxsplit=1)
+        optimisation_case = (
+            f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}"
+        )
+
+        return hydsim_pb2.SimulationRequest(
+            session_id=_to_proto_guid(self.session_id),
+            simulation=_to_proto_object_mesh_id(optimisation_case),
+            interval=_to_proto_utcinterval(start_time, end_time),
         )
 
     def _get_unit_of_measurement_id_by_name(
