@@ -75,7 +75,7 @@ def test_delete_access_token(auth_metadata_plugin):
 def test_is_valid_token_returns_false_for_deleted_access_token(auth_metadata_plugin):
     """Check if after deleting access token the validation method will return False."""
     auth_metadata_plugin.delete_access_token()
-    assert auth_metadata_plugin.is_token_valid() is False
+    assert not auth_metadata_plugin.is_token_valid()
 
 
 @pytest.mark.authentication
@@ -103,7 +103,7 @@ def test_connection_revoke_access_token(kerberos_connection):
     """Check if revoking access token from Connection class correctly invalidates it."""
     assert kerberos_connection.auth_metadata_plugin.is_token_valid()
     kerberos_connection.revoke_access_token()
-    assert kerberos_connection.auth_metadata_plugin.is_token_valid() is False
+    assert not kerberos_connection.auth_metadata_plugin.is_token_valid()
 
 
 @pytest.mark.asyncio
@@ -112,7 +112,7 @@ async def test_async_connection_revoke_access_token(async_kerberos_connection):
     """Check if revoking access token from AsyncConnection class correctly invalidates it."""
     assert async_kerberos_connection.auth_metadata_plugin.is_token_valid()
     await async_kerberos_connection.revoke_access_token()
-    assert async_kerberos_connection.auth_metadata_plugin.is_token_valid() is False
+    assert not async_kerberos_connection.auth_metadata_plugin.is_token_valid()
 
 
 @pytest.mark.authentication

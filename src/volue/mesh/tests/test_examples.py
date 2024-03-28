@@ -30,7 +30,7 @@ def is_port_responding(host: str, port: int):
 @pytest.mark.server
 def test_is_grpc_responding(mesh_test_config):
     """Check if the server's socket is open and responding."""
-    assert is_port_responding(*mesh_test_config.address.split(":")) is True
+    assert is_port_responding(*mesh_test_config.address.split(":"))
 
 
 @pytest.mark.examples
