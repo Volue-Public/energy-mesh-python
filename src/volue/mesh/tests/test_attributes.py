@@ -58,12 +58,12 @@ def verify_plant_raw_timeseries_attribute(
     verify_plant_base_attribute(attribute, attribute_name, attribute.id, is_definition)
 
     assert attribute.time_series_resource.timeseries_key == 0
-    assert attribute.time_series_resource.temporary is False
+    assert not attribute.time_series_resource.temporary
     assert attribute.time_series_resource.curve_type == Timeseries.Curve.PIECEWISELINEAR
     assert attribute.time_series_resource.resolution == Timeseries.Resolution.HOUR
     assert attribute.time_series_resource.unit_of_measurement == "Unit2"
     assert attribute.expression == ""
-    assert attribute.is_local_expression is False
+    assert not attribute.is_local_expression
 
     if is_definition:
         assert attribute.definition.description == ""
@@ -156,7 +156,7 @@ def test_update_timeseries_attribute_with_expression(session):
     for target in targets:
         original_attribute = session.get_timeseries_attribute(target)
         assert original_attribute.expression != new_local_expression
-        assert original_attribute.is_local_expression is False
+        assert not original_attribute.is_local_expression
 
         session.update_timeseries_attribute(
             target, new_local_expression=new_local_expression
@@ -167,7 +167,7 @@ def test_update_timeseries_attribute_with_expression(session):
         )
         assert updated_attribute.expression == new_local_expression
         assert updated_attribute.definition.template_expression != new_local_expression
-        assert updated_attribute.is_local_expression is True
+        assert updated_attribute.is_local_expression
 
         session.rollback()
 
@@ -422,11 +422,11 @@ def test_get_boolean_attribute(session, full_attribute_info):
             assert attribute.definition.type_name == "BooleanAttributeDefinition"
             assert attribute.definition.minimum_cardinality == 1
             assert attribute.definition.maximum_cardinality == 1
-            assert attribute.definition.default_value is True
+            assert attribute.definition.default_value
         else:
             assert attribute.definition is None
 
-        assert attribute.value is True
+        assert attribute.value
 
 
 @pytest.mark.database
