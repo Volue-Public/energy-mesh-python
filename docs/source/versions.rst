@@ -15,7 +15,12 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- It's now possible to get Marginal Cost input files from Mesh using the new
+  `get_mc_file` method. See :doc:`hydsim` for more information.
+- `run_simulation`, `run_inflow_calculation` and `get_mc_file` now includes log
+  messages from the server in the response. See :doc:`hydsim` for more information.
+- It's now possible to specify which scenario to run when using `run_simulation`.
+  See :doc:`hydsim` for more information.
 
 Changes
 ~~~~~~~~~~~~~~~~~~
