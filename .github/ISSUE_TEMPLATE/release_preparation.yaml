@@ -1,0 +1,26 @@
+name: Release Preparation
+description: Prepare Mesh Python SDK Release
+title: "Prepare Release <version>"
+labels: []
+projects: []
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Mesh Python SDK Version
+    validations:
+      required: true
+  - type: textarea
+    id: todo-list
+    attributes:
+      label: To Do
+      value: |
+        - [ ] If the minimal supported Mesh version changed, then create in Mesh repository a new release in GitHub with official Mesh build for Mesh Python SDK.
+              Switch to this version in Mesh Python SDK repo. Provide the new build number in comment.
+        - [ ] Update https://github.com/Volue-Public/energy-mesh-python/blob/master/docs/source/versions.rst
+        - [ ] Update the Python SDK version to official one (without `-dev` suffix)
+        - [ ] Release stable version <version> (take previous release description template as base)
+        - [ ] Check locally the installation steps from https://volue-public.github.io/energy-mesh-python/versions.html#install-instructions.
+        - [ ] Bump version and add `-dev` suffix
+    validations:
+      required: true
