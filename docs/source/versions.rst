@@ -3,14 +3,14 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-Mesh Python SDK version 1.7.0-dev
-*********************************
+`Mesh Python SDK version 1.7.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.7.0>`_
+*********************************************************************************************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.13 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
+- Mesh server version >= 2.13
+- Python [3.9, 3.10, 3.11, 3.12]
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -25,7 +25,9 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Handle MIN30 resolution. :pull:`431`
+- Changes for Mesh server 2.13 gRPC interface compatibility (:pull:`427`,
+  :pull:`430`, :pull:`433`, :issue:`384`, :issue:`385`, :issue:`405`, :issue:`423`)
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,7 +36,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.7.0
 
 
 `Mesh Python SDK version 1.6.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.6.0>`_
