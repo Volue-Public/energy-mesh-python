@@ -15,4 +15,4 @@ Mesh Python SDK is a client library used to communicate with Volue Energy's Mesh
 
 :blue_book: [Documentation](https://volue-public.github.io/energy-mesh-python/)
 
-Master version of the Mesh Python SDK requires at least 2.11 version of Volue Energy's Mesh server.
+Master version of the Mesh Python SDK requires at least 2.13 version of Volue Energy's Mesh server.
