@@ -1480,36 +1480,33 @@ class Session(abc.ABC):
         resolution: Timeseries.Resolution,
         scenario: int,
         return_datasets: bool,
-    ) -> hydsim_pb2.SimulationRequest:
+    ) -> hydsim_pb2.RunHydroSimulationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
         case_group, case_name = case.split("/", maxsplit=1)
         simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
 
-        return hydsim_pb2.SimulationRequest(
+        return hydsim_pb2.RunHydroSimulationRequest(
             session_id=_to_proto_guid(self.session_id),
             simulation=_to_proto_object_mesh_id(simulation),
             interval=_to_proto_utcinterval(start_time, end_time),
             scenario=scenario,
-            return_datasets=return_datasets,
         )
 
     def _prepare_run_inflow_calculation_request(
         self, targets: List[Object], start_time: datetime, end_time: datetime
-    ) -> hydsim_pb2.SimulationRequest:
+    ) -> hydsim_pb2.RunInflowCalculationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
 
         if len(targets) != 1:
             raise ValueError(f"expected one water course, found {len(targets)}")
 
-        return hydsim_pb2.SimulationRequest(
+        return hydsim_pb2.RunInflowCalculationRequest(
             session_id=_to_proto_guid(self.session_id),
-            simulation=_to_proto_object_mesh_id(targets[0].id),
+            watercourse=_to_proto_object_mesh_id(targets[0].id),
             interval=_to_proto_utcinterval(start_time, end_time),
-            scenario=0,
-            return_datasets=False,
         )
 
     def _prepare_get_mc_file_request(
@@ -1527,9 +1524,9 @@ class Session(abc.ABC):
             f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}"
         )
 
-        return hydsim_pb2.SimulationRequest(
+        return hydsim_pb2.GetMcFileRequest(
             session_id=_to_proto_guid(self.session_id),
-            simulation=_to_proto_object_mesh_id(optimisation_case),
+            optimisation_case=_to_proto_object_mesh_id(optimisation_case),
             interval=_to_proto_utcinterval(start_time, end_time),
         )
 
