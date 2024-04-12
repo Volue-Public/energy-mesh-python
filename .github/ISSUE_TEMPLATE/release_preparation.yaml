@@ -4,12 +4,6 @@ title: "Prepare release <version>"
 labels: []
 projects: []
 body:
-  - type: input
-    id: version
-    attributes:
-      label: Mesh Python SDK Version
-    validations:
-      required: true
   - type: textarea
     id: todo-list
     attributes:
@@ -22,5 +16,10 @@ body:
         - [ ] Release stable version (take previous release description template as base).
         - [ ] Check locally the installation steps from https://volue-public.github.io/energy-mesh-python/versions.html#install-instructions.
         - [ ] Bump version and add `-dev` suffix.
+        - [ ] Update due date and description of GitHub milestone for the released version (take previous release description template as base).
+        - [ ] Create new GitHub milestone for the new version.
+        - [ ] Check if there are any open issues or pull requests assigned to the GitHub milestone for the released version.
+              Close them or move to the milestone for the new version.
+        - [ ] Close GitHub milestone for the released version.
     validations:
       required: true
