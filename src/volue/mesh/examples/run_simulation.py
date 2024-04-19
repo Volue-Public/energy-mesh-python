@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from datetime import datetime
 
 import helpers
@@ -19,11 +20,15 @@ def sync_run_simulation(address, port, root_pem_certificate):
 
         try:
             for response in session.run_simulation(
-                "Mesh", "Cases/Demo", start_time, end_time
+                "Mesh", "Cases/Demo", start_time, end_time, return_datasets=True
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
                         f"[{logging.getLevelName(response.level)}] {response.message}"
+                    )
+                elif isinstance(response, mesh.HydSimDataset):
+                    print(
+                        f"Received dataset {response.name} with {len(response.data)} bytes"
                     )
             print("done")
         except Exception as e:
@@ -42,11 +47,15 @@ async def async_run_simulation(address, port, root_pem_certificate):
 
         try:
             async for response in session.run_simulation(
-                "Mesh", "Cases/Demo", start_time, end_time
+                "Mesh", "Cases/Demo", start_time, end_time, return_datasets=True
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
                         f"[{logging.getLevelName(response.level)}] {response.message}"
+                    )
+                elif isinstance(response, mesh.HydSimDataset):
+                    print(
+                        f"Received dataset {response.name} with {len(response.data)} bytes"
                     )
             print("done")
         except Exception as e:

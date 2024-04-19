@@ -850,7 +850,9 @@ class Session(abc.ABC):
             scenario: The scenario(s) to run. All scenarios are run if left as
                 `None`, no scenarios are run if set as -1, and a specific
                 numbered scenario is run if set as the number of that scenario.
-            return_datasets: **Unimplemented.**
+            return_datasets: Generate and return HydSim datasets that can be used
+                by Volue to diagnose issues with hydro simulations. For performance
+                reasons this should be false when not trying to diagnose an issue.
 
         Returns:
             An iterator of `None`. In future versions this iterator will yield
@@ -875,6 +877,8 @@ class Session(abc.ABC):
         water_course: str,
         start_time: datetime,
         end_time: datetime,
+        *,
+        return_datasets: bool = False,
     ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
         """Run an inflow calculation using HydSim on the Mesh server.
 
@@ -885,6 +889,9 @@ class Session(abc.ABC):
             water_course: The water course to calculate.
             start_time: The (inclusive) start of the calculation interval.
             end_time: The (exclusive) end of the calculation interval.
+            return_datasets: Generate and return HydSim datasets that can be used
+                by Volue to diagnose issues with inflow calculations. For performance
+                reasons this should be false when not trying to diagnose an issue.
 
         Returns:
             An iterator of `None`. In future versions this iterator will yield
@@ -1492,10 +1499,15 @@ class Session(abc.ABC):
             simulation=_to_proto_object_mesh_id(simulation),
             interval=_to_proto_utcinterval(start_time, end_time),
             scenario=scenario,
+            return_datasets=return_datasets,
         )
 
     def _prepare_run_inflow_calculation_request(
-        self, targets: List[Object], start_time: datetime, end_time: datetime
+        self,
+        targets: List[Object],
+        start_time: datetime,
+        end_time: datetime,
+        return_datasets: bool,
     ) -> hydsim_pb2.RunInflowCalculationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
@@ -1507,6 +1519,7 @@ class Session(abc.ABC):
             session_id=_to_proto_guid(self.session_id),
             watercourse=_to_proto_object_mesh_id(targets[0].id),
             interval=_to_proto_utcinterval(start_time, end_time),
+            return_datasets=return_datasets,
         )
 
     def _prepare_get_mc_file_request(

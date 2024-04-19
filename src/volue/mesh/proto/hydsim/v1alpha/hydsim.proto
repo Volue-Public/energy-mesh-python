@@ -31,6 +31,13 @@ message RunHydroSimulationRequest {
   // scenarios, and a number referring to an existing scenario runs that
   // scenario.
   int32 scenario = 5;
+
+  // Generate and return HydSim datasets that can be used by Volue to diagnose
+  // issues with hydro simulations. For performance reasons this should be
+  // false when not trying to diagnose an issue.
+  //
+  // See the HydSimDataset message for more information.
+  bool return_datasets = 6;
 }
 
 message RunInflowCalculationRequest {
@@ -38,6 +45,13 @@ message RunInflowCalculationRequest {
   volue.mesh.grpc.type.MeshId watercourse = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
   volue.mesh.grpc.type.Resolution resolution = 4;
+
+  // Generate and return HydSim datasets that can be used by Volue to diagnose
+  // issues with inflow calculations. For performance reasons this should be
+  // false when not trying to diagnose an issue.
+  //
+  // See the HydSimDataset message for more information.
+  bool return_datasets = 5;
 }
 
 message GetMcFileRequest {
@@ -51,7 +65,11 @@ message SimulationLog {
   string message = 2;
 }
 
-message HydsimDataset {
+// A HydSim dataset is a representation of data used in a hydro simulation or
+// inflow calculation. The HydSim team may use a dataset to diagnose issues.
+// When Volue requests a dataset we recommend storing datasets with filename
+// `name` and contents from `data` and then sending those files to Volue
+message HydSimDataset {
   string name = 1;
   bytes data = 2;
 }
@@ -59,9 +77,7 @@ message HydsimDataset {
 message LogOrDataset {
   oneof response_oneof {
     SimulationLog log_message = 1;
-
-    // Unimplemented.
-    HydsimDataset dataset = 2;
+    HydSimDataset dataset = 2;
   }
 }
 
