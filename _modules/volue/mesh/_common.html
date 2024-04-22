@@ -493,6 +493,23 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">proto</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="HydSimDataset"><a class="viewcode-back" href="../../../api.html#volue.mesh.HydSimDataset">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">HydSimDataset</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A representation of data used in a hydro simulation or inflow calculation.</span>
+
+<span class="sd">    The HydSim team may use a dataset to diagnose issues. When Volue requests a</span>
+<span class="sd">    dataset we recommend storing datasets with filename `name` and contents</span>
+<span class="sd">    from `data` and then sending those files to Volue.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">proto</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">proto</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
+
+
 <span class="k">def</span> <span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
 

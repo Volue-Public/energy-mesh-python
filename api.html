@@ -138,6 +138,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.update_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.update_external_access_token()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#volue.mesh.HydSimDataset"><code class="docutils literal notranslate"><span class="pre">HydSimDataset</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.HydSimDataset.data"><code class="docutils literal notranslate"><span class="pre">HydSimDataset.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.HydSimDataset.name"><code class="docutils literal notranslate"><span class="pre">HydSimDataset.name</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#volue.mesh.LinkRelationAttribute"><code class="docutils literal notranslate"><span class="pre">LinkRelationAttribute</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition"><code class="docutils literal notranslate"><span class="pre">LinkRelationAttribute.LinkRelationAttributeDefinition</span></code></a></li>
 </ul>
@@ -1044,7 +1049,7 @@ the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span cl
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.run_inflow_calculation">
-<span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.run_inflow_calculation" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.run_inflow_calculation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an inflow calculation using HydSim on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1055,6 +1060,9 @@ exists.</p></li>
 <li><p><strong>water_course</strong> – The water course to calculate.</p></li>
 <li><p><strong>start_time</strong> – The (inclusive) start of the calculation interval.</p></li>
 <li><p><strong>end_time</strong> – The (exclusive) end of the calculation interval.</p></li>
+<li><p><strong>return_datasets</strong> – Generate and return HydSim datasets that can be used
+by Volue to diagnose issues with inflow calculations. For performance
+reasons this should be false when not trying to diagnose an issue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1096,7 +1104,9 @@ but other resolutions may work. <strong>Unimplemented.</strong></p></li>
 <li><p><strong>scenario</strong> – The scenario(s) to run. All scenarios are run if left as
 <cite>None</cite>, no scenarios are run if set as -1, and a specific
 numbered scenario is run if set as the number of that scenario.</p></li>
-<li><p><strong>return_datasets</strong> – <strong>Unimplemented.</strong></p></li>
+<li><p><strong>return_datasets</strong> – Generate and return HydSim datasets that can be used
+by Volue to diagnose issues with hydro simulations. For performance
+reasons this should be false when not trying to diagnose an issue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1579,6 +1589,25 @@ to each server request.</p>
 </dd>
 </dl>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.HydSimDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">HydSimDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#HydSimDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.HydSimDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>A representation of data used in a hydro simulation or inflow calculation.</p>
+<p>The HydSim team may use a dataset to diagnose issues. When Volue requests a
+dataset we recommend storing datasets with filename <cite>name</cite> and contents
+from <cite>data</cite> and then sending those files to Volue.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.HydSimDataset.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></em><a class="headerlink" href="#volue.mesh.HydSimDataset.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.HydSimDataset.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#volue.mesh.HydSimDataset.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2582,7 +2611,7 @@ the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span cl
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.run_inflow_calculation">
-<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.12)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.run_inflow_calculation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.12)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.run_inflow_calculation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run an inflow calculation using HydSim on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2593,6 +2622,9 @@ exists.</p></li>
 <li><p><strong>water_course</strong> – The water course to calculate.</p></li>
 <li><p><strong>start_time</strong> – The (inclusive) start of the calculation interval.</p></li>
 <li><p><strong>end_time</strong> – The (exclusive) end of the calculation interval.</p></li>
+<li><p><strong>return_datasets</strong> – Generate and return HydSim datasets that can be used
+by Volue to diagnose issues with inflow calculations. For performance
+reasons this should be false when not trying to diagnose an issue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2634,7 +2666,9 @@ but other resolutions may work. <strong>Unimplemented.</strong></p></li>
 <li><p><strong>scenario</strong> – The scenario(s) to run. All scenarios are run if left as
 <cite>None</cite>, no scenarios are run if set as -1, and a specific
 numbered scenario is run if set as the number of that scenario.</p></li>
-<li><p><strong>return_datasets</strong> – <strong>Unimplemented.</strong></p></li>
+<li><p><strong>return_datasets</strong> – Generate and return HydSim datasets that can be used
+by Volue to diagnose issues with hydro simulations. For performance
+reasons this should be false when not trying to diagnose an issue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

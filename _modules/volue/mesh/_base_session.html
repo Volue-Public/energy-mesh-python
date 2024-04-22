@@ -1024,7 +1024,9 @@
 <span class="sd">            scenario: The scenario(s) to run. All scenarios are run if left as</span>
 <span class="sd">                `None`, no scenarios are run if set as -1, and a specific</span>
 <span class="sd">                numbered scenario is run if set as the number of that scenario.</span>
-<span class="sd">            return_datasets: **Unimplemented.**</span>
+<span class="sd">            return_datasets: Generate and return HydSim datasets that can be used</span>
+<span class="sd">                by Volue to diagnose issues with hydro simulations. For performance</span>
+<span class="sd">                reasons this should be false when not trying to diagnose an issue.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An iterator of `None`. In future versions this iterator will yield</span>
@@ -1049,6 +1051,8 @@
         <span class="n">water_course</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an inflow calculation using HydSim on the Mesh server.</span>
 
@@ -1059,6 +1063,9 @@
 <span class="sd">            water_course: The water course to calculate.</span>
 <span class="sd">            start_time: The (inclusive) start of the calculation interval.</span>
 <span class="sd">            end_time: The (exclusive) end of the calculation interval.</span>
+<span class="sd">            return_datasets: Generate and return HydSim datasets that can be used</span>
+<span class="sd">                by Volue to diagnose issues with inflow calculations. For performance</span>
+<span class="sd">                reasons this should be false when not trying to diagnose an issue.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            An iterator of `None`. In future versions this iterator will yield</span>
@@ -1666,10 +1673,15 @@
             <span class="n">simulation</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">simulation</span><span class="p">),</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
             <span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">,</span>
+            <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_prepare_run_inflow_calculation_request</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">],</span> <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">],</span>
+        <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">RunInflowCalculationRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
@@ -1681,6 +1693,7 @@
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">watercourse</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
+            <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_prepare_get_mc_file_request</span><span class="p">(</span>
