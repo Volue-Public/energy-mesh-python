@@ -15,6 +15,7 @@ from volue.mesh import (
     AttributeBase,
     AttributesFilter,
     Authentication,
+    HydSimDataset,
     LinkRelationVersion,
     LogMessage,
     Object,
@@ -426,6 +427,8 @@ class Connection(_base_connection.Connection):
             async for response in self.hydsim_service.RunHydroSimulation(request):
                 if response.HasField("log_message"):
                     yield LogMessage._from_proto(response.log_message)
+                if response.HasField("dataset"):
+                    yield HydSimDataset._from_proto(response.dataset)
                 else:
                     yield None
 
@@ -436,17 +439,21 @@ class Connection(_base_connection.Connection):
             water_course: str,
             start_time: datetime,
             end_time: datetime,
+            *,
+            return_datasets: bool = False,
         ) -> typing.AsyncIterator[None]:
             targets = await self.search_for_objects(
                 f"Model/{model}/Mesh.To_Areas/{area}",
                 f"To_HydroProduction/To_WaterCourses/@[.Name={water_course}]",
             )
             request = self._prepare_run_inflow_calculation_request(
-                targets, start_time, end_time
+                targets, start_time, end_time, return_datasets
             )
             async for response in self.hydsim_service.RunInflowCalculation(request):
                 if response.HasField("log_message"):
                     yield LogMessage._from_proto(response.log_message)
+                if response.HasField("dataset"):
+                    yield HydSimDataset._from_proto(response.dataset)
                 else:
                     yield None
 

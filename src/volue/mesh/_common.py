@@ -319,6 +319,23 @@ class LogMessage:
         return cls(level, proto.message)
 
 
+@dataclass
+class HydSimDataset:
+    """A representation of data used in a hydro simulation or inflow calculation.
+
+    The HydSim team may use a dataset to diagnose issues. When Volue requests a
+    dataset we recommend storing datasets with filename `name` and contents
+    from `data` and then sending those files to Volue.
+    """
+
+    name: str
+    data: bytes
+
+    @classmethod
+    def _from_proto(cls, proto):
+        return cls(proto.name, proto.data)
+
+
 def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[type.resources_pb2.Guid]:
     """Converts from Python UUID format to Microsoft's GUID format.
 

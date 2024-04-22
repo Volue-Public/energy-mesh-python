@@ -15,6 +15,7 @@ from ._attribute import (
 from ._object import Object
 from ._common import (
     AttributesFilter,
+    HydSimDataset,
     LinkRelationVersion,
     LogMessage,
     RatingCurveSegment,
@@ -33,6 +34,7 @@ __all__ = [
     "Authentication",
     "Connection",
     "AttributeBase",
+    "HydSimDataset",
     "LinkRelationAttribute",
     "LogMessage",
     "OwnershipRelationAttribute",
