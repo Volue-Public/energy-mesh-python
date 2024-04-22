@@ -36,7 +36,7 @@ def get_test_time_series_pyarrow_table(
     # flags - [pa.uint32]
     # value - [pa.float64]
     utc_times = pd.date_range(
-        first_point_timestamp, last_point_timestamp, freq="1H"
+        first_point_timestamp, last_point_timestamp, freq="1h"
     ).tolist()
     flags = [Timeseries.PointFlags.OK.value] * len(utc_times)
     points = list(range(10, 10 + 2 * len(utc_times), 2))
