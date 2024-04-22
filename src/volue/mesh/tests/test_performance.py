@@ -52,7 +52,7 @@ def _write_timeseries_points(
     number_of_points: int,
 ):
     """Writes random values to specific time series and interval."""
-    timestamps = pd.date_range(start_interval, periods=number_of_points, freq="1H")
+    timestamps = pd.date_range(start_interval, periods=number_of_points, freq="1h")
     flags = [Timeseries.PointFlags.OK.value] * number_of_points
     values = []
     for _ in range(number_of_points):
