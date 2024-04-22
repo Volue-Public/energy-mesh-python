@@ -54,11 +54,11 @@ black = ">=23.1.0"
 
 [tool.pytest.ini_options]
 markers = [
-    "database: Tests that require a running mesh server with a database cache with data. Warning: might read/write to db.",
-    "server: Tests that require a running mesh server.",
+    "database: Tests that require a running Mesh server with a test model named SimpleThermalTestModel. Warning: might read/write to db.",
+    "server: Tests that require a running Mesh server.",
     "examples: Tests that run the examples.",
-    "unittest: Tests that do NOT require a mesh server.",
-    "authentication: Tests that require a running mesh server with Kerberos authentication.",
+    "unittest: Tests that do NOT require a Mesh server.",
+    "authentication: Tests that require a running Mesh server with Kerberos authentication.",
     "long: Long tests, longer than a minute.",
 ]
 
