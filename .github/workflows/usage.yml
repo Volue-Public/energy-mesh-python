@@ -48,7 +48,7 @@ jobs:
           python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}
           python ./repo/src/volue/mesh/examples/get_version.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m pip install pytest pytest-asyncio==0.21.1 pandas
+          python -m pip install pytest pytest-asyncio==0.21.2 pandas
           python -m pytest --pyargs volue.mesh.tests -m "not authentication and not long"
 
       - name: Install Ubuntu 20.04 (wsl1)
@@ -74,5 +74,5 @@ jobs:
           python${{ matrix.python-version }} -m pip install --upgrade setuptools
           python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}
           python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py
-          python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.1 pandas
+          python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.2 pandas
           python${{ matrix.python-version }} -m pytest --pyargs volue.mesh.tests -m "not authentication and not long"
