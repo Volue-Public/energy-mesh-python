@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package volue.mesh.grpc.hydsim.v1alpha;
 
+import "google/protobuf/duration.proto";
+
 import "volue/mesh/proto/type/resources.proto";
 
 // Experimental HydSim API, very unstable.
@@ -25,7 +27,10 @@ message RunHydroSimulationRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
   volue.mesh.grpc.type.MeshId simulation = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
-  volue.mesh.grpc.type.Resolution resolution = 4;
+
+  // The resolution to use for the simulation. Must be 5, 10, 15, or 60 minutes.
+  // If left unset the default resolution of the simulation is used.
+  google.protobuf.Duration resolution = 4;
 
   // The scenario to use. The default of zero runs all scenarios, -1 runs no
   // scenarios, and a number referring to an existing scenario runs that
@@ -44,7 +49,10 @@ message RunInflowCalculationRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
   volue.mesh.grpc.type.MeshId watercourse = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
-  volue.mesh.grpc.type.Resolution resolution = 4;
+
+  // The resolution to use for the inflow calculation. Must be 5, 10, 15, or 60 minutes.
+  // If left unset the default resolution of the inflow calculation is used.
+  google.protobuf.Duration resolution = 4;
 
   // Generate and return HydSim datasets that can be used by Volue to diagnose
   // issues with inflow calculations. For performance reasons this should be

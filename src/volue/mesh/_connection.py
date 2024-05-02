@@ -432,6 +432,7 @@ class Connection(_base_connection.Connection):
             start_time: datetime,
             end_time: datetime,
             *,
+            resolution: timedelta = None,
             return_datasets: bool = False,
         ) -> typing.Iterator[None]:
             targets = self.search_for_objects(
@@ -439,7 +440,7 @@ class Connection(_base_connection.Connection):
                 f"To_HydroProduction/To_WaterCourses/@[.Name={water_course}]",
             )
             request = self._prepare_run_inflow_calculation_request(
-                targets, start_time, end_time, return_datasets
+                targets, start_time, end_time, resolution, return_datasets
             )
             for response in self.hydsim_service.RunInflowCalculation(request):
                 if response.HasField("log_message"):

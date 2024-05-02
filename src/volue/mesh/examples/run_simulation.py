@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import helpers
 
@@ -20,7 +20,12 @@ def sync_run_simulation(address, port, root_pem_certificate):
 
         try:
             for response in session.run_simulation(
-                "Mesh", "Cases/Demo", start_time, end_time, return_datasets=True
+                "Mesh",
+                "Cases/Demo",
+                start_time,
+                end_time,
+                return_datasets=True,
+                resolution=timedelta(minutes=5),
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
@@ -47,7 +52,12 @@ async def async_run_simulation(address, port, root_pem_certificate):
 
         try:
             async for response in session.run_simulation(
-                "Mesh", "Cases/Demo", start_time, end_time, return_datasets=True
+                "Mesh",
+                "Cases/Demo",
+                start_time,
+                end_time,
+                return_datasets=True,
+                resolution=timedelta(minutes=5),
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(

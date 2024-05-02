@@ -15,7 +15,9 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- It's now possible to specify the resolution of a hydro simulation or inflow
+  calculation using the optinal `resolution` argument to `run_simulation` and
+  `run_inflow_calculation`. See :doc:`hydsim` for more information.
 
 Changes
 ~~~~~~~~~~~~~~~~~~

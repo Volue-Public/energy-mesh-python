@@ -26,6 +26,7 @@ def sync_run_inflow_calculation(address, port, root_pem_certificate):
                 start_time,
                 end_time,
                 return_datasets=True,
+                resolution=timedelta(minutes=5),
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
@@ -58,6 +59,7 @@ async def async_run_inflow_calculation(address, port, root_pem_certificate):
                 start_time,
                 end_time,
                 return_datasets=True,
+                resolution=timedelta(minutes=5),
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
