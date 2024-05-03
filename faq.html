@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Glossary" href="glossary.html" />
-    <link rel="prev" title="Tests" href="tests.html" /> 
+    <link rel="prev" title="External authorization" href="external_auth.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,7 +97,6 @@
 <li class="toctree-l1"><a class="reference internal" href="hydsim.html">HydSim</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#connection-errors">Connection errors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#i-get-a-grpc-error">I get a gRPC error.</a></li>
@@ -106,7 +105,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#i-ran-the-tests-and-one-or-more-of-them-failed">I ran the tests and one or more of them failed.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mesh-server-grpc-configuration">Mesh server gRPC configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request">I think I found a bug or I have a feature request.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#i-need-more-help">I need more help.</a></li>
@@ -204,10 +202,9 @@
 </li>
 <li><p><a class="reference internal" href="#other" id="id5">Other</a></p>
 <ul>
-<li><p><a class="reference internal" href="#i-ran-the-tests-and-one-or-more-of-them-failed" id="id6">I ran the tests and one or more of them failed.</a></p></li>
-<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id7">Mesh server gRPC configuration</a></p></li>
-<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id8">I think I found a bug or I have a feature request.</a></p></li>
-<li><p><a class="reference internal" href="#i-need-more-help" id="id9">I need more help.</a></p></li>
+<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id6">Mesh server gRPC configuration</a></p></li>
+<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id7">I think I found a bug or I have a feature request.</a></p></li>
+<li><p><a class="reference internal" href="#i-need-more-help" id="id8">I need more help.</a></p></li>
 </ul>
 </li>
 </ul>
@@ -336,20 +333,16 @@ environments:</p>
 <div class="section" id="other">
 <h2><a class="toc-backref" href="#id5">Other</a><a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h2>
 <p>If neither of the above suggestions helped.</p>
-<div class="section" id="i-ran-the-tests-and-one-or-more-of-them-failed">
-<h3><a class="toc-backref" href="#id6">I ran the tests and one or more of them failed.</a><a class="headerlink" href="#i-ran-the-tests-and-one-or-more-of-them-failed" title="Permalink to this heading">¶</a></h3>
-<p>If you ran the <a class="reference internal" href="tests.html#tests"><span class="std std-ref">Tests</span></a> and one or more of them failed, you should first verify that you configured the server connection correctly. If the problem is not resolved by this you can generate a report based on the tests you ran by following the instructions in <a class="reference internal" href="tests.html#run-tests"><span class="std std-ref">Run tests</span></a>.</p>
-</div>
 <div class="section" id="mesh-server-grpc-configuration">
-<h3><a class="toc-backref" href="#id7">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this heading">¶</a></h3>
 <p>Mesh server is configured by Volue consultants. In case of any configuration problems or change requests (like turning on authentication) please contact your Volue consultant.</p>
 </div>
 <div class="section" id="i-think-i-found-a-bug-or-i-have-a-feature-request">
-<h3><a class="toc-backref" href="#id8">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this heading">¶</a></h3>
 <p>If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/discussions">discussion board</a> and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues">issue tracker</a>.</p>
 </div>
 <div class="section" id="i-need-more-help">
-<h3><a class="toc-backref" href="#id9">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this heading">¶</a></h3>
 <p>If you have a more pressing issue or if your issue includes confidential information, you should contact Volue’s customer service.</p>
 </div>
 </div>
@@ -362,14 +355,14 @@ environments:</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="tests.html" class="btn btn-neutral float-left" title="Tests" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="external_auth.html" class="btn btn-neutral float-left" title="External authorization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2022, Volue AS.
+        &#169; Copyright 2024, Volue AS.
 
     </p>
   </div>

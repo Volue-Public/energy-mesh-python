@@ -153,12 +153,32 @@ Setup for developers
     *Black*, e.g.: the formatting can be executed on file save, so you don't
     need to make an explicit call like presented above.
 
+Tests
+=====
+
+There are different types of tests. Some tests require running Mesh server
+instance with specific test model named: SimpleThermalTestModel. Such tests are
+marked with `database`. Other types like `unittest` do not require Mesh server
+at all. To see all types of tests see `markers` in [tool.pytest.ini_options]
+section in pyproject.toml file.
+
+Pytest allows you to `specify <https://docs.pytest.org/en/latest/how-to/usage.html#specifying-which-tests-to-run>`_
+which tests to run. For example, to check all tests except authentication and
+long tests::
+
+    poetry run pytest -m "not authentication and not long"
+
+
+When submitting a new Pull Request the tests are run automatically using GitHub
+Actions.
+
+
 Dependencies
 =============
 
 The Mesh Python SDK depends on the Python standard library, but also `gRPC <https://grpc.io/>`_ and `Apache Arrow <https://arrow.apache.org/>`_.
 
-These dependencies are managed, installed and referenced by the library using `Poetry`_. So no additional dependencies should be needed after running the pip install, unless you want to run the tests that come with the SDK, then see :ref:`tests:Tests`.
+These dependencies are managed, installed and referenced by the library using `Poetry`_.
+No additional dependencies should be needed after running the pip install.
 
 .. _Poetry: https://python-poetry.org/docs/
-

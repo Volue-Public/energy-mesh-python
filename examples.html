@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hydsim.html">HydSim</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best practices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#authorization">Authorization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#connect">Connect</a></li>
@@ -119,7 +120,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
 </ul>
@@ -199,7 +199,27 @@
             
   <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
-<p>This section contains code examples. These examples are packaged with the Mesh Python SDK and can be accessed when the package is installed.</p>
+<p>This section contains code examples. Most of them require specific Mesh model on the server side.
+Best practice is to copy the examples scripts that are of interest for you together with helpers.py</p>
+<div class="section" id="best-practices">
+<h2>Best practices<a class="headerlink" href="#best-practices" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>Checkout or open in GitHub git tag corresponding to the Mesh Python SDK
+version you are using. E.g. for Mesh Python SDK v1.7 it is:
+<a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/tree/v1.7.0">https://github.com/Volue-Public/energy-mesh-python/tree/v1.7.0</a></p></li>
+<li><p>Copy either the whole <cite>examples</cite> directory or specific examples script(s)
+together with helpers.py and paste it to your own workspace.</p></li>
+<li><p>Run example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">.</span>\<span class="n">examples</span>\<span class="n">get_version</span><span class="o">.</span><span class="n">py</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">50051</span> <span class="n">c</span><span class="p">:</span>\<span class="n">certificate</span><span class="o">.</span><span class="n">pem</span>
+</pre></div>
+</div>
+<p>First argument - Mesh server address with port. Default value is
+localhost:50051.</p>
+<p>Second argument - path to PEM-encoded TLS certificate used by Mesh server.
+Skip it if the Mesh server is configured to accept insecure gRPC connections.</p>
+</li>
+</ol>
+</div>
 <div class="section" id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">helpers</span>
@@ -1957,7 +1977,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2022, Volue AS.
+        &#169; Copyright 2024, Volue AS.
 
     </p>
   </div>
