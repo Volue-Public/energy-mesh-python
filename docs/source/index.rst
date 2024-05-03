@@ -14,7 +14,7 @@ If this is your first time using this library, here are some resources to help y
 
 - **Quickstart:** :doc:`quickstart`
 - **Installation:** :doc:`installation`
-- **Examples:** :doc:`examples` | :doc:`tests`
+- **Examples:** :doc:`examples`
 - **Authentication:** :doc:`authentication`
 - **How to do development** :ref:`Setup for developers`
 
@@ -48,7 +48,6 @@ If you're having trouble, these resources might help.
    hydsim
    examples
    authentication
-   tests
    faq
    glossary
 
