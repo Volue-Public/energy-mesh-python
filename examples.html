@@ -1809,7 +1809,7 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
 <h2>Run simulations<a class="headerlink" href="#run-simulations" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
 <span class="kn">import</span> <span class="nn">helpers</span>
 
@@ -1829,7 +1829,12 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span>
-                <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span> <span class="s2">&quot;Cases/Demo&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span>
+                <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Cases/Demo&quot;</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">,</span>
+                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
@@ -1856,7 +1861,12 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">async</span> <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">run_simulation</span><span class="p">(</span>
-                <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span> <span class="s2">&quot;Cases/Demo&quot;</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span>
+                <span class="s2">&quot;Mesh&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Cases/Demo&quot;</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">,</span>
+                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
@@ -1908,6 +1918,7 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
                 <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
@@ -1940,6 +1951,7 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
                 <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>

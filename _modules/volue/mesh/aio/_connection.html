@@ -613,6 +613,7 @@
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="o">*</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
             <span class="n">targets</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span>
@@ -620,7 +621,7 @@
                 <span class="sa">f</span><span class="s2">&quot;To_HydroProduction/To_WaterCourses/@[.Name=</span><span class="si">{</span><span class="n">water_course</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_run_inflow_calculation_request</span><span class="p">(</span>
-                <span class="n">targets</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">return_datasets</span>
+                <span class="n">targets</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">return_datasets</span>
             <span class="p">)</span>
             <span class="k">async</span> <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="o">.</span><span class="n">RunInflowCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;log_message&quot;</span><span class="p">):</span>
