@@ -845,8 +845,7 @@ class Session(abc.ABC):
             end_time: The (exclusive) end of the simulation interval.
             resolution: The resolution of the simulation. The default resolution
                 of the simulation case is used if this is left as `None`.
-                Officially supported resolutions are 5, 10, 15, and 60 minutes,
-                but other resolutions may work. **Unimplemented.**
+                Officially supported resolutions are 5, 10, 15, and 60 minutes.
             scenario: The scenario(s) to run. All scenarios are run if left as
                 `None`, no scenarios are run if set as -1, and a specific
                 numbered scenario is run if set as the number of that scenario.
@@ -878,6 +877,7 @@ class Session(abc.ABC):
         start_time: datetime,
         end_time: datetime,
         *,
+        resolution: timedelta = None,
         return_datasets: bool = False,
     ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
         """Run an inflow calculation using HydSim on the Mesh server.
@@ -889,6 +889,9 @@ class Session(abc.ABC):
             water_course: The water course to calculate.
             start_time: The (inclusive) start of the calculation interval.
             end_time: The (exclusive) end of the calculation interval.
+            resolution: The resolution of the simulation. The default resolution
+                of the inflow calculation case is used if this is left as `None`.
+                Officially supported resolutions are 5, 10, 15, and 60 minutes.
             return_datasets: Generate and return HydSim datasets that can be used
                 by Volue to diagnose issues with inflow calculations. For performance
                 reasons this should be false when not trying to diagnose an issue.
@@ -1484,7 +1487,7 @@ class Session(abc.ABC):
         case: str,
         start_time: datetime,
         end_time: datetime,
-        resolution: Timeseries.Resolution,
+        resolution: timedelta,
         scenario: int,
         return_datasets: bool,
     ) -> hydsim_pb2.RunHydroSimulationRequest:
@@ -1494,11 +1497,17 @@ class Session(abc.ABC):
         case_group, case_name = case.split("/", maxsplit=1)
         simulation = f"Model/{model}/{case_group}.has_OptimisationCases/{case_name}.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"
 
+        proto_resolution = None
+        if resolution is not None:
+            proto_resolution = protobuf.duration_pb2.Duration()
+            proto_resolution.FromTimedelta(resolution)
+
         return hydsim_pb2.RunHydroSimulationRequest(
             session_id=_to_proto_guid(self.session_id),
             simulation=_to_proto_object_mesh_id(simulation),
             interval=_to_proto_utcinterval(start_time, end_time),
             scenario=scenario,
+            resolution=proto_resolution,
             return_datasets=return_datasets,
         )
 
@@ -1507,6 +1516,7 @@ class Session(abc.ABC):
         targets: List[Object],
         start_time: datetime,
         end_time: datetime,
+        resolution: timedelta,
         return_datasets: bool,
     ) -> hydsim_pb2.RunInflowCalculationRequest:
         if start_time is None or end_time is None:
@@ -1515,10 +1525,16 @@ class Session(abc.ABC):
         if len(targets) != 1:
             raise ValueError(f"expected one water course, found {len(targets)}")
 
+        proto_resolution = None
+        if resolution is not None:
+            proto_resolution = protobuf.duration_pb2.Duration()
+            proto_resolution.FromTimedelta(resolution)
+
         return hydsim_pb2.RunInflowCalculationRequest(
             session_id=_to_proto_guid(self.session_id),
             watercourse=_to_proto_object_mesh_id(targets[0].id),
             interval=_to_proto_utcinterval(start_time, end_time),
+            resolution=proto_resolution,
             return_datasets=return_datasets,
         )
 
