@@ -17,7 +17,7 @@ from volue.mesh._common import (
     _to_proto_utcinterval,
 )
 from volue.mesh._mesh_id import _to_proto_calculation_target_mesh_id
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto.calc.v1alpha import calc_pb2
 
 
 class Timezone(Enum):
@@ -59,7 +59,7 @@ def _convert_datetime_to_mesh_calc_format(input: datetime.datetime) -> str:
 
 
 def _parse_timeseries_list_response(
-    response: core_pb2.CalculationResponse,
+    response: calc_pb2.CalculationResponse,
 ) -> List[Timeseries]:
     """
     Helper function for parsing a calculator response.
@@ -75,7 +75,7 @@ def _parse_timeseries_list_response(
 
 
 def _parse_single_timeseries_response(
-    response: core_pb2.CalculationResponse,
+    response: calc_pb2.CalculationResponse,
 ) -> Timeseries:
     """
     Helper function for parsing a calculator response.
@@ -97,7 +97,7 @@ def _parse_single_timeseries_response(
     return timeseries[0]
 
 
-def _parse_single_float_response(response: core_pb2.CalculationResponse) -> float:
+def _parse_single_float_response(response: calc_pb2.CalculationResponse) -> float:
     """
     Helper function for parsing a calculator response.
 
@@ -145,7 +145,7 @@ class _Calculation:
         self.start_time: datetime.datetime = start_time
         self.end_time: datetime.datetime = end_time
 
-    def prepare_request(self, expression: str) -> core_pb2.CalculationRequest:
+    def prepare_request(self, expression: str) -> calc_pb2.CalculationRequest:
         """
         Checks that the requirements for a calculation request are met,
         and constructs a calculation request object.
@@ -156,7 +156,7 @@ class _Calculation:
         Returns:
             gRPC calculation request.
         """
-        request = core_pb2.CalculationRequest(
+        request = calc_pb2.CalculationRequest(
             session_id=_to_proto_guid(self.session.session_id),
             expression=expression,
             interval=_to_proto_utcinterval(self.start_time, self.end_time),
@@ -164,7 +164,7 @@ class _Calculation:
         )
         return request
 
-    async def run_async(self, expression: str) -> core_pb2.CalculationResponse:
+    async def run_async(self, expression: str) -> calc_pb2.CalculationResponse:
         """
         Run a function using an asynchronous connection.
 
@@ -182,7 +182,7 @@ class _Calculation:
             )
 
         request = self.prepare_request(expression)
-        response = await self.session.mesh_service.RunCalculation(request)
+        response = await self.session.calc_service.RunCalculation(request)
         return response
 
     def run(self, expression: str):
@@ -203,5 +203,5 @@ class _Calculation:
             )
 
         request = self.prepare_request(expression)
-        response = self.session.mesh_service.RunCalculation(request)
+        response = self.session.calc_service.RunCalculation(request)
         return response

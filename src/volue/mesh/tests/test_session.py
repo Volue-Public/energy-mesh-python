@@ -49,7 +49,7 @@ def test_can_connect_to_existing_session(connection):
     assert session.session_id is not None
     same_session = connection.connect_to_session(session.session_id)
     assert session.session_id == same_session.session_id
-    assert session.mesh_service == same_session.mesh_service
+    assert session.session_service == same_session.session_service
     # This is not how user should work with sessions.
     # A session opened by one `Session` object MUST be
     # closed using the same `Session` object.

@@ -12,16 +12,26 @@ packages = [
 ]
 # By default Poetry doesn't package files in .gitignore.
 include = [
-    "src/volue/mesh/proto/core/v1alpha/core_pb2.py",
-    "src/volue/mesh/proto/core/v1alpha/core_pb2_grpc.py",
-    "src/volue/mesh/proto/core/v1alpha/resources_pb2.py",
-    "src/volue/mesh/proto/core/v1alpha/resources_pb2_grpc.py",
+    "src/volue/mesh/proto/auth/v1alpha/auth_pb2.py",
+    "src/volue/mesh/proto/auth/v1alpha/auth_pb2_grpc.py",
+    "src/volue/mesh/proto/calc/v1alpha/calc_pb2.py",
+    "src/volue/mesh/proto/calc/v1alpha/calc_pb2_grpc.py",
+    "src/volue/mesh/proto/config/v1alpha/config_pb2.py",
+    "src/volue/mesh/proto/config/v1alpha/config_pb2_grpc.py",
     "src/volue/mesh/proto/hydsim/v1alpha/hydsim_pb2.py",
     "src/volue/mesh/proto/hydsim/v1alpha/hydsim_pb2_grpc.py",
+    "src/volue/mesh/proto/model/v1alpha/model_pb2.py",
+    "src/volue/mesh/proto/model/v1alpha/model_pb2_grpc.py",
+    "src/volue/mesh/proto/model/v1alpha/resources_pb2.py",
+    "src/volue/mesh/proto/model/v1alpha/resources_pb2_grpc.py",
     "src/volue/mesh/proto/model_definition/v1alpha/model_definition_pb2.py",
     "src/volue/mesh/proto/model_definition/v1alpha/model_definition_pb2_grpc.py",
     "src/volue/mesh/proto/model_definition/v1alpha/resources_pb2.py",
     "src/volue/mesh/proto/model_definition/v1alpha/resources_pb2_grpc.py",
+    "src/volue/mesh/proto/session/v1alpha/session_pb2.py",
+    "src/volue/mesh/proto/session/v1alpha/session_pb2_grpc.py",
+    "src/volue/mesh/proto/time_series/v1alpha/time_series_pb2.py",
+    "src/volue/mesh/proto/time_series/v1alpha/time_series_pb2_grpc.py",
     "src/volue/mesh/proto/type/resources_pb2.py",
     "src/volue/mesh/proto/type/resources_pb2_grpc.py"
 ]

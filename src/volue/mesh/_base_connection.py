@@ -4,7 +4,14 @@ from typing import Optional, TypeVar
 
 import grpc
 
-from volue.mesh.proto import core, hydsim, model_definition
+from volue.mesh.proto.auth.v1alpha import auth_pb2, auth_pb2_grpc
+from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
+from volue.mesh.proto.config.v1alpha import config_pb2, config_pb2_grpc
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
+from volue.mesh.proto.model.v1alpha import model_pb2_grpc
+from volue.mesh.proto.model_definition.v1alpha import model_definition_pb2_grpc
+from volue.mesh.proto.session.v1alpha import session_pb2_grpc
+from volue.mesh.proto.time_series.v1alpha import time_series_pb2_grpc
 
 from . import _authentication
 from ._authentication import Authentication, ExternalAccessTokenPlugin
@@ -88,11 +95,16 @@ class Connection(abc.ABC):
         self.auth_metadata_plugin = auth_metadata_plugin
 
         if channel is not None:
-            self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
-            self.model_definition_service = model_definition.v1alpha.model_definition_pb2_grpc.ModelDefinitionServiceStub(
-                channel
+            self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
+            self.calc_service = calc_pb2_grpc.CalculationServiceStub(channel)
+            self.config_service = config_pb2_grpc.ConfigurationServiceStub(channel)
+            self.hydsim_service = hydsim_pb2_grpc.HydsimServiceStub(channel)
+            self.model_service = model_pb2_grpc.ModelServiceStub(channel)
+            self.model_definition_service = (
+                model_definition_pb2_grpc.ModelDefinitionServiceStub(channel)
             )
-            self.hydsim_service = hydsim.v1alpha.hydsim_pb2_grpc.HydsimServiceStub(
+            self.session_service = session_pb2_grpc.SessionServiceStub(channel)
+            self.time_series_service = time_series_pb2_grpc.TimeseriesServiceStub(
                 channel
             )
             return
@@ -138,11 +150,16 @@ class Connection(abc.ABC):
                     target=target, credentials=channel_credentials
                 )
 
-        self.mesh_service = core.v1alpha.core_pb2_grpc.MeshServiceStub(channel)
-        self.model_definition_service = model_definition.v1alpha.model_definition_pb2_grpc.ModelDefinitionServiceStub(
-            channel
+        self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
+        self.calc_service = calc_pb2_grpc.CalculationServiceStub(channel)
+        self.config_service = config_pb2_grpc.ConfigurationServiceStub(channel)
+        self.hydsim_service = hydsim_pb2_grpc.HydsimServiceStub(channel)
+        self.model_service = model_pb2_grpc.ModelServiceStub(channel)
+        self.model_definition_service = (
+            model_definition_pb2_grpc.ModelDefinitionServiceStub(channel)
         )
-        self.hydsim_service = hydsim.v1alpha.hydsim_pb2_grpc.HydsimServiceStub(channel)
+        self.session_service = session_pb2_grpc.SessionServiceStub(channel)
+        self.time_series_service = time_series_pb2_grpc.TimeseriesServiceStub(channel)
 
     @classmethod
     def insecure(cls: C, target: str) -> C:
@@ -254,7 +271,7 @@ class Connection(abc.ABC):
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @abc.abstractmethod
-    def get_version(self) -> core.v1alpha.resources_pb2.VersionInfo:
+    def get_version(self) -> config_pb2.VersionInfo:
         """Request version information of the connected Mesh server.
 
         Note:
@@ -265,7 +282,7 @@ class Connection(abc.ABC):
         """
 
     @abc.abstractmethod
-    def get_user_identity(self) -> core.v1alpha.core_pb2.UserIdentity:
+    def get_user_identity(self) -> auth_pb2.UserIdentity:
         """Request information about the user authorized to work with the Mesh server.
 
         Note:

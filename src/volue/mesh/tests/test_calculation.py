@@ -19,7 +19,7 @@ from volue.mesh.calc.common import (
     _parse_single_float_response,
     _parse_single_timeseries_response,
 )
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto.calc.v1alpha import calc_pb2
 
 ATTRIBUTE_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsRawAtt"
 
@@ -74,7 +74,7 @@ def test_parsing_single_timeseries_response_with_invalid_calculation_result_shou
     Check that expected exception is thrown when calculation result is not
     a single time series.
     """
-    response = core_pb2.CalculationResponse()
+    response = calc_pb2.CalculationResponse()
     # no time series at all
     with pytest.raises(RuntimeError, match=".*invalid calculation result*"):
         _parse_single_timeseries_response(response)
@@ -85,7 +85,7 @@ def test_parsing_single_float_response_with_invalid_calculation_result_should_th
     """
     Check that expected exception is thrown when calculation result is not a single float.
     """
-    response = core_pb2.CalculationResponse()
+    response = calc_pb2.CalculationResponse()
     # no float values at all
     with pytest.raises(RuntimeError, match=".*invalid calculation result*"):
         _parse_single_float_response(response)

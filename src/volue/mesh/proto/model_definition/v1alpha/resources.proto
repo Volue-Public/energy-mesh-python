@@ -12,22 +12,25 @@ message AttributeType {
   volue.mesh.grpc.type.Guid id = 1;
   string path = 2;
   string name = 3;
-
   string description = 4;
-  repeated Tag tags = 5;
+
+  // The owner of an attribute type is either a namespace or a model definition.
+  volue.mesh.grpc.type.MeshId owner_id = 5;
+
+  repeated Tag tags = 6;
 
   // If an attribute type has more than one namespace,
   // they are concatenated with dots '.', e.g.:
   //   namespace1.namespace2
-  string name_space = 6;
-  AttributeValueType value_type = 7;
+  string name_space = 7;
+  AttributeValueType value_type = 8;
 
   // For integer, double and time series attribute types.
-  optional UnitOfMeasurement unit_of_measurement = 8;
+  optional UnitOfMeasurement unit_of_measurement = 9;
   // For relation attributes types.
-  optional volue.mesh.grpc.type.MeshId target_object_definition_id = 9;
+  optional volue.mesh.grpc.type.MeshId target_object_definition_id = 10;
   // For integer, double, bool, string, UTC time, XY set attribute types.
-  optional string expression = 10;
+  optional string expression = 11;
 }
 
 enum AttributeValueType {
@@ -179,7 +182,7 @@ message ObjectDefinition {
   string name = 3;
   string description = 4;
 
-  // Each object definition is owned by either namespace or model definition.
+  // The owner of an object definition is either a namespace or a model definition.
   volue.mesh.grpc.type.MeshId owner_id = 5;
 
   repeated Tag tags = 6;
@@ -199,7 +202,7 @@ message Namespace {
     oneof child_id_oneof {
       volue.mesh.grpc.type.MeshId name_space_id = 1;
       volue.mesh.grpc.type.MeshId object_definition_id = 2;
-      volue.mesh.grpc.type.MeshId attribute_definition_id = 3;
+      volue.mesh.grpc.type.MeshId attribute_type_id = 3;
     }
   }
 
@@ -208,7 +211,7 @@ message Namespace {
   string name = 3;
   string description = 4;
 
-  // Each namespace is owned by either namespace or model definition.
+  // The owner of a namespace is either another namespace or a model definition.
   // Model definition does not have an owner.
   volue.mesh.grpc.type.MeshId owner_id = 5;
 

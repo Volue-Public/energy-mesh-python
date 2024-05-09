@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.config.v1alpha;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Mesh configuration service
+// -------------------------------
+// The Mesh configuration service is an API for managing Mesh server
+// configuration.
+//
+service ConfigurationService {
+
+  // Get the Mesh server version information.
+  rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
+
+  // Get the Mesh server health information.
+  // This function is not stable. Both signature and response content are
+  // subjects to change.
+  rpc GetHealthStatus(google.protobuf.Empty) returns (google.protobuf.Struct) {}
+
+  // Get the Mesh server configuration.
+  // This function is not stable. Both signature and response content are
+  // subjects to change.
+  rpc GetConfiguration(google.protobuf.Empty) returns (google.protobuf.Struct) {}
+
+  // Get the currently set log level threshold.
+  rpc GetLogLevel(google.protobuf.Empty) returns (GetLogLevelResponse) {}
+
+  // Change the log level threshold.
+  rpc UpdateLogLevel(UpdateLogLevelRequest) returns (UpdateLogLevelResponse) {}
+}
+
+// Version information for the Mesh server.
+message VersionInfo {
+  string version = 1;
+  // Friendly name of the Mesh server, e.g.: Volue Mesh Server
+  string name = 2;
+}
+
+message GetLogLevelResponse {
+  volue.mesh.grpc.type.LogLevel log_level = 1;
+}
+
+message UpdateLogLevelRequest {
+  volue.mesh.grpc.type.LogLevel new_log_level = 1;
+}
+
+message UpdateLogLevelResponse {
+}

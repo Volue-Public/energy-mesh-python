@@ -15,7 +15,7 @@ from dateutil import tz
 
 from volue.mesh import Timeseries
 from volue.mesh._common import _to_proto_guid, _to_proto_timeseries
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto.time_series.v1alpha import time_series_pb2
 from volue.mesh.proto.type import resources_pb2
 
 TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt"
@@ -202,14 +202,14 @@ def test_can_serialize_and_deserialize_write_timeserie_request():
     original_proto_timeseries = _to_proto_timeseries(original_timeseries)
     session_id_original = _to_proto_guid(uuid.uuid4())
 
-    original_reply = core_pb2.WriteTimeseriesRequest(
+    original_reply = time_series_pb2.WriteTimeseriesRequest(
         session_id=session_id_original, timeseries=original_proto_timeseries
     )
 
     binary_data = original_reply.SerializeToString()
     assert binary_data is not None
 
-    reply = core_pb2.WriteTimeseriesRequest()
+    reply = time_series_pb2.WriteTimeseriesRequest()
     reply.ParseFromString(binary_data)
     assert original_reply == reply
     assert session_id_original == reply.session_id

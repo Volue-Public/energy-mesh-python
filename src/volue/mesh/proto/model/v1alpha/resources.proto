@@ -1,11 +1,12 @@
 syntax = "proto3";
 
-package volue.mesh.grpc.core.v1alpha;
+package volue.mesh.grpc.model.v1alpha;
 
 import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
 import "volue/mesh/proto/model_definition/v1alpha/resources.proto";
+import "volue/mesh/proto/time_series/v1alpha/time_series.proto";
 import "volue/mesh/proto/type/resources.proto";
 
 
@@ -82,8 +83,9 @@ message TimeseriesAttributeValue {
   // To disconnect time series attribute from already connected time
   // series resource set `new_timeseries_resource_key` to 0 in the
   // `UpdateTimeseriesAttribute` RPC.
-  // To update curve type or resolution use `UpdateTimeseriesResource` RPC.
-  TimeseriesResource time_series_resource = 1;
+  // To update curve type or resolution use time series service
+  // `UpdateTimeseriesResource` RPC.
+  volue.mesh.grpc.time_series.v1alpha.TimeseriesResource time_series_resource = 1;
 
   // Expression that is actually used by the time series attribute.
   // It uses local expression if set, otherwise template expression
@@ -210,55 +212,6 @@ message AttributesMasks {
   //  Note: If no masks are provided then all attributes will be returned.
 }
 
-message Timeseries {
-  volue.mesh.grpc.type.MeshId id = 1;
-
-  // [OUTPUT_ONLY] - no need to set when writing time series using `WriteTimeseries`.
-  // Resolution/spacing for this timeseries.
-  volue.mesh.grpc.type.Resolution resolution = 2;
-
-  // Time interval for this timeseries.
-  volue.mesh.grpc.type.UtcInterval interval = 3;
-
-  // Data contains an Apache Arrow byte representation of the timeseries points.
-  // Stored in the following columns:
-  // 0: (uint64) utc_time
-  // 1: (uint32) flags
-  // 2: (double) value
-  bytes data = 4;
-}
-
-// Information about physical or virtual time series.
-message TimeseriesResource {
-  // Unique identifier for physical or virtual time series.
-  // Set to 0 if it is a local session time series.
-  // This is the only field that could be used for updating 
-  // time series attribute with new time series resource.
-  int64 timeseries_key = 1;
-
-  // [OUTPUT_ONLY]
-  string path = 2;
-
-  // [OUTPUT_ONLY]
-  string name = 3;
-
-  // Set to true if it is a local session time series.
-  // [OUTPUT_ONLY]
-  bool temporary = 4;
-
-  // [OUTPUT_ONLY]
-  volue.mesh.grpc.type.Curve curve_type = 5;
-
-  // [OUTPUT_ONLY]
-  volue.mesh.grpc.type.Resolution resolution = 6;
-
-  // [OUTPUT_ONLY]
-  volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 7;
-
-  // [OUTPUT_ONLY]
-  string virtual_timeseries_expression = 8;
-}
-
 // An `XyCurve` is a set of (x, y) pairs.
 message XyCurve {
   // The reference value of this curve. Also known as the z value.
@@ -292,19 +245,4 @@ message RatingCurveVersion {
   google.protobuf.Timestamp from = 1;
   double x_range_from = 2;
   repeated RatingCurveSegment x_value_segments = 3;
-}
-
-// Version information for the Mesh server.
-message VersionInfo {
-  string version = 1;
-  // Friendly name of the Mesh server, e.g.: Volue Mesh Server
-  string name = 2;
-}
-
-message NumericResults {
-  repeated double value = 1;
-}
-
-message StringResults {
-  repeated string value = 1;
 }

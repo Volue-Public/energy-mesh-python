@@ -1,102 +1,18 @@
 syntax = "proto3";
 
-package volue.mesh.grpc.core.v1alpha;
+package volue.mesh.grpc.model.v1alpha;
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/duration.proto";
 import "google/protobuf/field_mask.proto";
-import "google/protobuf/wrappers.proto";
-import "google/protobuf/struct.proto";
 
-import "volue/mesh/proto/core/v1alpha/resources.proto";
+import "volue/mesh/proto/model/v1alpha/resources.proto";
 import "volue/mesh/proto/type/resources.proto";
 
 
-// Mesh server service
+// Mesh model service
 // -------------------------------
-// The Mesh service is an API for interacting with a running Mesh server, also called just Mesh.
+// The Mesh model service is an API for managing Mesh model.
 //
-//
-// Authentication
-//
-// When Mesh is configured to require authentication an access token is
-// necessary for most calls. You can acquire an access token through Kerberos
-// authentication as described above the `AuthenticateKerberos` method. Access
-// tokens are passed in the `Authorization` metadata field of each RPC with the
-// format `Bearer <access token>`.
-//
-// Many gRPC libraries provide call credential types that correctly pass the
-// access token to the server, for example `grpc::AccessTokenCredentials` in C++.
-// These mechanisms will generally take the bare access token (without `Bearer`),
-// and create the `Bearer <access token>` string internally.
-//
-// Access tokens expire after an hour and should be refreshed before then.
-// Getting a new token early, for example after half the expiration time, is
-// recommended.
-//
-service MeshService {
-
-  // Authenticate using Kerberos
-  // -------------------------------
-  // Perform a potentially multi-leg Kerberos authentication where the client
-  // and the server sends Kerberos tickets back and forth until a complete
-  // security context is established or an error occurs.
-
-  // On success the final response from the server will contain a bearer token
-  // that should be used as a token in calls that require authorization, as
-  // well as the expiration time for that token.
-  rpc AuthenticateKerberos(stream google.protobuf.BytesValue) returns (stream AuthenticateKerberosResponse) {}
-
-  rpc AuthenticateFake(AuthenticateFakeRequest) returns (AuthenticateFakeResponse) {}
-
-  // Revoke an access token received from `AuthenticateKerberos`, causing
-  // it to become immediately unusable. If the RPC returns without error
-  // the operation succeeded *or* the token does not exist.
-  rpc RevokeAccessToken(google.protobuf.StringValue) returns (RevokeAccessTokenResponse) {}
-
-  // Returns the identity that was used to create the access token authorizing
-  // this call.
-  rpc GetUserIdentity(google.protobuf.Empty) returns (UserIdentity) {}
-
-  // Sessions
-  // -------------------------------
-  // To work with data inside a Mesh server you need to create a workspace which
-  // is called a session. Here you can have changes and calculations pending which
-  // won't be visible to other users of the Mesh server until you commit them.
-  //
-
-  // Start a Mesh session on the server, return the id of the session.
-  rpc StartSession(google.protobuf.Empty) returns (volue.mesh.grpc.type.Guid) {}
-
-  // Close a session on the Mesh server.
-  rpc EndSession(volue.mesh.grpc.type.Guid) returns (EndSessionResponse) {}
-
-  // Commit changes in a server session to permanent storage.
-  rpc Commit(volue.mesh.grpc.type.Guid) returns (CommitResponse) {}
-
-  // Rollback changes that are in the server's session but not in the database yet.
-  rpc Rollback(volue.mesh.grpc.type.Guid) returns (RollbackResponse) {}
-
-  rpc ExtendSession(volue.mesh.grpc.type.Guid) returns (ExtendSessionResponse) {}
-
-  // Timeseries
-  // -------------------------------
-  // In its simplest form a timeseries is just a table of timestamps, flags and values.
-  // Timeseries can be organized and generated in different ways.
-  // Some timeseries are retrieved 'as is' from the database where they are stored, while others
-  // are generated using calculations which can be based on an arbitrary set of data.
-  // Timeseries can be organized in a structure which resembles catalogs and thus can have a
-  // path associated with it. They can also potentially be linked to a node in a Mesh model and with
-  // that get a path that represents the nodes position in the Mesh model. More metadata like unit
-  // of measurement, curve type and so on can also be linked to the timeseries.
-
-  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
-  rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
-
-  rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
-
-  // Run ad-hoc calculation
-  rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
+service ModelService {
 
   rpc ListModels(ListModelsRequest) returns (ListModelsResponse) {}
 
@@ -166,32 +82,6 @@ service MeshService {
   // Update existing versioned one-to-one link relation attribute in the model.
   rpc UpdateVersionedLinkRelationAttribute(UpdateVersionedLinkRelationAttributeRequest) returns (UpdateVersionedLinkRelationAttributeResponse) {}
 
-  // Get time series resource.
-  // A time series resource:
-  // - can be either physical or virtual time series
-  // - can be connected to time series attributes.
-  // - is identified by time series key or path within Resource catalog
-  //
-  // Physical time series has data (timestamps, values and flags) and
-  // metadata (e.g.: curve type, resolution, etc.).
-  // Virtual time series has metadata but instead of timestamps, values and
-  // flags it has defined an expression to calculate time series data
-  // (similar to calculation time series) but is stored in the resources.
-  rpc GetTimeseriesResource(GetTimeseriesResourceRequest) returns (TimeseriesResource) {}
-
-  rpc UpdateTimeseriesResource(UpdateTimeseriesResourceRequest) returns (UpdateTimeseriesResourceResponse) {}
-
-  // Get the Mesh server version information.
-  rpc GetVersion(google.protobuf.Empty) returns (VersionInfo) {}
-
-  // Get the Mesh server health information.
-  // This function is not stable. Both signature and response content are subjects to change.
-  rpc GetHealthStatus(google.protobuf.Empty) returns (google.protobuf.Struct) {}
-
-  // Get the Mesh server configuration.
-  // This function is not stable. Both signature and response content are subjects to change.
-  rpc GetConfiguration(google.protobuf.Empty) returns (google.protobuf.Struct) {}
-
   // Get zero or more `XySet`s from an XY-set attribute (`XYSetAttribute`) or
   // a versioned XY-set attribute (`XYZSeriesAttribute`). See `GetXySetsRequest`
   // for more information.
@@ -211,139 +101,6 @@ service MeshService {
   // attribute (`RatingCurveAttribute`).
   // See `UpdateRatingCurveVersionsRequest` for more information.
   rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
-
-  // Get the currently set log level threshold
-  rpc GetLogLevel(google.protobuf.Empty) returns (GetLogLevelResponse) {}
-
-  // Change the log level threshold.
-  rpc UpdateLogLevel(UpdateLogLevelRequest) returns (UpdateLogLevelResponse) {}
-
-  // Copy time series from one part of Mesh model to another part of the model.
-  // This method copies time series values from a set of time series (source) to another set of time series (target).
-  // The input defines the root nodes of source hierarchy and target hierarchy.
-  // In case these root nodes are different, the match between source series and target series is 
-  // done by comparison of relative path to series attribute in source and target hierarchy.
-  //
-  // The function supports a mapping description that enables these operations:
-  // - Copy to *another* attribute on the same object as the source series.
-  // - Copy to *another* attribute on the matching object in the target hierarchy.
-  // - Copy time series from a source hierarchy to a target identified by a general search/navigation spec on the mapping definition.
-  //
-  // In case mapping is enabled, the root nodes for source and target may be the same.
-  rpc CopyTimeseriesBetweenObjects(CopyTimeseriesBetweenObjectsRequest) returns (CopyTimeseriesBetweenObjectsResponse) {}
-
-  // Resources part of Mesh structure is not bound to a specific model definition or model.
-  // It is organized by hierarchies of catalogs, like a file system. 
-  // A catalog may contain different type of resource objects. The most common types are Timeseries, Binary files and Text files
-  // This interface targets the Text files and provides functions to Read/Write/List text resources.
-
-  rpc ListTextResources(ListTextResourcesRequest) returns (ListTextResourcesResponse) {}
-  rpc GetTextResource(GetTextResourceRequest) returns (GetTextResourceResponse) {}
-  rpc WriteTextResource(WriteTextResourceRequest) returns (WriteTextResourceResponse) {}
-}
-
-message AuthenticateKerberosResponse {
-  // The Kerberos ticket returned by the server's AcceptSecurityContext call.
-  bytes kerberos_token = 1;
-
-  // A base64 encoded access token.
-  string bearer_token = 2;
-
-  // The access token will become invalid at this time.
-  google.protobuf.Duration token_duration = 3;
-}
-
-message AuthenticateFakeRequest {
-  string display_name = 1;
-  google.protobuf.Duration token_duration = 2;
-  string internal = 15;
-}
-
-message AuthenticateFakeResponse {
-  string bearer_token = 1;
-  google.protobuf.Duration token_duration = 2;
-}
-
-message RevokeAccessTokenResponse {}
-
-message UserIdentity {
-  // A human readable name identifying this user. This name should not be
-  // used as an unique identifier for the user as it may be identical
-  // between users and change over time.
-  string display_name = 1;
-
-  // Security package name where the user identity came from.
-  // It is not an unique identifier of the security package instance.
-  string source = 2;
-
-  // An identifier that uniquely identifies the user within given `source` instance, but
-  // not necessarily globally. Combining `source` and `identifier` does not guarantee
-  // to get globally unique identifier for the user as there may be different
-  // Active Directories using the same security packages (`source`) with
-  // duplicated user identifiers. However such situation is rather unlikely.
-  string identifier = 3;
-}
-
-message EndSessionResponse {}
-
-message ExtendSessionResponse {
-    google.protobuf.Duration expires_in = 1;
-}
-
-message CommitResponse {}
-
-message RollbackResponse {}
-
-message ReadTimeseriesRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  volue.mesh.grpc.type.MeshId timeseries_id = 2;
-  volue.mesh.grpc.type.UtcInterval interval = 3;
-
-  // if we request points from a breakpoint series, the actual points
-  // describing our interval, might be long before the actual interval.
-  // Should we then return the actual point (outside our interval),
-  // or a "fake"/virtual point inside our interval?
-  // TODO: bool allow_virtual_points?
-}
-
-message ReadTimeseriesStreamRequest{
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  repeated volue.mesh.grpc.type.MeshId timeseries_id = 2;
-  volue.mesh.grpc.type.UtcInterval interval = 3;
-}
-
-message ReadTimeseriesResponse {
-  repeated Timeseries timeseries = 1;
-}
-
-message WriteTimeseriesRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Time series must point to exactly one time series
-  // - attribute or source (pointed by path or ID)
-  // - physical or virtual (pointed by time series key)
-  // The resolution of the points has to fit the stored time series.
-  // Otherwise it will be rejected.
-  Timeseries timeseries = 2;
-}
-
-message WriteTimeseriesResponse {}
-
-message CalculationRequest {
-    volue.mesh.grpc.type.Guid session_id = 1;
-    string expression = 2;
-    volue.mesh.grpc.type.UtcInterval interval = 3;
-    volue.mesh.grpc.type.MeshId relative_to = 4;
-}
-
-message CalculationResponse {
-    oneof calculation_result_oneof {
-        ReadTimeseriesResponse timeseries_results = 1;  // not all fields in Timeseries result will be set (e.g. full_name, or timskey)
-        NumericResults numeric_results = 2;
-        StringResults string_results = 3;
-    }
 }
 
 message ListModelsRequest {
@@ -505,7 +262,8 @@ message UpdateObjectRequest {
   volue.mesh.grpc.type.MeshId new_owner_id = 5;
 }
 
-message UpdateObjectResponse {}
+message UpdateObjectResponse {
+}
 
 message DeleteObjectRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -519,7 +277,8 @@ message DeleteObjectRequest {
   bool recursive_delete = 3;
 }
 
-message DeleteObjectResponse {}
+message DeleteObjectResponse {
+}
 
 message GetAttributeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -580,7 +339,8 @@ message UpdateSimpleAttributeRequest {
   repeated AttributeValue new_collection_values = 4;
 }
 
-message UpdateSimpleAttributeResponse {}
+message UpdateSimpleAttributeResponse {
+}
 
 message UpdateTimeseriesAttributeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -610,7 +370,8 @@ message UpdateTimeseriesAttributeRequest {
   string new_local_expression = 5;
 }
 
-message UpdateTimeseriesAttributeResponse {}
+message UpdateTimeseriesAttributeResponse {
+}
 
 // Update request message for one-to-one link relation and one-to-many link
 // relation attributes.
@@ -644,7 +405,8 @@ message UpdateLinkRelationAttributeRequest {
   repeated volue.mesh.grpc.type.Guid target_object_ids = 4;
 }
 
-message UpdateLinkRelationAttributeResponse {}
+message UpdateLinkRelationAttributeResponse {
+}
 
 // Update request message for versioned one-to-one link relation attribute.
 message UpdateVersionedLinkRelationAttributeRequest {
@@ -662,41 +424,8 @@ message UpdateVersionedLinkRelationAttributeRequest {
   repeated LinkRelationVersion versions = 4;
 }
 
-message UpdateVersionedLinkRelationAttributeResponse {}
-
-message GetTimeseriesResourceRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Time series key of the time series resource to be returned.
-  int64 timeseries_resource_key = 2;
+message UpdateVersionedLinkRelationAttributeResponse {
 }
-
-message UpdateTimeseriesResourceRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // Time series key of the time series resource to be updated.
-  int64 timeseries_resource_key = 2;
-
-  // An array containing field names to be updated.
-  // For example to update a time series resource curve type and
-  // unit of measurement:
-  //   field_mask = ['new_curve_type', 'new_unit_of_measurement_id']
-  //   new_curve_type = CurveType::PIECEWISELINEAR
-  //   new_unit_of_measurement_id = ID of the unit of measurement.
-  //
-  // All units of measurements can be listed using model definition service
-  // `ListUnitsOfMeasurement` RPC.
-  google.protobuf.FieldMask field_mask = 3;
-
-  volue.mesh.grpc.type.Curve new_curve_type = 4;
-
-  // To clear the unit of measurement leave the `new_unit_of_measurement_id`
-  // field empty (not ID with only zeros), but provide `new_unit_of_measurement_id`
-  // string in the field mask.
-  volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 5;
-}
-
-message UpdateTimeseriesResourceResponse {}
 
 message GetRatingCurveVersionsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -734,7 +463,8 @@ message UpdateRatingCurveVersionsRequest {
   repeated RatingCurveVersion versions = 4;
 }
 
-message UpdateRatingCurveVersionsResponse {}
+message UpdateRatingCurveVersionsResponse {
+}
 
 // A request for the `XySet`s in an interval, or in the case of `XYSet` attributes
 // the single `XySet` owned by that attribute.
@@ -782,149 +512,5 @@ message UpdateXySetsRequest {
   repeated XySet xy_sets = 4;
 }
 
-message UpdateXySetsResponse {}
-
-message UpdateLogLevelRequest {
-  volue.mesh.grpc.type.LogLevel new_log_level = 1;
+message UpdateXySetsResponse {
 }
-
-message UpdateLogLevelResponse {}
-
-message GetLogLevelResponse {
-  // log level retrieved from Mesh
-  volue.mesh.grpc.type.LogLevel log_level = 1;
-}
-
-message AttributePair {
-
-    // A time series attribute name.
-    string source_attribute_name = 1;
-
-    // The target can either be a direct name or a search/navigation spec.
-    oneof target_attribute {
-        // Use name when the target attribute is found by internal lookup on target object.
-        string target_attribute_name = 2;
-
-        // Use search when the target attribute is found by general search from target object.
-        // To accept a search based mapping, the result of the search must be 1 time series attribute.
-
-        // The attribute search expression may contain a macro named $ObjName to make search more specific.
-        // The value of the macro is associated with the source object name.
-        // By using this macro it is possible to reach out to target series in a more generic way.
-        // Example: ../../*[.Type=Asset&&.Name=$ObjName&&...Name=C3].Ts1
-        // When at a source object having a name CA1, the search string will be expanded to ../../*[.Type=Asset&&.Name=CA1&&...Name=C3].Ts1
-        // Because the structure of the source and target hierarchy normally is the same, this will narrow the search.
-        string target_attribute_search = 3;
-    }
-}
-// Mapping details
-message TypeAttributeMapping {
-
-    // The Mesh object type name.
-    // When specified, only time series that match this filter will be considered for copy.
-    string object_type_name = 1;
-
-    // Mapping between time series source attribute name and target name.
-    // Target name may be a search expression.
-    repeated AttributePair attribute_mapping = 2;
-}
-
-message CopyTimeseriesBetweenObjectsRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-
-  // If interval is not supplied, the request will do a tentative operation
-  // which logs what time series will be copied if a valid interval is given.
-  volue.mesh.grpc.type.UtcInterval interval = 2;
-  
-  // Identify the root object of the Source hierarchy (path or guid)
-  volue.mesh.grpc.type.MeshId source = 3;
-  // If scenario name is specified, the source series must be bound to a scenario object
-  // To categorize an object as a scenario object follow a convention where
-  // a) The object itself has name == scenario_name
-  // b) The owner object (OwnerElement) has a object type name ending with Scenario
-  string scenario_name = 4;
-  // Identify the root object of the Target hierarchy (path or guid)
-  // In case attribute mapping is enabled the source and target may refer to same object
-  volue.mesh.grpc.type.MeshId target = 5;
-
-  // Optional: Defines which part of source hierarchy to copy and potentially also where to copy.
-  // In case this mapping is not specified the operation copies everything that matches general criteria.
-  // General criteria: source series can provide values (ts binding or expression) and target series can be persisted.
-  repeated TypeAttributeMapping mapping = 6;
-}
-
-message CopyTimeseriesBetweenObjectsResponse {
-
-    // Number of source series considered.
-    int64 source_series_count = 1;
-
-    // Number of target series considered.
-    int64 target_series_count = 2;
-
-    // The number of series that will be copied if input interval is defined.
-    // When this value is > 0 the operations were successful.
-    int64 match_series_count = 3;
-}
-
-// A text resource in Mesh can be compared with a text file located at a given catalog.
-// The API supports reading, writing and browsing such Mesh resource objects.
-
-message ListTextResourcesRequest {
-    volue.mesh.grpc.type.Guid session_id = 1;
-
-    // The catalog in which we are looking for Text resources (files).
-    // In case the option `include_subcatalogs` is true, this catalog is treated as the root 
-    // of a hierarchical search.
-    volue.mesh.grpc.type.MeshId catalog = 2;
-    
-    // Empty, simple "contains" pattern or a regular expression.
-    // In case it is empty, all Text resources are added to reply list.
-    // Else, the system will try to look for a Text resource which contains the `name_mask` value.
-    // For instance ".json" will match "AB.json", "A.jsonB" etc  (contains somewhere in the name gives match).
-    // If contain operation fails, the system tries to match the name of the Text resource with the `name_mask` value as a regular expression.
-    string name_mask = 3;
-    
-    // Include search for matches in subcatalogs
-    bool include_subcatalogs = 4;
-}
-
-message ListTextResourcesResponse {
-    // Resources that match request
-    repeated volue.mesh.grpc.type.MeshId resources = 1;
-}
-
-message GetTextResourceRequest {
-    volue.mesh.grpc.type.Guid session_id = 1;
-
-    // The path must lead to an existing Text Resource
-    // If MeshId contains a GUID, the system will resolve that GUID and do not try the MeshId path definition.
-    // A text path has the following format:
-    // Resource/Catalog1/CatalogX/SomeTextResourceName
-    volue.mesh.grpc.type.MeshId resource = 2;
-}
-
-message GetTextResourceResponse {
-    volue.mesh.grpc.type.Guid id = 1;
-    string path = 2;
-    // The contents of the Text resource 
-    string text = 3;
-}
-
-message WriteTextResourceRequest {
-    volue.mesh.grpc.type.Guid session_id = 1;
-
-    // The path may lead to an existing Text Resource
-    // Or, in case allow_create is true, the resource will be created
-    // This may create new catalogs, all or from a certain level
-    // The first part must be Resource, the last part is taken to be the Text resource name
-    // Resource/SomeTextResourceName is not accepted
-    volue.mesh.grpc.type.MeshId resource = 2;
-    
-    // If set to false the target must be an existing text resource
-    bool allow_create = 3;
-
-    // The contents
-    string text = 4;
-}
-
-message WriteTextResourceResponse {}
