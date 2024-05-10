@@ -9,11 +9,11 @@ from typing import Optional
 
 from volue.mesh import Timeseries
 from volue.mesh._common import _from_proto_curve_type, _from_proto_resolution
-from volue.mesh.proto import core
+from volue.mesh.proto.time_series.v1alpha import time_series_pb2
 
 
 def _get_unit_of_measurement(
-    proto_timeseries_resource: core.v1alpha.resources_pb2.TimeseriesResource,
+    proto_timeseries_resource: time_series_pb2.TimeseriesResource,
 ):
     if proto_timeseries_resource.HasField("unit_of_measurement"):
         return proto_timeseries_resource.unit_of_measurement.name
@@ -35,7 +35,7 @@ class TimeseriesResource:
 
     @classmethod
     def _from_proto_timeseries_resource(
-        cls, proto_timeseries_resource: core.v1alpha.resources_pb2.TimeseriesResource
+        cls, proto_timeseries_resource: time_series_pb2.TimeseriesResource
     ) -> TimeseriesResource:
         """Create a `TimeseriesResource` from protobuf TimeseriesResource.
 

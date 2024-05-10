@@ -577,7 +577,7 @@ message SearchNamespacesRequest {
   bool recursive_search = 3;
 
   // Defines what namespace information should be included in the
-  // response. If not set all information will be included.
+  // response. If not set, then all information will be included.
   //
   // An array containing `Namespace` message field names to be
   // returned in the response.

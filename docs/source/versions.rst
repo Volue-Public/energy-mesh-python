@@ -9,7 +9,7 @@ Mesh Python SDK version 1.8.0-dev
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.13 **(may change)**
+- Mesh server version >= 2.14 **(may change)**
 - Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features

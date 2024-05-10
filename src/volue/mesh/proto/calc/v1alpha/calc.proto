@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.calc.v1alpha;
+
+import "volue/mesh/proto/time_series/v1alpha/time_series.proto";
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Mesh calculation service
+// -------------------------------
+// The Mesh calculation service is an API for running Mesh calculations.
+//
+service CalculationService {
+
+  // Run ad-hoc calculation
+  rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
+}
+
+message CalculationRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  string expression = 2;
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+  volue.mesh.grpc.type.MeshId relative_to = 4;
+}
+
+message CalculationResponse {
+  oneof calculation_result_oneof {
+    // not all fields in Timeseries result will be set (e.g. full_name,
+    // or timskey)
+    volue.mesh.grpc.time_series.v1alpha.ReadTimeseriesResponse timeseries_results = 1;
+    NumericResults numeric_results = 2;
+    StringResults string_results = 3;
+  }
+}
+
+message NumericResults {
+  repeated double value = 1;
+}
+
+message StringResults {
+  repeated string value = 1;
+}

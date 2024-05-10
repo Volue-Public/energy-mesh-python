@@ -13,7 +13,7 @@ from typing import Optional
 import grpc
 from google import protobuf
 
-from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
+from volue.mesh.proto.auth.v1alpha import auth_pb2, auth_pb2_grpc
 
 if platform.startswith("win32"):
     import winkerberos as kerberos
@@ -174,7 +174,7 @@ class Authentication(grpc.AuthMetadataPlugin):
 
         # create separate channel for getting and refreshing Mesh token
         channel = grpc.secure_channel(target=target, credentials=channel_credentials)
-        self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
+        self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
 
         # get token in initialization to avoid spending
         # extra time while executing first call to Mesh
@@ -215,7 +215,7 @@ class Authentication(grpc.AuthMetadataPlugin):
             kerberos_token_iterator = self.KerberosTokenIterator(
                 self.service_principal, self.user_principal
             )
-            mesh_responses = self.mesh_service.AuthenticateKerberos(
+            mesh_responses = self.auth_service.AuthenticateKerberos(
                 kerberos_token_iterator
             )
             for mesh_response in mesh_responses:
@@ -250,14 +250,14 @@ class Authentication(grpc.AuthMetadataPlugin):
     def delete_access_token(self):
         """
         Deletes (resets) current Mesh token if no longer needed.
-        mesh_service.RevokeAccessToken call is made in Connection classes.
+        auth_service.RevokeAccessToken call is made in Connection classes.
         """
         self.token = None
         self.token_expiration_date = None
 
 
 def authenticate_fake(
-    service: core_pb2_grpc.MeshServiceStub, name: str
+    service: auth_pb2_grpc.AuthenticationServiceStub, name: str
 ) -> typing.Tuple[str, datetime]:
     """Authenticate to Mesh with a fake identity.
 
@@ -274,7 +274,7 @@ def authenticate_fake(
     Raises:
         grpc.RpcError: If the remote procedure call fails.
     """
-    request = core_pb2.AuthenticateFakeRequest(
+    request = auth_pb2.AuthenticateFakeRequest(
         display_name=name, token_duration=protobuf.duration_pb2.Duration(seconds=3600)
     )
     now = datetime.now(timezone.utc)
@@ -296,19 +296,19 @@ class FakeIdentityPlugin(grpc.AuthMetadataPlugin):
         self.token_expiration: datetime = datetime.now(timezone.utc)
 
         channel = grpc.secure_channel(target=grpc_target, credentials=grpc_credentials)
-        self.mesh_service = core_pb2_grpc.MeshServiceStub(channel)
+        self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
 
     def __call__(self, context, callback):
         if self.token_expiration < datetime.now(timezone.utc) + timedelta(minutes=1):
             self.token, self.token_expiration = authenticate_fake(
-                self.mesh_service, self.name
+                self.auth_service, self.name
             )
         callback((("authorization", "Bearer " + self.token),), None)
 
     def delete_access_token(self):
         """
         Deletes (resets) current Mesh token if no longer needed.
-        mesh_service.RevokeAccessToken call is made in Connection classes.
+        auth_service.RevokeAccessToken call is made in Connection classes.
         """
         self.token = None
         self.token_expiration_date = None

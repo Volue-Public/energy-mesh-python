@@ -32,19 +32,21 @@ from volue.mesh._common import (
     _from_proto_guid,
     _to_proto_guid,
     _to_proto_timeseries,
-    _to_proto_utcinterval,
 )
-from volue.mesh._mesh_id import _to_proto_object_mesh_id
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
 from volue.mesh.calc.transform import TransformFunctions
-from volue.mesh.proto.core.v1alpha import core_pb2, core_pb2_grpc
-from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
+
+from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
+from volue.mesh.proto.model.v1alpha import model_pb2_grpc
 from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
 )
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
+from volue.mesh.proto.session.v1alpha import session_pb2_grpc
+from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
 
 from . import _attribute, _base_connection, _base_session
 
@@ -57,16 +59,22 @@ class Connection(_base_connection.Connection):
 
         def __init__(
             self,
-            mesh_service: core_pb2_grpc.MeshServiceStub,
-            model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
+            calc_service: calc_pb2_grpc.CalculationServiceStub,
             hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
+            model_service: model_pb2_grpc.ModelServiceStub,
+            model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
+            session_service: session_pb2_grpc.SessionServiceStub,
+            time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
             session_id: Optional[uuid.UUID] = None,
         ):
             super().__init__(
                 session_id=session_id,
-                mesh_service=mesh_service,
-                model_definition_service=model_definition_service,
+                calc_service=calc_service,
                 hydsim_service=hydsim_service,
+                model_service=model_service,
+                model_definition_service=model_definition_service,
+                session_service=session_service,
+                time_series_service=time_series_service,
             )
 
         def __enter__(self):
@@ -88,11 +96,11 @@ class Connection(_base_connection.Connection):
             self.close()
 
         def _extend_lifetime(self) -> None:
-            self.mesh_service.ExtendSession(_to_proto_guid(self.session_id))
+            self.session_service.ExtendSession(_to_proto_guid(self.session_id))
 
         def open(self) -> None:
-            reply = self.mesh_service.StartSession(protobuf.empty_pb2.Empty())
-            self.session_id = _from_proto_guid(reply)
+            reply = self.session_service.StartSession(protobuf.empty_pb2.Empty())
+            self.session_id = _from_proto_guid(reply.session_id)
 
             self.stop_worker_thread.clear()
             self.worker_thread = super().WorkerThread(self)
@@ -103,14 +111,14 @@ class Connection(_base_connection.Connection):
                 self.stop_worker_thread.set()
                 self.worker_thread.join()
 
-            self.mesh_service.EndSession(_to_proto_guid(self.session_id))
+            self.session_service.EndSession(_to_proto_guid(self.session_id))
             self.session_id = None
 
         def rollback(self) -> None:
-            self.mesh_service.Rollback(_to_proto_guid(self.session_id))
+            self.session_service.Rollback(_to_proto_guid(self.session_id))
 
         def commit(self) -> None:
-            self.mesh_service.Commit(_to_proto_guid(self.session_id))
+            self.session_service.Commit(_to_proto_guid(self.session_id))
 
         def read_timeseries_points(
             self,
@@ -120,11 +128,11 @@ class Connection(_base_connection.Connection):
         ) -> Timeseries:
             gen = super()._read_timeseries_impl(target, start_time, end_time)
             request = next(gen)
-            return gen.send(self.mesh_service.ReadTimeseries(request))
+            return gen.send(self.time_series_service.ReadTimeseries(request))
 
         def write_timeseries_points(self, timeseries: Timeseries) -> None:
-            self.mesh_service.WriteTimeseries(
-                core_pb2.WriteTimeseriesRequest(
+            self.time_series_service.WriteTimeseries(
+                time_series_pb2.WriteTimeseriesRequest(
                     session_id=_to_proto_guid(self.session_id),
                     timeseries=_to_proto_timeseries(timeseries),
                 )
@@ -133,8 +141,8 @@ class Connection(_base_connection.Connection):
         def get_timeseries_resource_info(
             self, timeseries_key: int
         ) -> TimeseriesResource:
-            proto_timeseries_resource = self.mesh_service.GetTimeseriesResource(
-                core_pb2.GetTimeseriesResourceRequest(
+            proto_timeseries_resource = self.time_series_service.GetTimeseriesResource(
+                time_series_pb2.GetTimeseriesResourceRequest(
                     session_id=_to_proto_guid(self.session_id),
                     timeseries_resource_key=timeseries_key,
                 )
@@ -166,7 +174,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_update_timeseries_resource_request(
                 timeseries_key, new_curve_type, new_unit_of_measurement_id
             )
-            self.mesh_service.UpdateTimeseriesResource(request)
+            self.time_series_service.UpdateTimeseriesResource(request)
 
         def get_attribute(
             self,
@@ -176,7 +184,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_get_attribute_request(
                 target, full_attribute_info
             )
-            proto_attribute = self.mesh_service.GetAttribute(request)
+            proto_attribute = self.model_service.GetAttribute(request)
             return _from_proto_attribute(proto_attribute)
 
         def get_timeseries_attribute(
@@ -201,7 +209,7 @@ class Connection(_base_connection.Connection):
                 target, query, full_attribute_info
             )
 
-            proto_attributes = self.mesh_service.SearchAttributes(request)
+            proto_attributes = self.model_service.SearchAttributes(request)
 
             attributes = []
             for proto_attribute in proto_attributes:
@@ -225,7 +233,7 @@ class Connection(_base_connection.Connection):
             value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
         ) -> None:
             request = super()._prepare_update_simple_attribute_request(target, value)
-            self.mesh_service.UpdateSimpleAttribute(request)
+            self.model_service.UpdateSimpleAttribute(request)
 
         def update_timeseries_attribute(
             self,
@@ -236,7 +244,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_update_timeseries_attribute_request(
                 target, new_local_expression, new_timeseries_resource_key
             )
-            self.mesh_service.UpdateTimeseriesAttribute(request)
+            self.model_service.UpdateTimeseriesAttribute(request)
 
         def update_link_relation_attribute(
             self,
@@ -247,7 +255,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_update_link_relation_attribute_request(
                 target, new_target_object_ids, append
             )
-            self.mesh_service.UpdateLinkRelationAttribute(request)
+            self.model_service.UpdateLinkRelationAttribute(request)
 
         def update_versioned_link_relation_attribute(
             self,
@@ -259,14 +267,14 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_versioned_link_relation_attribute_request(
                 target, start_time, end_time, new_versions
             )
-            self.mesh_service.UpdateVersionedLinkRelationAttribute(request)
+            self.model_service.UpdateVersionedLinkRelationAttribute(request)
 
         def list_models(
             self,
         ) -> List[Object]:
             gen = super()._list_models_impl()
             request = next(gen)
-            return gen.send(self.mesh_service.ListModels(request))
+            return gen.send(self.model_service.ListModels(request))
 
         def get_object(
             self,
@@ -277,7 +285,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_get_object_request(
                 target, full_attribute_info, attributes_filter
             )
-            proto_object = self.mesh_service.GetObject(request)
+            proto_object = self.model_service.GetObject(request)
             return Object._from_proto_object(proto_object)
 
         def search_for_objects(
@@ -291,7 +299,7 @@ class Connection(_base_connection.Connection):
                 target, query, full_attribute_info, attributes_filter
             )
 
-            proto_objects = self.mesh_service.SearchObjects(request)
+            proto_objects = self.model_service.SearchObjects(request)
 
             objects = []
             for proto_object in proto_objects:
@@ -302,7 +310,7 @@ class Connection(_base_connection.Connection):
             self, target: Union[uuid.UUID, str, AttributeBase], name: str
         ) -> Object:
             request = super()._prepare_create_object_request(target=target, name=name)
-            proto_object = self.mesh_service.CreateObject(request)
+            proto_object = self.model_service.CreateObject(request)
             return Object._from_proto_object(proto_object)
 
         def update_object(
@@ -314,13 +322,13 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_update_object_request(
                 target, new_name, new_owner_attribute
             )
-            self.mesh_service.UpdateObject(request)
+            self.model_service.UpdateObject(request)
 
         def delete_object(
             self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
         ) -> None:
             request = super()._prepare_delete_object_request(target, recursive_delete)
-            self.mesh_service.DeleteObject(request)
+            self.model_service.DeleteObject(request)
 
         def forecast_functions(
             self,
@@ -363,7 +371,7 @@ class Connection(_base_connection.Connection):
         ) -> typing.List[XySet]:
             gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
             request = next(gen)
-            return gen.send(self.mesh_service.GetXySets(request))
+            return gen.send(self.model_service.GetXySets(request))
 
         def update_xy_sets(
             self,
@@ -375,7 +383,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_update_xy_sets_request(
                 target, start_time, end_time, new_xy_sets
             )
-            self.mesh_service.UpdateXySets(request)
+            self.model_service.UpdateXySets(request)
 
         def get_rating_curve_versions(
             self,
@@ -388,7 +396,7 @@ class Connection(_base_connection.Connection):
                 target, start_time, end_time, versions_only
             )
             request = next(gen)
-            return gen.send(self.mesh_service.GetRatingCurveVersions(request))
+            return gen.send(self.model_service.GetRatingCurveVersions(request))
 
         def update_rating_curve_versions(
             self,
@@ -400,7 +408,7 @@ class Connection(_base_connection.Connection):
             request = super()._prepare_update_rating_curve_versions_request(
                 target, start_time, end_time, new_versions
             )
-            self.mesh_service.UpdateRatingCurveVersions(request)
+            self.model_service.UpdateRatingCurveVersions(request)
 
         def run_simulation(
             self,
@@ -481,12 +489,12 @@ class Connection(_base_connection.Connection):
 
     def get_version(self) -> VersionInfo:
         return VersionInfo._from_proto(
-            self.mesh_service.GetVersion(protobuf.empty_pb2.Empty())
+            self.config_service.GetVersion(protobuf.empty_pb2.Empty())
         )
 
     def get_user_identity(self) -> UserIdentity:
         return UserIdentity._from_proto(
-            self.mesh_service.GetUserIdentity(protobuf.empty_pb2.Empty())
+            self.auth_service.GetUserIdentity(protobuf.empty_pb2.Empty())
         )
 
     def update_external_access_token(self, access_token: str) -> None:
@@ -505,7 +513,7 @@ class Connection(_base_connection.Connection):
         ):
             raise RuntimeError("Authentication not configured for this connection")
 
-        self.mesh_service.RevokeAccessToken(
+        self.auth_service.RevokeAccessToken(
             protobuf.wrappers_pb2.StringValue(value=self.auth_metadata_plugin.token)
         )
         self.auth_metadata_plugin.delete_access_token()
@@ -515,8 +523,11 @@ class Connection(_base_connection.Connection):
 
     def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
         return self.Session(
-            self.mesh_service,
-            self.model_definition_service,
-            self.hydsim_service,
-            session_id,
+            calc_service=self.calc_service,
+            hydsim_service=self.hydsim_service,
+            model_service=self.model_service,
+            model_definition_service=self.model_definition_service,
+            session_service=self.session_service,
+            time_series_service=self.time_series_service,
+            session_id=session_id,
         )

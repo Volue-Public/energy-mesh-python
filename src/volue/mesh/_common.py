@@ -14,8 +14,11 @@ import pyarrow as pa
 from google.protobuf import field_mask_pb2, timestamp_pb2
 
 from volue.mesh import Timeseries
-from volue.mesh.proto import core, type
-from volue.mesh.proto.core.v1alpha import core_pb2
+from volue.mesh.proto import type
+from volue.mesh.proto.auth.v1alpha import auth_pb2
+from volue.mesh.proto.config.v1alpha import config_pb2
+from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2
+from volue.mesh.proto.time_series.v1alpha import time_series_pb2
 
 
 @dataclass
@@ -142,7 +145,7 @@ class UserIdentity:
     identifier: str
 
     @classmethod
-    def _from_proto(cls, proto_user_identity: core_pb2.UserIdentity) -> UserIdentity:
+    def _from_proto(cls, proto_user_identity: auth_pb2.UserIdentity) -> UserIdentity:
         """Create a `UserIdentity` from protobuf UserIdentity.
 
         Args:
@@ -169,9 +172,7 @@ class VersionInfo:
     name: str
 
     @classmethod
-    def _from_proto(
-        cls, proto_version_info: core.v1alpha.resources_pb2.VersionInfo
-    ) -> VersionInfo:
+    def _from_proto(cls, proto_version_info: config_pb2.VersionInfo) -> VersionInfo:
         """Create a `VersionInfo` from protobuf VersionInfo.
 
         Args:
@@ -450,7 +451,7 @@ def _to_proto_utcinterval(
 
 def _to_proto_timeseries(
     timeseries: Timeseries,
-) -> core.v1alpha.resources_pb2.Timeseries:
+) -> time_series_pb2.Timeseries:
     """
     Converts a Timeseries to corresponding protobuf Timeseries.
 
@@ -468,7 +469,7 @@ def _to_proto_timeseries(
     writer.write_table(timeseries.arrow_table)
     buffer = stream.getvalue()
 
-    proto_timeseries = core.v1alpha.resources_pb2.Timeseries(
+    proto_timeseries = time_series_pb2.Timeseries(
         id=_to_proto_mesh_id_from_timeseries(timeseries),
         resolution=timeseries.resolution,
         interval=_to_proto_utcinterval(
@@ -503,8 +504,8 @@ def _to_proto_mesh_id_from_timeseries(
 
 def _to_proto_attribute_masks(
     attributes_filter: Optional[AttributesFilter],
-) -> core.v1alpha.resources_pb2.AttributesMasks:
-    attributes_masks = core.v1alpha.resources_pb2.AttributesMasks()
+) -> model_resources_pb2.AttributesMasks:
+    attributes_masks = model_resources_pb2.AttributesMasks()
 
     if attributes_filter is not None:
         if attributes_filter.name_mask is not None:
@@ -528,9 +529,7 @@ def _object_to_proto_field_mask(
 ) -> Optional[field_mask_pb2.FieldMask]:
     if attributes_filter is None or not attributes_filter.return_no_attributes:
         return None
-    fields = [
-        field.name for field in core.v1alpha.resources_pb2.Object.DESCRIPTOR.fields
-    ]
+    fields = [field.name for field in model_resources_pb2.Object.DESCRIPTOR.fields]
     fields.remove("attributes")
     return field_mask_pb2.FieldMask(paths=fields)
 
@@ -560,7 +559,9 @@ def _to_proto_attribute_field_mask(
     )
 
 
-def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries]:
+def _read_proto_reply(
+    reply: time_series_pb2.ReadTimeseriesResponse,
+) -> List[Timeseries]:
     """
     Converts a protobuf time series reply from Mesh server into Timeseries.
 
@@ -602,7 +603,9 @@ def _read_proto_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[Timeseries
     return timeseries
 
 
-def _read_proto_numeric_reply(reply: core_pb2.ReadTimeseriesResponse) -> List[float]:
+def _read_proto_numeric_reply(
+    reply: time_series_pb2.ReadTimeseriesResponse,
+) -> List[float]:
     """
     Converts a protobuf numeric calculation reply from Mesh server into an array of floating points values.
 

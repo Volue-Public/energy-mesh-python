@@ -1,0 +1,284 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.time_series.v1alpha;
+
+import "google/protobuf/field_mask.proto";
+
+import "volue/mesh/proto/model_definition/v1alpha/resources.proto";
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Mesh time series service
+// -------------------------------
+// The Mesh time series service is an API for managing Mesh time series,
+// including reading and writing.
+//
+// In its simplest form a time series is just a table of timestamps, flags
+// and values. Time series can be organized and generated in different ways.
+//
+// Some time series are retrieved 'as is' from the database where they are
+// stored. Such time series are called physical time series. They reside in
+// Mesh resources which is a container storing data, that could be used by Mesh
+// model(s). Physical time series together with time series data (timestamps,
+// values and flags) have also associated meta data (e.g.: curve type,
+// resolution, etc.).
+//
+// Others are generated using calculations which can be based on an arbitrary
+// set of data. Such time series are called calculation time series.
+//
+// There is also third type of time series called virtual time series (VTS).
+// Virtual time series has defined an expression to calculate time series data
+// (similar to calculation time series) but is stored in Mesh resources, just
+// like physical time series.
+//
+// Physical and virtual time series can be organized in Mesh resources in
+// a structure which resembles catalogs and thus can have a path associated
+// with it. They can also potentially be connected to a time series attribute
+// in a Mesh model.
+//
+service TimeseriesService {
+
+  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
+  rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
+
+  rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
+
+  // Get time series resource.
+  // A time series resource:
+  // - can be either physical or virtual time series
+  // - can be connected to time series attributes.
+  // - is identified by time series key or path within Resource catalog
+  //
+  // Physical time series has data (timestamps, values and flags) and
+  // metadata (e.g.: curve type, resolution, etc.).
+  // Virtual time series has metadata but instead of timestamps, values and
+  // flags it has defined an expression to calculate time series data
+  // (similar to calculation time series) but is stored in the resources.
+  rpc GetTimeseriesResource(GetTimeseriesResourceRequest) returns (TimeseriesResource) {}
+
+  rpc UpdateTimeseriesResource(UpdateTimeseriesResourceRequest) returns (UpdateTimeseriesResourceResponse) {}
+
+  // Copy time series from one part of Mesh model to another part of the model.
+  // This method copies time series values from a set of time series (source)
+  // to another set of time series (target).
+  // The input defines the root nodes of source hierarchy and target hierarchy.
+  // In case these root nodes are different, the match between source series
+  // and target series is  done by comparison of relative path to series
+  // attribute in source and target hierarchy.
+  //
+  // The function supports a mapping description that enables these operations:
+  // - Copy to *another* attribute on the same object as the source series.
+  // - Copy to *another* attribute on the matching object in the target
+  //   hierarchy.
+  // - Copy time series from a source hierarchy to a target identified by
+  //   a general search/navigation spec on the mapping definition.
+  //
+  // In case mapping is enabled, the root nodes for source and target may be
+  // the same.
+  rpc CopyTimeseriesBetweenObjects(CopyTimeseriesBetweenObjectsRequest) returns (CopyTimeseriesBetweenObjectsResponse) {}
+}
+
+message ReadTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  volue.mesh.grpc.type.MeshId timeseries_id = 2;
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+
+  // if we request points from a breakpoint series, the actual points
+  // describing our interval, might be long before the actual interval.
+  // Should we then return the actual point (outside our interval),
+  // or a "fake"/virtual point inside our interval?
+  // TODO: bool allow_virtual_points?
+}
+
+message ReadTimeseriesResponse {
+  repeated Timeseries timeseries = 1;
+}
+
+message ReadTimeseriesStreamRequest{
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  repeated volue.mesh.grpc.type.MeshId timeseries_ids = 2;
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+}
+
+message WriteTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series must point to exactly one time series
+  // - attribute or source (pointed by path or ID)
+  // - physical or virtual (pointed by time series key)
+  // The resolution of the points has to fit the stored time series.
+  // Otherwise it will be rejected.
+  Timeseries timeseries = 2;
+}
+
+message WriteTimeseriesResponse {
+}
+
+message GetTimeseriesResourceRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series key of the time series resource to be returned.
+  int64 timeseries_resource_key = 2;
+}
+
+// Information about physical or virtual time series.
+message TimeseriesResource {
+  // Unique identifier for physical or virtual time series.
+  // Set to 0 if it is a local session time series.
+  // This is the only field that could be used for updating 
+  // time series attribute with new time series resource.
+  int64 timeseries_key = 1;
+
+  // [OUTPUT_ONLY]
+  string path = 2;
+
+  // [OUTPUT_ONLY]
+  string name = 3;
+
+  // Set to true if it is a local session time series.
+  // [OUTPUT_ONLY]
+  bool temporary = 4;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.type.Curve curve_type = 5;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.type.Resolution resolution = 6;
+
+  // [OUTPUT_ONLY]
+  volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 7;
+
+  // [OUTPUT_ONLY]
+  string virtual_timeseries_expression = 8;
+}
+
+message Timeseries {
+  volue.mesh.grpc.type.MeshId id = 1;
+
+  // [OUTPUT_ONLY] - no need to set when writing time series using
+  // `WriteTimeseries`.
+  // Resolution/spacing for this timeseries.
+  volue.mesh.grpc.type.Resolution resolution = 2;
+
+  // Time interval for this timeseries.
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+
+  // Data contains an Apache Arrow byte representation of the time series
+  // points. Stored in the following columns:
+  // 0: (uint64) utc_time
+  // 1: (uint32) flags
+  // 2: (double) value
+  bytes data = 4;
+}
+
+message UpdateTimeseriesResourceRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series key of the time series resource to be updated.
+  int64 timeseries_resource_key = 2;
+
+  // An array containing field names to be updated.
+  // For example to update a time series resource curve type and
+  // unit of measurement:
+  //   field_mask = ['new_curve_type', 'new_unit_of_measurement_id']
+  //   new_curve_type = CurveType::PIECEWISELINEAR
+  //   new_unit_of_measurement_id = ID of the unit of measurement.
+  //
+  // All units of measurements can be listed using model definition service
+  // `ListUnitsOfMeasurement` RPC.
+  google.protobuf.FieldMask field_mask = 3;
+
+  volue.mesh.grpc.type.Curve new_curve_type = 4;
+
+  // To clear the unit of measurement leave the `new_unit_of_measurement_id`
+  // field empty (not ID with only zeros), but provide
+  //`new_unit_of_measurement_id` string in the field mask.
+  volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 5;
+}
+
+message UpdateTimeseriesResourceResponse {
+}
+
+
+message AttributePair {
+  // A time series attribute name.
+  string source_attribute_name = 1;
+
+  // The target can either be a direct name or a search/navigation spec.
+  oneof target_attribute {
+    // Use name when the target attribute is found by internal lookup on target
+    // object.
+    string target_attribute_name = 2;
+
+    // Use search when the target attribute is found by general search from
+    // target object. To accept a search based mapping, the result of the
+    // search must be 1 time series attribute. The attribute search expression
+    // may contain a macro named $ObjName to make search more specific.
+    // The value of the macro is associated with the source object name.
+    // By using this macro it is possible to reach out to target series in
+    // a more generic way. Example:
+    //   ../../*[.Type=Asset&&.Name=$ObjName&&...Name=C3].Ts1
+    //
+    // When at a source object having a name CA1, the search string will be
+    // expanded to ../../*[.Type=Asset&&.Name=CA1&&...Name=C3].Ts1
+    // Because the structure of the source and target hierarchy normally is the
+    // same, this will narrow the search.
+    string target_attribute_search = 3;
+  }
+}
+// Mapping details
+message TypeAttributeMapping {
+
+  // The Mesh object type name.
+  // When specified, only time series that match this filter will be considered
+  // for copy.
+  string object_type_name = 1;
+
+  // Mapping between time series source attribute name and target name.
+  // Target name may be a search expression.
+  repeated AttributePair attribute_mappings = 2;
+}
+
+message CopyTimeseriesBetweenObjectsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // If interval is not supplied, the request will do a tentative operation
+  // which logs what time series will be copied if a valid interval is given.
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+  
+  // Identify the root object of the Source hierarchy (path or guid)
+  volue.mesh.grpc.type.MeshId source = 3;
+  // If scenario name is specified, the source series must be bound to
+  // a scenario object. To categorize an object as a scenario object follow
+  // a convention where:
+  // a) The object itself has name == scenario_name
+  // b) The owner object (OwnerElement) has a object type name ending with
+  //    Scenario
+  string scenario_name = 4;
+  // Identify the root object of the Target hierarchy (path or guid).
+  // In case attribute mapping is enabled the source and target may refer to
+  // same object.
+  volue.mesh.grpc.type.MeshId target = 5;
+
+  // Optional
+  // Defines which part of source hierarchy to copy and potentially also where
+  // to copy. In case this mapping is not specified the operation copies
+  // everything that matches general criteria. General criteria: source series
+  // can provide values (ts binding or expression) and target series can be
+  // persisted.
+  repeated TypeAttributeMapping mappings = 6;
+}
+
+message CopyTimeseriesBetweenObjectsResponse {
+  // Number of source series considered.
+  int64 source_series_count = 1;
+
+  // Number of target series considered.
+  int64 target_series_count = 2;
+
+  // The number of series that will be copied if input interval is defined.
+  // When this value is > 0 the operations were successful.
+  int64 match_series_count = 3;
+}

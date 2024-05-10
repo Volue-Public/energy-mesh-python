@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.session.v1alpha;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Mesh session service
+// -------------------------------
+// The Mesh session service is an API for managing Mesh sessions.
+//
+// To work with data inside a Mesh server you need to create a workspace which
+// is called a session. Here you can have changes and calculations pending
+// which will not be visible to other users of the Mesh server until you commit
+// them.
+//
+// Mesh session can be viewed as a temporary workspace where changes will not
+// be affected by, or affect other users, that work with the system until
+// changes are committed and pushed out of the session and into where shared
+// resources are stored.
+//
+// Mesh server will normally have many separate sessions open at any given
+// time. A session should be created and closed after finishing work.
+//
+// When a session has been created, the user can interact with the Mesh model,
+// search for and retrieve data (like time series or information about object)
+// and perform calculations using functions among other things.
+//
+//  Session timeout
+//  ---------------
+//  Each session that has been inactive for some period of time will be
+//  automatically closed on the server side. This period is called session
+//  timeout. Currently the session timeout for gRPC sessions is set to 5
+//  minutes. This may change in the future versions of Mesh server. To
+//  check when the session expires you can use `ExtendSession` RPC which
+//  returns session timeout.
+//
+//  The session timeout is counted from the moment where handling of the last
+//  request made using that session was completed. So, if you are using
+//  a session for longer period than the session timeout, but you are actively
+//  making calls to, for example read time series points, then the session will
+//  not timeout.
+//
+//  In cases where a session needs to be preserved, but the inactivity periods
+//  are longer, then the user needs to make explicit calls using that session.
+//  See `ExtendSession` RPC.
+//
+service SessionService {
+
+  rpc StartSession(google.protobuf.Empty) returns (StartSessionResponse) {}
+
+  // End existing session.
+  // Changes that were not committed will be discarded and lost.
+  rpc EndSession(volue.mesh.grpc.type.Guid) returns (EndSessionResponse) {}
+
+  // Commit changes in a server's session to permanent storage.
+  rpc Commit(volue.mesh.grpc.type.Guid) returns (CommitResponse) {}
+
+  // Rollback changes that are in the server's session but not in the database
+  // yet.
+  rpc Rollback(volue.mesh.grpc.type.Guid) returns (RollbackResponse) {}
+
+  // Extends session timeout. For use cases where a created session may have
+  // long inactivity periods it is advised to extend the session lifetime using
+  // this RPC. The session lifetime extension call should not happen just
+  // before session expiration time. Instead it should be called e.g.: 1 minute
+  // before expiration time.
+  rpc ExtendSession(volue.mesh.grpc.type.Guid) returns (ExtendSessionResponse) {}
+}
+
+message StartSessionResponse {
+  volue.mesh.grpc.type.Guid session_id = 1;
+}
+
+message EndSessionResponse {
+}
+
+message ExtendSessionResponse {
+  google.protobuf.Duration expires_in = 1;
+}
+
+message CommitResponse {
+}
+
+message RollbackResponse {
+}
