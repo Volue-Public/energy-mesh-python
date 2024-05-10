@@ -190,7 +190,7 @@
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._mesh_id</span> <span class="kn">import</span> <span class="n">_to_proto_calculation_target_mesh_id</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.core.v1alpha</span> <span class="kn">import</span> <span class="n">core_pb2</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.calc.v1alpha</span> <span class="kn">import</span> <span class="n">calc_pb2</span>
 
 
 <div class="viewcode-block" id="Timezone"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.common.Timezone">[docs]</a><span class="k">class</span> <span class="nc">Timezone</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
@@ -232,7 +232,7 @@
 
 
 <span class="k">def</span> <span class="nf">_parse_timeseries_list_response</span><span class="p">(</span>
-    <span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">,</span>
+    <span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function for parsing a calculator response.</span>
@@ -248,7 +248,7 @@
 
 
 <span class="k">def</span> <span class="nf">_parse_single_timeseries_response</span><span class="p">(</span>
-    <span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">,</span>
+    <span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function for parsing a calculator response.</span>
@@ -270,7 +270,7 @@
     <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function for parsing a calculator response.</span>
 
@@ -318,7 +318,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">end_time</span>
 
-    <span class="k">def</span> <span class="nf">prepare_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">prepare_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks that the requirements for a calculation request are met,</span>
 <span class="sd">        and constructs a calculation request object.</span>
@@ -329,7 +329,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            gRPC calculation request.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">request</span> <span class="o">=</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">(</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">expression</span><span class="o">=</span><span class="n">expression</span><span class="p">,</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">),</span>
@@ -337,7 +337,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">core_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run a function using an asynchronous connection.</span>
 
@@ -355,7 +355,7 @@
             <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_request</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RunCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">calc_service</span><span class="o">.</span><span class="n">RunCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 
     <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -376,7 +376,7 @@
             <span class="p">)</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepare_request</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">mesh_service</span><span class="o">.</span><span class="n">RunCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">calc_service</span><span class="o">.</span><span class="n">RunCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 </pre></div>
 

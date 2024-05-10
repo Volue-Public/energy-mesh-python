@@ -182,11 +182,11 @@
 
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Timeseries</span>
 <span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="n">_from_proto_curve_type</span><span class="p">,</span> <span class="n">_from_proto_resolution</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto</span> <span class="kn">import</span> <span class="n">core</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.time_series.v1alpha</span> <span class="kn">import</span> <span class="n">time_series_pb2</span>
 
 
 <span class="k">def</span> <span class="nf">_get_unit_of_measurement</span><span class="p">(</span>
-    <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span><span class="p">,</span>
+    <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">if</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;unit_of_measurement&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="o">.</span><span class="n">name</span>
@@ -208,7 +208,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_from_proto_timeseries_resource</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">core</span><span class="o">.</span><span class="n">v1alpha</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_timeseries_resource</span><span class="p">:</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">TimeseriesResource</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `TimeseriesResource` from protobuf TimeseriesResource.</span>
 
