@@ -3,14 +3,14 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-Mesh Python SDK version 1.8.0-dev
-*********************************
+`Mesh Python SDK version 1.8.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.8.0>`_
+*********************************************************************************************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.14 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
+- Mesh server version >= 2.14
+- Python [3.9, 3.10, 3.11, 3.12]
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -22,7 +22,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Changes for Mesh server 2.14 gRPC interface compatibility (:issue:`464`)
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,7 +31,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ::
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.8.0
 
 
 `Mesh Python SDK version 1.7.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.7.0>`_
@@ -40,7 +40,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.13
+- Mesh server version [2.13]
 - Python [3.9, 3.10, 3.11, 3.12]
 
 New features
@@ -76,7 +76,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.12
+- Mesh server version [2.12]
 - Python [3.9, 3.10, 3.11, 3.12]
 
 New features
@@ -109,7 +109,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.12
+- Mesh server version [2.12]
 - Python [3.8, 3.9, 3.10, 3.11]
 
 New features
@@ -144,7 +144,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.10
+- Mesh server version [2.10, 2.11]
 - Python [3.8, 3.9, 3.10, 3.11]
 
 New features
@@ -185,7 +185,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.9
+- Mesh server version [2.9]
 - Python [3.8, 3.9, 3.10, 3.11]
 
 New features
@@ -222,7 +222,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.9
+- Mesh server version [2.9]
 - Python [3.7.1, 3.8, 3.9, 3.10]
 
 New features
@@ -256,7 +256,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.6.1
+- Mesh server version [2.6.1, 2.7, 2.8]
 - Python [3.7.1, 3.8, 3.9, 3.10]
 - Tested with Mesh server version 2.6.1.8
 
@@ -288,7 +288,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.6.1
+- Mesh server version [2.6.1, 2.7, 2.8]
 - Python [3.7.1, 3.8, 3.9]
 - Tested with Mesh server version 2.6.1.8
 
@@ -330,7 +330,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version 2.5.*
+- Mesh server version [2.5, 2.6.0]
 - Python [3.7.1, 3.8, 3.9]
 - Tested with Mesh server version 2.5.0.14
 
@@ -375,7 +375,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version 2.3.*
+- Mesh server version [2.3, 2.4]
 - Python [3.7.1, 3.8, 3.9]
 - Tested with Mesh server version 2.3.0.12
 
@@ -422,7 +422,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version 2.2.*
+- Mesh server version [2.2]
 - Python [3.7.1, 3.8, 3.9]
 - Tested with Mesh server version 2.2.0.9
 
