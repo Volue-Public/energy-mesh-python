@@ -3,6 +3,7 @@ Tests for volue.mesh.Authentication
 """
 
 import sys
+import time
 
 import grpc
 import pytest
@@ -86,6 +87,9 @@ def test_auth_metadata_plugin_obtains_correctly_new_token_after_delete(
     assert auth_metadata_plugin.is_token_valid()
     previous_token = auth_metadata_plugin.token
     previous_token_expiration_date = auth_metadata_plugin.token_expiration_date
+
+    # Wait a bit to make sure the new token expiration date is newer than the previous one.
+    time.sleep(0.001)
 
     auth_metadata_plugin.delete_access_token()
     auth_metadata_plugin.get_token()
