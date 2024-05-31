@@ -3,7 +3,9 @@ import uuid
 from datetime import datetime
 
 import helpers
+import pandas as pd
 import pyarrow as pa
+from dateutil import tz
 
 import volue.mesh.aio
 from volue import mesh
@@ -23,10 +25,16 @@ def get_pa_table_with_time_series_points() -> pa.Table:
     # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
     # flags - [pa.uint32]
     # value - [pa.float64]
+
+    # time_zone = tz.gettz("Europe/Warsaw")
+    time_zone = tz.UTC
+
     arrays = [
         # if no time zone is provided then the timestamp is treated as UTC
         pa.array(
-            [datetime(2016, 1, 1, 1), datetime(2016, 1, 1, 2), datetime(2016, 1, 1, 3)]
+            pd.date_range(
+                datetime(2016, 1, 1, 1, tzinfo=time_zone), periods=3, freq="1h"
+            )
         ),
         pa.array([mesh.Timeseries.PointFlags.OK.value] * 3),
         pa.array([0.0, 10.0, 1000.0]),
