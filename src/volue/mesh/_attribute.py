@@ -433,7 +433,11 @@ class VersionedLinkRelationAttribute(AttributeBase):
             versions: List[LinkRelationVersion] = []
 
             for proto_version in proto_value.versioned_link_relation_value.versions:
-                target_object_id = _from_proto_guid(proto_version.target_object_id)
+                target_object_id = (
+                    _from_proto_guid(proto_version.target_object_id)
+                    if proto_version.HasField("target_object_id")
+                    else None
+                )
                 valid_from_time = proto_version.valid_from_time.ToDatetime(tz.UTC)
                 versions.append(LinkRelationVersion(target_object_id, valid_from_time))
 
