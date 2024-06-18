@@ -286,7 +286,7 @@ class LinkRelationVersion:
          :doc:`mesh_relations`
     """
 
-    target_object_id: uuid.UUID
+    target_object_id: Optional[uuid.UUID]
     valid_from_time: datetime.datetime
 
     def __iter__(self):
