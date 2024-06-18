@@ -606,7 +606,11 @@
             <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="k">for</span> <span class="n">proto_version</span> <span class="ow">in</span> <span class="n">proto_value</span><span class="o">.</span><span class="n">versioned_link_relation_value</span><span class="o">.</span><span class="n">versions</span><span class="p">:</span>
-                <span class="n">target_object_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+                <span class="n">target_object_id</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">proto_version</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;target_object_id&quot;</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="kc">None</span>
+                <span class="p">)</span>
                 <span class="n">valid_from_time</span> <span class="o">=</span> <span class="n">proto_version</span><span class="o">.</span><span class="n">valid_from_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
                 <span class="n">versions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LinkRelationVersion</span><span class="p">(</span><span class="n">target_object_id</span><span class="p">,</span> <span class="n">valid_from_time</span><span class="p">))</span>
 
