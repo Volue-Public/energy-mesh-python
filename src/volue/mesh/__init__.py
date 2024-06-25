@@ -11,6 +11,7 @@ from ._attribute import (
     OwnershipRelationAttribute,
     TimeseriesAttribute,
     VersionedLinkRelationAttribute,
+    SimpleAttribute,
 )
 from ._object import Object
 from ._common import (
@@ -35,6 +36,7 @@ __all__ = [
     "Connection",
     "AttributeBase",
     "HydSimDataset",
+    "SimpleAttribute",
     "LinkRelationAttribute",
     "LogMessage",
     "OwnershipRelationAttribute",
