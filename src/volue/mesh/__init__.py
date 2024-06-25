@@ -11,7 +11,7 @@ from ._attribute import (
     OwnershipRelationAttribute,
     TimeseriesAttribute,
     VersionedLinkRelationAttribute,
-    SimpleAttribute
+    SimpleAttribute,
 )
 from ._object import Object
 from ._common import (
