@@ -183,6 +183,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.RatingCurveVersion.x_value_segments"><code class="docutils literal notranslate"><span class="pre">RatingCurveVersion.x_value_segments</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#volue.mesh.SimpleAttribute"><code class="docutils literal notranslate"><span class="pre">SimpleAttribute</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.SimpleAttribute.SimpleAttributeDefinition"><code class="docutils literal notranslate"><span class="pre">SimpleAttribute.SimpleAttributeDefinition</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#volue.mesh.Timeseries"><code class="docutils literal notranslate"><span class="pre">Timeseries</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Timeseries.Curve"><code class="docutils literal notranslate"><span class="pre">Timeseries.Curve</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Timeseries.PointFlags"><code class="docutils literal notranslate"><span class="pre">Timeseries.PointFlags</span></code></a></li>
@@ -1801,6 +1805,36 @@ for the curve. For <cite>x &lt; x_range_from</cite> for the given version the
 <dt class="sig sig-object py" id="volue.mesh.RatingCurveVersion.x_value_segments">
 <span class="sig-name descname"><span class="pre">x_value_segments</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.RatingCurveSegment" title="volue.mesh._common.RatingCurveSegment"><span class="pre">RatingCurveSegment</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.RatingCurveVersion.x_value_segments" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.SimpleAttribute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">SimpleAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Attribute</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#SimpleAttribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.SimpleAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents simple Mesh Attributes.</p>
+<p>A simple attribute means an attribute that is defined by a single value
+or a collection of single values.</p>
+<p>The value can be of the following type (<cite>value_type</cite> is provided in the parenthesis):
+- integer (Int64AttributeDefinition)
+- collection of integers (Int64ArrayAttributeDefinition)
+- double (DoubleAttributeDefinition)
+- collection of doubles (DoubleArrayAttributeDefinition)
+- boolean (BooleanAttributeDefinition)
+- collection of booleans (BooleanArrayAttributeDefinition)
+- string (StringAttributeDefinition) or collection of strings (StringArrayAttributeDefinition)
+- datetime (UtcDateTimeAttributeDefinition) or collection of datetimes (UtcDateTimeArrayAttributeDefinition)</p>
+<p>Types: integer (single or collection) and double (single or collection)
+may have additionally the following fields defined:
+- minimum_value
+- maximum_value
+- unit_of_measurement</p>
+<p>Refer to documentation for more details:
+<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.SimpleAttribute.SimpleAttributeDefinition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SimpleAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#SimpleAttribute.SimpleAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.SimpleAttribute.SimpleAttributeDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute definition for simple attributes.</p>
+</dd></dl>
 
 </dd></dl>
 

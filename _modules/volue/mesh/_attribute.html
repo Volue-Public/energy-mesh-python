@@ -347,7 +347,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;AttributeBase:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_string_representation</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 
-<span class="k">class</span> <span class="nc">SimpleAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.SimpleAttribute">[docs]</a><span class="k">class</span> <span class="nc">SimpleAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents simple Mesh Attributes.</span>
 
 <span class="sd">    A simple attribute means an attribute that is defined by a single value</span>
@@ -373,7 +373,7 @@
 <span class="sd">    :ref:`Mesh attribute &lt;mesh_attribute&gt;`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">SimpleAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
+<div class="viewcode-block" id="SimpleAttribute.SimpleAttributeDefinition"><a class="viewcode-back" href="../../../api.html#volue.mesh.SimpleAttribute.SimpleAttributeDefinition">[docs]</a>    <span class="k">class</span> <span class="nc">SimpleAttributeDefinition</span><span class="p">(</span><span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attribute definition for simple attributes.&quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -404,7 +404,7 @@
             <span class="k">if</span> <span class="s2">&quot;unit_of_measurement&quot;</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="n">definition_type</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="o">.</span><span class="n">name</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">unit_of_measurement</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto_attribute</span><span class="p">:</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto_attribute</span><span class="p">)</span>
@@ -440,7 +440,7 @@
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2"> unit_of_measurement: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">unit_of_measurement</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">message</span>
+        <span class="k">return</span> <span class="n">message</span></div>
 
 
 <div class="viewcode-block" id="OwnershipRelationAttribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.OwnershipRelationAttribute">[docs]</a><span class="k">class</span> <span class="nc">OwnershipRelationAttribute</span><span class="p">(</span><span class="n">AttributeBase</span><span class="p">):</span>
