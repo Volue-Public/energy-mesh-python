@@ -399,7 +399,7 @@ message UpdateLinkRelationAttributeRequest {
   //
   // If updating a one-to-many link relation (non-versioned) attribute
   // (`ReferenceCollectionAttribute`) this may contain zero, one or more
-  // `target_object_ids`s. If there is no `target_object_ids` provided and
+  // `target_object_ids`s. If there are no `target_object_ids` provided and
   // `append` is set to false then all currently existing target objects will
   // be removed.
   repeated volue.mesh.grpc.type.Guid target_object_ids = 4;
@@ -408,20 +408,46 @@ message UpdateLinkRelationAttributeRequest {
 message UpdateLinkRelationAttributeResponse {
 }
 
-// Update request message for versioned one-to-one link relation attribute.
+// Update request message for versioned one-to-one link relation and versioned
+// one-to-many link relation attributes.
 message UpdateVersionedLinkRelationAttributeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // All existing versions inside the interval will be deleted.
-  // Passing a `null` interval is an error.
+  // For versioned one-to-one link relation attribute
+  // (`ReferenceSeriesAttribute`) all existing versions with `valid_from_time`
+  // inside the interval will be deleted. Passing a `null` interval is an error.
+  //
+  // Example:
+  //   Existing versions:  |--- ver 1 --->|--- ver 2 --->|--- ver 3 --->
+  //   Request `interval`:           <------------->
+  //   Result:             |---------- ver 1 ----------->|--- ver 3 --->
+  //
+  // For versioned one-to-many link relation attribute
+  // (`ReferenceSeriesCollectionAttribute`) this must set to `null`.
   volue.mesh.grpc.type.UtcInterval interval = 2;
 
   // Versioned one-to-one link relation attribute (`ReferenceSeriesAttribute`)
-  // identifier.
+  // or versioned one-to-many link relation
+  // (`ReferenceSeriesCollectionAttribute`) identifier.
   volue.mesh.grpc.type.MeshId attribute = 3;
 
-  // `valid_from_time` of all `versions` must be inside the interval.
-  repeated LinkRelationVersion versions = 4;
+  // If updating a versioned one-to-one link relation attribute
+  // (`ReferenceSeriesAttribute`):
+  // - Request must contain zero or one `entries`. If there are no `entries`
+  //   provided then currently existing entries will  be removed.
+  // - All `valid_from_time` of all `versions` in the `entries` must be inside
+  //   the interval.
+  // - All `versions` in the `entries` must be sorted in ascending order by
+  //   `valid_from_time`. All `valid_from_time` timestamps must be unique.
+  //
+  // If updating a versioned one-to-many link relation attribute
+  // (`ReferenceSeriesCollectionAttribute`) this may contain zero, one or more
+  // `entries`s. All `versions` in the `entries` must be sorted in ascending
+  // order by `valid_from_time`. All `valid_from_time` timestamps within each
+  // entry must be unique.
+  // If there are no `entries` provided then all currently existing
+  // entries will be removed.
+  repeated VersionedLinkRelationAttributeValue entries = 4;
 }
 
 message UpdateVersionedLinkRelationAttributeResponse {
@@ -458,8 +484,8 @@ message UpdateRatingCurveVersionsRequest {
   volue.mesh.grpc.type.MeshId attribute = 3;
 
   // Update rating curve versions for rating curve attribute. The `from` of all
-  // versions must be inside the interval. All versions must be sorted by
-  // `from`.
+  // versions must be inside the interval. All versions must be sorted in
+  // ascending order by `from`. All `from` timestamps must be unique.
   repeated RatingCurveVersion versions = 4;
 }
 
@@ -505,7 +531,9 @@ message UpdateXySetsRequest {
 
   // If updating a versioned XY set attribute (`XYZSeriesAttribute`) the `XySet`s
   // in `xy_sets` will be inserted in the XY set series. The `valid_from_time` of all
-  // XY sets must be inside the interval.
+  // XY sets must be inside the interval. Provided XY sets do not need to be
+  // sorted by `valid_from_time`. However, all `valid_from_time` timestamps
+  // must be unique.
   //
   // If updating a non-versioned XY set attribute (`XYSetAttribute`) this must contain
   // zero or one `XySet`.

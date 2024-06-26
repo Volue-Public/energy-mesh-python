@@ -266,15 +266,17 @@ class Connection(_base_connection.Connection):
             )
             await self.model_service.UpdateLinkRelationAttribute(request)
 
-        async def update_versioned_link_relation_attribute(
+        async def update_versioned_one_to_one_link_relation_attribute(
             self,
             target: Union[uuid.UUID, str, AttributeBase],
             start_time: datetime,
             end_time: datetime,
             new_versions: List[LinkRelationVersion],
         ) -> None:
+            # If there are any versions provided then wrap it in additional List to reflect the proto entry.
+            new_versions = [new_versions] if new_versions else new_versions
             request = super()._prepare_versioned_link_relation_attribute_request(
-                target, start_time, end_time, new_versions
+                target, new_versions, start_time, end_time
             )
             await self.model_service.UpdateVersionedLinkRelationAttribute(request)
 

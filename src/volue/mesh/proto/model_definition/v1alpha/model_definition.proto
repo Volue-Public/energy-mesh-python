@@ -251,7 +251,8 @@ message UpdateObjectDefinitionRequest {
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 6;
 }
 
-message UpdateObjectDefinitionResponse {}
+message UpdateObjectDefinitionResponse {
+}
 
 message DeleteObjectDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -260,7 +261,8 @@ message DeleteObjectDefinitionRequest {
   volue.mesh.grpc.type.MeshId object_definition_id = 2;
 }
 
-message DeleteObjectDefinitionResponse {}
+message DeleteObjectDefinitionResponse {
+}
 
 message SearchAttributeDefinitionsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -534,7 +536,8 @@ message UpdateXySetAttributeTypeRequest {
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 7;
 }
 
-message UpdateAttributeTypeResponse {}
+message UpdateAttributeTypeResponse {
+}
 
 message DeleteAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -543,7 +546,8 @@ message DeleteAttributeTypeRequest {
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 }
 
-message DeleteAttributeTypeResponse {}
+message DeleteAttributeTypeResponse {
+}
 
 message ListModelDefinitionsRequest{
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -768,7 +772,8 @@ message UpdateXySetAttributeDefinitionRequest {
   XySetAxis new_y_axis = 6;
 }
 
-message UpdateAttributeDefinitionResponse {}
+message UpdateAttributeDefinitionResponse {
+}
 
 message DeleteAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -777,7 +782,8 @@ message DeleteAttributeDefinitionRequest {
   volue.mesh.grpc.type.MeshId attribute_definition_id = 2;
 }
 
-message DeleteAttributeDefinitionResponse {}
+message DeleteAttributeDefinitionResponse {
+}
 
 message GetNamespaceRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -825,7 +831,8 @@ message UpdateNamespaceRequest {
   string new_description = 5;
 }
 
-message UpdateNamespaceResponse {}
+message UpdateNamespaceResponse {
+}
 
 message DeleteNamespaceRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -834,7 +841,8 @@ message DeleteNamespaceRequest {
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 }
 
-message DeleteNamespaceResponse {}
+message DeleteNamespaceResponse {
+}
 
 message ListTagsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -888,7 +896,8 @@ message UpdateTagRequest {
   string new_description = 5;
 }
 
-message UpdateTagResponse {}
+message UpdateTagResponse {
+}
 
 message DeleteTagRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -906,7 +915,8 @@ message DeleteTagRequest {
   bool delete_usages = 3;
 }
 
-message DeleteTagResponse {}
+message DeleteTagResponse {
+}
 
 message ListUnitsOfMeasurementRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -940,4 +950,5 @@ message SetExtendedMetadataRequest {
   repeated ExtendedMetadata metadata = 3;
 }
 
-message SetExtendedMetadataResponse {}
+message SetExtendedMetadataResponse {
+}

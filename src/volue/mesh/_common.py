@@ -280,7 +280,8 @@ class LinkRelationVersion:
     """Represents a link relation version.
 
     Contains target object ID and timestamp with the time at which the
-    version becomes active.
+    version becomes active. If target object ID is None, then it means
+    the target object is "empty".
 
     See Also:
          :doc:`mesh_relations`
