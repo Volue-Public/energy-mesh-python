@@ -1214,7 +1214,11 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
     <span class="k">for</span> <span class="n">entry_index</span><span class="p">,</span> <span class="n">entry</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">entries</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Entry </span><span class="si">{</span><span class="n">entry_index</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">version_index</span><span class="p">,</span> <span class="n">version</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">versions</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">target_object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">:</span>
+                <span class="n">target_object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">target_object_id</span><span class="p">)</span>
+                <span class="n">target_object_name</span> <span class="o">=</span> <span class="n">target_object</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">target_object_name</span> <span class="o">=</span> <span class="s2">&quot;&lt;EMPTY&gt;&quot;</span>
 
             <span class="n">valid_from_time_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="c1"># If running on Windows and the datetime is before epoch</span>
@@ -1233,7 +1237,7 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
 
             <span class="n">message</span> <span class="o">+=</span> <span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Version </span><span class="si">{</span><span class="n">version_index</span><span class="si">}</span><span class="s2">. &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;target object name: </span><span class="si">{</span><span class="n">target_object</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;target object name: </span><span class="si">{</span><span class="n">target_object_name</span><span class="si">}</span><span class="s2">, &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;valid from time: </span><span class="si">{</span><span class="n">valid_from_time_str</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
@@ -1251,11 +1255,11 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
 
     <span class="c1"># Remove the first version in entry.</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">versions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">session</span><span class="o">.</span><span class="n">update_versioned_link_relation_attribute</span><span class="p">(</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_versioned_one_to_one_link_relation_attribute</span><span class="p">(</span>
             <span class="n">attribute_path</span><span class="p">,</span>
             <span class="n">start_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">min</span><span class="p">,</span>
             <span class="c1"># Replacement interval end time is exclusive,</span>
-            <span class="c1"># i.e.: &lt;start_time, end_time).</span>
+            <span class="c1"># i.e.: [start_time, end_time).</span>
             <span class="c1"># That is why we need to add some small time fraction to make</span>
             <span class="c1"># sure the last version&#39;s `valid_from_time` is within the</span>
             <span class="c1"># replacement interval.</span>
@@ -1267,17 +1271,24 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
     <span class="c1"># Add a new version in entry.</span>
     <span class="n">new_target_object_path</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.PlantToChimneyRef/SomePowerPlantChimney1&quot;</span>
     <span class="n">new_target_object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">new_target_object_path</span><span class="p">)</span>
-    <span class="n">new_link_relation_version</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+    <span class="n">new_link_relation_version_1</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
         <span class="n">target_object_id</span><span class="o">=</span><span class="n">new_target_object</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
         <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
         <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">session</span><span class="o">.</span><span class="n">update_versioned_link_relation_attribute</span><span class="p">(</span>
+    <span class="c1"># Add another one, this this with empty target object.</span>
+    <span class="n">new_link_relation_version_2</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="n">target_object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
+        <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">update_versioned_one_to_one_link_relation_attribute</span><span class="p">(</span>
         <span class="n">attribute_path</span><span class="p">,</span>
-        <span class="n">start_time</span><span class="o">=</span><span class="n">new_link_relation_version</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">,</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="n">new_link_relation_version_1</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">,</span>
         <span class="n">end_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">max</span><span class="p">,</span>
-        <span class="n">new_versions</span><span class="o">=</span><span class="p">[</span><span class="n">new_link_relation_version</span><span class="p">],</span>
+        <span class="n">new_versions</span><span class="o">=</span><span class="p">[</span><span class="n">new_link_relation_version_1</span><span class="p">,</span> <span class="n">new_link_relation_version_2</span><span class="p">],</span>
     <span class="p">)</span>
 
     <span class="c1"># Read the updated attribute.</span>
