@@ -151,6 +151,7 @@ message OwnershipRelationAttributeDefinition {
 message LinkRelationAttributeDefinition {
   string target_object_type_name = 1;
   volue.mesh.grpc.type.MeshId target_object_definition_id = 2;
+  bool versioned = 3;
 }
 
 message RatingCurveAttributeDefinition {

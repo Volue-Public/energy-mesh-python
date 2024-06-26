@@ -551,7 +551,7 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
-    def update_versioned_link_relation_attribute(
+    def update_versioned_one_to_one_link_relation_attribute(
         self,
         target: Union[uuid.UUID, str, AttributeBase],
         start_time: datetime,
@@ -1305,12 +1305,19 @@ class Session(abc.ABC):
     def _prepare_versioned_link_relation_attribute_request(
         self,
         target: Union[uuid.UUID, str, AttributeBase],
-        start_time: datetime,
-        end_time: datetime,
-        new_versions: List[LinkRelationVersion],
+        entries: List[List[LinkRelationVersion]],
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
     ) -> model_pb2.UpdateVersionedLinkRelationAttributeRequest:
+        if (start_time is None) != (end_time is None):
+            raise TypeError(
+                "start_time and end_time must both be None or both have a value"
+            )
+
         if start_time is None or end_time is None:
-            raise TypeError("start_time and end_time must both have a value")
+            proto_interval = None
+        else:
+            proto_interval = _to_proto_utcinterval(start_time, end_time)
 
         def to_proto_link_relation_version(
             version: LinkRelationVersion,
@@ -1324,15 +1331,23 @@ class Session(abc.ABC):
                 ),
             )
 
-        proto_versions = [
-            to_proto_link_relation_version(version) for version in new_versions
-        ]
+        def to_proto_link_relation_entry(
+            versions: List[LinkRelationVersion],
+        ) -> model_resources_pb2.VersionedLinkRelationAttributeValue:
+
+            return model_resources_pb2.VersionedLinkRelationAttributeValue(
+                versions=[
+                    to_proto_link_relation_version(version) for version in versions
+                ]
+            )
+
+        proto_entries = [to_proto_link_relation_entry(entry) for entry in entries]
 
         request = model_pb2.UpdateVersionedLinkRelationAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute=_to_proto_attribute_mesh_id(target),
-            interval=_to_proto_utcinterval(start_time, end_time),
-            versions=proto_versions,
+            interval=proto_interval,
+            entries=proto_entries,
         )
         return request
 

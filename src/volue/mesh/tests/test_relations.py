@@ -239,7 +239,7 @@ def test_update_versioned_one_to_one_link_relation_attribute_remove_one_version(
     targets = get_targets(session, VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME)
 
     for target in targets:
-        session.update_versioned_link_relation_attribute(
+        session.update_versioned_one_to_one_link_relation_attribute(
             target=target,
             start_time=datetime(2004, 1, 1),
             end_time=datetime(2014, 1, 1),
@@ -270,7 +270,7 @@ def test_update_versioned_one_to_one_link_relation_attribute_remove_all_versions
         ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
     )
 
-    session.update_versioned_link_relation_attribute(
+    session.update_versioned_one_to_one_link_relation_attribute(
         target=attribute_path,
         start_time=datetime.min,
         end_time=datetime.max,
@@ -296,16 +296,24 @@ def test_update_versioned_one_to_one_link_relation_attribute_remove_all_versions
 def test_update_versioned_one_to_one_link_relation_attribute_add_new_version(
     session, new_version_valid_from_time: datetime, new_version_index: int
 ):
+    # We have too few chimneys in the existing test model to test various scenarios.
+    # Create new test chimney.
+    new_chimney_owner_attribute_path = ATTRIBUTE_PATH_PREFIX + "PlantToChimneyRef"
+    new_chimney = session.create_object(
+        new_chimney_owner_attribute_path,
+        "SomeNewChimney",
+    )
+
     attribute_path = (
         ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
     )
 
-    new_versions = [LinkRelationVersion(CHIMNEY_1_ID, new_version_valid_from_time)]
+    new_versions = [LinkRelationVersion(new_chimney.id, new_version_valid_from_time)]
 
     # store already existing versions before the update
     old_versions = session.get_attribute(attribute_path).entries[0].versions
 
-    session.update_versioned_link_relation_attribute(
+    session.update_versioned_one_to_one_link_relation_attribute(
         target=attribute_path,
         start_time=new_version_valid_from_time,
         end_time=new_version_valid_from_time + timedelta(microseconds=1),
@@ -319,7 +327,52 @@ def test_update_versioned_one_to_one_link_relation_attribute_add_new_version(
     entry = attribute.entries[0]
     assert len(entry.versions) == 4
 
-    assert entry.versions[new_version_index].target_object_id == CHIMNEY_1_ID
+    assert entry.versions[new_version_index].target_object_id == new_chimney.id
+    # returned timestamps (including `valid_from_time`) are time-zone aware
+    assert entry.versions[
+        new_version_index
+    ].valid_from_time == new_version_valid_from_time.replace(tzinfo=tz.UTC)
+
+    # check that all old versions are still in place
+    assert all(version in entry.versions for version in old_versions)
+
+
+@pytest.mark.database
+@pytest.mark.parametrize(
+    "new_version_valid_from_time, new_version_index",
+    [
+        (datetime(2010, 1, 1), 1),
+        (datetime(2016, 1, 2), 2),
+        (datetime(2022, 1, 1), 3),
+    ],
+)
+def test_update_versioned_one_to_one_link_relation_attribute_add_new_empty_version(
+    session, new_version_valid_from_time: datetime, new_version_index: int
+):
+    attribute_path = (
+        ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
+    )
+
+    new_versions = [LinkRelationVersion(None, new_version_valid_from_time)]
+
+    # store already existing versions before the update
+    old_versions = session.get_attribute(attribute_path).entries[0].versions
+
+    session.update_versioned_one_to_one_link_relation_attribute(
+        target=attribute_path,
+        start_time=new_version_valid_from_time,
+        end_time=new_version_valid_from_time + timedelta(microseconds=1),
+        new_versions=new_versions,
+    )
+
+    attribute = session.get_attribute(attribute_path)
+
+    assert len(attribute.entries) == 1
+
+    entry = attribute.entries[0]
+    assert len(entry.versions) == 4
+
+    assert entry.versions[new_version_index].target_object_id is None
     # returned timestamps (including `valid_from_time`) are time-zone aware
     assert entry.versions[
         new_version_index
@@ -348,13 +401,21 @@ def test_update_versioned_one_to_one_link_relation_attribute_replace_versions(
     new_version_index: int,
     versions_count: int,
 ):
+    # We have too few chimneys in the existing test model to test various scenarios.
+    # Create new test chimney.
+    new_chimney_owner_attribute_path = ATTRIBUTE_PATH_PREFIX + "PlantToChimneyRef"
+    new_chimney = session.create_object(
+        new_chimney_owner_attribute_path,
+        "SomeNewChimney",
+    )
+
     attribute_path = (
         ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
     )
 
-    new_versions = [LinkRelationVersion(CHIMNEY_1_ID, start_time)]
+    new_versions = [LinkRelationVersion(new_chimney.id, start_time)]
 
-    session.update_versioned_link_relation_attribute(
+    session.update_versioned_one_to_one_link_relation_attribute(
         target=attribute_path,
         start_time=start_time,
         end_time=end_time,
@@ -368,7 +429,53 @@ def test_update_versioned_one_to_one_link_relation_attribute_replace_versions(
     entry = attribute.entries[0]
     assert len(entry.versions) == versions_count
 
-    assert entry.versions[new_version_index].target_object_id == CHIMNEY_1_ID
+    assert entry.versions[new_version_index].target_object_id == new_chimney.id
+    # returned timestamps (including `valid_from_time`) are time-zone aware
+    assert entry.versions[new_version_index].valid_from_time == start_time.replace(
+        tzinfo=tz.UTC
+    )
+
+
+@pytest.mark.database
+@pytest.mark.parametrize(
+    "start_time, end_time, new_version_index, versions_count",
+    [
+        (datetime(2005, 1, 1), datetime(2006, 1, 1), 0, 3),
+        (datetime(2005, 1, 1), datetime(2016, 1, 1), 0, 2),
+        (datetime(2005, 1, 1), datetime.max, 0, 1),
+        (datetime(2015, 1, 1), datetime(2020, 1, 1), 1, 2),
+        (datetime(2017, 1, 1), datetime.max, 2, 3),
+        (datetime.min, datetime.max, 0, 1),
+    ],
+)
+def test_update_versioned_one_to_one_link_relation_attribute_replace_versions_with_empty_targets(
+    session,
+    start_time: datetime,
+    end_time: datetime,
+    new_version_index: int,
+    versions_count: int,
+):
+    attribute_path = (
+        ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
+    )
+
+    new_versions = [LinkRelationVersion(None, start_time)]
+
+    session.update_versioned_one_to_one_link_relation_attribute(
+        target=attribute_path,
+        start_time=start_time,
+        end_time=end_time,
+        new_versions=new_versions,
+    )
+
+    attribute = session.get_attribute(attribute_path)
+
+    assert len(attribute.entries) == 1
+
+    entry = attribute.entries[0]
+    assert len(entry.versions) == versions_count
+
+    assert entry.versions[new_version_index].target_object_id is None
     # returned timestamps (including `valid_from_time`) are time-zone aware
     assert entry.versions[new_version_index].valid_from_time == start_time.replace(
         tzinfo=tz.UTC
@@ -387,31 +494,11 @@ def test_update_versioned_one_to_one_link_relation_attribute_with_invalid_interv
         grpc.RpcError,
         match="Interval .* is invalid",
     ):
-        session.update_versioned_link_relation_attribute(
+        session.update_versioned_one_to_one_link_relation_attribute(
             target=attribute_path,
             start_time=datetime(2022, 1, 1),
             end_time=datetime(2021, 1, 1),
             new_versions=[LinkRelationVersion(CHIMNEY_1_ID, datetime(2022, 1, 1))],
-        )
-
-
-@pytest.mark.database
-def test_update_versioned_one_to_one_link_relation_attribute_without_target_object_id(
-    session,
-):
-    attribute_path = (
-        ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
-    )
-
-    with pytest.raises(
-        grpc.RpcError,
-        match="each new link relation version must have a 'target_object_id'",
-    ):
-        session.update_versioned_link_relation_attribute(
-            target=attribute_path,
-            start_time=datetime.min,
-            end_time=datetime.max,
-            new_versions=[LinkRelationVersion(None, datetime(2022, 1, 1))],
         )
 
 
@@ -427,7 +514,7 @@ def test_update_versioned_one_to_one_link_relation_attribute_without_valid_from_
         grpc.RpcError,
         match="each new link relation version must have a 'valid_from_time' timestamp",
     ):
-        session.update_versioned_link_relation_attribute(
+        session.update_versioned_one_to_one_link_relation_attribute(
             target=attribute_path,
             start_time=datetime.min,
             end_time=datetime.max,
@@ -447,7 +534,7 @@ def test_update_versioned_one_to_one_link_relation_attribute_with_valid_from_tim
         grpc.RpcError,
         match="new link relations versions must be within the replacement interval",
     ):
-        session.update_versioned_link_relation_attribute(
+        session.update_versioned_one_to_one_link_relation_attribute(
             target=attribute_path,
             start_time=datetime(2022, 1, 1),
             end_time=datetime.max,
@@ -458,7 +545,7 @@ def test_update_versioned_one_to_one_link_relation_attribute_with_valid_from_tim
         grpc.RpcError,
         match="new link relations versions must be within the replacement interval",
     ):
-        session.update_versioned_link_relation_attribute(
+        session.update_versioned_one_to_one_link_relation_attribute(
             target=attribute_path,
             start_time=datetime.min,
             end_time=datetime(2022, 1, 1),
@@ -493,7 +580,7 @@ async def test_update_versioned_link_relations_async(async_session):
         ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME
     )
 
-    await async_session.update_versioned_link_relation_attribute(
+    await async_session.update_versioned_one_to_one_link_relation_attribute(
         target=attribute_path,
         start_time=datetime.min,
         end_time=datetime.max,
