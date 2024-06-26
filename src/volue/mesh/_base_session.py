@@ -580,6 +580,32 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
+    def update_versioned_one_to_many_link_relation_attribute(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase],
+        new_entries: List[List[LinkRelationVersion]],
+    ) -> None:
+        """
+        Update an existing Mesh versioned one-to-many link relation attribute in
+        the Mesh model.
+
+        Args:
+            target: Mesh one-to-many versioned link relation attribute to be updated.
+                It could be a Universal Unique Identifier or a path in the
+                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
+                <mesh_object_attribute_path>`.
+            new_entries: the list of lists of link relation versions to insert.
+                The first level list represents entries. Each entry can have multiple
+                link relation versions.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        See Also:
+            :doc:`mesh_relations`
+        """
+
+    @abc.abstractmethod
     def get_timeseries_resource_info(self, timeseries_key: int) -> TimeseriesResource:
         """
         Request information (like curve type or resolution) associated with

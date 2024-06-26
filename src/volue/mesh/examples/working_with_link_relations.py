@@ -204,7 +204,48 @@ def versioned_one_to_many_link_relation_example(session: Connection.Session):
     attribute = session.get_attribute(attribute_path)
     print(get_versioned_link_relation_attribute_information(attribute, session))
 
-    print("Update of versioned one-to-many is not supported.")
+    new_target_object_1_path = OBJECT_PATH + ".PlantToChimneyRef/SomePowerPlantChimney1"
+    new_target_object_1 = session.get_object(new_target_object_1_path)
+
+    new_target_object_2_path = OBJECT_PATH + ".PlantToChimneyRef/SomePowerPlantChimney2"
+    new_target_object_2 = session.get_object(new_target_object_2_path)
+
+    entry_1_version_1 = LinkRelationVersion(
+        target_object_id=new_target_object_1.id,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+    entry_1_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2025, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+    entry_1_version_3 = LinkRelationVersion(
+        target_object_id=new_target_object_1.id,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2027, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+    entry1 = [entry_1_version_1, entry_1_version_2, entry_1_version_3]
+
+    entry_2_version_1 = LinkRelationVersion(
+        target_object_id=new_target_object_2.id,
+        valid_from_time=datetime(2000, 1, 1),
+    )
+    entry_2_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        valid_from_time=datetime(2010, 1, 1),
+    )
+    entry2 = [entry_2_version_1, entry_2_version_2]
+
+    new_entries = [entry1, entry2]
+    session.update_versioned_one_to_many_link_relation_attribute(
+        attribute_path, new_entries
+    )
+
+    # Read the updated attribute.
+    attribute = session.get_attribute(attribute_path)
+    print("Updated link relation attribute:")
+    print(get_versioned_link_relation_attribute_information(attribute, session))
 
 
 def main(address, port, tls_root_cert):
