@@ -553,6 +553,76 @@ def test_update_versioned_one_to_one_link_relation_attribute_with_valid_from_tim
         )
 
 
+@pytest.mark.database
+def test_update_versioned_one_to_many_link_relation_attribute(
+    session,
+):
+    attribute_path = (
+        ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_MANY_LINK_RELATION_ATTRIBUTE_NAME
+    )
+
+    entry_1_version_1 = LinkRelationVersion(
+        target_object_id=CHIMNEY_2_ID,
+        valid_from_time=datetime(2022, 1, 1),
+    )
+    entry_1_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        valid_from_time=datetime(2025, 1, 1),
+    )
+    entry_1_version_3 = LinkRelationVersion(
+        target_object_id=CHIMNEY_2_ID,
+        valid_from_time=datetime(2027, 1, 1),
+    )
+    entry1 = [entry_1_version_1, entry_1_version_2, entry_1_version_3]
+
+    entry_2_version_1 = LinkRelationVersion(
+        target_object_id=CHIMNEY_1_ID,
+        valid_from_time=datetime(2000, 1, 1),
+    )
+    entry_2_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        valid_from_time=datetime(2010, 1, 1),
+    )
+    entry2 = [entry_2_version_1, entry_2_version_2]
+
+    new_entries = [entry1, entry2]
+    session.update_versioned_one_to_many_link_relation_attribute(
+        attribute_path, new_entries
+    )
+
+    attribute = session.get_attribute(attribute_path)
+
+    assert len(attribute.entries) == 2
+
+    for entry_index, new_entry in enumerate(new_entries):
+        actual_entry = attribute.entries[entry_index]
+        assert len(actual_entry.versions) == len(new_entry)
+
+        for version_index, new_version in enumerate(new_entry):
+            actual_version = attribute.entries[entry_index].versions[version_index]
+
+            assert actual_version.target_object_id == new_version.target_object_id
+            # returned timestamps (including `valid_from_time`) are time-zone aware
+            assert (
+                actual_version.valid_from_time
+                == new_version.valid_from_time.replace(tzinfo=tz.UTC)
+            )
+
+
+@pytest.mark.database
+def test_update_versioned_one_to_many_link_relation_attribute_remove_all_entries(
+    session,
+):
+    attribute_path = (
+        ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_MANY_LINK_RELATION_ATTRIBUTE_NAME
+    )
+
+    session.update_versioned_one_to_many_link_relation_attribute(attribute_path, [])
+
+    attribute = session.get_attribute(attribute_path)
+    assert len(attribute.entries) == 0
+
+
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_update_link_relations_async(async_session):
@@ -573,7 +643,7 @@ async def test_update_link_relations_async(async_session):
 
 @pytest.mark.asyncio
 @pytest.mark.database
-async def test_update_versioned_link_relations_async(async_session):
+async def test_update_versioned_one_to_one_link_relations_async(async_session):
     """For async run the simplest test, implementation is the same."""
 
     attribute_path = (
@@ -591,6 +661,25 @@ async def test_update_versioned_link_relations_async(async_session):
 
     assert len(attribute.entries) == 1
     assert len(attribute.entries[0].versions) == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_versioned_one_to_many_link_relations_async(async_session):
+    """For async run the simplest test, implementation is the same."""
+
+    attribute_path = (
+        ATTRIBUTE_PATH_PREFIX + VERSIONED_ONE_TO_MANY_LINK_RELATION_ATTRIBUTE_NAME
+    )
+
+    await async_session.update_versioned_one_to_many_link_relation_attribute(
+        target=attribute_path,
+        new_entries=[],
+    )
+
+    attribute = await async_session.get_attribute(attribute_path)
+
+    assert len(attribute.entries) == 0
 
 
 if __name__ == "__main__":

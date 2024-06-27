@@ -271,6 +271,16 @@ class Connection(_base_connection.Connection):
             )
             self.model_service.UpdateVersionedLinkRelationAttribute(request)
 
+        def update_versioned_one_to_many_link_relation_attribute(
+            self,
+            target: Union[uuid.UUID, str, AttributeBase],
+            new_entries: List[List[LinkRelationVersion]],
+        ) -> None:
+            request = super()._prepare_versioned_link_relation_attribute_request(
+                target, new_entries
+            )
+            self.model_service.UpdateVersionedLinkRelationAttribute(request)
+
         def list_models(
             self,
         ) -> List[Object]:
