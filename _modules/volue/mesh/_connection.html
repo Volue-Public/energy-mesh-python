@@ -444,6 +444,16 @@
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span><span class="o">.</span><span class="n">UpdateVersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Connection.Session.update_versioned_one_to_many_link_relation_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_versioned_one_to_many_link_relation_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">update_versioned_one_to_many_link_relation_attribute</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">new_entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]],</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_versioned_link_relation_attribute_request</span><span class="p">(</span>
+                <span class="n">target</span><span class="p">,</span> <span class="n">new_entries</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span><span class="o">.</span><span class="n">UpdateVersionedLinkRelationAttribute</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Connection.Session.list_models"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.list_models">[docs]</a>        <span class="k">def</span> <span class="nf">list_models</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>

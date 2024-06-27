@@ -1306,7 +1306,48 @@ Skip it if the Mesh server is configured to accept insecure gRPC connections.</p
     <span class="n">attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">get_versioned_link_relation_attribute_information</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">session</span><span class="p">))</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Update of versioned one-to-many is not supported.&quot;</span><span class="p">)</span>
+    <span class="n">new_target_object_1_path</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.PlantToChimneyRef/SomePowerPlantChimney1&quot;</span>
+    <span class="n">new_target_object_1</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">new_target_object_1_path</span><span class="p">)</span>
+
+    <span class="n">new_target_object_2_path</span> <span class="o">=</span> <span class="n">OBJECT_PATH</span> <span class="o">+</span> <span class="s2">&quot;.PlantToChimneyRef/SomePowerPlantChimney2&quot;</span>
+    <span class="n">new_target_object_2</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">new_target_object_2_path</span><span class="p">)</span>
+
+    <span class="n">entry_1_version_1</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="n">target_object_id</span><span class="o">=</span><span class="n">new_target_object_1</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
+        <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">entry_1_version_2</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="n">target_object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
+        <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">entry_1_version_3</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="n">target_object_id</span><span class="o">=</span><span class="n">new_target_object_1</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="c1"># If no time zone is provided then it will be treated as UTC.</span>
+        <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2027</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">LOCAL_TIME_ZONE</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">entry1</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry_1_version_1</span><span class="p">,</span> <span class="n">entry_1_version_2</span><span class="p">,</span> <span class="n">entry_1_version_3</span><span class="p">]</span>
+
+    <span class="n">entry_2_version_1</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="n">target_object_id</span><span class="o">=</span><span class="n">new_target_object_2</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">entry_2_version_2</span> <span class="o">=</span> <span class="n">LinkRelationVersion</span><span class="p">(</span>
+        <span class="n">target_object_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">valid_from_time</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">entry2</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry_2_version_1</span><span class="p">,</span> <span class="n">entry_2_version_2</span><span class="p">]</span>
+
+    <span class="n">new_entries</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry1</span><span class="p">,</span> <span class="n">entry2</span><span class="p">]</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">update_versioned_one_to_many_link_relation_attribute</span><span class="p">(</span>
+        <span class="n">attribute_path</span><span class="p">,</span> <span class="n">new_entries</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Read the updated attribute.</span>
+    <span class="n">attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">attribute_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Updated link relation attribute:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">get_versioned_link_relation_attribute_information</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">session</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">tls_root_cert</span><span class="p">):</span>
