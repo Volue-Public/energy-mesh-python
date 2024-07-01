@@ -405,24 +405,27 @@ def _to_proto_resolution(resolution: Timeseries.Resolution) -> type.resources_pb
     Args:
         resolution: The resolution to convert.
     """
-    proto_resolution = type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
+    proto_resolution = type.resources_pb2.Resolution()
 
     if resolution == Timeseries.Resolution.BREAKPOINT:
-        proto_resolution = type.resources_pb2.Resolution.BREAKPOINT
+        proto_resolution.type = type.resources_pb2.Resolution.BREAKPOINT
     elif resolution == Timeseries.Resolution.MIN15:
-        proto_resolution = type.resources_pb2.Resolution.MIN15
+        proto_resolution.type = type.resources_pb2.Resolution.MIN15
     elif resolution == Timeseries.Resolution.MIN30:
-        proto_resolution = type.resources_pb2.Resolution.MIN30
+        proto_resolution.type = type.resources_pb2.Resolution.MIN30
     elif resolution == Timeseries.Resolution.HOUR:
-        proto_resolution = type.resources_pb2.Resolution.HOUR
+        proto_resolution.type = type.resources_pb2.Resolution.HOUR
     elif resolution == Timeseries.Resolution.DAY:
-        proto_resolution = type.resources_pb2.Resolution.DAY
+        proto_resolution.type = type.resources_pb2.Resolution.DAY
     elif resolution == Timeseries.Resolution.WEEK:
-        proto_resolution = type.resources_pb2.Resolution.WEEK
+        proto_resolution.type = type.resources_pb2.Resolution.WEEK
     elif resolution == Timeseries.Resolution.MONTH:
-        proto_resolution = type.resources_pb2.Resolution.MONTH
+        proto_resolution.type = type.resources_pb2.Resolution.MONTH
     elif resolution == Timeseries.Resolution.YEAR:
-        proto_resolution = type.resources_pb2.Resolution.YEAR
+        proto_resolution.type = type.resources_pb2.Resolution.YEAR
+    else:
+        # FIXME: Should we throw instead?
+        proto_resolution.type = type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
 
     return proto_resolution
 

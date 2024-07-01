@@ -214,7 +214,9 @@ class Connection(_base_connection.Connection):
 
             response = self.time_series_service.CreatePhysicalTimeseriesResource(request)
 
-            return _from_proto_timeseries_resource(response)
+            print(response)
+
+            return TimeseriesResource._from_proto_timeseries_resource(response)
 
         def get_attribute(
             self,
