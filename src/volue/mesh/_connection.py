@@ -183,8 +183,9 @@ class Connection(_base_connection.Connection):
             path: str,
             name: str,
             curve_type: Timeseries.Curve,
+            # FIXME: Should we take a Timeseries.Resolution instead?
             resolution: timedelta,
-            unit_of_measurement: str,
+            unit_of_measurement: str
         ) -> TimeseriesResource:
             # TODO: Move this to a single function which just takes a string and returns the unit
             # of measurement ID.
