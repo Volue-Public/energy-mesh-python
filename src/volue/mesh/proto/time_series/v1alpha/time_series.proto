@@ -296,5 +296,5 @@ message CreatePhysicalTimeseriesResourceRequest {
 
   volue.mesh.grpc.type.Resolution resolution = 5;
 
-  volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 6;
+  volue.mesh.grpc.type.Guid unit_of_measurement_id = 6;
 }
