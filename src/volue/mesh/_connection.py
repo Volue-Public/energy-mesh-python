@@ -32,6 +32,7 @@ from volue.mesh._common import (
     _from_proto_guid,
     _to_proto_curve_type,
     _to_proto_guid,
+    _to_proto_resolution,
     _to_proto_timeseries,
 )
 from volue.mesh.calc.forecast import ForecastFunctions
@@ -183,8 +184,7 @@ class Connection(_base_connection.Connection):
             path: str,
             name: str,
             curve_type: Timeseries.Curve,
-            # FIXME: Should we take a Timeseries.Resolution instead?
-            resolution: timedelta,
+            resolution: Timeseries.Resolution,
             unit_of_measurement: str
         ) -> TimeseriesResource:
             # TODO: Move this to a single function which just takes a string and returns the unit
@@ -208,7 +208,7 @@ class Connection(_base_connection.Connection):
                 path=path,
                 name=name,
                 curve_type=_to_proto_curve_type(curve_type),
-                resolution=protobuf.duration_pb2.Duration().FromTimedelta(resolution),
+                resolution=_to_proto_resolution(resolution),
                 unit_of_measurement_id=unit_of_measurement_id
             )
 

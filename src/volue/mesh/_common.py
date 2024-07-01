@@ -397,6 +397,36 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     return curve
 
 
+# FIXME: Don't have such duplicated functions.
+def _to_proto_resolution(resolution: Timeseries.Resolution) -> type.resources_pb2.Resolution:
+    """
+    Converts from Timeseries.Resolution type to protobuf resolution type.
+
+    Args:
+        resolution: The resolution to convert.
+    """
+    proto_resolution = type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
+
+    if resolution == Timeseries.Resolution.BREAKPOINT:
+        proto_resolution = type.resources_pb2.Resolution.BREAKPOINT
+    elif resolution == Timeseries.Resolution.MIN15:
+        proto_resolution = type.resources_pb2.Resolution.MIN15
+    elif resolution == Timeseries.Resolution.MIN30:
+        proto_resolution = type.resources_pb2.Resolution.MIN30
+    elif resolution == Timeseries.Resolution.HOUR:
+        proto_resolution = type.resources_pb2.Resolution.HOUR
+    elif resolution == Timeseries.Resolution.DAY:
+        proto_resolution = type.resources_pb2.Resolution.DAY
+    elif resolution == Timeseries.Resolution.WEEK:
+        proto_resolution = type.resources_pb2.Resolution.WEEK
+    elif resolution == Timeseries.Resolution.MONTH:
+        proto_resolution = type.resources_pb2.Resolution.MONTH
+    elif resolution == Timeseries.Resolution.YEAR:
+        proto_resolution = type.resources_pb2.Resolution.YEAR
+
+    return proto_resolution
+
+
 def _from_proto_resolution(
     proto_resolution: type.resources_pb2.Resolution,
 ) -> Timeseries.Resolution:
