@@ -1,6 +1,6 @@
 import helpers
 
-from volue.mesh import Connection
+from volue.mesh import Connection, Timeseries
 
 
 def main(address, port, root_pem_certificate):
@@ -14,12 +14,18 @@ def main(address, port, root_pem_certificate):
     print(f"Connected to {version_info.name} {version_info.version}")
 
     # Create a remote session on the Volue Mesh server
-    session = connection.create_session()
-    session.open()
-    print("You have now an open session and can request time series")
+    with connection.create_session() as session:
+        print("You have now an open session and can request time series")
 
-    # Close the remote session
-    session.close()
+        result = session.create_timeseries(
+            path='Path/To/Test/Timeseries',
+            name='Test_Timeseries',
+            curve_type=Timeseries.Curve.PIECEWISELINEAR,
+            resolution=Timeseries.Resolution.HOUR,
+            unit_of_measurement="Unit1"
+        )
+
+        print(result)
 
 
 if __name__ == "__main__":
