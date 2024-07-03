@@ -112,7 +112,11 @@ def get_versioned_link_relation_attribute_information(
     for entry_index, entry in enumerate(attribute.entries, 1):
         message += f"Entry {entry_index}\n"
         for version_index, version in enumerate(entry.versions, 1):
-            target_object = session.get_object(version.target_object_id)
+            if version.target_object_id:
+                target_object = session.get_object(version.target_object_id)
+                target_object_name = target_object.name
+            else:
+                target_object_name = "<EMPTY>"
 
             valid_from_time_str = ""
             # If running on Windows and the datetime is before epoch
@@ -131,7 +135,7 @@ def get_versioned_link_relation_attribute_information(
 
             message += (
                 f"\tVersion {version_index}. "
-                f"target object name: {target_object.name}, "
+                f"target object name: {target_object_name}, "
                 f"valid from time: {valid_from_time_str}\n"
             )
 
@@ -149,11 +153,11 @@ def versioned_one_to_one_link_relation_example(session: Connection.Session):
 
     # Remove the first version in entry.
     if len(attribute.entries) > 0 and len(attribute.entries[0].versions) > 0:
-        session.update_versioned_link_relation_attribute(
+        session.update_versioned_one_to_one_link_relation_attribute(
             attribute_path,
             start_time=datetime.min,
             # Replacement interval end time is exclusive,
-            # i.e.: <start_time, end_time).
+            # i.e.: [start_time, end_time).
             # That is why we need to add some small time fraction to make
             # sure the last version's `valid_from_time` is within the
             # replacement interval.
@@ -165,17 +169,24 @@ def versioned_one_to_one_link_relation_example(session: Connection.Session):
     # Add a new version in entry.
     new_target_object_path = OBJECT_PATH + ".PlantToChimneyRef/SomePowerPlantChimney1"
     new_target_object = session.get_object(new_target_object_path)
-    new_link_relation_version = LinkRelationVersion(
+    new_link_relation_version_1 = LinkRelationVersion(
         target_object_id=new_target_object.id,
         # If no time zone is provided then it will be treated as UTC.
         valid_from_time=datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE),
     )
 
-    session.update_versioned_link_relation_attribute(
+    # Add another one, this this with empty target object.
+    new_link_relation_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2025, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+
+    session.update_versioned_one_to_one_link_relation_attribute(
         attribute_path,
-        start_time=new_link_relation_version.valid_from_time,
+        start_time=new_link_relation_version_1.valid_from_time,
         end_time=datetime.max,
-        new_versions=[new_link_relation_version],
+        new_versions=[new_link_relation_version_1, new_link_relation_version_2],
     )
 
     # Read the updated attribute.
@@ -193,7 +204,48 @@ def versioned_one_to_many_link_relation_example(session: Connection.Session):
     attribute = session.get_attribute(attribute_path)
     print(get_versioned_link_relation_attribute_information(attribute, session))
 
-    print("Update of versioned one-to-many is not supported.")
+    new_target_object_1_path = OBJECT_PATH + ".PlantToChimneyRef/SomePowerPlantChimney1"
+    new_target_object_1 = session.get_object(new_target_object_1_path)
+
+    new_target_object_2_path = OBJECT_PATH + ".PlantToChimneyRef/SomePowerPlantChimney2"
+    new_target_object_2 = session.get_object(new_target_object_2_path)
+
+    entry_1_version_1 = LinkRelationVersion(
+        target_object_id=new_target_object_1.id,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2022, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+    entry_1_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2025, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+    entry_1_version_3 = LinkRelationVersion(
+        target_object_id=new_target_object_1.id,
+        # If no time zone is provided then it will be treated as UTC.
+        valid_from_time=datetime(2027, 1, 1, tzinfo=LOCAL_TIME_ZONE),
+    )
+    entry1 = [entry_1_version_1, entry_1_version_2, entry_1_version_3]
+
+    entry_2_version_1 = LinkRelationVersion(
+        target_object_id=new_target_object_2.id,
+        valid_from_time=datetime(2000, 1, 1),
+    )
+    entry_2_version_2 = LinkRelationVersion(
+        target_object_id=None,
+        valid_from_time=datetime(2010, 1, 1),
+    )
+    entry2 = [entry_2_version_1, entry_2_version_2]
+
+    new_entries = [entry1, entry2]
+    session.update_versioned_one_to_many_link_relation_attribute(
+        attribute_path, new_entries
+    )
+
+    # Read the updated attribute.
+    attribute = session.get_attribute(attribute_path)
+    print("Updated link relation attribute:")
+    print(get_versioned_link_relation_attribute_information(attribute, session))
 
 
 def main(address, port, tls_root_cert):

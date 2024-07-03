@@ -113,9 +113,16 @@ message VersionedLinkRelationAttributeValue {
 }
 
 message LinkRelationVersion {
-  volue.mesh.grpc.type.Guid target_object_id = 1;
+  // If `target_object_id` is not set then it will serve as end of activity of
+  // previous target object. E.g.:
+  //   ver1: 01.01.2000 -> object A
+  //   ver2: 02.01.2000 -> _empty_
+  //   ver3: 04.01.2000 -> object B
+  // In the period [02.01.2000, 04.01.2000) no target object was active/linked.
+  optional volue.mesh.grpc.type.Guid target_object_id = 1;
   google.protobuf.Timestamp valid_from_time = 2;
 }
+
 // Defines what attributes need to be returned in response message.
 message AttributesMasks {
   // Attribute name uniquely identifies attribute within given object.

@@ -9,18 +9,23 @@ Mesh Python SDK version 1.9.0-dev
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.14 **(may change)**
+- Mesh server version >= 2.15 **(may change)**
 - Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for updating versioned one-to-many link relations. (:pull:`476`)
+
+  See `update_versioned_one_to_many_link_relation_attribute`.
 
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Changes for Mesh server 2.15 gRPC interface compatibility. (:issue:`470`)
+
+  It introduces breaking API change: `update_versioned_link_relation_attribute`
+  is renamed to `update_versioned_one_to_one_link_relation_attribute`.
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,7 +56,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- Changes for Mesh server 2.14 gRPC interface compatibility (:issue:`464`)
+- Changes for Mesh server 2.14 gRPC interface compatibility. (:issue:`464`)
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +91,7 @@ Changes
 ~~~~~~~~~~~~~~~~~~
 
 - Handle MIN30 resolution. :pull:`431`
-- Changes for Mesh server 2.13 gRPC interface compatibility (:pull:`427`,
+- Changes for Mesh server 2.13 gRPC interface compatibility. (:pull:`427`,
   :pull:`430`, :pull:`433`, :issue:`384`, :issue:`385`, :issue:`405`, :issue:`423`)
 
 Install instructions

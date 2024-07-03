@@ -551,7 +551,7 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
-    def update_versioned_link_relation_attribute(
+    def update_versioned_one_to_one_link_relation_attribute(
         self,
         target: Union[uuid.UUID, str, AttributeBase],
         start_time: datetime,
@@ -571,6 +571,32 @@ class Session(abc.ABC):
             end_time: the (exclusive) end of the edit interval.
             new_versions: the list of link relation versions to insert.
                 All versions must be within `[start_time, end_time)` interval.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        See Also:
+            :doc:`mesh_relations`
+        """
+
+    @abc.abstractmethod
+    def update_versioned_one_to_many_link_relation_attribute(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase],
+        new_entries: List[List[LinkRelationVersion]],
+    ) -> None:
+        """
+        Update an existing Mesh versioned one-to-many link relation attribute in
+        the Mesh model.
+
+        Args:
+            target: Mesh one-to-many versioned link relation attribute to be updated.
+                It could be a Universal Unique Identifier or a path in the
+                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
+                <mesh_object_attribute_path>`.
+            new_entries: the list of lists of link relation versions to insert.
+                The first level list represents entries. Each entry can have multiple
+                link relation versions.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
@@ -1305,12 +1331,19 @@ class Session(abc.ABC):
     def _prepare_versioned_link_relation_attribute_request(
         self,
         target: Union[uuid.UUID, str, AttributeBase],
-        start_time: datetime,
-        end_time: datetime,
-        new_versions: List[LinkRelationVersion],
+        entries: List[List[LinkRelationVersion]],
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
     ) -> model_pb2.UpdateVersionedLinkRelationAttributeRequest:
+        if (start_time is None) != (end_time is None):
+            raise TypeError(
+                "start_time and end_time must both be None or both have a value"
+            )
+
         if start_time is None or end_time is None:
-            raise TypeError("start_time and end_time must both have a value")
+            proto_interval = None
+        else:
+            proto_interval = _to_proto_utcinterval(start_time, end_time)
 
         def to_proto_link_relation_version(
             version: LinkRelationVersion,
@@ -1324,15 +1357,23 @@ class Session(abc.ABC):
                 ),
             )
 
-        proto_versions = [
-            to_proto_link_relation_version(version) for version in new_versions
-        ]
+        def to_proto_link_relation_entry(
+            versions: List[LinkRelationVersion],
+        ) -> model_resources_pb2.VersionedLinkRelationAttributeValue:
+
+            return model_resources_pb2.VersionedLinkRelationAttributeValue(
+                versions=[
+                    to_proto_link_relation_version(version) for version in versions
+                ]
+            )
+
+        proto_entries = [to_proto_link_relation_entry(entry) for entry in entries]
 
         request = model_pb2.UpdateVersionedLinkRelationAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
             attribute=_to_proto_attribute_mesh_id(target),
-            interval=_to_proto_utcinterval(start_time, end_time),
-            versions=proto_versions,
+            interval=proto_interval,
+            entries=proto_entries,
         )
         return request
 

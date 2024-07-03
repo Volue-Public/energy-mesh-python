@@ -176,7 +176,8 @@ message Timeseries {
 
   // Data contains an Apache Arrow byte representation of the time series
   // points. Stored in the following columns:
-  // 0: (uint64) utc_time
+  // 0: (timestamp('ms')) utc_time - UTC Unix timestamp expressed in
+  //    milliseconds (internally it is stored as a 64-bit integer)
   // 1: (uint32) flags
   // 2: (double) value
   bytes data = 4;
