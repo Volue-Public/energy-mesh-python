@@ -18,12 +18,14 @@ def main(address, port, root_pem_certificate):
         print("You have now an open session and can request time series")
 
         result = session.create_timeseries(
-            path='Path/To/Test/Timeseries',
+            path='/Path/To/Test/Timeseries/',
             name='Test_Timeseries',
             curve_type=Timeseries.Curve.PIECEWISELINEAR,
             resolution=Timeseries.Resolution.HOUR,
             unit_of_measurement="Unit1"
         )
+
+        session.commit()
 
         print(result)
 
