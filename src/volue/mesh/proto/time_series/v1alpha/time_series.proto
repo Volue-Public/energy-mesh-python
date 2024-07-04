@@ -4,8 +4,8 @@ package volue.mesh.grpc.time_series.v1alpha;
 
 import "google/protobuf/field_mask.proto";
 
-import "model_definition/v1alpha/resources.proto";
-import "type/resources.proto";
+import "volue/mesh/proto/model_definition/v1alpha/resources.proto";
+import "volue/mesh/proto/type/resources.proto";
 
 
 // Mesh time series service
