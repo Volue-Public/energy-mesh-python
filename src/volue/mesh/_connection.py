@@ -203,7 +203,7 @@ class Connection(_base_connection.Connection):
                 )
             )
 
-            request = time_series_pb2.CreatePhysicalTimeseriesResourceRequest(
+            request = time_series_pb2.CreatePhysicalTimeseriesRequest(
                 session_id=_to_proto_guid(self.session_id),
                 path=path,
                 name=name,
@@ -212,7 +212,7 @@ class Connection(_base_connection.Connection):
                 unit_of_measurement_id=unit_of_measurement_id
             )
 
-            response = self.time_series_service.CreatePhysicalTimeseriesResource(request)
+            response = self.time_series_service.CreatePhysicalTimeseries(request)
 
             print(response)
 
