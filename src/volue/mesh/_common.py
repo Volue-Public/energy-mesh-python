@@ -399,7 +399,9 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
 
 
 # FIXME: Don't have such duplicated functions.
-def _to_proto_resolution(resolution: Timeseries.Resolution) -> type.resources_pb2.Resolution:
+def _to_proto_resolution(
+    resolution: Timeseries.Resolution,
+) -> type.resources_pb2.Resolution:
     """
     Converts from Timeseries.Resolution type to protobuf resolution type.
 

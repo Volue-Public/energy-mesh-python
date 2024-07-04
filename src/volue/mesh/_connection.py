@@ -185,7 +185,7 @@ class Connection(_base_connection.Connection):
             name: str,
             curve_type: Timeseries.Curve,
             resolution: Timeseries.Resolution,
-            unit_of_measurement: str
+            unit_of_measurement: str,
         ) -> TimeseriesResource:
             # TODO: Move this to a single function which just takes a string and returns the unit
             # of measurement ID.
@@ -197,10 +197,8 @@ class Connection(_base_connection.Connection):
                 )
             )
 
-            unit_of_measurement_id = (
-                super()._get_unit_of_measurement_id_by_name(
-                    unit_of_measurement, list_response
-                )
+            unit_of_measurement_id = super()._get_unit_of_measurement_id_by_name(
+                unit_of_measurement, list_response
             )
 
             request = time_series_pb2.CreatePhysicalTimeseriesRequest(
@@ -209,7 +207,7 @@ class Connection(_base_connection.Connection):
                 name=name,
                 curve_type=_to_proto_curve_type(curve_type),
                 resolution=_to_proto_resolution(resolution),
-                unit_of_measurement_id=unit_of_measurement_id
+                unit_of_measurement_id=unit_of_measurement_id,
             )
 
             response = self.time_series_service.CreatePhysicalTimeseries(request)
