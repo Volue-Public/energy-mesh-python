@@ -34,7 +34,9 @@ from volue.mesh._common import (
     RatingCurveVersion,
     XySet,
     _from_proto_guid,
+    _to_proto_curve_type,
     _to_proto_guid,
+    _to_proto_resolution,
     _to_proto_timeseries,
 )
 from volue.mesh.calc.forecast import ForecastFunctionsAsync

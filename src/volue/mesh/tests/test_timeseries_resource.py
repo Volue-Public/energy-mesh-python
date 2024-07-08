@@ -153,16 +153,16 @@ class TestCreatePhysicalTimeseries:
 
 
     @staticmethod
-    def _verify_timeseries(timeseries: TimeseriesResource, ts_init_data):
+    def _verify_timeseries(timeseries: TimeseriesResource, expected_ts_data):
         # Newly created timeseries have "Resource" prepended to their paths, and the timeseries name
         # appended to it.
-        expected_path = 'Resource' + ts_init_data.path + ts_init_data.name
+        expected_path = 'Resource' + expected_ts_data.path + expected_ts_data.name
 
         assert timeseries.path == expected_path
-        assert timeseries.name == ts_init_data.name
-        assert timeseries.curve_type == ts_init_data.curve_type
-        assert timeseries.resolution == ts_init_data.resolution
-        assert timeseries.unit_of_measurement == ts_init_data.unit_of_measurement
+        assert timeseries.name == expected_ts_data.name
+        assert timeseries.curve_type == expected_ts_data.curve_type
+        assert timeseries.resolution == expected_ts_data.resolution
+        assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
 
 
     def test_create_physical_timeseries(self, session, ts_init_data):
@@ -181,6 +181,29 @@ class TestCreatePhysicalTimeseries:
 
         # Now check that the timeseries actually exists.
         stored_timeseries = session.get_timeseries_resource_info(
+            timeseries_key=timeseries.timeseries_key
+        )
+
+        self._verify_timeseries(stored_timeseries, ts_init_data)
+
+
+    @pytest.mark.asyncio
+    async def test_create_physical_timeseries(self, async_session, ts_init_data):
+        """Check that we can create a new physical timeseries."""
+        timeseries = await async_session.create_physical_timeseries(
+            path=ts_init_data.path,
+            name=ts_init_data.name,
+            curve_type=ts_init_data.curve_type,
+            resolution=ts_init_data.resolution,
+            unit_of_measurement=ts_init_data.unit_of_measurement
+        )
+
+        await async_session.commit()
+
+        self._verify_timeseries(timeseries, ts_init_data)
+
+        # Now check that the timeseries actually exists.
+        stored_timeseries =  await async_session.get_timeseries_resource_info(
             timeseries_key=timeseries.timeseries_key
         )
 
