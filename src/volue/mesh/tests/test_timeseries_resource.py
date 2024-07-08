@@ -10,6 +10,9 @@ import pytest
 from volue.mesh import Timeseries, TimeseriesResource
 
 
+INVALID_UNIT_OF_MEASUREMENT_NAME = 'no_such_unit'
+
+
 def get_physical_timeseries():
     """
     Physical time series from SimpleThermalModel test model.
@@ -109,7 +112,7 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
     """
 
     timeseries_key = get_physical_timeseries().timeseries_key
-    non_existing_unit_of_measurement = "no_such_unit"
+    non_existing_unit_of_measurement = INVALID_UNIT_OF_MEASUREMENT_NAME
 
     original_unit_of_measurement = session.get_timeseries_resource_info(
         timeseries_key
@@ -124,109 +127,63 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
     assert timeseries_resource.unit_of_measurement == original_unit_of_measurement
 
 
-def test_create_physical_timeseries(session):
-    """Check that we can create a new physical timeseries."""
-    PATH = '/Path/To/Test/Timeseries/',
-    NAME = 'Test_Timeseries',
-    CURVE_TYPE = Timeseries.Curve.PIECEWISELINEAR,
-    RESOLUTION = Timeseries.Resolution.HOUR,
-    UNIT_OF_MEASUREMENT = 'Unit1'
-
-    timeseries_resource = session.create_physical_timeseries(
-        path=PATH,
-        name=NAME,
-        curve_type=CURVE_TYPE,
-        resolution=RESOLUTION,
-        unit_of_measurement=UNIT_OF_MEASUREMENT
-    )
-
-    assert timeseries.resource.path == PATH
-    assert timeseries.resource.name == NAME
-    assert timeseries.resource.curve_type == CURVE_TYPE
-    assert timeseries.resource.resolution == RESOLUTION
-    assert timeseries.resource.unit_of_measurement == UNIT_OF_MEASUREMENT
-
-    # """Check that time series resource can be updated."""
-    # session.update_timeseries_resource_info(
-    #     timeseries_key, new_curve_type, new_unit_of_measurement
-    # )
-    # timeseries_info = session.get_timeseries_resource_info(timeseries_key)
-
-    # if new_curve_type is not None:
-    #     assert timeseries_info.curve_type == new_curve_type
-    # if new_unit_of_measurement is not None:
-    #     assert timeseries_info.unit_of_measurement == new_unit_of_measurement
+# pytest -k TestCreatePhysicalTimeseries
+@pytest.mark.database
+class TestCreatePhysicalTimeseries:
+    class TSInitData:
+        def __init__(self):
+            self.path = '/Path/To/Test/Timeseries/'
+            self.name = 'Test_Timeseries'
+            self.curve_type = Timeseries.Curve.PIECEWISELINEAR
+            self.resolution = Timeseries.Resolution.HOUR
+            self.unit_of_measurement = 'Unit1'
 
 
-# //  --gtest_filter=CreatePhysicalTimeseriesTests.SendRequestAndCommitShouldPass
-# TEST_F(CreatePhysicalTimeseriesTests, SendRequestAndCommitShouldPass) {
-#     const auto& create_ts_request = CreateRequest();
-#     const auto& create_ts_response = Api::CreatePhysicalTimeseries(context_, create_ts_request);
-#     Api::Commit(context_, proto_session_id_);
+    @pytest.fixture
+    def ts_init_data(self):
+        return TestCreatePhysicalTimeseries.TSInitData()
 
-#     VerifyResponse(create_ts_response);
-# }
 
-# //  --gtest_filter=CreatePhysicalTimeseriesTests.CreateExistingTimeseriesShouldThrow
-# TEST_F(CreatePhysicalTimeseriesTests, CreateExistingTimeseriesShouldThrow) {
-#     const auto& create_ts_request = CreateRequest();
+    @staticmethod
+    def _verify_timeseries(timeseries: TimeseriesResource, ts_init_data):
+        assert timeseries.path == ts_init_data.path
+        assert timeseries.name == ts_init_data.name
+        assert timeseries.curve_type == ts_init_data.curve_type
+        assert timeseries.resolution == ts_init_data.resolution
+        assert timeseries.unit_of_measurement == ts_init_data.unit_of_measurement
 
-#     const auto& send_request = [&]() -> TimeseriesResource {
-#         return Api::CreatePhysicalTimeseries(context_, create_ts_request);
-#     };
 
-#     // Create the timeseries.
-#     const auto& create_ts_response = send_request();
+    def test_create_physical_timeseries(self, session, ts_init_data):
+        """Check that we can create a new physical timeseries."""
+        timeseries = session.create_physical_timeseries(
+            path=ts_init_data.path,
+            name=ts_init_data.name,
+            curve_type=ts_init_data.curve_type,
+            resolution=ts_init_data.resolution,
+            unit_of_measurement=ts_init_data.unit_of_measurement
+        )
 
-#     Api::Commit(context_, proto_session_id_);
+        session.commit()
 
-#     VerifyResponse(create_ts_response);
+        self._verify_timeseries(timeseries, ts_init_data)
 
-#     const auto& msg =
-#         fmt::format("An element named {} already exists in the Timeseries resource catalog\n", name_);
+        # Now check that the timeseries actually exists.
+        stored_timeseries = session.get_timeseries_resource_info(
+            timeseries_key=timeseries.timeseries_key
+        )
 
-#     // Now try to create it again.
-#     EXPECT_THAT(send_request, ThrowsMessage<std::exception>(StrEq(msg)));
-# }
+        self._verify_timeseries(stored_timeseries, ts_init_data)
 
-# //  --gtest_filter=CreatePhysicalTimeseriesTests.InvalidPathShouldThrow
-# TEST_F(CreatePhysicalTimeseriesTests, InvalidPathShouldThrow) {
-#     // The path string must begin and end with slashes.
-#     TestInvalidPath("Path/To/Test/Timeseries");
-#     TestInvalidPath("Path/To/Test/Timeseries/");
-#     TestInvalidPath("/Path/To/Test/Timeseries");
-# }
 
-# //  --gtest_filter=CreatePhysicalTimeseriesTests.MissingFieldsShouldThrow
-# TEST_F(CreatePhysicalTimeseriesTests, MissingFieldsShouldThrow) {
-#     // Can't use auto here since it's deduced to different lambda types.
-#     std::function clear_field = [&](CreatePhysicalTimeseriesRequest& create_ts_request) {
-#         create_ts_request.clear_curve_type();
-#     };
-
-#     TestMissingField(clear_field);
-
-#     clear_field = [&](CreatePhysicalTimeseriesRequest& create_ts_request) {
-#         create_ts_request.clear_resolution();
-#     };
-
-#     TestMissingField(clear_field);
-
-#     clear_field = [&](CreatePhysicalTimeseriesRequest& create_ts_request) {
-#         create_ts_request.clear_unit_of_measurement_id();
-#     };
-
-#     TestMissingField(clear_field);
-# }
-
-# //  --gtest_filter=CreatePhysicalTimeseriesTests.InvalidUnitOfMeasurementIdShouldThrow
-# TEST_F(CreatePhysicalTimeseriesTests, InvalidUnitOfMeasurementIdShouldThrow) {
-#     unit_of_measurement_id_ = Common::Guid::Empty();
-
-#     const auto& create_ts_request = CreateRequest();
-
-#     EXPECT_THROW(Api::CreatePhysicalTimeseries(context_, create_ts_request), std::invalid_argument);
-# }
+    def test_create_timeseries_with_non_existing_unit_of_measurement(self, session, ts_init_data):
+        with pytest.raises(ValueError, match="invalid unit of measurement provided"):
+            timeseries = session.create_physical_timeseries(
+                path=ts_init_data.path,
+                name=ts_init_data.name,
+                curve_type=ts_init_data.curve_type,
+                resolution=ts_init_data.resolution,
+                unit_of_measurement=INVALID_UNIT_OF_MEASUREMENT_NAME
+            )
 
 
 @pytest.mark.asyncio
