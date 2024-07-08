@@ -17,7 +17,7 @@ def main(address, port, root_pem_certificate):
     with connection.create_session() as session:
         print("You have now an open session and can request time series")
 
-        result = session.create_timeseries(
+        result = session.create_physical_timeseries(
             path="/Path/To/Test/Timeseries/",
             name="Test_Timeseries",
             curve_type=Timeseries.Curve.PIECEWISELINEAR,

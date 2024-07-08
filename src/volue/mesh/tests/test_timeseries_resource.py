@@ -124,6 +124,111 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
     assert timeseries_resource.unit_of_measurement == original_unit_of_measurement
 
 
+def test_create_physical_timeseries(session):
+    """Check that we can create a new physical timeseries."""
+    PATH = '/Path/To/Test/Timeseries/',
+    NAME = 'Test_Timeseries',
+    CURVE_TYPE = Timeseries.Curve.PIECEWISELINEAR,
+    RESOLUTION = Timeseries.Resolution.HOUR,
+    UNIT_OF_MEASUREMENT = 'Unit1'
+
+    timeseries_resource = session.create_physical_timeseries(
+        path=PATH,
+        name=NAME,
+        curve_type=CURVE_TYPE,
+        resolution=RESOLUTION,
+        unit_of_measurement=UNIT_OF_MEASUREMENT
+    )
+
+    assert timeseries.resource.path == PATH
+    assert timeseries.resource.name == NAME
+    assert timeseries.resource.curve_type == CURVE_TYPE
+    assert timeseries.resource.resolution == RESOLUTION
+    assert timeseries.resource.unit_of_measurement == UNIT_OF_MEASUREMENT
+
+    # """Check that time series resource can be updated."""
+    # session.update_timeseries_resource_info(
+    #     timeseries_key, new_curve_type, new_unit_of_measurement
+    # )
+    # timeseries_info = session.get_timeseries_resource_info(timeseries_key)
+
+    # if new_curve_type is not None:
+    #     assert timeseries_info.curve_type == new_curve_type
+    # if new_unit_of_measurement is not None:
+    #     assert timeseries_info.unit_of_measurement == new_unit_of_measurement
+
+
+# //  --gtest_filter=CreatePhysicalTimeseriesTests.SendRequestAndCommitShouldPass
+# TEST_F(CreatePhysicalTimeseriesTests, SendRequestAndCommitShouldPass) {
+#     const auto& create_ts_request = CreateRequest();
+#     const auto& create_ts_response = Api::CreatePhysicalTimeseries(context_, create_ts_request);
+#     Api::Commit(context_, proto_session_id_);
+
+#     VerifyResponse(create_ts_response);
+# }
+
+# //  --gtest_filter=CreatePhysicalTimeseriesTests.CreateExistingTimeseriesShouldThrow
+# TEST_F(CreatePhysicalTimeseriesTests, CreateExistingTimeseriesShouldThrow) {
+#     const auto& create_ts_request = CreateRequest();
+
+#     const auto& send_request = [&]() -> TimeseriesResource {
+#         return Api::CreatePhysicalTimeseries(context_, create_ts_request);
+#     };
+
+#     // Create the timeseries.
+#     const auto& create_ts_response = send_request();
+
+#     Api::Commit(context_, proto_session_id_);
+
+#     VerifyResponse(create_ts_response);
+
+#     const auto& msg =
+#         fmt::format("An element named {} already exists in the Timeseries resource catalog\n", name_);
+
+#     // Now try to create it again.
+#     EXPECT_THAT(send_request, ThrowsMessage<std::exception>(StrEq(msg)));
+# }
+
+# //  --gtest_filter=CreatePhysicalTimeseriesTests.InvalidPathShouldThrow
+# TEST_F(CreatePhysicalTimeseriesTests, InvalidPathShouldThrow) {
+#     // The path string must begin and end with slashes.
+#     TestInvalidPath("Path/To/Test/Timeseries");
+#     TestInvalidPath("Path/To/Test/Timeseries/");
+#     TestInvalidPath("/Path/To/Test/Timeseries");
+# }
+
+# //  --gtest_filter=CreatePhysicalTimeseriesTests.MissingFieldsShouldThrow
+# TEST_F(CreatePhysicalTimeseriesTests, MissingFieldsShouldThrow) {
+#     // Can't use auto here since it's deduced to different lambda types.
+#     std::function clear_field = [&](CreatePhysicalTimeseriesRequest& create_ts_request) {
+#         create_ts_request.clear_curve_type();
+#     };
+
+#     TestMissingField(clear_field);
+
+#     clear_field = [&](CreatePhysicalTimeseriesRequest& create_ts_request) {
+#         create_ts_request.clear_resolution();
+#     };
+
+#     TestMissingField(clear_field);
+
+#     clear_field = [&](CreatePhysicalTimeseriesRequest& create_ts_request) {
+#         create_ts_request.clear_unit_of_measurement_id();
+#     };
+
+#     TestMissingField(clear_field);
+# }
+
+# //  --gtest_filter=CreatePhysicalTimeseriesTests.InvalidUnitOfMeasurementIdShouldThrow
+# TEST_F(CreatePhysicalTimeseriesTests, InvalidUnitOfMeasurementIdShouldThrow) {
+#     unit_of_measurement_id_ = Common::Guid::Empty();
+
+#     const auto& create_ts_request = CreateRequest();
+
+#     EXPECT_THROW(Api::CreatePhysicalTimeseries(context_, create_ts_request), std::invalid_argument);
+# }
+
+
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_timeseries_resource_async(async_session):

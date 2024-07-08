@@ -178,8 +178,7 @@ class Connection(_base_connection.Connection):
             )
             self.time_series_service.UpdateTimeseriesResource(request)
 
-        # FIXME: Should this be called 'create_physical_timeseries_resource' instead?
-        def create_timeseries(
+        def create_physical_timeseries(
             self,
             path: str,
             name: str,
@@ -211,8 +210,6 @@ class Connection(_base_connection.Connection):
             )
 
             response = self.time_series_service.CreatePhysicalTimeseries(request)
-
-            print(response)
 
             return TimeseriesResource._from_proto_timeseries_resource(response)
 
