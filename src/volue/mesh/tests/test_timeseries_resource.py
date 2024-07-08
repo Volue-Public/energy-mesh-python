@@ -2,6 +2,8 @@
 Tests for volue.mesh.TimeseriesResource
 """
 
+import random
+import string
 import sys
 
 import grpc
@@ -132,8 +134,14 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
 class TestCreatePhysicalTimeseries:
     class TSInitData:
         def __init__(self):
+            random_chars = 10
+
+            # Mesh will throw an exception if we try to create a timeseries with an existing path
+            # and name. Add a random suffix to the timeseries name to avoid this.
+            name_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=random_chars))
+
             self.path = '/Path/To/Test/Timeseries/'
-            self.name = 'Test_Timeseries'
+            self.name = 'Test_Timeseries_' + name_suffix
             self.curve_type = Timeseries.Curve.PIECEWISELINEAR
             self.resolution = Timeseries.Resolution.HOUR
             self.unit_of_measurement = 'Unit1'
@@ -146,7 +154,11 @@ class TestCreatePhysicalTimeseries:
 
     @staticmethod
     def _verify_timeseries(timeseries: TimeseriesResource, ts_init_data):
-        assert timeseries.path == ts_init_data.path
+        # Newly created timeseries have "Resource" prepended to their paths, and the timeseries name
+        # appended to it.
+        expected_path = 'Resource' + ts_init_data.path + ts_init_data.name
+
+        assert timeseries.path == expected_path
         assert timeseries.name == ts_init_data.name
         assert timeseries.curve_type == ts_init_data.curve_type
         assert timeseries.resolution == ts_init_data.resolution
