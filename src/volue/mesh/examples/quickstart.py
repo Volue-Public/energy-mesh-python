@@ -27,7 +27,13 @@ def main(address, port, root_pem_certificate):
 
         session.commit()
 
-        print(result)
+        print(result.timeseries_key)
+
+        result = session.get_timeseries_resource_info(
+            timeseries_key=result.timeseries_key
+        )
+
+        print(result.path)
 
 
 if __name__ == "__main__":
