@@ -29,13 +29,6 @@ def main(address, port, root_pem_certificate):
 
         print(result.timeseries_key)
 
-        result = session.get_timeseries_resource_info(
-            timeseries_key=result.timeseries_key
-        )
-
-        print(result.path)
-
-
 if __name__ == "__main__":
     address, port, root_pem_certificate = helpers.get_connection_info()
     main(address, port, root_pem_certificate)
