@@ -95,9 +95,9 @@ service TimeseriesService {
   // commit stage.
   //
   // Note also that the 'path' field on the returned TimeseriesResource won't
-  // have the same as the value as this field; namely, the returned 'path' will
-  // have a "Resource/" prefix, and will be suffixed with the contents of the
-  // 'name' field from this request. That is:
+  // have the same as the value as CreatePhysicalTimeseriesRequest's 'path';
+  // namely, the returned 'path' will have a "Resource/" prefix, and will be
+  // suffixed with the contents of the 'name' field from this request. That is:
   //
   //     response.path == "Resource/" + request.path + "/" + request.name
   //
