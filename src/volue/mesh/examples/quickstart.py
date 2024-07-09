@@ -29,6 +29,7 @@ def main(address, port, root_pem_certificate):
 
         print(result.timeseries_key)
 
+
 if __name__ == "__main__":
     address, port, root_pem_certificate = helpers.get_connection_info()
     main(address, port, root_pem_certificate)

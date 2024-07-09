@@ -12,7 +12,7 @@ import pytest
 from volue.mesh import Timeseries, TimeseriesResource
 
 
-INVALID_UNIT_OF_MEASUREMENT_NAME = 'no_such_unit'
+INVALID_UNIT_OF_MEASUREMENT_NAME = "no_such_unit"
 
 
 def get_physical_timeseries():
@@ -138,32 +138,31 @@ class TestCreatePhysicalTimeseries:
 
             # Mesh will throw an exception if we try to create a timeseries with an existing path
             # and name. Add a random suffix to the timeseries name to avoid this.
-            name_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=random_chars))
+            name_suffix = "".join(
+                random.choices(string.ascii_uppercase + string.digits, k=random_chars)
+            )
 
-            self.path = '/Path/To/Test/Timeseries/'
-            self.name = 'Test_Timeseries_' + name_suffix
+            self.path = "/Path/To/Test/Timeseries/"
+            self.name = "Test_Timeseries_" + name_suffix
             self.curve_type = Timeseries.Curve.PIECEWISELINEAR
             self.resolution = Timeseries.Resolution.HOUR
-            self.unit_of_measurement = 'Unit1'
-
+            self.unit_of_measurement = "Unit1"
 
     @pytest.fixture
     def ts_init_data(self):
         return TestCreatePhysicalTimeseries.TSInitData()
 
-
     @staticmethod
     def _verify_timeseries(timeseries: TimeseriesResource, expected_ts_data):
         # Newly created timeseries have "Resource" prepended to their paths, and the timeseries name
         # appended to it.
-        expected_path = 'Resource' + expected_ts_data.path + expected_ts_data.name
+        expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
 
         assert timeseries.path == expected_path
         assert timeseries.name == expected_ts_data.name
         assert timeseries.curve_type == expected_ts_data.curve_type
         assert timeseries.resolution == expected_ts_data.resolution
         assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
-
 
     def test_create_physical_timeseries(self, session, ts_init_data):
         """Check that we can create a new physical timeseries."""
@@ -172,7 +171,7 @@ class TestCreatePhysicalTimeseries:
             name=ts_init_data.name,
             curve_type=ts_init_data.curve_type,
             resolution=ts_init_data.resolution,
-            unit_of_measurement=ts_init_data.unit_of_measurement
+            unit_of_measurement=ts_init_data.unit_of_measurement,
         )
 
         session.commit()
@@ -184,7 +183,6 @@ class TestCreatePhysicalTimeseries:
         # requires us to know the timeseries' key, which CreatePhysicalTimeseries cannot return
         # since it's generated at the commit stage.
 
-
     @pytest.mark.asyncio
     async def test_create_physical_timeseries_async(self, async_session, ts_init_data):
         """Check that we can create a new physical timeseries."""
@@ -193,7 +191,7 @@ class TestCreatePhysicalTimeseries:
             name=ts_init_data.name,
             curve_type=ts_init_data.curve_type,
             resolution=ts_init_data.resolution,
-            unit_of_measurement=ts_init_data.unit_of_measurement
+            unit_of_measurement=ts_init_data.unit_of_measurement,
         )
 
         await async_session.commit()
@@ -205,15 +203,16 @@ class TestCreatePhysicalTimeseries:
         # requires us to know the timeseries' key, which CreatePhysicalTimeseries cannot return
         # since it's generated at the commit stage.
 
-
-    def test_create_timeseries_with_non_existing_unit_of_measurement(self, session, ts_init_data):
+    def test_create_timeseries_with_non_existing_unit_of_measurement(
+        self, session, ts_init_data
+    ):
         with pytest.raises(ValueError, match="invalid unit of measurement provided"):
             timeseries = session.create_physical_timeseries(
                 path=ts_init_data.path,
                 name=ts_init_data.name,
                 curve_type=ts_init_data.curve_type,
                 resolution=ts_init_data.resolution,
-                unit_of_measurement=INVALID_UNIT_OF_MEASUREMENT_NAME
+                unit_of_measurement=INVALID_UNIT_OF_MEASUREMENT_NAME,
             )
 
 
