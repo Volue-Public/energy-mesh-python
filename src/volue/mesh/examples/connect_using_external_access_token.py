@@ -5,7 +5,7 @@ import helpers
 from volue.mesh import Connection
 
 
-def main(address, port, root_pem_certificate):
+def main(address, tls_root_pem_cert):
     """
     Showing how to authorize to gRPC Mesh server using externally obtained
     access token, e.g: a OAuth JWT. Obtaining the access token is out of scope
@@ -18,7 +18,7 @@ def main(address, port, root_pem_certificate):
 
     token = "my_token"
     connection = Connection.with_external_access_token(
-        f"{address}:{port}", root_pem_certificate, access_token=token
+        address, tls_root_pem_cert, access_token=token
     )
 
     with connection.create_session() as session:
@@ -46,5 +46,5 @@ if __name__ == "__main__":
     # This requires Mesh server to be running with enabled TLS and OAuth options.
     # Obtaining access token is out of the scope for this example.
 
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    # main(address, port, root_pem_certificate)
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    # main(address, tls_root_pem_cert)

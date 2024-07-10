@@ -29,11 +29,11 @@ class Connection(abc.ABC):
 
         insecure = mesh.Connection.insecure('localhost:50051')
         tls = mesh.Connection.with_tls('localhost:50051', root_certificates)
-        kerberos = mesh.Connection.with_kerberos('localhost',
+        kerberos = mesh.Connection.with_kerberos('localhost:50051',
                                                  root_certificates,
                                                  'HOST/hostname.ad.examplecompany.com',
                                                  'ad\\user.name')
-        token = mesh.Connection.with_external_access_token('localhost',
+        token = mesh.Connection.with_external_access_token('localhost:50051',
                                                            root_certificates,
                                                            'eyJ0eXAiOi...')
 
@@ -70,7 +70,7 @@ class Connection(abc.ABC):
         self,
         host=None,
         port=None,
-        root_pem_certificate=None,
+        tls_root_pem_cert=None,
         authentication_parameters: Optional[Authentication.Parameters] = None,
         channel=None,
         auth_metadata_plugin=None,
@@ -80,7 +80,7 @@ class Connection(abc.ABC):
         Args:
             host: Mesh server host name in the form an IP or domain name
             port: Mesh server port number for gRPC communication
-            root_pem_certificate: PEM-encoded root certificate(s) as a byte string.
+            tls_root_pem_cert: PEM-encoded root certificate(s) as a byte string.
                 If this argument is set then a secured connection will be created,
                 otherwise it will be an insecure connection.
             authentication_parameters: TODO
@@ -118,12 +118,12 @@ class Connection(abc.ABC):
         #   (authentication requires TLS for encrypting auth tokens)
         # - with TLS and externally obtained access tokens
         #   (requires TLS for encrypting access tokens)
-        if not root_pem_certificate:
+        if not tls_root_pem_cert:
             # insecure connection (without TLS)
             channel = self._insecure_grpc_channel(target=target)
         else:
             channel_credentials = grpc.ssl_channel_credentials(
-                root_certificates=root_pem_certificate
+                root_certificates=tls_root_pem_cert
             )
 
             # authentication requires TLS
@@ -191,7 +191,7 @@ class Connection(abc.ABC):
         target: str,
         root_certificates: Optional[str],
         service_principal: str,
-        user_principal: str,
+        user_principal: Optional[str] = None,
     ) -> C:
         """Creates an encrypted and authenticated connection to a Mesh server.
 

@@ -37,8 +37,8 @@ def test_is_grpc_responding(mesh_test_config):
 @pytest.mark.database
 def test_example(mesh_test_config, example_path):
     args = [sys.executable, example_path, mesh_test_config.address]
-    if mesh_test_config.tls_root_certs is not None:
-        args.append(mesh_test_config.tls_root_certs_path)
+    if mesh_test_config.tls_root_pem_certs is not None:
+        args.append(mesh_test_config.tls_root_pem_certs_path)
     subprocess.run(args, check=True, timeout=15)
 
 

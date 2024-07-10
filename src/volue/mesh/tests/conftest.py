@@ -48,15 +48,15 @@ def pytest_addoption(parser):
 class TestConfig:
     address: str
     creds_type: str
-    tls_root_certs_path: typing.Optional[str]
-    tls_root_certs: typing.Optional[bytes]
+    tls_root_pem_certs_path: typing.Optional[str]
+    tls_root_pem_certs: typing.Optional[bytes]
     krb5_svc: typing.Optional[str]
     krb5_usr: typing.Optional[str]
 
     def __init__(self, config):
         self.address = config.getoption("--address")
         self.creds_type = config.getoption("--creds-type")
-        self.tls_root_certs_path = config.getoption("--tls-root-certs")
+        self.tls_root_pem_certs_path = config.getoption("--tls-root-certs")
         self.krb5_svc = config.getoption("--kerberos-service-principal")
         self.krb5_usr = config.getoption("--kerberos-user-principal")
 
@@ -71,16 +71,16 @@ class TestConfig:
                 )
 
         if self.creds_type == "insecure":
-            if self.tls_root_certs_path:
+            if self.tls_root_pem_certs_path:
                 raise pytest.UsageError(
                     "--tls-root-certs cannot be used for --creds-type=insecure connections"
                 )
 
-        if self.tls_root_certs_path is not None:
-            with open(self.tls_root_certs_path, "rb") as f:
-                self.tls_root_certs = f.read()
+        if self.tls_root_pem_certs_path is not None:
+            with open(self.tls_root_pem_certs_path, "rb") as f:
+                self.tls_root_pem_certs = f.read()
         else:
-            self.tls_root_certs = None
+            self.tls_root_pem_certs = None
 
 
 _test_config: typing.Optional[TestConfig] = None
@@ -116,12 +116,12 @@ def connection() -> mesh.Connection:
         return mesh.Connection.insecure(_test_config.address)
     elif _test_config.creds_type == "tls":
         return mesh.Connection.with_tls(
-            _test_config.address, _test_config.tls_root_certs
+            _test_config.address, _test_config.tls_root_pem_certs
         )
     elif _test_config.creds_type == "kerberos":
         return mesh.Connection.with_kerberos(
             _test_config.address,
-            _test_config.tls_root_certs,
+            _test_config.tls_root_pem_certs,
             _test_config.krb5_svc,
             _test_config.krb5_usr,
         )
@@ -146,12 +146,12 @@ def async_connection():
         return mesh.aio.Connection.insecure(_test_config.address)
     elif _test_config.creds_type == "tls":
         return mesh.aio.Connection.with_tls(
-            _test_config.address, _test_config.tls_root_certs
+            _test_config.address, _test_config.tls_root_pem_certs
         )
     elif _test_config.creds_type == "kerberos":
         return mesh.aio.Connection.with_kerberos(
             _test_config.address,
-            _test_config.tls_root_certs,
+            _test_config.tls_root_pem_certs,
             _test_config.krb5_svc,
             _test_config.krb5_usr,
         )

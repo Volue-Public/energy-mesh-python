@@ -49,14 +49,17 @@ async def read_timeseries_points_async(session: Connection.Session):
     # print(timeseries.arrow_table.to_pandas())
 
 
-async def main(address, port, root_pem_certificate):
+async def main(address, tls_root_pem_cert):
     """Showing how to get time series points asynchronously."""
-    connection = Connection(address, port, root_pem_certificate)
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
 
     async with connection.create_session() as session:
         await read_timeseries_points_async(session)
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    asyncio.run(main(address, port, root_pem_certificate))
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    asyncio.run(main(address, tls_root_pem_cert))
