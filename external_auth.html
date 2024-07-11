@@ -234,7 +234,7 @@ token.</p></li>
 <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Showing how to authorize to gRPC Mesh server using externally obtained</span>
 <span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
@@ -247,7 +247,7 @@ token.</p></li>
 
     <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_token&quot;</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">root_pem_certificate</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span>
+        <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span>
     <span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
@@ -275,8 +275,8 @@ token.</p></li>
     <span class="c1"># This requires Mesh server to be running with enabled TLS and OAuth options.</span>
     <span class="c1"># Obtaining access token is out of the scope for this example.</span>
 
-    <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">root_pem_certificate</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
-    <span class="c1"># main(address, port, root_pem_certificate)</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="c1"># main(address, tls_root_pem_cert)</span>
 </pre></div>
 </div>
 </div>
