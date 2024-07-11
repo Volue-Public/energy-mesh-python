@@ -40,7 +40,7 @@ Example usage:
     connection = mesh.Connection.with_tls(
         address,
         tls_root_pem_cert,
-        grpc_max_receive_message_length=10 * 1024* 1024,  # in bytes
+        grpc_max_receive_message_length=10 * 1024* 1024,  # 10MB
     )
 
 

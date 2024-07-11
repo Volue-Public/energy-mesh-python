@@ -7,7 +7,7 @@ import helpers
 import volue.mesh.aio
 from volue import mesh
 
-GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES = 10 * 1024 * 1024
+GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES = 10 * 1024 * 1024  # 10MB
 
 
 def sync_run_simulation(address, tls_root_pem_cert):
