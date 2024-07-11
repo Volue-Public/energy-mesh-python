@@ -52,6 +52,10 @@ def sync_write_timeseries_points(address, tls_root_pem_cert):
     with connection.create_session() as session:
         table = get_pa_table_with_time_series_points()
 
+        # Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.
+        # In case of larger data volumes please send input data in chunks.
+        # E.g.: call multiple times `write_timeseries_points` with shorter interval.
+
         # Send request to write time series based on time series key.
         timeseries = mesh.Timeseries(table=table, timskey=timeseries_key)
         session.write_timeseries_points(timeseries=timeseries)
@@ -120,6 +124,10 @@ async def async_write_timeseries_points(
 
     async with connection.create_session() as session:
         table = get_pa_table_with_time_series_points()
+
+        # Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.
+        # In case of larger data volumes please send input data in chunks.
+        # E.g.: call multiple times `write_timeseries_points` with shorter interval.
 
         # Send request to write time series based on time series key.
         timeseries = mesh.Timeseries(table=table, timskey=timeseries_key)

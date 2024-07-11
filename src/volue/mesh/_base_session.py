@@ -204,8 +204,13 @@ class Session(abc.ABC):
         end_time: datetime,
     ) -> Timeseries:
         """
-        Reads time series points for
-        the specified time series in the given interval.
+        Reads time series points for the specified time series in the given
+        interval.
+
+        If there are too many points in the response you might get
+        a `StatusCode.RESOURCE_EXHAUSTED` error.
+        See: :ref:`mesh_client:gRPC communication`.
+
         For information about `datetime` arguments and time zones refer to
         :ref:`mesh_client:Date times and time zones`.
 
@@ -227,6 +232,10 @@ class Session(abc.ABC):
         """
         Writes time series points for the specified time series in the given interval.
         Resolution of the time series does not need to be set when writing time series.
+
+        If there are too many points in the request you will the Mesh server
+        will discard it and return `StatusCode.RESOURCE_EXHAUSTED`.
+        See: :ref:`mesh_client:gRPC communication`.
 
         Args:
             timeseries: The modified time series.
@@ -885,6 +894,10 @@ class Session(abc.ABC):
     ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
         """Run a hydro simulation using HydSim on the Mesh server.
 
+        In case of running a simulation on longer interval and with
+        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`
+        error. See: :ref:`mesh_client:gRPC communication`.
+
         This function is experimental and subject to larger changes.
 
         Args:
@@ -931,6 +944,10 @@ class Session(abc.ABC):
         return_datasets: bool = False,
     ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
         """Run an inflow calculation using HydSim on the Mesh server.
+
+        In case of running an inflow calculation on longer interval and with
+        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`
+        error. See: :ref:`mesh_client:gRPC communication`.
 
         Args:
             model: The name of the Mesh model in which the inflow calculation

@@ -19,6 +19,55 @@ Using :ref:`api:volue.mesh.aio`.Connection:
 As time series data can potentially be large `Apache Arrow <https://arrow.apache.org/>`_ is used to optimize memory sharing.
 
 
+gRPC communication
+******************
+
+By default gRPC limits the size of inbound messages to 4MB. From Mesh Python
+SDK side, the user can change this limit when creating a connection to Mesh
+using `grpc_max_receive_message_length` argument.
+
+See:
+
+* :meth:`volue.mesh.Connection.Session.insecure`
+* :meth:`volue.mesh.Connection.Session.with_tls`
+* :meth:`volue.mesh.Connection.Session.with_kerberos`
+* :meth:`volue.mesh.Connection.Session.with_external_access_token`
+
+Example usage:
+
+.. code-block:: python
+
+    connection = mesh.Connection.with_tls(
+        address,
+        tls_root_pem_cert,
+        grpc_max_receive_message_length=10 * 1024* 1024,  # in bytes
+    )
+
+
+Another example of connection with `grpc_max_receive_message_length` argument
+is in `run_simulation.py`.
+
+.. note::
+    gRPC outbound message size is not limited by default.
+
+This might be useful when e.g.: running long simulations with
+`return_datasets` enabled. In such cases the dataset's size might exceed the
+4MB limit and a `RESOURCE_EXHAUSTED` status code would be returned.
+
+However, in other cases like reading time series data, we suggest reading the
+data in chunks. E.g.: instead of reading 50 years of hourly time series data,
+the user should request few read operations, but with shorter read intervals.
+
+The same is true for writing data, like time series data. Here however, it is
+not a suggestion, but a must. Mesh server gRPC inbound message size is not
+configurable and therefore it is always equal to 4MB. If gRPC client, like Mesh
+Python SDK, sends too big message then the request will be discarded. To avoid
+this clients must send data in chunks.
+
+.. note::
+    Single time series point occupies 20 bytes. To avoid exceeding the 4MB
+    limit single read or write operation should contain ~200k points maximum.
+
 
 Date times and time zones
 *************************

@@ -66,6 +66,21 @@ class Connection(abc.ABC):
         or grpc.secure_channel depending on desired behavior.
         """
 
+    @staticmethod
+    def _get_grpc_channel_options(max_receive_message_length: Optional[int]):
+        """Create a secure gRPC channel.
+
+        Derived classes should implement this using either grpc.aio.secure_channel
+        or grpc.secure_channel depending on desired behavior.
+        """
+        return (
+            [
+                ("grpc.max_receive_message_length", max_receive_message_length),
+            ]
+            if max_receive_message_length
+            else []
+        )
+
     def __init__(
         self,
         host=None,
@@ -162,17 +177,29 @@ class Connection(abc.ABC):
         self.time_series_service = time_series_pb2_grpc.TimeseriesServiceStub(channel)
 
     @classmethod
-    def insecure(cls: C, target: str) -> C:
+    def insecure(
+        cls: C, target: str, *, grpc_max_receive_message_length: Optional[int] = None
+    ) -> C:
         """Creates an insecure connection to a Mesh server.
 
         Args:
             target: The server address.
+            grpc_max_receive_message_length: Maximum inbound gRPC message size
+                in bytes. By default the maximum inbound gRPC message size is 4MB.
         """
-        channel = cls._insecure_grpc_channel(target)
+
+        options = cls._get_grpc_channel_options(grpc_max_receive_message_length)
+        channel = cls._insecure_grpc_channel(target=target, options=options)
         return cls(channel=channel)
 
     @classmethod
-    def with_tls(cls: C, target: str, root_certificates: Optional[str]) -> C:
+    def with_tls(
+        cls: C,
+        target: str,
+        root_certificates: Optional[str],
+        *,
+        grpc_max_receive_message_length: Optional[int] = None,
+    ) -> C:
         """Creates an encrypted connection to a Mesh server.
 
         Args:
@@ -180,9 +207,14 @@ class Connection(abc.ABC):
             root_certificates: The PEM-encoded TLS root certificates as a byte
                 string, or None to retrieve them from a default location chosen
                 by the gRPC runtime.
+            grpc_max_receive_message_length: Maximum inbound gRPC message size
+                in bytes. By default the maximum inbound gRPC message size is 4MB.
         """
         credentials = grpc.ssl_channel_credentials(root_certificates)
-        channel = cls._secure_grpc_channel(target, credentials)
+        options = cls._get_grpc_channel_options(grpc_max_receive_message_length)
+        channel = cls._secure_grpc_channel(
+            target=target, credentials=credentials, options=options
+        )
         return cls(channel=channel)
 
     @classmethod
@@ -192,6 +224,8 @@ class Connection(abc.ABC):
         root_certificates: Optional[str],
         service_principal: str,
         user_principal: Optional[str] = None,
+        *,
+        grpc_max_receive_message_length: Optional[int] = None,
     ) -> C:
         """Creates an encrypted and authenticated connection to a Mesh server.
 
@@ -215,6 +249,8 @@ class Connection(abc.ABC):
                 service. For example 'HOST\\server.at.host'.
             user_principal: The Kerberos user principal name. For example
                 'ad\\user`.
+            grpc_max_receive_message_length: Maximum inbound gRPC message size
+                in bytes. By default the maximum inbound gRPC message size is 4MB.
         """
         ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
         auth_params = _authentication.Authentication.Parameters(
@@ -225,12 +261,20 @@ class Connection(abc.ABC):
         credentials = grpc.composite_channel_credentials(
             ssl_credentials, call_credentials
         )
-        channel = cls._secure_grpc_channel(target, credentials)
+        options = cls._get_grpc_channel_options(grpc_max_receive_message_length)
+        channel = cls._secure_grpc_channel(
+            target=target, credentials=credentials, options=options
+        )
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @classmethod
     def with_external_access_token(
-        cls: C, target: str, root_certificates: Optional[str], access_token: str
+        cls: C,
+        target: str,
+        root_certificates: Optional[str],
+        access_token: str,
+        *,
+        grpc_max_receive_message_length: Optional[int] = None,
     ) -> C:
         """Creates an encrypted connection to a Mesh server and will add
         provided access token to authorization header to each server request.
@@ -245,6 +289,8 @@ class Connection(abc.ABC):
                 by the gRPC runtime.
             access_token: Token obtained externally, used to get access to Mesh
                 server.
+            grpc_max_receive_message_length: Maximum inbound gRPC message size
+                in bytes. By default the maximum inbound gRPC message size is 4MB.
         """
         ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
         auth_metadata_plugin = ExternalAccessTokenPlugin(access_token)
@@ -252,7 +298,10 @@ class Connection(abc.ABC):
         credentials = grpc.composite_channel_credentials(
             ssl_credentials, call_credentials
         )
-        channel = cls._secure_grpc_channel(target, credentials)
+        options = cls._get_grpc_channel_options(grpc_max_receive_message_length)
+        channel = cls._secure_grpc_channel(
+            target=target, credentials=credentials, options=options
+        )
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
     @classmethod
