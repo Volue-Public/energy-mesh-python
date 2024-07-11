@@ -20,7 +20,7 @@ def auth_metadata_plugin(mesh_test_config):
     """
     assert mesh_test_config.creds_type == "kerberos"
     channel_credentials = grpc.ssl_channel_credentials(
-        root_certificates=mesh_test_config.tls_root_certs
+        root_certificates=mesh_test_config.tls_root_pem_certs
     )
     authentication_parameters = mesh.Authentication.Parameters(
         mesh_test_config.krb5_svc, mesh_test_config.krb5_usr
@@ -35,7 +35,7 @@ def kerberos_connection(mesh_test_config) -> mesh.Connection:
     assert mesh_test_config.creds_type == "kerberos"
     connection = mesh.Connection.with_kerberos(
         mesh_test_config.address,
-        mesh_test_config.tls_root_certs,
+        mesh_test_config.tls_root_pem_certs,
         mesh_test_config.krb5_svc,
         mesh_test_config.krb5_usr,
     )
@@ -48,7 +48,7 @@ async def async_kerberos_connection(mesh_test_config) -> mesh.aio.Connection:
     assert mesh_test_config.creds_type == "kerberos"
     connection = mesh.aio.Connection.with_kerberos(
         mesh_test_config.address,
-        mesh_test_config.tls_root_certs,
+        mesh_test_config.tls_root_pem_certs,
         mesh_test_config.krb5_svc,
         mesh_test_config.krb5_usr,
     )

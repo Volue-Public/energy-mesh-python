@@ -34,7 +34,7 @@ async def handle_timeseries(session, path):
     await process_timeseries_values(arrow_table)
 
 
-async def main(address, port, root_pem_certificate):
+async def main(address, tls_root_pem_cert):
     """
     Showing how to use asynchronous connection in a real-world scenario.
     First multiple time series are returned that match a given query.
@@ -77,7 +77,10 @@ async def main(address, port, root_pem_certificate):
     query = "*.TsRawAtt"
     start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
 
-    connection = Connection(address, port, root_pem_certificate)
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
+
     async with connection.create_session() as session:
         try:
             timeseries_attributes = await session.search_for_timeseries_attributes(
@@ -97,5 +100,5 @@ async def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    asyncio.run(main(address, port, root_pem_certificate))
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    asyncio.run(main(address, tls_root_pem_cert))

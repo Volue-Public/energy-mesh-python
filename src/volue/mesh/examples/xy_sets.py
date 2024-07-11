@@ -9,9 +9,12 @@ UNVERSIONED_PATH = OBJECT_PATH + ".XYSetAtt"
 VERSIONED_PATH = OBJECT_PATH + ".XYZSeriesAtt"
 
 
-def main(address, port, tls_root_cert):
-    c = mesh.Connection(address, port, tls_root_cert)
-    with c.create_session() as session:
+def main(address, tls_root_pem_cert):
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = mesh.Connection.with_tls(address, tls_root_pem_cert)
+    connection = mesh.Connection.insecure(address)
+
+    with connection.create_session() as session:
         # In the default test model both the versioned and the unversioned
         # attribute are initially empty. The following two calls are therefore
         # expected to return [].

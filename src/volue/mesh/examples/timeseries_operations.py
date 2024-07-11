@@ -11,13 +11,16 @@ from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone
 
 
-def main(address, port, root_pem_certificate):
+def main(address, tls_root_pem_cert):
     """Showing how to find time series, write, read points from it and convert them to pandas format."""
 
     query = "*[.Name=SomePowerPlantChimney2].TsRawAtt"  # make sure only 1 time series is returned
     start_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
 
-    connection = Connection(address, port, root_pem_certificate)
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
+
     with connection.create_session() as session:
         # first lets find a time series in our model
         try:
@@ -143,5 +146,5 @@ if __name__ == "__main__":
     # This will search for a given time series, write some data,
     # read it and convert to pandas format.
 
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    main(address, port, root_pem_certificate)
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    main(address, tls_root_pem_cert)

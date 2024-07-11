@@ -20,19 +20,23 @@ async def start_and_end_session(session):
     await session.close()
 
 
-async def main(address, port, root_pem_certificate):
+async def main(address, tls_root_pem_cert):
     """Showing how to connect to a server and run two tasks concurrently."""
-    # Creating a connection, but not sending any requests yet
-    connection = Connection(address, port, root_pem_certificate)
-    # Indicate that these two functions can be run concurrently
+    # Creating a connection, but not sending any requests yet.
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
+
+    # Indicate that these two functions can be run concurrently.
     await asyncio.gather(
         get_version(connection), start_and_end_session(connection.create_session())
     )
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    asyncio.run(main(address, port, root_pem_certificate))
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    asyncio.run(main(address, tls_root_pem_cert))
     print("Done")
 
 # Outputs:
