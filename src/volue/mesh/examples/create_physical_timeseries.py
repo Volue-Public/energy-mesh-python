@@ -11,9 +11,13 @@ def main(address, tls_root_pem_cert):
     connection = Connection.insecure(address)
 
     with connection.create_session() as session:
+        # Mesh will throw an exception if we try to create a time series with an existing path
+        # and name. Add a random suffix to the time series name to avoid this.
+        name_suffix = get_random_suffix()
+
         result = session.create_physical_timeseries(
             path="/Path/To/Test/Timeseries/",
-            name="Test_Timeseries",
+            name="Test_Timeseries_" + name_suffix,
             curve_type=Timeseries.Curve.PIECEWISELINEAR,
             resolution=Timeseries.Resolution.HOUR,
             unit_of_measurement="Unit1",
@@ -22,6 +26,14 @@ def main(address, tls_root_pem_cert):
         session.commit()
 
         print(result)
+
+
+def get_random_suffix() -> str:
+    random_chars = 10
+
+    return "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=random_chars)
+    )
 
 
 if __name__ == "__main__":
