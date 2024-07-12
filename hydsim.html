@@ -199,6 +199,9 @@ Further below you’ll find synchronous and asynchronous examples.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.12)"><span class="pre">timedelta</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.12)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.run_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Run a hydro simulation using HydSim on the Mesh server.</p>
+<p>In case of running a simulation on longer interval and with
+<cite>return_datasets</cite> enabled you might get a <cite>StatusCode.RESOURCE_EXHAUSTED</cite>
+error. See: <a class="reference internal" href="mesh_client.html#grpc-communication"><span class="std std-ref">gRPC communication</span></a>.</p>
 <p>This function is experimental and subject to larger changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -242,6 +245,9 @@ log messages from the server.</p>
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.12)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.12)"><span class="pre">timedelta</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.12)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.12)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.12)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Run an inflow calculation using HydSim on the Mesh server.</p>
+<p>In case of running an inflow calculation on longer interval and with
+<cite>return_datasets</cite> enabled you might get a <cite>StatusCode.RESOURCE_EXHAUSTED</cite>
+error. See: <a class="reference internal" href="mesh_client.html#grpc-communication"><span class="std std-ref">gRPC communication</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -317,13 +323,27 @@ string is the Marginal Cost input.</p>
 <span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
+<span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 10MB</span>
+
 
 <span class="k">def</span> <span class="nf">sync_run_simulation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;connecting...&quot;</span><span class="p">)</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
-    <span class="c1"># connection = mesh.Connection.with_tls(address, tls_root_pem_cert)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+    <span class="c1"># connection = mesh.Connection.with_tls(</span>
+    <span class="c1">#     address,</span>
+    <span class="c1">#     tls_root_pem_cert,</span>
+    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
+    <span class="c1"># returns datasets for longer simulation intervals the gRPC message size</span>
+    <span class="c1"># may exceed this limit. In such cases the user can set new limit using</span>
+    <span class="c1"># `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -357,8 +377,20 @@ string is the Marginal Cost input.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;connecting...&quot;</span><span class="p">)</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
-    <span class="c1"># connection = mesh.aio.Connection.with_tls(address, tls_root_pem_cert)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+    <span class="c1"># connection = mesh.aio.Connection.with_tls(</span>
+    <span class="c1">#     address,</span>
+    <span class="c1">#     tls_root_pem_cert,</span>
+    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
+    <span class="c1"># returns datasets for longer simulation intervals the gRPC message size</span>
+    <span class="c1"># may exceed this limit. In such cases the user can set new limit using</span>
+    <span class="c1"># `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -406,13 +438,27 @@ string is the Marginal Cost input.</p>
 <span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
 
+<span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 10MB</span>
+
 
 <span class="k">def</span> <span class="nf">sync_run_inflow_calculation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;connecting...&quot;</span><span class="p">)</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
-    <span class="c1"># connection = mesh.Connection.with_tls(address, tls_root_pem_cert)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+    <span class="c1"># connection = mesh.Connection.with_tls(</span>
+    <span class="c1">#     address,</span>
+    <span class="c1">#     tls_root_pem_cert,</span>
+    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
+    <span class="c1"># returns datasets for longer inflow calculation intervals the gRPC message</span>
+    <span class="c1"># size may exceed this limit. In such cases the user can set new limit</span>
+    <span class="c1"># using `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -447,8 +493,20 @@ string is the Marginal Cost input.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;connecting...&quot;</span><span class="p">)</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
-    <span class="c1"># connection = mesh.aio.Connection.with_tls(address, tls_root_pem_cert)</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+    <span class="c1"># connection = mesh.aio.Connection.with_tls(</span>
+    <span class="c1">#     address,</span>
+    <span class="c1">#     tls_root_pem_cert,</span>
+    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1"># )</span>
+
+    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
+    <span class="c1"># returns datasets for longer inflow calculation intervals the gRPC message</span>
+    <span class="c1"># size may exceed this limit. In such cases the user can set new limit</span>
+    <span class="c1"># using `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>

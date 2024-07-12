@@ -97,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh Python SDK</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#grpc-communication">gRPC communication</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#date-times-and-time-zones">Date times and time zones</a></li>
 </ul>
 </li>
@@ -285,6 +286,49 @@
 </pre></div>
 </div>
 <p>As time series data can potentially be large <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a> is used to optimize memory sharing.</p>
+<div class="section" id="grpc-communication">
+<h2>gRPC communication<a class="headerlink" href="#grpc-communication" title="Permalink to this heading">¶</a></h2>
+<p>By default gRPC limits the size of inbound messages to 4MB. From Mesh Python
+SDK side, the user can change this limit when creating a connection to Mesh
+using <cite>grpc_max_receive_message_length</cite> argument.</p>
+<p>See:</p>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.insecure()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_tls()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_kerberos()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_external_access_token()</span></code></p></li>
+</ul>
+<p>Example usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_tls</span><span class="p">(</span>
+    <span class="n">address</span><span class="p">,</span>
+    <span class="n">tls_root_pem_cert</span><span class="p">,</span>
+    <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span><span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># 10MB</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Another example of connection with <cite>grpc_max_receive_message_length</cite> argument
+is in <cite>run_simulation.py</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>gRPC outbound message size is not limited by default.</p>
+</div>
+<p>This might be useful when e.g.: running long simulations with
+<cite>return_datasets</cite> enabled. In such cases the dataset’s size might exceed the
+4MB limit and a <cite>RESOURCE_EXHAUSTED</cite> status code would be returned.</p>
+<p>However, in other cases like reading time series data, we suggest reading the
+data in chunks. E.g.: instead of reading 50 years of hourly time series data,
+the user should request few read operations, but with shorter read intervals.</p>
+<p>The same is true for writing data, like time series data. Here however, it is
+not a suggestion, but a must. Mesh server gRPC inbound message size is not
+configurable and therefore it is always equal to 4MB. If gRPC client, like Mesh
+Python SDK, sends too big message then the request will be discarded. To avoid
+this clients must send data in chunks.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Single time series point occupies 20 bytes. To avoid exceeding the 4MB
+limit single read or write operation should contain ~200k points maximum.</p>
+</div>
+</div>
 <div class="section" id="date-times-and-time-zones">
 <h2>Date times and time zones<a class="headerlink" href="#date-times-and-time-zones" title="Permalink to this heading">¶</a></h2>
 <p>The Mesh Python SDK can accept either time zone naive (no time zone information is provided) or time zone aware date time objects.

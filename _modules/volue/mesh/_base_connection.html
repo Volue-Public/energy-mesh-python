@@ -239,6 +239,21 @@
 <span class="sd">        or grpc.secure_channel depending on desired behavior.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_grpc_channel_options</span><span class="p">(</span><span class="n">max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a secure gRPC channel.</span>
+
+<span class="sd">        Derived classes should implement this using either grpc.aio.secure_channel</span>
+<span class="sd">        or grpc.secure_channel depending on desired behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">(</span><span class="s2">&quot;grpc.max_receive_message_length&quot;</span><span class="p">,</span> <span class="n">max_receive_message_length</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">max_receive_message_length</span>
+            <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -335,17 +350,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span> <span class="o">=</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Connection.insecure"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.insecure">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">insecure</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">insecure</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an insecure connection to a Mesh server.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: The server address.</span>
+<span class="sd">            grpc_max_receive_message_length: Maximum inbound gRPC message size</span>
+<span class="sd">                in bytes. By default the maximum inbound gRPC message size is 4MB.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_insecure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+        <span class="n">options</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_grpc_channel_options</span><span class="p">(</span><span class="n">grpc_max_receive_message_length</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_insecure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.with_tls"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_tls">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_tls</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">with_tls</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted connection to a Mesh server.</span>
 
 <span class="sd">        Args:</span>
@@ -353,9 +380,14 @@
 <span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
 <span class="sd">                string, or None to retrieve them from a default location chosen</span>
 <span class="sd">                by the gRPC runtime.</span>
+<span class="sd">            grpc_max_receive_message_length: Maximum inbound gRPC message size</span>
+<span class="sd">                in bytes. By default the maximum inbound gRPC message size is 4MB.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_grpc_channel_options</span><span class="p">(</span><span class="n">grpc_max_receive_message_length</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.with_kerberos"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_kerberos">[docs]</a>    <span class="nd">@classmethod</span>
@@ -365,6 +397,8 @@
         <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">service_principal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">user_principal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted and authenticated connection to a Mesh server.</span>
 
@@ -388,6 +422,8 @@
 <span class="sd">                service. For example &#39;HOST\\server.at.host&#39;.</span>
 <span class="sd">            user_principal: The Kerberos user principal name. For example</span>
 <span class="sd">                &#39;ad\\user`.</span>
+<span class="sd">            grpc_max_receive_message_length: Maximum inbound gRPC message size</span>
+<span class="sd">                in bytes. By default the maximum inbound gRPC message size is 4MB.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ssl_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
         <span class="n">auth_params</span> <span class="o">=</span> <span class="n">_authentication</span><span class="o">.</span><span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
@@ -398,12 +434,20 @@
         <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
             <span class="n">ssl_credentials</span><span class="p">,</span> <span class="n">call_credentials</span>
         <span class="p">)</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_grpc_channel_options</span><span class="p">(</span><span class="n">grpc_max_receive_message_length</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.with_external_access_token"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_external_access_token">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">with_external_access_token</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted connection to a Mesh server and will add</span>
 <span class="sd">        provided access token to authorization header to each server request.</span>
@@ -418,6 +462,8 @@
 <span class="sd">                by the gRPC runtime.</span>
 <span class="sd">            access_token: Token obtained externally, used to get access to Mesh</span>
 <span class="sd">                server.</span>
+<span class="sd">            grpc_max_receive_message_length: Maximum inbound gRPC message size</span>
+<span class="sd">                in bytes. By default the maximum inbound gRPC message size is 4MB.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ssl_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
         <span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">ExternalAccessTokenPlugin</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
@@ -425,7 +471,10 @@
         <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
             <span class="n">ssl_credentials</span><span class="p">,</span> <span class="n">call_credentials</span>
         <span class="p">)</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_grpc_channel_options</span><span class="p">(</span><span class="n">grpc_max_receive_message_length</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span>
+            <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span></div>
 
     <span class="nd">@classmethod</span>

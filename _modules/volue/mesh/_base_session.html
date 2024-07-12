@@ -377,8 +377,13 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Reads time series points for</span>
-<span class="sd">        the specified time series in the given interval.</span>
+<span class="sd">        Reads time series points for the specified time series in the given</span>
+<span class="sd">        interval.</span>
+
+<span class="sd">        If there are too many points in the response you might get</span>
+<span class="sd">        a `StatusCode.RESOURCE_EXHAUSTED` error.</span>
+<span class="sd">        See: :ref:`mesh_client:gRPC communication`.</span>
+
 <span class="sd">        For information about `datetime` arguments and time zones refer to</span>
 <span class="sd">        :ref:`mesh_client:Date times and time zones`.</span>
 
@@ -400,6 +405,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Writes time series points for the specified time series in the given interval.</span>
 <span class="sd">        Resolution of the time series does not need to be set when writing time series.</span>
+
+<span class="sd">        If there are too many points in the request you will the Mesh server</span>
+<span class="sd">        will discard it and return `StatusCode.RESOURCE_EXHAUSTED`.</span>
+<span class="sd">        See: :ref:`mesh_client:gRPC communication`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            timeseries: The modified time series.</span>
@@ -1058,6 +1067,10 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a hydro simulation using HydSim on the Mesh server.</span>
 
+<span class="sd">        In case of running a simulation on longer interval and with</span>
+<span class="sd">        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`</span>
+<span class="sd">        error. See: :ref:`mesh_client:gRPC communication`.</span>
+
 <span class="sd">        This function is experimental and subject to larger changes.</span>
 
 <span class="sd">        Args:</span>
@@ -1104,6 +1117,10 @@
         <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an inflow calculation using HydSim on the Mesh server.</span>
+
+<span class="sd">        In case of running an inflow calculation on longer interval and with</span>
+<span class="sd">        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`</span>
+<span class="sd">        error. See: :ref:`mesh_client:gRPC communication`.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model: The name of the Mesh model in which the inflow calculation</span>
