@@ -301,16 +301,16 @@ environments:</p>
 <span class="w">          </span><span class="no">python -m pip install pytest pytest-asyncio==0.21.2 pandas</span>
 <span class="w">          </span><span class="no">python -m pytest --pyargs volue.mesh.tests -m &quot;not authentication and not long&quot;</span>
 
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Ubuntu 20.04 (wsl1)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Ubuntu 22.04 (wsl1)</span>
 <span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Vampire/setup-wsl@v1</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ubuntu-20.04</span>
+<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ubuntu-22.04</span>
 <span class="w">          </span><span class="nt">set-as-default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;true&#39;</span>
 <span class="w">          </span><span class="nt">update</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;false&#39;</span>
 
 <span class="w">      </span><span class="c1"># run one example before installing pytest packages and pandas</span>
 <span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and test Python SDK (Ubuntu 20.04)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and test Python SDK (Ubuntu 22.04)</span>
 <span class="w">        </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wsl-bash {0}</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">          </span><span class="no">sudo apt-get update</span>
