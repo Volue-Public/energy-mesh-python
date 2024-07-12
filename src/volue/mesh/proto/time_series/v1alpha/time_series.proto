@@ -80,7 +80,7 @@ service TimeseriesService {
   // Create a new (empty) physical time series resource. Returns the newly
   // created resource.
   //
-  // Any missing components of the requested timeseries path will be created in
+  // Any missing components of the requested time series path will be created in
   // the catalog as well. For example, if we set the CreatePhysicalTimeseriesRequest's
   // 'path' field to "/Path/To/Timeseries/", and its 'name' field to
   // "Test_Timeseries", the entire Path/To/Timeseries/Test_Timeseries sequence
@@ -91,7 +91,7 @@ service TimeseriesService {
   //
   // Note that the 'timeseries_key' field on the returned TimeseriesResource
   // will *not* have a valid value which can be used in other APIs. This is
-  // because the real timeseries key values are generated afterwards, at the
+  // because the real time series key values are generated afterwards, at the
   // commit stage.
   //
   // Note also that the 'path' field on the returned TimeseriesResource won't

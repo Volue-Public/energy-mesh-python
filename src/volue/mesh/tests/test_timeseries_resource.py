@@ -136,8 +136,8 @@ class TestCreatePhysicalTimeseries:
         def __init__(self):
             random_chars = 10
 
-            # Mesh will throw an exception if we try to create a timeseries with an existing path
-            # and name. Add a random suffix to the timeseries name to avoid this.
+            # Mesh will throw an exception if we try to create a time series with an existing path
+            # and name. Add a random suffix to the time series name to avoid this.
             name_suffix = "".join(
                 random.choices(string.ascii_uppercase + string.digits, k=random_chars)
             )
@@ -154,8 +154,8 @@ class TestCreatePhysicalTimeseries:
 
     @staticmethod
     def _verify_timeseries(timeseries: TimeseriesResource, expected_ts_data):
-        # Newly created timeseries have "Resource" prepended to their paths, and the timeseries name
-        # appended to it.
+        # Newly created time series have "Resource" prepended to their paths, and the time series
+        # name appended to it.
         expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
 
         assert timeseries.path == expected_path
@@ -165,7 +165,7 @@ class TestCreatePhysicalTimeseries:
         assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
 
     def test_create_physical_timeseries(self, session, ts_init_data):
-        """Check that we can create a new physical timeseries."""
+        """Check that we can create a new physical time series."""
         timeseries = session.create_physical_timeseries(
             path=ts_init_data.path,
             name=ts_init_data.name,
@@ -178,14 +178,14 @@ class TestCreatePhysicalTimeseries:
 
         self._verify_timeseries(timeseries, ts_init_data)
 
-        # TODO: We should also check that the timeseries actually exists in the database. Normally
+        # TODO: We should also check that the time series actually exists in the database. Normally
         # we'd be able to do this by using GetTimeseriesResource; however, that function currently
-        # requires us to know the timeseries' key, which CreatePhysicalTimeseries cannot return
+        # requires us to know the time series' key, which CreatePhysicalTimeseries cannot return
         # since it's generated at the commit stage.
 
     @pytest.mark.asyncio
     async def test_create_physical_timeseries_async(self, async_session, ts_init_data):
-        """Check that we can create a new physical timeseries."""
+        """Check that we can create a new physical time series."""
         timeseries = await async_session.create_physical_timeseries(
             path=ts_init_data.path,
             name=ts_init_data.name,
@@ -198,9 +198,9 @@ class TestCreatePhysicalTimeseries:
 
         self._verify_timeseries(timeseries, ts_init_data)
 
-        # TODO: We should also check that the timeseries actually exists in the database. Normally
+        # TODO: We should also check that the time series actually exists in the database. Normally
         # we'd be able to do this by using GetTimeseriesResource; however, that function currently
-        # requires us to know the timeseries' key, which CreatePhysicalTimeseries cannot return
+        # requires us to know the time series' key, which CreatePhysicalTimeseries cannot return
         # since it's generated at the commit stage.
 
     def test_create_timeseries_with_non_existing_unit_of_measurement(
