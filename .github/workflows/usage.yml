@@ -51,16 +51,16 @@ jobs:
           python -m pip install pytest pytest-asyncio==0.21.2 pandas
           python -m pytest --pyargs volue.mesh.tests -m "not authentication and not long"
 
-      - name: Install Ubuntu 20.04 (wsl1)
+      - name: Install Ubuntu 22.04 (wsl1)
         uses: Vampire/setup-wsl@v1
         with:
-          distribution: Ubuntu-20.04
+          distribution: Ubuntu-22.04
           set-as-default: 'true'
           update: 'false'
 
       # run one example before installing pytest packages and pandas
       # to check if all dependencies are installed together with Mesh Python SDK pip package
-      - name: Install and test Python SDK (Ubuntu 20.04)
+      - name: Install and test Python SDK (Ubuntu 22.04)
         shell: wsl-bash {0}
         run: |
           sudo apt-get update
