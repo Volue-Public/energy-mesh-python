@@ -23,6 +23,10 @@ async def read_timeseries_points_async(session: Connection.Session):
     start = datetime(2016, 1, 1, 6, 0, 0)
     end = datetime(2016, 1, 1, 8, 0, 0)
 
+    # Each time series point occupies 20 bytes. By default gRPC has a limitation of 4MB inbound message size.
+    # In case of larger data volumes please send request data in chunks.
+    # E.g.: call multiple times `read_timeseries_points` with shorter interval.
+
     # Send request to read time series based on time series key.
     timeseries = await session.read_timeseries_points(
         target=timeseries_key, start_time=start, end_time=end
