@@ -23,6 +23,10 @@ New features
 
   See :ref:`mesh_client:gRPC communication`.
 
+- We have added a new gRPC function to create physical time series. :issue:`383`
+
+  See `create_physical_timeseries`.
+
 Changes
 ~~~~~~~~~~~~~~~~~~
 
