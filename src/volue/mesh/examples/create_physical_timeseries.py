@@ -3,7 +3,7 @@ import helpers
 from volue.mesh import Connection, Timeseries
 
 
-def main(address, port, root_pem_certificate):
+def main(address, tls_root_pem_cert):
     """Showing how to create a physical time series resource."""
 
     # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
@@ -25,5 +25,5 @@ def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    main(address, port, root_pem_certificate)
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    main(address, tls_root_pem_cert)
