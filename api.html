@@ -106,7 +106,21 @@
 <p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-volue.mesh">volue.mesh</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#volue-mesh">volue.mesh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#volue.mesh.Connection"><code class="docutils literal notranslate"><span class="pre">Connection</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.Session"><code class="docutils literal notranslate"><span class="pre">Connection.Session</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.connect_to_session"><code class="docutils literal notranslate"><span class="pre">Connection.connect_to_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.create_session"><code class="docutils literal notranslate"><span class="pre">Connection.create_session()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.get_user_identity"><code class="docutils literal notranslate"><span class="pre">Connection.get_user_identity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.get_version"><code class="docutils literal notranslate"><span class="pre">Connection.get_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.insecure"><code class="docutils literal notranslate"><span class="pre">Connection.insecure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.revoke_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.revoke_access_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.update_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.update_external_access_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.with_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.with_external_access_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.with_kerberos"><code class="docutils literal notranslate"><span class="pre">Connection.with_kerberos()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.with_tls"><code class="docutils literal notranslate"><span class="pre">Connection.with_tls()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#volue.mesh.AttributeBase"><code class="docutils literal notranslate"><span class="pre">AttributeBase</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.AttributeBase.AttributeBaseDefinition"><code class="docutils literal notranslate"><span class="pre">AttributeBase.AttributeBaseDefinition</span></code></a></li>
 </ul>
@@ -125,16 +139,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Authentication.delete_access_token"><code class="docutils literal notranslate"><span class="pre">Authentication.delete_access_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Authentication.get_token"><code class="docutils literal notranslate"><span class="pre">Authentication.get_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Authentication.is_token_valid"><code class="docutils literal notranslate"><span class="pre">Authentication.is_token_valid()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#volue.mesh.Connection"><code class="docutils literal notranslate"><span class="pre">Connection</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.Session"><code class="docutils literal notranslate"><span class="pre">Connection.Session</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.connect_to_session"><code class="docutils literal notranslate"><span class="pre">Connection.connect_to_session()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.create_session"><code class="docutils literal notranslate"><span class="pre">Connection.create_session()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.get_user_identity"><code class="docutils literal notranslate"><span class="pre">Connection.get_user_identity()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.get_version"><code class="docutils literal notranslate"><span class="pre">Connection.get_version()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.revoke_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.revoke_access_token()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.Connection.update_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.update_external_access_token()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#volue.mesh.HydSimDataset"><code class="docutils literal notranslate"><span class="pre">HydSimDataset</span></code></a><ul>
@@ -246,8 +250,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.create_session"><code class="docutils literal notranslate"><span class="pre">Connection.create_session()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.get_user_identity"><code class="docutils literal notranslate"><span class="pre">Connection.get_user_identity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.get_version"><code class="docutils literal notranslate"><span class="pre">Connection.get_version()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.insecure"><code class="docutils literal notranslate"><span class="pre">Connection.insecure()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.revoke_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.revoke_access_token()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.update_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.update_external_access_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.with_external_access_token"><code class="docutils literal notranslate"><span class="pre">Connection.with_external_access_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.with_kerberos"><code class="docutils literal notranslate"><span class="pre">Connection.with_kerberos()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#volue.mesh.aio.Connection.with_tls"><code class="docutils literal notranslate"><span class="pre">Connection.with_tls()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -386,295 +394,9 @@
   <div class="section" id="api-documentation">
 <h1>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading">¶</a></h1>
 <p>The Mesh Python API contains several packages, namespaces and modules.</p>
-<div class="section" id="module-volue.mesh">
-<span id="volue-mesh"></span><h2>volue.mesh<a class="headerlink" href="#module-volue.mesh" title="Permalink to this heading">¶</a></h2>
-<p>Client library for Volue Energy’s Mesh software.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.AttributeBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">AttributeBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#AttributeBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributeBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for Mesh Attribute.</p>
-<p>Represents common information for all kinds of attributes.
-Mesh Attribute is an instance of Attribute Definition in the
-Mesh Model and has always an owner of Object type.
-It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).</p>
-<p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.AttributeBase.AttributeBaseDefinition">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AttributeBaseDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#AttributeBase.AttributeBaseDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributeBase.AttributeBaseDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute definition common for all kinds of attributes.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.AttributesFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">AttributesFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_no_attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#AttributesFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributesFilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines what attributes need to be returned in response message.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Name</span> <span class="pre">mask</span></span></dt>
-<dd><p>Attribute name uniquely identifies attribute within given object.
-If set then only attributes set in the name mask are read.
-If any other mask: tag or namespace or <cite>return_no_attributes</cite>
-flag is also set then an error will be returned.
-The attribute name provided in the mask must be equal to
-the actual attribute name in the model.
-Note: Regular expressions are not supported.
-See examples below for more details.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Tag</span> <span class="pre">mask</span></span></dt>
-<dd><p>Each attribute can have zero, one or more tags.
-If the tag mask is set then only attributes with
-at least one tag set in the field mask are read.
-If multiple tags are provided then all attributes having
-at least one of them are returned (logical OR).
-If name mask or <cite>return_no_attributes</cite> flag is also set
-then an error will be returned.
-It is allowed to have both: tag mask and namespace mask set.
-Note: Regular expressions are not supported.
-See examples below for more details.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">Namespace</span> <span class="pre">mask</span></span></dt>
-<dd><p>Each attribute can have zero, one or more namespaces.
-If the namespace mask is set then only attributes with
-at least one namespace set in the field mask are read.
-If multiple namespaces are provided in the mask then all
-attributes having at least one of them are returned (logical OR).
-Namespace mask does not accept entries with namespaces
-concatenated with dots ‘.’. Each namespace mask entry must
-be a separate namespace.
-If name mask or <cite>return_no_attributes</cite> flag is also set
-then an error will be returned.
-It is allowed to have both: tag mask and namespace mask set.
-Note: Regular expressions are not supported.
-See examples below for more details.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">`return_no_attributes`</span> <span class="pre">flag</span></span></dt>
-<dd><p>If set to True then no attributes will be returned.
-If any mask: name, tag or namespace is also set
-then an error will be returned.
-Default value is False.</p>
-</dd></dl>
-
-<p>Multiple attributes may have the same tag or namespace.
-If both: <cite>tag_mask</cite> and <cite>namespace_mask</cite> are provided then only attributes
-that meet both criteria are returned (intersection/logical AND).</p>
-<p>Note: If no masks are provided then all attributes will be returned.</p>
-<p>Example 1:</p>
-<blockquote>
-<div><p>Arg:      <cite>names</cite> is set to “Price,Volume,Production”
-Response: All attributes with names “Price”, “Volume” or “Production” will be returned.
-Note:     <cite>tag_mask</cite> or <cite>namespace_mask</cite> will be ignored even if set.</p>
-</div></blockquote>
-<p>Example 2:</p>
-<blockquote>
-<div><p>Arg:      <cite>tag_mask</cite> is set to “ProductionAttributes,LocationAttributes”
-Response: All attributes with tag name “ProductionAttributes” or “LocationAttributes” will be returned.
-Note:     If attributes A1, A2 have tag “ProductionAttributes” and A3
-has “LocationAttributes” then all three attributes (A1, A2 and A3) will be returned.
-Exactly the same rules apply to <cite>namespace_mask</cite>.</p>
-</div></blockquote>
-<p>Example 3:</p>
-<blockquote>
-<div><p>Arg:      <cite>namespace_mask</cite> is set to “Hydro,Wind”.
-Response: All attributes with namespace “Hydro” or “Wind” will be returned.
-Note:     Suppose there are the following attributes:
-- A1 (namespace “EnergySystem.Hydro”)
-- A2 (namespace “EnergySystem.Wind”)
-- A3 (namespace “EnergySystem.Carbon”)
-- A4 (namespace “EnergySystem.Hydro.Small”)
-- A5 (namespace “Hydro.Normal”)</p>
-<blockquote>
-<div><p>In this case attributes A1, A2, A4 and A5 will be returned.</p>
-</div></blockquote>
-</div></blockquote>
-<p>Example 4:</p>
-<blockquote>
-<div><p>Arg:      <cite>tag_mask</cite> is set to “ProductionAttributes”, <cite>namespace_mask</cite> is set to “Hydro,Wind”.
-Response: All attributes with tag name “ProductionAttributes” and namespace “Hydro” or “Wind” will be returned.
-Note:     Suppose there are the following attributes:
-- A1 (tag “ProductionAttributes”, namespace “Hydro”)
-- A2 (tag “ProductionAttributes”, namespace “Wind”)
-- A3 (tag “ProductionAttributes”, namespace “Carbon”)
-- A4 (tag “LocationAttributes”, namespace “Hydro”)
-- A5 (tag “LocationAttributes”, namespace “Wind”)</p>
-<blockquote>
-<div><p>In this case attributes A1 and A2 will be returned.</p>
-</div></blockquote>
-</div></blockquote>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.name_mask">
-<span class="sig-name descname"><span class="pre">name_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.name_mask" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.namespace_mask">
-<span class="sig-name descname"><span class="pre">namespace_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.namespace_mask" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.return_no_attributes">
-<span class="sig-name descname"><span class="pre">return_no_attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.return_no_attributes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.tag_mask">
-<span class="sig-name descname"><span class="pre">tag_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.tag_mask" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.Authentication">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.64.0)"><span class="pre">ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication" title="Permalink to this definition">¶</a></dt>
-<dd><p>Authentication services for authentication and authorization to Mesh server using <a class="reference external" href="https://en.wikipedia.org/wiki/Kerberos_(protocol)">kerberos</a>.</p>
-<p>The flow is as follows:</p>
-<ol class="arabic simple">
-<li><p>Obtain token from Kerberos to access specified service (SPN) with Mesh server running on it.</p></li>
-<li><p>Send this token to Mesh gRPC server (using AuthenticateKerberos).</p></li>
-<li><dl class="simple">
-<dt>In return Mesh may respond with:</dt><dd><ol class="loweralpha simple">
-<li><p>Server challenge to be verified and processed by client (using Kerberos). In this case the authentication is not yet completed and client should respond to the server with next Kerberos generated token.</p></li>
-<li><p>Mesh token - to be used in subsequent calls to Mesh that require authentication.</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-</ol>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Token duration - tokens are valid for <strong>1 hour</strong>. After this time a new token needs to be acquired.</p>
-</div>
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KerberosTokenIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Kerberos token iterator to be used with AuthenticateKerberos streaming gRPC.
-Sends tokens to be processed by the Mesh server and processes tokens
-received from the server.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>service_principal</strong> – Name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com.</p></li>
-<li><p><strong>user_principal</strong> – Name of an active directory user, e.g.: ‘aduser.name’.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.process_response">
-<span class="sig-name descname"><span class="pre">process_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_kerberos_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.process_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.process_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets new response from Mesh with kerberos token to be processed by client.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>server_kerberos_token</strong> – The kerberos token.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received">
-<span class="sig-name descname"><span class="pre">signal_final_response_received</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.signal_final_response_received"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received" title="Permalink to this definition">¶</a></dt>
-<dd><p>Signals to the iterator that final response from server was received.
-Cancel any preparation (meaning exit wait) as there is no need to prepare next request.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.Parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.Parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Authentication parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>service_principal</strong> – Name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com.</p></li>
-<li><p><strong>user_principal</strong> – Name of an active directory user, e.g.: ‘aduser.name’.</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters.service_principal">
-<span class="sig-name descname"><span class="pre">service_principal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#volue.mesh.Authentication.Parameters.service_principal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters.user_principal">
-<span class="sig-name descname"><span class="pre">user_principal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.Authentication.Parameters.user_principal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.64.0)"><span class="pre">ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: ‘HOST/hostname.ad.examplecompany.com’</p>
-<p>If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\user.name’ or r’aduser.name’.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>winkerberos converts service principal name if provided in RFC-2078 format. ‘&#64;’ is converted to ‘/’ if there is no ‘/’ character in the service principal name.</p>
-<p>E.g.: <a class="reference external" href="mailto:service&#37;&#52;&#48;hostname">service<span>&#64;</span>hostname</a>
-Would be converted to: service/hostname</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>parameters</strong> – Authentication parameters.</p></li>
-<li><p><strong>target</strong> – Mesh server host name in the form an IP or domain name.</p></li>
-<li><p><strong>channel_credentials</strong> – An encapsulation of the data required to create a secure Channel.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.delete_access_token">
-<span class="sig-name descname"><span class="pre">delete_access_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.delete_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.delete_access_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes (resets) current Mesh token if no longer needed.
-auth_service.RevokeAccessToken call is made in Connection classes.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.get_token">
-<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.get_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.get_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets Mesh token used for authorization in other calls to Mesh server.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.64.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p></li>
-<li><p><strong>(</strong><strong>win</strong><strong>)</strong><strong>kerberos.GSSError</strong> – Errors from kerberos.</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – Invalid token duration.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="volue.mesh.Authentication.is_token_valid">
-<span class="sig-name descname"><span class="pre">is_token_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.is_token_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.is_token_valid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if current token is still valid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Flag if token is valid.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="volue-mesh">
+<h2>volue.mesh<a class="headerlink" href="#volue-mesh" title="Permalink to this heading">¶</a></h2>
+<span class="target" id="module-volue.mesh"></span><p>Client library for Volue Energy’s Mesh software.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Connection">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection" title="Permalink to this definition">¶</a></dt>
@@ -1580,6 +1302,17 @@ You will need to open the session before it will be created on the Mesh server.<
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.insecure">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insecure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.insecure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.insecure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an insecure connection to a Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – The server address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.revoke_access_token">
 <span class="sig-name descname"><span class="pre">revoke_access_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.revoke_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.revoke_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Revokes Mesh token if user no longer should be authenticated.</p>
@@ -1617,6 +1350,358 @@ to each server request.</p>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – Error message raised if the connection is not using
     external access token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.with_external_access_token">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_external_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.with_external_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.with_external_access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an encrypted connection to a Mesh server and will add
+provided access token to authorization header to each server request.</p>
+<p>This is used for setups with external identity providers that generate
+access tokens to the Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The server address.</p></li>
+<li><p><strong>root_certificates</strong> – The PEM-encoded TLS root certificates as a byte
+string, or None to retrieve them from a default location chosen
+by the gRPC runtime.</p></li>
+<li><p><strong>access_token</strong> – Token obtained externally, used to get access to Mesh
+server.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.with_kerberos">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_kerberos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.with_kerberos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.with_kerberos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an encrypted and authenticated connection to a Mesh server.</p>
+<p>This call will perform a Kerberos authentication flow towards Active
+Directory and the Mesh server using the supplied principal names. If
+successful the returned connection will then use that authenticated
+identity for all calls to the Mesh service.</p>
+<p>The authentication is time-limited. When close to expiration the
+library will perform another authentication flow as part of the next
+gRPC call. This will lead to increased latency on calls where a
+re-authentication is necessary, but should otherwise be invisible to
+the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The server address.</p></li>
+<li><p><strong>root_certificates</strong> – The PEM-encoded TLS root certificates as a byte
+string, or None to retrieve them from a default location chosen
+by the gRPC runtime.</p></li>
+<li><p><strong>service_principal</strong> – The Kerberos service principal name for the Mesh
+service. For example ‘HOSTserver.at.host’.</p></li>
+<li><p><strong>user_principal</strong> – The Kerberos user principal name. For example
+‘aduser`.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Connection.with_tls">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_tls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.with_tls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.with_tls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an encrypted connection to a Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The server address.</p></li>
+<li><p><strong>root_certificates</strong> – The PEM-encoded TLS root certificates as a byte
+string, or None to retrieve them from a default location chosen
+by the gRPC runtime.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.AttributeBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">AttributeBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_attribute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#AttributeBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributeBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for Mesh Attribute.</p>
+<p>Represents common information for all kinds of attributes.
+Mesh Attribute is an instance of Attribute Definition in the
+Mesh Model and has always an owner of Object type.
+It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).</p>
+<p>Refer to documentation for more details:
+<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.AttributeBase.AttributeBaseDefinition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AttributeBaseDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#AttributeBase.AttributeBaseDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributeBase.AttributeBaseDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute definition common for all kinds of attributes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.AttributesFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">AttributesFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace_mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_no_attributes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_common.html#AttributesFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributesFilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines what attributes need to be returned in response message.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Name</span> <span class="pre">mask</span></span></dt>
+<dd><p>Attribute name uniquely identifies attribute within given object.
+If set then only attributes set in the name mask are read.
+If any other mask: tag or namespace or <cite>return_no_attributes</cite>
+flag is also set then an error will be returned.
+The attribute name provided in the mask must be equal to
+the actual attribute name in the model.
+Note: Regular expressions are not supported.
+See examples below for more details.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Tag</span> <span class="pre">mask</span></span></dt>
+<dd><p>Each attribute can have zero, one or more tags.
+If the tag mask is set then only attributes with
+at least one tag set in the field mask are read.
+If multiple tags are provided then all attributes having
+at least one of them are returned (logical OR).
+If name mask or <cite>return_no_attributes</cite> flag is also set
+then an error will be returned.
+It is allowed to have both: tag mask and namespace mask set.
+Note: Regular expressions are not supported.
+See examples below for more details.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">Namespace</span> <span class="pre">mask</span></span></dt>
+<dd><p>Each attribute can have zero, one or more namespaces.
+If the namespace mask is set then only attributes with
+at least one namespace set in the field mask are read.
+If multiple namespaces are provided in the mask then all
+attributes having at least one of them are returned (logical OR).
+Namespace mask does not accept entries with namespaces
+concatenated with dots ‘.’. Each namespace mask entry must
+be a separate namespace.
+If name mask or <cite>return_no_attributes</cite> flag is also set
+then an error will be returned.
+It is allowed to have both: tag mask and namespace mask set.
+Note: Regular expressions are not supported.
+See examples below for more details.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">`return_no_attributes`</span> <span class="pre">flag</span></span></dt>
+<dd><p>If set to True then no attributes will be returned.
+If any mask: name, tag or namespace is also set
+then an error will be returned.
+Default value is False.</p>
+</dd></dl>
+
+<p>Multiple attributes may have the same tag or namespace.
+If both: <cite>tag_mask</cite> and <cite>namespace_mask</cite> are provided then only attributes
+that meet both criteria are returned (intersection/logical AND).</p>
+<p>Note: If no masks are provided then all attributes will be returned.</p>
+<p>Example 1:</p>
+<blockquote>
+<div><p>Arg:      <cite>names</cite> is set to “Price,Volume,Production”
+Response: All attributes with names “Price”, “Volume” or “Production” will be returned.
+Note:     <cite>tag_mask</cite> or <cite>namespace_mask</cite> will be ignored even if set.</p>
+</div></blockquote>
+<p>Example 2:</p>
+<blockquote>
+<div><p>Arg:      <cite>tag_mask</cite> is set to “ProductionAttributes,LocationAttributes”
+Response: All attributes with tag name “ProductionAttributes” or “LocationAttributes” will be returned.
+Note:     If attributes A1, A2 have tag “ProductionAttributes” and A3
+has “LocationAttributes” then all three attributes (A1, A2 and A3) will be returned.
+Exactly the same rules apply to <cite>namespace_mask</cite>.</p>
+</div></blockquote>
+<p>Example 3:</p>
+<blockquote>
+<div><p>Arg:      <cite>namespace_mask</cite> is set to “Hydro,Wind”.
+Response: All attributes with namespace “Hydro” or “Wind” will be returned.
+Note:     Suppose there are the following attributes:
+- A1 (namespace “EnergySystem.Hydro”)
+- A2 (namespace “EnergySystem.Wind”)
+- A3 (namespace “EnergySystem.Carbon”)
+- A4 (namespace “EnergySystem.Hydro.Small”)
+- A5 (namespace “Hydro.Normal”)</p>
+<blockquote>
+<div><p>In this case attributes A1, A2, A4 and A5 will be returned.</p>
+</div></blockquote>
+</div></blockquote>
+<p>Example 4:</p>
+<blockquote>
+<div><p>Arg:      <cite>tag_mask</cite> is set to “ProductionAttributes”, <cite>namespace_mask</cite> is set to “Hydro,Wind”.
+Response: All attributes with tag name “ProductionAttributes” and namespace “Hydro” or “Wind” will be returned.
+Note:     Suppose there are the following attributes:
+- A1 (tag “ProductionAttributes”, namespace “Hydro”)
+- A2 (tag “ProductionAttributes”, namespace “Wind”)
+- A3 (tag “ProductionAttributes”, namespace “Carbon”)
+- A4 (tag “LocationAttributes”, namespace “Hydro”)
+- A5 (tag “LocationAttributes”, namespace “Wind”)</p>
+<blockquote>
+<div><p>In this case attributes A1 and A2 will be returned.</p>
+</div></blockquote>
+</div></blockquote>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.name_mask">
+<span class="sig-name descname"><span class="pre">name_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.name_mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.namespace_mask">
+<span class="sig-name descname"><span class="pre">namespace_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.namespace_mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.return_no_attributes">
+<span class="sig-name descname"><span class="pre">return_no_attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.return_no_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.AttributesFilter.tag_mask">
+<span class="sig-name descname"><span class="pre">tag_mask</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.AttributesFilter.tag_mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.Authentication">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Authentication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.64.0)"><span class="pre">ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authentication services for authentication and authorization to Mesh server using <a class="reference external" href="https://en.wikipedia.org/wiki/Kerberos_(protocol)">kerberos</a>.</p>
+<p>The flow is as follows:</p>
+<ol class="arabic simple">
+<li><p>Obtain token from Kerberos to access specified service (SPN) with Mesh server running on it.</p></li>
+<li><p>Send this token to Mesh gRPC server (using AuthenticateKerberos).</p></li>
+<li><dl class="simple">
+<dt>In return Mesh may respond with:</dt><dd><ol class="loweralpha simple">
+<li><p>Server challenge to be verified and processed by client (using Kerberos). In this case the authentication is not yet completed and client should respond to the server with next Kerberos generated token.</p></li>
+<li><p>Mesh token - to be used in subsequent calls to Mesh that require authentication.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Token duration - tokens are valid for <strong>1 hour</strong>. After this time a new token needs to be acquired.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">KerberosTokenIterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kerberos token iterator to be used with AuthenticateKerberos streaming gRPC.
+Sends tokens to be processed by the Mesh server and processes tokens
+received from the server.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_principal</strong> – Name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com.</p></li>
+<li><p><strong>user_principal</strong> – Name of an active directory user, e.g.: ‘aduser.name’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.process_response">
+<span class="sig-name descname"><span class="pre">process_response</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_kerberos_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.12)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.process_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.process_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets new response from Mesh with kerberos token to be processed by client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>server_kerberos_token</strong> – The kerberos token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received">
+<span class="sig-name descname"><span class="pre">signal_final_response_received</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.KerberosTokenIterator.signal_final_response_received"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.KerberosTokenIterator.signal_final_response_received" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signals to the iterator that final response from server was received.
+Cancel any preparation (meaning exit wait) as there is no need to prepare next request.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.Parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.Parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Authentication parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_principal</strong> – Name of an active directory service, e.g.: ‘HOST/hostname.ad.examplecompany.com.</p></li>
+<li><p><strong>user_principal</strong> – Name of an active directory user, e.g.: ‘aduser.name’.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters.service_principal">
+<span class="sig-name descname"><span class="pre">service_principal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#volue.mesh.Authentication.Parameters.service_principal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.Parameters.user_principal">
+<span class="sig-name descname"><span class="pre">user_principal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#volue.mesh.Authentication.Parameters.user_principal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Authentication.Parameters" title="volue.mesh._authentication.Authentication.Parameters"><span class="pre">Parameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel_credentials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.ChannelCredentials" title="(in gRPC Python v1.64.0)"><span class="pre">ChannelCredentials</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>If Mesh gRPC server is running as a service user, for example LocalSystem, NetworkService or a user account with a registered service principal name then it is enough to provide hostname as service principal, e.g.: ‘HOST/hostname.ad.examplecompany.com’</p>
+<p>If Mesh gRPC server is running as a user account without registered service principal name then it is enough to provide user account name running Mesh server as service principal, e.g.: ad\user.name’ or r’aduser.name’.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>winkerberos converts service principal name if provided in RFC-2078 format. ‘&#64;’ is converted to ‘/’ if there is no ‘/’ character in the service principal name.</p>
+<p>E.g.: <a class="reference external" href="mailto:service&#37;&#52;&#48;hostname">service<span>&#64;</span>hostname</a>
+Would be converted to: service/hostname</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> – Authentication parameters.</p></li>
+<li><p><strong>target</strong> – Mesh server host name in the form an IP or domain name.</p></li>
+<li><p><strong>channel_credentials</strong> – An encapsulation of the data required to create a secure Channel.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.delete_access_token">
+<span class="sig-name descname"><span class="pre">delete_access_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.delete_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.delete_access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes (resets) current Mesh token if no longer needed.
+auth_service.RevokeAccessToken call is made in Connection classes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.get_token">
+<span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.get_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.get_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Mesh token used for authorization in other calls to Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.64.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p></li>
+<li><p><strong>(</strong><strong>win</strong><strong>)</strong><strong>kerberos.GSSError</strong> – Errors from kerberos.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – Invalid token duration.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.Authentication.is_token_valid">
+<span class="sig-name descname"><span class="pre">is_token_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_authentication.html#Authentication.is_token_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Authentication.is_token_valid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if current token is still valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Flag if token is valid.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3201,6 +3286,17 @@ You will need to open the session before it will be created on the Mesh server.<
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.insecure">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">insecure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.insecure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.insecure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an insecure connection to a Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target</strong> – The server address.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.revoke_access_token">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">revoke_access_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.revoke_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.revoke_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Revokes Mesh token if user no longer should be authenticated.</p>
@@ -3238,6 +3334,72 @@ to each server request.</p>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – Error message raised if the connection is not using
     external access token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.with_external_access_token">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_external_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.with_external_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.with_external_access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an encrypted connection to a Mesh server and will add
+provided access token to authorization header to each server request.</p>
+<p>This is used for setups with external identity providers that generate
+access tokens to the Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The server address.</p></li>
+<li><p><strong>root_certificates</strong> – The PEM-encoded TLS root certificates as a byte
+string, or None to retrieve them from a default location chosen
+by the gRPC runtime.</p></li>
+<li><p><strong>access_token</strong> – Token obtained externally, used to get access to Mesh
+server.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.with_kerberos">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_kerberos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">user_principal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.with_kerberos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.with_kerberos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an encrypted and authenticated connection to a Mesh server.</p>
+<p>This call will perform a Kerberos authentication flow towards Active
+Directory and the Mesh server using the supplied principal names. If
+successful the returned connection will then use that authenticated
+identity for all calls to the Mesh service.</p>
+<p>The authentication is time-limited. When close to expiration the
+library will perform another authentication flow as part of the next
+gRPC call. This will lead to increased latency on calls where a
+re-authentication is necessary, but should otherwise be invisible to
+the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The server address.</p></li>
+<li><p><strong>root_certificates</strong> – The PEM-encoded TLS root certificates as a byte
+string, or None to retrieve them from a default location chosen
+by the gRPC runtime.</p></li>
+<li><p><strong>service_principal</strong> – The Kerberos service principal name for the Mesh
+service. For example ‘HOSTserver.at.host’.</p></li>
+<li><p><strong>user_principal</strong> – The Kerberos user principal name. For example
+‘aduser`.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="volue.mesh.aio.Connection.with_tls">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">with_tls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_certificates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.12)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">C</span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_connection.html#Connection.with_tls"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.with_tls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an encrypted connection to a Mesh server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The server address.</p></li>
+<li><p><strong>root_certificates</strong> – The PEM-encoded TLS root certificates as a byte
+string, or None to retrieve them from a default location chosen
+by the gRPC runtime.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

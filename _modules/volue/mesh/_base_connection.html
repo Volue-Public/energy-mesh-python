@@ -1,0 +1,568 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>volue.mesh._base_connection &mdash; volue.mesh 1.9.0-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hydsim.html">HydSim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authentication.html">Client authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>volue.mesh._base_connection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for volue.mesh._base_connection</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span>
+
+<span class="kn">import</span> <span class="nn">grpc</span>
+
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.auth.v1alpha</span> <span class="kn">import</span> <span class="n">auth_pb2</span><span class="p">,</span> <span class="n">auth_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.calc.v1alpha</span> <span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.config.v1alpha</span> <span class="kn">import</span> <span class="n">config_pb2</span><span class="p">,</span> <span class="n">config_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.hydsim.v1alpha</span> <span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.model.v1alpha</span> <span class="kn">import</span> <span class="n">model_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.model_definition.v1alpha</span> <span class="kn">import</span> <span class="n">model_definition_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.session.v1alpha</span> <span class="kn">import</span> <span class="n">session_pb2_grpc</span>
+<span class="kn">from</span> <span class="nn">volue.mesh.proto.time_series.v1alpha</span> <span class="kn">import</span> <span class="n">time_series_pb2_grpc</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_authentication</span>
+<span class="kn">from</span> <span class="nn">._authentication</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">ExternalAccessTokenPlugin</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;Connection&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A connection to a Mesh server.</span>
+
+<span class="sd">    There are four primary types of connections, insecure, TLS encrypted,</span>
+<span class="sd">    Kerberos authenticated (with TLS encryption) and with providing externally</span>
+<span class="sd">    obtained token (with TLS encryption).</span>
+<span class="sd">    These can be instantiated as follows::</span>
+
+<span class="sd">        insecure = mesh.Connection.insecure(&#39;localhost:50051&#39;)</span>
+<span class="sd">        tls = mesh.Connection.with_tls(&#39;localhost:50051&#39;, root_certificates)</span>
+<span class="sd">        kerberos = mesh.Connection.with_kerberos(&#39;localhost:50051&#39;,</span>
+<span class="sd">                                                 root_certificates,</span>
+<span class="sd">                                                 &#39;HOST/hostname.ad.examplecompany.com&#39;,</span>
+<span class="sd">                                                 &#39;ad\\user.name&#39;)</span>
+<span class="sd">        token = mesh.Connection.with_external_access_token(&#39;localhost:50051&#39;,</span>
+<span class="sd">                                                           root_certificates,</span>
+<span class="sd">                                                           &#39;eyJ0eXAiOi...&#39;)</span>
+
+<span class="sd">    The target address uses `gRPC Name Resolution &lt;naming&gt;`_. In general this</span>
+<span class="sd">    means that &#39;host:port&#39; works as expected.</span>
+
+<span class="sd">    See :py:meth:`Connection.insecure()`, :py:meth:`Connection.with_tls()`,</span>
+<span class="sd">    :py:meth:`Connection.with_kerberos()` and</span>
+<span class="sd">    :py:meth:`Connection.with_external_access_token()` for more information on</span>
+<span class="sd">    the connection variants.</span>
+
+<span class="sd">    .. _naming: https://github.com/grpc/grpc/blob/master/doc/naming.md</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_insecure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an insecure gRPC channel.</span>
+
+<span class="sd">        Derived classes should implement this using either grpc.aio.insecure_channel</span>
+<span class="sd">        or grpc.insecure_channel depending on desired behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_secure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a secure gRPC channel.</span>
+
+<span class="sd">        Derived classes should implement this using either grpc.aio.secure_channel</span>
+<span class="sd">        or grpc.secure_channel depending on desired behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">tls_root_pem_cert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">channel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a connection for communication with Mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            host: Mesh server host name in the form an IP or domain name</span>
+<span class="sd">            port: Mesh server port number for gRPC communication</span>
+<span class="sd">            tls_root_pem_cert: PEM-encoded root certificate(s) as a byte string.</span>
+<span class="sd">                If this argument is set then a secured connection will be created,</span>
+<span class="sd">                otherwise it will be an insecure connection.</span>
+<span class="sd">            authentication_parameters: TODO</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            There are 4 possible connection types:</span>
+<span class="sd">            - insecure (without TLS)</span>
+<span class="sd">            - with TLS</span>
+<span class="sd">            - with TLS and Kerberos authentication (authentication requires TLS for encrypting auth tokens)</span>
+<span class="sd">            - with TLS and externally obtained access tokens (requires TLS for encrypting access tokens)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">auth_metadata_plugin</span>
+
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auth_service</span> <span class="o">=</span> <span class="n">auth_pb2_grpc</span><span class="o">.</span><span class="n">AuthenticationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span> <span class="o">=</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_service</span> <span class="o">=</span> <span class="n">config_pb2_grpc</span><span class="o">.</span><span class="n">ConfigurationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span> <span class="o">=</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span> <span class="o">=</span> <span class="n">model_pb2_grpc</span><span class="o">.</span><span class="n">ModelServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">model_definition_pb2_grpc</span><span class="o">.</span><span class="n">ModelDefinitionServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span> <span class="o">=</span> <span class="n">session_pb2_grpc</span><span class="o">.</span><span class="n">SessionServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span> <span class="o">=</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">(</span>
+                <span class="n">channel</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">target</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># There are 4 possible connection types:</span>
+        <span class="c1"># - insecure (without TLS)</span>
+        <span class="c1"># - with TLS</span>
+        <span class="c1"># - with TLS and Kerberos authentication</span>
+        <span class="c1">#   (authentication requires TLS for encrypting auth tokens)</span>
+        <span class="c1"># - with TLS and externally obtained access tokens</span>
+        <span class="c1">#   (requires TLS for encrypting access tokens)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">tls_root_pem_cert</span><span class="p">:</span>
+            <span class="c1"># insecure connection (without TLS)</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insecure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">channel_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span>
+                <span class="n">root_certificates</span><span class="o">=</span><span class="n">tls_root_pem_cert</span>
+            <span class="p">)</span>
+
+            <span class="c1"># authentication requires TLS</span>
+            <span class="k">if</span> <span class="n">authentication_parameters</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">Authentication</span><span class="p">(</span>
+                    <span class="n">authentication_parameters</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">channel_credentials</span>
+                <span class="p">)</span>
+                <span class="n">call_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">metadata_call_credentials</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span>
+                <span class="p">)</span>
+
+                <span class="n">composite_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
+                    <span class="n">channel_credentials</span><span class="p">,</span>
+                    <span class="n">call_credentials</span><span class="p">,</span>
+                <span class="p">)</span>
+
+                <span class="c1"># connection using TLS and Kerberos authentication</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">composite_credentials</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># connection using TLS (no Kerberos authentication)</span>
+                <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span>
+                    <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">channel_credentials</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">auth_service</span> <span class="o">=</span> <span class="n">auth_pb2_grpc</span><span class="o">.</span><span class="n">AuthenticationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span> <span class="o">=</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_service</span> <span class="o">=</span> <span class="n">config_pb2_grpc</span><span class="o">.</span><span class="n">ConfigurationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span> <span class="o">=</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span> <span class="o">=</span> <span class="n">model_pb2_grpc</span><span class="o">.</span><span class="n">ModelServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">model_definition_pb2_grpc</span><span class="o">.</span><span class="n">ModelDefinitionServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span> <span class="o">=</span> <span class="n">session_pb2_grpc</span><span class="o">.</span><span class="n">SessionServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span> <span class="o">=</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Connection.insecure"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.insecure">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">insecure</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an insecure connection to a Mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The server address.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_insecure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.with_tls"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_tls">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_tls</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted connection to a Mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The server address.</span>
+<span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
+<span class="sd">                string, or None to retrieve them from a default location chosen</span>
+<span class="sd">                by the gRPC runtime.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.with_kerberos"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_kerberos">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_kerberos</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">service_principal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">user_principal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted and authenticated connection to a Mesh server.</span>
+
+<span class="sd">        This call will perform a Kerberos authentication flow towards Active</span>
+<span class="sd">        Directory and the Mesh server using the supplied principal names. If</span>
+<span class="sd">        successful the returned connection will then use that authenticated</span>
+<span class="sd">        identity for all calls to the Mesh service.</span>
+
+<span class="sd">        The authentication is time-limited. When close to expiration the</span>
+<span class="sd">        library will perform another authentication flow as part of the next</span>
+<span class="sd">        gRPC call. This will lead to increased latency on calls where a</span>
+<span class="sd">        re-authentication is necessary, but should otherwise be invisible to</span>
+<span class="sd">        the user.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The server address.</span>
+<span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
+<span class="sd">                string, or None to retrieve them from a default location chosen</span>
+<span class="sd">                by the gRPC runtime.</span>
+<span class="sd">            service_principal: The Kerberos service principal name for the Mesh</span>
+<span class="sd">                service. For example &#39;HOST\\server.at.host&#39;.</span>
+<span class="sd">            user_principal: The Kerberos user principal name. For example</span>
+<span class="sd">                &#39;ad\\user`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ssl_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
+        <span class="n">auth_params</span> <span class="o">=</span> <span class="n">_authentication</span><span class="o">.</span><span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">(</span>
+            <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span>
+        <span class="p">)</span>
+        <span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">Authentication</span><span class="p">(</span><span class="n">auth_params</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">ssl_credentials</span><span class="p">)</span>
+        <span class="n">call_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">metadata_call_credentials</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
+            <span class="n">ssl_credentials</span><span class="p">,</span> <span class="n">call_credentials</span>
+        <span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.with_external_access_token"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_external_access_token">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">with_external_access_token</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted connection to a Mesh server and will add</span>
+<span class="sd">        provided access token to authorization header to each server request.</span>
+
+<span class="sd">        This is used for setups with external identity providers that generate</span>
+<span class="sd">        access tokens to the Mesh server.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The server address.</span>
+<span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
+<span class="sd">                string, or None to retrieve them from a default location chosen</span>
+<span class="sd">                by the gRPC runtime.</span>
+<span class="sd">            access_token: Token obtained externally, used to get access to Mesh</span>
+<span class="sd">                server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ssl_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
+        <span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">ExternalAccessTokenPlugin</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span>
+        <span class="n">call_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">metadata_call_credentials</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
+            <span class="n">ssl_credentials</span><span class="p">,</span> <span class="n">call_credentials</span>
+        <span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_with_fake_identity</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">):</span>
+        <span class="n">ssl_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
+        <span class="n">auth_metadata_plugin</span> <span class="o">=</span> <span class="n">_authentication</span><span class="o">.</span><span class="n">FakeIdentityPlugin</span><span class="p">(</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">ssl_credentials</span><span class="p">,</span> <span class="n">name</span>
+        <span class="p">)</span>
+        <span class="n">call_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">metadata_call_credentials</span><span class="p">(</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">composite_channel_credentials</span><span class="p">(</span>
+            <span class="n">ssl_credentials</span><span class="p">,</span> <span class="n">call_credentials</span>
+        <span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_secure_grpc_channel</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">credentials</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">config_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request version information of the connected Mesh server.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Does not require an open session.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">get_user_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">auth_pb2</span><span class="o">.</span><span class="n">UserIdentity</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Request information about the user authorized to work with the Mesh server.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Does not require an open session.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not</span>
+<span class="sd">                be completed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">update_external_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates external access token used for connection to Mesh.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            access_token: New access token to be added to authorization header</span>
+<span class="sd">                to each server request.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Does not require an open session.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Error message raised if the connection is not using</span>
+<span class="sd">                external access token.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Revokes Mesh token if user no longer should be authenticated.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Does not require an open session.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Error message raised if the connection is not using</span>
+<span class="sd">                Kerberos authentication.</span>
+<span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not</span>
+<span class="sd">                be completed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new session.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is handled locally. No communication with the server is involved.</span>
+<span class="sd">            You will need to open the session before it will be created on the Mesh server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a session with a given session id, the id of the session you are (or want to be) connected to.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session_id: The id of the session you are (or want to be) connected to.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            This is handled locally. No communication with the server is involved.</span>
+<span class="sd">            Any subsequent use of the session object will communicate with the</span>
+<span class="sd">            Mesh server. If the given session_id is a valid open session on the</span>
+<span class="sd">            Mesh server, the session is now open and can be used. If the session_id</span>
+<span class="sd">            is *not* a valid open session an exception will be raised when trying to</span>
+<span class="sd">            use the session.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2024, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
