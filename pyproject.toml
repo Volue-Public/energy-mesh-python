@@ -38,7 +38,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, <3.13"
-grpcio = "^1.37.0"
+grpcio = ">=1.37.0, <1.65.0"
 pyarrow = ">=7.0.0"
 protobuf = ">=3.20.1"
 winkerberos = { version = ">=0.9.1", markers = "sys_platform == 'win32'" }
@@ -50,7 +50,7 @@ python-dateutil = "^2.8.2"
 six = "^1.16.0"
 
 [tool.poetry.dev-dependencies]
-grpcio-tools = "^1.37.0"
+grpcio-tools = ">=1.37.0, <1.65.0"
 Sphinx = ">=5.0.2"
 sphinx-rtd-theme = "^0.5.2"
 rtd = "^1.2.3"
@@ -75,7 +75,7 @@ markers = [
 [build-system]
 requires = [
     "poetry-core>=1.9.0",
-    "grpcio-tools>=1.60.1"
+    "grpcio-tools>=1.37.0, <1.65.0"
 ]
 build-backend = "poetry.core.masonry.api"
 
