@@ -42,12 +42,19 @@ def get_pa_table_with_time_series_points() -> pa.Table:
     return pa.Table.from_arrays(arrays, schema=mesh.Timeseries.schema)
 
 
-def sync_write_timeseries_points(address, port, root_pem_certificate):
+def sync_write_timeseries_points(address, tls_root_pem_cert):
     print("Synchronous write time series points:")
-    connection = mesh.Connection(address, port, root_pem_certificate)
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = mesh.Connection.with_tls(address, tls_root_pem_cert)
+    connection = mesh.Connection.insecure(address)
 
     with connection.create_session() as session:
         table = get_pa_table_with_time_series_points()
+
+        # Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.
+        # In case of larger data volumes please send input data in chunks.
+        # E.g.: call multiple times `write_timeseries_points` with shorter interval.
 
         # Send request to write time series based on time series key.
         timeseries = mesh.Timeseries(table=table, timskey=timeseries_key)
@@ -107,14 +114,20 @@ def sync_write_timeseries_points(address, port, root_pem_certificate):
 
 async def async_write_timeseries_points(
     address,
-    port,
-    root_pem_certificate,
+    tls_root_pem_cert,
 ):
     print("Asynchronous write time series points:")
-    connection = mesh.aio.Connection(address, port, root_pem_certificate)
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = mesh.aio.Connection.with_tls(address, tls_root_pem_cert)
+    connection = mesh.aio.Connection.insecure(address)
 
     async with connection.create_session() as session:
         table = get_pa_table_with_time_series_points()
+
+        # Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.
+        # In case of larger data volumes please send input data in chunks.
+        # E.g.: call multiple times `write_timeseries_points` with shorter interval.
 
         # Send request to write time series based on time series key.
         timeseries = mesh.Timeseries(table=table, timskey=timeseries_key)
@@ -174,10 +187,9 @@ async def async_write_timeseries_points(
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
+    address, tls_root_pem_cert = helpers.get_connection_info()
     sync_write_timeseries_points(
         address,
-        port,
-        root_pem_certificate,
+        tls_root_pem_cert,
     )
-    asyncio.run(async_write_timeseries_points(address, port, root_pem_certificate))
+    asyncio.run(async_write_timeseries_points(address, tls_root_pem_cert))

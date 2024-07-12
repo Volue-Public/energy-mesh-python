@@ -3,10 +3,13 @@ import helpers
 from volue.mesh import AttributesFilter, Connection, OwnershipRelationAttribute
 
 
-def main(address, port, tls_root_cert):
+def main(address, tls_root_pem_cert):
     root_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
 
-    connection = Connection(address, port, tls_root_cert)
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
+
     with connection.create_session() as session:
         # Root object has an ownership relation attribute that point to objects
         # of "PlantElementType" type. We want to add new object of this type.

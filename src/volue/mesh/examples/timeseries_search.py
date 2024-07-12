@@ -95,11 +95,12 @@ def search_method_3(session: Connection.Session):
     traverse_child_objects(session, object_path)
 
 
-def main(address, port, root_pem_certificate):
+def main(address, tls_root_pem_cert):
     """Showing how to search for Mesh time series attributes in various ways."""
 
-    # Configure the connection you want.
-    connection = Connection(address, port, root_pem_certificate)
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
 
     # Create a remote session on the Volue Mesh server.
     with connection.create_session() as session:
@@ -109,5 +110,5 @@ def main(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    main(address, port, root_pem_certificate)
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    main(address, tls_root_pem_cert)

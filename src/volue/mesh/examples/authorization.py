@@ -2,15 +2,17 @@ import asyncio
 
 import helpers
 
-from volue.mesh import Authentication, Connection
-from volue.mesh.aio import Connection as AsyncConnection
+import volue.mesh.aio
+from volue import mesh
 
 
-def sync_auth(address, port, root_pem_certificate, authentication_parameters):
+def sync_auth(address, tls_root_pem_cert, service_principal, user_principal):
     print("Synchronous authentication example: ")
-    connection = Connection(
-        address, port, root_pem_certificate, authentication_parameters
+
+    connection = mesh.Connection.with_kerberos(
+        address, tls_root_pem_cert, service_principal, user_principal
     )
+
     user_identity = connection.get_user_identity()
     print(user_identity)
 
@@ -18,10 +20,11 @@ def sync_auth(address, port, root_pem_certificate, authentication_parameters):
     connection.revoke_access_token()
 
 
-async def async_auth(address, port, root_pem_certificate, authentication_parameters):
+async def async_auth(address, tls_root_pem_cert, service_principal, user_principal):
     print("Asynchronous authentication example:")
-    connection = AsyncConnection(
-        address, port, root_pem_certificate, authentication_parameters
+
+    connection = mesh.aio.Connection.with_kerberos(
+        address, tls_root_pem_cert, service_principal, user_principal
     )
 
     user_identity = await connection.get_user_identity()
@@ -31,14 +34,14 @@ async def async_auth(address, port, root_pem_certificate, authentication_paramet
     await connection.revoke_access_token()
 
 
-def main(address, port, root_pem_certificate):
+def main(address, tls_root_pem_cert):
     """Showing how to authorize to gRPC Mesh server."""
 
     # If Mesh gRPC server is running as a service user,
     # for example LocalSystem, NetworkService or a user account
     # with a registered service principal name then it is enough
     # to provide hostname as service principal, e.g.:
-    #   'HOST/hostname.ad.examplecompany.com'
+    #   'HOST/hostname.companyad.company.com'
     # If Mesh gRPC server is running as a user account without
     # registered service principal name then it is enough to provide
     # user account name running Mesh server as service principal, e.g.:
@@ -49,13 +52,12 @@ def main(address, port, root_pem_certificate):
     #           service@hostname
     #       Would be converted to:
     #           service/hostname
-    authentication_parameters = Authentication.Parameters(
-        "HOST/example.companyad.company.com"
-    )
+    service_principal = "HOST/hostname.companyad.company.com"
+    user_principal = None
 
-    sync_auth(address, port, root_pem_certificate, authentication_parameters)
+    sync_auth(address, tls_root_pem_cert, service_principal, user_principal)
     asyncio.run(
-        async_auth(address, port, root_pem_certificate, authentication_parameters)
+        async_auth(address, tls_root_pem_cert, service_principal, user_principal)
     )
 
 
@@ -67,5 +69,5 @@ if __name__ == "__main__":
     #
     # This requires Mesh server to be running with enabled TLS and Kerberos options.
 
-    address, port, root_pem_certificate = helpers.get_connection_info()
-#    main(address, port, root_pem_certificate)
+    address, tls_root_pem_cert = helpers.get_connection_info()
+#    main(address, tls_root_pem_cert)

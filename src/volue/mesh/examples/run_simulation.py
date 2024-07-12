@@ -7,10 +7,27 @@ import helpers
 import volue.mesh.aio
 from volue import mesh
 
+GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES = 10 * 1024 * 1024  # 10MB
 
-def sync_run_simulation(address, port, root_pem_certificate):
+
+def sync_run_simulation(address, tls_root_pem_cert):
     print("connecting...")
-    connection = mesh.Connection(address, port, root_pem_certificate)
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = mesh.Connection.with_tls(
+    #     address,
+    #     tls_root_pem_cert,
+    #     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
+    # )
+
+    # By default the maximum inbound gRPC message size is 4MB. When Mesh server
+    # returns datasets for longer simulation intervals the gRPC message size
+    # may exceed this limit. In such cases the user can set new limit using
+    # `grpc_max_receive_message_length` when creating a connection to Mesh.
+    connection = mesh.Connection.insecure(
+        address,
+        grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
+    )
 
     with connection.create_session() as session:
         start_time = datetime(2023, 11, 1)
@@ -40,9 +57,24 @@ def sync_run_simulation(address, port, root_pem_certificate):
             print(f"failed to run simulation: {e}")
 
 
-async def async_run_simulation(address, port, root_pem_certificate):
+async def async_run_simulation(address, tls_root_pem_cert):
     print("connecting...")
-    connection = mesh.aio.Connection(address, port, root_pem_certificate)
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = mesh.aio.Connection.with_tls(
+    #     address,
+    #     tls_root_pem_cert,
+    #     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
+    # )
+
+    # By default the maximum inbound gRPC message size is 4MB. When Mesh server
+    # returns datasets for longer simulation intervals the gRPC message size
+    # may exceed this limit. In such cases the user can set new limit using
+    # `grpc_max_receive_message_length` when creating a connection to Mesh.
+    connection = mesh.aio.Connection.insecure(
+        address,
+        grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
+    )
 
     async with connection.create_session() as session:
         start_time = datetime(2023, 11, 1)
@@ -73,6 +105,6 @@ async def async_run_simulation(address, port, root_pem_certificate):
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    sync_run_simulation(address, port, root_pem_certificate)
-    asyncio.run(async_run_simulation(address, port, root_pem_certificate))
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    sync_run_simulation(address, tls_root_pem_cert)
+    asyncio.run(async_run_simulation(address, tls_root_pem_cert))

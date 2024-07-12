@@ -15,14 +15,18 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Support for updating versioned one-to-many link relations. (:pull:`476`)
+- Support for updating versioned one-to-many link relations. :pull:`476`
 
   See `update_versioned_one_to_many_link_relation_attribute`.
+
+- Configurable gRPC inbound message size. :issue:`421`
+
+  See :ref:`mesh_client:gRPC communication`.
 
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- Changes for Mesh server 2.15 gRPC interface compatibility. (:issue:`470`)
+- Changes for Mesh server 2.15 gRPC interface compatibility. :issue:`470`
 
   It introduces breaking API change: `update_versioned_link_relation_attribute`
   is renamed to `update_versioned_one_to_one_link_relation_attribute`.
@@ -56,7 +60,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- Changes for Mesh server 2.14 gRPC interface compatibility. (:issue:`464`)
+- Changes for Mesh server 2.14 gRPC interface compatibility. :issue:`464`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

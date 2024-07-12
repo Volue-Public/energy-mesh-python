@@ -4,7 +4,7 @@ import sys
 def get_connection_info():
     """Helper function to set hand over connection info to examples."""
     address = "localhost:50051"
-    root_pem_certificate = ""
+    tls_root_pem_cert = ""
 
     if len(sys.argv) > 1:
         address = sys.argv[1]
@@ -21,7 +21,6 @@ def get_connection_info():
                 # -----BEGIN CERTIFICATE-----
                 # ..(second certificate)..
                 # -----END CERTIFICATE-----
-                root_pem_certificate = file.read()
+                tls_root_pem_cert = file.read()
 
-    hostname, port = address.split(":")
-    return hostname, port, root_pem_certificate
+    return address, tls_root_pem_cert

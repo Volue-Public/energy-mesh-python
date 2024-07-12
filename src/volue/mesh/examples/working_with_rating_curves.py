@@ -5,7 +5,7 @@ import helpers
 from volue.mesh import Connection, RatingCurveSegment, RatingCurveVersion
 
 
-def main(address, port, tls_root_cert):
+def main(address, tls_root_pem_cert):
     rating_curve_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.RatingCurveAtt"
 
     # Defining a time interval to read rating curve versions from.
@@ -13,7 +13,10 @@ def main(address, port, tls_root_cert):
     start_time = datetime(2008, 1, 1)
     end_time = datetime(2022, 1, 1)
 
-    connection = Connection(address, port, tls_root_cert)
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
+
     with connection.create_session() as session:
         # First read the attribute using `get_attribute`.
         # We can get standard information like name, ID, tags, etc.

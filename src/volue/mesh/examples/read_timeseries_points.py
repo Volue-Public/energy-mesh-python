@@ -22,6 +22,10 @@ def read_timeseries_points(session: Connection.Session):
     start = datetime(2016, 1, 1, 6, 0, 0)
     end = datetime(2016, 1, 1, 8, 0, 0)
 
+    # Each time series point occupies 20 bytes. By default gRPC has a limitation of 4MB inbound message size.
+    # In case of larger data volumes please send request data in chunks.
+    # E.g.: call multiple times `read_timeseries_points` with shorter interval.
+
     # Send request to read time series based on time series key.
     timeseries = session.read_timeseries_points(
         target=timeseries_key, start_time=start, end_time=end
@@ -48,14 +52,17 @@ def read_timeseries_points(session: Connection.Session):
     # print(timeseries.arrow_table.to_pandas())
 
 
-def main(address, port, root_pem_certificate):
+def main(address, tls_root_pem_cert):
     """Showing how to get time series points."""
-    connection = Connection(address, port, root_pem_certificate)
+
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
 
     with connection.create_session() as session:
         read_timeseries_points(session)
 
 
 if __name__ == "__main__":
-    address, port, root_pem_certificate = helpers.get_connection_info()
-    main(address, port, root_pem_certificate)
+    address, tls_root_pem_cert = helpers.get_connection_info()
+    main(address, tls_root_pem_cert)

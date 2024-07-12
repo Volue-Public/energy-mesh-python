@@ -6,13 +6,25 @@ The Mesh Python API contains several packages, namespaces and modules.
 volue.mesh
 ~~~~~~~~~~~~~~~~~~~~
 
+.. We want to include documentation about connection methods, like `with_tls`,
+   defined as class methods on Connection base class.
 .. automodule:: volue.mesh
+    :exclude-members: Connection
+
+    .. autoclass:: Connection
+        :inherited-members:
+        :exclude-members: WorkerThread
 
 
 volue.mesh.aio
 ~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: volue.mesh.aio
+    :exclude-members: Connection
+
+    .. autoclass:: Connection
+        :inherited-members:
+        :exclude-members: WorkerThread
 
 
 volue.mesh.calc

@@ -248,8 +248,11 @@ def versioned_one_to_many_link_relation_example(session: Connection.Session):
     print(get_versioned_link_relation_attribute_information(attribute, session))
 
 
-def main(address, port, tls_root_cert):
-    connection = Connection(address, port, tls_root_cert)
+def main(address, tls_root_pem_cert):
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
+    connection = Connection.insecure(address)
+
     with connection.create_session() as session:
         one_to_one_link_relation_example(session)
         one_to_many_link_relation_example(session)
