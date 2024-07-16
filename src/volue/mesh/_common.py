@@ -13,6 +13,8 @@ from typing import List, Optional, Tuple
 import pyarrow as pa
 from google.protobuf import field_mask_pb2, timestamp_pb2
 
+from bidict import bidict
+
 from volue.mesh import Timeseries
 from volue.mesh.proto import type
 from volue.mesh.proto.auth.v1alpha import auth_pb2
@@ -307,16 +309,15 @@ class LogMessage:
 
     @classmethod
     def _from_proto(cls, proto):
-        if proto.level == type.resources_pb2.LogLevel.TRACE:
-            level = logging.DEBUG
-        elif proto.level == type.resources_pb2.LogLevel.DEBUG:
-            level = logging.DEBUG
-        elif proto.level == type.resources_pb2.LogLevel.INFO:
-            level = logging.INFO
-        elif proto.level == type.resources_pb2.LogLevel.WARN:
-            level = logging.WARNING
-        elif proto.level == type.resources_pb2.LogLevel.ERR:
-            level = logging.ERROR
+        levels = {
+            type.resources_pb2.LogLevel.TRACE: logging.DEBUG,
+            type.resources_pb2.LogLevel.DEBUG: logging.DEBUG,
+            type.resources_pb2.LogLevel.INFO: logging.INFO,
+            type.resources_pb2.LogLevel.WARN: logging.WARNING,
+            type.resources_pb2.LogLevel.ERR: logging.ERROR,
+        }
+
+        level = levels[proto.level]
 
         return cls(level, proto.message)
 
@@ -360,6 +361,17 @@ def _from_proto_guid(guid: Optional[type.resources_pb2.Guid]) -> Optional[uuid.U
     return uuid.UUID(bytes_le=guid.bytes_le)
 
 
+# We intentionally leave out Curve.UNKNOWN so that a KeyError will be raised if we receive such
+# values.
+CURVE_TYPES = bidict(
+    {
+        Timeseries.Curve.PIECEWISELINEAR: type.resources_pb2.Curve.PIECEWISELINEAR,
+        Timeseries.Curve.STAIRCASE: type.resources_pb2.Curve.STAIRCASE,
+        Timeseries.Curve.STAIRCASESTARTOFSTEP: type.resources_pb2.Curve.STAIRCASESTARTOFSTEP,
+    }
+)
+
+
 def _to_proto_curve_type(curve: Timeseries.Curve) -> type.resources_pb2.Curve:
     """
     Converts from Timeseries.Curve type to protobuf curve type.
@@ -368,13 +380,8 @@ def _to_proto_curve_type(curve: Timeseries.Curve) -> type.resources_pb2.Curve:
         curve: The curve to convert.
     """
     proto_curve = type.resources_pb2.Curve()
-    proto_curve.type = type.resources_pb2.Curve.UNKNOWN
-    if curve == Timeseries.Curve.PIECEWISELINEAR:
-        proto_curve.type = type.resources_pb2.Curve.PIECEWISELINEAR
-    elif curve == Timeseries.Curve.STAIRCASE:
-        proto_curve.type = type.resources_pb2.Curve.STAIRCASE
-    elif curve == Timeseries.Curve.STAIRCASESTARTOFSTEP:
-        proto_curve.type = type.resources_pb2.Curve.STAIRCASESTARTOFSTEP
+
+    proto_curve.type = CURVE_TYPES[curve]
 
     return proto_curve
 
@@ -386,19 +393,21 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     Args:
         proto_curve: The protobuf curve to convert.
     """
-    curve = Timeseries.Curve.UNKNOWN
-
-    if proto_curve.type == type.resources_pb2.Curve.PIECEWISELINEAR:
-        curve = Timeseries.Curve.PIECEWISELINEAR
-    elif proto_curve.type == type.resources_pb2.Curve.STAIRCASE:
-        curve = Timeseries.Curve.STAIRCASE
-    elif proto_curve.type == type.resources_pb2.Curve.STAIRCASESTARTOFSTEP:
-        curve = Timeseries.Curve.STAIRCASESTARTOFSTEP
-
-    return curve
+    return CURVE_TYPES.inverse(proto_curve)
 
 
-# FIXME: Don't have such duplicated functions.
+RESOLUTIONS = {
+    Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
+    Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
+    Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
+    Timeseries.Resolution.HOUR: type.resources_pb2.Resolution.HOUR,
+    Timeseries.Resolution.DAY: type.resources_pb2.Resolution.DAY,
+    Timeseries.Resolution.WEEK: type.resources_pb2.Resolution.WEEK,
+    Timeseries.Resolution.MONTH: type.resources_pb2.Resolution.MONTH,
+    Timeseries.Resolution.YEAR: type.resources_pb2.Resolution.YEAR,
+}
+
+
 def _to_proto_resolution(
     resolution: Timeseries.Resolution,
 ) -> type.resources_pb2.Resolution:
@@ -410,25 +419,7 @@ def _to_proto_resolution(
     """
     proto_resolution = type.resources_pb2.Resolution()
 
-    if resolution == Timeseries.Resolution.BREAKPOINT:
-        proto_resolution.type = type.resources_pb2.Resolution.BREAKPOINT
-    elif resolution == Timeseries.Resolution.MIN15:
-        proto_resolution.type = type.resources_pb2.Resolution.MIN15
-    elif resolution == Timeseries.Resolution.MIN30:
-        proto_resolution.type = type.resources_pb2.Resolution.MIN30
-    elif resolution == Timeseries.Resolution.HOUR:
-        proto_resolution.type = type.resources_pb2.Resolution.HOUR
-    elif resolution == Timeseries.Resolution.DAY:
-        proto_resolution.type = type.resources_pb2.Resolution.DAY
-    elif resolution == Timeseries.Resolution.WEEK:
-        proto_resolution.type = type.resources_pb2.Resolution.WEEK
-    elif resolution == Timeseries.Resolution.MONTH:
-        proto_resolution.type = type.resources_pb2.Resolution.MONTH
-    elif resolution == Timeseries.Resolution.YEAR:
-        proto_resolution.type = type.resources_pb2.Resolution.YEAR
-    else:
-        # FIXME: Should we throw instead?
-        proto_resolution.type = type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
+    proto_resolution.type = RESOLUTIONS[resolution]
 
     return proto_resolution
 
@@ -442,26 +433,7 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    resolution = Timeseries.Resolution.UNSPECIFIED
-
-    if proto_resolution.type == type.resources_pb2.Resolution.BREAKPOINT:
-        resolution = Timeseries.Resolution.BREAKPOINT
-    elif proto_resolution.type == type.resources_pb2.Resolution.MIN15:
-        resolution = Timeseries.Resolution.MIN15
-    elif proto_resolution.type == type.resources_pb2.Resolution.MIN30:
-        resolution = Timeseries.Resolution.MIN30
-    elif proto_resolution.type == type.resources_pb2.Resolution.HOUR:
-        resolution = Timeseries.Resolution.HOUR
-    elif proto_resolution.type == type.resources_pb2.Resolution.DAY:
-        resolution = Timeseries.Resolution.DAY
-    elif proto_resolution.type == type.resources_pb2.Resolution.WEEK:
-        resolution = Timeseries.Resolution.WEEK
-    elif proto_resolution.type == type.resources_pb2.Resolution.MONTH:
-        resolution = Timeseries.Resolution.MONTH
-    elif proto_resolution.type == type.resources_pb2.Resolution.YEAR:
-        resolution = Timeseries.Resolution.YEAR
-
-    return resolution
+    return RESOLUTIONS.inverse(proto_resolution)
 
 
 def _to_proto_utcinterval(
