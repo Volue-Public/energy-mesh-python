@@ -37,7 +37,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           token: ${{ secrets.OAUTH_TOKEN }}
       - name: Run long tests
-        if: ${{ success() && env.NEW_COMMITS > 0 }}
+        if: ${{ success() }} #&& env.NEW_COMMITS > 0 }}
         working-directory: ${{ github.workspace }}
         run: |
           poetry run pytest -m "long"
