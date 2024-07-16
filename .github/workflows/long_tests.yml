@@ -24,11 +24,12 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+        path: 2_fix_duplicated_code
       - name: Check if branch changed
         run: |
           echo "NEW_COMMITS=$(git log --since '1 day ago' --oneline | wc -l)" >> "$env:GITHUB_ENV"
       - name: Install dev environment
-        if: ${{ env.NEW_COMMITS > 0 }}
+        # if: ${{ env.NEW_COMMITS > 0 }}
         uses: ./.github/workflows/install_dev_env
         with:
           python-version: ${{ matrix.python-version }}
