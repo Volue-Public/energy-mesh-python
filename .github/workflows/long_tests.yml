@@ -26,7 +26,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
         with:
-          path: 2_fix_duplicated_code
+          ref: 2_fix_duplicated_code
       # - name: Check if branch changed
       #   run: |
       #     echo "NEW_COMMITS=$(git log --since '1 day ago' --oneline | wc -l)" >> "$env:GITHUB_ENV"
