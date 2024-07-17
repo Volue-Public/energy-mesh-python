@@ -49,6 +49,7 @@ from volue.mesh.proto.model_definition.v1alpha import (
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 from volue.mesh.proto.session.v1alpha import session_pb2_grpc
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
+from volue.mesh.proto.type import resources_pb2
 
 from . import _attribute, _base_connection, _base_session
 
