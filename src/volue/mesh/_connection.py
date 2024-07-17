@@ -100,6 +100,19 @@ class Connection(_base_connection.Connection):
         def _extend_lifetime(self) -> None:
             self.session_service.ExtendSession(_to_proto_guid(self.session_id))
 
+        def _get_unit_of_measurement_id_by_name(
+            self, unit_of_measurement: str
+        ) -> resources_pb2.Guid:
+            list_response = self.model_definition_service.ListUnitsOfMeasurement(
+                model_definition_pb2.ListUnitsOfMeasurementRequest(
+                    session_id=_to_proto_guid(self.session_id)
+                )
+            )
+
+            return super()._get_unit_of_measurement_id_by_name(
+                unit_of_measurement, list_response
+            )
+
         def open(self) -> None:
             reply = self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)
@@ -162,15 +175,8 @@ class Connection(_base_connection.Connection):
             new_unit_of_measurement_id = None
 
             if new_unit_of_measurement is not None:
-                list_response = self.model_definition_service.ListUnitsOfMeasurement(
-                    model_definition_pb2.ListUnitsOfMeasurementRequest(
-                        session_id=_to_proto_guid(self.session_id)
-                    )
-                )
-                new_unit_of_measurement_id = (
-                    super()._get_unit_of_measurement_id_by_name(
-                        new_unit_of_measurement, list_response
-                    )
+                new_unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
+                    new_unit_of_measurement
                 )
 
             request = super()._prepare_update_timeseries_resource_request(
@@ -186,18 +192,8 @@ class Connection(_base_connection.Connection):
             resolution: Timeseries.Resolution,
             unit_of_measurement: str,
         ) -> TimeseriesResource:
-            # TODO: Move this to a single function which just takes a string and returns the unit
-            # of measurement ID.
-            unit_of_measurement_id = None
-
-            list_response = self.model_definition_service.ListUnitsOfMeasurement(
-                model_definition_pb2.ListUnitsOfMeasurementRequest(
-                    session_id=_to_proto_guid(self.session_id)
-                )
-            )
-
-            unit_of_measurement_id = super()._get_unit_of_measurement_id_by_name(
-                unit_of_measurement, list_response
+            unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
+                new_unit_of_measurement
             )
 
             request = time_series_pb2.CreatePhysicalTimeseriesRequest(
