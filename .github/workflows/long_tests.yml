@@ -7,7 +7,7 @@ name: Long tests
 on:
   push:
     branches:
-      - 2_fix_duplicated_code
+      - 3_fix_unit_of_measurement
 
 
   workflow_dispatch:
@@ -26,7 +26,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
         with:
-          ref: 2_fix_duplicated_code
+          ref: 3_fix_unit_of_measurement
       # - name: Check if branch changed
       #   run: |
       #     echo "NEW_COMMITS=$(git log --since '1 day ago' --oneline | wc -l)" >> "$env:GITHUB_ENV"
