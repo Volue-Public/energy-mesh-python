@@ -28,9 +28,9 @@ Best practices
 .. note::
    Starting from Mesh Python SDK 1.9, in all examples the connection to Mesh
    server is established using :meth:`volue.mesh.Connection.Session.insecure`.
-   To use different connection type, e.g.: with TLS, the user has to change the
-   example script. In case of providing second argument, with PEM-encoded TLS
-   certificate, it will be discarded if insecure connection is used.
+   To use a different connection type, e.g.: with TLS, the user has to change
+   the example script. The PEM-encoded TLS certificate passed as a second
+   argument will be discarded if an insecure connection is used.
 
 Quickstart
 *****************

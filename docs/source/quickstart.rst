@@ -29,7 +29,7 @@ Lets connect to the server, get its version and create a session for getting dat
 Name this file quickstart.py.
 
 .. warning::
-   It assumes Volue Mesh server is running locally with gRPC enabled on default port *50051* and TLS disabled for gRPC.
+   It assumes Volue Mesh server is running locally with gRPC enabled on default port *50051* and TLS is disabled for gRPC.
    If you are using a remote server or a non-default port for gRPC communication please change the *address* and *port* variables.
    In case of problems or questions regarding Mesh server configuration please contact Volue consultant.
 
