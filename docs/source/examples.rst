@@ -21,7 +21,16 @@ Best practices
 
    Second argument - path to PEM-encoded TLS certificate used by Mesh server.
    Skip it if the Mesh server is configured to accept insecure gRPC connections.
+   If provided, then make sure that instead of :meth:`volue.mesh.Connection.Session.insecure`,
+   the :meth:`volue.mesh.Connection.Session.with_tls` is used to establish
+   connection to Mesh.
 
+.. note::
+   Starting from Mesh Python SDK 1.9, in all examples the connection to Mesh
+   server is established using :meth:`volue.mesh.Connection.Session.insecure`.
+   To use different connection type, e.g.: with TLS, the user has to change the
+   example script. In case of providing second argument, with PEM-encoded TLS
+   certificate, it will be discarded if insecure connection is used.
 
 Quickstart
 *****************
