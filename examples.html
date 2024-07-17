@@ -216,9 +216,20 @@ together with helpers.py and paste it to your own workspace.</p></li>
 <p>First argument - Mesh server address with port. Default value is
 localhost:50051.</p>
 <p>Second argument - path to PEM-encoded TLS certificate used by Mesh server.
-Skip it if the Mesh server is configured to accept insecure gRPC connections.</p>
+Skip it if the Mesh server is configured to accept insecure gRPC connections.
+If provided, then make sure that instead of <code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.insecure()</span></code>,
+the <code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_tls()</span></code> is used to establish
+connection to Mesh.</p>
 </li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Starting from Mesh Python SDK 1.9, in all examples the connection to Mesh
+server is established using <code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.insecure()</span></code>.
+To use a different connection type, e.g.: with TLS, the user has to change
+the example script. The PEM-encoded TLS certificate passed as a second
+argument will be discarded if an insecure connection is used.</p>
+</div>
 </div>
 <div class="section" id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this heading">¶</a></h2>

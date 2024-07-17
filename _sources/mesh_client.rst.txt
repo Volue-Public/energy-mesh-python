@@ -51,18 +51,19 @@ is in `run_simulation.py`.
     gRPC outbound message size is not limited by default.
 
 This might be useful when e.g.: running long simulations with
-`return_datasets` enabled. In such cases the dataset's size might exceed the
-4MB limit and a `RESOURCE_EXHAUSTED` status code would be returned.
+`return_datasets` enabled. In such cases the dataset size might exceed the 4MB
+limit and a `RESOURCE_EXHAUSTED` status code would be returned.
 
 However, in other cases like reading time series data, we suggest reading the
-data in chunks. E.g.: instead of reading 50 years of hourly time series data,
-the user should request few read operations, but with shorter read intervals.
+data in chunks. E.g.: instead of reading 50 years of hourly time series data
+in a single request, the user should request several read operations with
+shorter read intervals.
 
 The same is true for writing data, like time series data. Here however, it is
 not a suggestion, but a must. Mesh server gRPC inbound message size is not
 configurable and therefore it is always equal to 4MB. If gRPC client, like Mesh
-Python SDK, sends too big message then the request will be discarded. To avoid
-this clients must send data in chunks.
+Python SDK, sends a message which is too large, then the request will be
+discarded. To avoid this, clients must send data in chunks.
 
 .. note::
     Single time series point occupies 20 bytes. To avoid exceeding the 4MB
