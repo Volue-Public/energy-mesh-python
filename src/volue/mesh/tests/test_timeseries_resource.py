@@ -2,12 +2,17 @@
 Tests for volue.mesh.TimeseriesResource
 """
 
+import random
+import string
 import sys
 
 import grpc
 import pytest
 
 from volue.mesh import Timeseries, TimeseriesResource
+
+
+INVALID_UNIT_OF_MEASUREMENT_NAME = "no_such_unit"
 
 
 def get_physical_timeseries():
@@ -109,7 +114,7 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
     """
 
     timeseries_key = get_physical_timeseries().timeseries_key
-    non_existing_unit_of_measurement = "no_such_unit"
+    non_existing_unit_of_measurement = INVALID_UNIT_OF_MEASUREMENT_NAME
 
     original_unit_of_measurement = session.get_timeseries_resource_info(
         timeseries_key
@@ -122,6 +127,93 @@ def test_update_timeseries_resource_with_non_existing_unit_of_measurement(sessio
 
     timeseries_resource = session.get_timeseries_resource_info(timeseries_key)
     assert timeseries_resource.unit_of_measurement == original_unit_of_measurement
+
+
+# pytest -k TestCreatePhysicalTimeseries
+@pytest.mark.database
+class TestCreatePhysicalTimeseries:
+    class TSInitData:
+        def __init__(self):
+            random_chars = 10
+
+            # Mesh will throw an exception if we try to create a time series with an existing path
+            # and name. Add a random suffix to the time series name to avoid this.
+            name_suffix = "".join(
+                random.choices(string.ascii_uppercase + string.digits, k=random_chars)
+            )
+
+            self.path = "/Path/To/Test/Timeseries/"
+            self.name = "Test_Timeseries_" + name_suffix
+            self.curve_type = Timeseries.Curve.PIECEWISELINEAR
+            self.resolution = Timeseries.Resolution.HOUR
+            self.unit_of_measurement = "Unit1"
+
+    @pytest.fixture
+    def ts_init_data(self):
+        return TestCreatePhysicalTimeseries.TSInitData()
+
+    @staticmethod
+    def _verify_timeseries(timeseries: TimeseriesResource, expected_ts_data):
+        # Newly created time series have "Resource" prepended to their paths, and the time series
+        # name appended to it.
+        expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
+
+        assert timeseries.path == expected_path
+        assert timeseries.name == expected_ts_data.name
+        assert timeseries.curve_type == expected_ts_data.curve_type
+        assert timeseries.resolution == expected_ts_data.resolution
+        assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
+
+    def test_create_physical_timeseries(self, session, ts_init_data):
+        """Check that we can create a new physical time series."""
+        timeseries = session.create_physical_timeseries(
+            path=ts_init_data.path,
+            name=ts_init_data.name,
+            curve_type=ts_init_data.curve_type,
+            resolution=ts_init_data.resolution,
+            unit_of_measurement=ts_init_data.unit_of_measurement,
+        )
+
+        session.commit()
+
+        self._verify_timeseries(timeseries, ts_init_data)
+
+        # TODO: We should also check that the time series actually exists in the database. Normally
+        # we'd be able to do this by using GetTimeseriesResource; however, that function currently
+        # requires us to know the time series' key, which CreatePhysicalTimeseries cannot return
+        # since it's generated at the commit stage.
+
+    @pytest.mark.asyncio
+    async def test_create_physical_timeseries_async(self, async_session, ts_init_data):
+        """Check that we can create a new physical time series."""
+        timeseries = await async_session.create_physical_timeseries(
+            path=ts_init_data.path,
+            name=ts_init_data.name,
+            curve_type=ts_init_data.curve_type,
+            resolution=ts_init_data.resolution,
+            unit_of_measurement=ts_init_data.unit_of_measurement,
+        )
+
+        await async_session.commit()
+
+        self._verify_timeseries(timeseries, ts_init_data)
+
+        # TODO: We should also check that the time series actually exists in the database. Normally
+        # we'd be able to do this by using GetTimeseriesResource; however, that function currently
+        # requires us to know the time series' key, which CreatePhysicalTimeseries cannot return
+        # since it's generated at the commit stage.
+
+    def test_create_timeseries_with_non_existing_unit_of_measurement(
+        self, session, ts_init_data
+    ):
+        with pytest.raises(ValueError, match="invalid unit of measurement provided"):
+            timeseries = session.create_physical_timeseries(
+                path=ts_init_data.path,
+                name=ts_init_data.name,
+                curve_type=ts_init_data.curve_type,
+                resolution=ts_init_data.resolution,
+                unit_of_measurement=INVALID_UNIT_OF_MEASUREMENT_NAME,
+            )
 
 
 @pytest.mark.asyncio

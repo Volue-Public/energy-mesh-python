@@ -76,6 +76,34 @@ service TimeseriesService {
   // In case mapping is enabled, the root nodes for source and target may be
   // the same.
   rpc CopyTimeseriesBetweenObjects(CopyTimeseriesBetweenObjectsRequest) returns (CopyTimeseriesBetweenObjectsResponse) {}
+
+  // Create a new (empty) physical time series resource. Returns the newly
+  // created resource.
+  //
+  // Any missing components of the requested time series path will be created in
+  // the catalog as well. For example, if we set the CreatePhysicalTimeseriesRequest's
+  // 'path' field to "/Path/To/Timeseries/", and its 'name' field to
+  // "Test_Timeseries", the entire Path/To/Timeseries/Test_Timeseries sequence
+  //  of catalog entries will be created if it doesn't exist already.
+  //
+  // It is not mandatory that the path mirrors the topology of the Mesh model.
+  // The path *must* begin and end with forward slashes.
+  //
+  // Note that the 'timeseries_key' field on the returned TimeseriesResource
+  // will *not* have a valid value which can be used in other APIs. This is
+  // because the real time series key values are generated afterwards, at the
+  // commit stage.
+  //
+  // Note also that the 'path' field on the returned TimeseriesResource won't
+  // have the same as the value as CreatePhysicalTimeseriesRequest's 'path';
+  // namely, the returned 'path' will have a "Resource/" prefix, and will be
+  // suffixed with the contents of the 'name' field from this request. That is:
+  //
+  //     response.path == "Resource/" + request.path + "/" + request.name
+  //
+  // Continuing with the previous example, in this case the 'path' field in the
+  // response will be "Resource/Path/To/Timeseries/Test_Timeseries".
+  rpc CreatePhysicalTimeseries(CreatePhysicalTimeseriesRequest) returns (TimeseriesResource) {}
 }
 
 message ReadTimeseriesRequest {
@@ -127,7 +155,7 @@ message GetTimeseriesResourceRequest {
 message TimeseriesResource {
   // Unique identifier for physical or virtual time series.
   // Set to 0 if it is a local session time series.
-  // This is the only field that could be used for updating 
+  // This is the only field that could be used for updating
   // time series attribute with new time series resource.
   int64 timeseries_key = 1;
 
@@ -248,7 +276,7 @@ message CopyTimeseriesBetweenObjectsRequest {
   // If interval is not supplied, the request will do a tentative operation
   // which logs what time series will be copied if a valid interval is given.
   volue.mesh.grpc.type.UtcInterval interval = 2;
-  
+
   // Identify the root object of the Source hierarchy (path or guid)
   volue.mesh.grpc.type.MeshId source = 3;
   // If scenario name is specified, the source series must be bound to
@@ -282,4 +310,21 @@ message CopyTimeseriesBetweenObjectsResponse {
   // The number of series that will be copied if input interval is defined.
   // When this value is > 0 the operations were successful.
   int64 match_series_count = 3;
+}
+
+// Request for creating new physical timeseries resources. All the fields are
+// mandatory.
+// See the documentation of the CreatePhysicalTimeseries RPC for more info.
+message CreatePhysicalTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  string path = 2;
+
+  string name = 3;
+
+  volue.mesh.grpc.type.Curve curve_type = 4;
+
+  volue.mesh.grpc.type.Resolution resolution = 5;
+
+  volue.mesh.grpc.type.Guid unit_of_measurement_id = 6;
 }

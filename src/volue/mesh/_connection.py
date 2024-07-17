@@ -30,7 +30,9 @@ from volue.mesh._common import (
     RatingCurveVersion,
     XySet,
     _from_proto_guid,
+    _to_proto_curve_type,
     _to_proto_guid,
+    _to_proto_resolution,
     _to_proto_timeseries,
 )
 from volue.mesh.calc.forecast import ForecastFunctions
@@ -175,6 +177,41 @@ class Connection(_base_connection.Connection):
                 timeseries_key, new_curve_type, new_unit_of_measurement_id
             )
             self.time_series_service.UpdateTimeseriesResource(request)
+
+        def create_physical_timeseries(
+            self,
+            path: str,
+            name: str,
+            curve_type: Timeseries.Curve,
+            resolution: Timeseries.Resolution,
+            unit_of_measurement: str,
+        ) -> TimeseriesResource:
+            # TODO: Move this to a single function which just takes a string and returns the unit
+            # of measurement ID.
+            unit_of_measurement_id = None
+
+            list_response = self.model_definition_service.ListUnitsOfMeasurement(
+                model_definition_pb2.ListUnitsOfMeasurementRequest(
+                    session_id=_to_proto_guid(self.session_id)
+                )
+            )
+
+            unit_of_measurement_id = super()._get_unit_of_measurement_id_by_name(
+                unit_of_measurement, list_response
+            )
+
+            request = time_series_pb2.CreatePhysicalTimeseriesRequest(
+                session_id=_to_proto_guid(self.session_id),
+                path=path,
+                name=name,
+                curve_type=_to_proto_curve_type(curve_type),
+                resolution=_to_proto_resolution(resolution),
+                unit_of_measurement_id=unit_of_measurement_id,
+            )
+
+            response = self.time_series_service.CreatePhysicalTimeseries(request)
+
+            return TimeseriesResource._from_proto_timeseries_resource(response)
 
         def get_attribute(
             self,
