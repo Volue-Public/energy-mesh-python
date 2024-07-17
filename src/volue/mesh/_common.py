@@ -393,7 +393,7 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     Args:
         proto_curve: The protobuf curve to convert.
     """
-    return CURVE_TYPES.inverse(proto_curve)
+    return CURVE_TYPES.inverse[proto_curve]
 
 
 RESOLUTIONS = {
@@ -468,7 +468,7 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    return RESOLUTIONS.inverse(proto_resolution)
+    return RESOLUTIONS.inverse[proto_resolution]
 
 
 def _to_proto_utcinterval(
