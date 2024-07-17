@@ -203,7 +203,9 @@
     <span class="n">RatingCurveVersion</span><span class="p">,</span>
     <span class="n">XySet</span><span class="p">,</span>
     <span class="n">_from_proto_guid</span><span class="p">,</span>
+    <span class="n">_to_proto_curve_type</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
+    <span class="n">_to_proto_resolution</span><span class="p">,</span>
     <span class="n">_to_proto_timeseries</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">volue.mesh.calc.forecast</span> <span class="kn">import</span> <span class="n">ForecastFunctions</span>
@@ -348,6 +350,41 @@
                 <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">new_curve_type</span><span class="p">,</span> <span class="n">new_unit_of_measurement_id</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span><span class="o">.</span><span class="n">UpdateTimeseriesResource</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Connection.Session.create_physical_timeseries"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.create_physical_timeseries">[docs]</a>        <span class="k">def</span> <span class="nf">create_physical_timeseries</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">curve_type</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+            <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
+            <span class="c1"># TODO: Move this to a single function which just takes a string and returns the unit</span>
+            <span class="c1"># of measurement ID.</span>
+            <span class="n">unit_of_measurement_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="n">list_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span><span class="o">.</span><span class="n">ListUnitsOfMeasurement</span><span class="p">(</span>
+                <span class="n">model_definition_pb2</span><span class="o">.</span><span class="n">ListUnitsOfMeasurementRequest</span><span class="p">(</span>
+                    <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">unit_of_measurement_id</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_unit_of_measurement_id_by_name</span><span class="p">(</span>
+                <span class="n">unit_of_measurement</span><span class="p">,</span> <span class="n">list_response</span>
+            <span class="p">)</span>
+
+            <span class="n">request</span> <span class="o">=</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">CreatePhysicalTimeseriesRequest</span><span class="p">(</span>
+                <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">curve_type</span><span class="o">=</span><span class="n">_to_proto_curve_type</span><span class="p">(</span><span class="n">curve_type</span><span class="p">),</span>
+                <span class="n">resolution</span><span class="o">=</span><span class="n">_to_proto_resolution</span><span class="p">(</span><span class="n">resolution</span><span class="p">),</span>
+                <span class="n">unit_of_measurement_id</span><span class="o">=</span><span class="n">unit_of_measurement_id</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span><span class="o">.</span><span class="n">CreatePhysicalTimeseries</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">TimeseriesResource</span><span class="o">.</span><span class="n">_from_proto_timeseries_resource</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.get_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_attribute">[docs]</a>        <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

@@ -571,6 +571,41 @@
     <span class="k">return</span> <span class="n">curve</span>
 
 
+<span class="c1"># FIXME: Don&#39;t have such duplicated functions.</span>
+<span class="k">def</span> <span class="nf">_to_proto_resolution</span><span class="p">(</span>
+    <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts from Timeseries.Resolution type to protobuf resolution type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        resolution: The resolution to convert.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">proto_resolution</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">BREAKPOINT</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">BREAKPOINT</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN15</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN30</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MIN30</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">WEEK</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">WEEK</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MONTH</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">MONTH</span>
+    <span class="k">elif</span> <span class="n">resolution</span> <span class="o">==</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">YEAR</span><span class="p">:</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">YEAR</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># FIXME: Should we throw instead?</span>
+        <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">RESOLUTION_UNSPECIFIED</span>
+
+    <span class="k">return</span> <span class="n">proto_resolution</span>
+
+
 <span class="k">def</span> <span class="nf">_from_proto_resolution</span><span class="p">(</span>
     <span class="n">proto_resolution</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
