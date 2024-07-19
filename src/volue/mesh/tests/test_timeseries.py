@@ -604,7 +604,7 @@ def test_write_timeseries_points_to_calculation_timeseries(session):
         table=new_table, full_name=TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH
     )
 
-    with pytest.raises(grpc.RpcError, match="Time series not found"):
+    with pytest.raises(grpc.RpcError, match="physical time series to write not found"):
         session.write_timeseries_points(timeseries)
 
 
