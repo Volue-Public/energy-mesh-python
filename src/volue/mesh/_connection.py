@@ -194,7 +194,7 @@ class Connection(_base_connection.Connection):
             unit_of_measurement: str,
         ) -> TimeseriesResource:
             unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
-                new_unit_of_measurement
+                unit_of_measurement
             )
 
             request = time_series_pb2.CreatePhysicalTimeseriesRequest(
