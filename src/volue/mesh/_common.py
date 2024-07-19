@@ -393,10 +393,10 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     Args:
         proto_curve: The protobuf curve to convert.
     """
-    return CURVE_TYPES.inverse[proto_curve]
+    return CURVE_TYPES.inverse[proto_curve.type]
 
 
-RESOLUTIONS = {
+RESOLUTIONS = bidict({
     Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
     Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
     Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
@@ -405,7 +405,7 @@ RESOLUTIONS = {
     Timeseries.Resolution.WEEK: type.resources_pb2.Resolution.WEEK,
     Timeseries.Resolution.MONTH: type.resources_pb2.Resolution.MONTH,
     Timeseries.Resolution.YEAR: type.resources_pb2.Resolution.YEAR,
-}
+})
 
 
 def _to_proto_resolution(
@@ -424,41 +424,6 @@ def _to_proto_resolution(
     return proto_resolution
 
 
-# FIXME: Don't have such duplicated functions.
-def _to_proto_resolution(
-    resolution: Timeseries.Resolution,
-) -> type.resources_pb2.Resolution:
-    """
-    Converts from Timeseries.Resolution type to protobuf resolution type.
-
-    Args:
-        resolution: The resolution to convert.
-    """
-    proto_resolution = type.resources_pb2.Resolution()
-
-    if resolution == Timeseries.Resolution.BREAKPOINT:
-        proto_resolution.type = type.resources_pb2.Resolution.BREAKPOINT
-    elif resolution == Timeseries.Resolution.MIN15:
-        proto_resolution.type = type.resources_pb2.Resolution.MIN15
-    elif resolution == Timeseries.Resolution.MIN30:
-        proto_resolution.type = type.resources_pb2.Resolution.MIN30
-    elif resolution == Timeseries.Resolution.HOUR:
-        proto_resolution.type = type.resources_pb2.Resolution.HOUR
-    elif resolution == Timeseries.Resolution.DAY:
-        proto_resolution.type = type.resources_pb2.Resolution.DAY
-    elif resolution == Timeseries.Resolution.WEEK:
-        proto_resolution.type = type.resources_pb2.Resolution.WEEK
-    elif resolution == Timeseries.Resolution.MONTH:
-        proto_resolution.type = type.resources_pb2.Resolution.MONTH
-    elif resolution == Timeseries.Resolution.YEAR:
-        proto_resolution.type = type.resources_pb2.Resolution.YEAR
-    else:
-        # FIXME: Should we throw instead?
-        proto_resolution.type = type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
-
-    return proto_resolution
-
-
 def _from_proto_resolution(
     proto_resolution: type.resources_pb2.Resolution,
 ) -> Timeseries.Resolution:
@@ -468,7 +433,7 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    return RESOLUTIONS.inverse[proto_resolution]
+    return RESOLUTIONS.inverse[proto_resolution.type]
 
 
 def _to_proto_utcinterval(
