@@ -396,16 +396,18 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     return CURVE_TYPES.inverse[proto_curve.type]
 
 
-RESOLUTIONS = bidict({
-    Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
-    Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
-    Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
-    Timeseries.Resolution.HOUR: type.resources_pb2.Resolution.HOUR,
-    Timeseries.Resolution.DAY: type.resources_pb2.Resolution.DAY,
-    Timeseries.Resolution.WEEK: type.resources_pb2.Resolution.WEEK,
-    Timeseries.Resolution.MONTH: type.resources_pb2.Resolution.MONTH,
-    Timeseries.Resolution.YEAR: type.resources_pb2.Resolution.YEAR,
-})
+RESOLUTIONS = bidict(
+    {
+        Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
+        Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
+        Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
+        Timeseries.Resolution.HOUR: type.resources_pb2.Resolution.HOUR,
+        Timeseries.Resolution.DAY: type.resources_pb2.Resolution.DAY,
+        Timeseries.Resolution.WEEK: type.resources_pb2.Resolution.WEEK,
+        Timeseries.Resolution.MONTH: type.resources_pb2.Resolution.MONTH,
+        Timeseries.Resolution.YEAR: type.resources_pb2.Resolution.YEAR,
+    }
+)
 
 
 def _to_proto_resolution(
