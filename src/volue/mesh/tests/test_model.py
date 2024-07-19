@@ -1,25 +1,20 @@
-"""
-Testing model, adding, removing, modyfying objects
-"""
 
-import asyncio
+#Testing model, adding, removing, modyfying objects.
+
 import sys
-from time import sleep
-
 import grpc
 import pytest
 
-# After this timeout an inactive session must be closed by the server.
-# gRPC session timeout + ping interval + minimal margin:
-# 5 mins + 1 min + 1 sec
-SESSION_LIFETIME_EXTENSION_TESTS_SLEEP_VALUE_IN_SECS = 361
-
+TESTPLANT = "TestPlant"
+TESTPLANT2 = "TestPlant2"
+TESTPLANT_PARENT = "TestPlantParent"
+TESTPLANT_CHILD = "TestPlantChild"
 
 @pytest.mark.database
-def test_two_sessions_adding_same_object(connection):
+def test_two_sessions_adding_the_same_object(connection):
     
     root_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
-    root_object_ownership_relation_attribute = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
+    root_object_ownership_relation_attribute = f"{root_object_path}.ThermalPowerToPlantRef"
     
     session1 = connection.create_session()
     session1.open()
@@ -27,33 +22,29 @@ def test_two_sessions_adding_same_object(connection):
     session2 = connection.create_session()
     session2.open()
    
-    session1.create_object(root_object_ownership_relation_attribute,"TestPlant")
-    session2.create_object(root_object_ownership_relation_attribute,"TestPlant")
+    new_object1 = session1.create_object(root_object_ownership_relation_attribute,TESTPLANT)
+    new_object2 = session2.create_object(root_object_ownership_relation_attribute,TESTPLANT)
     
     session1.commit()
 
-    new_object_path = f"{root_object_path}/{'TestPlant'}"
-    root_object_full_info = session1.get_object(new_object_path, full_attribute_info=True)
-    assert root_object_full_info.name == 'TestPlant'
+    assert new_object1.name == 'TestPlant'
 
     # expecting error
     with pytest.raises(grpc.RpcError, match="session "+str(session2.session_id)+" is corrupt due to changes done by some other session, rollback your changes to fix your session"):
         session2.commit()
 
     #clean up
-    new_object_id = session1.get_object(new_object_path).id
-    session1.delete_object(new_object_id)
+    session1.delete_object(new_object1.id)
     session1.commit()
 
     session1.close()
     session2.close()
-    
-    
+        
 @pytest.mark.database
-def test_two_sessions_adding_same_object2(connection):
-     
+def test_two_sessions_adding_the_same_object_after_commit(connection):
+    
     root_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
-    root_object_ownership_relation_attribute = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
+    root_object_ownership_relation_attribute = f"{root_object_path}.ThermalPowerToPlantRef"
     
     session1 = connection.create_session()
     session1.open()
@@ -61,111 +52,90 @@ def test_two_sessions_adding_same_object2(connection):
     session2 = connection.create_session()
     session2.open()
    
-    session1.create_object(root_object_ownership_relation_attribute,"TestPlant2")
+    new_object1 = session1.create_object(root_object_ownership_relation_attribute,TESTPLANT)
     session1.commit()
     
-    new_object_path = f"{root_object_path}/{'TestPlant2'}"
-    root_object_full_info = session1.get_object(new_object_path, full_attribute_info=True)
-    assert root_object_full_info.name == 'TestPlant2'
+    assert new_object1.name == 'TestPlant'
     
     # expecting error
-    with pytest.raises(grpc.RpcError, match="An element named TestPlant2 already exists in the ThermalPowerToPlantRef element array"):
-        session2.create_object(root_object_ownership_relation_attribute,"TestPlant2")
-    
+    with pytest.raises(grpc.RpcError, match="An element named "+TESTPLANT+" already exists in the ThermalPowerToPlantRef element array"):
+        session2.create_object(root_object_ownership_relation_attribute,TESTPLANT)
+  
     #session2.commit() is not needed because session2.create should fail
 
     #clean up
-    new_object_id = session2.get_object(new_object_path).id
-    session1.delete_object(new_object_id)
+    session1.delete_object(new_object1.id)
     session1.commit()
 
     session1.close()
     session2.close() 
     
-   
 @pytest.mark.database
 def test_two_sessions_adding_different_objects(connection):
     
     root_object_path = "Model/SimpleThermalTestModel/ThermalComponent"
-    root_object_ownership_relation_attribute = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
+    root_object_ownership_relation_attribute = f"{root_object_path}.ThermalPowerToPlantRef"
 
     with connection.create_session() as session1:
-            session1.create_object(root_object_ownership_relation_attribute,"TestPlant_1")
+            new_object1 = session1.create_object(root_object_ownership_relation_attribute,TESTPLANT)
             
             # commit
             session1.commit()
 
             # check that object was created
-            new_object_path1 = f"{root_object_path}/{'TestPlant_1'}"
-            root_object_full_info = session1.get_object(new_object_path1, full_attribute_info=True)
-            assert root_object_full_info.name == 'TestPlant_1'
+            assert new_object1.name == 'TestPlant'
 
     with connection.create_session() as session2:
         
-            session2.create_object(root_object_ownership_relation_attribute,"TestPlant_2")
+            new_object2 = session2.create_object(root_object_ownership_relation_attribute,TESTPLANT2)
           
             # commit
             session2.commit()
 
             # check that object was created
-            new_object_path2 = f"{root_object_path}/{'TestPlant_2'}"
-            root_object_full_info = session2.get_object(new_object_path2, full_attribute_info=True)
-            assert root_object_full_info.name == 'TestPlant_2'
+            assert new_object2.name == 'TestPlant2'
 
     #clean up
     with connection.create_session() as session3:
-            new_object_path1 = f"{root_object_path}/{'TestPlant_1'}"  
-            new_object_path2 = f"{root_object_path}/{'TestPlant_2'}"
-            new_object_id1 = session3.get_object(new_object_path1).id
-            session3.delete_object(new_object_id1)
-            new_object_id2 = session3.get_object(new_object_path2).id
-            session3.delete_object(new_object_id2)
+            session3.delete_object(new_object1.id)
+            session3.delete_object(new_object2.id)
             session3.commit()
-
  
 @pytest.mark.database
 def test_two_sessions_adding_child_before_removing_parent(connection):
-      
+    
     root_object_ownership_relation_attribute_parent = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-    root_object_ownership_relation_attribute_child = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/TestPlantParent.SimpleOwnershipAtt"
+    root_object_ownership_relation_attribute_child = f"{root_object_ownership_relation_attribute_parent}/TestPlantParent.SimpleOwnershipAtt"
     
     with connection.create_session() as session1:
     
             #first create the parent object
-            session1.create_object(root_object_ownership_relation_attribute_parent,"TestPlantParent")
+            new_parent = session1.create_object(root_object_ownership_relation_attribute_parent,TESTPLANT_PARENT)
             session1.commit()
             # create child object
-            session1.create_object(root_object_ownership_relation_attribute_child,"TestPlantChild")
+            new_child = session1.create_object(root_object_ownership_relation_attribute_child,TESTPLANT_CHILD)
             session1.commit()
             
             # check that the objects are created
-            parent_object_path = f"{root_object_ownership_relation_attribute_parent}/{'TestPlantParent'}"
-            parent_object_full_info = session1.get_object(parent_object_path, full_attribute_info=True)
-            assert parent_object_full_info.name == 'TestPlantParent'
-            
-            child_object_path = f"{root_object_ownership_relation_attribute_child}/{'TestPlantChild'}"
-            child_object_full_info = session1.get_object(child_object_path, full_attribute_info=True)
-            assert child_object_full_info.name == 'TestPlantChild'
+            assert new_parent.name == 'TestPlantParent'
+            assert new_child.name == 'TestPlantChild'
 
     with connection.create_session() as session2:
-        
-            parent_object_path = f"{root_object_ownership_relation_attribute_parent}/{'TestPlantParent'}"
-    
-            parent_object_id = session2.get_object(parent_object_path).id
-            session2.delete_object(parent_object_id)
+            
+            session2.delete_object(new_parent.id)
+            
             # commit
             session2.commit()
 
             # check that parent object is deleted
             with pytest.raises(grpc.RpcError, match="Object not found"):
-                parent_object_full_info = session2.get_object(parent_object_path, full_attribute_info=True)
-                
-        
+                session2.get_object(new_parent.id)
+                        
 @pytest.mark.database
 def test_two_sessions_adding_child_after_removing_parent(connection):
         
     root_object_ownership_relation_attribute_parent = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-    root_object_ownership_relation_attribute_child = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/TestPlantParent.SimpleOwnershipAtt"
+    root_object_ownership_relation_attribute_child = f"{root_object_ownership_relation_attribute_parent}/TestPlantParent.SimpleOwnershipAtt"
         
     session1 = connection.create_session()
     session1.open()
@@ -174,16 +144,13 @@ def test_two_sessions_adding_child_after_removing_parent(connection):
     session2.open()
    
     #first create the parent object
-    session1.create_object(root_object_ownership_relation_attribute_parent,"TestPlantParent")
+    new_parent = session1.create_object(root_object_ownership_relation_attribute_parent,TESTPLANT_PARENT)
     session1.commit()
+    
     # create child object
-    session1.create_object(root_object_ownership_relation_attribute_child,"TestPlantChild")
+    new_child = session1.create_object(root_object_ownership_relation_attribute_child,TESTPLANT_CHILD)
     
-    #delete parent object    
-    parent_object_path = f"{root_object_ownership_relation_attribute_parent}/{'TestPlantParent'}"
-    
-    parent_object_id = session2.get_object(parent_object_path).id
-    session2.delete_object(parent_object_id)
+    session2.delete_object(new_parent.id)
     
     # commit the deletion of parent
     session2.commit()
@@ -194,13 +161,12 @@ def test_two_sessions_adding_child_after_removing_parent(connection):
    
     session1.close()
     session2.close()
-    
-        
+            
 @pytest.mark.database
-def test_two_sessions_adding_child_after_removing_parent2(connection):
+def test_two_sessions_adding_child_after_removing_parent_and_commit(connection):
      
     root_object_ownership_relation_attribute_parent = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-    root_object_ownership_relation_attribute_child = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/TestPlantParent.SimpleOwnershipAtt"
+    root_object_ownership_relation_attribute_child = f"{root_object_ownership_relation_attribute_parent}/TestPlantParent.SimpleOwnershipAtt"
         
     session1 = connection.create_session()
     session1.open()
@@ -208,36 +174,31 @@ def test_two_sessions_adding_child_after_removing_parent2(connection):
     session2 = connection.create_session()
     session2.open()
    
-    #first create the parent objectd
-    session1.create_object(root_object_ownership_relation_attribute_parent,"TestPlantParent")
+    #first create the parent object
+    new_parent = session1.create_object(root_object_ownership_relation_attribute_parent,TESTPLANT_PARENT)
     session1.commit()
     
     #delete parent object    
-    parent_object_path = f"{root_object_ownership_relation_attribute_parent}/{'TestPlantParent'}"
+    session2.delete_object(new_parent.id)
     
-    parent_object_id = session2.get_object(parent_object_path).id
-    session2.delete_object(parent_object_id)
-    
-    # commit the deletion of parent
+    #commit the deletion of parent
     session2.commit()
     
-    # commit on creation of child should fail
+    #creation of child should fail
     
     with pytest.raises(grpc.RpcError, match="Owner of the object not found"):
-        session1.create_object(root_object_ownership_relation_attribute_child,"TestPlantChild")
+        session1.create_object(root_object_ownership_relation_attribute_child,TESTPLANT_CHILD)
     
     #commit on session1 is not needed because create should fail
     
     session1.close()
     session2.close()
-
     
 @pytest.mark.database
-def test_two_sessions_removing_same_object(connection):
+def test_two_sessions_removing_same_object_after_commit(connection):
     
     root_object_ownership_relation_attribute = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-    #root_object_ownership_relation_attribute_child = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/TestPlantParent.SimpleOwnershipAtt"
-        
+         
     session1 = connection.create_session()
     session1.open()
   
@@ -245,33 +206,28 @@ def test_two_sessions_removing_same_object(connection):
     session2.open()
    
     #first create the object to be deleted
-    session1.create_object(root_object_ownership_relation_attribute,"TestPlantToRemove")
+    new_object = session1.create_object(root_object_ownership_relation_attribute,TESTPLANT)
     session1.commit()
     
     #deleting the object in session1
-    new_object_path = f"{root_object_ownership_relation_attribute}/{'TestPlantToRemove'}"
-    
-    new_object_id_session1 = session1.get_object(new_object_path).id
-    session1.delete_object(new_object_id_session1)
+    session1.delete_object(new_object.id)
     session1.commit()
     
     #deleting the same object in session2 should fail
-    
     with pytest.raises(grpc.RpcError, match="Object not found"):
-        new_object_id_session2 = session2.get_object(new_object_path).id
-        session2.delete_object(new_object_id_session2)
+        session2.delete_object(new_object.id)
     
-    #commit on session2 is not needed because create should fail
-    
+    #check that the new object is deleted
+    with pytest.raises(grpc.RpcError, match="Object not found"):
+        session2.get_object(new_object.id)
+
     session1.close()
     session2.close()
         
-    
 @pytest.mark.database
-def test_two_sessions_removing_same_object2(connection):
+def test_two_sessions_removing_same_object(connection):
      
     root_object_ownership_relation_attribute = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-    #root_object_ownership_relation_attribute_child = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/TestPlantParent.SimpleOwnershipAtt"
         
     session1 = connection.create_session()
     session1.open()
@@ -280,29 +236,22 @@ def test_two_sessions_removing_same_object2(connection):
     session2.open()
    
     #first create the object to be deleted
-    session1.create_object(root_object_ownership_relation_attribute,"TestPlantToRemove")
+    new_object = session1.create_object(root_object_ownership_relation_attribute,TESTPLANT)
     session1.commit()
+
+    session1.delete_object(new_object.id)
     
-    #deleting the object in session1
-    new_object_path = f"{root_object_ownership_relation_attribute}/{'TestPlantToRemove'}"
-    
-    new_object_id_session1 = session1.get_object(new_object_path).id
-    session1.delete_object(new_object_id_session1)
-    
-    #deleting the same object in session2
-    new_object_id_session2 = session2.get_object(new_object_path).id
-    session2.delete_object(new_object_id_session2)
+    session2.delete_object(new_object.id)
     
     #commit on session1 should remove the object
     session1.commit()
-    
-    #commit on session2 should fail because of object not existing anymore, but it passes - this might be ok, because get_object happens before commit1 so at this point it doesn't verify anymore
+
+    #commit on session2 should fail because of object not existing anymore - expected is "object not found"
     session2.commit()
     
     session1.close()
     session2.close()
-    
-    
+        
 @pytest.mark.database
 def test_two_sessions_updating_same_object_same_attribute(connection):
     
@@ -311,7 +260,7 @@ def test_two_sessions_updating_same_object_same_attribute(connection):
     with connection.create_session() as session1:
             
             #get object attributes info with session1
-            root_object_full_info_s1 = session1.get_object(root_object_path, full_attribute_info=True)
+            root_object_full_info_s1 = session1.get_object(root_object_path)
             string_attribute_s1 = root_object_full_info_s1.attributes["StringAtt"]
             
             #update attribute
@@ -325,7 +274,7 @@ def test_two_sessions_updating_same_object_same_attribute(connection):
     with connection.create_session() as session2:
             
             #get object attributes info with session2
-            root_object_full_info_s2 = session2.get_object(root_object_path, full_attribute_info=True)
+            root_object_full_info_s2 = session2.get_object(root_object_path)
             string_attribute_s2 = root_object_full_info_s2.attributes["StringAtt"]
             
             #update attribute
@@ -339,14 +288,13 @@ def test_two_sessions_updating_same_object_same_attribute(connection):
     with connection.create_session() as session3:
             
             #get object attributes info
-            root_object_full_info_s3 = session3.get_object(root_object_path, full_attribute_info=True)
+            root_object_full_info_s3 = session3.get_object(root_object_path)
             string_attribute_s3 = root_object_full_info_s3.attributes["StringAtt"]
             
             #update attribute to initial value
             session3.update_simple_attribute(string_attribute_s3, "Default string value")
             session3.commit()
-     
-    
+         
 @pytest.mark.database
 def test_two_sessions_updating_same_object_different_attributes(connection):
      
@@ -355,7 +303,7 @@ def test_two_sessions_updating_same_object_different_attributes(connection):
     with connection.create_session() as session1:
             
             #get object attributes info with session1
-            root_object_full_info_s1 = session1.get_object(root_object_path, full_attribute_info=True)
+            root_object_full_info_s1 = session1.get_object(root_object_path)
             int_attribute = root_object_full_info_s1.attributes["Int64Att"]
             
             #update attribute
@@ -364,12 +312,11 @@ def test_two_sessions_updating_same_object_different_attributes(connection):
             
             #check if attribute has a new value
             assert session1.get_attribute(int_attribute).value == 100
-            
-            
+                        
     with connection.create_session() as session2:
             
             #get object attributes info with session2
-            root_object_full_info_s2 = session2.get_object(root_object_path, full_attribute_info=True)
+            root_object_full_info_s2 = session2.get_object(root_object_path)
             string_attribute = root_object_full_info_s2.attributes["StringAtt"]
             
             #update attribute
@@ -385,7 +332,7 @@ def test_two_sessions_updating_same_object_different_attributes(connection):
     with connection.create_session() as session3:
             
             #get object attributes info
-            root_object_full_info_s3 = session3.get_object(root_object_path, full_attribute_info=True)
+            root_object_full_info_s3 = session3.get_object(root_object_path)
             string_attribute_s3 = root_object_full_info_s3.attributes["StringAtt"]
             int_attribute_s3 = root_object_full_info_s3.attributes["Int64Att"]
 
@@ -398,46 +345,36 @@ def test_two_sessions_updating_same_object_different_attributes(connection):
 def test_two_sessions_updating_same_object_name(connection):
          
     test_object_ownership_relation_attribute = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
-    test_object_path0 = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/TestObject"
-    test_object_path1 = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/Session1_TestObject_NewName"
-    test_object_path2 = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/Session2_TestObject_NewName"
-
 
     with connection.create_session() as session1:
         #first create the test object
-        session1.create_object(test_object_ownership_relation_attribute,"TestObject")
+        new_object = session1.create_object(test_object_ownership_relation_attribute,"TestObject")
         session1.commit()
-        test_object_id_s0 = session1.get_object(test_object_path0).id
-                
+        
         #check if object created with given name
-        assert session1.get_object(test_object_id_s0).name == 'TestObject'
+        assert session1.get_object(new_object.id).name == 'TestObject'
         
         #update name in session1
-        session1.update_object(test_object_id_s0, new_name="Session1_TestObject_NewName")
+        session1.update_object(new_object.id, new_name="Session1_TestObject_NewName")
         session1.commit()
 
-        test_object_id_s1 = session1.get_object(test_object_path1).id
-        assert session1.get_object(test_object_id_s1).name == 'Session1_TestObject_NewName'
+        assert session1.get_object(new_object.id).name == 'Session1_TestObject_NewName'
 
     with connection.create_session() as session2:
         
         #update name in session2
-        test_object_id_s2 = session2.get_object(test_object_path1).id
-        session2.update_object(test_object_id_s2, new_name="Session2_TestObject_NewName")
+        session2.update_object(new_object.id, new_name="Session2_TestObject_NewName")
         session2.commit()
         
-        assert session2.get_object(test_object_id_s2).name == 'Session2_TestObject_NewName'
+        assert session2.get_object(new_object.id).name == 'Session2_TestObject_NewName'
     
     #check that current object name is as committed in session2
     with connection.create_session() as session3:
-        test_object_id_s3 = session3.get_object(test_object_path2).id
-        assert session3.get_object(test_object_id_s3).name == 'Session2_TestObject_NewName'
-
+        assert session3.get_object(new_object.id).name == 'Session2_TestObject_NewName'
 
     #clean up
     with connection.create_session() as session4:
-        new_object_id = session4.get_object(test_object_path2).id
-        session4.delete_object(new_object_id)
+        session4.delete_object(new_object.id)
         session4.commit()
 
 if __name__ == "__main__":
