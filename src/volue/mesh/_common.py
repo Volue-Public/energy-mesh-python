@@ -393,10 +393,10 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     Args:
         proto_curve: The protobuf curve to convert.
     """
-    return CURVE_TYPES.inverse(proto_curve)
+    return CURVE_TYPES.inverse[proto_curve.type]
 
 
-RESOLUTIONS = {
+RESOLUTIONS = bidict({
     Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
     Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
     Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
@@ -405,7 +405,7 @@ RESOLUTIONS = {
     Timeseries.Resolution.WEEK: type.resources_pb2.Resolution.WEEK,
     Timeseries.Resolution.MONTH: type.resources_pb2.Resolution.MONTH,
     Timeseries.Resolution.YEAR: type.resources_pb2.Resolution.YEAR,
-}
+})
 
 
 def _to_proto_resolution(
@@ -433,7 +433,7 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    return RESOLUTIONS.inverse(proto_resolution)
+    return RESOLUTIONS.inverse[proto_resolution.type]
 
 
 def _to_proto_utcinterval(
