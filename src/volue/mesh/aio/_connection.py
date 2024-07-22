@@ -105,7 +105,7 @@ class Connection(_base_connection.Connection):
         async def _extend_lifetime(self) -> None:
             await self.session_service.ExtendSession(_to_proto_guid(self.session_id))
 
-        def _get_unit_of_measurement_id_by_name(
+        async def _get_unit_of_measurement_id_by_name(
             self, unit_of_measurement: str
         ) -> resources_pb2.Guid:
             list_response = await self.model_definition_service.ListUnitsOfMeasurement(
