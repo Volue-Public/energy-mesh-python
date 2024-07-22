@@ -183,8 +183,10 @@ class Connection(_base_connection.Connection):
             new_unit_of_measurement_id = None
 
             if new_unit_of_measurement is not None:
-                new_unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
-                    new_unit_of_measurement
+                new_unit_of_measurement_id = (
+                    await self._get_unit_of_measurement_id_by_name(
+                        new_unit_of_measurement
+                    )
                 )
 
             request = super()._prepare_update_timeseries_resource_request(
