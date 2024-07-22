@@ -6,13 +6,10 @@ This is a list of frequently asked questions regarding the Mesh Python SDK.
 .. contents::
    :local:
 
-Connection errors
-******************
-
 When trying to connect to a Volue Mesh server you might get some errors if things are not set up correctly.
 
-I get a gRPC error.
-~~~~~~~~~~~~~~~~~~~~
+I get a connection gRPC error.
+******************************
 ::
 
     failed to connect to all addresses
@@ -26,7 +23,7 @@ This error can have multiple causes. Some things to check are:
 
 
 I get a SSL_ERROR_SSL. What am I doing wrong?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*********************************************
 ::
 
     E0903 09:26:59.667000000 29912 src/core/tsi/ssl_transport_security.cc:1468] Handshake failed with fatal error SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER.
@@ -35,8 +32,27 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
 
-I get error with building dependencies when installing `volue.mesh` on Linux
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I get a RESOURCE_EXHAUSTED gRPC error.
+**************************************
+
+By default, gRPC limits the size of inbound messages to 4MB. There is no limit
+on outbound message size. From client side, the user can change those limits
+when creating a gRPC connection to Mesh. From Mesh server side, those limits
+are not configurable and the default values are used.
+
+When the server receives too large message, it returns RESOURCE_EXHAUSTED and
+a message like "Received message larger than max (20000524 vs. 4194304)".
+
+When the client receives too large message, the client gRPC runtime returns
+RESOURCE_EXHAUSTED and a message like "CLIENT: Received message larger than max
+(20000524 vs. 4194304)".
+
+Refer to :ref:`Mesh Python SDK gRPC communication <mesh_client_grpc>` for more
+information and suggested ways to address the issue.
+
+
+I get error with building dependencies when installing `volue.mesh` on Linux.
+*****************************************************************************
 
 This error can have multiple causes. Some things to check are:
 
@@ -56,6 +72,7 @@ environments:
 
 .. literalinclude:: /../../.github/workflows/usage.yml
    :language: yaml
+
 
 Other
 *****
@@ -78,4 +95,3 @@ I need more help.
 ~~~~~~~~~~~~~~~~~~~~~~
 
 If you have a more pressing issue or if your issue includes confidential information, you should contact Volue's customer service.
-
