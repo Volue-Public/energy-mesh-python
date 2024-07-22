@@ -202,7 +202,7 @@ class Connection(_base_connection.Connection):
             resolution: Timeseries.Resolution,
             unit_of_measurement: str,
         ) -> TimeseriesResource:
-            unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
+            unit_of_measurement_id = await self._get_unit_of_measurement_id_by_name(
                 unit_of_measurement
             )
 
