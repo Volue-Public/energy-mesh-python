@@ -19,6 +19,8 @@ Using :ref:`api:volue.mesh.aio`.Connection:
 As time series data can potentially be large `Apache Arrow <https://arrow.apache.org/>`_ is used to optimize memory sharing.
 
 
+.. _mesh_client_grpc:
+
 gRPC communication
 ******************
 
