@@ -273,7 +273,7 @@ def test_delete_object(session):
 
     for target in targets:
         session.delete_object(target)
-        with pytest.raises(grpc.RpcError, match="Object not found:"):
+        with pytest.raises(grpc.RpcError, match="object not found:"):
             session.get_object(target)
         session.rollback()
 
@@ -288,7 +288,7 @@ def test_recursive_delete_object(session):
 
     for target in targets:
         session.delete_object(target, recursive_delete=True)
-        with pytest.raises(grpc.RpcError, match="Object not found:"):
+        with pytest.raises(grpc.RpcError, match="object not found:"):
             session.get_object(target)
         session.rollback()
 
@@ -416,7 +416,7 @@ async def test_mesh_objects_async(async_session):
     assert newer_object.name == new_name
 
     await async_session.delete_object(newer_object.path)
-    with pytest.raises(grpc.RpcError, match="Object not found"):
+    with pytest.raises(grpc.RpcError, match="object not found"):
         await async_session.get_object(newer_object.path)
 
 
