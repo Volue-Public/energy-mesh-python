@@ -23,12 +23,35 @@ class Method(Enum):
     Methods used for transforming a time series from one resolution to another.
 
     Args:
-        SUM: The sum of the values included in the base for this value. Does not consider how long the values are valid, i.e. a break point series with two values in the current interval that will give the sum of these two values.
-        SUMI: Integral based sum with resolution second. Calculates the sum of value multiplied with number of seconds each value is valid. Value equal 1 at the start of the day will give 86400 as day value if the base is one break point series and 3600 if this is an hour series with only one value on first hour.
-        AVG: For fixed interval series. Sum of all values in accumulation period divided by number of values in the accumulation period (24 for hour series that is transformed to day series). For break point series: Mean value of the values included in the base for this value. Does not consider how long the values are valid, i.e. a break point series with two values in the current interval that will give the mean value of these two values.
-        AVGI: Integral based mean value, i.e. considers how much of the accumulation period that a given value is valid (to next value that can be NaN for a fixed interval series). This value is presented as mean value in the summary part of the presentation in Table.
-        FIRST: First value in the accumulation period. For break point series this is the functional value at the start of the accumulation period, unless there exist an explicit value. Please note! For fixed interval series it is the first value not being NaN in the accumulation period.
-        LAST: Last value in the accumulation period. For break point series this is the functional value at the end of the accumulation period, unless there exist an explicit value. Note! For fixed interval series it is the last value not being NaN in the accumulation period.
+        SUM: The sum of the values included in the base for this value. Does
+            not consider how long the values are valid, i.e. a break point
+            series with two values in the current interval that will give the
+            sum of these two values.
+        SUMI: Integral based sum with resolution second. Calculates the sum of
+            value multiplied with number of seconds each value is valid. Value
+            equal 1 at the start of the day will give 86400 as day value if the
+            base is one break point series and 3600 if this is an hour series
+            with only one value on first hour.
+        AVG: For fixed interval series. Sum of all values in accumulation
+            period divided by number of values in the accumulation period (24
+            for hour series that is transformed to day series). For break point
+            series: Mean value of the values included in the base for this
+            value. Does not consider how long the values are valid, i.e.
+            a break point series with two values in the current interval that
+            will give the mean value of these two values.
+        AVGI: Integral based mean value, i.e. considers how much of the
+            accumulation period that a given value is valid (to next value that
+            can be NaN for a fixed interval series).
+        FIRST: First value in the accumulation period. For break point series
+            this is the functional value at the start of the accumulation
+            period, unless there exist an explicit value. Please note! For
+            fixed interval series it is the first value not being NaN in the
+            accumulation period.
+        LAST: Last value in the accumulation period. For break point series
+            this is the functional value at the end of the accumulation period,
+            unless there exist an explicit value. Note! For fixed interval
+            series it is the last value not being NaN in the accumulation
+            period.
         MIN: Smallest value in the accumulation period.
         MAX: Largest value in the accumulation period.
     """
