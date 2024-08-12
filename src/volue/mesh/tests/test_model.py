@@ -5,6 +5,7 @@ Testing model, adding, removing, modifying objects.
 import sys
 import grpc
 import pytest
+import time
 
 THERMAL_OBJECT_OWNERSHIP_RELATION_ATTRIBUTE_PATH = (
     "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"
@@ -35,6 +36,8 @@ def test_two_sessions_adding_the_same_object(connection):
     session1.commit()
 
     assert new_object1.name == TEST_PLANT_NAME
+
+    time.sleep(1)
 
     # expecting error
     with pytest.raises(
@@ -68,6 +71,8 @@ def test_two_sessions_adding_the_same_object_after_commit(connection):
     session1.commit()
 
     assert new_object1.name == TEST_PLANT_NAME
+
+    time.sleep(1)
 
     # expecting error
     with pytest.raises(
@@ -172,10 +177,14 @@ def test_two_sessions_adding_child_after_removing_parent(connection):
         new_parent.attributes["SimpleOwnershipAtt"], TEST_PLANT_NAME_CHILD
     )
 
+    time.sleep(1)
+
     session2.delete_object(new_parent.id)
 
     # commit the deletion of parent
     session2.commit()
+
+    time.sleep(1)
 
     # commit on creation of child should fail
     with pytest.raises(grpc.RpcError, match="Missing owner"):
@@ -199,6 +208,8 @@ def test_two_sessions_adding_child_after_removing_parent_and_commit(connection):
         THERMAL_OBJECT_OWNERSHIP_RELATION_ATTRIBUTE_PATH, TEST_PLANT_NAME_PARENT
     )
     session1.commit()
+
+    time.sleep(1)
 
     # delete parent object
     session2.delete_object(new_parent.id)
@@ -238,6 +249,8 @@ def test_two_sessions_removing_same_object_after_commit(connection):
     session1.delete_object(new_object.id)
     session1.commit()
 
+    time.sleep(1)
+
     # deleting the same object in session2 should fail
     with pytest.raises(grpc.RpcError, match="object not found"):
         session2.delete_object(new_object.id)
@@ -265,6 +278,8 @@ def test_two_sessions_removing_same_object(connection):
     )
     session1.commit()
 
+    time.sleep(1)
+
     session1.delete_object(new_object.id)
 
     session2.delete_object(new_object.id)
@@ -272,7 +287,9 @@ def test_two_sessions_removing_same_object(connection):
     # commit on session1 should remove the object
     session1.commit()
 
-    # commit on session2 should fail because of object not existing anymore - expected is "object not found"
+    # Although intuitively we might think that commit on session2 should fail
+    # because of object not existing anymore, but the actual behavior is that
+    # it will ignore no longer existing objects meant to be deleted.
     session2.commit()
 
     session1.close()
@@ -403,6 +420,8 @@ def test_two_sessions_updating_same_object_name(connection):
         session2.commit()
 
         assert session2.get_object(new_object.id).name == session2_test_object_new_name
+
+    time.sleep(1)
 
     # check that current object name is as committed in session2
     with connection.create_session() as session3:
