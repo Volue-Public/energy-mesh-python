@@ -52,6 +52,10 @@ def main(address, tls_root_pem_cert):
             for path, expression in local_expressions.items():
                 print(f"Attribute path: {path} has local expression:\n{expression}")
 
+            # clear search results before traversing the next model
+            local_expressions.clear()
+            template_expressions.clear()
+
 
 if __name__ == "__main__":
     address, tls_root_pem_cert = helpers.get_connection_info()
