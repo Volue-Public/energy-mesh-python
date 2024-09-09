@@ -30,6 +30,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
+- **Fixed:** Example with searching calculation expressions. :pull:`508`
 - Changes for Mesh server 2.15 gRPC interface compatibility. :issue:`470`
 
   It introduces breaking API change: `update_versioned_link_relation_attribute`
