@@ -4,7 +4,7 @@ Versions
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
 Mesh Python SDK version 1.10.0-dev
-*********************************
+**********************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
