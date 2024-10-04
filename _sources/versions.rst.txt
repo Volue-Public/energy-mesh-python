@@ -6,6 +6,8 @@ Depending on the Mesh Server version you intend to communicate with a compatible
 Mesh Python SDK version 1.10.0-dev
 **********************************
 
+This is the current master version.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
