@@ -35,7 +35,7 @@ If you don't have a GitHub user you can `join here <https://github.com/join>`_.
 Python
 **********
 
-Mesh Python SDK works with Python 3.9, 3.10, 3.11, and 3.12. Support for earlier and later versions is not provided due to dependencies.
+Mesh Python SDK works with Python 3.9, 3.10, 3.11, and 3.12. Support for earlier and later versions is not guaranteed due to dependencies.
 
 #. Download and install (Windows):
 
@@ -103,6 +103,35 @@ As a user you can install the Mesh Python SDK using Python's standard package ma
 .. note::
     See :doc:`versions` if you need a specific Mesh version.
 
+
+Setup for users (offline environments)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To install Mesh Python SDK on a computer without internet connection you first need to download
+binaries on a computer with internet connection and then copy those binaries to the target machine.
+
+On computer with internet connection download the Mesh Python SDK along with its dependencies using
+Python's standard package manager system pip::
+
+    # Use correct volue.mesh package version.
+    python -m pip download git+https://github.com/Volue-Public/energy-mesh-python@vX.Y.Z
+
+
+Additionally, download Mesh Python SDK build dependencies. Those are specified in [build-system]
+section in pyproject.toml file.::
+
+    # Check [build-system] section in pyproject.toml file if those are up to date.
+    python -m pip download poetry-core
+    python -m pip download grpcio-tools==1.66.1
+
+Copy all the downloaded binaries to the target computer without internet connection.
+In the directory with the downloaded binaries execute::
+
+    # Use correct volue.mesh package version.
+    python -m pip install volue.mesh-X.Y.Z.zip --no-index -f .
+
+.. note::
+    See :doc:`versions` if you need a specific Mesh version.
 
 .. _Setup for developers:
 
