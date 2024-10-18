@@ -83,7 +83,7 @@ See instructions at :ref:`Setup for users` and use the following:
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.14
+- Mesh server version [2.14]
 - Python [3.9, 3.10, 3.11, 3.12]
 
 New features
