@@ -153,7 +153,9 @@ class TestCreatePhysicalTimeseries:
         return TestCreatePhysicalTimeseries.TSInitData()
 
     @staticmethod
-    def _verify_timeseries(timeseries: TimeseriesResource, expected_ts_data: TimeseriesResource):
+    def _verify_timeseries(
+        timeseries: TimeseriesResource, expected_ts_data: TimeseriesResource
+    ):
         # Newly created time series have "Resource" prepended to their paths, and the time series
         # name appended to it.
         expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
@@ -183,26 +185,22 @@ class TestCreatePhysicalTimeseries:
         # requires us to know the time series' key, which CreatePhysicalTimeseries cannot return
         # since it's generated at the commit stage.
 
-    def test_create_timeseries_with_unknown_curve_type(
-        self, session, ts_init_data
-    ):
+    def test_create_timeseries_with_unknown_curve_type(self, session, ts_init_data):
         """Check that an unknown curve type still works."""
-        unknown_curve_type = Timeseries.Curve.UNKNOWN
+        ts_data = ts_init_data
+        ts_data.curve_type = Timeseries.Curve.UNKNOWN
 
         timeseries = session.create_physical_timeseries(
-            path=ts_init_data.path,
-            name=ts_init_data.name,
-            curve_type = unknown_curve_type,
-            resolution=ts_init_data.resolution,
-            unit_of_measurement=ts_init_data.unit_of_measurement,
+            path=ts_data.path,
+            name=ts_data.name,
+            curve_type=ts_data.curve_type,
+            resolution=ts_data.resolution,
+            unit_of_measurement=ts_data.unit_of_measurement,
         )
 
         session.commit()
 
-        expected_ts_data = ts_init_data
-        expected_ts_data.curve_type = unknown_curve_type
-
-        self._verify_timeseries(timeseries, ts_init_data)
+        self._verify_timeseries(timeseries, ts_data)
 
     @pytest.mark.asyncio
     async def test_create_physical_timeseries_async(self, async_session, ts_init_data):

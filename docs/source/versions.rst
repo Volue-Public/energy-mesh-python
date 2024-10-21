@@ -22,7 +22,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- **Fixed:**
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
