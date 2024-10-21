@@ -361,8 +361,6 @@ def _from_proto_guid(guid: Optional[type.resources_pb2.Guid]) -> Optional[uuid.U
     return uuid.UUID(bytes_le=guid.bytes_le)
 
 
-# We intentionally leave out Curve.UNKNOWN so that a KeyError will be raised if we receive such
-# values.
 CURVE_TYPES = bidict(
     {
         Timeseries.Curve.PIECEWISELINEAR: type.resources_pb2.Curve.PIECEWISELINEAR,
@@ -381,7 +379,7 @@ def _to_proto_curve_type(curve: Timeseries.Curve) -> type.resources_pb2.Curve:
     """
     proto_curve = type.resources_pb2.Curve()
 
-    proto_curve.type = CURVE_TYPES[curve]
+    proto_curve.type = CURVE_TYPES.get(curve, type.resources_pb2.Curve.UNKNOWN)
 
     return proto_curve
 
@@ -393,7 +391,7 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     Args:
         proto_curve: The protobuf curve to convert.
     """
-    return CURVE_TYPES.inverse[proto_curve.type]
+    return CURVE_TYPES.inverse.get(proto_curve.type, Timeseries.Curve.UNKNOWN)
 
 
 RESOLUTIONS = bidict(
@@ -421,7 +419,9 @@ def _to_proto_resolution(
     """
     proto_resolution = type.resources_pb2.Resolution()
 
-    proto_resolution.type = RESOLUTIONS[resolution]
+    proto_resolution.type = RESOLUTIONS.get(
+        resolution, type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
+    )
 
     return proto_resolution
 
@@ -435,7 +435,9 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    return RESOLUTIONS.inverse[proto_resolution.type]
+    return RESOLUTIONS.inverse.get(
+        proto_resolution.type, Timeseries.Resolution.UNSPECIFIED
+    )
 
 
 def _to_proto_utcinterval(
