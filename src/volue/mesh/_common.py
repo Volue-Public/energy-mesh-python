@@ -363,6 +363,7 @@ def _from_proto_guid(guid: Optional[type.resources_pb2.Guid]) -> Optional[uuid.U
 
 CURVE_TYPES = bidict(
     {
+        Timeseries.Curve.UNKNOWN: type.resources_pb2.Curve.UNKNOWN,
         Timeseries.Curve.PIECEWISELINEAR: type.resources_pb2.Curve.PIECEWISELINEAR,
         Timeseries.Curve.STAIRCASE: type.resources_pb2.Curve.STAIRCASE,
         Timeseries.Curve.STAIRCASESTARTOFSTEP: type.resources_pb2.Curve.STAIRCASESTARTOFSTEP,
@@ -396,6 +397,7 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
 
 RESOLUTIONS = bidict(
     {
+        Timeseries.Resolution.UNSPECIFIED: type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED,
         Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
         Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
         Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
