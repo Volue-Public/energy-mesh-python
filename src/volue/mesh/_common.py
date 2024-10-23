@@ -434,7 +434,7 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    return RESOLUTIONS.inverse[proto_resolution]
+    return RESOLUTIONS.inverse[proto_resolution.type]
 
 
 def _to_proto_utcinterval(
