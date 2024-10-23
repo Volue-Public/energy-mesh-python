@@ -397,7 +397,6 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
 
 RESOLUTIONS = bidict(
     {
-        Timeseries.Resolution.UNSPECIFIED: type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED,
         Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
         Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
         Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
@@ -421,9 +420,7 @@ def _to_proto_resolution(
     """
     proto_resolution = type.resources_pb2.Resolution()
 
-    proto_resolution.type = RESOLUTIONS.get(
-        resolution, type.resources_pb2.Resolution.RESOLUTION_UNSPECIFIED
-    )
+    proto_resolution.type = RESOLUTIONS[resolution]
 
     return proto_resolution
 
@@ -437,9 +434,7 @@ def _from_proto_resolution(
     Args:
         proto_resolution: The protobuf resolution to convert.
     """
-    return RESOLUTIONS.inverse.get(
-        proto_resolution.type, Timeseries.Resolution.UNSPECIFIED
-    )
+    return RESOLUTIONS.inverse[proto_resolution]
 
 
 def _to_proto_utcinterval(
