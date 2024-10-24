@@ -361,10 +361,9 @@ def _from_proto_guid(guid: Optional[type.resources_pb2.Guid]) -> Optional[uuid.U
     return uuid.UUID(bytes_le=guid.bytes_le)
 
 
-# We intentionally leave out Curve.UNKNOWN so that a KeyError will be raised if we receive such
-# values.
 CURVE_TYPES = bidict(
     {
+        Timeseries.Curve.UNKNOWN: type.resources_pb2.Curve.UNKNOWN,
         Timeseries.Curve.PIECEWISELINEAR: type.resources_pb2.Curve.PIECEWISELINEAR,
         Timeseries.Curve.STAIRCASE: type.resources_pb2.Curve.STAIRCASE,
         Timeseries.Curve.STAIRCASESTARTOFSTEP: type.resources_pb2.Curve.STAIRCASESTARTOFSTEP,
