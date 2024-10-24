@@ -534,10 +534,9 @@
     <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">guid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
 
 
-<span class="c1"># We intentionally leave out Curve.UNKNOWN so that a KeyError will be raised if we receive such</span>
-<span class="c1"># values.</span>
 <span class="n">CURVE_TYPES</span> <span class="o">=</span> <span class="n">bidict</span><span class="p">(</span>
     <span class="p">{</span>
+        <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span><span class="p">,</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASE</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASE</span><span class="p">,</span>
         <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASESTARTOFSTEP</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">STAIRCASESTARTOFSTEP</span><span class="p">,</span>

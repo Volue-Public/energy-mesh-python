@@ -22,7 +22,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- **Fixed:** Processing time series objects with unknown curve types. :issue:`519`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
