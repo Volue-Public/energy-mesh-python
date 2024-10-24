@@ -380,7 +380,7 @@ def _to_proto_curve_type(curve: Timeseries.Curve) -> type.resources_pb2.Curve:
     """
     proto_curve = type.resources_pb2.Curve()
 
-    proto_curve.type = CURVE_TYPES.get(curve, type.resources_pb2.Curve.UNKNOWN)
+    proto_curve.type = CURVE_TYPES[curve]
 
     return proto_curve
 
@@ -392,7 +392,7 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
     Args:
         proto_curve: The protobuf curve to convert.
     """
-    return CURVE_TYPES.inverse.get(proto_curve.type, Timeseries.Curve.UNKNOWN)
+    return CURVE_TYPES.inverse[proto_curve.type]
 
 
 RESOLUTIONS = bidict(
