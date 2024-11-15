@@ -3,21 +3,16 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-Mesh Python SDK version 1.10.0-dev
-**********************************
+`Mesh Python SDK version 1.10.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.10.0>`_
+***********************************************************************************************************
 
 This is the current master version.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.15 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
-
-New features
-~~~~~~~~~~~~~~~~~~
-
-- TBA
+- Mesh server version >= 2.15
+- Python [3.9, 3.10, 3.11, 3.12]
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -29,9 +24,9 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.10.0
 
 
 `Mesh Python SDK version 1.9.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.9.0>`_
@@ -72,7 +67,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.9.0
 
@@ -103,7 +98,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.8.0
 
@@ -139,7 +134,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.7.0
 
@@ -172,7 +167,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.6.0
 
@@ -205,7 +200,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.5.0
 
@@ -238,7 +233,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.4.0
 
@@ -275,7 +270,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.3.0
 
@@ -317,7 +312,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.2.1
 
@@ -349,7 +344,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.1.1
 
@@ -391,7 +386,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@v1.0.0
 
@@ -436,7 +431,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@Mesh_v2.5
 
@@ -482,7 +477,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@Mesh_v2.3
 
@@ -531,7 +526,7 @@ Install instructions
 
 See instructions at :ref:`Setup for users` and use the following:
 
-::
+.. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python@Mesh_v2.2
 
