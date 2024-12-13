@@ -5,7 +5,7 @@ from typing import Union
 
 import helpers
 
-from volue.mesh import Connection, OwnershipRelationAttribute, TimeseriesAttribute
+from volue.mesh import Connection, TimeseriesAttribute
 
 
 def get_pem_certificate_contents(certificate_path: str):
@@ -28,29 +28,26 @@ def get_pem_certificate_contents(certificate_path: str):
     return tls_root_pem_cert
 
 
-def traverse_model_top_down(
-    session: Connection.Session,
-    target: Union[str, uuid.UUID],
-    time_series_info: dict[int, list[str]],
-) -> None:
+def find_time_series_duplicates(
+    session: Connection.Session, model: Union[str, uuid.UUID]
+) -> dict[int, list[str]]:
     """
-    Traverses the Mesh model recursively and stores time series key of physical
+    Iterates over all Mesh model objects and stores time series key of physical
     or virtual time series connected to time series attributes.
     """
-    object = session.get_object(target)
+    time_series_info = {}
 
-    for attr in object.attributes.values():
-        if isinstance(attr, OwnershipRelationAttribute):
-            for child_id in attr.target_object_ids:
-                traverse_model_top_down(session, child_id, time_series_info)
+    for obj in session.search_for_objects(model, "{*}"):
+        for attr in obj.attributes.values():
+            if isinstance(attr, TimeseriesAttribute):
+                if attr.time_series_resource is not None:
+                    timeseries_key = attr.time_series_resource.timeseries_key
+                    if timeseries_key not in time_series_info:
+                        time_series_info[timeseries_key] = [attr.path]
+                    else:
+                        time_series_info[timeseries_key].append(attr.path)
 
-        if isinstance(attr, TimeseriesAttribute):
-            if attr.time_series_resource is not None:
-                timeseries_key = attr.time_series_resource.timeseries_key
-                if timeseries_key not in time_series_info:
-                    time_series_info[timeseries_key] = [attr.path]
-                else:
-                    time_series_info[timeseries_key].append(attr.path)
+    return time_series_info
 
 
 def main(address, tls_root_pem_cert):
@@ -61,11 +58,10 @@ def main(address, tls_root_pem_cert):
     connection = Connection.insecure(address)
 
     model_name = "SimpleThermalTestModel"
-    time_series_info = {}
 
     with connection.create_session() as session:
         print(f"Model: '{model_name}'")
-        traverse_model_top_down(session, f"Model/{model_name}", time_series_info)
+        time_series_info = find_time_series_duplicates(session, f"Model/{model_name}")
 
         for timeseries_key, paths in time_series_info.items():
             if len(paths) > 1:
