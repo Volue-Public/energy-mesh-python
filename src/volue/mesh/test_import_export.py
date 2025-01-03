@@ -3,9 +3,13 @@ import time
 import subprocess
 import uuid
 
+from datetime import datetime
+
 from google.protobuf import timestamp_pb2
 
 from volue import mesh
+
+from volue.mesh.proto.model.v1alpha import model_pb2
 
 
 def main():
@@ -28,17 +32,17 @@ def main():
 
         mesh_proc.terminate()
 
-    print("[MARTIN] Starting mesh...")
+    # print("[MARTIN] Starting mesh...")
 
-    with subprocess.Popen(mesh_exe) as mesh_proc:
-        # Give mesh some time to finish starting up
-        time.sleep(10)
+    # with subprocess.Popen(mesh_exe) as mesh_proc:
+    #     # Give mesh some time to finish starting up
+    #     time.sleep(10)
 
-        import_and_check_validity(connection, imp_exp_exe, dump_with_validity_path)
+    #     import_and_check_validity(connection, imp_exp_exe, dump_with_validity_path)
 
-        print("[MARTIN] Terminating mesh...")
+    #     print("[MARTIN] Terminating mesh...")
 
-        mesh_proc.terminate()
+    #     mesh_proc.terminate()
 
     # check_validity()
 
@@ -59,12 +63,12 @@ def generate_data_with_validity(
 
         session.commit()
 
-    exp_args = [imp_exp_exe, "-o", dump_with_validity_path, "-m", "MeshTEK"]
+    # exp_args = [imp_exp_exe, "-o", dump_with_validity_path, "-m", "MeshTEK"]
 
-    # Export data with validity
-    print("[MARTIN] Exporting data with validity...")
+    # # Export data with validity
+    # print("[MARTIN] Exporting data with validity...")
 
-    subprocess.check_call(exp_args)
+    # subprocess.check_call(exp_args)
 
 
 def import_and_check_validity(
@@ -83,7 +87,7 @@ def import_and_check_validity(
 
 
 def set_validity(session):
-    # Llamar a UpdateValidity de protobuf
+    print("[MARTIN] Setting validity for object...")
 
     valid_from_datetime = datetime.fromisoformat("2024-12-04T00:00:00.000Z")
     valid_from = timestamp_pb2.Timestamp()
@@ -95,33 +99,16 @@ def set_validity(session):
 
     object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 
-    request = time_series_pb2.UpdateValidityRequest(
-        session_id=_to_proto_guid(session_id.session_id),
-        object_id=_to_proto_guid(object_id),
+    request = model_pb2.UpdateValidityRequest(
+        session_id=_common._to_proto_guid(session.session_id),
+        object_id=_common._to_proto_guid(object_id),
         valid_from=valid_from,
         valid_until=valid_until,
     )
 
     response = session.model_service.UpdateValidity(request)
 
-    print(response)
-
-    # unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
-    #     unit_of_measurement
-    # )
-
-    # request = time_series_pb2.CreatePhysicalTimeseriesRequest(
-    #     session_id=_to_proto_guid(self.session_id),
-    #     path=path,
-    #     name=name,
-    #     curve_type=_to_proto_curve_type(curve_type),
-    #     resolution=_to_proto_resolution(resolution),
-    #     unit_of_measurement_id=unit_of_measurement_id,
-    # )
-
-    # response = self.time_series_service.CreatePhysicalTimeseries(request)
-
-    # return TimeseriesResource._from_proto_timeseries_resource(response)
+    print(f"[MARTIN] Done! Response: '{response}'")
 
 
 if __name__ == "__main__":
