@@ -8,6 +8,9 @@ import "volue/mesh/proto/model/v1alpha/resources.proto";
 import "volue/mesh/proto/type/resources.proto";
 
 
+import "google/protobuf/timestamp.proto";
+
+
 // Mesh model service
 // -------------------------------
 // The Mesh model service is an API for managing Mesh model.

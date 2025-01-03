@@ -1,6 +1,9 @@
 import threading
 import time
 import subprocess
+import uuid
+
+from google.protobuf import timestamp_pb2
 
 from volue import mesh
 
@@ -52,7 +55,8 @@ def generate_data_with_validity(connection: mesh.Connection,
 
     # Set validity for an object (Models->MeshTEK->Mesh->To_Areas->Finland)
     with connection.create_session() as session:
-        # set_validity()
+        set_validity(session)
+
         session.commit()
 
     exp_args = [imp_exp_exe, '-o', dump_with_validity_path, "-m", "MeshTEK"]
@@ -78,13 +82,27 @@ def import_and_check_validity(connection: mesh.Connection,
         # get_validity()
 
 
-def set_validity():
+def set_validity(session):
     # Llamar a UpdateValidity de protobuf
 
-    request = time_series_pb2.UpdateValidityRequest()
+    valid_from_datetime = datetime.fromisoformat('2024-12-04T00:00:00.000Z')
+    valid_from = timestamp_pb2.Timestamp()
+    valid_from.FromDatetime(valid_from_datetime)
 
-    response = self.time_series_service.UpdateValidity(request)
+    valid_until_datetime = datetime.fromisoformat('2024-12-27T00:00:00.000Z')
+    valid_until = timestamp_pb2.Timestamp()
+    valid_until.FromDatetime(valid_until_datetime)
 
+    request = time_series_pb2.UpdateValidityRequest(
+        session_id=_to_proto_guid(session_id.session_id),
+        object_id='ADOJIYJkCUu5uli0h0DQ5w==',
+        valid_from=valid_from,
+        valid_until=valid_until
+    )
+
+    response = session.model_service.UpdateValidity(request)
+
+    print(response)
 
 
 
