@@ -93,9 +93,11 @@ def set_validity(session):
     valid_until = timestamp_pb2.Timestamp()
     valid_until.FromDatetime(valid_until_datetime)
 
+    object_id = uuid.UUID('{21893300-6482-4b09-b9ba-58b48740d0e7}')
+
     request = time_series_pb2.UpdateValidityRequest(
         session_id=_to_proto_guid(session_id.session_id),
-        object_id='ADOJIYJkCUu5uli0h0DQ5w==',
+        object_id=_to_proto_guid(object_id),
         valid_from=valid_from,
         valid_until=valid_until
     )
