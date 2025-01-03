@@ -9,6 +9,7 @@ from google.protobuf import timestamp_pb2
 
 from volue import mesh
 
+from volue.mesh.proto import type
 from volue.mesh.proto.model.v1alpha import model_pb2
 
 
@@ -100,8 +101,8 @@ def set_validity(session):
     object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 
     request = model_pb2.UpdateValidityRequest(
-        session_id=_common._to_proto_guid(session.session_id),
-        object_id=_common._to_proto_guid(object_id),
+        session_id=to_proto_guid(session.session_id),
+        object_id=to_proto_guid(object_id),
         valid_from=valid_from,
         valid_until=valid_until,
     )
@@ -109,6 +110,10 @@ def set_validity(session):
     response = session.model_service.UpdateValidity(request)
 
     print(f"[MARTIN] Done! Response: '{response}'")
+
+
+def to_proto_guid(uuid: uuid.UUID):
+    return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
 
 
 if __name__ == "__main__":
