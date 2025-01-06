@@ -14,13 +14,21 @@ from volue.mesh.proto.model.v1alpha import model_pb2
 
 
 class ValidityInfo:
-    def __init__(self, get_validity_response):
-        self.valid_from = get_validity_response.valid_from.ToDatetime()
-        self.valid_until = get_validity_response.valid_until.ToDatetime()
+    def __init__(self, valid_from: datetime.time, valid_until: datetime.time):
+        self.valid_from = valid_from
+        self.valid_until = valid_until
 
 
     def __str__(self):
         return f"valid_from: '{self.valid_from.isoformat}'; valid_until: '{self.valid_until.isoformat()}'"
+
+
+    def __eq__(self, other):
+        if isinstance(other, ValidityInfo):
+            self.valid_from == other.valid_from
+            self.valid_until == other.valid_until
+        else:
+            raise TypeError("'other' is not an instance of ValidityInfo")
 
 
 def main():
@@ -36,6 +44,7 @@ def main():
 
     valid_from = datetime.fromisoformat("2024-12-04T00:00:00.000Z")
     valid_until = datetime.fromisoformat("2024-12-27T00:00:00.000Z")
+    expected_validity_info = ValidityInfo(valid_from, valid_until)
 
     print("[MARTIN] Starting mesh...")
 
@@ -47,8 +56,9 @@ def main():
         # Give mesh some time to finish starting up
         time.sleep(10)
 
+
         generate_data_with_validity(
-            connection, imp_exp_exe, dump_with_validity_path, object_id
+            connection, imp_exp_exe, dump_with_validity_path, object_id, expected_validity_info
         )
 
         print("[MARTIN] Terminating mesh...")
@@ -67,8 +77,10 @@ def main():
             connection, imp_exp_exe, dump_with_validity_path, object_id
         )
 
-        print("[MARTIN] Terminating mesh...")
+        check_validity(validity_info, expected_validity_info)
     finally:
+        print("[MARTIN] Terminating mesh...")
+
         mesh_proc.terminate()
 
 
@@ -122,7 +134,7 @@ def import_and_get_validity(
     with connection.create_session() as session:
         response = get_validity(session, object_id)
 
-    validity_info = ValidityInfo(response)
+    validity_info = ValidityInfo(response.valid_from.ToDatetime(), response.valid_until.ToDatetime())
 
     print(f"[MARTIN] Validity of object after importing it: '{validity_info}'")
 
@@ -163,6 +175,13 @@ def get_validity(session, object_id: str):
     print(f"[MARTIN] Done!")
 
     return response
+
+
+def check_validity(validity_info: ValidityInfo, expected_validity_info: ValidityInfo)
+    if validity_info == expected_validity_info:
+        print(f"[MARTIN] OK: '{validity_info}' == '{expected_validity_info}'")
+    else:
+        print(f"[MARTIN] ERROR: '{validity_info}' != '{expected_validity_info}'")
 
 
 def to_proto_mesh_id(uuid: uuid.UUID):
