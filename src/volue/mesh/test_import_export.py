@@ -12,43 +12,67 @@ from volue import mesh
 from volue.mesh.proto import type
 from volue.mesh.proto.model.v1alpha import model_pb2
 
+BASE_DUMP_PATH = "C:/Users/martin.galvan/base_dump.mdump"
+DUMP_WITH_VALIDITY_PATH = "C:/Users/martin.galvan/with_validity.mdump"
+MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
+MESH_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Server.exe"
+IMP_EXP_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
+
+# This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
+OBJECT_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
+
 
 class ValidityInfo:
-    def __init__(self, valid_from: datetime.time, valid_until: datetime.time):
+    def __init__(self, valid_from: datetime, valid_until: datetime):
         self.valid_from = valid_from
         self.valid_until = valid_until
 
-
     def __str__(self):
-        return f"valid_from: '{self.valid_from.isoformat}'; valid_until: '{self.valid_until.isoformat()}'"
-
+        return f"valid_from: '{self.valid_from}'; valid_until: '{self.valid_until}'"
 
     def __eq__(self, other):
         if isinstance(other, ValidityInfo):
-            self.valid_from == other.valid_from
-            self.valid_until == other.valid_until
+            return (
+                self.valid_from == other.valid_from
+                and self.valid_until == other.valid_until
+            )
         else:
-            raise TypeError("'other' is not an instance of ValidityInfo")
+            return NotImplemented
 
 
 def main():
     connection = mesh.Connection.insecure("localhost:50051")
 
-    mesh_build_path = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
-    mesh_exe = f"{mesh_build_path}/Powel.Mesh.Server.exe"
-    imp_exp_exe = f"{mesh_build_path}/Powel.Mesh.Model.ImportExport.exe"
-    dump_with_validity_path = "C:/Users/martin.galvan/with_validity.mdump"
-
-    # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
-    object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
-
-    valid_from = datetime.fromisoformat("2024-12-04T00:00:00.000Z")
-    valid_until = datetime.fromisoformat("2024-12-27T00:00:00.000Z")
+    # FIXME: The checks seem to break if I use datetime.fromisoformat("2024-12-04T00:00:00.000Z")
+    # since the return value from GetValidity is different from what we have here.
+    valid_from = datetime.fromisoformat("2024-12-04T00:00:00")
+    valid_until = datetime.fromisoformat("2024-12-27T00:00:00")
     expected_validity_info = ValidityInfo(valid_from, valid_until)
 
     print("[MARTIN] Starting mesh...")
 
-    mesh_proc = subprocess.Popen([mesh_exe])
+    # Set only 'from'
+    test_set_validity(connection, ValidityInfo(valid_from, None))
+
+    # Set only 'until'
+    test_set_validity(connection, ValidityInfo(None, valid_until))
+
+    # Set both 'from' and 'until'
+    test_set_validity(connection, ValidityInfo(valid_from, valid_until))
+
+    # test_update_from_until
+    # test_update_from
+    # test_update_until
+    # test_remove_from
+    # test_remove_until
+    # test_remove_from_until
+
+
+def test_set_validity(
+    connection: mesh.Connection,
+    expected_validity_info: ValidityInfo,
+):
+    mesh_proc = subprocess.Popen([MESH_EXE])
 
     # We need to use try/finally instead of 'with subprocess.Popen(...)' since for some reason we
     # won't be able to catch any exceptions until we terminate the mesh process.
@@ -56,26 +80,21 @@ def main():
         # Give mesh some time to finish starting up
         time.sleep(10)
 
-
-        generate_data_with_validity(
-            connection, imp_exp_exe, dump_with_validity_path, object_id, expected_validity_info
-        )
-
-        print("[MARTIN] Terminating mesh...")
+        generate_data_with_validity(connection, expected_validity_info)
     finally:
+        print("[MARTIN] Terminating mesh...")
+
         mesh_proc.terminate()
 
     print("[MARTIN] Starting mesh...")
 
-    mesh_proc = subprocess.Popen(mesh_exe)
+    mesh_proc = subprocess.Popen([MESH_EXE])
 
     try:
         # Give mesh some time to finish starting up
         time.sleep(10)
 
-        validity_info = import_and_get_validity(
-            connection, imp_exp_exe, dump_with_validity_path, object_id
-        )
+        validity_info = import_and_get_validity(connection)
 
         check_validity(validity_info, expected_validity_info)
     finally:
@@ -85,13 +104,9 @@ def main():
 
 
 def generate_data_with_validity(
-    connection: mesh.Connection,
-    imp_exp_exe: str,
-    dump_with_validity_path: str,
-    object_id: str,
-    validity_info: ValidityInfo
+    connection: mesh.Connection, validity_info: ValidityInfo
 ):
-    imp_args = [imp_exp_exe, "-i", "C:/Users/martin.galvan/base_dump.mdump", "-S"]
+    imp_args = [IMP_EXP_EXE, "-i", BASE_DUMP_PATH, "-S"]
 
     # Import the base data first
     print("[MARTIN] Importing base data...")
@@ -101,16 +116,16 @@ def generate_data_with_validity(
     # Set validity for an object
     with connection.create_session() as session:
         # First, verify that the object doesn't have any validity info set
-        response = get_validity(session, object_id)
+        response = get_validity(session, OBJECT_ID)
 
         print(f"[MARTIN] Validity of object before setting it: '{response}'")
 
         # Now, set the validity
-        set_validity(session, object_id, validity_info)
+        set_validity(session, OBJECT_ID, validity_info)
 
         session.commit()
 
-    exp_args = [imp_exp_exe, "-o", dump_with_validity_path, "-m", "MeshTEK"]
+    exp_args = [IMP_EXP_EXE, "-o", DUMP_WITH_VALIDITY_PATH, "-m", "MeshTEK"]
 
     # Export data with validity
     print("[MARTIN] Exporting data with validity...")
@@ -120,11 +135,8 @@ def generate_data_with_validity(
 
 def import_and_get_validity(
     connection: mesh.Connection,
-    imp_exp_exe: str,
-    dump_with_validity_path: str,
-    object_id: str,
 ):
-    imp_args = [imp_exp_exe, "-i", dump_with_validity_path, "-S"]
+    imp_args = [IMP_EXP_EXE, "-i", DUMP_WITH_VALIDITY_PATH, "-S"]
 
     # Import the data with validity
     print("[MARTIN] Importing data with validity...")
@@ -132,16 +144,18 @@ def import_and_get_validity(
     subprocess.check_call(imp_args)
 
     with connection.create_session() as session:
-        response = get_validity(session, object_id)
+        response = get_validity(session)
 
-    validity_info = ValidityInfo(response.valid_from.ToDatetime(), response.valid_until.ToDatetime())
+    validity_info = ValidityInfo(
+        response.valid_from.ToDatetime(), response.valid_until.ToDatetime()
+    )
 
     print(f"[MARTIN] Validity of object after importing it: '{validity_info}'")
 
     return validity_info
 
 
-def set_validity(session, object_id: str, validity_info: ValidityInfo):
+def set_validity(session, validity_info: ValidityInfo):
     print("[MARTIN] Setting validity for object...")
 
     valid_from = timestamp_pb2.Timestamp()
@@ -152,7 +166,7 @@ def set_validity(session, object_id: str, validity_info: ValidityInfo):
 
     request = model_pb2.UpdateValidityRequest(
         session_id=to_proto_guid(session.session_id),
-        object_id=to_proto_mesh_id(object_id),
+        object_id=to_proto_mesh_id(OBJECT_ID),
         valid_from=valid_from,
         valid_until=valid_until,
     )
@@ -162,12 +176,12 @@ def set_validity(session, object_id: str, validity_info: ValidityInfo):
     print(f"[MARTIN] Done! Response: '{response}'")
 
 
-def get_validity(session, object_id: str):
+def get_validity(session):
     print("[MARTIN] Getting validity for object...")
 
     request = model_pb2.GetValidityRequest(
         session_id=to_proto_guid(session.session_id),
-        object_id=to_proto_mesh_id(object_id),
+        object_id=to_proto_mesh_id(OBJECT_ID),
     )
 
     response = session.model_service.GetValidity(request)
@@ -177,7 +191,7 @@ def get_validity(session, object_id: str):
     return response
 
 
-def check_validity(validity_info: ValidityInfo, expected_validity_info: ValidityInfo)
+def check_validity(validity_info: ValidityInfo, expected_validity_info: ValidityInfo):
     if validity_info == expected_validity_info:
         print(f"[MARTIN] OK: '{validity_info}' == '{expected_validity_info}'")
     else:
