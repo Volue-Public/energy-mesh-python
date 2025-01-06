@@ -58,7 +58,7 @@ def generate_data_with_validity(
 
     # subprocess.check_call(imp_args)
 
-    # Set validity for an object (Models->MeshTEK->Mesh->To_Areas->Finland)
+    # Set validity for an object
     with connection.create_session() as session:
         set_validity(session)
 
@@ -98,11 +98,12 @@ def set_validity(session):
     valid_until = timestamp_pb2.Timestamp()
     valid_until.FromDatetime(valid_until_datetime)
 
+    # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
     object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 
     request = model_pb2.UpdateValidityRequest(
         session_id=to_proto_guid(session.session_id),
-        object_id=object_id,
+        object_id=to_proto_mesh_id(object_id),
         valid_from=valid_from,
         valid_until=valid_until,
     )
