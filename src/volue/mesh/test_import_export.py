@@ -13,6 +13,16 @@ from volue.mesh.proto import type
 from volue.mesh.proto.model.v1alpha import model_pb2
 
 
+class ValidityInfo:
+    def __init__(self, get_validity_response):
+        self.valid_from = get_validity_response.valid_from.ToDatetime()
+        self.valid_until = get_validity_response.valid_until.ToDatetime()
+
+
+    def __str__(self):
+        return f"valid_from: '{self.valid_from.isoformat}'; valid_until: '{self.valid_until.isoformat()}'"
+
+
 def main():
     connection = mesh.Connection.insecure("localhost:50051")
 
@@ -23,6 +33,9 @@ def main():
 
     # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
     object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
+
+    valid_from = datetime.fromisoformat("2024-12-04T00:00:00.000Z")
+    valid_until = datetime.fromisoformat("2024-12-27T00:00:00.000Z")
 
     print("[MARTIN] Starting mesh...")
 
@@ -50,7 +63,7 @@ def main():
         # Give mesh some time to finish starting up
         time.sleep(10)
 
-        import_and_check_validity(
+        validity_info = import_and_get_validity(
             connection, imp_exp_exe, dump_with_validity_path, object_id
         )
 
@@ -58,14 +71,13 @@ def main():
     finally:
         mesh_proc.terminate()
 
-    # check_validity()
-
 
 def generate_data_with_validity(
     connection: mesh.Connection,
     imp_exp_exe: str,
     dump_with_validity_path: str,
     object_id: str,
+    validity_info: ValidityInfo
 ):
     imp_args = [imp_exp_exe, "-i", "C:/Users/martin.galvan/base_dump.mdump", "-S"]
 
@@ -77,12 +89,12 @@ def generate_data_with_validity(
     # Set validity for an object
     with connection.create_session() as session:
         # First, verify that the object doesn't have any validity info set
-        validity_info = get_validity(session, object_id)
+        response = get_validity(session, object_id)
 
-        print(f"[MARTIN] Validity of object before setting it: {validity_info}")
+        print(f"[MARTIN] Validity of object before setting it: '{response}'")
 
         # Now, set the validity
-        set_validity(session, object_id)
+        set_validity(session, object_id, validity_info)
 
         session.commit()
 
@@ -94,7 +106,7 @@ def generate_data_with_validity(
     subprocess.check_call(exp_args)
 
 
-def import_and_check_validity(
+def import_and_get_validity(
     connection: mesh.Connection,
     imp_exp_exe: str,
     dump_with_validity_path: str,
@@ -108,21 +120,23 @@ def import_and_check_validity(
     subprocess.check_call(imp_args)
 
     with connection.create_session() as session:
-        validity_info = get_validity(session, object_id)
+        response = get_validity(session, object_id)
 
-    print(f"[MARTIN] Validity of object after importing it: {validity_info}")
+    validity_info = ValidityInfo(response)
+
+    print(f"[MARTIN] Validity of object after importing it: '{validity_info}'")
+
+    return validity_info
 
 
-def set_validity(session, object_id: str):
+def set_validity(session, object_id: str, validity_info: ValidityInfo):
     print("[MARTIN] Setting validity for object...")
 
-    valid_from_datetime = datetime.fromisoformat("2024-12-04T00:00:00.000Z")
     valid_from = timestamp_pb2.Timestamp()
-    valid_from.FromDatetime(valid_from_datetime)
+    valid_from.FromDatetime(validity_info.valid_from)
 
-    valid_until_datetime = datetime.fromisoformat("2024-12-27T00:00:00.000Z")
     valid_until = timestamp_pb2.Timestamp()
-    valid_until.FromDatetime(valid_until_datetime)
+    valid_until.FromDatetime(validity_info.valid_until)
 
     request = model_pb2.UpdateValidityRequest(
         session_id=to_proto_guid(session.session_id),
