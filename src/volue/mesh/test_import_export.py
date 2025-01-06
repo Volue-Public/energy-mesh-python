@@ -26,7 +26,11 @@ def main():
 
     print("[MARTIN] Starting mesh...")
 
-    with subprocess.Popen([mesh_exe]) as mesh_proc:
+    mesh_proc = subprocess.Popen([mesh_exe])
+
+    # We need to use try/finally instead of 'with subprocess.Popen(...)' since for some reason we
+    # won't be able to catch any exceptions until we terminate the mesh process.
+    try:
         # Give mesh some time to finish starting up
         time.sleep(10)
 
@@ -35,12 +39,14 @@ def main():
         )
 
         print("[MARTIN] Terminating mesh...")
-
+    finally:
         mesh_proc.terminate()
 
     print("[MARTIN] Starting mesh...")
 
-    with subprocess.Popen(mesh_exe) as mesh_proc:
+    mesh_proc = subprocess.Popen(mesh_exe)
+
+    try:
         # Give mesh some time to finish starting up
         time.sleep(10)
 
@@ -49,10 +55,10 @@ def main():
         )
 
         print("[MARTIN] Terminating mesh...")
-
+    finally:
         mesh_proc.terminate()
 
-    check_validity()
+    # check_validity()
 
 
 def generate_data_with_validity(
@@ -70,7 +76,13 @@ def generate_data_with_validity(
 
     # Set validity for an object
     with connection.create_session() as session:
-        set_validity(session)
+        # First, verify that the object doesn't have any validity info set
+        validity_info = get_validity(session, object_id)
+
+        print(f"[MARTIN] Validity of object before setting it: {validity_info}")
+
+        # Now, set the validity
+        set_validity(session, object_id)
 
         session.commit()
 
@@ -96,7 +108,9 @@ def import_and_check_validity(
     subprocess.check_call(imp_args)
 
     with connection.create_session() as session:
-        get_validity(session, object_id)
+        validity_info = get_validity(session, object_id)
+
+    print(f"[MARTIN] Validity of object after importing it: {validity_info}")
 
 
 def set_validity(session, object_id: str):
@@ -132,7 +146,9 @@ def get_validity(session, object_id: str):
 
     response = session.model_service.GetValidity(request)
 
-    print(f"[MARTIN] Done! Response: '{response}'")
+    print(f"[MARTIN] Done!")
+
+    return response
 
 
 def to_proto_mesh_id(uuid: uuid.UUID):
