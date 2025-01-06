@@ -21,7 +21,7 @@ MESH_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Server.exe"
 IMP_EXP_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
 
 # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
-OBJECT_ID = UUID.uuid("{21893300-6482-4b09-b9ba-58b48740d0e7}")
+OBJECT_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("2024-12-04T00:00:00.000Z") since
 # the return value from GetValidity doesn't seem to include the fractionary part.
@@ -51,8 +51,8 @@ class ValidityInfo:
     ("validity_info"),
     [
         ValidityInfo(FROM_DATE, UNTIL_DATE),
-        # ValidityInfo(None, UNTIL_DATE),
-        # ValidityInfo(FROM_DATE, None),
+        ValidityInfo(None, UNTIL_DATE),
+        ValidityInfo(FROM_DATE, None),
     ],
 )
 class TestValidityImportExport:
