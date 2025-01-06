@@ -21,42 +21,52 @@ def main():
     imp_exp_exe = f"{mesh_build_path}/Powel.Mesh.Model.ImportExport.exe"
     dump_with_validity_path = "C:/Users/martin.galvan/with_validity.mdump"
 
+    # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
+    object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
+
     print("[MARTIN] Starting mesh...")
 
     with subprocess.Popen([mesh_exe]) as mesh_proc:
         # Give mesh some time to finish starting up
         time.sleep(10)
 
-        generate_data_with_validity(connection, imp_exp_exe, dump_with_validity_path)
+        generate_data_with_validity(
+            connection, imp_exp_exe, dump_with_validity_path, object_id
+        )
 
         print("[MARTIN] Terminating mesh...")
 
         mesh_proc.terminate()
 
-    # print("[MARTIN] Starting mesh...")
+    print("[MARTIN] Starting mesh...")
 
-    # with subprocess.Popen(mesh_exe) as mesh_proc:
-    #     # Give mesh some time to finish starting up
-    #     time.sleep(10)
+    with subprocess.Popen(mesh_exe) as mesh_proc:
+        # Give mesh some time to finish starting up
+        time.sleep(10)
 
-    #     import_and_check_validity(connection, imp_exp_exe, dump_with_validity_path)
+        import_and_check_validity(
+            connection, imp_exp_exe, dump_with_validity_path, object_id
+        )
 
-    #     print("[MARTIN] Terminating mesh...")
+        print("[MARTIN] Terminating mesh...")
 
-    #     mesh_proc.terminate()
+        mesh_proc.terminate()
 
-    # check_validity()
+    check_validity()
 
 
 def generate_data_with_validity(
-    connection: mesh.Connection, imp_exp_exe: str, dump_with_validity_path: str
+    connection: mesh.Connection,
+    imp_exp_exe: str,
+    dump_with_validity_path: str,
+    object_id: str,
 ):
     imp_args = [imp_exp_exe, "-i", "C:/Users/martin.galvan/base_dump.mdump", "-S"]
 
     # Import the base data first
     print("[MARTIN] Importing base data...")
 
-    # subprocess.check_call(imp_args)
+    subprocess.check_call(imp_args)
 
     # Set validity for an object
     with connection.create_session() as session:
@@ -64,16 +74,19 @@ def generate_data_with_validity(
 
         session.commit()
 
-    # exp_args = [imp_exp_exe, "-o", dump_with_validity_path, "-m", "MeshTEK"]
+    exp_args = [imp_exp_exe, "-o", dump_with_validity_path, "-m", "MeshTEK"]
 
-    # # Export data with validity
-    # print("[MARTIN] Exporting data with validity...")
+    # Export data with validity
+    print("[MARTIN] Exporting data with validity...")
 
-    # subprocess.check_call(exp_args)
+    subprocess.check_call(exp_args)
 
 
 def import_and_check_validity(
-    connection: mesh.Connection, imp_exp_exe: str, dump_with_validity_path: str
+    connection: mesh.Connection,
+    imp_exp_exe: str,
+    dump_with_validity_path: str,
+    object_id: str,
 ):
     imp_args = [imp_exp_exe, "-i", dump_with_validity_path, "-S"]
 
@@ -83,11 +96,10 @@ def import_and_check_validity(
     subprocess.check_call(imp_args)
 
     with connection.create_session() as session:
-        pass
-        # get_validity()
+        get_validity(session, object_id)
 
 
-def set_validity(session):
+def set_validity(session, object_id: str):
     print("[MARTIN] Setting validity for object...")
 
     valid_from_datetime = datetime.fromisoformat("2024-12-04T00:00:00.000Z")
@@ -98,9 +110,6 @@ def set_validity(session):
     valid_until = timestamp_pb2.Timestamp()
     valid_until.FromDatetime(valid_until_datetime)
 
-    # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
-    object_id = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
-
     request = model_pb2.UpdateValidityRequest(
         session_id=to_proto_guid(session.session_id),
         object_id=to_proto_mesh_id(object_id),
@@ -108,7 +117,20 @@ def set_validity(session):
         valid_until=valid_until,
     )
 
-    # response = session.model_service.UpdateValidity(request)
+    response = session.model_service.UpdateValidity(request)
+
+    print(f"[MARTIN] Done! Response: '{response}'")
+
+
+def get_validity(session, object_id: str):
+    print("[MARTIN] Getting validity for object...")
+
+    request = model_pb2.GetValidityRequest(
+        session_id=to_proto_guid(session.session_id),
+        object_id=to_proto_mesh_id(object_id),
+    )
+
+    response = session.model_service.GetValidity(request)
 
     print(f"[MARTIN] Done! Response: '{response}'")
 
@@ -116,9 +138,10 @@ def set_validity(session):
 def to_proto_mesh_id(uuid: uuid.UUID):
     proto_mesh_id = type.resources_pb2.MeshId()
 
-    proto_mesh_id.id.CopyFrom(to_proto_guid(target))
+    proto_mesh_id.id.CopyFrom(to_proto_guid(uuid))
 
     return proto_mesh_id
+
 
 def to_proto_guid(uuid: uuid.UUID):
     return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
