@@ -9,6 +9,8 @@ from google.protobuf import timestamp_pb2
 
 from volue import mesh
 
+from volue.mesh._common import _to_proto_guid
+from volue.mesh._mesh_id import _to_proto_object_mesh_id
 from volue.mesh.proto import type
 from volue.mesh.proto.model.v1alpha import model_pb2
 
@@ -111,17 +113,17 @@ def generate_data_with_validity(
     # Import the base data first
     print("[MARTIN] Importing base data...")
 
-    subprocess.check_call(imp_args)
+    # subprocess.check_call(imp_args)
 
     # Set validity for an object
     with connection.create_session() as session:
         # First, verify that the object doesn't have any validity info set
-        response = get_validity(session, OBJECT_ID)
+        response = get_validity(session)
 
         print(f"[MARTIN] Validity of object before setting it: '{response}'")
 
         # Now, set the validity
-        set_validity(session, OBJECT_ID, validity_info)
+        set_validity(session, validity_info)
 
         session.commit()
 
@@ -165,8 +167,8 @@ def set_validity(session, validity_info: ValidityInfo):
     valid_until.FromDatetime(validity_info.valid_until)
 
     request = model_pb2.UpdateValidityRequest(
-        session_id=to_proto_guid(session.session_id),
-        object_id=to_proto_mesh_id(OBJECT_ID),
+        session_id=_to_proto_guid(session.session_id),
+        object_id=_to_proto_object_mesh_id(OBJECT_ID),
         valid_from=valid_from,
         valid_until=valid_until,
     )
@@ -180,8 +182,8 @@ def get_validity(session):
     print("[MARTIN] Getting validity for object...")
 
     request = model_pb2.GetValidityRequest(
-        session_id=to_proto_guid(session.session_id),
-        object_id=to_proto_mesh_id(OBJECT_ID),
+        session_id=_to_proto_guid(session.session_id),
+        object_id=_to_proto_object_mesh_id(OBJECT_ID),
     )
 
     response = session.model_service.GetValidity(request)
@@ -198,16 +200,16 @@ def check_validity(validity_info: ValidityInfo, expected_validity_info: Validity
         print(f"[MARTIN] ERROR: '{validity_info}' != '{expected_validity_info}'")
 
 
-def to_proto_mesh_id(uuid: uuid.UUID):
-    proto_mesh_id = type.resources_pb2.MeshId()
+# def to_proto_mesh_id(uuid: uuid.UUID):
+#     proto_mesh_id = type.resources_pb2.MeshId()
 
-    proto_mesh_id.id.CopyFrom(to_proto_guid(uuid))
+#     proto_mesh_id.id.CopyFrom(to_proto_guid(uuid))
 
-    return proto_mesh_id
+#     return proto_mesh_id
 
 
-def to_proto_guid(uuid: uuid.UUID):
-    return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
+# def to_proto_guid(uuid: uuid.UUID):
+#     return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
 
 
 if __name__ == "__main__":
