@@ -56,7 +56,7 @@ def generate_data_with_validity(
     # Import the base data first
     print("[MARTIN] Importing base data...")
 
-    subprocess.check_call(imp_args)
+    # subprocess.check_call(imp_args)
 
     # Set validity for an object (Models->MeshTEK->Mesh->To_Areas->Finland)
     with connection.create_session() as session:
@@ -102,15 +102,22 @@ def set_validity(session):
 
     request = model_pb2.UpdateValidityRequest(
         session_id=to_proto_guid(session.session_id),
-        object_id=to_proto_guid(object_id),
+        object_id=object_id,
         valid_from=valid_from,
         valid_until=valid_until,
     )
 
-    response = session.model_service.UpdateValidity(request)
+    # response = session.model_service.UpdateValidity(request)
 
     print(f"[MARTIN] Done! Response: '{response}'")
 
+
+def to_proto_mesh_id(uuid: uuid.UUID):
+    proto_mesh_id = type.resources_pb2.MeshId()
+
+    proto_mesh_id.id.CopyFrom(to_proto_guid(target))
+
+    return proto_mesh_id
 
 def to_proto_guid(uuid: uuid.UUID):
     return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
