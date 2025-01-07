@@ -38,7 +38,10 @@ MESH_TO_AREAS_FINLAND_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 MESH_TO_AREAS_NORGE_ID = uuid.UUID("{f06e67ed-61a6-4700-ac40-df80d752aeba}")
 
 # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO1
-MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID("{478f13d3-6e40-4db7-ae5b-3544ce04c546}")
+MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID(
+    "{478f13d3-6e40-4db7-ae5b-3544ce04c546}"
+)
+
 
 class ValidityInterval:
     def __init__(self, valid_from: datetime = None, valid_until: datetime = None):
@@ -103,12 +106,17 @@ class TestValidityImportExport:
             self._do_import(BASE_DUMP_PATH)
             self._set_validity_data(connection, validity_test_data)
 
-        def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
+        def import_data_with_validity(
+            connection: mesh.Connection,
+            imported_validity_data: dict[uuid.UUID, ValidityInterval],
+        ):
             self._get_validity_data(connection, imported_validity_data)
 
         self._run_mesh_and_do(generate_and_export_data_with_validity, connection)
 
-        self._run_mesh_and_do(import_data_with_validity, connection, imported_validity_data)
+        self._run_mesh_and_do(
+            import_data_with_validity, connection, imported_validity_data
+        )
 
         assert imported_validity_data == validity_test_data
 
@@ -117,11 +125,11 @@ class TestValidityImportExport:
 
     #     self._run_mesh_and_do(self._do_import)
     #     self._
-        # Set and export validity 1
-        # Restart mesh
-        # Set validity 2
-        # Import validity 1
-        # Check that the final validity is validity 1
+    # Set and export validity 1
+    # Restart mesh
+    # Set validity 2
+    # Import validity 1
+    # Check that the final validity is validity 1
 
     def _run_mesh_and_do(self, callback: Callable, *args):
         mesh_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Server.exe"
@@ -142,7 +150,11 @@ class TestValidityImportExport:
 
             mesh_proc.terminate()
 
-    def _set_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval]):
+    def _set_validity_data(
+        self,
+        connection: mesh.Connection,
+        validity_data: dict[uuid.UUID, ValidityInterval],
+    ):
         # Set validity for our target objects.
         with connection.create_session() as session:
             for object_id, validity_interval in validity_data.items():
@@ -157,13 +169,19 @@ class TestValidityImportExport:
             session.commit()
 
     def _get_validity_data(
-        self, connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]
+        self,
+        connection: mesh.Connection,
+        imported_validity_data: dict[uuid.UUID, ValidityInterval],
     ):
         with connection.create_session() as session:
             for object_id in imported_validity_data:
-                imported_validity_data[object_id] = self._get_validity(session, object_id)
+                imported_validity_data[object_id] = self._get_validity(
+                    session, object_id
+                )
 
-                print(f"[MARTIN] Validity of object '{object_id}' after importing it: '{imported_validity_data[object_id]}'")
+                print(
+                    f"[MARTIN] Validity of object '{object_id}' after importing it: '{imported_validity_data[object_id]}'"
+                )
 
     def _set_validity(
         self,
@@ -214,15 +232,18 @@ class TestValidityImportExport:
     def _do_import(self, dump_path: str):
         print("[MARTIN] Importing data...")
 
-        _call_import_export(["-i", dump_path, "-S"])
+        self._call_import_export(["-i", dump_path, "-S"])
 
     def _do_export(self, dump_path: str):
         print("[MARTIN] Exporting data...")
 
-        _call_import_export(["-o", dump_path, "-m", "MeshTEK"])
+        self._call_import_export(["-o", dump_path, "-m", "MeshTEK"])
 
     def _call_import_export(self, args: list[str]):
-        subprocess.check_call([IMP_EXP_EXE] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.check_call(
+            [IMP_EXP_EXE] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
+        )
+
 
 if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))
