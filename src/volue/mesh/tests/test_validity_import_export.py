@@ -94,6 +94,7 @@ VALIDITY_TEST_DATA = {
 }
 
 
+# -k TestValidityImportExport
 class TestValidityImportExport:
     def test_set_validity(self, connection: mesh.Connection):
         imported_validity_data = {}
@@ -111,10 +112,10 @@ class TestValidityImportExport:
 
         print("[MARTIN] Starting mesh...")
 
-        mesh_proc = subprocess.Popen([mesh_exe])
-
         # We need to use try/finally instead of 'with subprocess.Popen(...)' since for some reason
         # we won't be able to catch any exceptions until we terminate the mesh process.
+        mesh_proc = subprocess.Popen([mesh_exe])
+
         try:
             # Give mesh some time to finish starting up
             time.sleep(10)
@@ -130,14 +131,13 @@ class TestValidityImportExport:
 
         imp_args = [IMP_EXP_EXE, "-i", base_dump_path, "-S"]
 
-        # Import the base data first
         print("[MARTIN] Importing base data...")
 
         subprocess.check_call(
             imp_args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
         )
 
-        # Set validity for an object
+        # Set validity for our target objects.
         with connection.create_session() as session:
             for object_id, validity_info in VALIDITY_TEST_DATA.items():
                 # First, verify that the object doesn't have any validity info set.
@@ -152,7 +152,6 @@ class TestValidityImportExport:
 
         exp_args = [IMP_EXP_EXE, "-o", DUMP_WITH_VALIDITY_PATH, "-m", "MeshTEK"]
 
-        # Export data with validity.
         print("[MARTIN] Exporting data with validity...")
 
         subprocess.check_call(
@@ -166,7 +165,6 @@ class TestValidityImportExport:
 
         imp_args = [IMP_EXP_EXE, "-i", DUMP_WITH_VALIDITY_PATH, "-S"]
 
-        # Import the data with validity.
         print("[MARTIN] Importing data with validity...")
 
         subprocess.check_call(
