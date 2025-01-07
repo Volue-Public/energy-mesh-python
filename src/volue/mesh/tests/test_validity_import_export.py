@@ -21,6 +21,8 @@ MESH_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Server.exe"
 IMP_EXP_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
 
 # This is the ID of Models->MeshTEK->Mesh->To_Areas->Finland
+# TODO: A more efficient test would be to edit the validity of several objects at the same time, so
+# that we only have to do one export/import for all the tests instead of one for each test.
 OBJECT_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("2024-12-04T00:00:00.000Z") since
@@ -129,9 +131,10 @@ class TestValidityImportExport:
         with connection.create_session() as session:
             response = self._get_validity(session)
 
-        validity_info = ValidityInfo(
-            response.valid_from.ToDatetime(), response.valid_until.ToDatetime()
-        )
+        valid_from = response.valid_from.ToDatetime() if response.valid_from != None else response.valid_from
+        valid_until = response.valid_until.ToDatetime() if response.valid_until != None else response.valid_until
+
+        validity_info = ValidityInfo(valid_from, valid_until)
 
         print(f"[MARTIN] Validity of object after importing it: '{validity_info}'")
 
@@ -140,11 +143,17 @@ class TestValidityImportExport:
     def _set_validity(self, session: mesh.Connection.Session, validity_info: ValidityInfo):
         print("[MARTIN] Setting validity for object...")
 
-        valid_from = timestamp_pb2.Timestamp()
-        valid_from.FromDatetime(validity_info.valid_from)
+        if validity_info.valid_from != None:
+            valid_from = timestamp_pb2.Timestamp()
+            valid_from.FromDatetime(validity_info.valid_from)
+        else:
+            valid_from = None
 
-        valid_until = timestamp_pb2.Timestamp()
-        valid_until.FromDatetime(validity_info.valid_until)
+        if validity_info.valid_until != None:
+            valid_until = timestamp_pb2.Timestamp()
+            valid_until.FromDatetime(validity_info.valid_until)
+        else:
+            valid_until = None
 
         request = model_pb2.UpdateValidityRequest(
             session_id=_common._to_proto_guid(session.session_id),
