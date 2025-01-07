@@ -165,9 +165,9 @@ class TestValidityImportExport:
                 response = self._get_validity(session, object_id)
                 validity_info = ValidityInfo().from_proto_timestamps(response.valid_from, response.valid_until)
 
-            result[object_id] = validity_info
+                result[object_id] = validity_info
 
-            print(f"[MARTIN] Validity of object '{object_id}' after importing it: '{validity_info}'")
+                print(f"[MARTIN] Validity of object '{object_id}' after importing it: '{validity_info}'")
 
         return result
 
