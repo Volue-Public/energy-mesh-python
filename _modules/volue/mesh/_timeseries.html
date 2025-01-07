@@ -175,15 +175,15 @@
 <span class="sd">Functionality for working with time series.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 
 
-<div class="viewcode-block" id="Timeseries"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries">[docs]</a><span class="k">class</span> <span class="nc">Timeseries</span><span class="p">:</span>
+<div class="viewcode-block" id="Timeseries"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Timeseries</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a Mesh time series.</span>
 
 <span class="sd">    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)</span>
@@ -195,7 +195,7 @@
 <span class="sd">        :doc:`timeseries`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Timeseries.Curve"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Curve">[docs]</a>    <span class="k">class</span> <span class="nc">Curve</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="Timeseries.Curve"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Curve">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">Curve</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A curve type of a time series.</span>
 <span class="sd">        It specifies how the values are laid out relative to each other.</span>
@@ -212,7 +212,7 @@
         <span class="n">PIECEWISELINEAR</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="n">STAIRCASE</span> <span class="o">=</span> <span class="mi">3</span></div>
 
-<div class="viewcode-block" id="Timeseries.Resolution"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Resolution">[docs]</a>    <span class="k">class</span> <span class="nc">Resolution</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="Timeseries.Resolution"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Resolution">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">Resolution</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The resolution of values in the time series.</span>
 <span class="sd">        It specifies the time interval between each value.</span>
@@ -239,7 +239,7 @@
         <span class="n">YEAR</span> <span class="o">=</span> <span class="mi">7</span>
         <span class="n">MIN30</span> <span class="o">=</span> <span class="mi">8</span></div>
 
-<div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span> <span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Information about certain action that has been performed on the values</span>
 <span class="sd">        and the state. It is 32 bit flag setting the status for the point. Enum</span>
@@ -278,7 +278,7 @@
         <span class="p">]</span>
     <span class="p">)</span>  <span class="c1"># The pyarrow schema used for time series points.</span>
 
-<div class="viewcode-block" id="Timeseries.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="Timeseries.__init__"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.__init__">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">table</span><span class="p">:</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Resolution</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -340,7 +340,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">end_time</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Number of points inside the time series.</span>
 
@@ -350,7 +350,7 @@
         <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_calculation_expression_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_calculation_expression_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks if a time series is a calculated or a physical or virtual time series.</span>
 

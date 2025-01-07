@@ -171,28 +171,28 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._base_connection</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span>
 
-<span class="kn">import</span> <span class="nn">grpc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">grpc</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.auth.v1alpha</span> <span class="kn">import</span> <span class="n">auth_pb2</span><span class="p">,</span> <span class="n">auth_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.calc.v1alpha</span> <span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.config.v1alpha</span> <span class="kn">import</span> <span class="n">config_pb2</span><span class="p">,</span> <span class="n">config_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.hydsim.v1alpha</span> <span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.model.v1alpha</span> <span class="kn">import</span> <span class="n">model_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.model_definition.v1alpha</span> <span class="kn">import</span> <span class="n">model_definition_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.session.v1alpha</span> <span class="kn">import</span> <span class="n">session_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.time_series.v1alpha</span> <span class="kn">import</span> <span class="n">time_series_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.auth.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth_pb2</span><span class="p">,</span> <span class="n">auth_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.config.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">config_pb2</span><span class="p">,</span> <span class="n">config_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model_definition.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_definition_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.session.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">session_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.time_series.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_series_pb2_grpc</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_authentication</span>
-<span class="kn">from</span> <span class="nn">._authentication</span> <span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">ExternalAccessTokenPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">_authentication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._authentication</span><span class="w"> </span><span class="kn">import</span> <span class="n">Authentication</span><span class="p">,</span> <span class="n">ExternalAccessTokenPlugin</span>
 
 <span class="n">C</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;Connection&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Connection</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Connection</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A connection to a Mesh server.</span>
 
 <span class="sd">    There are four primary types of connections, insecure, TLS encrypted,</span>
@@ -223,7 +223,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_insecure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insecure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an insecure gRPC channel.</span>
 
 <span class="sd">        Derived classes should implement this using either grpc.aio.insecure_channel</span>
@@ -232,7 +232,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_secure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_secure_grpc_channel</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a secure gRPC channel.</span>
 
 <span class="sd">        Derived classes should implement this using either grpc.aio.secure_channel</span>
@@ -240,7 +240,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_grpc_channel_options</span><span class="p">(</span><span class="n">max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_grpc_channel_options</span><span class="p">(</span><span class="n">max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a secure gRPC channel.</span>
 
 <span class="sd">        Derived classes should implement this using either grpc.aio.secure_channel</span>
@@ -254,7 +254,7 @@
             <span class="k">else</span> <span class="p">[]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -350,7 +350,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span> <span class="o">=</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Connection.insecure"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.insecure">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">insecure</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insecure</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an insecure connection to a Mesh server.</span>
@@ -366,7 +366,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.with_tls"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_tls">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_tls</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_tls</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -391,7 +391,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.with_kerberos"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_kerberos">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_kerberos</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_kerberos</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -441,7 +441,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.with_external_access_token"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.with_external_access_token">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">with_external_access_token</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">with_external_access_token</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -478,7 +478,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span></div>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_with_fake_identity</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_with_fake_identity</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">):</span>
         <span class="n">ssl_credentials</span> <span class="o">=</span> <span class="n">grpc</span><span class="o">.</span><span class="n">ssl_channel_credentials</span><span class="p">(</span><span class="n">root_certificates</span><span class="p">)</span>
@@ -493,7 +493,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="n">auth_metadata_plugin</span><span class="p">)</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">config_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">config_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Request version information of the connected Mesh server.</span>
 
 <span class="sd">        Note:</span>
@@ -504,7 +504,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_user_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">auth_pb2</span><span class="o">.</span><span class="n">UserIdentity</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">auth_pb2</span><span class="o">.</span><span class="n">UserIdentity</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Request information about the user authorized to work with the Mesh server.</span>
 
 <span class="sd">        Note:</span>
@@ -516,7 +516,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_external_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_external_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates external access token used for connection to Mesh.</span>
 
 <span class="sd">        Args:</span>
@@ -532,7 +532,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">revoke_access_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Revokes Mesh token if user no longer should be authenticated.</span>
 
 <span class="sd">        Note:</span>
@@ -546,7 +546,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new session.</span>
 
 <span class="sd">        Note:</span>
@@ -555,7 +555,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a session with a given session id, the id of the session you are (or want to be) connected to.</span>
 
 <span class="sd">        Args:</span>

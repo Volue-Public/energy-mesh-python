@@ -171,46 +171,46 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._base_session</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">typing</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">dateutil</span>
-<span class="kn">from</span> <span class="nn">google</span> <span class="kn">import</span> <span class="n">protobuf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dateutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google</span><span class="w"> </span><span class="kn">import</span> <span class="n">protobuf</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.calc.v1alpha</span> <span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.hydsim.v1alpha</span> <span class="kn">import</span> <span class="n">hydsim_pb2</span><span class="p">,</span> <span class="n">hydsim_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.model.v1alpha</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2</span><span class="p">,</span> <span class="n">hydsim_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">model_pb2</span><span class="p">,</span>
     <span class="n">model_pb2_grpc</span><span class="p">,</span>
     <span class="n">resources_pb2</span> <span class="k">as</span> <span class="n">model_resources_pb2</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.model_definition.v1alpha</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model_definition.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">model_definition_pb2</span><span class="p">,</span>
     <span class="n">model_definition_pb2_grpc</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.session.v1alpha</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.session.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">session_pb2_grpc</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.time_series.v1alpha</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.time_series.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">time_series_pb2</span><span class="p">,</span>
     <span class="n">time_series_pb2_grpc</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.type</span> <span class="kn">import</span> <span class="n">resources_pb2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.type</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources_pb2</span>
 
-<span class="kn">from</span> <span class="nn">._attribute</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._attribute</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SIMPLE_TYPE</span><span class="p">,</span>
     <span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
     <span class="n">AttributeBase</span><span class="p">,</span>
     <span class="n">TimeseriesAttribute</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._common</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AttributesFilter</span><span class="p">,</span>
     <span class="n">LinkRelationVersion</span><span class="p">,</span>
     <span class="n">RatingCurveSegment</span><span class="p">,</span>
@@ -226,25 +226,25 @@
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">._mesh_id</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._mesh_id</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">_to_proto_attribute_mesh_id</span><span class="p">,</span>
     <span class="n">_to_proto_object_mesh_id</span><span class="p">,</span>
     <span class="n">_to_proto_read_timeseries_mesh_id</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">._object</span> <span class="kn">import</span> <span class="n">Object</span>
-<span class="kn">from</span> <span class="nn">._timeseries</span> <span class="kn">import</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">._timeseries_resource</span> <span class="kn">import</span> <span class="n">TimeseriesResource</span>
-<span class="kn">from</span> <span class="nn">.calc.forecast</span> <span class="kn">import</span> <span class="n">ForecastFunctions</span>
-<span class="kn">from</span> <span class="nn">.calc.history</span> <span class="kn">import</span> <span class="n">HistoryFunctions</span>
-<span class="kn">from</span> <span class="nn">.calc.statistical</span> <span class="kn">import</span> <span class="n">StatisticalFunctions</span>
-<span class="kn">from</span> <span class="nn">.calc.transform</span> <span class="kn">import</span> <span class="n">TransformFunctions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._object</span><span class="w"> </span><span class="kn">import</span> <span class="n">Object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._timeseries</span><span class="w"> </span><span class="kn">import</span> <span class="n">Timeseries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">._timeseries_resource</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeseriesResource</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.calc.forecast</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForecastFunctions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.calc.history</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryFunctions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.calc.statistical</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatisticalFunctions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.calc.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformFunctions</span>
 
 <span class="n">EXTEND_SESSION_LIFETIME_INTERVAL_IN_SECS</span> <span class="o">=</span> <span class="mi">150</span>
 
 
-<span class="k">class</span> <span class="nc">Session</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="k">class</span> <span class="nc">WorkerThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Session</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">class</span><span class="w"> </span><span class="nc">WorkerThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
             <span class="n">event_loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -255,7 +255,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">session</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">asyncio</span><span class="o">.</span><span class="n">AbstractEventLoop</span><span class="p">]</span> <span class="o">=</span> <span class="n">event_loop</span>
 
-        <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">event_loop</span><span class="p">)</span>
 
@@ -277,11 +277,11 @@
                     <span class="c1"># message and exit the worker thread.</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;session </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2"> worker thread exception&quot;</span>
-                    <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+                    <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a session to a Mesh server.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_extend_lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extend_lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request to extend session lifetime on the Mesh server.</span>
 <span class="sd">        This is used internally by the Mesh Python SDK and the user does not</span>
@@ -291,7 +291,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">calc_service</span><span class="p">:</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span><span class="p">,</span>
         <span class="n">hydsim_service</span><span class="p">:</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">,</span>
@@ -329,7 +329,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Session</span><span class="o">.</span><span class="n">WorkerThread</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request to open a session on the Mesh server.</span>
 <span class="sd">        An opened session must be closed using the same `Session` object.</span>
@@ -339,7 +339,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request to close a session on the Mesh server.</span>
 
@@ -352,7 +352,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Discard changes in the :doc:`Mesh session &lt;mesh_session&gt;`.</span>
 
@@ -361,7 +361,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Commit changes made in the :doc:`Mesh session &lt;mesh_session&gt;` to the shared storage.</span>
 
@@ -370,7 +370,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">read_timeseries_points</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_timeseries_points</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -401,7 +401,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Writes time series points for the specified time series in the given interval.</span>
 <span class="sd">        Resolution of the time series does not need to be set when writing time series.</span>
@@ -418,7 +418,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">list_models</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_models</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -430,7 +430,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -455,7 +455,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">search_for_objects</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_for_objects</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -482,7 +482,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">create_object</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Object</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -511,7 +511,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_object</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">new_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -540,7 +540,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">delete_object</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="n">recursive_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -558,7 +558,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -579,7 +579,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_timeseries_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_timeseries_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -601,7 +601,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">search_for_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_for_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -625,7 +625,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">search_for_timeseries_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_for_timeseries_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -649,7 +649,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_simple_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_simple_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
@@ -675,7 +675,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_timeseries_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">new_local_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -699,7 +699,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_link_relation_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_link_relation_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">new_target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">],</span>
@@ -733,7 +733,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_versioned_one_to_one_link_relation_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_versioned_one_to_one_link_relation_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -762,7 +762,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_versioned_one_to_many_link_relation_attribute</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_versioned_one_to_many_link_relation_attribute</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">new_entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]],</span>
@@ -788,7 +788,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_timeseries_resource_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_timeseries_resource_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Request information (like curve type or resolution) associated with</span>
 <span class="sd">        a physical or virtual time series.</span>
@@ -802,7 +802,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_timeseries_resource_info</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_resource_info</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -825,7 +825,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">forecast_functions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forecast_functions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -846,7 +846,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">history_functions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">history_functions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -867,7 +867,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">statistical_functions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">statistical_functions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -888,7 +888,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">transform_functions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transform_functions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -909,7 +909,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_xy_sets</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_xy_sets</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
@@ -953,7 +953,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_xy_sets</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_xy_sets</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
@@ -993,7 +993,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_rating_curve_versions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_rating_curve_versions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1026,7 +1026,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">update_rating_curve_versions</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_rating_curve_versions</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1054,7 +1054,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Session.run_simulation"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.run_simulation">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">run_simulation</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_simulation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1105,7 +1105,7 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="Session.run_inflow_calculation"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.run_inflow_calculation">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">run_inflow_calculation</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_inflow_calculation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">area</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1152,7 +1152,7 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="Session.get_mc_file"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.get_mc_file">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">get_mc_file</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_mc_file</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1177,7 +1177,7 @@
 <span class="sd">            grpc.RpcError</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_xy_sets_impl</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_xy_sets_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
@@ -1209,7 +1209,7 @@
 
         <span class="n">response</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">request</span>
 
-        <span class="k">def</span> <span class="nf">get_valid_from_time</span><span class="p">(</span><span class="n">proto</span><span class="p">:</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_valid_from_time</span><span class="p">(</span><span class="n">proto</span><span class="p">:</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">proto</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;valid_from_time&quot;</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">proto</span><span class="o">.</span><span class="n">valid_from_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1229,7 +1229,7 @@
             <span class="k">for</span> <span class="n">proto_xy_set</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">xy_sets</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_xy_sets_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_xy_sets_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">],</span>
@@ -1246,14 +1246,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">interval</span> <span class="o">=</span> <span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_xy_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">XyCurve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_xy_curve</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">XyCurve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XyCurve</span><span class="p">(</span>
                 <span class="n">reference_value</span><span class="o">=</span><span class="n">curve</span><span class="o">.</span><span class="n">z</span><span class="p">,</span>
                 <span class="n">x_values</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xy</span><span class="p">],</span>
                 <span class="n">y_values</span><span class="o">=</span><span class="p">[</span><span class="n">y</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">curve</span><span class="o">.</span><span class="n">xy</span><span class="p">],</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_xy_set</span><span class="p">(</span><span class="n">xy_set</span><span class="p">:</span> <span class="n">XySet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_xy_set</span><span class="p">(</span><span class="n">xy_set</span><span class="p">:</span> <span class="n">XySet</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">:</span>
             <span class="n">valid_from_time</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">xy_set</span><span class="o">.</span><span class="n">valid_from_time</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -1275,7 +1275,7 @@
 
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_read_timeseries_impl</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_read_timeseries_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1304,7 +1304,7 @@
 
         <span class="k">yield</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_list_models_impl</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_list_models_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">ListModelsResponse</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator implementation of list_models.</span>
@@ -1323,7 +1323,7 @@
             <span class="n">Object</span><span class="o">.</span><span class="n">_from_proto_object</span><span class="p">(</span><span class="n">proto_object</span><span class="p">)</span> <span class="k">for</span> <span class="n">proto_object</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">models</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_get_object_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_get_object_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -1342,7 +1342,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_search_for_objects_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_for_objects_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1363,7 +1363,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_create_object_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_object_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">CreateObjectRequest</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `CreateObjectRequest`&quot;&quot;&quot;</span>
@@ -1375,7 +1375,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_object_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_object_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">new_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -1397,7 +1397,7 @@
             <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="c1"># Wrap the error so that the user can distinguish what</span>
                 <span class="c1"># MeshId is wrong: target or new_owner_attribute.</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid new owner attribute&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid new owner attribute&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
             <span class="n">request</span><span class="o">.</span><span class="n">new_owner_id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">new_owner_mesh_id</span><span class="p">)</span>
             <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_owner_id&quot;</span><span class="p">)</span>
@@ -1412,7 +1412,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_delete_object_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_object_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="n">recursive_delete</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">DeleteObjectRequest</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `DeleteObjectRequest`&quot;&quot;&quot;</span>
@@ -1424,7 +1424,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_get_attribute_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_get_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">GetAttributeRequest</span><span class="p">(</span>
@@ -1435,7 +1435,7 @@
 
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_search_attributes_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_attributes_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1450,7 +1450,7 @@
 
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_simple_attribute_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_simple_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
@@ -1474,7 +1474,7 @@
 
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_timeseries_attribute_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_timeseries_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">new_local_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -1499,7 +1499,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_link_relation_attribute_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_link_relation_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">new_target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">],</span>
@@ -1518,7 +1518,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_versioned_link_relation_attribute_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_versioned_link_relation_attribute_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]],</span>
@@ -1535,7 +1535,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">proto_interval</span> <span class="o">=</span> <span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_link_relation_version</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_link_relation_version</span><span class="p">(</span>
             <span class="n">version</span><span class="p">:</span> <span class="n">LinkRelationVersion</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">LinkRelationVersion</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">LinkRelationVersion</span><span class="p">(</span>
@@ -1547,7 +1547,7 @@
                 <span class="p">),</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_link_relation_entry</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_link_relation_entry</span><span class="p">(</span>
             <span class="n">versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">],</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">VersionedLinkRelationAttributeValue</span><span class="p">:</span>
 
@@ -1567,7 +1567,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_to_proto_singular_attribute_value</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_singular_attribute_value</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">SIMPLE_TYPE</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">:</span>
         <span class="n">att_value</span> <span class="o">=</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">()</span>
@@ -1588,7 +1588,7 @@
 
         <span class="k">return</span> <span class="n">att_value</span>
 
-    <span class="k">def</span> <span class="nf">_to_update_attribute_request_values</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_update_attribute_request_values</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SIMPLE_TYPE_OR_COLLECTION</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span>
         <span class="n">Optional</span><span class="p">[</span><span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">],</span>
@@ -1610,7 +1610,7 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">new_singular_value</span><span class="p">,</span> <span class="n">new_collection_values</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_timeseries_resource_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_timeseries_resource_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">],</span>
@@ -1635,7 +1635,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_get_rating_curve_versions_impl</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_rating_curve_versions_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1684,7 +1684,7 @@
             <span class="k">for</span> <span class="n">proto_version</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">versions</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_update_rating_curve_versions_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_rating_curve_versions_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1694,7 +1694,7 @@
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_rating_curve_segment</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_rating_curve_segment</span><span class="p">(</span>
             <span class="n">segment</span><span class="p">:</span> <span class="n">RatingCurveSegment</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">RatingCurveSegment</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">RatingCurveSegment</span><span class="p">(</span>
@@ -1704,7 +1704,7 @@
                 <span class="n">factor_c</span><span class="o">=</span><span class="n">segment</span><span class="o">.</span><span class="n">factor_c</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">to_proto_rating_curve_version</span><span class="p">(</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_rating_curve_version</span><span class="p">(</span>
             <span class="n">version</span><span class="p">:</span> <span class="n">RatingCurveVersion</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">RatingCurveVersion</span><span class="p">:</span>
             <span class="n">proto_segments</span> <span class="o">=</span> <span class="p">[</span>
@@ -1736,7 +1736,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_run_simulation_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_run_simulation_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1766,7 +1766,7 @@
             <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_run_inflow_calculation_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_run_inflow_calculation_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">targets</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">],</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1793,7 +1793,7 @@
             <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_prepare_get_mc_file_request</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_get_mc_file_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1814,7 +1814,7 @@
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_unit_of_measurement_id_by_name</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_unit_of_measurement_id_by_name</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">list_response</span><span class="p">:</span> <span class="n">model_definition_pb2</span><span class="o">.</span><span class="n">ListUnitsOfMeasurementResponse</span><span class="p">,</span>

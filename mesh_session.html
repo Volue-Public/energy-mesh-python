@@ -197,14 +197,14 @@
 <p>If the connection is lost it is possible to reconnect to the server and attach to a open session using a session identifier. If a user does not close a session manually it will time out and will be closed after a specific time, but this might steal resources and should be avoided.</p>
 <p>Trying to connect to a session with a session id that is no longer valid will result in an error.</p>
 <p>The following example shows some different ways of working with sessions.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 
-<span class="kn">import</span> <span class="nn">helpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing different ways of working with sessions.&quot;&quot;&quot;</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>

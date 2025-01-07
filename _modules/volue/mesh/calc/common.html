@@ -175,25 +175,25 @@
 <span class="sd">Common classes/enums/etc for Mesh calculation functions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">tz</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">tz</span>
 
-<span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timeseries</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._common</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timeseries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._common</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">_read_proto_numeric_reply</span><span class="p">,</span>
     <span class="n">_read_proto_reply</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">volue.mesh._mesh_id</span> <span class="kn">import</span> <span class="n">_to_proto_calculation_target_mesh_id</span>
-<span class="kn">from</span> <span class="nn">volue.mesh.proto.calc.v1alpha</span> <span class="kn">import</span> <span class="n">calc_pb2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._mesh_id</span><span class="w"> </span><span class="kn">import</span> <span class="n">_to_proto_calculation_target_mesh_id</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2</span>
 
 
-<div class="viewcode-block" id="Timezone"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.common.Timezone">[docs]</a><span class="k">class</span> <span class="nc">Timezone</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="Timezone"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.common.Timezone">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Timezone</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Timezone specifier.</span>
 
@@ -208,7 +208,7 @@
     <span class="n">UTC</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
-<span class="k">def</span> <span class="nf">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_convert_datetime_to_mesh_calc_format</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts input datetime to format expected by Mesh calculator.</span>
 <span class="sd">    Datetime is converted to UTC. If input datetime is time zone naive then it is already treated as UTC.</span>
@@ -231,7 +231,7 @@
     <span class="k">return</span> <span class="n">converted_date_str</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_timeseries_list_response</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_timeseries_list_response</span><span class="p">(</span>
     <span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -247,7 +247,7 @@
     <span class="k">return</span> <span class="n">timeseries</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_single_timeseries_response</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_single_timeseries_response</span><span class="p">(</span>
     <span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -270,7 +270,7 @@
     <span class="k">return</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function for parsing a calculator response.</span>
 
@@ -291,12 +291,12 @@
     <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">_Calculation</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_Calculation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all calculations.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">session</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
@@ -318,7 +318,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">start_time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">=</span> <span class="n">end_time</span>
 
-    <span class="k">def</span> <span class="nf">prepare_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationRequest</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Checks that the requirements for a calculation request are met,</span>
 <span class="sd">        and constructs a calculation request object.</span>
@@ -337,7 +337,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">run_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">calc_pb2</span><span class="o">.</span><span class="n">CalculationResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run a function using an asynchronous connection.</span>
 
@@ -347,7 +347,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            gRPC calculation response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">volue.mesh.aio</span> <span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.aio</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span> <span class="k">as</span> <span class="n">AsyncConnection</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">AsyncConnection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -358,7 +358,7 @@
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">calc_service</span><span class="o">.</span><span class="n">RunCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span>
 
-    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expression</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run a function using a synchronous connection.</span>
 
@@ -368,7 +368,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            gRPC calculation response.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">volue.mesh</span> <span class="kn">import</span> <span class="n">Connection</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>

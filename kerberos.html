@@ -202,7 +202,7 @@ machine user the service principal name will usually be
 <code class="docutils literal notranslate"><span class="pre">HOST/full.qualified.domain.name</span></code> or <code class="docutils literal notranslate"><span class="pre">HOST/f.q.d.n&#64;DOMAIN.COM</span></code> but it might
 be different in your environment. Determining the service principal name for
 the Mesh service is out of scope for this guide.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -304,7 +304,7 @@ Python SDK authenticates to the Mesh server. As long as that ticket is
 available on the client you will not have to retype your password.
 To destroy the ticket run <code class="docutils literal notranslate"><span class="pre">kdestroy</span></code>.</p>
 <p>Finally, we can connect to the Mesh server from Python.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
 <span class="c1"># Most certificates won&#39;t work with IP addresses, therefore</span>
 <span class="c1"># you&#39;ll need to be able to resolve the Mesh server by name,</span>
@@ -326,15 +326,15 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
 <p>Please refer to example <em>authorization.py</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
-<span class="kn">import</span> <span class="nn">helpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
 
-<span class="kn">import</span> <span class="nn">volue.mesh.aio</span>
-<span class="kn">from</span> <span class="nn">volue</span> <span class="kn">import</span> <span class="n">mesh</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">volue.mesh.aio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
 
-<span class="k">def</span> <span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
@@ -348,7 +348,7 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
     <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
 
 
-<span class="k">async</span> <span class="k">def</span> <span class="nf">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example:&quot;</span><span class="p">)</span>
 
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
@@ -362,7 +362,7 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
     <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">revoke_access_token</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
 
     <span class="c1"># If Mesh gRPC server is running as a service user,</span>
