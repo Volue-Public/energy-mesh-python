@@ -106,17 +106,12 @@ class TestValidityImportExport:
             self._do_import(BASE_DUMP_PATH)
             self._set_validity_data(connection, validity_test_data)
 
-        def import_data_with_validity(
-            connection: mesh.Connection,
-            imported_validity_data: dict[uuid.UUID, ValidityInterval],
-        ):
+        def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
             self._get_validity_data(connection, imported_validity_data)
 
         self._run_mesh_and_do(generate_and_export_data_with_validity, connection)
 
-        self._run_mesh_and_do(
-            import_data_with_validity, connection, imported_validity_data
-        )
+        self._run_mesh_and_do(import_data_with_validity, connection, imported_validity_data)
 
         assert imported_validity_data == validity_test_data
 
@@ -150,10 +145,7 @@ class TestValidityImportExport:
 
             mesh_proc.terminate()
 
-    def _set_validity_data(
-        self,
-        connection: mesh.Connection,
-        validity_data: dict[uuid.UUID, ValidityInterval],
+    def _set_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval],
     ):
         # Set validity for our target objects.
         with connection.create_session() as session:
@@ -168,28 +160,15 @@ class TestValidityImportExport:
 
             session.commit()
 
-    def _get_validity_data(
-        self,
-        connection: mesh.Connection,
-        imported_validity_data: dict[uuid.UUID, ValidityInterval],
-    ):
+    def _get_validity_data(self, connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
         with connection.create_session() as session:
             for object_id in imported_validity_data:
-                imported_validity_data[object_id] = self._get_validity(
-                    session, object_id
-                )
+                imported_validity_data[object_id] = self._get_validity(session, object_id)
 
-                print(
-                    f"[MARTIN] Validity of object '{object_id}' after importing it: '{imported_validity_data[object_id]}'"
-                )
+                print(f"[MARTIN] Validity of object '{object_id}' after importing it: '{imported_validity_data[object_id]}'")
 
-    def _set_validity(
-        self,
-        session: mesh.Connection.Session,
-        object_id: uuid.UUID,
-        validity_interval: ValidityInterval,
-    ):
-        print("[MARTIN] Setting validity for object...")
+    def _set_validity(self, session: mesh.Connection.Session, object_id: uuid.UUID, validity_interval: ValidityInterval):
+        print(f"[MARTIN] Setting validity for object {object_id}...")
 
         valid_from, valid_until = validity_interval.to_proto_timestamps()
 
@@ -204,10 +183,8 @@ class TestValidityImportExport:
 
         print(f"[MARTIN] Done! Response: '{response}'")
 
-    def _get_validity(
-        self, session: mesh.Connection.Session, object_id: uuid.UUID
-    ) -> ValidityInterval:
-        print("[MARTIN] Getting validity for object...")
+    def _get_validity(self, session: mesh.Connection.Session, object_id: uuid.UUID) -> ValidityInterval:
+        print(f"[MARTIN] Getting validity for object {object_id}...")
 
         request = model_pb2.GetValidityRequest(
             session_id=_common._to_proto_guid(session.session_id),
