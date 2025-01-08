@@ -100,6 +100,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-a-connection-grpc-error">I get a connection gRPC error.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong">I get a SSL_ERROR_SSL. What am I doing wrong?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha">I get an ImportError: cannot import name ‘auth_pb2’ from ‘volue.mesh.proto.auth.v1alpha’.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-a-resource-exhausted-grpc-error">I get a RESOURCE_EXHAUSTED gRPC error.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other">Other</a><ul>
@@ -193,13 +194,14 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="#i-get-a-connection-grpc-error" id="id1">I get a connection gRPC error.</a></p></li>
 <li><p><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" id="id2">I get a SSL_ERROR_SSL. What am I doing wrong?</a></p></li>
-<li><p><a class="reference internal" href="#i-get-a-resource-exhausted-grpc-error" id="id3">I get a RESOURCE_EXHAUSTED gRPC error.</a></p></li>
-<li><p><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" id="id4">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a></p></li>
-<li><p><a class="reference internal" href="#other" id="id5">Other</a></p>
+<li><p><a class="reference internal" href="#i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha" id="id3">I get an ImportError: cannot import name ‘auth_pb2’ from ‘volue.mesh.proto.auth.v1alpha’.</a></p></li>
+<li><p><a class="reference internal" href="#i-get-a-resource-exhausted-grpc-error" id="id4">I get a RESOURCE_EXHAUSTED gRPC error.</a></p></li>
+<li><p><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" id="id5">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a></p></li>
+<li><p><a class="reference internal" href="#other" id="id6">Other</a></p>
 <ul>
-<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id6">Mesh server gRPC configuration</a></p></li>
-<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id7">I think I found a bug or I have a feature request.</a></p></li>
-<li><p><a class="reference internal" href="#i-need-more-help" id="id8">I need more help.</a></p></li>
+<li><p><a class="reference internal" href="#mesh-server-grpc-configuration" id="id7">Mesh server gRPC configuration</a></p></li>
+<li><p><a class="reference internal" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" id="id8">I think I found a bug or I have a feature request.</a></p></li>
+<li><p><a class="reference internal" href="#i-need-more-help" id="id9">I need more help.</a></p></li>
 </ul>
 </li>
 </ul>
@@ -225,8 +227,30 @@
 </div>
 <p>If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.</p>
 </div>
+<div class="section" id="i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha">
+<h2><a class="toc-backref" href="#id3">I get an ImportError: cannot import name ‘auth_pb2’ from ‘volue.mesh.proto.auth.v1alpha’.</a><a class="headerlink" href="#i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha" title="Permalink to this heading">¶</a></h2>
+<p>When trying to use the Mesh Python SDK you might get an error like this.
+All Mesh Python SDK versions up to 1.10.0 (inclusive) are affected by this
+issue.</p>
+<p>This issue is fixed in Mesh Python SDK 1.11.0. All users with a Mesh server
+version starting from 2.15.0 should upgrade the Mesh Python SDK. Users with
+Mesh server version 2.14 and below need to reinstall the Mesh Python SDK by
+running the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generally we recommend to run this in virtual environment</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>poetry-core<span class="o">==</span><span class="m">1</span>.9.1
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>grpcio-tools<span class="o">==</span><span class="m">1</span>.66.1
+<span class="c1"># Replace &lt;YOUR_MESH_PYTHON_SDK_VERSION_HERE&gt; with the version you want to install</span>
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-build-isolation<span class="w"> </span>git+https://github.com/Volue-Public/energy-mesh-python@&lt;YOUR_MESH_PYTHON_SDK_VERSION_HERE&gt;
+</pre></div>
+</div>
+<p>The reason for this is that we need poetry-core to be older than version 2.0.0.
+Here we use the <cite>–no-build-isolation</cite> flag to prevent pip from automatically
+installing any dependencies in an isolated build environment, and we install
+them manually instead.</p>
+<p>See <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/526">[526]</a> for more information.</p>
+</div>
 <div class="section" id="i-get-a-resource-exhausted-grpc-error">
-<h2><a class="toc-backref" href="#id3">I get a RESOURCE_EXHAUSTED gRPC error.</a><a class="headerlink" href="#i-get-a-resource-exhausted-grpc-error" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">I get a RESOURCE_EXHAUSTED gRPC error.</a><a class="headerlink" href="#i-get-a-resource-exhausted-grpc-error" title="Permalink to this heading">¶</a></h2>
 <p>By default, gRPC limits the size of inbound messages to 4MB. There is no limit
 on outbound message size. From client side, the user can change those limits
 when creating a gRPC connection to Mesh. From Mesh server side, those limits
@@ -240,7 +264,7 @@ RESOURCE_EXHAUSTED and a message like “CLIENT: Received message larger than ma
 information and suggested ways to address the issue.</p>
 </div>
 <div class="section" id="i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux">
-<h2><a class="toc-backref" href="#id4">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a><a class="headerlink" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a><a class="headerlink" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" title="Permalink to this heading">¶</a></h2>
 <p>This error can have multiple causes. Some things to check are:</p>
 <ol class="arabic simple">
 <li><p>Is pip upgraded to the latest version?</p></li>
@@ -337,18 +361,18 @@ environments:</p>
 </div>
 </div>
 <div class="section" id="other">
-<h2><a class="toc-backref" href="#id5">Other</a><a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">Other</a><a class="headerlink" href="#other" title="Permalink to this heading">¶</a></h2>
 <p>If neither of the above suggestions helped.</p>
 <div class="section" id="mesh-server-grpc-configuration">
-<h3><a class="toc-backref" href="#id6">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Mesh server gRPC configuration</a><a class="headerlink" href="#mesh-server-grpc-configuration" title="Permalink to this heading">¶</a></h3>
 <p>Mesh server is configured by Volue consultants. In case of any configuration problems or change requests (like turning on authentication) please contact your Volue consultant.</p>
 </div>
 <div class="section" id="i-think-i-found-a-bug-or-i-have-a-feature-request">
-<h3><a class="toc-backref" href="#id7">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">I think I found a bug or I have a feature request.</a><a class="headerlink" href="#i-think-i-found-a-bug-or-i-have-a-feature-request" title="Permalink to this heading">¶</a></h3>
 <p>If you believe you found a bug in the Mesh Python SDK or have any other suggestions, you should first read the <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/discussions">discussion board</a> and if that does not resolve your problem you should report the issue in as much detail as possible, preferably with a code example demonstrating the bug, in <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues">issue tracker</a>.</p>
 </div>
 <div class="section" id="i-need-more-help">
-<h3><a class="toc-backref" href="#id8">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">I need more help.</a><a class="headerlink" href="#i-need-more-help" title="Permalink to this heading">¶</a></h3>
 <p>If you have a more pressing issue or if your issue includes confidential information, you should contact Volue’s customer service.</p>
 </div>
 </div>
