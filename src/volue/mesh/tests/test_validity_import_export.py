@@ -1,6 +1,7 @@
 import time
 import subprocess
 import sys
+import tempfile
 import uuid
 
 from collections.abc import Callable
@@ -17,13 +18,11 @@ from volue.mesh.proto.model.v1alpha import model_pb2
 
 DUMPS_PATH = "C:/Users/martin.galvan"
 BASE_DUMP_PATH = f"{DUMPS_PATH}/base_dump.mdump"
-DUMP_WITH_VALIDITY_PATH = f"{DUMPS_PATH}/with_validity.mdump"
 MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
-IMP_EXP_EXE = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
 
-# FIXME: The checks seem to break if we use datetime.fromisoformat("2024-12-04T00:00:00.000Z") since
+# FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
 # the return value from GetValidity doesn't seem to include the fractionary part.
-FROM_DATE = datetime.fromisoformat("2024-12-04T00:00:00")
+FROM_DATE = datetime.fromisoformat("1990-08-21T00:00:00")
 UNTIL_DATE = FROM_DATE + timedelta(days=1)
 
 # We set various combinations of validity values for different objects at the same time on each test.
@@ -38,10 +37,10 @@ MESH_TO_AREAS_FINLAND_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 MESH_TO_AREAS_NORGE_ID = uuid.UUID("{f06e67ed-61a6-4700-ac40-df80d752aeba}")
 
 # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO1
-MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID(
-    "{478f13d3-6e40-4db7-ae5b-3544ce04c546}"
-)
+MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID("{478f13d3-6e40-4db7-ae5b-3544ce04c546}")
 
+# Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO3
+MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID = uuid.UUID("{f00dcb8c-3dfd-4f6d-9f46-052d0843886b}")
 
 class ValidityInterval:
     def __init__(self, valid_from: datetime = None, valid_until: datetime = None):
@@ -53,12 +52,11 @@ class ValidityInterval:
 
     def __eq__(self, other):
         if isinstance(other, ValidityInterval):
-            return (
-                self.valid_from == other.valid_from
-                and self.valid_until == other.valid_until
-            )
+            return (self.valid_from == other.valid_from and
+                    self.valid_until == other.valid_until)
         else:
             return NotImplemented
+
 
     def to_proto_timestamps(
         self,
@@ -75,6 +73,7 @@ class ValidityInterval:
             valid_until.FromDatetime(self.valid_until)
 
         return (valid_from, valid_until)
+
 
     def from_proto_timestamps(
         self, valid_from: timestamp_pb2.Timestamp, valid_until: timestamp_pb2.Timestamp
@@ -93,38 +92,79 @@ class ValidityInterval:
 
 # -k TestValidityImportExport
 class TestValidityImportExport:
-    def test_set_validity(self, connection: mesh.Connection):
-        validity_test_data = {
+    # def test_set_validity(self, connection: mesh.Connection):
+    #     dump_with_validity_path = f"{DUMPS_PATH}/with_validity.mdump"
+
+    #     validity_test_data = {
+    #         MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
+    #         MESH_TO_AREAS_NORGE_ID: ValidityInterval(FROM_DATE, None),
+    #         MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
+    #     }
+
+    #     self._generate_and_export_data_with_validity(connection, validity_test_data, dump_with_validity_path)
+
+    #     imported_validity_data = dict.fromkeys(validity_test_data, None)
+
+    #     def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
+    #         self._do_import(dump_with_validity_path)
+    #         self._get_validity_data(connection, imported_validity_data)
+
+    #     self._run_mesh_and_do(import_data_with_validity, connection, imported_validity_data)
+
+    #     assert imported_validity_data == validity_test_data
+
+
+    def test_change_existing_validity(self, connection: mesh.Connection):
+        dump_with_new_validity_path = f"{DUMPS_PATH}/new_validity.mdump"
+
+        old_validity_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
             MESH_TO_AREAS_NORGE_ID: ValidityInterval(FROM_DATE, None),
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
+            MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
         }
 
-        imported_validity_data = {}
+        new_validity_data = {
+            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE + timedelta(days=1), UNTIL_DATE + timedelta(days=1)),
+            MESH_TO_AREAS_NORGE_ID: ValidityInterval(None, UNTIL_DATE),
+            MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(FROM_DATE, None),
+            MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(None, None),
+        }
 
-        def generate_and_export_data_with_validity(connection: mesh.Connection):
+        # Create an dump file with the "new" validity data.
+        self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
+
+        # Set the "old" validity data first, then import the "new" validity data.
+        imported_validity_data = dict.fromkeys(new_validity_data, None)
+
+        def callback(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
             self._do_import(BASE_DUMP_PATH)
-            self._set_validity_data(connection, validity_test_data)
-
-        def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
+            self._set_validity_data(connection, old_validity_data)
+            self._do_import(dump_with_new_validity_path)
             self._get_validity_data(connection, imported_validity_data)
 
-        self._run_mesh_and_do(generate_and_export_data_with_validity, connection)
+        self._run_mesh_and_do(callback, connection, imported_validity_data)
 
-        self._run_mesh_and_do(import_data_with_validity, connection, imported_validity_data)
+        # Check that the resulting validity data is the "new" one.
+        print("[MARTIN] Validity data after import:")
 
-        assert imported_validity_data == validity_test_data
+        for id, interval in imported_validity_data.items():
+            print(f"[MARTIN] {id}: {interval}")
 
-    # def test_change_existing_validity(self, connection: mesh.Connection):
-    #     imported_validity_data = {}
+        assert imported_validity_data == new_validity_data
 
-    #     self._run_mesh_and_do(self._do_import)
-    #     self._
-    # Set and export validity 1
-    # Restart mesh
-    # Set validity 2
-    # Import validity 1
-    # Check that the final validity is validity 1
+
+    def _generate_and_export_data_with_validity(self,
+                                                connection: mesh.Connection,
+                                                validity_data: dict[uuid.UUID, ValidityInterval],
+                                                dump_with_validity_path: str):
+        def callback(connection: mesh.Connection):
+            self._do_import(BASE_DUMP_PATH)
+            self._set_validity_data(connection, validity_data)
+            self._do_export(dump_with_validity_path)
+
+        self._run_mesh_and_do(callback, connection)
+
 
     def _run_mesh_and_do(self, callback: Callable, *args):
         mesh_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Server.exe"
@@ -145,8 +185,8 @@ class TestValidityImportExport:
 
             mesh_proc.terminate()
 
-    def _set_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval],
-    ):
+
+    def _set_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval]):
         # Set validity for our target objects.
         with connection.create_session() as session:
             for object_id, validity_interval in validity_data.items():
@@ -160,12 +200,14 @@ class TestValidityImportExport:
 
             session.commit()
 
-    def _get_validity_data(self, connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
-        with connection.create_session() as session:
-            for object_id in imported_validity_data:
-                imported_validity_data[object_id] = self._get_validity(session, object_id)
 
-                print(f"[MARTIN] Validity of object '{object_id}' after importing it: '{imported_validity_data[object_id]}'")
+    def _get_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval]):
+        with connection.create_session() as session:
+            for object_id in validity_data:
+                validity_data[object_id] = self._get_validity(session, object_id)
+
+                print(f"[MARTIN] Validity of object '{object_id}': '{validity_data[object_id]}'")
+
 
     def _set_validity(self, session: mesh.Connection.Session, object_id: uuid.UUID, validity_interval: ValidityInterval):
         print(f"[MARTIN] Setting validity for object {object_id}...")
@@ -182,6 +224,7 @@ class TestValidityImportExport:
         response = session.model_service.UpdateValidity(request)
 
         print(f"[MARTIN] Done! Response: '{response}'")
+
 
     def _get_validity(self, session: mesh.Connection.Session, object_id: uuid.UUID) -> ValidityInterval:
         print(f"[MARTIN] Getting validity for object {object_id}...")
@@ -206,20 +249,23 @@ class TestValidityImportExport:
 
         return validity_interval
 
+
     def _do_import(self, dump_path: str):
         print("[MARTIN] Importing data...")
 
         self._call_import_export(["-i", dump_path, "-S"])
+
 
     def _do_export(self, dump_path: str):
         print("[MARTIN] Exporting data...")
 
         self._call_import_export(["-o", dump_path, "-m", "MeshTEK"])
 
+
     def _call_import_export(self, args: list[str]):
-        subprocess.check_call(
-            [IMP_EXP_EXE] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT
-        )
+        imp_exp_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
+
+        subprocess.check_call([imp_exp_exe] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
