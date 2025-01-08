@@ -32,6 +32,8 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
 
+.. _faq_proto_import_error:
+
 I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha'.
 *****************************************************************************************
 
