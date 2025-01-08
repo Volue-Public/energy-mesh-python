@@ -39,24 +39,24 @@ When trying to use the Mesh Python SDK you might get an error like this.
 All Mesh Python SDK versions up to 1.10.0 (inclusive) are affected by this
 issue.
 
-This issue is fixed in Mesh Python SDK 1.11.0. All users with Mesh server
-version starting from 2.15.0 should upgrade Mesh Python SDK. Users with Mesh
-server version 2.14 and below need to reinstall Mesh Python SDK the following
-way:
+This issue is fixed in Mesh Python SDK 1.11.0. All users with a Mesh server
+version starting from 2.15.0 should upgrade the Mesh Python SDK. Users with
+Mesh server version 2.14 and below need to reinstall the Mesh Python SDK by
+running the following:
 
 .. code-block:: bash
 
    # Generally we recommend to run this in virtual environment
-   pip install poetry-core==1.9.1
-   pip install grpcio-tools==1.66.1
-   # Set your Mesh Python SDK version in the next line
-   pip install --no-build-isolation git+https://github.com/Volue-Public/energy-mesh-python@v1.8.0
+   python -m pip install poetry-core==1.9.1
+   python -m pip install grpcio-tools==1.66.1
+   # Replace <YOUR_MESH_PYTHON_SDK_VERSION_HERE> with the version you want to install
+   python -m pip install --no-build-isolation git+https://github.com/Volue-Public/energy-mesh-python@<YOUR_MESH_PYTHON_SDK_VERSION_HERE>
 
 
-The reason is that we need poetry-core version below 2.0.0. To do this we need
-to install Mesh Python SDK with `--no-build-isolation` flag. This flag requires
-all the build dependencies to be already installed on the system. That is why
-we install poetry-core and grpcio-tools before installing Mesh Python SDK.
+The reason for this is that we need poetry-core to be older than version 2.0.0.
+Here we use the `--no-build-isolation` flag to prevent pip from automatically
+installing any dependencies in an isolated build environment, and we install
+them manually instead.
 
 See :issue:`526` for more information.
 
