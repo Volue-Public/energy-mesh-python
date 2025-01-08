@@ -32,6 +32,34 @@ I get a SSL_ERROR_SSL. What am I doing wrong?
 If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
 
 
+I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha'.
+*****************************************************************************************
+
+When trying to use the Mesh Python SDK you might get an error like this.
+All Mesh Python SDK versions up to 1.10.0 (inclusive) are affected by this
+issue.
+
+This issue is fixed in Mesh Python SDK 1.11.0. All users with Mesh server
+version starting from 2.15.0 should upgrade Mesh Python SDK. Users with Mesh
+server version 2.14 and below need to reinstall Mesh Python SDK the following
+way:
+
+.. code-block:: bash
+
+   # Generally we recommend to run this in virtual environment
+   pip install poetry-core==1.9.1
+   pip install grpcio-tools==1.66.1
+   # Set your Mesh Python SDK version in the next line
+   pip install --no-build-isolation git+https://github.com/Volue-Public/energy-mesh-python@v1.8.0
+
+
+The reason is that we need poetry-core version below 2.0.0. To do this we need
+to install Mesh Python SDK with `--no-build-isolation` flag. This flag requires
+all the build dependencies to be already installed on the system. That is why
+we install poetry-core and grpcio-tools before installing Mesh Python SDK.
+
+See :issue:`526` for more information.
+
 I get a RESOURCE_EXHAUSTED gRPC error.
 **************************************
 
