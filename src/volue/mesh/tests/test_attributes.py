@@ -12,7 +12,8 @@ import pytest
 from dateutil import tz
 
 from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute
-from volue.mesh.tests.test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID
+
+from .test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID
 
 ATTRIBUTE_PATH_PREFIX = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
 

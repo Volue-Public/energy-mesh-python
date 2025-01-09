@@ -10,7 +10,8 @@ import pytest
 from dateutil import tz
 
 from volue.mesh import LinkRelationVersion
-from volue.mesh.tests.test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID
+
+from .test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID
 
 ONE_TO_ONE_LINK_RELATION_ATTRIBUTE_NAME = "SimpleReference"
 ONE_TO_MANY_LINK_RELATION_ATTRIBUTE_NAME = "PlantToChimneyRefCollection"

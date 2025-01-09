@@ -14,10 +14,8 @@ from volue.mesh import (
     Object,
     OwnershipRelationAttribute,
 )
-from volue.mesh.tests.test_utilities.utilities import (
-    AttributeForTesting,
-    ObjectForTesting,
-)
+
+from .test_utilities.utilities import AttributeForTesting, ObjectForTesting
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"
 OBJECT_ID = uuid.UUID("0000000A-0001-0000-0000-000000000000")
