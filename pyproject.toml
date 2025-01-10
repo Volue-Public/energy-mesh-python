@@ -35,6 +35,10 @@ include = [
     { path = "src/volue/mesh/proto/type/resources_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/type/resources_pb2_grpc.py", format = ["sdist", "wheel"] }
 ]
+exclude = [
+    "src/volue/mesh/examples/**",
+    "src/volue/mesh/tests/**",
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9, <3.13"
@@ -50,7 +54,7 @@ python-dateutil = "^2.8.2"
 # https://bugzilla.mozilla.org/show_bug.cgi?id=1857492
 six = "^1.16.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 grpcio-tools = ">=1.37.0, <=1.66.1"
 Sphinx = ">=5.0.2"
 sphinx-rtd-theme = "^0.5.2"
