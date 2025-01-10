@@ -22,7 +22,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Do not include tests and examples in the `volue.mesh` package. :pull:`529`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
