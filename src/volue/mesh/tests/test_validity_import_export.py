@@ -28,7 +28,7 @@ UNTIL_DATE = FROM_DATE + timedelta(days=1)
 # We set various combinations of validity values for different objects at the same time on each test.
 # This is more efficient than doing the entire export/import cycle on a single object for each
 # combination of validity values.
-# Note that the target objects must be of type Model, Component, or AttributeElement.
+# Note that the target objects must be of type AttributeElement or Component.
 
 # Models->MeshTEK->Mesh->To_Areas->Finland
 MESH_TO_AREAS_FINLAND_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
@@ -124,6 +124,26 @@ class TestValidityImportExport:
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
         }
 
+        # SI INTENTO ANULARLE EL FROM O UNTIL DESDE WOMBAT, VEO QUE SOLAMENTE ACTUALIZA EL QUE NO
+        # ANULO, PERO NO TOCA EL QUE INTENTO ANULAR. ¿SERA QUE DESDE EL IMPORT ESTOY HACIENDO
+        # ALGO DISTINTO?
+        # Deberia probar con el debugger corriendo el import. De todas formas, sigue siendo
+        # inconsistente que no pueda anular from y until al mismo tiempo, siendo que puedo anular
+        # uno de ellos.
+        # Segun veo, ya en la propia ZMQ request del segundo import vienen solamente tres validity
+        # edits en vez de cuatro. Debuggeando vi que ya cuando hago el serializer.Read(importedData.ValidityData());
+        # no me toma el ultimo validity edit. ¿Sera que el serializer no lo sabe leer, o que
+        # directamente no se exporta? Parece que directamente no se exporta; cuando en el import
+        # hago ReadElements ya me esta tirando solamente 3. ¿Sera que no se exporta porque el export
+        # esta mal, o porque la parte de gRPC en Python no esta mandando bien el ultimo elemento?
+        # Creo que lo que esta pasando es que cuando hago el export solo estoy guardando la validity
+        # de los primeros 3 elementos, pero como el ultimo no tiene validity, no guardo nada.
+        # El export/import no tiene forma de saber que objectos pierden totalmente su validity
+        # cuando hago un import, ya que solo tomo en cuenta los objetos que tienen algo de validity.
+        # Esto es un problema, ya que la solucion seria que cuando hago el import busco todos los
+        # objetos que existen actualmente y veo si tienen validity. Si la tienen, y el import no
+        # tiene data de validity, significa que hay que sacarsela.
+
         new_validity_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE + timedelta(days=1), UNTIL_DATE + timedelta(days=1)),
             MESH_TO_AREAS_NORGE_ID: ValidityInterval(None, UNTIL_DATE),
@@ -131,8 +151,8 @@ class TestValidityImportExport:
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(None, None),
         }
 
-        # Create an dump file with the "new" validity data.
-        self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
+        # # Create a dump file with the "new" validity data.
+        # self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
 
         # Set the "old" validity data first, then import the "new" validity data.
         imported_validity_data = dict.fromkeys(new_validity_data, None)
