@@ -124,26 +124,6 @@ class TestValidityImportExport:
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
         }
 
-        # SI INTENTO ANULARLE EL FROM O UNTIL DESDE WOMBAT, VEO QUE SOLAMENTE ACTUALIZA EL QUE NO
-        # ANULO, PERO NO TOCA EL QUE INTENTO ANULAR. ¿SERA QUE DESDE EL IMPORT ESTOY HACIENDO
-        # ALGO DISTINTO?
-        # Deberia probar con el debugger corriendo el import. De todas formas, sigue siendo
-        # inconsistente que no pueda anular from y until al mismo tiempo, siendo que puedo anular
-        # uno de ellos.
-        # Segun veo, ya en la propia ZMQ request del segundo import vienen solamente tres validity
-        # edits en vez de cuatro. Debuggeando vi que ya cuando hago el serializer.Read(importedData.ValidityData());
-        # no me toma el ultimo validity edit. ¿Sera que el serializer no lo sabe leer, o que
-        # directamente no se exporta? Parece que directamente no se exporta; cuando en el import
-        # hago ReadElements ya me esta tirando solamente 3. ¿Sera que no se exporta porque el export
-        # esta mal, o porque la parte de gRPC en Python no esta mandando bien el ultimo elemento?
-        # Creo que lo que esta pasando es que cuando hago el export solo estoy guardando la validity
-        # de los primeros 3 elementos, pero como el ultimo no tiene validity, no guardo nada.
-        # El export/import no tiene forma de saber que objectos pierden totalmente su validity
-        # cuando hago un import, ya que solo tomo en cuenta los objetos que tienen algo de validity.
-        # Esto es un problema, ya que la solucion seria que cuando hago el import busco todos los
-        # objetos que existen actualmente y veo si tienen validity. Si la tienen, y el import no
-        # tiene data de validity, significa que hay que sacarsela.
-
         new_validity_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE + timedelta(days=1), UNTIL_DATE + timedelta(days=1)),
             MESH_TO_AREAS_NORGE_ID: ValidityInterval(None, UNTIL_DATE),
