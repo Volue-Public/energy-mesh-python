@@ -89,9 +89,13 @@ class _TransformFunctionsBase(_Calculation, ABC):
             Mesh calculation expression.
         """
 
-        if resolution is Timeseries.Resolution.BREAKPOINT:
+        if resolution in (
+            Timeseries.Resolution.BREAKPOINT,
+            Timeseries.Resolution.UNDEFINED,
+            Timeseries.Resolution.UNSPECIFIED,
+        ):
             raise ValueError(
-                "'BREAKPOINT' resolution is unsupported for time series transformation"
+                f"'{resolution.name}' resolution is unsupported for time series transformation"
             )
 
         expression = "## = @TRANSFORM(@t("

@@ -46,6 +46,7 @@ class Timeseries:
 
         Args:
             UNSPECIFIED:
+            UNDEFINED:
             BREAKPOINT:
             MIN15:
             MIN30:
@@ -65,6 +66,7 @@ class Timeseries:
         MONTH = 6
         YEAR = 7
         MIN30 = 8
+        UNDEFINED = 9
 
     class PointFlags(Enum):
         """

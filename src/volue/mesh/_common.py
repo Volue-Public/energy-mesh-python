@@ -397,6 +397,7 @@ def _from_proto_curve_type(proto_curve: type.resources_pb2.Curve) -> Timeseries.
 
 RESOLUTIONS = bidict(
     {
+        Timeseries.Resolution.UNDEFINED: type.resources_pb2.Resolution.UNDEFINED,
         Timeseries.Resolution.BREAKPOINT: type.resources_pb2.Resolution.BREAKPOINT,
         Timeseries.Resolution.MIN15: type.resources_pb2.Resolution.MIN15,
         Timeseries.Resolution.MIN30: type.resources_pb2.Resolution.MIN30,
