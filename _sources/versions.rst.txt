@@ -11,7 +11,7 @@ This is the current master version.
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.15 **(may change)**
+- Mesh server version >= 2.17 **(may change)**
 - Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features
@@ -22,6 +22,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
+- Support for *undefined* time series resolution. :pull:`535`
 - Do not include tests and examples in the `volue.mesh` package. :pull:`529`
 
 Install instructions
