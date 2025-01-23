@@ -16,8 +16,9 @@ from volue import mesh
 from volue.mesh import _common, _mesh_id
 from volue.mesh.proto.model.v1alpha import model_pb2
 
-DUMPS_PATH = "C:/Users/martin.galvan"
-BASE_DUMP_PATH = f"{DUMPS_PATH}/base_dump.mdump"
+# DUMPS_PATH = "C:/Users/martin.galvan"
+DUMPS_PATH = tempfile.TemporaryDirectory()
+BASE_DUMP_PATH = "C:/Users/martin.galvan/base_dump.mdump"
 MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
@@ -92,26 +93,26 @@ class ValidityInterval:
 
 # -k TestValidityImportExport
 class TestValidityImportExport:
-    # def test_set_validity(self, connection: mesh.Connection):
-    #     dump_with_validity_path = f"{DUMPS_PATH}/with_validity.mdump"
+    def test_set_validity(self, connection: mesh.Connection):
+        dump_with_validity_path = f"{DUMPS_PATH}/with_validity.mdump"
 
-    #     validity_test_data = {
-    #         MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
-    #         MESH_TO_AREAS_NORGE_ID: ValidityInterval(FROM_DATE, None),
-    #         MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
-    #     }
+        validity_test_data = {
+            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
+            MESH_TO_AREAS_NORGE_ID: ValidityInterval(FROM_DATE, None),
+            MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
+        }
 
-    #     self._generate_and_export_data_with_validity(connection, validity_test_data, dump_with_validity_path)
+        self._generate_and_export_data_with_validity(connection, validity_test_data, dump_with_validity_path)
 
-    #     imported_validity_data = dict.fromkeys(validity_test_data, None)
+        imported_validity_data = dict.fromkeys(validity_test_data, None)
 
-    #     def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
-    #         self._do_import(dump_with_validity_path)
-    #         self._get_validity_data(connection, imported_validity_data)
+        def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
+            self._do_import(dump_with_validity_path)
+            self._get_validity_data(connection, imported_validity_data)
 
-    #     self._run_mesh_and_do(import_data_with_validity, connection, imported_validity_data)
+        self._run_mesh_and_do(import_data_with_validity, connection, imported_validity_data)
 
-    #     assert imported_validity_data == validity_test_data
+        assert imported_validity_data == validity_test_data
 
 
     def test_change_existing_validity(self, connection: mesh.Connection):
@@ -131,8 +132,8 @@ class TestValidityImportExport:
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(None, None),
         }
 
-        # # Create a dump file with the "new" validity data.
-        # self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
+        # Create a dump file with the "new" validity data.
+        self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
 
         # Set the "old" validity data first, then import the "new" validity data.
         imported_validity_data = dict.fromkeys(new_validity_data, None)
@@ -148,8 +149,8 @@ class TestValidityImportExport:
         # Check that the resulting validity data is the "new" one.
         print("[MARTIN] Validity data after import:")
 
-        for id, interval in imported_validity_data.items():
-            print(f"[MARTIN] {id}: {interval}")
+        for guid, interval in imported_validity_data.items():
+            print(f"[MARTIN] {guid}: {interval}")
 
         assert imported_validity_data == new_validity_data
 
