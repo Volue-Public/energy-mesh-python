@@ -1,7 +1,21 @@
-This software code and its related documentation are the sole property of Volue ASA and its affiliated companies.
+MIT License
 
-It shall not be redistributed to or otherwise shared with any third party, nor shall any third party be granted any use rights to it, unless through an explicit license agreement concluded between Volue and a customer which defines the scope and duration of usage rights granted to the software code and related documentation. 
+Copyright (c) 2024 Volue ASA
 
-As a principle any license to Volue software should be granted as non-exclusive, restricted (subject to the existence/payment of a maintenance or lease agreement), non-transferable and non-sublicensable. 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-No customer or third party shall be granted any right to copy (other than for back-up purposes), reverse engineer, modify or create derivatives of the software and its related documentation unless explicitly agreed with Volue in writing.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
