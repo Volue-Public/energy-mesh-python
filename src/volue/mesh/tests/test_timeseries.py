@@ -644,6 +644,30 @@ def test_write_unsorted_timeseries_points(session):
         session.write_timeseries_points(timeseries)
 
 
+@pytest.mark.database
+def test_read_empty_timeseries(session):
+    """
+    Check that reading empty time series (without any points) is correctly handled.
+    """
+    empty_time_series_key = 9
+    start_time = datetime(2016, 1, 1)
+    end_time = datetime(2025, 1, 1)
+
+    reply_timeseries = session.read_timeseries_points(
+        empty_time_series_key, start_time, end_time
+    )
+
+    assert reply_timeseries.arrow_table is not None
+    assert reply_timeseries.arrow_table.num_rows == 0
+    # This check is redundant, but it is good to have it.
+    assert reply_timeseries.number_of_points == 0
+
+    assert reply_timeseries.start_time is None
+    assert reply_timeseries.end_time is None
+    assert reply_timeseries.resolution == Timeseries.Resolution.BREAKPOINT
+    assert reply_timeseries.timskey == empty_time_series_key
+
+
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_timeseries_async(async_session):
