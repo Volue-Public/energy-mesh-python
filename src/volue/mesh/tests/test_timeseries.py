@@ -491,8 +491,7 @@ def test_remove_timeseries_points_without_providing_write_interval(session):
     attribute_path = TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
 
     with pytest.raises(
-        AttributeError,
-        match="'Timeseries' object has no attribute 'start_time'",
+        TypeError, match="time series start_time and end_time must both have a value"
     ):
         session.write_timeseries_points(
             Timeseries(
@@ -503,8 +502,7 @@ def test_remove_timeseries_points_without_providing_write_interval(session):
         )
 
     with pytest.raises(
-        AttributeError,
-        match="'Timeseries' object has no attribute 'start_time'",
+        TypeError, match="time series start_time and end_time must both have a value"
     ):
         session.write_timeseries_points(
             Timeseries(
@@ -514,8 +512,7 @@ def test_remove_timeseries_points_without_providing_write_interval(session):
         )
 
     with pytest.raises(
-        AttributeError,
-        match="'Timeseries' object has no attribute 'end_time'",
+        TypeError, match="time series start_time and end_time must both have a value"
     ):
         session.write_timeseries_points(
             Timeseries(
