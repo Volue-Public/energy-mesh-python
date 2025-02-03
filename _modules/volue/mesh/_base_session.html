@@ -186,22 +186,14 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2</span><span class="p">,</span> <span class="n">hydsim_pb2_grpc</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">model_pb2</span><span class="p">,</span>
-    <span class="n">model_pb2_grpc</span><span class="p">,</span>
-    <span class="n">resources_pb2</span> <span class="k">as</span> <span class="n">model_resources_pb2</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_pb2</span><span class="p">,</span> <span class="n">model_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources_pb2</span> <span class="k">as</span> <span class="n">model_resources_pb2</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model_definition.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">model_definition_pb2</span><span class="p">,</span>
     <span class="n">model_definition_pb2_grpc</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.session.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">session_pb2_grpc</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.time_series.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">time_series_pb2</span><span class="p">,</span>
-    <span class="n">time_series_pb2_grpc</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.session.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">session_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.time_series.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_series_pb2</span><span class="p">,</span> <span class="n">time_series_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.type</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources_pb2</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">._attribute</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -224,6 +216,7 @@
     <span class="n">_to_proto_attribute_masks</span><span class="p">,</span>
     <span class="n">_to_proto_curve_type</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
+    <span class="n">_to_proto_timeseries</span><span class="p">,</span>
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._mesh_id</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1304,6 +1297,20 @@
 
         <span class="k">yield</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_write_timeseries_points_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that time series is correct to be written, e.g.: has start and end time.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;time series start_time and end_time must both have a value&quot;</span>
+            <span class="p">)</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">timeseries</span><span class="o">=</span><span class="n">_to_proto_timeseries</span><span class="p">(</span><span class="n">timeseries</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_list_models_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">ListModelsResponse</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
@@ -1432,7 +1439,6 @@
             <span class="n">attribute_id</span><span class="o">=</span><span class="n">_to_proto_attribute_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">field_mask</span><span class="o">=</span><span class="n">_to_proto_attribute_field_mask</span><span class="p">(</span><span class="n">full_attribute_info</span><span class="p">),</span>
         <span class="p">)</span>
-
         <span class="k">return</span> <span class="n">request</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_attributes_request</span><span class="p">(</span>
@@ -1447,7 +1453,6 @@
             <span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
             <span class="n">field_mask</span><span class="o">=</span><span class="n">_to_proto_attribute_field_mask</span><span class="p">(</span><span class="n">full_attribute_info</span><span class="p">),</span>
         <span class="p">)</span>
-
         <span class="k">return</span> <span class="n">request</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_simple_attribute_request</span><span class="p">(</span>

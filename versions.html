@@ -308,7 +308,17 @@
 </div>
 <div class="section" id="changes">
 <h3>Changes<a class="headerlink" href="#changes" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
+<ul>
+<li><p>Support for new way of sending empty time series. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/pull/538">[538]</a></p>
+<p><strong>This introduces breaking change for use cases with reading time series with
+no points.</strong></p>
+<p>Starting from Mesh 2.17 when an empty time series is read (e.g.: break point
+time series with no values), instead of raising an <cite>ValueError</cite> with message
+<cite>No data in time series reply for the given interval</cite>, we will now return
+<cite>volue.mesh.Timeseries</cite> instance with an empty Arrow table and start/end
+timestamps set to <cite>None</cite>. Other time series metadata like resolution will be
+set as usual.</p>
+</li>
 <li><p>Support for <em>undefined</em> time series resolution. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/pull/535">[535]</a></p></li>
 <li><p>Do not include tests and examples in the <cite>volue.mesh</cite> package. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/pull/529">[529]</a></p></li>
 </ul>

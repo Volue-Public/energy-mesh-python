@@ -760,10 +760,18 @@
     <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">proto_timeseries</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
         <span class="n">resolution</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">resolution</span>
-        <span class="n">interval</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">interval</span>
 
+        <span class="c1"># Since Mesh 2.17 in case of an empty time series an empty Arrow table is returned.</span>
+        <span class="c1"># As a result, the below ValueError is deprecated and will be removed in future releases.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No data in time series reply for the given interval&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">):</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">start_time</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">end_time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">proto_timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
@@ -773,14 +781,14 @@
             <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span>
                 <span class="n">table</span><span class="p">,</span>
                 <span class="n">_from_proto_resolution</span><span class="p">(</span><span class="n">resolution</span><span class="p">),</span>
-                <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span>
-                <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="p">,</span>
                 <span class="n">timeseries_id</span><span class="o">.</span><span class="n">timeseries_key</span><span class="p">,</span>
                 <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">timeseries_id</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
                 <span class="n">timeseries_id</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="n">interval</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 
         <span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timeseries</span>
