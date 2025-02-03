@@ -13,22 +13,14 @@ from google import protobuf
 
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
-from volue.mesh.proto.model.v1alpha import (
-    model_pb2,
-    model_pb2_grpc,
-    resources_pb2 as model_resources_pb2,
-)
+from volue.mesh.proto.model.v1alpha import model_pb2, model_pb2_grpc
+from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2
 from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
 )
-from volue.mesh.proto.session.v1alpha import (
-    session_pb2_grpc,
-)
-from volue.mesh.proto.time_series.v1alpha import (
-    time_series_pb2,
-    time_series_pb2_grpc,
-)
+from volue.mesh.proto.session.v1alpha import session_pb2_grpc
+from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
 from volue.mesh.proto.type import resources_pb2
 
 from ._attribute import (
@@ -51,6 +43,7 @@ from ._common import (
     _to_proto_attribute_masks,
     _to_proto_curve_type,
     _to_proto_guid,
+    _to_proto_timeseries,
     _to_proto_utcinterval,
 )
 from ._mesh_id import (
@@ -1131,6 +1124,20 @@ class Session(abc.ABC):
 
         yield timeseries[0]
 
+    def _prepare_write_timeseries_points_request(
+        self, timeseries: Timeseries
+    ) -> time_series_pb2.WriteTimeseriesRequest:
+        """Check that time series is correct to be written, e.g.: has start and end time."""
+        if timeseries.start_time is None or timeseries.end_time is None:
+            raise TypeError(
+                "time series start_time and end_time must both have a value"
+            )
+        request = time_series_pb2.WriteTimeseriesRequest(
+            session_id=_to_proto_guid(self.session_id),
+            timeseries=_to_proto_timeseries(timeseries),
+        )
+        return request
+
     def _list_models_impl(
         self,
     ) -> typing.Generator[typing.Any, model_pb2.ListModelsResponse, None]:
@@ -1259,7 +1266,6 @@ class Session(abc.ABC):
             attribute_id=_to_proto_attribute_mesh_id(target),
             field_mask=_to_proto_attribute_field_mask(full_attribute_info),
         )
-
         return request
 
     def _prepare_search_attributes_request(
@@ -1274,7 +1280,6 @@ class Session(abc.ABC):
             query=query,
             field_mask=_to_proto_attribute_field_mask(full_attribute_info),
         )
-
         return request
 
     def _prepare_update_simple_attribute_request(
