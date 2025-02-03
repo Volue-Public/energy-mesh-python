@@ -50,7 +50,6 @@ def verify_physical_timeseries(reply_timeseries: Timeseries):
     Verify if all time series properties and data have expected values.
     "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt"
     """
-    assert reply_timeseries.timskey == 3
     assert reply_timeseries.resolution == Timeseries.Resolution.HOUR
 
     assert type(reply_timeseries) is Timeseries
@@ -310,6 +309,13 @@ def test_read_physical_timeseries_points(session):
         )
         verify_physical_timeseries(reply_timeseries)
 
+        # If we are reading physical time series by time series attribute
+        # (path, ID or object) then no time series key is returned (meaning 0).
+        # If we are reading physical time series directly via time series key,
+        # then the key should be returned.
+        expected_timeseries_key = target if isinstance(target, int) else 0
+        assert reply_timeseries.timskey == expected_timeseries_key
+
 
 @pytest.mark.database
 def test_read_calculation_timeseries_points(session):
@@ -368,6 +374,7 @@ def test_read_timeseries_points_with_different_datetime_timezones(
         TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH, start_time, end_time
     )
     verify_physical_timeseries(reply_timeseries)
+    assert reply_timeseries.timskey == 0
 
 
 @pytest.mark.database

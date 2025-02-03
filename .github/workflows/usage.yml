@@ -2,9 +2,9 @@ name: Usage
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
   workflow_dispatch:
 
@@ -39,7 +39,7 @@ jobs:
         id: download-mesh-server
         with:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
-          MESH_SERVICE_TAG: 'v2.15.0.5'
+          MESH_SERVICE_TAG: "v2.17.0.2283"
 
       # run one example before installing pytest packages and pandas
       # to check if all dependencies are installed together with Mesh Python SDK pip package
@@ -55,8 +55,8 @@ jobs:
         uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-22.04
-          set-as-default: 'true'
-          update: 'false'
+          set-as-default: "true"
+          update: "false"
 
       # run one example before installing pytest packages and pandas
       # to check if all dependencies are installed together with Mesh Python SDK pip package
