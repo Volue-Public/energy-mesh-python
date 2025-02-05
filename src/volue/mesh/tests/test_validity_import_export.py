@@ -17,7 +17,6 @@ from volue.mesh import _common, _mesh_id
 from volue.mesh.proto.model.v1alpha import model_pb2
 
 # DUMPS_PATH = "C:/Users/martin.galvan"
-DUMPS_PATH = tempfile.TemporaryDirectory()
 BASE_DUMP_PATH = "C:/Users/martin.galvan/base_dump.mdump"
 MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
 
@@ -91,10 +90,16 @@ class ValidityInterval:
         return self
 
 
+@pytest.fixture
+def dumps_path():
+    return tempfile.TemporaryDirectory()
+
+
 # -k TestValidityImportExport
 class TestValidityImportExport:
-    def test_set_validity(self, connection: mesh.Connection):
-        dump_with_validity_path = f"{DUMPS_PATH}/with_validity.mdump"
+
+    def test_set_validity(self, connection: mesh.Connection, dumps_path: tempfile.TemporaryDirectory):
+        dump_with_validity_path = f"{dumps_path.name}/with_validity.mdump"
 
         validity_test_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -115,8 +120,8 @@ class TestValidityImportExport:
         assert imported_validity_data == validity_test_data
 
 
-    def test_change_existing_validity(self, connection: mesh.Connection):
-        dump_with_new_validity_path = f"{DUMPS_PATH}/new_validity.mdump"
+    def test_change_existing_validity(self, connection: mesh.Connection, dumps_path: tempfile.TemporaryDirectory):
+        dump_with_new_validity_path = f"{dumps_path.name}/new_validity.mdump"
 
         old_validity_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -180,7 +185,11 @@ class TestValidityImportExport:
             # Give mesh some time to finish starting up
             time.sleep(10)
 
-            callback(*args)
+            # Check if mesh has terminated due to some error:
+            if not mesh_proc.poll():
+                callback(*args)
+            else:
+                raise RuntimeError(f"Mesh error: {mesh_proc.returncode}")
         finally:
             print("[MARTIN] Terminating mesh...")
 
