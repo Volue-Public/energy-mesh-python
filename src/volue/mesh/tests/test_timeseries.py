@@ -50,7 +50,6 @@ def verify_physical_timeseries(reply_timeseries: Timeseries):
     Verify if all time series properties and data have expected values.
     "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt"
     """
-    assert reply_timeseries.timskey == 3
     assert reply_timeseries.resolution == Timeseries.Resolution.HOUR
 
     assert type(reply_timeseries) is Timeseries
@@ -310,6 +309,13 @@ def test_read_physical_timeseries_points(session):
         )
         verify_physical_timeseries(reply_timeseries)
 
+        # If we are reading physical time series by time series attribute
+        # (path, ID or object) then no time series key is returned (meaning 0).
+        # If we are reading physical time series directly via time series key,
+        # then the key should be returned.
+        expected_timeseries_key = target if isinstance(target, int) else 0
+        assert reply_timeseries.timskey == expected_timeseries_key
+
 
 @pytest.mark.database
 def test_read_calculation_timeseries_points(session):
@@ -368,6 +374,7 @@ def test_read_timeseries_points_with_different_datetime_timezones(
         TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH, start_time, end_time
     )
     verify_physical_timeseries(reply_timeseries)
+    assert reply_timeseries.timskey == 0
 
 
 @pytest.mark.database
@@ -484,8 +491,7 @@ def test_remove_timeseries_points_without_providing_write_interval(session):
     attribute_path = TIME_SERIES_ATTRIBUTE_WITH_PHYSICAL_TIME_SERIES_PATH
 
     with pytest.raises(
-        AttributeError,
-        match="'Timeseries' object has no attribute 'start_time'",
+        TypeError, match="time series start_time and end_time must both have a value"
     ):
         session.write_timeseries_points(
             Timeseries(
@@ -496,8 +502,7 @@ def test_remove_timeseries_points_without_providing_write_interval(session):
         )
 
     with pytest.raises(
-        AttributeError,
-        match="'Timeseries' object has no attribute 'start_time'",
+        TypeError, match="time series start_time and end_time must both have a value"
     ):
         session.write_timeseries_points(
             Timeseries(
@@ -507,8 +512,7 @@ def test_remove_timeseries_points_without_providing_write_interval(session):
         )
 
     with pytest.raises(
-        AttributeError,
-        match="'Timeseries' object has no attribute 'end_time'",
+        TypeError, match="time series start_time and end_time must both have a value"
     ):
         session.write_timeseries_points(
             Timeseries(
@@ -635,6 +639,30 @@ def test_write_unsorted_timeseries_points(session):
         grpc.RpcError, match="timestamps in the segment are not increasing"
     ):
         session.write_timeseries_points(timeseries)
+
+
+@pytest.mark.database
+def test_read_empty_timeseries(session):
+    """
+    Check that reading empty time series (without any points) is correctly handled.
+    """
+    empty_time_series_key = 9
+    start_time = datetime(2016, 1, 1)
+    end_time = datetime(2025, 1, 1)
+
+    reply_timeseries = session.read_timeseries_points(
+        empty_time_series_key, start_time, end_time
+    )
+
+    assert reply_timeseries.arrow_table is not None
+    assert reply_timeseries.arrow_table.num_rows == 0
+    # This check is redundant, but it is good to have it.
+    assert reply_timeseries.number_of_points == 0
+
+    assert reply_timeseries.start_time is None
+    assert reply_timeseries.end_time is None
+    assert reply_timeseries.resolution == Timeseries.Resolution.BREAKPOINT
+    assert reply_timeseries.timskey == empty_time_series_key
 
 
 @pytest.mark.asyncio

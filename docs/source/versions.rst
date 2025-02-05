@@ -22,6 +22,18 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
+- Support for new way of sending empty time series. :pull:`538`
+
+  **This introduces breaking change for use cases with reading time series with
+  no points.**
+
+  Starting from Mesh 2.17 when an empty time series is read (e.g.: break point
+  time series with no values), instead of raising an `ValueError` with message
+  `No data in time series reply for the given interval`, we will now return 
+  `volue.mesh.Timeseries` instance with an empty Arrow table and start/end
+  timestamps set to `None`. Other time series metadata like resolution will be
+  set as usual.
+
 - Support for *undefined* time series resolution. :pull:`535`
 - Do not include tests and examples in the `volue.mesh` package. :pull:`529`
 

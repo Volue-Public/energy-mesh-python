@@ -587,10 +587,18 @@ def _read_proto_reply(
     timeseries = []
     for proto_timeseries in reply.timeseries:
         resolution = proto_timeseries.resolution
-        interval = proto_timeseries.interval
 
+        # Since Mesh 2.17 in case of an empty time series an empty Arrow table is returned.
+        # As a result, the below ValueError is deprecated and will be removed in future releases.
         if not proto_timeseries.data:
             raise ValueError("No data in time series reply for the given interval")
+
+        if proto_timeseries.HasField("interval"):
+            start_time = proto_timeseries.interval.start_time
+            end_time = proto_timeseries.interval.end_time
+        else:
+            start_time = None
+            end_time = None
 
         reader = pa.ipc.open_stream(proto_timeseries.data)
         table = reader.read_all()
@@ -600,14 +608,14 @@ def _read_proto_reply(
             ts = Timeseries(
                 table,
                 _from_proto_resolution(resolution),
-                interval.start_time,
-                interval.end_time,
+                start_time,
+                end_time,
                 timeseries_id.timeseries_key,
                 _from_proto_guid(timeseries_id.id),
                 timeseries_id.path,
             )
         else:
-            ts = Timeseries(table, resolution, interval.start_time, interval.end_time)
+            ts = Timeseries(table, resolution, start_time, end_time)
 
         timeseries.append(ts)
     return timeseries

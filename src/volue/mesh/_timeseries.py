@@ -156,6 +156,9 @@ class Timeseries:
         if start_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
                 self.start_time = self.arrow_table["utc_time"][0].as_py()
+            else:
+                # Means we have an empty time series
+                self.start_time = None
         else:
             self.start_time = start_time
 
@@ -165,6 +168,9 @@ class Timeseries:
                 self.end_time = self.arrow_table["utc_time"][-1].as_py() + timedelta(
                     seconds=1
                 )
+            else:
+                # Means we have an empty time series
+                self.end_time = None
         else:
             self.end_time = end_time
 
