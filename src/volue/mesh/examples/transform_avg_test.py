@@ -18,7 +18,7 @@ from volue.mesh.calc import transform as Transform
 # # - time series key of a physical time series
 # # - path of a time series attribute that is connected to a physical time series
 # # - ID of a time series attribute that is connected to a physical time series
-timeseries_key = 10
+timeseries_key = 9
 
 
 def get_pa_table_with_time_series_points() -> pa.Table:
