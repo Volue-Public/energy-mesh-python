@@ -42,6 +42,12 @@ MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID("{478f13d3-6e40-4db7-ae5b-354
 # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO3
 MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID = uuid.UUID("{f00dcb8c-3dfd-4f6d-9f46-052d0843886b}")
 
+
+@pytest.fixture
+def dumps_path():
+    return tempfile.TemporaryDirectory()
+
+
 class ValidityInterval:
     def __init__(self, valid_from: datetime = None, valid_until: datetime = None):
         self.valid_from = valid_from
@@ -88,11 +94,6 @@ class ValidityInterval:
             self.valid_until = valid_until.ToDatetime()
 
         return self
-
-
-@pytest.fixture
-def dumps_path():
-    return tempfile.TemporaryDirectory()
 
 
 # -k TestValidityImportExport
