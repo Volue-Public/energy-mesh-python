@@ -17,7 +17,7 @@ runs:
     - name: Installing poetry
       uses: abatilo/actions-poetry@v2.0.0
       with:
-        poetry-version: '1.7.1'
+        poetry-version: "1.7.1"
 
     - name: Poetry install
       run: poetry install
@@ -41,4 +41,4 @@ runs:
       id: download-mesh-server
       with:
         GITHUB_TOKEN: ${{ inputs.token }}
-        MESH_SERVICE_TAG: 'v2.15.0.5'
+        MESH_SERVICE_TAG: "v2.17.0.2283"

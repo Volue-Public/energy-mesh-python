@@ -3,7 +3,7 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 
-Mesh Python SDK version 1.11.0-dev
+Mesh Python SDK version 1.12.0-dev
 **********************************
 
 This is the current master version.
@@ -11,7 +11,7 @@ This is the current master version.
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.15 **(may change)**
+- Mesh server version >= 2.17 **(may change)**
 - Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features
@@ -22,7 +22,20 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for new way of sending empty time series. :pull:`538`
+
+  **This introduces breaking change for use cases with reading time series with
+  no points.**
+
+  Starting from Mesh 2.17 when an empty time series is read (e.g.: break point
+  time series with no values), instead of raising an `ValueError` with message
+  `No data in time series reply for the given interval`, we will now return 
+  `volue.mesh.Timeseries` instance with an empty Arrow table and start/end
+  timestamps set to `None`. Other time series metadata like resolution will be
+  set as usual.
+
+- Support for *undefined* time series resolution. :pull:`535`
+- Do not include tests and examples in the `volue.mesh` package. :pull:`529`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -34,8 +47,38 @@ See instructions at :ref:`Setup for users` and use the following:
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
 
 
+`Mesh Python SDK version 1.11.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.11.0>`_
+***********************************************************************************************************
+
+This is the current master version.
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.15
+- Python [3.9, 3.10, 3.11, 3.12]
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- **Fixed:** Broken installation of volue.mesh package via pip. :issue:`526`
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+.. code-block:: bash
+
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.11.0
+
+
 `Mesh Python SDK version 1.10.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.10.0>`_
 ***********************************************************************************************************
+
+.. warning::
+    Due to :issue:`526` it is recommended to use
+    `Mesh Python SDK version 1.11.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.11.0>`_ instead.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -60,6 +103,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 `Mesh Python SDK version 1.9.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.9.0>`_
 *********************************************************************************************************
+
+.. warning::
+    Due to :issue:`526` it is recommended to use
+    `Mesh Python SDK version 1.11.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.11.0>`_ instead.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -104,6 +151,10 @@ See instructions at :ref:`Setup for users` and use the following:
 `Mesh Python SDK version 1.8.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.8.0>`_
 *********************************************************************************************************
 
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
@@ -134,6 +185,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 `Mesh Python SDK version 1.7.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.7.0>`_
 *********************************************************************************************************
+
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -171,6 +226,10 @@ See instructions at :ref:`Setup for users` and use the following:
 `Mesh Python SDK version 1.6.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.6.0>`_
 *********************************************************************************************************
 
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
@@ -203,6 +262,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 `Mesh Python SDK version 1.5.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.5.0>`_
 *********************************************************************************************************
+
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -238,6 +301,10 @@ See instructions at :ref:`Setup for users` and use the following:
 *********************************************************************************************************
 
 ------------
+
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -280,6 +347,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ------------
 
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
@@ -317,6 +388,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ------------
 
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
@@ -351,6 +426,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ------------
 
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
@@ -382,6 +461,10 @@ See instructions at :ref:`Setup for users` and use the following:
 *********************************************************************************************************
 
 ------------
+
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -424,6 +507,10 @@ See instructions at :ref:`Setup for users` and use the following:
 *************************************************************************************************************************
 
 ------------
+
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -470,6 +557,10 @@ See instructions at :ref:`Setup for users` and use the following:
 
 ------------
 
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
+
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
@@ -496,11 +587,6 @@ Changes
 - **Fixed:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
 - **Fixed:** "Visual bug when displaying results for use cases" :issue:`122`
 
-Known issues
-~~~~~~~~~~~~~~~~~~
-
-- None
-
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -516,6 +602,10 @@ See instructions at :ref:`Setup for users` and use the following:
 *************************************************************************************************************************
 
 ------------
+
+.. warning::
+    Affected by :issue:`526`. Check the FAQ section:
+    :ref:`I get an ImportError: cannot import name 'auth_pb2' from 'volue.mesh.proto.auth.v1alpha' <faq_proto_import_error>`.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~

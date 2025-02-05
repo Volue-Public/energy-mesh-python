@@ -37,7 +37,6 @@ from volue.mesh._common import (
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_resolution,
-    _to_proto_timeseries,
 )
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
@@ -152,12 +151,8 @@ class Connection(_base_connection.Connection):
             return gen.send(await self.time_series_service.ReadTimeseries(request))
 
         async def write_timeseries_points(self, timeseries: Timeseries) -> None:
-            await self.time_series_service.WriteTimeseries(
-                time_series_pb2.WriteTimeseriesRequest(
-                    session_id=_to_proto_guid(self.session_id),
-                    timeseries=_to_proto_timeseries(timeseries),
-                )
-            )
+            request = super()._prepare_write_timeseries_points_request(timeseries)
+            await self.time_series_service.WriteTimeseries(request)
 
         async def get_timeseries_resource_info(
             self, timeseries_key: int

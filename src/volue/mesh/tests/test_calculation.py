@@ -92,7 +92,7 @@ def test_parsing_single_float_response_with_invalid_calculation_result_should_th
 
 
 @pytest.mark.unittest
-def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
+def test_preparing_transform_request_with_unsupported_resolution_should_throw():
     """
     Check that expected exception is thrown when trying to
     read transformed time series with unsupported resolution.
@@ -106,10 +106,17 @@ def test_preparing_transform_request_with_breakpoint_resolution_should_throw():
         session_id, ATTRIBUTE_PATH, start_time, end_time
     )
 
-    with pytest.raises(ValueError, match=".*'BREAKPOINT' resolution is unsupported.*"):
-        base._transform_expression(
-            Timeseries.Resolution.BREAKPOINT, transform.Method.SUM, None, None
-        )
+    unsupported_resolutions = [
+        Timeseries.Resolution.BREAKPOINT,
+        Timeseries.Resolution.UNDEFINED,
+        Timeseries.Resolution.UNSPECIFIED,
+    ]
+
+    for resolution in unsupported_resolutions:
+        with pytest.raises(
+            ValueError, match=f".*'{resolution.name}' resolution is unsupported.*"
+        ):
+            base._transform_expression(resolution, transform.Method.SUM, None, None)
 
 
 @pytest.mark.unittest

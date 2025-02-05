@@ -8,10 +8,8 @@ import uuid
 import pytest
 
 from volue.mesh import Timeseries, _common, _mesh_id
-from volue.mesh.tests.test_utilities.utilities import (
-    AttributeForTesting,
-    ObjectForTesting,
-)
+
+from .test_utilities.utilities import AttributeForTesting, ObjectForTesting
 
 
 @pytest.mark.unittest

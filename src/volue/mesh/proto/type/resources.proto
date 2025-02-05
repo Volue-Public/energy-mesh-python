@@ -28,6 +28,7 @@ message Resolution {
     MONTH                  = 6;
     YEAR                   = 7;
     MIN30                  = 8;
+    UNDEFINED              = 9;
   }
   ResolutionType type = 1;
 }
