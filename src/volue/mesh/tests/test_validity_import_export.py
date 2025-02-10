@@ -16,7 +16,6 @@ from volue import mesh
 from volue.mesh import _common, _mesh_id
 from volue.mesh.proto.model.v1alpha import model_pb2
 
-# DUMPS_PATH = "C:/Users/martin.galvan"
 BASE_DUMP_PATH = "C:/Users/martin.galvan/base_dump.mdump"
 MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
 
@@ -183,7 +182,7 @@ class TestValidityImportExport:
         mesh_proc = subprocess.Popen([mesh_exe])
 
         try:
-            # Give mesh some time to finish starting up
+            # Give mesh some time to finish starting up.
             time.sleep(10)
 
             # Check if mesh has terminated due to some error:
