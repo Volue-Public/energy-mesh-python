@@ -97,7 +97,6 @@ class ValidityInterval:
 
 # -k TestValidityImportExport
 class TestValidityImportExport:
-
     def test_set_validity(self, connection: mesh.Connection, dumps_path: tempfile.TemporaryDirectory):
         dump_with_validity_path = f"{dumps_path.name}/with_validity.mdump"
 
@@ -275,7 +274,8 @@ class TestValidityImportExport:
     def _call_import_export(self, args: list[str]):
         imp_exp_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
 
-        subprocess.check_call([imp_exp_exe] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        # Use serialization version 27, which introduces Validity support.
+        subprocess.check_call([imp_exp_exe, '-v', '27'] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
