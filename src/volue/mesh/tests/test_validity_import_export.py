@@ -176,15 +176,20 @@ class TestValidityImportExport:
 
         print("[MARTIN] Starting mesh...")
 
-        # We need to use try/finally instead of 'with subprocess.Popen(...)' since for some reason
-        # we won't be able to catch any exceptions until we terminate the mesh process.
+        # We need to use try/finally instead of 'with subprocess.Popen(...)' since we can't wait on
+        # the mesh process (because it won't finish on its own). In addition, for some reason we
+        # won't be able to catch any exceptions until we terminate the mesh process.
         mesh_proc = subprocess.Popen([mesh_exe])
 
         try:
             # Give mesh some time to finish starting up.
             time.sleep(10)
 
-            # Check if mesh has terminated due to some error:
+            # Check if mesh has terminated due to some error (e.g. missing mesh.json).
+            # FIXME: The above waiting time may not've been enough for Mesh to reach a point where
+            # it would normally fail, in which case we may end up waiting forever since the
+            # ImportExport program doesn't finish on its own when Mesh isn't running. We should have
+            # a more sure-fire way of catching such situations.
             if not mesh_proc.poll():
                 callback(*args)
             else:
