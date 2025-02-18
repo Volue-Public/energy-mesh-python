@@ -34,10 +34,8 @@ See instructions at :ref:`Setup for users` and use the following:
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
 
 
-Mesh Python SDK version 1.12.0
-**********************************
-
-This is the current master version.
+`Mesh Python SDK version 1.12.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.12.0>`_
+***********************************************************************************************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
@@ -75,8 +73,6 @@ See instructions at :ref:`Setup for users` and use the following:
 
 `Mesh Python SDK version 1.11.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.11.0>`_
 ***********************************************************************************************************
-
-This is the current master version.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
