@@ -16,7 +16,9 @@ from volue import mesh
 from volue.mesh import _common, _mesh_id
 from volue.mesh.proto.model.v1alpha import model_pb2
 
-BASE_DUMP_PATH = "C:/Users/martin.galvan/base_dump.mdump"
+BASE_DUMPS_PATH = "C:/Users/martin.galvan"
+BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
+BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
 MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
@@ -143,7 +145,7 @@ class TestValidityImportExport:
         imported_validity_data = dict.fromkeys(new_validity_data, None)
 
         def callback(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
-            self._do_import(BASE_DUMP_PATH)
+            self._do_import(BASE_DUMP_NEW_MESH)
             self._set_validity_data(connection, old_validity_data)
             self._do_import(dump_with_new_validity_path)
             self._get_validity_data(connection, imported_validity_data)
@@ -159,12 +161,19 @@ class TestValidityImportExport:
         assert imported_validity_data == new_validity_data
 
 
+    def test_can_import_old_dump_without_validity(self, connection: mesh.Connection):
+        def callback(connection: mesh.Connection):
+            self._do_import(BASE_DUMP_OLD_MESH)
+
+        self._run_mesh_and_do(callback, connection)
+
+
     def _generate_and_export_data_with_validity(self,
                                                 connection: mesh.Connection,
                                                 validity_data: dict[uuid.UUID, ValidityInterval],
                                                 dump_with_validity_path: str):
         def callback(connection: mesh.Connection):
-            self._do_import(BASE_DUMP_PATH)
+            self._do_import(BASE_DUMP_NEW_MESH)
             self._set_validity_data(connection, validity_data)
             self._do_export(dump_with_validity_path)
 
