@@ -8,9 +8,9 @@ from volue.mesh import Connection
 
 def read_timeseries_points(session: Connection.Session):
     """Showing how to read time series points."""
-    
+
     start_time = time.time()
-    
+
     # Define the time series identifier, it can be:
     # - time series key of a physical time series
     # - path of a time series attribute that is connected to a physical time series
@@ -85,7 +85,7 @@ def read_timeseries_points(session: Connection.Session):
 
     for g in guid:
         timeseries = session.read_timeseries_points(
-            target=uuid.UUID("514E4B59-681E-4296-914A-E4F7D1F4E654"),
+            target=uuid.UUID(g),
             start_time=start,
             end_time=end,
         )
