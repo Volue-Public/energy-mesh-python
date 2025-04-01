@@ -280,8 +280,10 @@ def test_update_versioned_one_to_one_link_relation_attribute_remove_all_versions
 
     attribute = session.get_attribute(attribute_path)
 
-    assert len(attribute.entries) == 1
-    assert len(attribute.entries[0].versions) == 0
+    # TODO: change to after Mesh 2.18 RC
+    assert len(attribute.entries) in {0, 1}
+    if len(attribute.entries) == 1:
+        assert len(attribute.entries[0].versions) == 0
 
 
 @pytest.mark.database
@@ -660,8 +662,10 @@ async def test_update_versioned_one_to_one_link_relations_async(async_session):
 
     attribute = await async_session.get_attribute(attribute_path)
 
-    assert len(attribute.entries) == 1
-    assert len(attribute.entries[0].versions) == 0
+    # TODO: change to after Mesh 2.18 RC
+    assert len(attribute.entries) in {0, 1}
+    if len(attribute.entries) == 1:
+        assert len(attribute.entries[0].versions) == 0
 
 
 @pytest.mark.asyncio
