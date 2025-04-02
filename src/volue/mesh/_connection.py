@@ -10,6 +10,7 @@ from typing import List, Optional, Union
 import grpc
 from google import protobuf
 
+from volue.mesh._availability import _Availability
 from volue.mesh import (
     AttributeBase,
     AttributesFilter,
