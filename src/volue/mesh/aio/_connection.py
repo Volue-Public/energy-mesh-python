@@ -30,6 +30,7 @@ from volue.mesh import (
 )
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._authentication import ExternalAccessTokenPlugin
+from volue.mesh._availability import _Availability
 from volue.mesh._common import (
     RatingCurveVersion,
     XySet,
@@ -43,6 +44,7 @@ from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
 
+from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.model.v1alpha import model_pb2_grpc
 from volue.mesh.proto.model_definition.v1alpha import (
@@ -71,6 +73,7 @@ class Connection(_base_connection.Connection):
             model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
             session_service: session_pb2_grpc.SessionServiceStub,
             time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
+            availability_service: availability_pb2_grpc.AvailabilityServiceStub,
             session_id: Optional[uuid.UUID] = None,
         ):
             super().__init__(
@@ -82,6 +85,7 @@ class Connection(_base_connection.Connection):
                 session_service=session_service,
                 time_series_service=time_series_service,
             )
+            self.availability = _Availability(self.session_id, availability_service)
 
         async def __aenter__(self):
             """
