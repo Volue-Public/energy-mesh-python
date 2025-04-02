@@ -83,8 +83,8 @@ class Connection(_base_connection.Connection):
                 model_definition_service=model_definition_service,
                 session_service=session_service,
                 time_series_service=time_series_service,
+                availability_service=availability_service,
             )
-            self.availability = _Availability(self.session_id, availability_service)
 
         async def __aenter__(self):
             """
