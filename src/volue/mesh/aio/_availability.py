@@ -13,5 +13,5 @@ class _Availability(_base_availability._Availability):
     ):
         super().__init__(availability_service, session_id)
 
-    async def CreateRevision():
+    async def create_revision():
         print("CreateRevision")

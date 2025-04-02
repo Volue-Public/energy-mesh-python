@@ -15,5 +15,5 @@ class _Availability:
             availability_service
         )
 
-    def PrepareRevisionRequest():
+    def create_revision():
         print("PrepareRevisionRequest")
