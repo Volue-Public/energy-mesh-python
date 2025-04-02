@@ -5,6 +5,7 @@ from typing import Optional, TypeVar
 import grpc
 
 from volue.mesh.proto.auth.v1alpha import auth_pb2, auth_pb2_grpc
+from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.config.v1alpha import config_pb2, config_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
@@ -111,6 +112,9 @@ class Connection(abc.ABC):
 
         if channel is not None:
             self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
+            self.availability_service = availability_pb2_grpc.AvailabilityServiceStub(
+                channel
+            )
             self.calc_service = calc_pb2_grpc.CalculationServiceStub(channel)
             self.config_service = config_pb2_grpc.ConfigurationServiceStub(channel)
             self.hydsim_service = hydsim_pb2_grpc.HydsimServiceStub(channel)
@@ -166,6 +170,9 @@ class Connection(abc.ABC):
                 )
 
         self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
+        self.availability_service = availability_pb2_grpc.AvailabilityServiceStub(
+            channel
+        )
         self.calc_service = calc_pb2_grpc.CalculationServiceStub(channel)
         self.config_service = config_pb2_grpc.ConfigurationServiceStub(channel)
         self.hydsim_service = hydsim_pb2_grpc.HydsimServiceStub(channel)

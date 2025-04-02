@@ -584,5 +584,6 @@ class Connection(_base_connection.Connection):
             model_definition_service=self.model_definition_service,
             session_service=self.session_service,
             time_series_service=self.time_series_service,
+            availability_service=self.availability_service,
             session_id=session_id,
         )
