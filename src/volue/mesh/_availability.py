@@ -1,5 +1,6 @@
-from typing import Optional
 import uuid
+from typing import Optional
+
 from volue.mesh import _base_availability
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 
@@ -12,5 +13,5 @@ class _Availability(_base_availability._Availability):
     ):
         super().__init__(availability_service, session_id)
 
-    def CreateRevision():
+    def create_revision():
         print("CreateRevision")

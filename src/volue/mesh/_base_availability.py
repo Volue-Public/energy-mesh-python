@@ -1,5 +1,5 @@
-from typing import Optional
 import uuid
+from typing import Optional
 
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 

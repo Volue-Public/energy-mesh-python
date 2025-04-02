@@ -43,15 +43,14 @@ from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
-
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 from volue.mesh.proto.model.v1alpha import model_pb2_grpc
 from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
 )
-from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 from volue.mesh.proto.session.v1alpha import session_pb2_grpc
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
 from volue.mesh.proto.type import resources_pb2
