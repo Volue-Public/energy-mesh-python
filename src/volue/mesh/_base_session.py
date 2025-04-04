@@ -11,8 +11,6 @@ from typing import List, Optional, Tuple, Union
 import dateutil
 from google import protobuf
 
-from volue.mesh._base_availability import _Availability
-from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
 from volue.mesh.proto.model.v1alpha import model_pb2, model_pb2_grpc
@@ -121,7 +119,6 @@ class Session(abc.ABC):
         model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
         session_service: session_pb2_grpc.SessionServiceStub,
         time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
-        availability_service: availability_pb2_grpc.AvailabilityServiceStub,
         session_id: Optional[uuid.UUID] = None,
     ):
         """
@@ -147,7 +144,6 @@ class Session(abc.ABC):
         self.time_series_service: time_series_pb2_grpc.TimeseriesServiceStub = (
             time_series_service
         )
-        self.availability = _Availability(availability_service, session_id)
         self.stop_worker_thread: threading.Event = threading.Event()
         self.worker_thread: Optional[Session.WorkerThread] = None
 

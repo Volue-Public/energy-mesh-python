@@ -79,7 +79,9 @@ class Connection(_base_connection.Connection):
                 model_definition_service=model_definition_service,
                 session_service=session_service,
                 time_series_service=time_series_service,
-                availability_service=availability_service,
+            )
+            self.availability = _Availability(
+                availability_service=availability_service, session_id=session_id
             )
 
         def __enter__(self):
@@ -120,6 +122,7 @@ class Connection(_base_connection.Connection):
             reply = self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)
 
+            self.availability.session_id = self.session_id
             self.stop_worker_thread.clear()
             self.worker_thread = super().WorkerThread(self)
             self.worker_thread.start()
