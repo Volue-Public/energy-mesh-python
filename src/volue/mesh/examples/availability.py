@@ -16,7 +16,7 @@ def create_revision(session: Connection.Session):
 
 
 def main(address, tls_root_pem_cert):
-    """Showing how to get time series points."""
+    """Showing how to create a revision."""
 
     # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
     # connection = Connection.with_tls(address, tls_root_pem_cert)

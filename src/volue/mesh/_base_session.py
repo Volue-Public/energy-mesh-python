@@ -144,6 +144,7 @@ class Session(abc.ABC):
         self.time_series_service: time_series_pb2_grpc.TimeseriesServiceStub = (
             time_series_service
         )
+
         self.stop_worker_thread: threading.Event = threading.Event()
         self.worker_thread: Optional[Session.WorkerThread] = None
 

@@ -1,6 +1,7 @@
 import sys
 from datetime import datetime
 
+import grpc
 import pytest
 
 THERMAL_COMPONENT_PATH = "Model/SimpleThermalTestModel/ThermalComponent"
@@ -34,27 +35,25 @@ def test_create_revision(connection):
 @pytest.mark.database
 def test_create_revision_with_invalid_target(connection):
     with connection.create_session() as session:
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(grpc.RpcError, match="object not found"):
             session.availability.create_revision(
                 target="Invalid/Path",
                 id="event_id",
                 local_id="local_id",
                 reason="reason",
             )
-        assert "object not found" in str(exc_info.value)
 
 
 @pytest.mark.database
 def test_create_revision_with_missing_fields(connection):
     with connection.create_session() as session:
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(grpc.RpcError, match="no event id provided"):
             session.availability.create_revision(
                 target=THERMAL_COMPONENT_PATH,
                 id=None,  # Missing required field
                 local_id="local_id",
                 reason="reason",
             )
-        assert "no event id provided" in str(exc_info.value)
 
 
 @pytest.mark.database
@@ -66,14 +65,13 @@ def test_create_revision_with_duplicate_id(connection):
             local_id="local_id_1",
             reason="reason_1",
         )
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(grpc.RpcError, match="event with event id"):
             session.availability.create_revision(
                 target=THERMAL_COMPONENT_PATH,
                 id="duplicate_id",  # Duplicate ID
                 local_id="local_id_2",
                 reason="reason_2",
             )
-        assert "event with event id" in str(exc_info.value)
 
 
 @pytest.mark.database
@@ -98,6 +96,31 @@ def test_create_revision_with_empty_reason(connection):
         # Assert last_changed record info
         assert revision.last_changed.author is not None
         assert isinstance(revision.last_changed.timestamp, datetime)
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_create_revision_async(async_session):
+    revision = await async_session.availability.create_revision(
+        target=THERMAL_COMPONENT_PATH,
+        id="event_id",
+        local_id="local_id",
+        reason="reason",
+    )
+
+    # Assert basic fields
+    assert revision.event_id == "event_id"
+    assert revision.local_id == "local_id"
+    assert revision.reason == "reason"
+    assert revision.owner_id is not None
+
+    # Assert created record info
+    assert revision.created.author is not None
+    assert isinstance(revision.created.timestamp, datetime)
+
+    # Assert last_changed record info
+    assert revision.last_changed.author is not None
+    assert isinstance(revision.last_changed.timestamp, datetime)
 
 
 if __name__ == "__main__":

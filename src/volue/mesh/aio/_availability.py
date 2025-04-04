@@ -17,5 +17,5 @@ class _Availability(_base_availability._Availability):
         self, target: Union[uuid.UUID, str], id: str, local_id: str, reason: str
     ) -> _base_availability.Revision:
         request = super()._prepare_create_revision_request(target, id, local_id, reason)
-        response = await self.availability_service.CreateRevision(request)
-        return _base_availability.Revision(response.revision)
+        proto_revision = await self.availability_service.CreateRevision(request)
+        return _base_availability.Revision._from_proto(proto_revision)
