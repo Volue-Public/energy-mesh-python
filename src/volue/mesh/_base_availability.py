@@ -26,7 +26,16 @@ class RevisionRecurrence:
 
 @dataclass
 class AvailabilityRecordInfo:
-    """Record information for availability revisions."""
+    """
+    Represents metadata about a record in the availability system.
+
+    This class contains information about who created or last modified
+    a record and when the action occurred.
+
+    Attributes:
+        author (str): The name or identifier of the user who created or last modified the record.
+        timestamp (datetime): The date and time when the record was created or last modified.
+    """
 
     author: str
     timestamp: datetime
@@ -35,6 +44,15 @@ class AvailabilityRecordInfo:
     def _from_proto(
         cls, proto_record_info: availability_pb2.RecordInfo
     ) -> AvailabilityRecordInfo:
+        """
+        Converts a protobuf RecordInfo object into an AvailabilityRecordInfo instance.
+
+        Args:
+            proto_record_info (availability_pb2.RecordInfo): The protobuf RecordInfo object.
+
+        Returns:
+            AvailabilityRecordInfo: The corresponding AvailabilityRecordInfo instance.
+        """
         return cls(
             author=proto_record_info.author,
             timestamp=proto_record_info.timestamp.ToDatetime(dateutil.tz.UTC),
@@ -42,6 +60,24 @@ class AvailabilityRecordInfo:
 
 
 class Revision:
+    """
+    Represents a revision in the availability system.
+
+    A revision defines a period during which a Mesh object is unavailable.
+    It includes metadata about the revision, such as its identifiers, reason,
+    creation time, last modification time, and recurrence details.
+
+    Attributes:
+        owner_id (uuid.UUID): The unique identifier of the Mesh object to which the revision belongs.
+        owner_path (str): The path of the Mesh object to which the revision belongs.
+        event_id (str): A unique identifier for the revision.
+        local_id (str): An additional identifier for the revision, which may not be unique.
+        reason (str): A description or explanation for the revision.
+        created (AvailabilityRecordInfo): Metadata about when and by whom the revision was created.
+        last_changed (AvailabilityRecordInfo): Metadata about when and by whom the revision was last modified.
+        recurrence (list[RevisionRecurrence]): A list of recurrence patterns associated with the revision.
+    """
+
     def __init__(
         self,
         proto_availability: availability_pb2.Revision,
