@@ -1,14 +1,13 @@
 import helpers
 
 from volue.mesh import Connection
-
 from volue.mesh.availability import Revision
 
 
 def create_revision(session: Connection.Session):
     revision: Revision = session.availability.create_revision(
         target="Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2",
-        id="event_id",
+        event_id="event_id",
         local_id="local_id",
         reason="reason",
     )
