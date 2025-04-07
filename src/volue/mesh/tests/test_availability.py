@@ -4,6 +4,8 @@ from datetime import datetime
 import grpc
 import pytest
 
+from volue.mesh._base_availability import Recurrence, RecurrenceType, RevisionRecurrence
+
 THERMAL_COMPONENT_PATH = "Model/SimpleThermalTestModel/ThermalComponent"
 
 
@@ -30,6 +32,8 @@ def test_create_revision(connection):
         # Assert last_changed record info
         assert revision.last_changed.author is not None
         assert isinstance(revision.last_changed.timestamp, datetime)
+
+        assert revision.recurrences == []
 
 
 @pytest.mark.database
@@ -96,6 +100,39 @@ def test_create_revision_with_empty_reason(connection):
         # Assert last_changed record info
         assert revision.last_changed.author is not None
         assert isinstance(revision.last_changed.timestamp, datetime)
+
+
+@pytest.mark.database
+def test_add_revision_recurrence(session):
+    revision = session.availability.create_revision(
+        target=THERMAL_COMPONENT_PATH,
+        id="event_id",
+        local_id="local_id",
+        reason="reason",
+    )
+
+    recurrence = session.availability.add_revision_recurrence(
+        target=THERMAL_COMPONENT_PATH,
+        event_id=revision.event_id,
+        recurrence=RevisionRecurrence(
+            period_start=datetime(2023, 1, 1),
+            period_end=datetime(2023, 1, 2),
+            recurrence=Recurrence(
+                status="Planned",
+                description="Test Recurrence",
+                recurrence_type=RecurrenceType.NONE,
+            ),
+        ),
+    )
+
+    assert recurrence == 0
+
+    revision = session.availability.get_availability_event(
+        target=THERMAL_COMPONENT_PATH,
+        event_id=revision.event_id,
+    )
+
+    assert len(revision.recurrences) == 1
 
 
 @pytest.mark.asyncio

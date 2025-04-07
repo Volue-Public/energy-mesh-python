@@ -30,7 +30,6 @@ from volue.mesh import (
 )
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._authentication import ExternalAccessTokenPlugin
-from volue.mesh._availability import _Availability
 from volue.mesh._common import (
     RatingCurveVersion,
     XySet,
@@ -39,6 +38,7 @@ from volue.mesh._common import (
     _to_proto_guid,
     _to_proto_resolution,
 )
+from volue.mesh.aio._availability import _Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
