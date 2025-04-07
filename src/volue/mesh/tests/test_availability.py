@@ -1,6 +1,7 @@
 import sys
 from datetime import datetime
 
+import dateutil
 import grpc
 import pytest
 
@@ -14,7 +15,7 @@ def test_create_revision(connection):
     with connection.create_session() as session:
         revision = session.availability.create_revision(
             target=THERMAL_COMPONENT_PATH,
-            id="event_id",
+            event_id="event_id",
             local_id="local_id",
             reason="reason",
         )
@@ -42,7 +43,7 @@ def test_create_revision_with_invalid_target(connection):
         with pytest.raises(grpc.RpcError, match="object not found"):
             session.availability.create_revision(
                 target="Invalid/Path",
-                id="event_id",
+                event_id="event_id",
                 local_id="local_id",
                 reason="reason",
             )
@@ -54,7 +55,7 @@ def test_create_revision_with_missing_fields(connection):
         with pytest.raises(grpc.RpcError, match="no event id provided"):
             session.availability.create_revision(
                 target=THERMAL_COMPONENT_PATH,
-                id=None,  # Missing required field
+                event_id=None,  # Missing required field
                 local_id="local_id",
                 reason="reason",
             )
@@ -65,14 +66,14 @@ def test_create_revision_with_duplicate_id(connection):
     with connection.create_session() as session:
         session.availability.create_revision(
             target=THERMAL_COMPONENT_PATH,
-            id="duplicate_id",
+            event_id="duplicate_id",
             local_id="local_id_1",
             reason="reason_1",
         )
         with pytest.raises(grpc.RpcError, match="event with event id"):
             session.availability.create_revision(
                 target=THERMAL_COMPONENT_PATH,
-                id="duplicate_id",  # Duplicate ID
+                event_id="duplicate_id",  # Duplicate ID
                 local_id="local_id_2",
                 reason="reason_2",
             )
@@ -83,7 +84,7 @@ def test_create_revision_with_empty_reason(connection):
     with connection.create_session() as session:
         revision = session.availability.create_revision(
             target=THERMAL_COMPONENT_PATH,
-            id="event_id_empty_reason",
+            event_id="event_id_empty_reason",
             local_id="local_id",
             reason="",  # Empty reason
         )
@@ -106,7 +107,7 @@ def test_create_revision_with_empty_reason(connection):
 def test_add_revision_recurrence(session):
     revision = session.availability.create_revision(
         target=THERMAL_COMPONENT_PATH,
-        id="event_id",
+        event_id="event_id",
         local_id="local_id",
         reason="reason",
     )
@@ -115,8 +116,8 @@ def test_add_revision_recurrence(session):
         target=THERMAL_COMPONENT_PATH,
         event_id=revision.event_id,
         recurrence=RevisionRecurrence(
-            period_start=datetime(2023, 1, 1),
-            period_end=datetime(2023, 1, 2),
+            period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+            period_end=datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC),
             recurrence=Recurrence(
                 status="Planned",
                 description="Test Recurrence",
@@ -134,13 +135,20 @@ def test_add_revision_recurrence(session):
 
     assert len(revision.recurrences) == 1
 
+    recurrence = revision.recurrences[0]
+    assert recurrence.period_start == datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+    assert recurrence.period_end == datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC)
+    assert recurrence.recurrence.status == "Planned"
+    assert recurrence.recurrence.description == "Test Recurrence"
+    assert recurrence.recurrence.recurrence_type == RecurrenceType.NONE
+
 
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_create_revision_async(async_session):
     revision = await async_session.availability.create_revision(
         target=THERMAL_COMPONENT_PATH,
-        id="event_id",
+        event_id="event_id",
         local_id="local_id",
         reason="reason",
     )

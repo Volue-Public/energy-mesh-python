@@ -38,7 +38,7 @@ from volue.mesh._common import (
     _to_proto_guid,
     _to_proto_resolution,
 )
-from volue.mesh.aio._availability import _Availability
+from volue.mesh.availability._availability_aio import _Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync

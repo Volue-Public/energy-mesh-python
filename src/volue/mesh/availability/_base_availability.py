@@ -67,7 +67,7 @@ class Recurrence:
                 else None
             ),
             recur_until=(
-                proto_recurrence.recur_until.ToDatetime()
+                proto_recurrence.recur_until.ToDatetime(dateutil.tz.UTC)
                 if proto_recurrence.HasField("recur_until")
                 else None
             ),
@@ -257,7 +257,11 @@ class _Availability(abc.ABC):
 
     @abc.abstractmethod
     def create_revision(
-        self, target: Union[uuid.UUID, str, Object], id: str, local_id: str, reason: str
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        local_id: str,
+        reason: str,
     ) -> Revision:
         """
         Creates a new revision for a specified Mesh object.
@@ -269,7 +273,7 @@ class _Availability(abc.ABC):
         Args:
             target: The Mesh object to which the new revision belongs.
                 This can be specified as a UUID or a string path.
-            id: A unique identifier for the revision. This must be unique
+            event_id: A unique identifier for the revision. This must be unique
                 among all revisions belonging to the same target object.
             local_id: An additional identifier for the revision. This does not
                 need to be unique and can be used for external system references.

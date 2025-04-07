@@ -25,7 +25,6 @@ from volue.mesh import (
 )
 from volue.mesh._attribute import _from_proto_attribute
 from volue.mesh._authentication import ExternalAccessTokenPlugin
-from volue.mesh._availability import _Availability
 from volue.mesh._common import (
     LinkRelationVersion,
     RatingCurveVersion,
@@ -35,6 +34,7 @@ from volue.mesh._common import (
     _to_proto_guid,
     _to_proto_resolution,
 )
+from volue.mesh.availability._availability import _Availability
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
