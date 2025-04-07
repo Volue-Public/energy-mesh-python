@@ -1,18 +1,19 @@
-import uuid
-from datetime import datetime
-
 import helpers
 
 from volue.mesh import Connection
 
+from volue.mesh.availability import Revision
+
 
 def create_revision(session: Connection.Session):
-    session.availability.create_revision(
+    revision: Revision = session.availability.create_revision(
         target="Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2",
         id="event_id",
         local_id="local_id",
         reason="reason",
     )
+
+    print(f"Revision created with ID: {revision.event_id}")
 
 
 def main(address, tls_root_pem_cert):

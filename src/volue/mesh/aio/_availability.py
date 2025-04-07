@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional, Union
 
-from volue.mesh import _base_availability
+from volue.mesh.availability import _base_availability
 from volue.mesh._object import Object
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 

@@ -4,7 +4,7 @@ from datetime import datetime
 import grpc
 import pytest
 
-from volue.mesh._base_availability import Recurrence, RecurrenceType, RevisionRecurrence
+from volue.mesh.availability import Recurrence, RecurrenceType, RevisionRecurrence
 
 THERMAL_COMPONENT_PATH = "Model/SimpleThermalTestModel/ThermalComponent"
 
