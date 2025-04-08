@@ -178,6 +178,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">grpc</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.auth.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth_pb2</span><span class="p">,</span> <span class="n">auth_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.availability.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">availability_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.config.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">config_pb2</span><span class="p">,</span> <span class="n">config_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
@@ -284,6 +285,9 @@
 
         <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auth_service</span> <span class="o">=</span> <span class="n">auth_pb2_grpc</span><span class="o">.</span><span class="n">AuthenticationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">availability_service</span> <span class="o">=</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span><span class="p">(</span>
+                <span class="n">channel</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span> <span class="o">=</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">config_service</span> <span class="o">=</span> <span class="n">config_pb2_grpc</span><span class="o">.</span><span class="n">ConfigurationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span> <span class="o">=</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
@@ -339,6 +343,9 @@
                 <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_service</span> <span class="o">=</span> <span class="n">auth_pb2_grpc</span><span class="o">.</span><span class="n">AuthenticationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">availability_service</span> <span class="o">=</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span><span class="p">(</span>
+            <span class="n">channel</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span> <span class="o">=</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_service</span> <span class="o">=</span> <span class="n">config_pb2_grpc</span><span class="o">.</span><span class="n">ConfigurationServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span> <span class="o">=</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>

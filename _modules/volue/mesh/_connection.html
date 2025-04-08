@@ -207,18 +207,19 @@
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_resolution</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.availability._availability</span><span class="w"> </span><span class="kn">import</span> <span class="n">_Availability</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.forecast</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForecastFunctions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.history</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryFunctions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.statistical</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatisticalFunctions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformFunctions</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.availability.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">availability_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model_definition.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">model_definition_pb2</span><span class="p">,</span>
     <span class="n">model_definition_pb2_grpc</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.session.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">session_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.time_series.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_series_pb2</span><span class="p">,</span> <span class="n">time_series_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.type</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources_pb2</span>
@@ -240,6 +241,7 @@
             <span class="n">model_definition_service</span><span class="p">:</span> <span class="n">model_definition_pb2_grpc</span><span class="o">.</span><span class="n">ModelDefinitionServiceStub</span><span class="p">,</span>
             <span class="n">session_service</span><span class="p">:</span> <span class="n">session_pb2_grpc</span><span class="o">.</span><span class="n">SessionServiceStub</span><span class="p">,</span>
             <span class="n">time_series_service</span><span class="p">:</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">,</span>
+            <span class="n">availability_service</span><span class="p">:</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span><span class="p">,</span>
             <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -250,6 +252,9 @@
                 <span class="n">model_definition_service</span><span class="o">=</span><span class="n">model_definition_service</span><span class="p">,</span>
                 <span class="n">session_service</span><span class="o">=</span><span class="n">session_service</span><span class="p">,</span>
                 <span class="n">time_series_service</span><span class="o">=</span><span class="n">time_series_service</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">availability</span> <span class="o">=</span> <span class="n">_Availability</span><span class="p">(</span>
+                <span class="n">availability_service</span><span class="o">=</span><span class="n">availability_service</span><span class="p">,</span> <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span>
             <span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -290,6 +295,7 @@
             <span class="n">reply</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop_worker_thread</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">WorkerThread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">worker_thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
@@ -743,6 +749,7 @@
             <span class="n">model_definition_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span><span class="p">,</span>
             <span class="n">session_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">session_service</span><span class="p">,</span>
             <span class="n">time_series_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span><span class="p">,</span>
+            <span class="n">availability_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">availability_service</span><span class="p">,</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
