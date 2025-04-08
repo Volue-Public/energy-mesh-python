@@ -7,8 +7,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional, Union
 
+import dateutil
 from bidict import bidict
-from google.protobuf import timestamp_pb2
 
 from volue.mesh._common import (
     _datetime_to_timestamp_pb2,
@@ -34,11 +34,11 @@ class RecurrenceType(Enum):
 
 RECURRENCE_TYPE = bidict(
     {
-        RecurrenceType.NONE: type.availability_pb2.RecurrenceType.NONE,
-        RecurrenceType.DAILY: type.availability_pb2.RecurrenceType.DAILY,
-        RecurrenceType.WEEKLY: type.availability_pb2.RecurrenceType.WEEKLY,
-        RecurrenceType.MONTHLY: type.availability_pb2.RecurrenceType.MONTHLY,
-        RecurrenceType.YEARLY: type.availability_pb2.RecurrenceType.YEARLY,
+        RecurrenceType.NONE: availability_pb2.RecurrenceType.NONE,
+        RecurrenceType.DAILY: availability_pb2.RecurrenceType.DAILY,
+        RecurrenceType.WEEKLY: availability_pb2.RecurrenceType.WEEKLY,
+        RecurrenceType.MONTHLY: availability_pb2.RecurrenceType.MONTHLY,
+        RecurrenceType.YEARLY: availability_pb2.RecurrenceType.YEARLY,
     }
 )
 
@@ -76,7 +76,7 @@ class Recurrence:
         return cls(
             status=proto_recurrence.status,
             description=proto_recurrence.description,
-            recurrence_type=RECURRENCE_TYPE[proto_recurrence.recurrence_type],
+            recurrence_type=RECURRENCE_TYPE.inverse[proto_recurrence.recurrence_type],
             recur_every=(
                 proto_recurrence.recur_every
                 if proto_recurrence.HasField("recur_every")

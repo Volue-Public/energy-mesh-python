@@ -46,7 +46,7 @@ class _Availability(_base_availability._Availability):
 
     async def get_availability_event(
         self, target: Union[uuid.UUID, str, Object], event_id: str
-    ) -> Union[_base_availability.Revision, None]:
+    ) -> Union[_base_availability.Revision]:
 
         request = super()._prepare_get_availability_event_request(
             target=target,
@@ -54,7 +54,5 @@ class _Availability(_base_availability._Availability):
         )
 
         proto_event = await self.availability_service.GetAvailabilityEvent(request)
-        if proto_event is None:
-            return None
 
-        return _base_availability.Revision._from_proto(proto_event)
+        return _base_availability.Revision._from_proto(proto_event.revision)
