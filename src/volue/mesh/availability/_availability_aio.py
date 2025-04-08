@@ -1,8 +1,9 @@
+import datetime
 import uuid
 from typing import Optional, Union
 
 from volue.mesh._object import Object
-from volue.mesh.availability import _base_availability
+from volue.mesh.availability import Recurrence, _base_availability
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 
 
@@ -31,9 +32,13 @@ class _Availability(_base_availability._Availability):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        recurrence: _base_availability.RevisionRecurrence,
+        recurrence: Recurrence,
+        period_start: datetime,
+        period_end: datetime,
     ) -> int:
-        request = super()._prepare_add_recurrence_request(target, event_id, recurrence)
+        request = super()._prepare_add_recurrence_request(
+            target, event_id, recurrence, period_start, period_end
+        )
         add_recurrence_response = await self.availability_service.AddRevisionRecurrence(
             request
         )

@@ -7,10 +7,15 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional, Union
 
-import dateutil
+from bidict import bidict
 from google.protobuf import timestamp_pb2
 
-from volue.mesh._common import _from_proto_guid, _to_proto_guid, _to_proto_utcinterval
+from volue.mesh._common import (
+    _datetime_to_timestamp_pb2,
+    _from_proto_guid,
+    _to_proto_guid,
+    _to_proto_utcinterval,
+)
 from volue.mesh._mesh_id import _to_proto_object_mesh_id
 from volue.mesh._object import Object
 from volue.mesh.proto.availability.v1alpha import (
@@ -25,6 +30,17 @@ class RecurrenceType(Enum):
     WEEKLY = 2
     MONTHLY = 3
     YEARLY = 4
+
+
+RECURRENCE_TYPE = bidict(
+    {
+        RecurrenceType.NONE: type.availability_pb2.RecurrenceType.NONE,
+        RecurrenceType.DAILY: type.availability_pb2.RecurrenceType.DAILY,
+        RecurrenceType.WEEKLY: type.availability_pb2.RecurrenceType.WEEKLY,
+        RecurrenceType.MONTHLY: type.availability_pb2.RecurrenceType.MONTHLY,
+        RecurrenceType.YEARLY: type.availability_pb2.RecurrenceType.YEARLY,
+    }
+)
 
 
 @dataclass
@@ -60,7 +76,7 @@ class Recurrence:
         return cls(
             status=proto_recurrence.status,
             description=proto_recurrence.description,
-            recurrence_type=RecurrenceType(proto_recurrence.recurrence_type),
+            recurrence_type=RECURRENCE_TYPE[proto_recurrence.recurrence_type],
             recur_every=(
                 proto_recurrence.recur_every
                 if proto_recurrence.HasField("recur_every")
@@ -87,8 +103,7 @@ class Recurrence:
         if recurrence.recur_until is None:
             recur_until = None
         else:
-            recur_until = timestamp_pb2.Timestamp()
-            recur_until.FromDatetime(recurrence.recur_until)
+            recur_until = _datetime_to_timestamp_pb2(recurrence.recur_until)
 
         return availability_pb2.Recurrence(
             status=recurrence.status,
@@ -105,10 +120,10 @@ class RevisionRecurrence:
     Represents a recurrence associated with a revision.
 
     Attributes:
-        id: The unique identifier of the recurrence.
-        recurrence: The recurrence details.
-        period: The interval for which the recurrence is active.
-        active_instance: The active instance of the recurrence, if any.
+        id: The unique identifier of the recurrence (optional).
+        recurrence: The recurrence details, including type, frequency, and description.
+        period_start: The start time of the interval for which the recurrence is active.
+        period_end: The end time of the interval for which the recurrence is active.
     """
 
     recurrence: Recurrence
@@ -127,7 +142,7 @@ class RevisionRecurrence:
             proto_recurrence: The protobuf RevisionRecurrence object.
 
         Returns:
-            The corresponding RevisionRecurrence instance.
+            RevisionRecurrence: The corresponding RevisionRecurrence instance.
         """
         return cls(
             id=proto_recurrence.recurrence_id,
@@ -182,7 +197,7 @@ class AvailabilityRecordInfo:
         Converts a protobuf RecordInfo object into an AvailabilityRecordInfo instance.
 
         Args:
-            proto_record_info (availability_pb2.RecordInfo): The protobuf RecordInfo object.
+            proto_record_info: The protobuf RecordInfo object.
 
         Returns:
             AvailabilityRecordInfo: The corresponding AvailabilityRecordInfo instance.
@@ -306,17 +321,26 @@ class _Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        recurrence: RevisionRecurrence,
+        recurrence: Recurrence,
+        period_start: datetime,
+        period_end: datetime,
     ) -> int:
         """
         Adds a recurrence pattern to an existing revision.
 
+        This method allows you to associate a recurrence pattern with a specific
+        revision of a Mesh object, defining the period during which the recurrence
+        is active.
+
         Args:
             target: The Mesh object to which the revision belongs.
-                This can be specified as a UUID or a string path.
+                This can be specified as a UUID, a string path, or an Object instance.
             event_id: The unique identifier of the revision to which the recurrence
                 will be added.
-            recurrence: The recurrence pattern to be added.
+            recurrence: The recurrence pattern to be added, including details such as
+                type, frequency, and description.
+            period_start: The start time of the period during which the recurrence is active.
+            period_end: The end time of the period during which the recurrence is active.
 
         Returns:
             int: The unique identifier of the newly created recurrence.
@@ -330,13 +354,20 @@ class _Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        recurrence: RevisionRecurrence,
+        recurrence: Recurrence,
+        period_start: datetime,
+        period_end: datetime,
     ) -> availability_pb2.AddRevisionRecurrenceRequest:
+
+        revision_recurrence = RevisionRecurrence(
+            recurrence=recurrence, period_start=period_start, period_end=period_end
+        )
+
         request = availability_pb2.AddRevisionRecurrenceRequest(
             session_id=_to_proto_guid(self.session_id),
             owner_id=_to_proto_object_mesh_id(target),
             event_id=event_id,
-            revision_recurrence=RevisionRecurrence._to_proto(recurrence),
+            revision_recurrence=RevisionRecurrence._to_proto(revision_recurrence),
         )
         return request
 
@@ -345,7 +376,7 @@ class _Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-    ) -> Union[Revision, None]:
+    ) -> Union[Revision]:
         """
         Retrieves a specific availability event (Revision or Restriction) for a given Mesh object.
 
@@ -358,8 +389,7 @@ class _Availability(abc.ABC):
             event_id: The unique identifier of the availability event to retrieve.
 
         Returns:
-            Union[Revision, None]: The availability event as a `Revision` object if found,
-            or `None` if the event does not exist.
+            Union[Revision]: The availability event as a `Revision` object if found.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.

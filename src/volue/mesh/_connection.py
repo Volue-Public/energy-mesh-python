@@ -13,6 +13,7 @@ from google import protobuf
 from volue.mesh import (
     AttributeBase,
     AttributesFilter,
+    Authentication,
     HydSimDataset,
     LogMessage,
     Object,

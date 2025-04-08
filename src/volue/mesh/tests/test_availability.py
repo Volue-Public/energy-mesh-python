@@ -115,14 +115,12 @@ def test_add_revision_recurrence(session):
     recurrence = session.availability.add_revision_recurrence(
         target=THERMAL_COMPONENT_PATH,
         event_id=revision.event_id,
-        recurrence=RevisionRecurrence(
-            period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
-            period_end=datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC),
-            recurrence=Recurrence(
-                status="Planned",
-                description="Test Recurrence",
-                recurrence_type=RecurrenceType.NONE,
-            ),
+        period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+        period_end=datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC),
+        recurrence=Recurrence(
+            status="Planned",
+            description="Test Recurrence",
+            recurrence_type=RecurrenceType.NONE,
         ),
     )
 
