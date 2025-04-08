@@ -1,0 +1,483 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.availability.v1alpha;
+
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Availability service
+// -------------------------------
+// The Mesh availability service is an API for creating, searching,
+// retrieving, updating, and deleting availability events within the Mesh
+// system.
+// An availability event provides information about the period during which
+// a Mesh object is unavailable or partially available.
+// There are two types of availability events:
+// - Revision - represents periods when object is unavailable 
+// - Restriction - represents periods when object is partially available
+//
+// Additionally advanced restriction exists to represent objects availability
+// using timeseries calculation.
+
+
+service AvailabilityService {
+  // Create revision for given object.
+  // Each revision can have multiple `RevisionRecurrence`. To create those use
+  // `AddRevisionRecurrence` RPC.
+  rpc CreateRevision(CreateRevisionRequest) returns (Revision) {}
+
+  // Create restriction for a given object.
+  // Each restriction can have only one `RestrictionRecurrence`.
+  rpc CreateRestriction(CreateRestrictionRequest) returns (Restriction) {}
+
+  rpc CreateAdvancedRestriction(CreateAdvancedRestrictionRequest) returns (AdvancedRestriction) {}
+
+  // Add recurrence to the revision.
+  // After creating Revision with `CreateRevision` this RPC can be used to
+  // create revision recurrences.
+  rpc AddRevisionRecurrence(AddRevisionRecurrenceRequest) returns (AddRevisionRecurrenceResponse) {}
+
+  // Search for Restriction or Revision or both, based on the type of
+  // availability event.
+  rpc SearchAvailabilityEvents(SearchAvailabilityEventsRequest) returns (stream AvailabilityEvent) {}
+
+  // Return specific Revision or Restriction using event id.
+  rpc GetAvailabilityEvent(GetAvailabilityEventRequest) returns (AvailabilityEvent) {}
+
+  // Search for all instances of a specific revision or restriction in a given
+  // period.
+  rpc SearchInstances(SearchInstancesRequest) returns (stream Instance) {}
+
+  // Return all advanced restrictions for given object.
+  rpc SearchAdvancedRestrictions(SearchAdvancedRestrictionsRequest) returns (stream AdvancedRestriction) {}
+
+  // Return specific advanced restriction for given object.
+  rpc GetAdvancedRestriction(GetAdvancedRestrictionRequest) returns (AdvancedRestriction) {}
+
+  rpc ListRevisionStatuses(ListRevisionStatusesRequest) returns (ListRevisionStatusesResponse) {}
+  rpc ListRestrictionStatuses(ListRestrictionStatusesRequest) returns (ListRestrictionStatusesResponse) {}
+  rpc ListAvailabilityCategories(ListAvailabilityCategoriesRequest) returns (ListAvailabilityCategoriesResponse) {}
+
+  rpc UpdateRevision(UpdateRevisionRequest) returns (UpdateRevisionResponse) {}
+  rpc UpdateRestriction(UpdateRestrictionRequest) returns (UpdateRestrictionResponse) {}
+
+  rpc DeleteRevisionRecurrence(DeleteRevisionRecurrenceRequest) returns (DeleteRevisionRecurrenceResponse) {}
+
+  // Delete revisions and/or restrictions based on event id and owner id.
+  rpc DeleteAvailabilityEventsById(DeleteAvailabilityEventsByIdRequest) returns (DeleteAvailabilityEventsByIdResponse) {}
+
+  // Delete all availability events of a given type and parent.
+  rpc DeleteAvailabilityEvents(DeleteAvailabilityEventsRequest) returns (DeleteAvailabilityEventsResponse) {}
+  rpc DeleteAdvancedRestrictions(DeleteAdvancedRestrictionsRequest) returns (DeleteAdvancedRestrictionsResponse) {}
+}
+
+message CreateRevisionRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the new revision belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Identifier of the event. Must be unique between all events belonging
+  // to the same owner.
+  string event_id = 3;
+
+  // Additional identifier. Does not have to be unique. Can be used for example
+  // to refer events in external system.
+  string local_id = 4;
+
+  // Reason for creating the revision.
+  string reason = 5;
+}
+
+message CreateRestrictionRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the new revision belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Identifier of the event. Must be unique between all events belonging
+  // to the same owner.
+  string event_id = 3;
+
+  // Category of the restriction. List of available categories can be obtained
+  // using `ListAvailabilityCategories` RPC.
+  string category = 4;
+
+  // Additional identifier. Does not have to be unique. Can be used for example
+  // to refer to events in external system.
+  string local_id = 5;
+
+  // Reason for creating the revision.
+  string reason = 6;
+
+  // Recurrence describes how and if the restriction will recur.
+  RestrictionRecurrence restriction_recurrence = 7;
+}
+
+message CreateAdvancedRestrictionRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  
+  // The Mesh object to which the new advanced restriction belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Category of the advanced event. Category must be unique between all
+  // advanced events belonging to the same owner.
+  // List of available categories can be obtained using
+  // `ListAvailabilityCategories` RPC.
+  string category = 3;
+
+  // MeshId of timeseries calculation associated with advanced event.
+  // Timeseries calculation must have the same owner entity as this Advanced
+  // Restriction.
+  volue.mesh.grpc.type.MeshId calculation_id = 4;
+}
+
+message AddRevisionRecurrenceRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the new revision belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Identifier of the event for which recurrence will be added.
+  string event_id = 3;
+
+  // Recurrence of the event. Single revision can have multiple
+  // recurrences.
+  RevisionRecurrence revision_recurrence = 4;
+}
+
+message AddRevisionRecurrenceResponse {
+  uint32 recurrence_id = 1;
+}
+
+// Search Mesh objects for specific type of events.
+message SearchAvailabilityEventsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Type of the event to look for.
+  EventType event_type = 2;
+
+  // List of objects to search for events. Must not be empty.
+  // Mesh server has a limitation of 4MB inbound message size.
+  // In case of larger data volumes please send input
+  // data in chunks.
+  repeated volue.mesh.grpc.type.MeshId owner_ids = 3;
+}
+
+// Get single event based on parent MeshId and event id.
+message GetAvailabilityEventRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the event belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Identifier of the event to get.
+  string event_id = 3;
+}
+
+message SearchInstancesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the event belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Identifier of the event for which instances will be searched.
+  string event_id = 3;
+
+  // Interval for which instances will be returned. All instances 
+  // starting or ending within that interval will be returned.
+  volue.mesh.grpc.type.UtcInterval interval = 4;
+}
+
+// Instance is single occurrence of revision or restriction
+// according to recurrence pattern.
+message Instance {
+  // Instance of the revision or restriction
+  oneof instance_oneof {
+    RevisionInstance revision_instance = 1;
+    RestrictionInstance restriction_instance = 2;
+  }
+}
+
+// Search for all advanced restrictions for specific Mesh object.
+message SearchAdvancedRestrictionsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // List of objects to search for events. Must not be empty.
+  // Mesh server has a limitation of 4MB inbound message size.
+  // In case of larger data volumes please send input
+  // data in chunks.
+  repeated volue.mesh.grpc.type.MeshId owner_ids = 2;
+}
+
+// Get advanced restriction for specific Mesh object.
+// advanced restriction is uniquely identified by owner
+// identifier and category.
+message GetAdvancedRestrictionRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+  string category = 3;
+}
+
+message ListRevisionStatusesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+}
+
+message ListRevisionStatusesResponse {
+  repeated string statuses = 1;
+}
+
+message ListRestrictionStatusesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+}
+
+message ListRestrictionStatusesResponse {
+  repeated string statuses = 1;
+}
+
+message ListAvailabilityCategoriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+}
+
+message ListAvailabilityCategoriesResponse {
+  repeated string categories = 1;
+}
+
+message UpdateRevisionRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the event belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Identifier of the event to be updated.
+  string event_id = 3;
+
+  // Only paths set in the field mask are updated.
+  google.protobuf.FieldMask field_mask = 4;
+  string new_local_id = 5;
+  string new_reason = 6;
+}
+
+message UpdateRevisionResponse {
+}
+
+message UpdateRestrictionRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+  string event_id = 3;
+  
+  google.protobuf.FieldMask field_mask = 4;
+  string new_local_id = 5;
+  string new_reason = 6;
+  string new_category = 7;
+  RestrictionRecurrence new_restriction_recurrence = 8;
+}
+
+message UpdateRestrictionResponse {
+}
+
+message DeleteRevisionRecurrenceRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+  string event_id = 3;
+  uint32 recurrence_id = 4;
+}
+
+message DeleteRevisionRecurrenceResponse {
+}
+
+message DeleteAvailabilityEventsByIdRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the events belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Ids of the events to be deleted
+  repeated string event_ids = 3;
+}
+
+message DeleteAvailabilityEventsByIdResponse {
+}
+
+message DeleteAvailabilityEventsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // The Mesh object to which the events belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  // Type of the events to delete
+  EventType event_type = 3;
+}
+
+message DeleteAvailabilityEventsResponse {
+}
+
+message DeleteAdvancedRestrictionsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+
+  repeated string categories = 3;
+}
+
+message DeleteAdvancedRestrictionsResponse {
+}
+
+message Revision {
+  volue.mesh.grpc.type.MeshId owner_id = 2;
+  string event_id = 3;
+  string local_id = 4;
+  string reason = 5;
+  // [OUTPUT_ONLY]
+  RecordInfo created = 6;
+  // [OUTPUT_ONLY]
+  RecordInfo last_changed = 7;
+  repeated RevisionRecurrence recurrences = 8;
+}
+
+message Recurrence {
+  string status = 1;
+  string description = 2;
+
+  // Type of the recurrence describing repetition unit of interval provided
+  // in `period` field should repeat.
+  RecurrenceType recurrence_type = 3;
+
+  // Multiplier of recurrence_type. Valid only if recurrence_type value it not
+  // `NONE`. If recurrence_type value it not `NONE` must be greater than 0.
+  // For example if recurrence_type is set to `Weekly` and `recur_every` is set
+  // to 2 then interval provided in `period` field will be repeated every 2
+  // weeks until `recur_until` timestamp.
+  optional uint32 recur_every = 4;
+
+  // Time until which interval provided in `period` field will be repeated.
+  optional google.protobuf.Timestamp recur_until = 5;
+}
+
+message RevisionRecurrence {
+  // Unique identifier within the event.
+  // [OUTPUT_ONLY]
+  uint32 recurrence_id = 1;
+
+  Recurrence recurrence = 2;
+
+  // Interval for which recurrence is active.
+  // It can be repeated using combination of `recurrence_type`,
+  // `recur_every` and `recur_until` fields from Recurrence.
+  volue.mesh.grpc.type.UtcInterval period = 3;
+
+  // Instance that is active during retrieval of `RevisionRecurrence`.
+  // If no instance is active - next instance will be returned.
+  // If there is no active instance and no next instance - nothing will be
+  // returned.
+  // [OUTPUT_ONLY]
+  optional RevisionInstance active_instance = 4;
+}
+
+message RestrictionBasicRecurrence {
+  Recurrence recurrence = 1;
+
+  // Interval for which recurrence is active.
+  // It can be repeated using combination of `recurrence_type`,
+  // `recur_every` and `recur_until` fields from Recurrence.
+  volue.mesh.grpc.type.UtcInterval period = 2;
+
+  // New value applied to the restricted object category.
+  double value = 3;
+}
+
+message RestrictionComplexRecurrence {
+  Recurrence recurrence = 1;
+
+  // Time stamps with corresponding values that are applied to the 
+  // restricted object category.
+  // They can be repeated using combination of `recurrence_type`,
+  // `recur_every` and `recur_until` fields from Recurrence.
+  repeated TimePoint values = 2;
+}
+
+message Restriction {
+  volue.mesh.grpc.type.MeshId owner_id = 1;
+  string event_id = 2;
+  string category = 3;
+  string local_id = 4;
+  string reason = 5;
+  RecordInfo created = 6;
+  RecordInfo last_changed = 7;
+  
+  RestrictionRecurrence restriction_recurrence =  8;
+
+  // Instance that is active during retrieval of `Restriction`.
+  // If no instance is active - next instance will be returned.
+  // If there is no active instance and no next instance - nothing will be
+  // returned.
+  // [OUTPUT_ONLY]
+  optional RestrictionInstance active_instance = 9;
+}
+
+message AdvancedRestriction {
+  // The Mesh object to which the new advanced restriction belongs.
+  volue.mesh.grpc.type.MeshId owner_id = 1;
+
+  // Category of the advanced event. Category must be unique between all
+  // advanced events belonging to the same owner.
+  // List of available categories can be obtained using
+  // `ListAvailabilityCategories` RPC.
+  string category = 2;
+
+  // MeshId of timeseries calculation associated with advanced event.
+  // Timeseries calculation must have the same owner entity as this Advanced
+  // Restriction.
+  volue.mesh.grpc.type.MeshId calculation_id = 3;
+
+  RecordInfo created = 4;
+}
+
+message RecordInfo {
+  string author = 1;
+  google.protobuf.Timestamp timestamp = 2;
+}
+
+message RestrictionRecurrence {
+  oneof recurrence_oneof {
+    RestrictionBasicRecurrence basic_recurrence = 1;
+    RestrictionComplexRecurrence complex_recurrence = 2;
+  }
+}
+
+message RevisionInstance {
+  volue.mesh.grpc.type.UtcInterval period = 1;
+}
+
+message RestrictionInstance {
+  volue.mesh.grpc.type.UtcInterval period = 1;
+  double value = 2;
+}
+
+message AvailabilityEvent {
+  oneof event_oneof {
+    Restriction restriction = 1;
+    Revision revision = 2;
+  }
+}
+
+message TimePoint {
+  double value = 1;
+  google.protobuf.Timestamp timestamp = 2;
+}
+
+enum EventType {
+  ALL = 0;
+  RESTRICTION = 1;
+  REVISION = 2;
+}
+
+enum RecurrenceType {
+  NONE = 0;
+  DAILY = 1;
+  WEEKLY = 2;
+  MONTHLY = 3;
+  YEARLY = 4;
+}

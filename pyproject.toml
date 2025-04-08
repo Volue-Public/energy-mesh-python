@@ -14,6 +14,8 @@ packages = [
 include = [
     { path = "src/volue/mesh/proto/auth/v1alpha/auth_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/auth/v1alpha/auth_pb2_grpc.py", format = ["sdist", "wheel"] },
+    { path = "src/volue/mesh/proto/availability/v1alpha/availability_pb2.py", format = ["sdist", "wheel"] },
+    { path = "src/volue/mesh/proto/availability/v1alpha/availability_pb2_grpc.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/calc/v1alpha/calc_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/calc/v1alpha/calc_pb2_grpc.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/config/v1alpha/config_pb2.py", format = ["sdist", "wheel"] },
