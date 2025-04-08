@@ -108,7 +108,7 @@ class Recurrence:
         return availability_pb2.Recurrence(
             status=recurrence.status,
             description=recurrence.description,
-            recurrence_type=recurrence.recurrence_type.value,
+            recurrence_type=RECURRENCE_TYPE[recurrence.recurrence_type],
             recur_every=recurrence.recur_every,
             recur_until=recur_until,
         )
