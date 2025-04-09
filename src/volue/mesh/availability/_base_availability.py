@@ -58,6 +58,64 @@ EVENT_TYPE = bidict(
 
 
 @dataclass
+class RevisionInstance:
+    """
+    Represents a specific instance of a revision in the availability system.
+    """
+
+    period_start: datetime
+    period_end: datetime
+
+    @classmethod
+    def _from_proto(
+        cls, proto_instance: availability_pb2.RevisionInstance
+    ) -> RevisionInstance:
+        """
+        Converts a protobuf RevisionInstance object into a RevisionInstance instance.
+
+        Args:
+            proto_instance: The protobuf RevisionInstance object.
+
+        Returns:
+            The corresponding RevisionInstance instance.
+        """
+        return cls(
+            period_start=proto_instance.period.start_time.ToDatetime(dateutil.tz.UTC),
+            period_end=proto_instance.period.end_time.ToDatetime(dateutil.tz.UTC),
+        )
+
+
+@dataclass
+class RestrictionInstance:
+    """
+    Represents a specific instance of a restriction in the availability system.
+    """
+
+    period_start: datetime
+    period_end: datetime
+    value: float
+
+    @classmethod
+    def _from_proto(
+        cls, proto_instance: availability_pb2.RestrictionInstance
+    ) -> RestrictionInstance:
+        """
+        Converts a protobuf RestrictionInstance object into a RestrictionInstance instance.
+
+        Args:
+            proto_instance: The protobuf RestrictionInstance object.
+
+        Returns:
+            The corresponding RestrictionInstance instance.
+        """
+        return cls(
+            period_start=proto_instance.period.start_time.ToDatetime(dateutil.tz.UTC),
+            period_end=proto_instance.period.end_time.ToDatetime(dateutil.tz.UTC),
+            value=proto_instance.value,
+        )
+
+
+@dataclass
 class Recurrence:
     """
     Represents a recurrence pattern for a revision in the availability system.
@@ -313,6 +371,18 @@ class RestrictionBasicRecurrence:
     period_end: datetime
     value: float
 
+    @classmethod
+    def _from_proto(
+        cls,
+        proto_recurrence: availability_pb2.RestrictionBasicRecurrence,
+    ) -> RestrictionBasicRecurrence:
+        return cls(
+            recurrence=Recurrence._from_proto(proto_recurrence.recurrence),
+            period_start=proto_recurrence.period.start_time.ToDatetime(dateutil.tz.UTC),
+            period_end=proto_recurrence.period.end_time.ToDatetime(dateutil.tz.UTC),
+            value=proto_recurrence.value,
+        )
+
 
 @dataclass
 class TimePoint:
@@ -348,6 +418,22 @@ class RestrictionComplexRecurrence:
     recurrence: Recurrence
     time_points: list[TimePoint]
 
+    @classmethod
+    def _from_proto(
+        cls,
+        proto_recurrence: availability_pb2.RestrictionComplexRecurrence,
+    ) -> RestrictionComplexRecurrence:
+        return cls(
+            recurrence=Recurrence._from_proto(proto_recurrence.recurrence),
+            time_points=[
+                TimePoint(
+                    value=point.value,
+                    timestamp=point.timestamp.ToDatetime(dateutil.tz.UTC),
+                )
+                for point in proto_recurrence.values
+            ],
+        )
+
 
 @dataclass
 class Restriction:
@@ -376,6 +462,28 @@ class Restriction:
     reason: str
     category: str
     recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
+
+    @classmethod
+    def _from_proto(
+        cls,
+        proto_availability: availability_pb2.Restriction,
+    ) -> Restriction:
+        return cls(
+            owner_id=_from_proto_guid(proto_availability.owner_id.id),
+            owner_path=proto_availability.owner_id.path,
+            event_id=proto_availability.event_id,
+            local_id=proto_availability.local_id,
+            reason=proto_availability.reason,
+            category=proto_availability.category,
+            recurrence=(
+                RestrictionBasicRecurrence._from_proto(proto_availability.recurrence)
+                if proto_availability.recurrence.WhichOneof("recurrence_oneof")
+                == "basic_recurrence"
+                else RestrictionComplexRecurrence._from_proto(
+                    proto_availability.recurrence
+                )
+            ),
+        )
 
 
 class _Availability(abc.ABC):
@@ -432,6 +540,65 @@ class _Availability(abc.ABC):
             event_id=id,
             local_id=local_id,
             reason=reason,
+        )
+        return request
+
+    @abc.abstractmethod
+    def create_restriction(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        local_id: str,
+        reason: str,
+        category: str,
+        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+    ) -> Restriction:
+        """
+        Creates a new restriction for a specified Mesh object.
+
+        A restriction defines a period during which a Mesh object is unavailable
+        due to external factors. This method allows you to define the restriction
+        by specifying its target, unique identifier, local identifier, reason,
+        category, and recurrence details.
+
+        Args:
+            target: The Mesh object to which the new restriction belongs.
+                This can be specified as a UUID or a string path.
+            event_id: A unique identifier for the restriction. This must be unique
+                among all restrictions belonging to the same target object.
+            local_id: An additional identifier for the restriction. This does not
+                need to be unique and can be used for external system references.
+            reason: A description or explanation for creating the restriction.
+            category: The category of the restriction.
+            recurrence: The recurrence details, which can be either basic or complex.
+
+        Returns:
+            Restriction: An object representing the newly created restriction,
+            including details such as event ID, local ID, reason, owner ID,
+            creation time, last modification time, and recurrence information.
+
+        Raises:
+            Exception: If the target is invalid or the restriction cannot be created.
+            TypeError: If required fields are missing or invalid types are provided.
+        """
+
+    def _prepare_create_restriction_request(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        id: str,
+        local_id: str,
+        reason: str,
+        category: str,
+        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+    ) -> availability_pb2.CreateRestrictionRequest:
+        request = availability_pb2.CreateRestrictionRequest(
+            session_id=_to_proto_guid(self.session_id),
+            owner_id=_to_proto_object_mesh_id(target),
+            event_id=id,
+            local_id=local_id,
+            reason=reason,
+            category=category,
+            restriction_recurrence=recurrence,
         )
         return request
 
@@ -495,7 +662,7 @@ class _Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-    ) -> Union[Revision]:
+    ) -> Union[Revision, Restriction]:
         """
         Retrieves a specific availability event (Revision or Restriction) for a given Mesh object.
 
@@ -532,7 +699,7 @@ class _Availability(abc.ABC):
         self,
         event_type: EventType,
         targets: list[Union[uuid.UUID, str, Object]],
-    ) -> Union[list[Revision]]:
+    ) -> list[Union[Revision, Restriction]]:
         """
         Searches for availability events (Revisions or Restrictions) in specified Mesh objects.
 

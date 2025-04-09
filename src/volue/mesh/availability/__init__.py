@@ -7,6 +7,7 @@ from ._base_availability import (
     EventType,
     Recurrence,
     RecurrenceType,
+    Restriction,
     Revision,
     RevisionRecurrence,
 )

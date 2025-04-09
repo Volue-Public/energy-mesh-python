@@ -3,7 +3,7 @@ import uuid
 from typing import Optional, Union
 
 from volue.mesh._object import Object
-from volue.mesh.availability import EventType, Recurrence, Revision
+from volue.mesh.availability import EventType, Recurrence, Restriction, Revision
 from volue.mesh.availability._base_availability import _Availability
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 
@@ -47,7 +47,7 @@ class _Availability(_Availability):
 
     def get_availability_event(
         self, target: Union[uuid.UUID, str, Object], event_id: str
-    ) -> Union[Revision]:
+    ) -> Union[Revision, Restriction]:
 
         request = super()._prepare_get_availability_event_request(
             target=target,
@@ -56,13 +56,16 @@ class _Availability(_Availability):
 
         proto_event = self.availability_service.GetAvailabilityEvent(request)
 
-        return Revision._from_proto(proto_event.revision)
+        if proto_event.HasField("revision"):
+            return Revision._from_proto(proto_event.revision)
+        else:
+            return Restriction._from_proto(proto_event.restriction)
 
     def search_availability_events(
         self,
         event_type: EventType,
         targets: list[Union[uuid.UUID, str, Object]],
-    ) -> Union[list[Revision]]:
+    ) -> list[Union[Revision, Restriction]]:
         request = super()._prepare_search_availability_events_request(
             event_type=event_type,
             targets=targets,
@@ -70,7 +73,15 @@ class _Availability(_Availability):
 
         proto_events = self.availability_service.SearchAvailabilityEvents(request)
 
-        return [Revision._from_proto(proto_event) for proto_event in proto_events]
+        results = []
+
+        for proto_event in proto_events:
+            if proto_event.HasField("revision"):
+                results.append(Revision._from_proto(proto_event.revision))
+            else:
+                results.append(Restriction._from_proto(proto_event.restriction))
+
+        return results
 
     def delete_revision_recurrence(
         self,
@@ -78,7 +89,7 @@ class _Availability(_Availability):
         event_id: str,
         recurrence_id: int,
     ) -> None:
-        request = super()._prepare_delete_recurrence_request(
+        request = super()._prepare_delete_revision_recurrence_request(
             target, event_id, recurrence_id
         )
         self.availability_service.DeleteRevisionRecurrence(request)
@@ -101,3 +112,16 @@ class _Availability(_Availability):
             target=target, event_type=event_type
         )
         self.availability_service.DeleteAvailabilityEvents(request)
+
+    def create_restriction(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        local_id: str,
+        reason: str,
+    ) -> Restriction:
+        request = super()._prepare_create_restriction_request(
+            target, event_id, local_id, reason
+        )
+        proto_restriction = self.availability_service.CreateRestriction(request)
+        return Restriction._from_proto(proto_restriction)
