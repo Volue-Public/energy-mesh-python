@@ -9,6 +9,7 @@ from typing import Optional, Union
 
 import dateutil
 from bidict import bidict
+from google import protobuf
 
 from volue.mesh._common import (
     _datetime_to_timestamp_pb2,
@@ -383,6 +384,18 @@ class RestrictionBasicRecurrence:
             value=proto_recurrence.value,
         )
 
+    @classmethod
+    def _to_proto(
+        cls, recurrence: RestrictionBasicRecurrence
+    ) -> availability_pb2.RestrictionBasicRecurrence:
+        return availability_pb2.RestrictionBasicRecurrence(
+            recurrence=Recurrence._to_proto(recurrence.recurrence),
+            period=_to_proto_utcinterval(
+                recurrence.period_start, recurrence.period_end
+            ),
+            value=recurrence.value,
+        )
+
 
 @dataclass
 class TimePoint:
@@ -431,6 +444,21 @@ class RestrictionComplexRecurrence:
                     timestamp=point.timestamp.ToDatetime(dateutil.tz.UTC),
                 )
                 for point in proto_recurrence.values
+            ],
+        )
+
+    @classmethod
+    def _to_proto(
+        cls, recurrence: RestrictionComplexRecurrence
+    ) -> availability_pb2.RestrictionComplexRecurrence:
+        return availability_pb2.RestrictionComplexRecurrence(
+            recurrence=Recurrence._to_proto(recurrence.recurrence),
+            values=[
+                availability_pb2.TimePoint(
+                    value=point.value,
+                    timestamp=_datetime_to_timestamp_pb2(point.timestamp),
+                )
+                for point in recurrence.time_points
             ],
         )
 
@@ -840,4 +868,228 @@ class _Availability(abc.ABC):
             owner_id=_to_proto_object_mesh_id(target),
             event_type=EVENT_TYPE[event_type],
         )
+        return request
+
+    @abc.abstractmethod
+    def search_instances(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        period_start: datetime,
+        period_end: datetime,
+    ) -> Union[list[RevisionInstance], list[RestrictionInstance]]:
+        """
+        Searches for instances of availability events (Revisions or Restrictions) within a specific time period.
+
+        This method retrieves the specific instances of an availability event that occur within the specified
+        time period. This is particularly useful for recurring events where you want to find all occurrences
+        within a date range.
+
+        Args:
+            target: The Mesh object to which the availability event belongs.
+                This can be specified as a UUID, a string path, or an Object instance.
+            event_id: The unique identifier of the availability event.
+            period_start: The start date/time of the period to search for instances.
+            period_end: The end date/time of the period to search for instances.
+
+        Returns:
+            list[Union[RevisionInstance, RestrictionInstance]]: A list of instances of the event
+            that occur within the specified time period. Each instance contains information about
+            when the event occurs and, for restriction instances, the applied value.
+
+        Raises:
+            grpc.RpcError: If the gRPC request fails or the server returns an error.
+            Exception: If the target or event_id is invalid or if the date range is invalid.
+        """
+
+    def _prepare_search_instances_request(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        period_start: datetime,
+        period_end: datetime,
+    ) -> availability_pb2.SearchInstancesRequest:
+        request = availability_pb2.SearchInstancesRequest(
+            session_id=_to_proto_guid(self.session_id),
+            owner_id=_to_proto_object_mesh_id(target),
+            event_id=event_id,
+            period=_to_proto_utcinterval(period_start, period_end),
+        )
+        return request
+
+    @abc.abstractmethod
+    def update_revision(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        new_local_id: str = None,
+        new_reason: str = None,
+    ) -> Revision:
+        """
+        Updates an existing revision with new information.
+
+        This method allows you to modify specific fields of an existing revision,
+        such as its local ID or reason. You can update either one or both fields.
+
+        Args:
+            target: The Mesh object to which the revision belongs.
+                This can be specified as a UUID, a string path, or an Object instance.
+            event_id: The unique identifier of the revision to be updated.
+            new_local_id: The new local identifier for the revision. If None,
+                the local ID will remain unchanged.
+            new_reason: The new reason or description for the revision. If None,
+                the reason will remain unchanged.
+
+        Returns:
+            None
+
+        Raises:
+            grpc.RpcError: If the gRPC request fails or the server returns an error.
+            ValueError: If neither new_local_id nor new_reason are provided.
+            Exception: If the target or event_id is invalid.
+
+        Note:
+            At least one of new_local_id or new_reason must be provided.
+            The updated revision will have an updated last_changed timestamp.
+        """
+
+    def _prepare_update_revision_request(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        new_local_id: Optional[str] = None,
+        new_reason: Optional[str] = None,
+    ) -> availability_pb2.UpdateRevisionRequest:
+
+        if new_local_id is None and new_reason is None:
+            raise ValueError(
+                "At least one of new_local_id or new_reason must be provided"
+            )
+
+        request = availability_pb2.UpdateRevisionRequest(
+            session_id=_to_proto_guid(self.session_id),
+            owner_id=_to_proto_object_mesh_id(target),
+            event_id=event_id,
+        )
+
+        fields_to_update = []
+
+        if new_local_id is not None:
+            request.new_local_id = new_local_id
+            fields_to_update.append("new_local_id")
+
+        if new_reason is not None:
+            request.new_reason = new_reason
+            fields_to_update.append("new_reason")
+
+        request.field_mask.CopyFrom(
+            protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)
+        )
+
+        return request
+
+    @abc.abstractmethod
+    def update_restriction(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        new_local_id: Optional[str] = None,
+        new_reason: Optional[str] = None,
+        new_category: Optional[str] = None,
+        new_restriction_recurrence: Optional[
+            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
+        ] = None,
+    ) -> Restriction:
+        """
+        Updates an existing restriction with new information.
+
+        This method allows you to modify specific fields of an existing restriction,
+        such as its local ID, reason, category, or recurrence details. You can update
+        any combination of these fields.
+
+        Args:
+            target: The Mesh object to which the restriction belongs.
+                This can be specified as a UUID, a string path, or an Object instance.
+            event_id: The unique identifier of the restriction to be updated.
+            new_local_id: The new local identifier for the restriction. If None,
+                the local ID will remain unchanged.
+            new_reason: The new reason or description for the restriction. If None,
+                the reason will remain unchanged.
+            new_category: The new category for the restriction. If None,
+                the category will remain unchanged.
+            new_restriction_recurrence: The new recurrence details for the restriction. If None,
+                the recurrence details will remain unchanged.
+
+        Returns:
+            Restriction: The updated restriction.
+
+        Raises:
+            grpc.RpcError: If the gRPC request fails or the server returns an error.
+            ValueError: If none of the update fields are provided.
+            Exception: If the target or event_id is invalid.
+
+        Note:
+            At least one of new_local_id, new_reason, new_category, or new_restriction_recurrence
+            must be provided. The updated restriction will have an updated last_changed timestamp.
+        """
+
+    def _prepare_update_restriction_request(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        new_local_id: Optional[str] = None,
+        new_reason: Optional[str] = None,
+        new_category: Optional[str] = None,
+        new_restriction_recurrence: Optional[
+            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
+        ] = None,
+    ) -> availability_pb2.UpdateRestrictionRequest:
+        if (
+            new_local_id is None
+            and new_reason is None
+            and new_category is None
+            and new_restriction_recurrence is None
+        ):
+            raise ValueError(
+                "At least one of new_local_id, new_reason, new_category, or "
+                "new_restriction_recurrence must be provided"
+            )
+
+        request = availability_pb2.UpdateRestrictionRequest(
+            session_id=_to_proto_guid(self.session_id),
+            owner_id=_to_proto_object_mesh_id(target),
+            event_id=event_id,
+        )
+
+        fields_to_update = []
+
+        if new_local_id is not None:
+            request.new_local_id = new_local_id
+            fields_to_update.append("new_local_id")
+
+        if new_reason is not None:
+            request.new_reason = new_reason
+            fields_to_update.append("new_reason")
+
+        if new_category is not None:
+            request.new_category = new_category
+            fields_to_update.append("new_category")
+
+        if new_restriction_recurrence is not None:
+            if isinstance(new_restriction_recurrence, RestrictionBasicRecurrence):
+                proto_recurrence = RestrictionBasicRecurrence._to_proto(
+                    new_restriction_recurrence
+                )
+            else:
+                proto_recurrence = RestrictionComplexRecurrence._to_proto(
+                    new_restriction_recurrence
+                )
+
+            request.new_restriction_recurrence.CopyFrom(proto_recurrence)
+            fields_to_update.append("new_restriction_recurrence")
+
+        request.field_mask.CopyFrom(
+            protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)
+        )
+
         return request

@@ -8,7 +8,11 @@ from ._base_availability import (
     Recurrence,
     RecurrenceType,
     Restriction,
+    RestrictionBasicRecurrence,
+    RestrictionComplexRecurrence,
+    RestrictionInstance,
     Revision,
+    RevisionInstance,
     RevisionRecurrence,
 )
 

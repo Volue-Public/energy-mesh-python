@@ -3,7 +3,16 @@ import uuid
 from typing import Optional, Union
 
 from volue.mesh._object import Object
-from volue.mesh.availability import EventType, Recurrence, Restriction, Revision
+from volue.mesh.availability import (
+    EventType,
+    Recurrence,
+    Restriction,
+    RestrictionBasicRecurrence,
+    RestrictionComplexRecurrence,
+    RestrictionInstance,
+    Revision,
+    RevisionInstance,
+)
 from volue.mesh.availability._base_availability import _Availability
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 
@@ -124,4 +133,69 @@ class _Availability(_Availability):
             target, event_id, local_id, reason
         )
         proto_restriction = self.availability_service.CreateRestriction(request)
+        return Restriction._from_proto(proto_restriction)
+
+    def search_instances(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        period_start: datetime,
+        period_end: datetime,
+    ) -> Union[list[RevisionInstance], list[RestrictionInstance]]:
+        request = super()._prepare_search_instances_request(
+            target=target,
+            event_id=event_id,
+            period_start=period_start,
+            period_end=period_end,
+        )
+
+        proto_instances = self.availability_service.SearchInstances(request)
+
+        results = []
+
+        for proto_instance in proto_instances:
+            if proto_instance.HasField("revision_instance"):
+                results.append(
+                    RevisionInstance._from_proto(proto_instance.revision_instance)
+                )
+            else:
+                results.append(
+                    RestrictionInstance._from_proto(proto_instance.restriction_instance)
+                )
+
+        return results
+
+    def update_revision(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        new_local_id: str,
+        new_reason: str,
+    ) -> Revision:
+        request = super()._prepare_update_revision_request(
+            target, event_id, new_local_id, new_reason
+        )
+        proto_revision = self.availability_service.UpdateRevision(request)
+        return Revision._from_proto(proto_revision)
+
+    def update_restriction(
+        self,
+        target: Union[uuid.UUID, str, Object],
+        event_id: str,
+        new_local_id: Optional[str] = None,
+        new_reason: Optional[str] = None,
+        new_category: Optional[str] = None,
+        new_restriction_recurrence: Optional[
+            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
+        ] = None,
+    ) -> Restriction:
+        request = super()._prepare_update_restriction_request(
+            target,
+            event_id,
+            new_local_id,
+            new_reason,
+            new_category,
+            new_restriction_recurrence,
+        )
+        proto_restriction = self.availability_service.UpdateRestriction(request)
         return Restriction._from_proto(proto_restriction)
