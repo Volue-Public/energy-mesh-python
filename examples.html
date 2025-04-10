@@ -819,8 +819,8 @@ argument will be discarded if an insecure connection is used.</p>
     <span class="c1"># start_object_guid = uuid.UUID(&quot;0000000b-0001-0000-0000-000000000000&quot;)  # ThermalComponent</span>
 
     <span class="c1"># The query expressed using Mesh search language syntax</span>
-    <span class="c1"># Traverse all children (*) of the start object, not case-sensitive ({}) and</span>
-    <span class="c1"># accept all that has an attribute (.) called TsRawAtt</span>
+    <span class="c1"># Traverse all children ({*}) of the start object and accept all that have</span>
+    <span class="c1"># an attribute (.) called TsRawAtt</span>
     <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;{*}.TsRawAtt&quot;</span>
 
     <span class="c1"># Search for time series attributes using this query</span>
