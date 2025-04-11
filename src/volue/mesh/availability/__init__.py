@@ -14,6 +14,7 @@ from ._base_availability import (
     Revision,
     RevisionInstance,
     RevisionRecurrence,
+    TimePoint,
 )
 
 __all__ = [

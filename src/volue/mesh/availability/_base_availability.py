@@ -489,6 +489,8 @@ class Restriction:
     local_id: str
     reason: str
     category: str
+    created: AvailabilityRecordInfo
+    last_changed: AvailabilityRecordInfo
     recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
 
     @classmethod
@@ -503,12 +505,20 @@ class Restriction:
             local_id=proto_availability.local_id,
             reason=proto_availability.reason,
             category=proto_availability.category,
+            created=AvailabilityRecordInfo._from_proto(proto_availability.created),
+            last_changed=AvailabilityRecordInfo._from_proto(
+                proto_availability.last_changed
+            ),
             recurrence=(
-                RestrictionBasicRecurrence._from_proto(proto_availability.recurrence)
-                if proto_availability.recurrence.WhichOneof("recurrence_oneof")
+                RestrictionBasicRecurrence._from_proto(
+                    proto_availability.restriction_recurrence.basic_recurrence
+                )
+                if proto_availability.restriction_recurrence.WhichOneof(
+                    "recurrence_oneof"
+                )
                 == "basic_recurrence"
                 else RestrictionComplexRecurrence._from_proto(
-                    proto_availability.recurrence
+                    proto_availability.restriction_recurrence.complex_recurrence
                 )
             ),
         )
@@ -613,20 +623,32 @@ class _Availability(abc.ABC):
     def _prepare_create_restriction_request(
         self,
         target: Union[uuid.UUID, str, Object],
-        id: str,
+        event_id: str,
         local_id: str,
         reason: str,
         category: str,
         recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
     ) -> availability_pb2.CreateRestrictionRequest:
+        proto_recurrence = availability_pb2.RestrictionRecurrence()
+
+        # Set the appropriate field based on the recurrence type
+        if isinstance(recurrence, RestrictionBasicRecurrence):
+            proto_recurrence.basic_recurrence.CopyFrom(
+                RestrictionBasicRecurrence._to_proto(recurrence)
+            )
+        else:  # RestrictionComplexRecurrence
+            proto_recurrence.complex_recurrence.CopyFrom(
+                RestrictionComplexRecurrence._to_proto(recurrence)
+            )
+
         request = availability_pb2.CreateRestrictionRequest(
             session_id=_to_proto_guid(self.session_id),
             owner_id=_to_proto_object_mesh_id(target),
-            event_id=id,
+            event_id=event_id,
             local_id=local_id,
             reason=reason,
             category=category,
-            restriction_recurrence=recurrence,
+            restriction_recurrence=proto_recurrence,
         )
         return request
 
@@ -913,7 +935,7 @@ class _Availability(abc.ABC):
             session_id=_to_proto_guid(self.session_id),
             owner_id=_to_proto_object_mesh_id(target),
             event_id=event_id,
-            period=_to_proto_utcinterval(period_start, period_end),
+            interval=_to_proto_utcinterval(period_start, period_end),
         )
         return request
 
@@ -924,7 +946,7 @@ class _Availability(abc.ABC):
         event_id: str,
         new_local_id: str = None,
         new_reason: str = None,
-    ) -> Revision:
+    ) -> None:
         """
         Updates an existing revision with new information.
 
@@ -999,7 +1021,7 @@ class _Availability(abc.ABC):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
-    ) -> Restriction:
+    ) -> None:
         """
         Updates an existing restriction with new information.
 
@@ -1019,9 +1041,6 @@ class _Availability(abc.ABC):
                 the category will remain unchanged.
             new_restriction_recurrence: The new recurrence details for the restriction. If None,
                 the recurrence details will remain unchanged.
-
-        Returns:
-            Restriction: The updated restriction.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.
@@ -1080,12 +1099,17 @@ class _Availability(abc.ABC):
                 proto_recurrence = RestrictionBasicRecurrence._to_proto(
                     new_restriction_recurrence
                 )
+                request.new_restriction_recurrence.basic_recurrence.CopyFrom(
+                    proto_recurrence
+                )
             else:
                 proto_recurrence = RestrictionComplexRecurrence._to_proto(
                     new_restriction_recurrence
                 )
+                request.new_restriction_recurrence.complex_recurrence.CopyFrom(
+                    proto_recurrence
+                )
 
-            request.new_restriction_recurrence.CopyFrom(proto_recurrence)
             fields_to_update.append("new_restriction_recurrence")
 
         request.field_mask.CopyFrom(

@@ -128,9 +128,11 @@ class _Availability(_Availability):
         event_id: str,
         local_id: str,
         reason: str,
+        category: str,
+        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
     ) -> Restriction:
         request = super()._prepare_create_restriction_request(
-            target, event_id, local_id, reason
+            target, event_id, local_id, reason, category, recurrence
         )
         proto_restriction = self.availability_service.CreateRestriction(request)
         return Restriction._from_proto(proto_restriction)
@@ -152,7 +154,6 @@ class _Availability(_Availability):
         proto_instances = self.availability_service.SearchInstances(request)
 
         results = []
-
         for proto_instance in proto_instances:
             if proto_instance.HasField("revision_instance"):
                 results.append(
@@ -171,12 +172,11 @@ class _Availability(_Availability):
         event_id: str,
         new_local_id: str,
         new_reason: str,
-    ) -> Revision:
+    ) -> None:
         request = super()._prepare_update_revision_request(
             target, event_id, new_local_id, new_reason
         )
-        proto_revision = self.availability_service.UpdateRevision(request)
-        return Revision._from_proto(proto_revision)
+        self.availability_service.UpdateRevision(request)
 
     def update_restriction(
         self,
@@ -188,7 +188,7 @@ class _Availability(_Availability):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
-    ) -> Restriction:
+    ) -> None:
         request = super()._prepare_update_restriction_request(
             target,
             event_id,
@@ -197,5 +197,4 @@ class _Availability(_Availability):
             new_category,
             new_restriction_recurrence,
         )
-        proto_restriction = self.availability_service.UpdateRestriction(request)
-        return Restriction._from_proto(proto_restriction)
+        self.availability_service.UpdateRestriction(request)

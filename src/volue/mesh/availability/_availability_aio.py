@@ -80,11 +80,14 @@ class _Availability(_base_availability._Availability):
             targets=targets,
         )
 
-        proto_events = await self.availability_service.SearchAvailabilityEvents(request)
+        # Get the stream call
+        stream_call = self.availability_service.SearchAvailabilityEvents(request)
 
+        # Create the results list
         results = []
 
-        for proto_event in proto_events:
+        # Use async for to iterate through the stream responses
+        async for proto_event in stream_call:
             if proto_event.HasField("revision"):
                 results.append(Revision._from_proto(proto_event.revision))
             else:
@@ -130,9 +133,11 @@ class _Availability(_base_availability._Availability):
         event_id: str,
         local_id: str,
         reason: str,
+        category: str,
+        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
     ) -> Restriction:
         request = super()._prepare_create_restriction_request(
-            target, event_id, local_id, reason
+            target, event_id, local_id, reason, category, recurrence
         )
         proto_restriction = await self.availability_service.CreateRestriction(request)
         return Restriction._from_proto(proto_restriction)
@@ -151,11 +156,11 @@ class _Availability(_base_availability._Availability):
             period_end=period_end,
         )
 
-        proto_instances = await self.availability_service.SearchInstances(request)
+        proto_instances_stream = self.availability_service.SearchInstances(request)
 
         results = []
 
-        for proto_instance in proto_instances:
+        async for proto_instance in proto_instances_stream:
             if proto_instance.HasField("revision_instance"):
                 results.append(
                     RevisionInstance._from_proto(proto_instance.revision_instance)
@@ -173,12 +178,11 @@ class _Availability(_base_availability._Availability):
         event_id: str,
         new_local_id: str,
         new_reason: str,
-    ) -> Revision:
+    ) -> None:
         request = super()._prepare_update_revision_request(
             target, event_id, new_local_id, new_reason
         )
-        proto_revision = await self.availability_service.UpdateRevision(request)
-        return Revision._from_proto(proto_revision)
+        await self.availability_service.UpdateRevision(request)
 
     async def update_restriction(
         self,
@@ -190,7 +194,7 @@ class _Availability(_base_availability._Availability):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
-    ) -> Restriction:
+    ) -> None:
         request = super()._prepare_update_restriction_request(
             target,
             event_id,
@@ -199,5 +203,4 @@ class _Availability(_base_availability._Availability):
             new_category,
             new_restriction_recurrence,
         )
-        proto_restriction = await self.availability_service.UpdateRestriction(request)
-        return Restriction._from_proto(proto_restriction)
+        await self.availability_service.UpdateRestriction(request)
