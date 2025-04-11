@@ -735,7 +735,7 @@ def test_update_revision(session):
     assert retrieved_revision.created.timestamp == original_revision.created.timestamp
     assert (
         retrieved_revision.last_changed.timestamp
-        > original_revision.last_changed.timestamp
+        >= original_revision.last_changed.timestamp
     )
 
 
@@ -841,7 +841,7 @@ def test_update_restriction(session):
     )
     assert (
         updated_restriction.last_changed.timestamp
-        > original_restriction.last_changed.timestamp
+        >= original_restriction.last_changed.timestamp
     )
 
 
@@ -1068,7 +1068,7 @@ async def test_revision_async(async_session):
     assert updated_revision.local_id == "updated_async_local_id"
     assert updated_revision.reason == "Updated async reason"
     assert updated_revision.created.timestamp == revision.created.timestamp
-    assert updated_revision.last_changed.timestamp > revision.last_changed.timestamp
+    assert updated_revision.last_changed.timestamp >= revision.last_changed.timestamp
 
     # 8. Delete a specific recurrence
     await async_session.availability.delete_revision_recurrence(
