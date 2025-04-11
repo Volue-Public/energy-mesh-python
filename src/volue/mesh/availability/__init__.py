@@ -23,4 +23,11 @@ __all__ = [
     "RecurrenceType",
     "RevisionRecurrence",
     "Revision",
+    "RevisionInstance",
+    "Restriction",
+    "RestrictionBasicRecurrence",
+    "RestrictionComplexRecurrence",
+    "RestrictionInstance",
+    "EventType",
+    "TimePoint",
 ]

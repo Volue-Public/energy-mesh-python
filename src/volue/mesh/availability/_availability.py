@@ -1,5 +1,5 @@
-import datetime
 import uuid
+from datetime import datetime
 from typing import Optional, Union
 
 from volue.mesh._object import Object
@@ -76,8 +76,7 @@ class _Availability(_Availability):
         targets: list[Union[uuid.UUID, str, Object]],
     ) -> list[Union[Revision, Restriction]]:
         request = super()._prepare_search_availability_events_request(
-            event_type=event_type,
-            targets=targets,
+            event_type=event_type, targets=targets
         )
 
         proto_events = self.availability_service.SearchAvailabilityEvents(request)
@@ -109,8 +108,7 @@ class _Availability(_Availability):
         event_ids: list[str],
     ) -> None:
         request = super()._prepare_delete_availability_events_by_id_request(
-            target=target,
-            event_ids=event_ids,
+            target=target, event_ids=event_ids
         )
         self.availability_service.DeleteAvailabilityEventsById(request)
 
@@ -170,8 +168,8 @@ class _Availability(_Availability):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: str,
-        new_reason: str,
+        new_local_id: str = None,
+        new_reason: str = None,
     ) -> None:
         request = super()._prepare_update_revision_request(
             target, event_id, new_local_id, new_reason

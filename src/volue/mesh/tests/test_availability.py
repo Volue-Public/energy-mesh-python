@@ -965,6 +965,130 @@ def test_update_restriction_complex_to_basic(session):
     # assert retrieved_restriction.recurrence.value == 1.0
 
 
+@pytest.mark.database
+def test_update_revision_throws_exception_when_no_parameters(session):
+
+    # Test that an exception is raised when no parameters provided
+    with pytest.raises(
+        ValueError, match="At least one of new_local_id or new_reason must be provided"
+    ):
+        session.availability._prepare_update_revision_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_revision_test",
+            new_local_id=None,
+            new_reason=None,
+        )
+
+    # Test that no exception is raised when at least one parameter is provided
+    try:
+        # With only new_local_id
+        session.availability._prepare_update_revision_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_revision_test",
+            new_local_id="new_id",
+            new_reason=None,
+        )
+
+        # With only new_reason
+        session.availability._prepare_update_revision_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_revision_test",
+            new_local_id=None,
+            new_reason="new reason",
+        )
+
+        # With both parameters
+        session.availability._prepare_update_revision_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_revision_test",
+            new_local_id="new_id",
+            new_reason="new reason",
+        )
+    except ValueError:
+        pytest.fail("ValueError was raised unexpectedly!")
+
+
+@pytest.mark.database
+def test_update_restriction_throws_exception_when_no_parameters(session):
+
+    with pytest.raises(
+        ValueError,
+        match="At least one of new_local_id, new_reason, new_category, or new_restriction_recurrence must be provided",
+    ):
+        session.availability._prepare_update_restriction_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_restriction_test",
+            new_local_id=None,
+            new_reason=None,
+            new_category=None,
+            new_restriction_recurrence=None,
+        )
+
+    # Test that no exception is raised when at least one parameter is provided
+    try:
+        # With only new_local_id
+        session.availability._prepare_update_restriction_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_restriction_test",
+            new_local_id="new_id",
+            new_reason=None,
+            new_category=None,
+            new_restriction_recurrence=None,
+        )
+
+        # With only new_reason
+        session.availability._prepare_update_restriction_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_restriction_test",
+            new_local_id=None,
+            new_reason="new reason",
+            new_category=None,
+            new_restriction_recurrence=None,
+        )
+
+        # With only new_category
+        session.availability._prepare_update_restriction_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_restriction_test",
+            new_local_id=None,
+            new_reason=None,
+            new_category="new category",
+            new_restriction_recurrence=None,
+        )
+
+        # With only new_restriction_recurrence
+        basic_recurrence = RestrictionBasicRecurrence(
+            recurrence=Recurrence(
+                status="SelfImposed",
+                description="New restriction",
+                recurrence_type=RecurrenceType.NONE,
+            ),
+            period_start=datetime(2023, 2, 1, tzinfo=dateutil.tz.UTC),
+            period_end=datetime(2023, 2, 10, tzinfo=dateutil.tz.UTC),
+            value=1.0,
+        )
+        session.availability._prepare_update_restriction_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_restriction_test",
+            new_local_id=None,
+            new_reason=None,
+            new_category=None,
+            new_restriction_recurrence=basic_recurrence,
+        )
+
+        # With multiple parameters
+        session.availability._prepare_update_restriction_request(
+            target=THERMAL_COMPONENT_PATH,
+            event_id="update_restriction_test",
+            new_local_id="new_id",
+            new_reason="new reason",
+            new_category="new category",
+            new_restriction_recurrence=None,
+        )
+    except ValueError:
+        pytest.fail("ValueError was raised unexpectedly!")
+
+
 @pytest.mark.asyncio
 @pytest.mark.database
 async def test_revision_async(async_session):

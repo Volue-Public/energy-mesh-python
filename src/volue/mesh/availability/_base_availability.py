@@ -479,6 +479,10 @@ class Restriction:
         event_id: A unique identifier for the restriction.
         local_id: An additional identifier for the restriction, which may not be unique.
         reason: A description or explanation for the restriction.
+        created: Metadata about when and by whom the restriction was created, containing
+                 author name and timestamp information.
+        last_changed: Metadata about when and by whom the restriction was last modified,
+                      containing author name and timestamp information.
         category: The category of the restriction.
         recurrence: The recurrence details, which can be either basic or complex.
     """
@@ -725,7 +729,7 @@ class _Availability(abc.ABC):
             event_id: The unique identifier of the availability event to retrieve.
 
         Returns:
-            Union[Revision]: The availability event as a `Revision` object if found.
+            The availability event as a `Revision` or `Restriction` object if found.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.
@@ -915,9 +919,8 @@ class _Availability(abc.ABC):
             period_end: The end date/time of the period to search for instances.
 
         Returns:
-            list[Union[RevisionInstance, RestrictionInstance]]: A list of instances of the event
-            that occur within the specified time period. Each instance contains information about
-            when the event occurs and, for restriction instances, the applied value.
+            A list of instances of the event that occur within the specified time period.
+            Each instance contains information about when the event occurs and, for restriction instances, the applied value.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.

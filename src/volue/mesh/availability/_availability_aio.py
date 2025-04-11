@@ -1,5 +1,5 @@
-import datetime
 import uuid
+from datetime import datetime
 from typing import Optional, Union
 
 from volue.mesh._object import Object
@@ -12,12 +12,12 @@ from volue.mesh.availability import (
     RestrictionInstance,
     Revision,
     RevisionInstance,
-    _base_availability,
 )
+from volue.mesh.availability._base_availability import _Availability
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 
 
-class _Availability(_base_availability._Availability):
+class _Availability(_Availability):
     def __init__(
         self,
         availability_service: availability_pb2_grpc.AvailabilityServiceStub,
@@ -81,13 +81,15 @@ class _Availability(_base_availability._Availability):
         )
 
         # Get the stream call
-        stream_call = self.availability_service.SearchAvailabilityEvents(request)
+        proto_events_stream = self.availability_service.SearchAvailabilityEvents(
+            request
+        )
 
         # Create the results list
         results = []
 
         # Use async for to iterate through the stream responses
-        async for proto_event in stream_call:
+        async for proto_event in proto_events_stream:
             if proto_event.HasField("revision"):
                 results.append(Revision._from_proto(proto_event.revision))
             else:
@@ -113,8 +115,7 @@ class _Availability(_base_availability._Availability):
         event_ids: list[str],
     ) -> None:
         request = super()._prepare_delete_availability_events_by_id_request(
-            target=target,
-            event_ids=event_ids,
+            target=target, event_ids=event_ids
         )
         await self.availability_service.DeleteAvailabilityEventsById(request)
 
@@ -122,8 +123,7 @@ class _Availability(_base_availability._Availability):
         self, target: Union[uuid.UUID, str, Object], event_type: EventType
     ) -> None:
         request = super()._prepare_delete_availability_events_request(
-            target=target,
-            event_type=event_type,
+            target=target, event_type=event_type
         )
         await self.availability_service.DeleteAvailabilityEvents(request)
 
@@ -176,8 +176,8 @@ class _Availability(_base_availability._Availability):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: str,
-        new_reason: str,
+        new_local_id: str = None,
+        new_reason: str = None,
     ) -> None:
         request = super()._prepare_update_revision_request(
             target, event_id, new_local_id, new_reason
