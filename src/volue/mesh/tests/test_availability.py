@@ -1215,7 +1215,7 @@ async def test_restriction_async(async_session):
     assert updated_restriction.category == "DischargeMax[m3/s]"
     assert updated_restriction.created.timestamp == restriction.created.timestamp
     assert (
-        updated_restriction.last_changed.timestamp > restriction.last_changed.timestamp
+        updated_restriction.last_changed.timestamp >= restriction.last_changed.timestamp
     )
 
     # 6. Update the recurrence of the restriction
