@@ -177,6 +177,8 @@ def test_search_availability_events(connection):
             reason="search_reason",
         )
 
+        assert isinstance(revision, Revision)
+
         # Search for the revision
         results = session.availability.search_availability_events(
             event_type=EventType.REVISION,
@@ -228,6 +230,8 @@ def test_delete_revision_recurrence(session):
         event_id=revision.event_id,
     )
     assert len(revision.recurrences) == 1
+
+    assert isinstance(revision, Revision)
 
     # Delete the recurrence
     session.availability.delete_revision_recurrence(
