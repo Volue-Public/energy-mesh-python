@@ -443,6 +443,7 @@ def test_create_restriction_with_basic_recurrence(connection):
         assert restriction.recurrence.period_end == datetime(
             2023, 1, 10, tzinfo=dateutil.tz.UTC
         )
+        # TODO: Uncomment when bug in Mesh is fixed
         # assert restriction.recurrence.value == 0.5
 
 
@@ -643,7 +644,7 @@ def test_search_instances(session):
     assert len(instances) == 3
 
     expected_day = 2
-    # There is a bug in mesh that makes the instances in reverse order
+    # TODO: There is a bug in mesh that makes the instances in reverse order
     # So we need to reverse the list to check the expected order
     for i, instance in reversed(list(enumerate(instances))):
         # Each instance should be from 8 AM to 4 PM on consecutive days
@@ -833,6 +834,7 @@ def test_update_restriction(session):
     assert updated_restriction.recurrence.period_end == datetime(
         2023, 2, 10, tzinfo=dateutil.tz.UTC
     )
+    # TODO: Uncomment when bug in Mesh is fixed
     # assert updated_restriction.recurrence.value == 1.0
 
     # Verify timestamps reflect the update
@@ -899,6 +901,7 @@ def test_update_restriction_partial(session):
     assert retrieved_restriction.recurrence.period_end == datetime(
         2023, 1, 10, tzinfo=dateutil.tz.UTC
     )
+    # TODO: Uncomment when bug in Mesh is fixed
     # assert retrieved_restriction.recurrence.value == 0.5
 
 
@@ -962,6 +965,7 @@ def test_update_restriction_complex_to_basic(session):
     assert (
         retrieved_restriction.recurrence.recurrence.description == "Basic restriction"
     )
+    # TODO: Uncomment when bug in Mesh is fixed
     # assert retrieved_restriction.recurrence.value == 1.0
 
 
@@ -1431,7 +1435,7 @@ async def test_restriction_async(async_session):
     assert len(complex_restriction.recurrence.time_points) == 3
 
     # 8. Finally, delete both restrictions
-    await async_session.availability.delete_availability_events_by_id(
+    await async_session.availability.delete_availability_events(
         target=THERMAL_COMPONENT_PATH,
         event_ids=["async_restriction_event", "async_complex_restriction"],
     )

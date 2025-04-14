@@ -19,15 +19,15 @@ from ._base_availability import (
 
 __all__ = [
     "AvailabilityRecordInfo",
+    "EventType",
     "Recurrence",
     "RecurrenceType",
-    "RevisionRecurrence",
-    "Revision",
-    "RevisionInstance",
     "Restriction",
     "RestrictionBasicRecurrence",
     "RestrictionComplexRecurrence",
     "RestrictionInstance",
-    "EventType",
+    "Revision",
+    "RevisionInstance",
+    "RevisionRecurrence",
     "TimePoint",
 ]

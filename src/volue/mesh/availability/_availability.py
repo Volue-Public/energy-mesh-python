@@ -168,8 +168,8 @@ class _Availability(_Availability):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: str = None,
-        new_reason: str = None,
+        new_local_id: Optional[str] = None,
+        new_reason: Optional[str] = None,
     ) -> None:
         request = super()._prepare_update_revision_request(
             target, event_id, new_local_id, new_reason
