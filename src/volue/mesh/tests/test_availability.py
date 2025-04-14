@@ -9,6 +9,7 @@ from volue.mesh.availability import (
     EventType,
     Recurrence,
     RecurrenceType,
+    Restriction,
     RestrictionBasicRecurrence,
     RestrictionComplexRecurrence,
     RestrictionInstance,
@@ -420,6 +421,8 @@ def test_create_restriction_with_basic_recurrence(connection):
             ),
         )
 
+        assert isinstance(restriction, Restriction)
+
         # Assert basic fields
         assert restriction.event_id == "basic_restriction_event"
         assert restriction.local_id == "basic_restriction_local_id"
@@ -580,6 +583,9 @@ def test_search_and_get_restriction(session):
     # Find our specific restriction in results
     found = False
     for result in results:
+
+        assert isinstance(result, Restriction)
+
         if result.event_id == "searchable_restriction_event":
             found = True
             assert result.local_id == "searchable_restriction_local_id"
@@ -594,6 +600,8 @@ def test_search_and_get_restriction(session):
         target=THERMAL_COMPONENT_PATH,
         event_id="searchable_restriction_event",
     )
+
+    assert isinstance(result, Restriction)
 
     # Verify it matches what we created
     assert retrieved_restriction.event_id == "searchable_restriction_event"
