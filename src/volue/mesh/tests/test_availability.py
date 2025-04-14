@@ -1437,7 +1437,7 @@ async def test_restriction_async(async_session):
     # 8. Finally, delete both restrictions
     await async_session.availability.delete_availability_events(
         target=THERMAL_COMPONENT_PATH,
-        event_ids=["async_restriction_event", "async_complex_restriction"],
+        event_type=EventType.ALL,
     )
 
     # Verify deletion by searching for events
