@@ -11,13 +11,10 @@ from volue.mesh.availability import (
     RecurrenceType,
     RestrictionBasicRecurrence,
     RestrictionComplexRecurrence,
-    RevisionRecurrence,
-    TimePoint,
-)
-from volue.mesh.availability._base_availability import (
     RestrictionInstance,
     Revision,
     RevisionInstance,
+    TimePoint,
 )
 
 THERMAL_COMPONENT_PATH = "Model/SimpleThermalTestModel/ThermalComponent"
