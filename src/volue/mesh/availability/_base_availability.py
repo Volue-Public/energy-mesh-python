@@ -947,8 +947,8 @@ class _Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: str = None,
-        new_reason: str = None,
+        new_local_id: Optional[str] = None,
+        new_reason: Optional[str] = None,
     ) -> None:
         """
         Updates an existing revision with new information.

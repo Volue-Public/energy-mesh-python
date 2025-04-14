@@ -14,6 +14,11 @@ from volue.mesh.availability import (
     RevisionRecurrence,
     TimePoint,
 )
+from volue.mesh.availability._base_availability import (
+    RestrictionInstance,
+    Revision,
+    RevisionInstance,
+)
 
 THERMAL_COMPONENT_PATH = "Model/SimpleThermalTestModel/ThermalComponent"
 
@@ -186,6 +191,7 @@ def test_search_availability_events(connection):
         # Find our specific revision in results
         found = False
         for result in results:
+            assert isinstance(result, Revision)
             if result.event_id == "search_event_id":
                 found = True
                 assert result.local_id == "search_local_id"
@@ -647,6 +653,8 @@ def test_search_instances(session):
     # TODO: There is a bug in mesh that makes the instances in reverse order
     # So we need to reverse the list to check the expected order
     for i, instance in reversed(list(enumerate(instances))):
+        assert isinstance(instance, RevisionInstance)
+
         # Each instance should be from 8 AM to 4 PM on consecutive days
         expected_start = datetime(2023, 1, expected_day, 8, 0, tzinfo=dateutil.tz.UTC)
         expected_end = datetime(2023, 1, expected_day, 16, 0, tzinfo=dateutil.tz.UTC)
@@ -694,6 +702,7 @@ def test_search_restriction_instances(session):
 
     # Verify each instance has the correct value
     for instance in instances:
+        assert isinstance(instance, RestrictionInstance)
         assert instance.value == 42.5
 
         # Each instance should be exactly 1 day long
