@@ -4,7 +4,15 @@ import dateutil
 import helpers
 
 from volue.mesh import Connection
-from volue.mesh.availability import EventType, Recurrence, RecurrenceType, Revision
+from volue.mesh.availability import (
+    EventType,
+    Recurrence,
+    RecurrenceType,
+    RestrictionBasicRecurrence,
+    RestrictionComplexRecurrence,
+    Revision,
+    TimePoint,
+)
 
 CHIMNEY_PATH = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2"
 
@@ -149,6 +157,206 @@ def revision_workflow(session: Connection.Session):
     print("\n=== Revision Workflow Example Completed ===\n")
 
 
+def restriction_workflow(session: Connection.Session):
+    """
+    Demonstrates a complete workflow for creating, managing, and deleting restrictions in Mesh.
+    """
+    print("\n=== Starting Restriction Workflow Example ===\n")
+
+    # 1. Create a basic restriction with constant value
+    print("1. Creating a basic restriction...")
+    basic_restriction = session.availability.create_restriction(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+        local_id="basic_local_id",
+        reason="Test basic restriction",
+        category="DischargeMin[m3/s]",
+        recurrence=RestrictionBasicRecurrence(
+            recurrence=Recurrence(
+                status="SelfImposed",
+                description="Basic test restriction",
+                recurrence_type=RecurrenceType.WEEKLY,
+                recur_every=1,
+                recur_until=datetime(2023, 1, 31, tzinfo=dateutil.tz.UTC),
+            ),
+            period_start=datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC),  # Monday
+            period_end=datetime(2023, 1, 3, tzinfo=dateutil.tz.UTC),  # Tuesday
+            value=75.5,  # 75.5% capacity
+        ),
+    )
+
+    print(f"   Created basic restriction with ID: {basic_restriction.event_id}")
+    print(f"   Owner ID: {basic_restriction.owner_id}")
+    print(f"   Category: {basic_restriction.category}")
+    print(f"   Value: {basic_restriction.recurrence.value}")
+    print(
+        f"   Created by: {basic_restriction.created.author} at {basic_restriction.created.timestamp}"
+    )
+    print(f"   Status: {basic_restriction.recurrence.recurrence.status}")
+
+    # 2. Create a complex restriction with multiple time points
+    print("\n2. Creating a complex restriction with multiple time points...")
+    complex_restriction = session.availability.create_restriction(
+        target=CHIMNEY_PATH,
+        event_id="complex_restriction_id",
+        local_id="complex_local_id",
+        reason="Test complex restriction",
+        category="DischargeMax[m3/s]",
+        recurrence=RestrictionComplexRecurrence(
+            recurrence=Recurrence(
+                status="SelfImposed",
+                description="Complex test restriction",
+                recurrence_type=RecurrenceType.DAILY,
+                recur_every=1,
+                recur_until=datetime(2023, 1, 15, tzinfo=dateutil.tz.UTC),
+            ),
+            time_points=[
+                TimePoint(
+                    value=80.0,
+                    timestamp=datetime(2023, 1, 1, 8, 0, tzinfo=dateutil.tz.UTC),
+                ),
+                TimePoint(
+                    value=60.0,
+                    timestamp=datetime(2023, 1, 1, 12, 0, tzinfo=dateutil.tz.UTC),
+                ),
+                TimePoint(
+                    value=70.0,
+                    timestamp=datetime(2023, 1, 1, 16, 0, tzinfo=dateutil.tz.UTC),
+                ),
+                TimePoint(
+                    value=90.0,
+                    timestamp=datetime(2023, 1, 1, 20, 0, tzinfo=dateutil.tz.UTC),
+                ),
+            ],
+        ),
+    )
+
+    print(f"   Created complex restriction with ID: {complex_restriction.event_id}")
+    print(f"   Category: {complex_restriction.category}")
+    print(
+        f"   Number of time points: {len(complex_restriction.recurrence.time_points)}"
+    )
+    print(
+        f"   Recurrence type: {complex_restriction.recurrence.recurrence.recurrence_type.name}"
+    )
+    print(f"   Repeats until: {complex_restriction.recurrence.recurrence.recur_until}")
+
+    # 3. Search for restrictions
+    print("\n3. Searching for all restrictions...")
+    restrictions = session.availability.search_availability_events(
+        event_type=EventType.RESTRICTION,
+        targets=[CHIMNEY_PATH],
+    )
+    print(f"   Found {len(restrictions)} restrictions")
+    for i, restriction in enumerate(restrictions):
+        print(
+            f"   Restriction {i+1}: ID: {restriction.event_id}, Category: {restriction.category}"
+        )
+
+    # 4. Get a specific restriction by ID
+    print("\n4. Getting specific restriction details...")
+    retrieved_restriction = session.availability.get_availability_event(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+    )
+    print(f"   Retrieved restriction with ID: {retrieved_restriction.event_id}")
+    print(f"   Local ID: {retrieved_restriction.local_id}")
+    print(f"   Reason: {retrieved_restriction.reason}")
+    print(f"   Category: {retrieved_restriction.category}")
+    if hasattr(retrieved_restriction.recurrence, "value"):
+        print(f"   Value: {retrieved_restriction.recurrence.value}")
+
+    # 5. Search for instances within a time period
+    print("\n5. Searching for specific instances of the basic restriction...")
+    instances = session.availability.search_instances(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+        period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+        period_end=datetime(2023, 1, 31, tzinfo=dateutil.tz.UTC),
+    )
+    print(f"   Found {len(instances)} instances")
+    for i, instance in enumerate(instances):  # Just show first few instances
+        print(
+            f"   Instance {i+1}: Period: {instance.period_start} to {instance.period_end}, Value: {instance.value}"
+        )
+
+    # 6. Update restriction
+    print("\n6. Updating the basic restriction...")
+    session.availability.update_restriction(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+        new_local_id="updated_basic_id",
+        new_reason="Updated basic restriction reason",
+        new_category="DischargeMax[m3/s]",
+    )
+
+    # Verify the update
+    updated_restriction = session.availability.get_availability_event(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+    )
+    print(f"   Updated local ID: {updated_restriction.local_id}")
+    print(f"   Updated reason: {updated_restriction.reason}")
+    print(f"   Updated category: {updated_restriction.category}")
+    print(f"   Last modified: {updated_restriction.last_changed.timestamp}")
+
+    # 7. Update restriction recurrence
+    print("\n7. Updating the restriction recurrence...")
+    new_recurrence = RestrictionBasicRecurrence(
+        recurrence=Recurrence(
+            status="SelfImposed",
+            description="Updated restriction recurrence",
+            recurrence_type=RecurrenceType.NONE,
+        ),
+        period_start=datetime(2023, 2, 1, tzinfo=dateutil.tz.UTC),
+        period_end=datetime(2023, 2, 10, tzinfo=dateutil.tz.UTC),
+        value=50.0,
+    )
+
+    session.availability.update_restriction(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+        new_restriction_recurrence=new_recurrence,
+    )
+
+    updated_restriction = session.availability.get_availability_event(
+        target=CHIMNEY_PATH,
+        event_id="basic_restriction_id",
+    )
+    print(
+        f"   New recurrence period: {updated_restriction.recurrence.period_start} to {updated_restriction.recurrence.period_end}"
+    )
+    print(f"   New value: {updated_restriction.recurrence.value}")
+    print(
+        f"   New recurrence type: {updated_restriction.recurrence.recurrence.recurrence_type.name}"
+    )
+
+    # 8. Delete restrictions
+    print("\n8. Deleting restrictions...")
+    session.availability.delete_availability_events_by_id(
+        target=CHIMNEY_PATH,
+        event_ids=["basic_restriction_id", "complex_restriction_id"],
+    )
+
+    # Verify deletion
+    remaining_restrictions = session.availability.search_availability_events(
+        event_type=EventType.RESTRICTION,
+        targets=[CHIMNEY_PATH],
+    )
+
+    found_basic = any(
+        r.event_id == "basic_restriction_id" for r in remaining_restrictions
+    )
+    found_complex = any(
+        r.event_id == "complex_restriction_id" for r in remaining_restrictions
+    )
+
+    print(f"   Basic restriction still exists: {found_basic}")
+    print(f"   Complex restriction still exists: {found_complex}")
+
+    print("\n=== Restriction Workflow Example Completed ===\n")
+
+
 def main(address, tls_root_pem_cert):
     """Showing how to create a revision."""
 
@@ -158,6 +366,7 @@ def main(address, tls_root_pem_cert):
 
     with connection.create_session() as session:
         revision_workflow(session)
+        restriction_workflow(session)
 
 
 if __name__ == "__main__":
