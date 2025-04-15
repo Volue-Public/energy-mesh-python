@@ -55,7 +55,7 @@ def revision_workflow(session: Connection.Session):
     print("\n3. Getting the revision with its new recurrence...")
     revision_with_recurrence = session.availability.get_availability_event(
         target=CHIMNEY_PATH,
-        event_id="event_id",
+        event_id=revision.event_id,
     )
     print(f"   Retrieved revision with ID: {revision_with_recurrence.event_id}")
     print(f"   Recurrences count: {len(revision_with_recurrence.recurrences)}")
