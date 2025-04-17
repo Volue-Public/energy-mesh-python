@@ -34,7 +34,7 @@ from volue.mesh._common import (
     _to_proto_guid,
     _to_proto_resolution,
 )
-from volue.mesh.availability._availability import _Availability
+from volue.mesh.availability._availability import Availability
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
 from volue.mesh.calc.statistical import StatisticalFunctions
@@ -80,7 +80,7 @@ class Connection(_base_connection.Connection):
                 session_service=session_service,
                 time_series_service=time_series_service,
             )
-            self.availability = _Availability(
+            self.availability = Availability(
                 availability_service=availability_service, session_id=session_id
             )
 
