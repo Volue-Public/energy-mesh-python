@@ -3,6 +3,7 @@ Functionality that supports Mesh availability events.
 """
 
 from ._base_availability import (
+    Availability,
     AvailabilityRecordInfo,
     EventType,
     Recurrence,

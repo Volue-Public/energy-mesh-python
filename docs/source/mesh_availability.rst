@@ -5,15 +5,16 @@ Mesh Availability
 A Mesh availability event provides information about periods during which Mesh objects are unavailable or partially available. The availability functionality helps track and model the operational status of assets throughout time.
 
 Types of Availability Events
-****************************
+*****************************
 
-Mesh Python SDK supports twp types of availability events:
+Mesh Python SDK supports three types of availability events:
 
 * **Revision** - Represents periods when an object is completely unavailable (e.g., during maintenance or outage)
 * **Restriction** - Represents periods when an object is partially available with reduced capacity
+* **Advanced Restriction** - Represents object availability using timeseries calculations for complex patterns
 
 Availability Recurrence
-**********************
+************************
 
 Availability events can be defined with various recurrence patterns:
 
@@ -30,14 +31,14 @@ Each recurrence pattern allows specifying:
 * The time interval for each occurrence
 
 Instances
-*********
+**********
 
 An **instance** is a single occurrence of a revision or restriction according to its recurrence pattern. When analyzing availability, you can search for all instances that occur within a specified time period.
 
 For example, a weekly revision occurring every Monday for two months would have approximately eight instances, one for each Monday in the specified period.
 
 Categories and Statuses
-**********************
+************************
 
 Availability events can have:
 
@@ -46,7 +47,7 @@ Availability events can have:
 * **Reason** - Text description explaining why the event exists
 
 Common Use Cases
-***************
+*****************
 
 The availability functionality can be used for:
 
