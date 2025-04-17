@@ -28,7 +28,7 @@ def revision_workflow(session: Connection.Session):
         target=CHIMNEY_PATH,
         event_id="event_id",
         local_id="local_id",
-        reason="Async revision reason",
+        reason="Revision reason",
     )
 
     print(f"   Created revision with ID: {revision.event_id}")
@@ -76,7 +76,7 @@ def revision_workflow(session: Connection.Session):
         period_end=datetime(2023, 2, 2, tzinfo=dateutil.tz.UTC),
         recurrence=Recurrence(
             status="Planned",
-            description="Second Async Recurrence",
+            description="Second Recurrence",
             recurrence_type=RecurrenceType.DAILY,
             recur_every=2,
             recur_until=datetime(2023, 2, 15, tzinfo=dateutil.tz.UTC),
@@ -118,7 +118,7 @@ def revision_workflow(session: Connection.Session):
         target=CHIMNEY_PATH,
         event_id="event_id",
         new_local_id="updated_local_id",
-        new_reason="Updated async reason",
+        new_reason="Updated reason",
     )
 
     updated_revision = session.availability.get_availability_event(
