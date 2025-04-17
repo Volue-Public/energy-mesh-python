@@ -45,7 +45,7 @@ def revision_workflow(session: Connection.Session):
         period_end=datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC),
         recurrence=Recurrence(
             status="Planned",
-            description="Async Test Recurrence",
+            description="Recurrence",
             recurrence_type=RecurrenceType.NONE,
         ),
     )
@@ -148,11 +148,11 @@ def revision_workflow(session: Connection.Session):
         event_ids=["event_id"],
     )
 
-    found_revisions = session.availability.search_availability_events(
+    remaining_revisions = session.availability.search_availability_events(
         event_type=EventType.REVISION,
         targets=[CHIMNEY_PATH],
     )
-    print(f"   Revisions found: {len(found_revisions)}")
+    print(f"   Revisions found: {len(remaining_revisions)}")
 
     print("\n=== Revision Workflow Example Completed ===\n")
 
@@ -169,12 +169,12 @@ def restriction_workflow(session: Connection.Session):
         target=CHIMNEY_PATH,
         event_id="basic_restriction_id",
         local_id="basic_local_id",
-        reason="Test basic restriction",
+        reason="basic restriction",
         category="DischargeMin[m3/s]",
         recurrence=RestrictionBasicRecurrence(
             recurrence=Recurrence(
                 status="SelfImposed",
-                description="Basic test restriction",
+                description="Basic restriction",
                 recurrence_type=RecurrenceType.WEEKLY,
                 recur_every=1,
                 recur_until=datetime(2023, 1, 31, tzinfo=dateutil.tz.UTC),
@@ -200,12 +200,12 @@ def restriction_workflow(session: Connection.Session):
         target=CHIMNEY_PATH,
         event_id="complex_restriction_id",
         local_id="complex_local_id",
-        reason="Test complex restriction",
+        reason="Complex restriction",
         category="DischargeMax[m3/s]",
         recurrence=RestrictionComplexRecurrence(
             recurrence=Recurrence(
                 status="SelfImposed",
-                description="Complex test restriction",
+                description="Complex restriction",
                 recurrence_type=RecurrenceType.DAILY,
                 recur_every=1,
                 recur_until=datetime(2023, 1, 15, tzinfo=dateutil.tz.UTC),
@@ -263,8 +263,39 @@ def restriction_workflow(session: Connection.Session):
     print(f"   Local ID: {retrieved_restriction.local_id}")
     print(f"   Reason: {retrieved_restriction.reason}")
     print(f"   Category: {retrieved_restriction.category}")
-    if hasattr(retrieved_restriction.recurrence, "value"):
+
+    # Check the type of recurrence and print the value accordingly
+    # In this case we expect the recurrence to be of type RestrictionBasicRecurrence
+    if isinstance(retrieved_restriction.recurrence, RestrictionBasicRecurrence):
         print(f"   Value: {retrieved_restriction.recurrence.value}")
+    elif isinstance(retrieved_restriction.recurrence, RestrictionComplexRecurrence):
+        # In case of complex recurrence we can print the time points
+        for i, point in enumerate(retrieved_restriction.recurrence.values):
+            print(
+                f"   Time point {i+1}: Value: {point.value}, Timestamp: {point.timestamp}"
+            )
+
+    # 4.5 Get a specific restriction by ID
+    print("\n4.5. Getting specific restriction details...")
+    retrieved_restriction = session.availability.get_availability_event(
+        target=CHIMNEY_PATH,
+        event_id="complex_restriction_id",
+    )
+    print(f"   Retrieved restriction with ID: {retrieved_restriction.event_id}")
+    print(f"   Local ID: {retrieved_restriction.local_id}")
+    print(f"   Reason: {retrieved_restriction.reason}")
+    print(f"   Category: {retrieved_restriction.category}")
+
+    # Check the type of recurrence and print the value accordingly
+    # In this case we expect the recurrence to be of type RestrictionComplexRecurrence
+    if isinstance(retrieved_restriction.recurrence, RestrictionBasicRecurrence):
+        print(f"   Value: {retrieved_restriction.recurrence.value}")
+    elif isinstance(retrieved_restriction.recurrence, RestrictionComplexRecurrence):
+        # In case of complex recurrence we can print the time points
+        for i, point in enumerate(retrieved_restriction.recurrence.time_points):
+            print(
+                f"   Time point {i+1}: Value: {point.value}, Timestamp: {point.timestamp}"
+            )
 
     # 5. Search for instances within a time period
     print("\n5. Searching for specific instances of the basic restriction...")
@@ -344,15 +375,7 @@ def restriction_workflow(session: Connection.Session):
         targets=[CHIMNEY_PATH],
     )
 
-    found_basic = any(
-        r.event_id == "basic_restriction_id" for r in remaining_restrictions
-    )
-    found_complex = any(
-        r.event_id == "complex_restriction_id" for r in remaining_restrictions
-    )
-
-    print(f"   Basic restriction still exists: {found_basic}")
-    print(f"   Complex restriction still exists: {found_complex}")
+    print(f"   Restrictions found: {len(remaining_restrictions)}")
 
     print("\n=== Restriction Workflow Example Completed ===\n")
 
