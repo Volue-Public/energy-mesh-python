@@ -22,7 +22,7 @@ New features
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- **Fixed:** Async `delete_object` was missing an `await` on an internal async call. :pull:`551`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
