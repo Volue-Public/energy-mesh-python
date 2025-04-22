@@ -383,7 +383,7 @@ class Connection(_base_connection.Connection):
             self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
         ) -> None:
             request = super()._prepare_delete_object_request(target, recursive_delete)
-            self.model_service.DeleteObject(request)
+            await self.model_service.DeleteObject(request)
 
         def forecast_functions(
             self,
