@@ -17,7 +17,9 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for availability events.
+  See :doc:`mesh_availability`.
+
 
 Changes
 ~~~~~~~~~~~~~~~~~~

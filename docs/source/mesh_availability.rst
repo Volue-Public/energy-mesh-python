@@ -13,7 +13,6 @@ Mesh Python SDK supports three types of availability events:
 
 * **Revision** - Represents periods when an object is completely unavailable (e.g., during maintenance or outage)
 * **Restriction** - Represents periods when an object is partially available with reduced capacity
-* **Advanced Restriction** - Represents object availability using timeseries calculations for complex patterns
 
 Availability Recurrence
 ************************
