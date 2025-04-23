@@ -528,7 +528,7 @@ class Restriction:
         )
 
 
-class _Availability(abc.ABC):
+class Availability(abc.ABC):
     def __init__(
         self,
         availability_service: availability_pb2_grpc.AvailabilityServiceStub,

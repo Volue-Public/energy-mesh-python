@@ -13,11 +13,11 @@ from volue.mesh.availability import (
     Revision,
     RevisionInstance,
 )
-from volue.mesh.availability._base_availability import _Availability
+from volue.mesh.availability._base_availability import Availability
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 
 
-class _Availability(_Availability):
+class Availability(Availability):
     def __init__(
         self,
         availability_service: availability_pb2_grpc.AvailabilityServiceStub,

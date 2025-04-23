@@ -16,6 +16,18 @@ volue.mesh
         :exclude-members: WorkerThread
 
 
+volue.mesh.availability
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: volue.mesh.availability
+    :noindex:
+    :exclude-members: Availability
+
+    .. autoclass:: Availability
+        :inherited-members:
+    
+
+
 volue.mesh.aio
 ~~~~~~~~~~~~~~~~~~~~
 
