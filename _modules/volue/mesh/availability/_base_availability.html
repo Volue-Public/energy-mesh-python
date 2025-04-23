@@ -1,0 +1,1341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>volue.mesh.availability._base_availability &mdash; volue.mesh 1.13.0-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> volue.mesh
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Welcome</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../quickstart.html">Quickstart guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction_to_mesh.html">An introduction to Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../hydsim.html">HydSim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authentication.html">Client authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Versions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../versions.html">Versions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">SDK Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">volue.mesh</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>volue.mesh.availability._base_availability</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for volue.mesh.availability._base_availability</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">dateutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bidict</span><span class="w"> </span><span class="kn">import</span> <span class="n">bidict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">google</span><span class="w"> </span><span class="kn">import</span> <span class="n">protobuf</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._common</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_datetime_to_timestamp_pb2</span><span class="p">,</span>
+    <span class="n">_from_proto_guid</span><span class="p">,</span>
+    <span class="n">_to_proto_guid</span><span class="p">,</span>
+    <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._mesh_id</span><span class="w"> </span><span class="kn">import</span> <span class="n">_to_proto_object_mesh_id</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._object</span><span class="w"> </span><span class="kn">import</span> <span class="n">Object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.availability.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">availability_pb2</span><span class="p">,</span>
+    <span class="n">availability_pb2_grpc</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="RecurrenceType"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RecurrenceType">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">RecurrenceType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">DAILY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">WEEKLY</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MONTHLY</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">YEARLY</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+
+<div class="viewcode-block" id="EventType"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.EventType">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">EventType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ALL</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">RESTRICTION</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">REVISION</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<span class="n">RECURRENCE_TYPE</span> <span class="o">=</span> <span class="n">bidict</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="n">RecurrenceType</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="n">RecurrenceType</span><span class="o">.</span><span class="n">DAILY</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span>
+        <span class="n">RecurrenceType</span><span class="o">.</span><span class="n">WEEKLY</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">WEEKLY</span><span class="p">,</span>
+        <span class="n">RecurrenceType</span><span class="o">.</span><span class="n">MONTHLY</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">MONTHLY</span><span class="p">,</span>
+        <span class="n">RecurrenceType</span><span class="o">.</span><span class="n">YEARLY</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">YEARLY</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">EVENT_TYPE</span> <span class="o">=</span> <span class="n">bidict</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="n">EventType</span><span class="o">.</span><span class="n">ALL</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">EventType</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span>
+        <span class="n">EventType</span><span class="o">.</span><span class="n">RESTRICTION</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">EventType</span><span class="o">.</span><span class="n">RESTRICTION</span><span class="p">,</span>
+        <span class="n">EventType</span><span class="o">.</span><span class="n">REVISION</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">EventType</span><span class="o">.</span><span class="n">REVISION</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="RevisionInstance"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RevisionInstance">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RevisionInstance</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a specific instance of a revision in the availability system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_instance</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RevisionInstance</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RevisionInstance</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a protobuf RevisionInstance object into a RevisionInstance instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            proto_instance: The protobuf RevisionInstance object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The corresponding RevisionInstance instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">period_start</span><span class="o">=</span><span class="n">proto_instance</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="n">period_end</span><span class="o">=</span><span class="n">proto_instance</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">end_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RestrictionInstance"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RestrictionInstance">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestrictionInstance</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a specific instance of a restriction in the availability system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_instance</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionInstance</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RestrictionInstance</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a protobuf RestrictionInstance object into a RestrictionInstance instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            proto_instance: The protobuf RestrictionInstance object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The corresponding RestrictionInstance instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">period_start</span><span class="o">=</span><span class="n">proto_instance</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="n">period_end</span><span class="o">=</span><span class="n">proto_instance</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">end_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">proto_instance</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Recurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Recurrence">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Recurrence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a recurrence pattern for a revision in the availability system.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        status: The status of the recurrence.</span>
+<span class="sd">        description: A description of the recurrence.</span>
+<span class="sd">        recurrence_type: The type of recurrence (e.g., DAILY, WEEKLY, etc.).</span>
+<span class="sd">        recur_every: The multiplier of the recurrence type (e.g., every 2 weeks).</span>
+<span class="sd">        recur_until: The time until which the recurrence is active.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">recurrence_type</span><span class="p">:</span> <span class="n">RecurrenceType</span>
+    <span class="n">recur_every</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">recur_until</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_recurrence</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">Recurrence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Recurrence</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a protobuf Recurrence object into a Recurrence instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            proto_recurrence: The protobuf Recurrence object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The corresponding Recurrence instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RECURRENCE_TYPE</span><span class="o">.</span><span class="n">inverse</span><span class="p">[</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recurrence_type</span><span class="p">],</span>
+            <span class="n">recur_every</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recur_every</span>
+                <span class="k">if</span> <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;recur_every&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
+            <span class="n">recur_until</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recur_until</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;recur_until&quot;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">Recurrence</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a Recurrence instance into a protobuf Recurrence object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            recurrence: The Recurrence instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The corresponding protobuf Recurrence object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">recurrence</span><span class="o">.</span><span class="n">recur_until</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">recur_until</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">recur_until</span> <span class="o">=</span> <span class="n">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recur_until</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">Recurrence</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">recurrence</span><span class="o">.</span><span class="n">status</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">recurrence</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RECURRENCE_TYPE</span><span class="p">[</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence_type</span><span class="p">],</span>
+            <span class="n">recur_every</span><span class="o">=</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recur_every</span><span class="p">,</span>
+            <span class="n">recur_until</span><span class="o">=</span><span class="n">recur_until</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RevisionRecurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RevisionRecurrence">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RevisionRecurrence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a recurrence associated with a revision.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id: The unique identifier of the recurrence (optional).</span>
+<span class="sd">        recurrence: The recurrence details, including type, frequency, and description.</span>
+<span class="sd">        period_start: The start time of the interval for which the recurrence is active.</span>
+<span class="sd">        period_end: The end time of the interval for which the recurrence is active.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span>
+    <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_recurrence</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RevisionRecurrence</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RevisionRecurrence</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a protobuf RevisionRecurrence object into a RevisionRecurrence instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            proto_recurrence: The protobuf RevisionRecurrence object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            RevisionRecurrence: The corresponding RevisionRecurrence instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recurrence_id</span><span class="p">,</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="p">),</span>
+            <span class="n">period_start</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="n">period_end</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">end_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">recurrence</span><span class="p">:</span> <span class="n">RevisionRecurrence</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RevisionRecurrence</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a RevisionRecurrence instance into a protobuf RevisionRecurrence object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            recurrence: The RevisionRecurrence instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The corresponding protobuf RevisionRecurrence object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RevisionRecurrence</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="p">),</span>
+            <span class="n">period</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span>
+                <span class="n">recurrence</span><span class="o">.</span><span class="n">period_start</span><span class="p">,</span> <span class="n">recurrence</span><span class="o">.</span><span class="n">period_end</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AvailabilityRecordInfo"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.AvailabilityRecordInfo">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AvailabilityRecordInfo</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents metadata about a record in the availability system.</span>
+
+<span class="sd">    This class contains information about who created or last modified</span>
+<span class="sd">    a record and when the action occurred.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        author: The name or identifier of the user who created or last modified the record.</span>
+<span class="sd">        timestamp: The date and time when the record was created or last modified.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">author</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">proto_record_info</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RecordInfo</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AvailabilityRecordInfo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts a protobuf RecordInfo object into an AvailabilityRecordInfo instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            proto_record_info: The protobuf RecordInfo object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            AvailabilityRecordInfo: The corresponding AvailabilityRecordInfo instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">proto_record_info</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+            <span class="n">timestamp</span><span class="o">=</span><span class="n">proto_record_info</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Revision"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Revision">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Revision</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a revision in the availability system.</span>
+
+<span class="sd">    A revision defines a period during which a Mesh object is unavailable.</span>
+<span class="sd">    It includes metadata about the revision, such as its identifiers, reason,</span>
+<span class="sd">    creation time, last modification time, and recurrence details.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        owner_id: The unique identifier of the Mesh object to which the revision belongs.</span>
+<span class="sd">        owner_path: The path of the Mesh object to which the revision belongs.</span>
+<span class="sd">        event_id: A unique identifier for the revision.</span>
+<span class="sd">        local_id: An additional identifier for the revision, which may not be unique.</span>
+<span class="sd">        reason: A description or explanation for the revision.</span>
+<span class="sd">        created: Metadata about when and by whom the revision was created.</span>
+<span class="sd">        last_changed: Metadata about when and by whom the revision was last modified.</span>
+<span class="sd">        recurrences: A list of recurrence patterns associated with the revision.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">owner_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span>
+    <span class="n">owner_path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">created</span><span class="p">:</span> <span class="n">AvailabilityRecordInfo</span>
+    <span class="n">last_changed</span><span class="p">:</span> <span class="n">AvailabilityRecordInfo</span>
+    <span class="n">recurrences</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">RevisionRecurrence</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">proto_availability</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">Revision</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Revision</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">owner_path</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">local_id</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">local_id</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+            <span class="n">created</span><span class="o">=</span><span class="n">AvailabilityRecordInfo</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">created</span><span class="p">),</span>
+            <span class="n">last_changed</span><span class="o">=</span><span class="n">AvailabilityRecordInfo</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span>
+                <span class="n">proto_availability</span><span class="o">.</span><span class="n">last_changed</span>
+            <span class="p">),</span>
+            <span class="n">recurrences</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">RevisionRecurrence</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">recurrence</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">recurrence</span> <span class="ow">in</span> <span class="n">proto_availability</span><span class="o">.</span><span class="n">recurrences</span>
+            <span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestrictionRecurrence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a recurrence pattern for a restriction in the availability system.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        status: The status of the recurrence.</span>
+<span class="sd">        description: A description of the recurrence.</span>
+<span class="sd">        recurrence_type: The type of recurrence (e.g., DAILY, WEEKLY, etc.).</span>
+<span class="sd">        recur_every: The multiplier of the recurrence type (e.g., every 2 weeks).</span>
+<span class="sd">        recur_until: The time until which the recurrence is active.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">recurrence_type</span><span class="p">:</span> <span class="n">RecurrenceType</span>
+    <span class="n">recur_every</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">recur_until</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="RestrictionBasicRecurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RestrictionBasicRecurrence">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestrictionBasicRecurrence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a basic recurrence pattern for a restriction in the availability system.</span>
+
+<span class="sd">    A basic recurrence defines a fixed value applied to a restricted object category</span>
+<span class="sd">    over a specific time interval.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        recurrence: The recurrence details, including type, frequency, and description.</span>
+<span class="sd">        period_start: The start time of the interval for which the recurrence is active.</span>
+<span class="sd">        period_end: The end time of the interval for which the recurrence is active.</span>
+<span class="sd">        value: The fixed value applied to the restricted object category during the recurrence.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span>
+    <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">proto_recurrence</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RestrictionBasicRecurrence</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="p">),</span>
+            <span class="n">period_start</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="n">period_end</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">period</span><span class="o">.</span><span class="n">end_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">recurrence</span><span class="p">:</span> <span class="n">RestrictionBasicRecurrence</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionBasicRecurrence</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionBasicRecurrence</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="p">),</span>
+            <span class="n">period</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span>
+                <span class="n">recurrence</span><span class="o">.</span><span class="n">period_start</span><span class="p">,</span> <span class="n">recurrence</span><span class="o">.</span><span class="n">period_end</span>
+            <span class="p">),</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TimePoint"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.TimePoint">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TimePoint</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a single time point with a corresponding value in the availability system.</span>
+
+<span class="sd">    A time point is used in complex recurrences to define specific timestamps</span>
+<span class="sd">    and their associated values.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        value: The value applied at the specified timestamp.</span>
+<span class="sd">        timestamp: The specific point in time for which the value is defined.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span></div>
+
+
+<div class="viewcode-block" id="RestrictionComplexRecurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RestrictionComplexRecurrence">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestrictionComplexRecurrence</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a complex recurrence pattern for a restriction in the availability system.</span>
+
+<span class="sd">    A complex recurrence defines multiple time points with corresponding values</span>
+<span class="sd">    that are applied to a restricted object category. These time points can be</span>
+<span class="sd">    repeated using recurrence patterns.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        recurrence: The recurrence details, including type, frequency, and description.</span>
+<span class="sd">        time_points: A list of time points, each with a specific timestamp and value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span>
+    <span class="n">time_points</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TimePoint</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">proto_recurrence</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionComplexRecurrence</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">proto_recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="p">),</span>
+            <span class="n">time_points</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">TimePoint</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">point</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">point</span><span class="o">.</span><span class="n">timestamp</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">values</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">recurrence</span><span class="p">:</span> <span class="n">RestrictionComplexRecurrence</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionComplexRecurrence</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionComplexRecurrence</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="p">),</span>
+            <span class="n">values</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">availability_pb2</span><span class="o">.</span><span class="n">TimePoint</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">point</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">timestamp</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">recurrence</span><span class="o">.</span><span class="n">time_points</span>
+            <span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Restriction"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Restriction">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Restriction</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a restriction in the availability system.</span>
+
+<span class="sd">    A restriction defines a period during which a Mesh object is unavailable</span>
+<span class="sd">    due to external factors. It includes metadata about the restriction,</span>
+<span class="sd">    such as its identifiers, reason, creation time, last modification time,</span>
+<span class="sd">    and recurrence details.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        owner_id: The unique identifier of the Mesh object to which the restriction belongs.</span>
+<span class="sd">        owner_path: The path of the Mesh object to which the restriction belongs.</span>
+<span class="sd">        event_id: A unique identifier for the restriction.</span>
+<span class="sd">        local_id: An additional identifier for the restriction, which may not be unique.</span>
+<span class="sd">        reason: A description or explanation for the restriction.</span>
+<span class="sd">        created: Metadata about when and by whom the restriction was created, containing</span>
+<span class="sd">                 author name and timestamp information.</span>
+<span class="sd">        last_changed: Metadata about when and by whom the restriction was last modified,</span>
+<span class="sd">                      containing author name and timestamp information.</span>
+<span class="sd">        category: The category of the restriction.</span>
+<span class="sd">        recurrence: The recurrence details, which can be either basic or complex.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">owner_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span>
+    <span class="n">owner_path</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">category</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">created</span><span class="p">:</span> <span class="n">AvailabilityRecordInfo</span>
+    <span class="n">last_changed</span><span class="p">:</span> <span class="n">AvailabilityRecordInfo</span>
+    <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">proto_availability</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">Restriction</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Restriction</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="n">owner_path</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">owner_id</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">local_id</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">local_id</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">reason</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">category</span><span class="p">,</span>
+            <span class="n">created</span><span class="o">=</span><span class="n">AvailabilityRecordInfo</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">proto_availability</span><span class="o">.</span><span class="n">created</span><span class="p">),</span>
+            <span class="n">last_changed</span><span class="o">=</span><span class="n">AvailabilityRecordInfo</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span>
+                <span class="n">proto_availability</span><span class="o">.</span><span class="n">last_changed</span>
+            <span class="p">),</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">RestrictionBasicRecurrence</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span>
+                    <span class="n">proto_availability</span><span class="o">.</span><span class="n">restriction_recurrence</span><span class="o">.</span><span class="n">basic_recurrence</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">proto_availability</span><span class="o">.</span><span class="n">restriction_recurrence</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span>
+                    <span class="s2">&quot;recurrence_oneof&quot;</span>
+                <span class="p">)</span>
+                <span class="o">==</span> <span class="s2">&quot;basic_recurrence&quot;</span>
+                <span class="k">else</span> <span class="n">RestrictionComplexRecurrence</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span>
+                    <span class="n">proto_availability</span><span class="o">.</span><span class="n">restriction_recurrence</span><span class="o">.</span><span class="n">complex_recurrence</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Availability"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Availability</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">availability_service</span><span class="p">:</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span><span class="p">,</span>
+        <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">],</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="n">session_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">availability_service</span><span class="p">:</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">availability_service</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Availability.create_revision"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.create_revision">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_revision</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Revision</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new revision for a specified Mesh object.</span>
+
+<span class="sd">        A revision represents a period during which a Mesh object is unavailable.</span>
+<span class="sd">        This method allows you to define the revision by specifying its target,</span>
+<span class="sd">        unique identifier, local identifier, and the reason for its creation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the new revision belongs.</span>
+<span class="sd">                This can be specified as a UUID or a string path.</span>
+<span class="sd">            event_id: A unique identifier for the revision. This must be unique</span>
+<span class="sd">                among all revisions belonging to the same target object.</span>
+<span class="sd">            local_id: An additional identifier for the revision. This does not</span>
+<span class="sd">                need to be unique and can be used for external system references.</span>
+<span class="sd">            reason: A description or explanation for creating the revision.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Revision: An object representing the newly created revision, including</span>
+<span class="sd">            details such as event ID, local ID, reason, owner ID, creation time,</span>
+<span class="sd">            last modification time, and recurrence information.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the target is invalid or the revision cannot be created.</span>
+<span class="sd">            TypeError: If required fields are missing or invalid types are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_revision_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRevisionRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRevisionRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
+            <span class="n">local_id</span><span class="o">=</span><span class="n">local_id</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.create_restriction"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.create_restriction">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_restriction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Restriction</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a new restriction for a specified Mesh object.</span>
+
+<span class="sd">        A restriction defines a period during which a Mesh object is unavailable</span>
+<span class="sd">        due to external factors. This method allows you to define the restriction</span>
+<span class="sd">        by specifying its target, unique identifier, local identifier, reason,</span>
+<span class="sd">        category, and recurrence details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the new restriction belongs.</span>
+<span class="sd">                This can be specified as a UUID or a string path.</span>
+<span class="sd">            event_id: A unique identifier for the restriction. This must be unique</span>
+<span class="sd">                among all restrictions belonging to the same target object.</span>
+<span class="sd">            local_id: An additional identifier for the restriction. This does not</span>
+<span class="sd">                need to be unique and can be used for external system references.</span>
+<span class="sd">            reason: A description or explanation for creating the restriction.</span>
+<span class="sd">            category: The category of the restriction.</span>
+<span class="sd">            recurrence: The recurrence details, which can be either basic or complex.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Restriction: An object representing the newly created restriction,</span>
+<span class="sd">            including details such as event ID, local ID, reason, owner ID,</span>
+<span class="sd">            creation time, last modification time, and recurrence information.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the target is invalid or the restriction cannot be created.</span>
+<span class="sd">            TypeError: If required fields are missing or invalid types are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_restriction_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRestrictionRequest</span><span class="p">:</span>
+        <span class="n">proto_recurrence</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionRecurrence</span><span class="p">()</span>
+
+        <span class="c1"># Set the appropriate field based on the recurrence type</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recurrence</span><span class="p">,</span> <span class="n">RestrictionBasicRecurrence</span><span class="p">):</span>
+            <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">basic_recurrence</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+                <span class="n">RestrictionBasicRecurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">recurrence</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># RestrictionComplexRecurrence</span>
+            <span class="n">proto_recurrence</span><span class="o">.</span><span class="n">complex_recurrence</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+                <span class="n">RestrictionComplexRecurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">recurrence</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRestrictionRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">local_id</span><span class="o">=</span><span class="n">local_id</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
+            <span class="n">restriction_recurrence</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.add_revision_recurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.add_revision_recurrence">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_revision_recurrence</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a recurrence pattern to an existing revision.</span>
+
+<span class="sd">        This method allows you to associate a recurrence pattern with a specific</span>
+<span class="sd">        revision of a Mesh object, defining the period during which the recurrence</span>
+<span class="sd">        is active.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the revision belongs.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_id: The unique identifier of the revision to which the recurrence</span>
+<span class="sd">                will be added.</span>
+<span class="sd">            recurrence: The recurrence pattern to be added, including details such as</span>
+<span class="sd">                type, frequency, and description.</span>
+<span class="sd">            period_start: The start time of the period during which the recurrence is active.</span>
+<span class="sd">            period_end: The end time of the period during which the recurrence is active.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The unique identifier of the newly created recurrence.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            Exception: If the target is invalid or the recurrence cannot be added.</span>
+<span class="sd">            TypeError: If required fields are missing or invalid types are provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_add_recurrence_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">AddRevisionRecurrenceRequest</span><span class="p">:</span>
+
+        <span class="n">revision_recurrence</span> <span class="o">=</span> <span class="n">RevisionRecurrence</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">recurrence</span><span class="p">,</span> <span class="n">period_start</span><span class="o">=</span><span class="n">period_start</span><span class="p">,</span> <span class="n">period_end</span><span class="o">=</span><span class="n">period_end</span>
+        <span class="p">)</span>
+
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">AddRevisionRecurrenceRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">revision_recurrence</span><span class="o">=</span><span class="n">RevisionRecurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">revision_recurrence</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.get_availability_event"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.get_availability_event">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_availability_event</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Revision</span><span class="p">,</span> <span class="n">Restriction</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves a specific availability event (Revision or Restriction) for a given Mesh object.</span>
+
+<span class="sd">        This method fetches the details of an availability event, such as a Revision or Restriction,</span>
+<span class="sd">        based on the provided Mesh object and event identifier.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the availability event belongs.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_id: The unique identifier of the availability event to retrieve.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The availability event as a `Revision` or `Restriction` object if found.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            Exception: If the target or event_id is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_get_availability_event_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">GetAvailabilityEventRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">GetAvailabilityEventRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.search_availability_events"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.search_availability_events">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_availability_events</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Revision</span><span class="p">,</span> <span class="n">Restriction</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Searches for availability events (Revisions or Restrictions) in specified Mesh objects.</span>
+
+<span class="sd">        This method allows you to search for specific types of availability events (e.g., Revisions or Restrictions)</span>
+<span class="sd">        across multiple Mesh objects.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_type: The type of availability event to search for. Can be one of the following:</span>
+<span class="sd">                - EventType.ALL: Search for all types of events.</span>
+<span class="sd">                - EventType.RESTRICTION: Search for restrictions only.</span>
+<span class="sd">                - EventType.REVISION: Search for revisions only.</span>
+<span class="sd">            targets: A list of Mesh objects to search for events. Each target can be specified as a UUID, a string path,</span>
+<span class="sd">                or an Object instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of `Revision` or `Restriction` objects representing the availability events found.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            ValueError: If the `targets` list is empty or invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_availability_events_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">SearchAvailabilityEventsRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">SearchAvailabilityEventsRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">EVENT_TYPE</span><span class="p">[</span><span class="n">event_type</span><span class="p">],</span>
+            <span class="n">owner_ids</span><span class="o">=</span><span class="p">[</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.delete_revision_recurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.delete_revision_recurrence">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_revision_recurrence</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">recurrence_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a specific recurrence associated with a revision.</span>
+
+<span class="sd">        This method allows you to remove a recurrence pattern from an existing revision.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the revision belongs.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_id: The unique identifier of the revision from which the recurrence will be deleted.</span>
+<span class="sd">            recurrence_id: The unique identifier of the recurrence to be deleted.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            Exception: If the target, event_id, or recurrence_id is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_revision_recurrence_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">recurrence_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteRevisionRecurrenceRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteRevisionRecurrenceRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">recurrence_id</span><span class="o">=</span><span class="n">recurrence_id</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.delete_availability_events_by_id"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.delete_availability_events_by_id">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_availability_events_by_id</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes availability events (Revisions or Restrictions) for a given Mesh object.</span>
+
+<span class="sd">        This method allows you to delete one or more availability events (e.g., Revisions or Restrictions)</span>
+<span class="sd">        associated with a specific Mesh object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the availability events belong.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_ids: A list of unique identifiers for the availability events to be deleted.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            ValueError: If the `event_ids` list is empty or invalid.</span>
+<span class="sd">            Exception: If the target or event_ids are invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_availability_events_by_id_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsByIdRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsByIdRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_ids</span><span class="o">=</span><span class="n">event_ids</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.delete_availability_events"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.delete_availability_events">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_availability_events</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes all availability events (Revisions or Restrictions) of a specific type for a given Mesh object.</span>
+
+<span class="sd">        This method removes all availability events of the specified type (e.g., Revisions or Restrictions)</span>
+<span class="sd">        associated with the given Mesh object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the availability events belong.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_type: The type of availability events to delete. Can be one of the following:</span>
+<span class="sd">                - EventType.ALL: Deletes all types of availability events.</span>
+<span class="sd">                - EventType.RESTRICTION: Deletes only restriction events.</span>
+<span class="sd">                - EventType.REVISION: Deletes only revision events.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            ValueError: If the `event_type` is invalid.</span>
+<span class="sd">            Exception: If the target is invalid or the deletion cannot be performed.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_availability_events_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_type</span><span class="o">=</span><span class="n">EVENT_TYPE</span><span class="p">[</span><span class="n">event_type</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.search_instances"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.search_instances">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">search_instances</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">RevisionInstance</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">RestrictionInstance</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Searches for instances of availability events (Revisions or Restrictions) within a specific time period.</span>
+
+<span class="sd">        This method retrieves the specific instances of an availability event that occur within the specified</span>
+<span class="sd">        time period. This is particularly useful for recurring events where you want to find all occurrences</span>
+<span class="sd">        within a date range.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the availability event belongs.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_id: The unique identifier of the availability event.</span>
+<span class="sd">            period_start: The start date/time of the period to search for instances.</span>
+<span class="sd">            period_end: The end date/time of the period to search for instances.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of instances of the event that occur within the specified time period.</span>
+<span class="sd">            Each instance contains information about when the event occurs and, for restriction instances, the applied value.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            Exception: If the target or event_id is invalid or if the date range is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_instances_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">SearchInstancesRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">SearchInstancesRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">period_start</span><span class="p">,</span> <span class="n">period_end</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.update_revision"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.update_revision">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_revision</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates an existing revision with new information.</span>
+
+<span class="sd">        This method allows you to modify specific fields of an existing revision,</span>
+<span class="sd">        such as its local ID or reason. You can update either one or both fields.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the revision belongs.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_id: The unique identifier of the revision to be updated.</span>
+<span class="sd">            new_local_id: The new local identifier for the revision. If None,</span>
+<span class="sd">                the local ID will remain unchanged.</span>
+<span class="sd">            new_reason: The new reason or description for the revision. If None,</span>
+<span class="sd">                the reason will remain unchanged.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            ValueError: If neither new_local_id nor new_reason are provided.</span>
+<span class="sd">            Exception: If the target or event_id is invalid.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            At least one of new_local_id or new_reason must be provided.</span>
+<span class="sd">            The updated revision will have an updated last_changed timestamp.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_revision_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRevisionRequest</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">new_local_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">new_reason</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;At least one of new_local_id or new_reason must be provided&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRevisionRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">new_local_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_local_id</span> <span class="o">=</span> <span class="n">new_local_id</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_local_id&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_reason</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_reason</span> <span class="o">=</span> <span class="n">new_reason</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_reason&quot;</span><span class="p">)</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+            <span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">fields_to_update</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">request</span>
+
+<div class="viewcode-block" id="Availability.update_restriction"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.update_restriction">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_restriction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates an existing restriction with new information.</span>
+
+<span class="sd">        This method allows you to modify specific fields of an existing restriction,</span>
+<span class="sd">        such as its local ID, reason, category, or recurrence details. You can update</span>
+<span class="sd">        any combination of these fields.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: The Mesh object to which the restriction belongs.</span>
+<span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
+<span class="sd">            event_id: The unique identifier of the restriction to be updated.</span>
+<span class="sd">            new_local_id: The new local identifier for the restriction. If None,</span>
+<span class="sd">                the local ID will remain unchanged.</span>
+<span class="sd">            new_reason: The new reason or description for the restriction. If None,</span>
+<span class="sd">                the reason will remain unchanged.</span>
+<span class="sd">            new_category: The new category for the restriction. If None,</span>
+<span class="sd">                the category will remain unchanged.</span>
+<span class="sd">            new_restriction_recurrence: The new recurrence details for the restriction. If None,</span>
+<span class="sd">                the recurrence details will remain unchanged.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
+<span class="sd">            ValueError: If none of the update fields are provided.</span>
+<span class="sd">            Exception: If the target or event_id is invalid.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            At least one of new_local_id, new_reason, new_category, or new_restriction_recurrence</span>
+<span class="sd">            must be provided. The updated restriction will have an updated last_changed timestamp.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_restriction_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRestrictionRequest</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">new_local_id</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">new_reason</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">new_category</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">new_restriction_recurrence</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;At least one of new_local_id, new_reason, new_category, or &quot;</span>
+                <span class="s2">&quot;new_restriction_recurrence must be provided&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRestrictionRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+            <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">new_local_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_local_id</span> <span class="o">=</span> <span class="n">new_local_id</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_local_id&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_reason</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_reason</span> <span class="o">=</span> <span class="n">new_reason</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_reason&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_category</span> <span class="o">=</span> <span class="n">new_category</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_category&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_restriction_recurrence</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_restriction_recurrence</span><span class="p">,</span> <span class="n">RestrictionBasicRecurrence</span><span class="p">):</span>
+                <span class="n">proto_recurrence</span> <span class="o">=</span> <span class="n">RestrictionBasicRecurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span>
+                    <span class="n">new_restriction_recurrence</span>
+                <span class="p">)</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">new_restriction_recurrence</span><span class="o">.</span><span class="n">basic_recurrence</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+                    <span class="n">proto_recurrence</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">proto_recurrence</span> <span class="o">=</span> <span class="n">RestrictionComplexRecurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span>
+                    <span class="n">new_restriction_recurrence</span>
+                <span class="p">)</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">new_restriction_recurrence</span><span class="o">.</span><span class="n">complex_recurrence</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+                    <span class="n">proto_recurrence</span>
+                <span class="p">)</span>
+
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_restriction_recurrence&quot;</span><span class="p">)</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+            <span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">fields_to_update</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">request</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2024, Volue AS.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

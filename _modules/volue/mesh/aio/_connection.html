@@ -211,7 +211,7 @@
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_resolution</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.availability._availability_aio</span><span class="w"> </span><span class="kn">import</span> <span class="n">_Availability</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.availability._availability_aio</span><span class="w"> </span><span class="kn">import</span> <span class="n">Availability</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.forecast</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForecastFunctionsAsync</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.history</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryFunctionsAsync</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.statistical</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatisticalFunctionsAsync</span>
@@ -257,7 +257,7 @@
                 <span class="n">session_service</span><span class="o">=</span><span class="n">session_service</span><span class="p">,</span>
                 <span class="n">time_series_service</span><span class="o">=</span><span class="n">time_series_service</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">availability</span> <span class="o">=</span> <span class="n">_Availability</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">availability</span> <span class="o">=</span> <span class="n">Availability</span><span class="p">(</span>
                 <span class="n">availability_service</span><span class="o">=</span><span class="n">availability_service</span><span class="p">,</span> <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span>
             <span class="p">)</span>
 
