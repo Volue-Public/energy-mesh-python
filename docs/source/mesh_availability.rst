@@ -2,7 +2,9 @@
 Mesh Availability
 =================
 
-A Mesh availability event provides information about periods during which Mesh objects are unavailable or partially available. The availability functionality helps track and model the operational status of assets throughout time.
+A Mesh availability event provides information about periods during which Mesh
+objects are unavailable or partially available. The availability functionality
+helps track and model the operational status of assets throughout time.
 
 Types of Availability Events
 *****************************
@@ -33,9 +35,13 @@ Each recurrence pattern allows specifying:
 Instances
 **********
 
-An **instance** is a single occurrence of a revision or restriction according to its recurrence pattern. When analyzing availability, you can search for all instances that occur within a specified time period.
+An **instance** is a single occurrence of a revision or restriction according
+to its recurrence pattern. When analyzing availability, you can search for 
+all instances that occur within a specified time period.
 
-For example, a weekly revision occurring every Monday for two months would have approximately eight instances, one for each Monday in the specified period.
+For example, a weekly revision occurring every Monday for two months would 
+have approximately eight instances, one for each Monday in the specified 
+period.
 
 Categories and Statuses
 ************************
@@ -56,4 +62,12 @@ The availability functionality can be used for:
 * **Outage Tracking** - Documenting unexpected unavailability periods
 * **Resource Allocation** - Planning operations around known availability constraints
 
-When working with availability data, you can search for events affecting specific objects, find all instances occurring within a time period, and incorporate availability information into operational planning and analysis.
+When working with availability data, you can search for events affecting specific
+objects, find all instances occurring within a time period, and incorporate
+availability information into operational planning and analysis.
+
+The following example shows different ways of working with availability.
+
+.. literalinclude:: /../../src/volue/mesh/examples/availability.py
+
+Detailed API specification can be found here: :ref:`api:volue.mesh.availability`
