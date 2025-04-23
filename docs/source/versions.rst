@@ -17,7 +17,7 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Support for availability events.
+- Support for availability events. :issue:`523`
   See :doc:`mesh_availability`.
 
 
