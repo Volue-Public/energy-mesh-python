@@ -15,11 +15,18 @@ Windows Kerberos
 
 If you are on Windows as an Active Directory domain user Kerberos
 authentication is relatively simple. You only need to find the service
-principal name the Mesh service is running under. If Mesh is running as a
-machine user the service principal name will usually be
+principal name the Mesh service is running under.
+
+If Mesh is running as a machine user the service principal name will usually be
 ``HOST/full.qualified.domain.name`` or ``HOST/f.q.d.n@DOMAIN.COM`` but it might
-be different in your environment. Determining the service principal name for
-the Mesh service is out of scope for this guide.
+be different in your environment.
+
+If Mesh is running as a regular user the service principal name will usually be
+``account_name`` or ``DOMAIN\account_name`` but it might be different in your
+environment.
+
+Determining the service principal name for the Mesh service is out of scope for
+this guide.
 
 .. code-block:: python
 
