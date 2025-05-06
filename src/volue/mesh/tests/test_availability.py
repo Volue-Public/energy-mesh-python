@@ -659,9 +659,7 @@ def test_search_instances(session):
     assert len(instances) == 3
 
     expected_day = 2
-    # TODO: There is a bug in mesh that makes the instances in reverse order
-    # So we need to reverse the list to check the expected order
-    for i, instance in reversed(list(enumerate(instances))):
+    for i, instance in enumerate(instances):
         assert isinstance(instance, RevisionInstance)
 
         # Each instance should be from 8 AM to 4 PM on consecutive days
