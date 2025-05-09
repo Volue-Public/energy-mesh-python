@@ -3,7 +3,9 @@ Tests for volue.mesh.Connection.Session and volue.mesh.aio.Connection.Session.
 """
 
 import asyncio
+import random
 import sys
+import threading
 from time import sleep
 
 import grpc
@@ -352,6 +354,56 @@ async def test_async_sessions_lifetime_auto_extension(async_connection):
 
     await session_1.close()
     await session_2.close()
+
+
+@pytest.mark.server
+@pytest.mark.long
+def test_model_changes_in_multiple_concurrent_sessions(connection):
+    """
+    Check if having multiple sessions open at the same time, with some of them
+    doing changes and committing them, does not crash Mesh.
+    """
+
+    def update_simple_attribute(connection, path):
+        with connection.create_session() as session:
+            value = random.uniform(0, 10)
+            session.update_simple_attribute(path, value)
+            session.commit()
+
+    def run_in_threads(connection, paths):
+        threads = []
+        for path in paths:
+            for _ in range(10):
+                thread = threading.Thread(
+                    target=update_simple_attribute, args=(connection, path)
+                )
+                threads.append(thread)
+                thread.start()
+
+        for thread in threads:
+            thread.join()
+
+    session_with_no_changes = connection.create_session()
+    session_with_no_changes.open()
+
+    session_with_changes = connection.create_session()
+    session_with_changes.open()
+    session_with_changes.update_simple_attribute(
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.Int64Att", 80
+    )
+
+    for _ in range(100):
+        run_in_threads(
+            connection,
+            [
+                "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney1.DblAtt",
+                "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.DblAtt",
+                "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.DblAtt",
+            ],
+        )
+
+    session_with_no_changes.close()
+    session_with_changes.close()
 
 
 if __name__ == "__main__":
