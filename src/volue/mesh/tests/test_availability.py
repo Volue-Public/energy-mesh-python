@@ -453,8 +453,7 @@ def test_create_restriction_with_basic_recurrence(connection):
         assert restriction.recurrence.period_end == datetime(
             2023, 1, 10, tzinfo=dateutil.tz.UTC
         )
-        # TODO: Uncomment when bug in Mesh is fixed
-        # assert restriction.recurrence.value == 0.5
+        assert restriction.recurrence.value == 0.5
 
 
 @pytest.mark.database
@@ -659,9 +658,7 @@ def test_search_instances(session):
     assert len(instances) == 3
 
     expected_day = 2
-    # TODO: There is a bug in mesh that makes the instances in reverse order
-    # So we need to reverse the list to check the expected order
-    for i, instance in reversed(list(enumerate(instances))):
+    for i, instance in enumerate(instances):
         assert isinstance(instance, RevisionInstance)
 
         # Each instance should be from 8 AM to 4 PM on consecutive days
@@ -852,8 +849,7 @@ def test_update_restriction(session):
     assert updated_restriction.recurrence.period_end == datetime(
         2023, 2, 10, tzinfo=dateutil.tz.UTC
     )
-    # TODO: Uncomment when bug in Mesh is fixed
-    # assert updated_restriction.recurrence.value == 1.0
+    assert updated_restriction.recurrence.value == 1.0
 
     # Verify timestamps reflect the update
     assert (
@@ -919,8 +915,7 @@ def test_update_restriction_partial(session):
     assert retrieved_restriction.recurrence.period_end == datetime(
         2023, 1, 10, tzinfo=dateutil.tz.UTC
     )
-    # TODO: Uncomment when bug in Mesh is fixed
-    # assert retrieved_restriction.recurrence.value == 0.5
+    assert retrieved_restriction.recurrence.value == 0.5
 
 
 @pytest.mark.database
@@ -983,8 +978,7 @@ def test_update_restriction_complex_to_basic(session):
     assert (
         retrieved_restriction.recurrence.recurrence.description == "Basic restriction"
     )
-    # TODO: Uncomment when bug in Mesh is fixed
-    # assert retrieved_restriction.recurrence.value == 1.0
+    assert retrieved_restriction.recurrence.value == 1.0
 
 
 @pytest.mark.database
