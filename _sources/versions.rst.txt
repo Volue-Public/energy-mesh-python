@@ -11,7 +11,7 @@ This is the current master version.
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.17 **(may change)**
+- Mesh server version >= 2.18 **(may change)**
 - Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features
