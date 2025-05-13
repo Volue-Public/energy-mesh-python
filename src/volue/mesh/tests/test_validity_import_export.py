@@ -19,7 +19,7 @@ from volue.mesh.proto.model.v1alpha import model_pb2
 BASE_DUMPS_PATH = "C:/Users/martin.galvan"
 BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
 BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
-MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
+MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Release"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
 # the return value from GetValidity doesn't seem to include the fractionary part.
@@ -141,9 +141,9 @@ class TestValidityImportExport:
         # Create a dump file with the "new" validity data.
         self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
 
-        # Set the "old" validity data first, then import the "new" validity data.
         imported_validity_data = dict.fromkeys(new_validity_data, None)
 
+        # Set the "old" validity data first, then import the "new" validity data.
         def callback(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
             self._do_import(BASE_DUMP_NEW_MESH)
             self._set_validity_data(connection, old_validity_data)
@@ -196,9 +196,10 @@ class TestValidityImportExport:
 
             # Check if mesh has terminated due to some error (e.g. missing mesh.json).
             # FIXME: The above waiting time may not've been enough for Mesh to reach a point where
-            # it would normally fail, in which case we may end up waiting forever since the
-            # ImportExport program doesn't finish on its own when Mesh isn't running. We should have
-            # a more sure-fire way of catching such situations.
+            # it would normally fail, in which case this 'poll' call will succeed. In that case
+            # we may end up waiting forever when invoking ImportExport within the callback, since
+            # the ImportExport program doesn't finish on its own when Mesh isn't running. We should
+            # have a more sure-fire way of catching such situations.
             if not mesh_proc.poll():
                 callback(*args)
             else:
