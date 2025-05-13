@@ -11,18 +11,20 @@ This is the current master version.
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.17 **(may change)**
+- Mesh server version >= 2.18 **(may change)**
 - Python [3.9, 3.10, 3.11, 3.12] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for availability events. :issue:`523`
+  See :doc:`mesh_availability`.
+
 
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- **Fixed:** Async `delete_object` was missing an `await` on an internal async call. :pull:`551`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
