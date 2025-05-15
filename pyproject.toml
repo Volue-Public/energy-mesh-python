@@ -43,7 +43,7 @@ exclude = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.13"
+python = ">=3.9, <3.14"
 grpcio = ">=1.37.0, <=1.66.1"
 pyarrow = ">=7.0.0"
 protobuf = ">=3.20.1, <=5.27.2"
