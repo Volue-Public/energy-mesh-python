@@ -194,12 +194,8 @@ class TestValidityImportExport:
             # Give mesh some time to finish starting up.
             time.sleep(10)
 
-            # Check if mesh has terminated due to some error (e.g. missing mesh.json).
-            # FIXME: The above waiting time may not've been enough for Mesh to reach a point where
-            # it would normally fail, in which case this 'poll' call will succeed. In that case
-            # we may end up waiting forever when invoking ImportExport within the callback, since
-            # the ImportExport program doesn't finish on its own when Mesh isn't running. We should
-            # have a more sure-fire way of catching such situations.
+            # Check if mesh has terminated due to some error at this point (e.g. missing mesh.json).
+            # This is faster than waiting for a timeout error on Model.ImportExport.
             if not mesh_proc.poll():
                 callback(*args)
             else:
@@ -290,7 +286,9 @@ class TestValidityImportExport:
         imp_exp_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
 
         # Use serialization version 27, which introduces Validity support.
-        subprocess.check_call([imp_exp_exe, '-v', '27'] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        # Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
+        # point and we're unable to detect it for whatever reason.
+        subprocess.check_call([imp_exp_exe, '-v', '27', '-f', '5'] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
