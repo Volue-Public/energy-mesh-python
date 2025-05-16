@@ -12,7 +12,7 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.18 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
+- Python [3.9, 3.10, 3.11, 3.12, 3.13] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -20,6 +20,10 @@ New features
 - Support for availability events. :issue:`523`
   See :doc:`mesh_availability`.
 
+- Support for Python 3.13 :pull:`558`
+
+.. warning::
+    Python 3.9 support will dropped in the next Mesh Python SDK release.
 
 Changes
 ~~~~~~~~~~~~~~~~~~

@@ -43,10 +43,10 @@ exclude = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.13"
-grpcio = ">=1.37.0, <=1.66.1"
+python = ">=3.9, <3.14"
+grpcio = ">=1.37.0, <=1.68.1"
 pyarrow = ">=7.0.0"
-protobuf = ">=3.20.1, <=5.27.2"
+protobuf = ">=3.20.1, <=5.28.1"
 winkerberos = { version = ">=0.9.1", markers = "sys_platform == 'win32'" }
 kerberos = { version = "^1.3.1", markers = "sys_platform == 'linux'" }
 bidict = ">=0.23.1"
@@ -57,7 +57,7 @@ python-dateutil = "^2.8.2"
 six = "^1.16.0"
 
 [tool.poetry.group.dev.dependencies]
-grpcio-tools = ">=1.37.0, <=1.66.1"
+grpcio-tools = ">=1.37.0, <=1.68.1"
 Sphinx = ">=5.0.2"
 sphinx-rtd-theme = "^0.5.2"
 rtd = "^1.2.3"
@@ -82,7 +82,7 @@ markers = [
 [build-system]
 requires = [
     "poetry-core>=1.8.5, <2.0.0",
-    "grpcio-tools>=1.37.0, <=1.66.1"
+    "grpcio-tools>=1.37.0, <=1.68.1"
 ]
 build-backend = "poetry.core.masonry.api"
 
