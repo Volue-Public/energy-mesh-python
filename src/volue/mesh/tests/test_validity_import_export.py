@@ -16,6 +16,9 @@ from volue import mesh
 from volue.mesh import _common, _mesh_id
 from volue.mesh.proto.model.v1alpha import model_pb2
 
+# Use serialization version 27, which introduces Validity support.
+SERIALIZATION_VERSION = 27
+
 BASE_DUMPS_PATH = "C:/Users/martin.galvan"
 BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
 BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
@@ -188,7 +191,7 @@ class TestValidityImportExport:
         # We need to use try/finally instead of 'with subprocess.Popen(...)' since we can't wait on
         # the mesh process (because it won't finish on its own). In addition, for some reason we
         # won't be able to catch any exceptions until we terminate the mesh process.
-        mesh_proc = subprocess.Popen([mesh_exe])
+        mesh_proc = subprocess.Popen([mesh_exe, '--serialization-version', SERIALIZATION_VERSION])
 
         try:
             # Give mesh some time to finish starting up.
@@ -285,10 +288,9 @@ class TestValidityImportExport:
     def _call_import_export(self, args: list[str]):
         imp_exp_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
 
-        # Use serialization version 27, which introduces Validity support.
         # Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
         # point and we're unable to detect it for whatever reason.
-        subprocess.check_call([imp_exp_exe, '-v', '27', '-f', '5'] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.check_call([imp_exp_exe, '-v', SERIALIZATION_VERSION, '-f', '5'] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
