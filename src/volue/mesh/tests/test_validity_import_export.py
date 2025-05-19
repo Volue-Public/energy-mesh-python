@@ -192,7 +192,7 @@ class TestValidityImportExport:
         # We need to use try/finally instead of 'with subprocess.Popen(...)' since we can't wait on
         # the mesh process (because it won't finish on its own). In addition, for some reason we
         # won't be able to catch any exceptions until we terminate the mesh process.
-        mesh_proc = subprocess.Popen([mesh_exe])#, '--serialization-version', f'{SERIALIZATION_VERSION}'])
+        mesh_proc = subprocess.Popen([mesh_exe, '--serialization-version', f'{SERIALIZATION_VERSION}'])
 
         try:
             # Give mesh some time to finish starting up.
@@ -226,10 +226,7 @@ class TestValidityImportExport:
 
 
     def _get_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval]):
-        print("[MARTIN] Antes de create_session")
-
         with connection.create_session() as session:
-            print("[MARTIN] Despues de create_session")
             for object_id in validity_data:
                 validity_data[object_id] = self._get_validity(session, object_id)
 
@@ -294,7 +291,7 @@ class TestValidityImportExport:
 
         # Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
         # point and we're unable to detect it for whatever reason.
-        subprocess.check_call([imp_exp_exe, "-v", "27", "-f", "5"] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.check_call([imp_exp_exe, "-v", f"{SERIALIZATION_VERSION}", "-f", "5"] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
