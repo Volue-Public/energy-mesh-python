@@ -8,6 +8,9 @@ import "volue/mesh/proto/model/v1alpha/resources.proto";
 import "volue/mesh/proto/type/resources.proto";
 
 
+import "google/protobuf/timestamp.proto";
+
+
 // Mesh model service
 // -------------------------------
 // The Mesh model service is an API for managing Mesh model.
@@ -101,7 +104,37 @@ service ModelService {
   // attribute (`RatingCurveAttribute`).
   // See `UpdateRatingCurveVersionsRequest` for more information.
   rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
+
+
+
+
+  // Get the validity of the object if it has.
+  rpc GetValidity(GetValidityRequest) returns (GetValidityResponse) {}
+
+  // Update validity of the object.
+  rpc UpdateValidity(UpdateValidityRequest) returns (UpdateValidityResponse) {}
 }
+
+message GetValidityRequest{
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId object_id = 2;
+}
+
+message GetValidityResponse{
+  optional google.protobuf.Timestamp valid_from = 1;
+  optional google.protobuf.Timestamp valid_until = 2;
+}
+
+message UpdateValidityRequest{
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId object_id = 2;
+  optional google.protobuf.Timestamp valid_from = 3;
+  optional google.protobuf.Timestamp valid_until = 4;
+}
+
+message UpdateValidityResponse{}
+
+
 
 message ListModelsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -328,7 +361,7 @@ message UpdateSimpleAttributeRequest {
   //      new_collection_values[1].string_value = 'new_value_2'
   //      new_collection_values[2].string_value = 'new_value_3'
   //
-  // Note: 
+  // Note:
   // To remove all existing values from an attribute collection
   // just set session_id and attribute_id of an attribute collection
   // type and leave the new_collection_values empty.
