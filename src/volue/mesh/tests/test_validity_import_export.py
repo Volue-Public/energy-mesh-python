@@ -104,8 +104,6 @@ class ValidityInterval:
 # -k TestValidityImportExport
 class TestValidityImportExport:
     def test_set_validity(self, connection: mesh.Connection, dumps_path: tempfile.TemporaryDirectory):
-        # dump_with_validity_path = f"{dumps_path.name}/with_validity.mdump"
-
         def callback(connection: mesh.Connection):
             with connection.create_session() as session:
                 pass
@@ -114,6 +112,8 @@ class TestValidityImportExport:
 
         self._run_mesh_and_do(callback, connection)
         self._run_mesh_and_do(callback, connection)
+
+        # dump_with_validity_path = f"{dumps_path.name}/with_validity.mdump"
 
         # validity_test_data = {
         #     MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
