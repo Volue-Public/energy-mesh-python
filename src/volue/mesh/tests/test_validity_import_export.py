@@ -108,7 +108,7 @@ class TestValidityImportExport:
             with connection.create_session() as session:
                 pass
 
-            time.sleep(10)
+            time.sleep(5)
 
         self._run_mesh_and_do(callback, connection)
         self._run_mesh_and_do(callback, connection)
