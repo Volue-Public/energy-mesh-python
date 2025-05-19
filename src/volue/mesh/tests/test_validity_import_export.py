@@ -303,7 +303,8 @@ class TestValidityImportExport:
 
         # Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
         # point and we're unable to detect it for whatever reason.
-        subprocess.check_call([imp_exp_exe, "-v", "27", "-f", "1"] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        # subprocess.check_call([imp_exp_exe, "-v", "27", "-f", "5"] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.check_call([imp_exp_exe, "-v", "27"] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
