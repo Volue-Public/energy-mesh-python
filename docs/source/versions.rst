@@ -12,7 +12,7 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.18 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12] **(may change)**
+- Python [3.9, 3.10, 3.11, 3.12, 3.13] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -55,7 +55,7 @@ Changes
 
   Starting from Mesh 2.17 when an empty time series is read (e.g.: break point
   time series with no values), instead of raising an `ValueError` with message
-  `No data in time series reply for the given interval`, we will now return 
+  `No data in time series reply for the given interval`, we will now return
   `volue.mesh.Timeseries` instance with an empty Arrow table and start/end
   timestamps set to `None`. Other time series metadata like resolution will be
   set as usual.
