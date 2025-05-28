@@ -1478,6 +1478,27 @@ argument will be discarded if an insecure connection is used.</p>
             <span class="sa">f</span><span class="s2">&quot;Filtered attributes count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">object_with_filtered_attributes</span><span class="o">.</span><span class="n">attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
+        <span class="c1"># Connect a time series resource to a time series attribute of the new object.</span>
+        <span class="n">new_timeseries_resource_key</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+            <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;TsRawAtt&quot;</span><span class="p">],</span>
+            <span class="n">new_timeseries_resource_key</span><span class="o">=</span><span class="n">new_timeseries_resource_key</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Now disconnect the time series resource. Set `new_timeseries_resource_key`</span>
+        <span class="c1"># to 0 to disconnect.</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+            <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;TsRawAtt&quot;</span><span class="p">],</span>
+            <span class="n">new_timeseries_resource_key</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Change local expression of a time series attribute of the new object.</span>
+        <span class="n">new_local_expression</span> <span class="o">=</span> <span class="s2">&quot;## = 2</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
+            <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;TsCalcAtt&quot;</span><span class="p">],</span>
+            <span class="n">new_local_expression</span><span class="o">=</span><span class="n">new_local_expression</span><span class="p">,</span>
+        <span class="p">)</span>
+
         <span class="c1"># Now lets change the object name.</span>
         <span class="n">session</span><span class="o">.</span><span class="n">update_object</span><span class="p">(</span><span class="n">new_object</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;NewNamePowerPlant&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Object&#39;s name changed.&quot;</span><span class="p">)</span>
