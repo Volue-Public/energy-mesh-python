@@ -35,17 +35,29 @@ UNTIL_DATE = FROM_DATE + timedelta(days=1)
 # combination of validity values.
 # Note that the target objects must be of type AttributeElement or Component.
 
-# Models->MeshTEK->Mesh->To_Areas->Finland
-MESH_TO_AREAS_FINLAND_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
+# # Models->MeshTEK->Mesh->To_Areas->Finland
+# MESH_TO_AREAS_FINLAND_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
 
-# Models->MeshTEK->Mesh->To_Areas->Norge
-MESH_TO_AREAS_NORGE_ID = uuid.UUID("{f06e67ed-61a6-4700-ac40-df80d752aeba}")
+# # Models->MeshTEK->Mesh->To_Areas->Norge
+# MESH_TO_AREAS_NORGE_ID = uuid.UUID("{f06e67ed-61a6-4700-ac40-df80d752aeba}")
 
-# Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO1
-MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID("{478f13d3-6e40-4db7-ae5b-3544ce04c546}")
+# # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO1
+# MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID("{478f13d3-6e40-4db7-ae5b-3544ce04c546}")
 
-# Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO3
-MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID = uuid.UUID("{f00dcb8c-3dfd-4f6d-9f46-052d0843886b}")
+# # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO3
+# MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID = uuid.UUID("{f00dcb8c-3dfd-4f6d-9f46-052d0843886b}")
+
+# Models->SimpleThermalTestModel->ThermalComponent
+THERMAL_COMPONENT_ID = uuid.UUID("{0000000b-0001-0000-0000-000000000000}")
+
+# Models->SimpleThermalTestModel->ThermalComponent->ThermalPowerToPlantRef->SomePowerPlant1
+POWER_PLANT_1_ID = uuid.UUID("{0000000a-0001-0000-0000-000000000000}")
+
+# Models->SimpleThermalTestModel->ThermalComponent->ThermalPowerToPlantRef->SomePowerPlant1->PlantToChimneyRef->SomePowerPlantChimney1
+CHIMNEY_1_ID = uuid.UUID("{0000000a-0004-0000-0000-000000000000}")
+
+# Models->SimpleThermalTestModel->ThermalComponent->ThermalPowerToPlantRef->SomePowerPlant1->PlantToChimneyRef->SomePowerPlantChimney1
+CHIMNEY_2_ID = uuid.UUID("{0000000a-0005-0000-0000-000000000000}")
 
 
 @pytest.fixture
