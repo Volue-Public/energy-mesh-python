@@ -1,3 +1,4 @@
+import os
 import time
 import subprocess
 import sys
@@ -110,13 +111,13 @@ class ValidityInterval:
 
 # -k TestValidityImportExport
 class TestValidityImportExport:
-    @pytest.fixture
-    def dumps_dir(scope="class"):
+    @pytest.fixture(scope="class")
+    def dumps_dir(self) -> tempfile.TemporaryDirectory:
         return tempfile.TemporaryDirectory()
 
 
     @pytest.fixture(scope="class")
-    def base_dump_new_mesh_path(dumps_dir: tempfile.TemporaryDirectory):
+    def base_dump_new_mesh_path(self, dumps_dir: tempfile.TemporaryDirectory) -> str:
         dump_path = os.path.join(dumps_dir.name, "base_dump_new_mesh.mdump")
 
         def callback():
@@ -135,9 +136,9 @@ class TestValidityImportExport:
         dump_with_validity_path = os.path.join(dumps_dir.name, "with_validity.mdump")
 
         validity_test_data = {
-            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
-            MESH_TO_AREAS_NORGE_ID: ValidityInterval(FROM_DATE, None),
-            MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
+            THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
+            POWER_PLANT_1_ID: ValidityInterval(FROM_DATE, None),
+            CHIMNEY_1_ID: ValidityInterval(None, UNTIL_DATE),
         }
 
         self._generate_and_export_data_with_validity(connection,
@@ -164,18 +165,18 @@ class TestValidityImportExport:
         dump_with_new_validity_path = os.path.join(dumps_dir.name, "new_validity.mdump")
 
         old_validity_data = {
-            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
-            MESH_TO_AREAS_NORGE_ID: ValidityInterval(FROM_DATE, None),
-            MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
-            MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
+            THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
+            POWER_PLANT_1_ID: ValidityInterval(FROM_DATE, None),
+            CHIMNEY_1_ID: ValidityInterval(None, UNTIL_DATE),
+            CHIMNEY_2_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
         }
 
         new_validity_data = {
-            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE + timedelta(days=1),
-                                                       UNTIL_DATE + timedelta(days=1)),
-            MESH_TO_AREAS_NORGE_ID: ValidityInterval(None, UNTIL_DATE),
-            MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(FROM_DATE, None),
-            MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(None, None),
+            THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE + timedelta(days=1),
+                                                   UNTIL_DATE + timedelta(days=1)),
+            POWER_PLANT_1_ID: ValidityInterval(None, UNTIL_DATE),
+            CHIMNEY_1_ID: ValidityInterval(FROM_DATE, None),
+            CHIMNEY_2_ID: ValidityInterval(None, None),
         }
 
         # Create a dump file with the "new" validity data.
@@ -289,7 +290,10 @@ class TestValidityImportExport:
                 print(f"[MARTIN] Validity of object '{object_id}': '{validity_data[object_id]}'")
 
 
-    def _set_validity(self, session: mesh.Connection.Session, object_id: uuid.UUID, validity_interval: ValidityInterval):
+    def _set_validity(self,
+                      session: mesh.Connection.Session,
+                      object_id: uuid.UUID,
+                      validity_interval: ValidityInterval):
         print(f"[MARTIN] Setting validity for object {object_id}...")
 
         valid_from, valid_until = validity_interval.to_proto_timestamps()
