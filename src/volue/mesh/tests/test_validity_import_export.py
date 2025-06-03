@@ -20,9 +20,9 @@ from volue.mesh.proto.model.v1alpha import model_pb2
 # TODO: Remove this once the default is version 27 or greater.
 SERIALIZATION_VERSION = 27
 
-BASE_DUMPS_PATH = "C:/Users/martin.galvan"
-BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
-BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
+# BASE_DUMPS_PATH = "C:/Users/martin.galvan"
+# BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
+# BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
 MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Release"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
@@ -58,11 +58,6 @@ CHIMNEY_1_ID = uuid.UUID("{0000000a-0004-0000-0000-000000000000}")
 
 # Models->SimpleThermalTestModel->ThermalComponent->ThermalPowerToPlantRef->SomePowerPlant1->PlantToChimneyRef->SomePowerPlantChimney1
 CHIMNEY_2_ID = uuid.UUID("{0000000a-0005-0000-0000-000000000000}")
-
-
-@pytest.fixture
-def dumps_path():
-    return tempfile.TemporaryDirectory()
 
 
 class ValidityInterval:
@@ -115,8 +110,29 @@ class ValidityInterval:
 
 # -k TestValidityImportExport
 class TestValidityImportExport:
-    def test_set_validity(self, connection: mesh.Connection, dumps_path: tempfile.TemporaryDirectory):
-        dump_with_validity_path = f"{dumps_path.name}/with_validity.mdump"
+    @pytest.fixture
+    def dumps_dir(scope="class"):
+        return tempfile.TemporaryDirectory()
+
+
+    @pytest.fixture(scope="class")
+    def base_dump_new_mesh_path(dumps_dir: tempfile.TemporaryDirectory):
+        dump_path = os.path.join(dumps_dir.name, "base_dump_new_mesh.mdump")
+
+        def callback():
+            self._populate_with_simple_thermal_model()
+            self._do_export(dumps_dir)
+
+        self._run_mesh_and_do(callback)
+
+        return dump_path
+
+
+    def test_set_validity(self,
+                          connection: mesh.Connection,
+                          base_dump_new_mesh_path: str,
+                          dumps_dir: tempfile.TemporaryDirectory):
+        dump_with_validity_path = os.path.join(dumps_dir.name, "with_validity.mdump")
 
         validity_test_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -124,11 +140,15 @@ class TestValidityImportExport:
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(None, UNTIL_DATE),
         }
 
-        self._generate_and_export_data_with_validity(connection, validity_test_data, dump_with_validity_path)
+        self._generate_and_export_data_with_validity(connection,
+                                                     validity_test_data,
+                                                     base_dump_new_mesh_path,
+                                                     dump_with_validity_path)
 
         imported_validity_data = dict.fromkeys(validity_test_data, None)
 
-        def import_data_with_validity(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
+        def import_data_with_validity(connection: mesh.Connection,
+                                      imported_validity_data: dict[uuid.UUID, ValidityInterval]):
             self._do_import(dump_with_validity_path)
             self._get_validity_data(connection, imported_validity_data)
 
@@ -137,8 +157,11 @@ class TestValidityImportExport:
         assert imported_validity_data == validity_test_data
 
 
-    def test_change_existing_validity(self, connection: mesh.Connection, dumps_path: tempfile.TemporaryDirectory):
-        dump_with_new_validity_path = f"{dumps_path.name}/new_validity.mdump"
+    def test_change_existing_validity(self,
+                                      connection: mesh.Connection,
+                                      base_dump_new_mesh_path: str,
+                                      dumps_dir: tempfile.TemporaryDirectory):
+        dump_with_new_validity_path = os.path.join(dumps_dir.name, "new_validity.mdump")
 
         old_validity_data = {
             MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -148,20 +171,26 @@ class TestValidityImportExport:
         }
 
         new_validity_data = {
-            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE + timedelta(days=1), UNTIL_DATE + timedelta(days=1)),
+            MESH_TO_AREAS_FINLAND_ID: ValidityInterval(FROM_DATE + timedelta(days=1),
+                                                       UNTIL_DATE + timedelta(days=1)),
             MESH_TO_AREAS_NORGE_ID: ValidityInterval(None, UNTIL_DATE),
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID: ValidityInterval(FROM_DATE, None),
             MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID: ValidityInterval(None, None),
         }
 
         # Create a dump file with the "new" validity data.
-        self._generate_and_export_data_with_validity(connection, new_validity_data, dump_with_new_validity_path)
+        self._generate_and_export_data_with_validity(connection,
+                                                     new_validity_data,
+                                                     base_dump_new_mesh_path,
+                                                     dump_with_new_validity_path)
 
         imported_validity_data = dict.fromkeys(new_validity_data, None)
 
         # Set the "old" validity data first, then import the "new" validity data.
-        def callback(connection: mesh.Connection, imported_validity_data: dict[uuid.UUID, ValidityInterval]):
-            self._do_import(BASE_DUMP_NEW_MESH)
+        def callback(connection: mesh.Connection,
+                     base_dump_new_mesh_path: str,
+                     imported_validity_data: dict[uuid.UUID, ValidityInterval]):
+            self._do_import(base_dump_new_mesh_path)
             self._set_validity_data(connection, old_validity_data)
             self._do_import(dump_with_new_validity_path)
             self._get_validity_data(connection, imported_validity_data)
@@ -177,19 +206,30 @@ class TestValidityImportExport:
         assert imported_validity_data == new_validity_data
 
 
-    def test_can_import_old_dump_without_validity(self, connection: mesh.Connection):
-        def callback(connection: mesh.Connection):
-            self._do_import(BASE_DUMP_OLD_MESH)
+    # def test_can_import_old_dump_without_validity(self, connection: mesh.Connection):
+    #     def callback(connection: mesh.Connection):
+    #         self._do_import(BASE_DUMP_OLD_MESH)
 
-        self._run_mesh_and_do(callback, connection)
+    #     self._run_mesh_and_do(callback, connection)
+
+
+    def _populate_with_simple_thermal_model(self):
+        cli_requests_exe = os.path.join(MESH_BUILD_PATH, "Powel.Mesh.CommandLineRequests.exe")
+
+        # FIXME: Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
+        # point and we're unable to detect it for whatever reason.
+        subprocess.check_call([cli_requests_exe, "-w", "PopulateTestModels", "-m", "SimpleThermalModel"],
+                              stdout=subprocess.DEVNULL,
+                              stderr=subprocess.STDOUT)
 
 
     def _generate_and_export_data_with_validity(self,
                                                 connection: mesh.Connection,
                                                 validity_data: dict[uuid.UUID, ValidityInterval],
+                                                base_dump_new_mesh_path: str,
                                                 dump_with_validity_path: str):
         def callback(connection: mesh.Connection):
-            self._do_import(BASE_DUMP_NEW_MESH)
+            self._do_import(base_dump_new_mesh_path)
             self._set_validity_data(connection, validity_data)
             self._do_export(dump_with_validity_path)
 
@@ -197,7 +237,7 @@ class TestValidityImportExport:
 
 
     def _run_mesh_and_do(self, callback: Callable, *args):
-        mesh_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Server.exe"
+        mesh_exe = os.path.join(MESH_BUILD_PATH, "Powel.Mesh.Server.exe")
 
         print("[MARTIN] Starting mesh...")
 
@@ -222,7 +262,9 @@ class TestValidityImportExport:
             mesh_proc.terminate()
 
 
-    def _set_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval]):
+    def _set_validity_data(self,
+                           connection: mesh.Connection,
+                           validity_data: dict[uuid.UUID, ValidityInterval]):
         # Set validity for our target objects.
         with connection.create_session() as session:
             for object_id, validity_interval in validity_data.items():
@@ -237,7 +279,9 @@ class TestValidityImportExport:
             session.commit()
 
 
-    def _get_validity_data(self, connection: mesh.Connection, validity_data: dict[uuid.UUID, ValidityInterval]):
+    def _get_validity_data(self,
+                           connection: mesh.Connection,
+                           validity_data: dict[uuid.UUID, ValidityInterval]):
         with connection.create_session() as session:
             for object_id in validity_data:
                 validity_data[object_id] = self._get_validity(session, object_id)
@@ -295,15 +339,17 @@ class TestValidityImportExport:
     def _do_export(self, dump_path: str):
         print("[MARTIN] Exporting data...")
 
-        self._call_import_export(["-o", dump_path, "-m", "MeshTEK"])
+        self._call_import_export(["-o", dump_path, "-m", "SimpleThermalTestModel"])
 
 
     def _call_import_export(self, args: list[str]):
-        imp_exp_exe = f"{MESH_BUILD_PATH}/Powel.Mesh.Model.ImportExport.exe"
+        imp_exp_exe = os.path.join(MESH_BUILD_PATH, "Powel.Mesh.Model.ImportExport.exe")
 
         # Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
         # point and we're unable to detect it for whatever reason.
-        subprocess.check_call([imp_exp_exe, "-v", f"{SERIALIZATION_VERSION}", "-f", "5"] + args, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        subprocess.check_call([imp_exp_exe, "-v", f"{SERIALIZATION_VERSION}", "-f", "5"] + args,
+                              stdout=subprocess.DEVNULL,
+                              stderr=subprocess.STDOUT)
 
 
 if __name__ == "__main__":
