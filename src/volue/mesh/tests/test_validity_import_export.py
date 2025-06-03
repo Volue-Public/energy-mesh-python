@@ -24,7 +24,7 @@ SERIALIZATION_VERSION = 27
 # BASE_DUMPS_PATH = "C:/Users/martin.galvan"
 # BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
 # BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
-MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Release"
+MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
 # the return value from GetValidity doesn't seem to include the fractionary part.
@@ -112,17 +112,12 @@ class ValidityInterval:
 # -k TestValidityImportExport
 class TestValidityImportExport:
     @pytest.fixture(scope="class")
-    def dumps_dir(self) -> tempfile.TemporaryDirectory:
-        return tempfile.TemporaryDirectory()
-
-
-    @pytest.fixture(scope="class")
-    def base_dump_new_mesh_path(self, dumps_dir: tempfile.TemporaryDirectory) -> str:
-        dump_path = os.path.join(dumps_dir.name, "base_dump_new_mesh.mdump")
+    def base_dump_new_mesh_path(self, tmp_path: pathlib.Path) -> str:
+        dump_path = os.path.join(tmp_path, "base_dump_new_mesh.mdump")
 
         def callback():
             self._populate_with_simple_thermal_model()
-            self._do_export(dumps_dir)
+            self._do_export(dump_path)
 
         self._run_mesh_and_do(callback)
 
@@ -132,8 +127,8 @@ class TestValidityImportExport:
     def test_set_validity(self,
                           connection: mesh.Connection,
                           base_dump_new_mesh_path: str,
-                          dumps_dir: tempfile.TemporaryDirectory):
-        dump_with_validity_path = os.path.join(dumps_dir.name, "with_validity.mdump")
+                          tmp_path: pathlib.Path):
+        dump_with_validity_path = os.path.join(tmp_path, "with_validity.mdump")
 
         validity_test_data = {
             THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -161,8 +156,8 @@ class TestValidityImportExport:
     def test_change_existing_validity(self,
                                       connection: mesh.Connection,
                                       base_dump_new_mesh_path: str,
-                                      dumps_dir: tempfile.TemporaryDirectory):
-        dump_with_new_validity_path = os.path.join(dumps_dir.name, "new_validity.mdump")
+                                      tmp_path: pathlib.Path):
+        dump_with_new_validity_path = os.path.join(tmp_path, "new_validity.mdump")
 
         old_validity_data = {
             THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -196,7 +191,7 @@ class TestValidityImportExport:
             self._do_import(dump_with_new_validity_path)
             self._get_validity_data(connection, imported_validity_data)
 
-        self._run_mesh_and_do(callback, connection, imported_validity_data)
+        self._run_mesh_and_do(callback, connection, base_dump_new_mesh_path, imported_validity_data)
 
         # Check that the resulting validity data is the "new" one.
         print("[MARTIN] Validity data after import:")
