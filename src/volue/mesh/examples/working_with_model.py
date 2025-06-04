@@ -64,6 +64,27 @@ def main(address, tls_root_pem_cert):
             f"Filtered attributes count: {len(object_with_filtered_attributes.attributes)}"
         )
 
+        # Connect a time series resource to a time series attribute of the new object.
+        new_timeseries_resource_key = 2
+        session.update_timeseries_attribute(
+            new_object.attributes["TsRawAtt"],
+            new_timeseries_resource_key=new_timeseries_resource_key,
+        )
+
+        # Now disconnect the time series resource. Set `new_timeseries_resource_key`
+        # to 0 to disconnect.
+        session.update_timeseries_attribute(
+            new_object.attributes["TsRawAtt"],
+            new_timeseries_resource_key=0,
+        )
+
+        # Change local expression of a time series attribute of the new object.
+        new_local_expression = "## = 2\n"
+        session.update_timeseries_attribute(
+            new_object.attributes["TsCalcAtt"],
+            new_local_expression=new_local_expression,
+        )
+
         # Now lets change the object name.
         session.update_object(new_object, new_name="NewNamePowerPlant")
         print("Object's name changed.")
