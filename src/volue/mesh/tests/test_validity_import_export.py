@@ -24,7 +24,7 @@ SERIALIZATION_VERSION = 27
 # BASE_DUMPS_PATH = "C:/Users/martin.galvan"
 # BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
 # BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
-MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
+MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Release"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
 # the return value from GetValidity doesn't seem to include the fractionary part.
@@ -34,20 +34,7 @@ UNTIL_DATE = FROM_DATE + timedelta(days=1)
 # We set various combinations of validity values for different objects at the same time on each test.
 # This is more efficient than doing the entire export/import cycle on a single object for each
 # combination of validity values.
-# Note that the target objects must be of type AttributeElement or Component.
-
-# # Models->MeshTEK->Mesh->To_Areas->Finland
-# MESH_TO_AREAS_FINLAND_ID = uuid.UUID("{21893300-6482-4b09-b9ba-58b48740d0e7}")
-
-# # Models->MeshTEK->Mesh->To_Areas->Norge
-# MESH_TO_AREAS_NORGE_ID = uuid.UUID("{f06e67ed-61a6-4700-ac40-df80d752aeba}")
-
-# # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO1
-# MESH_MARKET_ENERGY_MARKET_FLOWS_NO1_ID = uuid.UUID("{478f13d3-6e40-4db7-ae5b-3544ce04c546}")
-
-# # Models->MeshTEK->Mesh->has_Market->Market->has_EnergyMarketFlows->NO3
-# MESH_MARKET_ENERGY_MARKET_FLOWS_NO3_ID = uuid.UUID("{f00dcb8c-3dfd-4f6d-9f46-052d0843886b}")
-
+# Note that the target objects must be of kind AttributeElement or Component.
 # Models->SimpleThermalTestModel->ThermalComponent
 THERMAL_COMPONENT_ID = uuid.UUID("{0000000b-0001-0000-0000-000000000000}")
 
@@ -112,8 +99,22 @@ class ValidityInterval:
 # -k TestValidityImportExport
 class TestValidityImportExport:
     @pytest.fixture(scope="class")
-    def base_dump_new_mesh_path(self, tmp_path: pathlib.Path) -> str:
-        dump_path = os.path.join(tmp_path, "base_dump_new_mesh.mdump")
+    def dumps_dir(self, tmp_path_factory: pytest.TempPathFactory) -> str:
+        return str(tmp_path_factory.mktemp(self.__class__.__name__))
+
+    # This fixture creates an .mdump file containing the 'SimpleThermalTestModel' which can be later
+    # imported and used as a base for further testing.
+    # Note that we could replace this fixture by just calling _populate_with_simple_thermal_model
+    # on each test instead of importing the .mdump; however, if we later do an import of e.g. a
+    # modified SimpleThermalModel, we'll get an error of the following form:
+    #
+    # "The member container at PlantElementType already contains an attribute definition..."
+    #
+    # The error doesn't appear if we first populate Mesh through importing this .mdump instead of
+    # using CommandLineRequests as in _populate_with_simple_thermal_model.
+    @pytest.fixture(scope="class")
+    def base_dump_new_mesh_path(self, dumps_dir: str) -> str:
+        dump_path = os.path.join(dumps_dir, "base_dump_new_mesh.mdump")
 
         def callback():
             self._populate_with_simple_thermal_model()
@@ -124,11 +125,11 @@ class TestValidityImportExport:
         return dump_path
 
 
-    def test_set_validity(self,
-                          connection: mesh.Connection,
-                          base_dump_new_mesh_path: str,
-                          tmp_path: pathlib.Path):
-        dump_with_validity_path = os.path.join(tmp_path, "with_validity.mdump")
+    def test_import_validity(self,
+                             connection: mesh.Connection,
+                             base_dump_new_mesh_path: str,
+                             dumps_dir: str):
+        dump_with_validity_path = os.path.join(dumps_dir, "with_validity.mdump")
 
         validity_test_data = {
             THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -153,11 +154,11 @@ class TestValidityImportExport:
         assert imported_validity_data == validity_test_data
 
 
-    def test_change_existing_validity(self,
-                                      connection: mesh.Connection,
-                                      base_dump_new_mesh_path: str,
-                                      tmp_path: pathlib.Path):
-        dump_with_new_validity_path = os.path.join(tmp_path, "new_validity.mdump")
+    def test_import_over_existing_validity(self,
+                                           connection: mesh.Connection,
+                                           base_dump_new_mesh_path: str,
+                                           dumps_dir: str):
+        dump_with_new_validity_path = os.path.join(dumps_dir, "new_validity.mdump")
 
         old_validity_data = {
             THERMAL_COMPONENT_ID: ValidityInterval(FROM_DATE, UNTIL_DATE),
@@ -188,6 +189,13 @@ class TestValidityImportExport:
                      imported_validity_data: dict[uuid.UUID, ValidityInterval]):
             self._do_import(base_dump_new_mesh_path)
             self._set_validity_data(connection, old_validity_data)
+
+            # We need a 1-second delay between two imports because each one creates an entry in the
+            # ObjectModelUpdates catalog with a name including a timestamp with a resolution in
+            # seconds. If two updates happen too close to each other, the names of the entries will
+            # collide and we'll get an error.
+            time.sleep(1)
+
             self._do_import(dump_with_new_validity_path)
             self._get_validity_data(connection, imported_validity_data)
 
@@ -214,9 +222,7 @@ class TestValidityImportExport:
 
         # FIXME: Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
         # point and we're unable to detect it for whatever reason.
-        subprocess.check_call([cli_requests_exe, "-w", "PopulateTestModels", "-m", "SimpleThermalModel"],
-                              stdout=subprocess.DEVNULL,
-                              stderr=subprocess.STDOUT)
+        subprocess.check_call([cli_requests_exe, "-w", "PopulateTestModels", "-m", "SimpleThermalModel"])
 
 
     def _generate_and_export_data_with_validity(self,
@@ -338,18 +344,20 @@ class TestValidityImportExport:
     def _do_export(self, dump_path: str):
         print("[MARTIN] Exporting data...")
 
-        self._call_import_export(["-o", dump_path, "-m", "SimpleThermalTestModel"])
+        self._call_import_export(["-o", dump_path])
 
 
     def _call_import_export(self, args: list[str]):
         imp_exp_exe = os.path.join(MESH_BUILD_PATH, "Powel.Mesh.Model.ImportExport.exe")
 
+        # Make sure we only import and export the model called 'SimpleThermalTestModel', since
+        # otherwise the exports will include stuff from 'Utility' which will error out when trying
+        # to import it later on.
         # Set timeout for communicating with Mesh server to 5 minutes, in case Mesh crashes at some
         # point and we're unable to detect it for whatever reason.
-        subprocess.check_call([imp_exp_exe, "-v", f"{SERIALIZATION_VERSION}", "-f", "5"] + args,
-                              stdout=subprocess.DEVNULL,
-                              stderr=subprocess.STDOUT)
+        subprocess.check_call([imp_exp_exe, "-m", "SimpleThermalTestModel", "-v", f"{SERIALIZATION_VERSION}", "-f", "5"] + args)
 
 
 if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))
+
