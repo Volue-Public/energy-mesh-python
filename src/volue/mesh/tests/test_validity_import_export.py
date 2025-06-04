@@ -24,7 +24,7 @@ SERIALIZATION_VERSION = 27
 # BASE_DUMPS_PATH = "C:/Users/martin.galvan"
 # BASE_DUMP_OLD_MESH = f"{BASE_DUMPS_PATH}/base_dump_old_mesh.mdump"
 # BASE_DUMP_NEW_MESH = f"{BASE_DUMPS_PATH}/base_dump_new_mesh.mdump"
-MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Release"
+MESH_BUILD_PATH = "C:/Users/martin.galvan/Documents/energy-mesh/Mesh/build/Debug"
 
 # FIXME: The checks seem to break if we use datetime.fromisoformat("1990-08-21T00:00:00.000Z") since
 # the return value from GetValidity doesn't seem to include the fractionary part.
