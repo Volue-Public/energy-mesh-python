@@ -11,6 +11,7 @@ import pytest
 
 from volue.mesh import Timeseries, TimeseriesResource
 
+from .test_utilities.utilities import UNIT_1, UNIT_2
 
 INVALID_UNIT_OF_MEASUREMENT_NAME = "no_such_unit"
 
@@ -25,7 +26,7 @@ def get_physical_timeseries():
         temporary=False,
         curve_type=Timeseries.Curve.PIECEWISELINEAR,
         resolution=Timeseries.Resolution.HOUR,
-        unit_of_measurement="Unit2",
+        unit_of_measurement=UNIT_2,
         path=f"Resource/SimpleThermalTestResourceCatalog/{ts_name}",
         name=ts_name,
     )
@@ -87,8 +88,8 @@ def test_get_timeseries_resource(session, timeseries):
     "new_curve_type, new_unit_of_measurement",
     [
         (Timeseries.Curve.STAIRCASESTARTOFSTEP, None),
-        (None, "Unit1"),
-        (Timeseries.Curve.PIECEWISELINEAR, "Unit2"),
+        (None, UNIT_1),
+        (Timeseries.Curve.PIECEWISELINEAR, UNIT_2),
     ],
 )
 def test_update_timeseries_resource(
@@ -146,7 +147,7 @@ class TestCreatePhysicalTimeseries:
             self.name = "Test_Timeseries_" + name_suffix
             self.curve_type = Timeseries.Curve.PIECEWISELINEAR
             self.resolution = Timeseries.Resolution.HOUR
-            self.unit_of_measurement = "Unit1"
+            self.unit_of_measurement = UNIT_1
 
     @pytest.fixture
     def ts_init_data(self):
@@ -242,7 +243,7 @@ async def test_timeseries_resource_async(async_session):
 
     timeseries_key = get_physical_timeseries().timeseries_key
     new_curve_type = Timeseries.Curve.STAIRCASE
-    new_unit_of_measurement = "Unit1"
+    new_unit_of_measurement = UNIT_1
 
     await async_session.update_timeseries_resource_info(
         timeseries_key, new_curve_type, new_unit_of_measurement

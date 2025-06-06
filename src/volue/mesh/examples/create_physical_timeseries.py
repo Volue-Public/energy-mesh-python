@@ -22,7 +22,7 @@ def main(address, tls_root_pem_cert):
             name="Test_Timeseries_" + name_suffix,
             curve_type=Timeseries.Curve.PIECEWISELINEAR,
             resolution=Timeseries.Resolution.HOUR,
-            unit_of_measurement="Unit1",
+            unit_of_measurement="cm",
         )
 
         session.commit()

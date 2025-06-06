@@ -11,6 +11,8 @@ from time import sleep
 import grpc
 import pytest
 
+from .test_utilities.utilities import UNIT_1
+
 # After this timeout an inactive session must be closed by the server.
 # gRPC session timeout + ping interval + minimal margin:
 # 5 mins + 1 min + 1 sec
@@ -165,7 +167,7 @@ def test_rollback(session):
     """Check that rollback discards changes made in the current session."""
 
     timeseries_key = 3
-    new_unit_of_measurement = "Unit1"
+    new_unit_of_measurement = UNIT_1
 
     # check baseline
     timeseries_info = session.get_timeseries_resource_info(
@@ -200,7 +202,7 @@ async def test_rollback_and_commit_async(async_session):
     """For async run the simplest test, implementation is the same."""
 
     timeseries_key = 3
-    new_unit_of_measurement = "Unit1"
+    new_unit_of_measurement = UNIT_1
 
     # check baseline
     timeseries_info = await async_session.get_timeseries_resource_info(

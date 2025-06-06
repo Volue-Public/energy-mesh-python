@@ -13,7 +13,7 @@ from dateutil import tz
 
 from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute
 
-from .test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID
+from .test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID, UNIT_2
 
 ATTRIBUTE_PATH_PREFIX = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1."
 
@@ -62,7 +62,7 @@ def verify_plant_raw_timeseries_attribute(
     assert not attribute.time_series_resource.temporary
     assert attribute.time_series_resource.curve_type == Timeseries.Curve.PIECEWISELINEAR
     assert attribute.time_series_resource.resolution == Timeseries.Resolution.HOUR
-    assert attribute.time_series_resource.unit_of_measurement == "Unit2"
+    assert attribute.time_series_resource.unit_of_measurement == UNIT_2
     assert attribute.expression == ""
     assert not attribute.is_local_expression
 

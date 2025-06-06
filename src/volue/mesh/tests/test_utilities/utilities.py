@@ -9,6 +9,10 @@ from volue.mesh import AttributeBase, Object
 CHIMNEY_1_ID = uuid.UUID("0000000A-0004-0000-0000-000000000000")
 CHIMNEY_2_ID = uuid.UUID("0000000A-0005-0000-0000-000000000000")
 
+# Dummy unit of measurement 'unit' values used for testing.
+UNIT_1 = "m"
+UNIT_2 = "cm"
+
 
 class AttributeForTesting(AttributeBase):
     """
