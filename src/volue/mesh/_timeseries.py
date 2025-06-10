@@ -99,13 +99,18 @@ class Timeseries:
         MISSING = 0x04000000
         SUSPECT = 0x02000000
 
+    # Mesh PyArrow schema fields names.
+    TIMESTAMP_PA_FIELD_NAME = "utc_time"
+    FLAGS_PA_FIELD_NAME = "flags"
+    VALUE_PA_FIELD_NAME = "value"
+
     schema = pa.schema(
         [
-            pa.field("utc_time", pa.timestamp("ms")),
-            pa.field("flags", pa.uint32()),
-            pa.field("value", pa.float64()),
+            pa.field(TIMESTAMP_PA_FIELD_NAME, pa.timestamp("ms")),
+            pa.field(FLAGS_PA_FIELD_NAME, pa.uint32()),
+            pa.field(VALUE_PA_FIELD_NAME, pa.float64()),
         ]
-    )  # The pyarrow schema used for time series points.
+    )  # The PyArrow schema used for time series points.
 
     def __init__(
         self,
