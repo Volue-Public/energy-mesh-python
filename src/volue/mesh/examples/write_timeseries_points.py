@@ -33,17 +33,19 @@ def get_pa_table_from_pa_arrays() -> pa.Table:
     time_zone = tz.UTC
     number_of_points = 3
 
+    timestamps = pd.date_range(
+        datetime(2016, 1, 1, 1, tzinfo=time_zone),
+        periods=number_of_points,
+        freq="1h",
+    )
+    flags = [mesh.Timeseries.PointFlags.OK.value] * number_of_points
+    values = [0.0, 10.0, 1000.0]
+
     arrays = [
         # if no time zone is provided then the timestamp is treated as UTC
-        pa.array(
-            pd.date_range(
-                datetime(2016, 1, 1, 1, tzinfo=time_zone),
-                periods=number_of_points,
-                freq="1h",
-            )
-        ),
-        pa.array([mesh.Timeseries.PointFlags.OK.value] * number_of_points),
-        pa.array([0.0, 10.0, 1000.0]),
+        pa.array(timestamps),
+        pa.array(flags),
+        pa.array(values),
     ]
     return pa.Table.from_arrays(arrays, schema=mesh.Timeseries.schema)
 
@@ -61,16 +63,19 @@ def get_pa_table_from_pandas() -> pa.Table:
     time_zone = tz.UTC
     number_of_points = 3
 
+    timestamps = pd.date_range(
+        datetime(2016, 1, 1, 1, tzinfo=time_zone),
+        periods=number_of_points,
+        freq="1h",
+    )
+    flags = [mesh.Timeseries.PointFlags.OK.value] * number_of_points
+    values = [1.1, 22.2, 333.3]
+
     df = pd.DataFrame(
         {
-            mesh.Timeseries.TIMESTAMP_PA_FIELD_NAME: pd.date_range(
-                datetime(2016, 1, 1, 1, tzinfo=time_zone),
-                periods=number_of_points,
-                freq="1h",
-            ),
-            mesh.Timeseries.FLAGS_PA_FIELD_NAME: [mesh.Timeseries.PointFlags.OK.value]
-            * number_of_points,
-            mesh.Timeseries.VALUE_PA_FIELD_NAME: [1.1, 22.2, 333.3],
+            mesh.Timeseries.TIMESTAMP_PA_FIELD_NAME: timestamps,
+            mesh.Timeseries.FLAGS_PA_FIELD_NAME: flags,
+            mesh.Timeseries.VALUE_PA_FIELD_NAME: values,
         }
     )
 
