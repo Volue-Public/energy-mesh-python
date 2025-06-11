@@ -1756,6 +1756,7 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">grpc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
@@ -1773,7 +1774,9 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="n">timeseries_attribute_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;e5df77a9-8b60-4b0a-aa1b-3c3957c538a0&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_pa_table_with_time_series_points</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pa_table_from_pa_arrays</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a sample PyArrow Table with time series points from PyArrow arrays.&quot;&quot;&quot;</span>
+
     <span class="c1"># Defining the data we want to write.</span>
     <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
     <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
@@ -1782,18 +1785,55 @@ argument will be discarded if an insecure connection is used.</p>
 
     <span class="c1"># time_zone = tz.gettz(&quot;Europe/Warsaw&quot;)</span>
     <span class="n">time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">UTC</span>
+    <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+        <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">time_zone</span><span class="p">),</span>
+        <span class="n">periods</span><span class="o">=</span><span class="n">number_of_points</span><span class="p">,</span>
+        <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">]</span>
 
     <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1"># if no time zone is provided then the timestamp is treated as UTC</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
-                <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">time_zone</span><span class="p">),</span> <span class="n">periods</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span>
-            <span class="p">)</span>
-        <span class="p">),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">),</span>
-        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">]),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">timestamps</span><span class="p">),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flags</span><span class="p">),</span>
+        <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="k">return</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pa_table_from_pandas</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a sample PyArrow Table with time series points from pandas DataFrame.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Defining the data we want to write.</span>
+    <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
+    <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
+    <span class="c1"># flags - [pa.uint32]</span>
+    <span class="c1"># value - [pa.float64]</span>
+
+    <span class="c1"># time_zone = tz.gettz(&quot;Europe/Warsaw&quot;)</span>
+    <span class="n">time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">UTC</span>
+    <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">timestamps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
+        <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">time_zone</span><span class="p">),</span>
+        <span class="n">periods</span><span class="o">=</span><span class="n">number_of_points</span><span class="p">,</span>
+        <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">22.2</span><span class="p">,</span> <span class="mf">333.3</span><span class="p">]</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">TIMESTAMP_PA_FIELD_NAME</span><span class="p">:</span> <span class="n">timestamps</span><span class="p">,</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">FLAGS_PA_FIELD_NAME</span><span class="p">:</span> <span class="n">flags</span><span class="p">,</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">VALUE_PA_FIELD_NAME</span><span class="p">:</span> <span class="n">values</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_write_timeseries_points</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
@@ -1804,7 +1844,7 @@ argument will be discarded if an insecure connection is used.</p>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">get_pa_table_with_time_series_points</span><span class="p">()</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">get_pa_table_from_pandas</span><span class="p">()</span>
 
         <span class="c1"># Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.</span>
         <span class="c1"># In case of larger data volumes please send input data in chunks.</span>
@@ -1855,7 +1895,7 @@ argument will be discarded if an insecure connection is used.</p>
             <span class="n">timeseries</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_attribute_id</span><span class="p">)</span>
             <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="o">=</span><span class="n">timeseries</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time series points written using time series attribute ID.&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;failed to write time series points based on time series attribute ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
@@ -1877,7 +1917,7 @@ argument will be discarded if an insecure connection is used.</p>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="n">table</span> <span class="o">=</span> <span class="n">get_pa_table_with_time_series_points</span><span class="p">()</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">get_pa_table_from_pa_arrays</span><span class="p">()</span>
 
         <span class="c1"># Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.</span>
         <span class="c1"># In case of larger data volumes please send input data in chunks.</span>
@@ -1928,7 +1968,7 @@ argument will be discarded if an insecure connection is used.</p>
             <span class="n">timeseries</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">uuid_id</span><span class="o">=</span><span class="n">timeseries_attribute_id</span><span class="p">)</span>
             <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="o">=</span><span class="n">timeseries</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Time series points written using time series attribute ID.&quot;</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;failed to write time series points based on time series attribute ID: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
