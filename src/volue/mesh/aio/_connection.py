@@ -38,18 +38,19 @@ from volue.mesh._common import (
     _to_proto_guid,
     _to_proto_resolution,
 )
+from volue.mesh.availability._availability_aio import Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
-
+from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
+from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 from volue.mesh.proto.model.v1alpha import model_pb2_grpc
 from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
 )
-from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 from volue.mesh.proto.session.v1alpha import session_pb2_grpc
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
 from volue.mesh.proto.type import resources_pb2
@@ -71,6 +72,7 @@ class Connection(_base_connection.Connection):
             model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
             session_service: session_pb2_grpc.SessionServiceStub,
             time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
+            availability_service: availability_pb2_grpc.AvailabilityServiceStub,
             session_id: Optional[uuid.UUID] = None,
         ):
             super().__init__(
@@ -81,6 +83,9 @@ class Connection(_base_connection.Connection):
                 model_definition_service=model_definition_service,
                 session_service=session_service,
                 time_series_service=time_series_service,
+            )
+            self.availability = Availability(
+                availability_service=availability_service, session_id=session_id
             )
 
         async def __aenter__(self):
@@ -122,6 +127,7 @@ class Connection(_base_connection.Connection):
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)
 
+            self.availability.session_id = self.session_id
             self.stop_worker_thread.clear()
             self.worker_thread = super().WorkerThread(self, asyncio.get_running_loop())
             self.worker_thread.start()
@@ -377,7 +383,7 @@ class Connection(_base_connection.Connection):
             self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
         ) -> None:
             request = super()._prepare_delete_object_request(target, recursive_delete)
-            self.model_service.DeleteObject(request)
+            await self.model_service.DeleteObject(request)
 
         def forecast_functions(
             self,
@@ -580,5 +586,6 @@ class Connection(_base_connection.Connection):
             model_definition_service=self.model_definition_service,
             session_service=self.session_service,
             time_series_service=self.time_series_service,
+            availability_service=self.availability_service,
             session_id=session_id,
         )

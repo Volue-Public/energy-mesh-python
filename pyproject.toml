@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "volue.mesh"
-version = "1.13.0-dev"
+version = "1.14.0-dev"
 description = ""
 license = "Proprietary"
 authors = ["Volue AS"]
@@ -14,6 +14,8 @@ packages = [
 include = [
     { path = "src/volue/mesh/proto/auth/v1alpha/auth_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/auth/v1alpha/auth_pb2_grpc.py", format = ["sdist", "wheel"] },
+    { path = "src/volue/mesh/proto/availability/v1alpha/availability_pb2.py", format = ["sdist", "wheel"] },
+    { path = "src/volue/mesh/proto/availability/v1alpha/availability_pb2_grpc.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/calc/v1alpha/calc_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/calc/v1alpha/calc_pb2_grpc.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/config/v1alpha/config_pb2.py", format = ["sdist", "wheel"] },
@@ -41,8 +43,8 @@ exclude = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.13"
-grpcio = ">=1.37.0, <=1.66.1"
+python = ">=3.9, <3.14"
+grpcio = ">=1.37.0, <=1.67.1"
 pyarrow = ">=7.0.0"
 protobuf = ">=3.20.1, <=5.27.2"
 winkerberos = { version = ">=0.9.1", markers = "sys_platform == 'win32'" }
@@ -55,7 +57,7 @@ python-dateutil = "^2.8.2"
 six = "^1.16.0"
 
 [tool.poetry.group.dev.dependencies]
-grpcio-tools = ">=1.37.0, <=1.66.1"
+grpcio-tools = ">=1.37.0, <=1.67.1"
 Sphinx = ">=5.0.2"
 sphinx-rtd-theme = "^0.5.2"
 rtd = "^1.2.3"
@@ -80,7 +82,7 @@ markers = [
 [build-system]
 requires = [
     "poetry-core>=1.8.5, <2.0.0",
-    "grpcio-tools>=1.37.0, <=1.66.1"
+    "grpcio-tools>=1.37.0, <=1.67.1"
 ]
 build-backend = "poetry.core.masonry.api"
 

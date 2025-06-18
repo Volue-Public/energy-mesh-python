@@ -2,6 +2,7 @@ import asyncio
 import uuid
 from datetime import datetime
 
+import grpc
 import helpers
 import pandas as pd
 import pyarrow as pa
@@ -19,7 +20,9 @@ timeseries_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent/SomeP
 timeseries_attribute_id = uuid.UUID("e5df77a9-8b60-4b0a-aa1b-3c3957c538a0")
 
 
-def get_pa_table_with_time_series_points() -> pa.Table:
+def get_pa_table_from_pa_arrays() -> pa.Table:
+    """Create a sample PyArrow Table with time series points from PyArrow arrays."""
+
     # Defining the data we want to write.
     # Mesh data is organized as an Arrow table with the following schema:
     # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
@@ -28,18 +31,55 @@ def get_pa_table_with_time_series_points() -> pa.Table:
 
     # time_zone = tz.gettz("Europe/Warsaw")
     time_zone = tz.UTC
+    number_of_points = 3
+
+    timestamps = pd.date_range(
+        datetime(2016, 1, 1, 1, tzinfo=time_zone),
+        periods=number_of_points,
+        freq="1h",
+    )
+    flags = [mesh.Timeseries.PointFlags.OK.value] * number_of_points
+    values = [0.0, 10.0, 1000.0]
 
     arrays = [
         # if no time zone is provided then the timestamp is treated as UTC
-        pa.array(
-            pd.date_range(
-                datetime(2016, 1, 1, 1, tzinfo=time_zone), periods=3, freq="1h"
-            )
-        ),
-        pa.array([mesh.Timeseries.PointFlags.OK.value] * 3),
-        pa.array([0.0, 10.0, 1000.0]),
+        pa.array(timestamps),
+        pa.array(flags),
+        pa.array(values),
     ]
     return pa.Table.from_arrays(arrays, schema=mesh.Timeseries.schema)
+
+
+def get_pa_table_from_pandas() -> pa.Table:
+    """Create a sample PyArrow Table with time series points from pandas DataFrame."""
+
+    # Defining the data we want to write.
+    # Mesh data is organized as an Arrow table with the following schema:
+    # utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds
+    # flags - [pa.uint32]
+    # value - [pa.float64]
+
+    # time_zone = tz.gettz("Europe/Warsaw")
+    time_zone = tz.UTC
+    number_of_points = 3
+
+    timestamps = pd.date_range(
+        datetime(2016, 1, 1, 1, tzinfo=time_zone),
+        periods=number_of_points,
+        freq="1h",
+    )
+    flags = [mesh.Timeseries.PointFlags.OK.value] * number_of_points
+    values = [1.1, 22.2, 333.3]
+
+    df = pd.DataFrame(
+        {
+            mesh.Timeseries.TIMESTAMP_PA_FIELD_NAME: timestamps,
+            mesh.Timeseries.FLAGS_PA_FIELD_NAME: flags,
+            mesh.Timeseries.VALUE_PA_FIELD_NAME: values,
+        }
+    )
+
+    return pa.Table.from_pandas(df, schema=mesh.Timeseries.schema)
 
 
 def sync_write_timeseries_points(address, tls_root_pem_cert):
@@ -50,7 +90,7 @@ def sync_write_timeseries_points(address, tls_root_pem_cert):
     connection = mesh.Connection.insecure(address)
 
     with connection.create_session() as session:
-        table = get_pa_table_with_time_series_points()
+        table = get_pa_table_from_pandas()
 
         # Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.
         # In case of larger data volumes please send input data in chunks.
@@ -101,7 +141,7 @@ def sync_write_timeseries_points(address, tls_root_pem_cert):
             timeseries = mesh.Timeseries(table=table, uuid_id=timeseries_attribute_id)
             session.write_timeseries_points(timeseries=timeseries)
             print("Time series points written using time series attribute ID.")
-        except Exception as e:
+        except grpc.RpcError as e:
             print(
                 f"failed to write time series points based on time series attribute ID: {e}"
             )
@@ -123,7 +163,7 @@ async def async_write_timeseries_points(
     connection = mesh.aio.Connection.insecure(address)
 
     async with connection.create_session() as session:
-        table = get_pa_table_with_time_series_points()
+        table = get_pa_table_from_pa_arrays()
 
         # Each time series point occupies 20 bytes. Mesh server has a limitation of 4MB inbound message size.
         # In case of larger data volumes please send input data in chunks.
@@ -174,7 +214,7 @@ async def async_write_timeseries_points(
             timeseries = mesh.Timeseries(table=table, uuid_id=timeseries_attribute_id)
             await session.write_timeseries_points(timeseries=timeseries)
             print("Time series points written using time series attribute ID.")
-        except Exception as e:
+        except grpc.RpcError as e:
             print(
                 f"failed to write time series points based on time series attribute ID: {e}"
             )

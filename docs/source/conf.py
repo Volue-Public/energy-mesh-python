@@ -10,11 +10,13 @@ ROOT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", ".
 VOLUE_FOLDER = os.path.join(ROOT_FOLDER, "src", "volue")
 MESH_FOLDER = os.path.join(VOLUE_FOLDER, "mesh")
 MESH_AIO_FOLDER = os.path.join(MESH_FOLDER, "aio")
+MESH_AVAILABILITY_FOLDER = os.path.join(MESH_FOLDER, "availability")
 EXAMPLE_FOLDER = os.path.join(MESH_FOLDER, "examples")
 TESTS_FOLDER = os.path.join(MESH_FOLDER, "tests")
 sys.path.insert(0, VOLUE_FOLDER)
 sys.path.insert(0, MESH_FOLDER)
 sys.path.insert(0, MESH_AIO_FOLDER)
+sys.path.insert(0, MESH_AVAILABILITY_FOLDER)
 sys.path.insert(0, EXAMPLE_FOLDER)
 sys.path.insert(0, TESTS_FOLDER)
 

@@ -21,8 +21,8 @@ def search_method_1(session: Connection.Session):
     # start_object_guid = uuid.UUID("0000000b-0001-0000-0000-000000000000")  # ThermalComponent
 
     # The query expressed using Mesh search language syntax
-    # Traverse all children (*) of the start object, not case-sensitive ({}) and
-    # accept all that has an attribute (.) called TsRawAtt
+    # Traverse all children ({*}) of the start object and accept all that have
+    # an attribute (.) called TsRawAtt
     query = "{*}.TsRawAtt"
 
     # Search for time series attributes using this query
