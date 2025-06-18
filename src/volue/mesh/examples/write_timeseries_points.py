@@ -6,7 +6,6 @@ import grpc
 import helpers
 import pandas as pd
 import pyarrow as pa
-from dateutil import tz
 
 import volue.mesh.aio
 from volue import mesh
@@ -19,6 +18,9 @@ timeseries_key = 3
 timeseries_attribute_path = "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt"
 timeseries_attribute_id = uuid.UUID("e5df77a9-8b60-4b0a-aa1b-3c3957c538a0")
 
+# time_zone = "Europe/Warsaw"
+time_zone = "UTC"
+
 
 def get_pa_table_from_pa_arrays() -> pa.Table:
     """Create a sample PyArrow Table with time series points from PyArrow arrays."""
@@ -29,14 +31,10 @@ def get_pa_table_from_pa_arrays() -> pa.Table:
     # flags - [pa.uint32]
     # value - [pa.float64]
 
-    # time_zone = tz.gettz("Europe/Warsaw")
-    time_zone = tz.UTC
     number_of_points = 3
 
     timestamps = pd.date_range(
-        datetime(2016, 1, 1, 1, tzinfo=time_zone),
-        periods=number_of_points,
-        freq="1h",
+        datetime(2016, 1, 1, 1), periods=number_of_points, freq="1h", tz=time_zone
     )
     flags = [mesh.Timeseries.PointFlags.OK.value] * number_of_points
     values = [0.0, 10.0, 1000.0]
@@ -59,14 +57,10 @@ def get_pa_table_from_pandas() -> pa.Table:
     # flags - [pa.uint32]
     # value - [pa.float64]
 
-    # time_zone = tz.gettz("Europe/Warsaw")
-    time_zone = tz.UTC
     number_of_points = 3
 
     timestamps = pd.date_range(
-        datetime(2016, 1, 1, 1, tzinfo=time_zone),
-        periods=number_of_points,
-        freq="1h",
+        datetime(2016, 1, 1, 1), periods=number_of_points, freq="1h", tz=time_zone
     )
     flags = [mesh.Timeseries.PointFlags.OK.value] * number_of_points
     values = [1.1, 22.2, 333.3]

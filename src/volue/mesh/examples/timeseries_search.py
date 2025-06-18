@@ -75,8 +75,9 @@ def search_method_3(session: Connection.Session):
     """
     This method uses `get_object` function.
     Useful when you want to traverse a subset of the model from a given node,
-    but not root object/model. Models do not contain attributes, so you won't
-    be able to traverse the child objects using ownership attributes.
+    but not root object/model. Root objects/models do not contain attributes,
+    so you won't be able to traverse the child objects using ownership
+    attributes.
     """
     print("Search method 3")
 
