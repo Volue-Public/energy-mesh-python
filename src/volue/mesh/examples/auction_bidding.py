@@ -14,8 +14,8 @@ def main(address):
 
 def fix_auction_bidding(session: Connection.Session):
     target = "Model/POMAtest01" # Something based off EnergySystem
-    query = "*[.Type=ReserveProduct]" #"*[.Type=CurveOrders]"}
-    curve_orders_attribute_names = ["ActivationTime"] #["MinVolume", "MaxVolume", "VolumeMin", "VolumeMax"]
+    query = "*[.Type=CurveOrders]"
+    curve_orders_attribute_names = ["MinVolume", "MaxVolume", "VolumeMin", "VolumeMax"]
     curve_orders_attributes = AttributesFilter(name_mask=curve_orders_attribute_names)
 
     # First, get all the CurveOrders objects in the model.
@@ -29,7 +29,7 @@ def fix_auction_bidding(session: Connection.Session):
 
         print(parent_object_path)
 
-        ownership_attribute_name = "has_EnergyMarkets" # "has_AuctionOrders"
+        ownership_attribute_name = "has_AuctionOrders"
         ownership_attribute = AttributesFilter(name_mask=[ownership_attribute_name])
 
         parent = session.get_object(parent_object_path, attributes_filter=ownership_attribute)
@@ -42,7 +42,7 @@ def fix_auction_bidding(session: Connection.Session):
         # Set the values of the new AuctionOrders object to those of the corresponding CurveOrders.
         for attribute_name in curve_orders_attribute_names:
             curve_orders_attribute = curve_orders_obj.attributes[attribute_name]
-            auction_orders_attribute = auction_orders_obj.attributes["LastAuctionAvailable"] # auction_orders_obj.attributes[attribute_name]
+            auction_orders_attribute = auction_orders_obj.attributes[attribute_name]
 
             print(curve_orders_attribute)
             print(auction_orders_attribute)
