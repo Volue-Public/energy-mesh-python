@@ -25,7 +25,7 @@ the following requirements:
   token.
 - User's claims: `name` and `oid` must be part of the access token.
 
-Azure Active Directory (Azure AD) supports all OAuth 2.0 flows.
+Microsoft Entra ID (formerly Azure AD) supports all OAuth 2.0 flows.
 
 
 Example

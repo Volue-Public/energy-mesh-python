@@ -9,6 +9,9 @@ from volue import mesh
 def sync_auth(address, tls_root_pem_cert, service_principal, user_principal):
     print("Synchronous authentication example: ")
 
+    # Providing `root_certificates` is optional. If set to `None` root
+    # certificates will be retrieved from a default location chosen by the gRPC
+    # runtime.
     connection = mesh.Connection.with_kerberos(
         address, tls_root_pem_cert, service_principal, user_principal
     )
@@ -23,6 +26,9 @@ def sync_auth(address, tls_root_pem_cert, service_principal, user_principal):
 async def async_auth(address, tls_root_pem_cert, service_principal, user_principal):
     print("Asynchronous authentication example:")
 
+    # Providing `root_certificates` is optional. If set to `None` root
+    # certificates will be retrieved from a default location chosen by the gRPC
+    # runtime.
     connection = mesh.aio.Connection.with_kerberos(
         address, tls_root_pem_cert, service_principal, user_principal
     )

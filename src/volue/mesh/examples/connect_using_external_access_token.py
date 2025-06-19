@@ -11,12 +11,16 @@ def main(address, tls_root_pem_cert):
     access token, e.g: a OAuth JWT. Obtaining the access token is out of scope
     for this example.
 
-    Depending on your environment, e.g.: Azure AD, using libraries like
-    Microsoft Authentication Library (MSAL) for getting the tokens is
+    Depending on your environment, e.g.: Microsoft Entra ID, using libraries
+    like Microsoft Authentication Library (MSAL) for getting the tokens is
     suggested.
     """
 
     token = "my_token"
+
+    # Providing `root_certificates` is optional. If set to `None` root
+    # certificates will be retrieved from a default location chosen by the gRPC
+    # runtime.
     connection = Connection.with_external_access_token(
         address, tls_root_pem_cert, access_token=token
     )
