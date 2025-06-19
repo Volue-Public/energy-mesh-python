@@ -48,8 +48,8 @@ def search_method_2(session: Connection.Session):
     """
     print("Search method 2")
 
-    # Provide root object/model as the start object to run the search.
-    # Root objects/models do not contain any attributes.
+    # Provide root object (also referred to as a model) as the start object to
+    # run the search.
     start_object_path = "Model/SimpleThermalTestModel"
 
     # Returns every object.
@@ -74,10 +74,8 @@ def search_method_2(session: Connection.Session):
 def search_method_3(session: Connection.Session):
     """
     This method uses `get_object` function.
-    Useful when you want to traverse a subset of the model from a given node,
-    but not root object/model. Root objects/models do not contain attributes,
-    so you won't be able to traverse the child objects using ownership
-    attributes.
+    Useful when you want to traverse a subset of the model tree from a given
+    object.
     """
     print("Search method 3")
 
