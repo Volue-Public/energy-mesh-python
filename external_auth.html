@@ -205,7 +205,7 @@ the following requirements:</p>
 token.</p></li>
 <li><p>User’s claims: <cite>name</cite> and <cite>oid</cite> must be part of the access token.</p></li>
 </ul>
-<p>Azure Active Directory (Azure AD) supports all OAuth 2.0 flows.</p>
+<p>Microsoft Entra ID (formerly Azure AD) supports all OAuth 2.0 flows.</p>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
@@ -240,12 +240,16 @@ token.</p></li>
 <span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
 <span class="sd">    for this example.</span>
 
-<span class="sd">    Depending on your environment, e.g.: Azure AD, using libraries like</span>
-<span class="sd">    Microsoft Authentication Library (MSAL) for getting the tokens is</span>
+<span class="sd">    Depending on your environment, e.g.: Microsoft Entra ID, using libraries</span>
+<span class="sd">    like Microsoft Authentication Library (MSAL) for getting the tokens is</span>
 <span class="sd">    suggested.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_token&quot;</span>
+
+    <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
+    <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
+    <span class="c1"># runtime.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
         <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span>
     <span class="p">)</span>

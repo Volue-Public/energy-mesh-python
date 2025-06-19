@@ -341,6 +341,9 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
 
+    <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
+    <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
+    <span class="c1"># runtime.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
         <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span>
     <span class="p">)</span>
@@ -355,6 +358,9 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example:&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
+    <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
+    <span class="c1"># runtime.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
         <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span>
     <span class="p">)</span>

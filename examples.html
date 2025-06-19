@@ -277,6 +277,9 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
 
+    <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
+    <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
+    <span class="c1"># runtime.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
         <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span>
     <span class="p">)</span>
@@ -291,6 +294,9 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example:&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
+    <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
+    <span class="c1"># runtime.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
         <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span>
     <span class="p">)</span>
@@ -456,12 +462,16 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
 <span class="sd">    for this example.</span>
 
-<span class="sd">    Depending on your environment, e.g.: Azure AD, using libraries like</span>
-<span class="sd">    Microsoft Authentication Library (MSAL) for getting the tokens is</span>
+<span class="sd">    Depending on your environment, e.g.: Microsoft Entra ID, using libraries</span>
+<span class="sd">    like Microsoft Authentication Library (MSAL) for getting the tokens is</span>
 <span class="sd">    suggested.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_token&quot;</span>
+
+    <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
+    <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
+    <span class="c1"># runtime.</span>
     <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
         <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">token</span>
     <span class="p">)</span>
@@ -846,8 +856,8 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Search method 2&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Provide root object/model as the start object to run the search.</span>
-    <span class="c1"># Root objects/models do not contain any attributes.</span>
+    <span class="c1"># Provide root object (also referred to as a model) as the start object to</span>
+    <span class="c1"># run the search.</span>
     <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel&quot;</span>
 
     <span class="c1"># Returns every object.</span>
@@ -872,9 +882,8 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="k">def</span><span class="w"> </span><span class="nf">search_method_3</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This method uses `get_object` function.</span>
-<span class="sd">    Useful when you want to traverse a subset of the model from a given node,</span>
-<span class="sd">    but not root object/model. Models do not contain attributes, so you won&#39;t</span>
-<span class="sd">    be able to traverse the child objects using ownership attributes.</span>
+<span class="sd">    Useful when you want to traverse a subset of the model tree from a given</span>
+<span class="sd">    object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Search method 3&quot;</span><span class="p">)</span>
 
@@ -1760,7 +1769,6 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dateutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">tz</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
@@ -1773,6 +1781,9 @@ argument will be discarded if an insecure connection is used.</p>
 <span class="n">timeseries_attribute_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.TsRawAtt&quot;</span>
 <span class="n">timeseries_attribute_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;e5df77a9-8b60-4b0a-aa1b-3c3957c538a0&quot;</span><span class="p">)</span>
 
+<span class="c1"># time_zone = &quot;Europe/Warsaw&quot;</span>
+<span class="n">time_zone</span> <span class="o">=</span> <span class="s2">&quot;UTC&quot;</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_pa_table_from_pa_arrays</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a sample PyArrow Table with time series points from PyArrow arrays.&quot;&quot;&quot;</span>
@@ -1783,14 +1794,10 @@ argument will be discarded if an insecure connection is used.</p>
     <span class="c1"># flags - [pa.uint32]</span>
     <span class="c1"># value - [pa.float64]</span>
 
-    <span class="c1"># time_zone = tz.gettz(&quot;Europe/Warsaw&quot;)</span>
-    <span class="n">time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">UTC</span>
     <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="n">timestamps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
-        <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">time_zone</span><span class="p">),</span>
-        <span class="n">periods</span><span class="o">=</span><span class="n">number_of_points</span><span class="p">,</span>
-        <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span><span class="p">,</span>
+        <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">periods</span><span class="o">=</span><span class="n">number_of_points</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">time_zone</span>
     <span class="p">)</span>
     <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">1000.0</span><span class="p">]</span>
@@ -1813,14 +1820,10 @@ argument will be discarded if an insecure connection is used.</p>
     <span class="c1"># flags - [pa.uint32]</span>
     <span class="c1"># value - [pa.float64]</span>
 
-    <span class="c1"># time_zone = tz.gettz(&quot;Europe/Warsaw&quot;)</span>
-    <span class="n">time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">UTC</span>
     <span class="n">number_of_points</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="n">timestamps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span>
-        <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">time_zone</span><span class="p">),</span>
-        <span class="n">periods</span><span class="o">=</span><span class="n">number_of_points</span><span class="p">,</span>
-        <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span><span class="p">,</span>
+        <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">periods</span><span class="o">=</span><span class="n">number_of_points</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;1h&quot;</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">time_zone</span>
     <span class="p">)</span>
     <span class="n">flags</span> <span class="o">=</span> <span class="p">[</span><span class="n">mesh</span><span class="o">.</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">PointFlags</span><span class="o">.</span><span class="n">OK</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">*</span> <span class="n">number_of_points</span>
     <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">22.2</span><span class="p">,</span> <span class="mf">333.3</span><span class="p">]</span>
