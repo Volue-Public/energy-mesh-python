@@ -79,8 +79,13 @@ def copy_attribute_values(session: Connection.Session,
                                             curve_orders_attr.expression,
                                             curve_orders_attr.time_series_resource.timeseries_key)
     elif isinstance(auction_orders_attr, VersionedLinkRelationAttribute):
-        session.update_versioned_one_to_many_link_relation_attribute(auction_orders_attr,
-                                                                     curve_orders_attr.entries)
+        # to_Areas should be a one-to-one link relation.
+        assert(len(curve_orders_attr.entries) == 0)
+
+        session.update_versioned_one_to_one_link_relation_attribute(auction_orders_attr,
+                                                                    datetime.min,
+                                                                    datetime.max,
+                                                                    curve_orders_attr.entries)
     else:
         raise TypeError(f"Found attribute '{attr_name}' of unexpected type '{type(auction_orders_attr)}'")
 
