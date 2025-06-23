@@ -23,17 +23,19 @@ def main():
     connection = Connection.insecure(address)
 
     with connection.create_session() as session:
-        fix_auction_bidding(session)
+        models = session.list_models()
+
+        for model in models:
+            fix_auction_bidding(model, session)
 
 
-def fix_auction_bidding(session: Connection.Session):
-    target = "Model/DemoModel"
+def fix_auction_bidding(model: Object, session: Connection.Session):
     query = "*[.Type=CurveOrders]"
     curve_orders_attr_names = ["MinVolume", "MaxVolume", "VolumeMin", "VolumeMax", "to_Areas"]
     curve_orders_attrs = AttributesFilter(name_mask=curve_orders_attr_names)
 
     # First, get all the CurveOrders objects in the model.
-    for curve_orders_obj in session.search_for_objects(target,
+    for curve_orders_obj in session.search_for_objects(model,
                                                        query,
                                                        attributes_filter=curve_orders_attrs):
         # This is a bit ugly, since we're relying on the fact that objects' attributes are specified
