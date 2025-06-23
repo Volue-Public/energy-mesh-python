@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 import helpers
@@ -41,8 +41,6 @@ def fix_auction_bidding(session: Connection.Session):
         # (as opposed to the attribute which serves as its owner) would be to query Mesh using
         # 'get_attribute' to get the owner attribute and 'get_object' to get the attribute's owner
         # object, which is less efficient.
-        print(curve_orders_obj)
-
         parent_object_path = os.path.splitext(curve_orders_obj.owner_path)[0]
 
         has_auction_orders = "has_AuctionOrders"
@@ -57,7 +55,7 @@ def fix_auction_bidding(session: Connection.Session):
 
         has_curve_orders_attr = auction_orders_obj.attributes["has_CurveOrders"]
 
-        session.update_object(curve_orders_obj.id, new_owner_attribute=has_curve_orders_attr)
+        # session.update_object(curve_orders_obj.id, new_owner_attribute=has_curve_orders_attr)
 
         # Finally, set the values of the new AuctionOrders object to those of the corresponding
         # CurveOrders.
@@ -74,9 +72,6 @@ def copy_attribute_values(session: Connection.Session,
     curve_orders_attr = curve_orders_obj.attributes[attr_name]
     auction_orders_attr = auction_orders_obj.attributes[attr_name]
 
-    print(curve_orders_attr)
-    print(auction_orders_attr)
-
     if isinstance(auction_orders_attr, SimpleAttribute):
         session.update_simple_attribute(auction_orders_attr, curve_orders_attr.value)
     elif isinstance(auction_orders_attr, TimeseriesAttribute):
@@ -91,6 +86,22 @@ def copy_attribute_values(session: Connection.Session,
             versions = curve_orders_attr.entries[0].versions
 
             if versions:
+                # BORRAR ESTO:
+                tzinfo = versions[0].valid_from_time.tzinfo
+                dt_min = datetime.min.replace(tzinfo=tzinfo)
+                now = datetime.now(tzinfo)
+
+                versions = [LinkRelationVersion(versions[0].target_object_id, dt_min),
+                            LinkRelationVersion(None, now),
+                            LinkRelationVersion(versions[0].target_object_id, now + timedelta(hours=1))]
+
+                session.update_versioned_one_to_one_link_relation_attribute(curve_orders_attr,
+                                                                            datetime.min,
+                                                                            datetime.max,
+                                                                            versions)
+
+
+
                 target_object_id = find_current_target_object_id(versions)
                 ids = [target_object_id] if target_object_id is not None else []
 
@@ -110,6 +121,11 @@ def find_current_target_object_id(versions: List[LinkRelationVersion]) -> uuid.U
     current_time = datetime.now(tzinfo)
 
     current_version = next(v for v in reversed(versions) if v.valid_from_time <= current_time)
+
+    print("Versions:")
+    print(versions)
+    print(f"Selected: {current_version}")
+    print("")
 
     return current_version.target_object_id
 
