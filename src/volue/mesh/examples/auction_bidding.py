@@ -86,22 +86,6 @@ def copy_attribute_values(session: Connection.Session,
             versions = curve_orders_attr.entries[0].versions
 
             if versions:
-                # BORRAR ESTO:
-                tzinfo = versions[0].valid_from_time.tzinfo
-                dt_min = datetime.min.replace(tzinfo=tzinfo)
-                now = datetime.now(tzinfo)
-
-                versions = [LinkRelationVersion(versions[0].target_object_id, dt_min),
-                            LinkRelationVersion(None, now),
-                            LinkRelationVersion(versions[0].target_object_id, now + timedelta(hours=1))]
-
-                session.update_versioned_one_to_one_link_relation_attribute(curve_orders_attr,
-                                                                            datetime.min,
-                                                                            datetime.max,
-                                                                            versions)
-
-
-
                 target_object_id = find_current_target_object_id(versions)
                 ids = [target_object_id] if target_object_id is not None else []
 
@@ -121,11 +105,6 @@ def find_current_target_object_id(versions: List[LinkRelationVersion]) -> uuid.U
     current_time = datetime.now(tzinfo)
 
     current_version = next(v for v in reversed(versions) if v.valid_from_time <= current_time)
-
-    print("Versions:")
-    print(versions)
-    print(f"Selected: {current_version}")
-    print("")
 
     return current_version.target_object_id
 
