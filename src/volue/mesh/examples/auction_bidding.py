@@ -55,7 +55,7 @@ def fix_auction_bidding(session: Connection.Session):
 
         has_curve_orders_attr = auction_orders_obj.attributes["has_CurveOrders"]
 
-        # session.update_object(curve_orders_obj.id, new_owner_attribute=has_curve_orders_attr)
+        session.update_object(curve_orders_obj.id, new_owner_attribute=has_curve_orders_attr)
 
         # Finally, set the values of the new AuctionOrders object to those of the corresponding
         # CurveOrders.
