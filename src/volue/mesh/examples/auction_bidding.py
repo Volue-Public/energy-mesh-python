@@ -1,10 +1,9 @@
+import argparse
 import os
 import uuid
 
 from datetime import datetime
 from typing import List
-
-import helpers
 
 from volue.mesh import (AttributesFilter,
                         Connection,
@@ -16,21 +15,54 @@ from volue.mesh import (AttributesFilter,
 
 
 def main():
-    address, tls_root_pem_cert = helpers.get_connection_info()
+    parser = argparse.ArgumentParser(description="Fixup Mesh models as per the reorganization required by AuctionBidding")
+
+    parser.add_argument("--keep-old-objects",
+                        help="Whether to keep the old CurveOrders objects under Portfolios and Subportfolios. Default: True",
+                        default=True)
+
+    args = parser.parse_args()
+
+    address, tls_root_pem_cert = get_connection_info(args.address, args.root_certificate_path)
 
     # For production environments create the connection using: with_tls, with_kerberos, or
     # with_external_access_token, e.g.:
     # connection = Connection.with_tls(address, tls_root_pem_cert)
-    connection = Connection.insecure(address)
+    connection = Connection.insecure()
 
     with connection.create_session() as session:
         models = session.list_models()
 
         for model in models:
-            fix_auction_bidding(model, session)
+            fix_auction_bidding(model, session, args.keep_old_objects)
 
 
-def fix_auction_bidding(model: Object, session: Connection.Session):
+def get_connection_info():
+    """Helper function to set hand over connection info to examples."""
+    address = "localhost:50051"
+    tls_root_pem_cert = ""
+
+    if len(sys.argv) > 1:
+        address = sys.argv[1]
+    if len(sys.argv) > 2:
+        root_certificate_path = sys.argv[2]
+        if root_certificate_path:
+            with open(root_certificate_path, "rb") as file:
+                # In case multiple root certificates are needed, e.g.:
+                # the same client accesses different Mesh servers (with different root certs)
+                # Just combine into single file the root certificates, like:
+                # -----BEGIN CERTIFICATE-----
+                # ...(first certificate)...
+                # -----END CERTIFICATE-----
+                # -----BEGIN CERTIFICATE-----
+                # ..(second certificate)..
+                # -----END CERTIFICATE-----
+                tls_root_pem_cert = file.read()
+
+    return address, tls_root_pem_cert
+
+
+def fix_auction_bidding(model: Object, session: Connection.Session, keep_old_objects: bool):
     query = "*[.Type=CurveOrders]"
     curve_orders_attr_names = ["MinVolume", "MaxVolume", "VolumeMin", "VolumeMax", "to_Areas"]
     curve_orders_attrs = AttributesFilter(name_mask=curve_orders_attr_names)
@@ -51,14 +83,11 @@ def fix_auction_bidding(model: Object, session: Connection.Session):
 
         parent = session.get_object(parent_object_path, attributes_filter=has_auction_orders_attr)
 
-        # For each CurveOrders object, create a corresponding AuctionOrders object and set it as the
-        # CurveOrders object's owner.
+        # For each CurveOrders object, create a corresponding AuctionOrders object.
         auction_orders_obj = session.create_object(parent.attributes[has_auction_orders],
                                                    curve_orders_obj.name)
 
-        has_curve_orders_attr = auction_orders_obj.attributes["has_CurveOrders"]
-
-        session.update_object(curve_orders_obj.id, new_owner_attribute=has_curve_orders_attr)
+        set_curve_orders_obj_hierarchy(keep_old_objects)
 
         # Finally, set the values of the new AuctionOrders object to those of the corresponding
         # CurveOrders.
@@ -66,6 +95,22 @@ def fix_auction_bidding(model: Object, session: Connection.Session):
             copy_attribute_values(session, auction_orders_obj, curve_orders_obj, attr_name)
 
     session.commit()
+
+
+def set_curve_orders_obj_hierarchy():
+    has_curve_orders = "has_CurveOrders"
+
+    if keep_old_objects:
+        new_curve_orders_obj = session.create_object(auction_orders_obj.attributes[has_curve_orders],
+                                                     curve_orders_obj.name)
+
+        # TODO: Copy the attributes of 'curve_orders_obj' to 'new_curve_orders_obj'. Depending
+        # on the use case this may require cloning the CurveOrders' entire child object tree.
+    else:
+        # Set the new AuctionOrders object as the CurveOrders object's owner.
+        has_curve_orders_attr = auction_orders_obj.attributes[has_curve_orders]
+
+        session.update_object(curve_orders_obj.id, new_owner_attribute=has_curve_orders_attr)
 
 
 def copy_attribute_values(session: Connection.Session,
