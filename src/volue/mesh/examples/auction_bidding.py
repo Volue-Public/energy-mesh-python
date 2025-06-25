@@ -1,7 +1,7 @@
 import os
 import uuid
 
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List
 
 import helpers
@@ -18,7 +18,8 @@ from volue.mesh import (AttributesFilter,
 def main():
     address, tls_root_pem_cert = helpers.get_connection_info()
 
-    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # For production environments create the connection using: with_tls, with_kerberos, or
+    # with_external_access_token, e.g.:
     # connection = Connection.with_tls(address, tls_root_pem_cert)
     connection = Connection.insecure(address)
 
