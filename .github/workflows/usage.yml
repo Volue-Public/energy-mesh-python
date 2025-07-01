@@ -51,10 +51,9 @@ jobs:
           python -m pytest ./repo/src/volue/mesh/tests -m "not authentication and not long"
 
       - name: Install Ubuntu 22.04 (WSL)
-        uses: Vampire/setup-wsl@v5
+        uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-22.04
-          wsl-version: 1
           set-as-default: "true"
           update: "false"
 
