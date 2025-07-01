@@ -50,17 +50,17 @@ jobs:
           python -m pip install pytest pytest-asyncio==0.21.2 pandas
           python -m pytest ./repo/src/volue/mesh/tests -m "not authentication and not long"
 
-      - name: Install Ubuntu 22.04 (WSL)
+      - name: Install Ubuntu 24.04 (WSL)
         uses: Vampire/setup-wsl@v5
         with:
-          distribution: Ubuntu-22.04
+          distribution: Ubuntu-24.04
           wsl-version: 1
           set-as-default: "true"
           update: "false"
 
       # run one example before installing pytest packages and pandas
       # to check if all dependencies are installed together with Mesh Python SDK pip package
-      - name: Install and test Python SDK (Ubuntu 22.04)
+      - name: Install and test Python SDK (Ubuntu 24.04)
         shell: wsl-bash {0}
         run: |
           sudo apt-get update
