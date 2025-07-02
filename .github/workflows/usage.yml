@@ -54,7 +54,7 @@ jobs:
         uses: Vampire/setup-wsl@v5
         with:
           distribution: Ubuntu-22.04
-          wsl-version: 2
+          wsl-version: 1
           set-as-default: "true"
           update: "false"
 
