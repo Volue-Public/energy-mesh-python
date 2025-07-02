@@ -10,7 +10,7 @@ on:
 
 jobs:
   checkout_and_use:
-    runs-on: windows-2022
+    runs-on: windows-2025
     strategy:
       matrix:
         python-version: [3.9, "3.10", 3.11, 3.12, 3.13]
@@ -18,11 +18,6 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      - shell: pwsh
-        run: |
-            $wslupd = wsl --update --web-download | Out-String
-            $wslupd
-            
       - uses: actions/checkout@v2
         with:
           path: repo
