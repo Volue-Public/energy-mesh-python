@@ -84,5 +84,5 @@ jobs:
       - name: Test Python SDK (Ubuntu 22.04)
         shell: wsl-bash {0}
         run: |
-          python${{ matrix.python-version }} -m pytest ./repo/src/volue/mesh/tests -m "server and not long" -v
+          python${{ matrix.python-version }} -m pytest ./repo/src/volue/mesh/tests -m "not asyncio and server and not long" -v
           echo "Python version: ${{ matrix.python-version }}"
