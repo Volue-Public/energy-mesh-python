@@ -60,7 +60,7 @@ jobs:
 
       # run one example before installing pytest packages and pandas
       # to check if all dependencies are installed together with Mesh Python SDK pip package
-      - name: Install Python SDK (Ubuntu 22.04)
+      - name: Install and test Python SDK (Ubuntu 22.04)
         shell: wsl-bash {0}
         run: |
           sudo apt-get update
@@ -80,9 +80,4 @@ jobs:
           python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}
           python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py
           python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.2 pandas
-
-      - name: Test Python SDK (Ubuntu 22.04)
-        shell: wsl-bash {0}
-        run: |
-          python${{ matrix.python-version }} -m pytest ./repo/src/volue/mesh/tests -m "server and not long" -v
-          echo "Python version: ${{ matrix.python-version }}"
+          python${{ matrix.python-version }} -m pytest ./repo/src/volue/mesh/tests -m "not authentication and not long"
