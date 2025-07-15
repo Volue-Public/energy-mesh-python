@@ -117,12 +117,12 @@ Python's standard package manager system pip::
     python -m pip download git+https://github.com/Volue-Public/energy-mesh-python@vX.Y.Z
 
 
-Additionally, download Mesh Python SDK build dependencies. Those are specified in [build-system]
+Additionally, download Mesh Python SDK build dependencies. Those are specified in the [build-system]
 section in pyproject.toml file.::
 
     # Check [build-system] section in pyproject.toml file if those are up to date.
-    python -m pip download poetry-core
-    python -m pip download grpcio-tools==1.66.1
+    python -m pip download poetry-core==1.9.1
+    python -m pip download grpcio-tools==1.67.1
 
 Copy all the downloaded binaries to the target computer without internet connection.
 In the directory with the downloaded binaries execute::
