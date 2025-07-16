@@ -22,14 +22,17 @@ This error can have multiple causes. Some things to check are:
 #. Is the server set up to run with gRPC enabled? For this please contact Volue consultant.
 
 
-I get a SSL_ERROR_SSL. What am I doing wrong?
-*********************************************
-::
+I get an SSL_ERROR_SSL. What am I doing wrong?
+**********************************************
 
-    E0903 09:26:59.667000000 29912 src/core/tsi/ssl_transport_security.cc:1468] Handshake failed with fatal error SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER.
+.. code-block:: bash
+
+   Ssl handshake failed (TSI_PROTOCOL_FAILURE): SSL_ERROR_SSL: error:100000f7:SSL routines:OPENSSL_internal:WRONG_VERSION_NUMBER
 
 
-If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.
+If your server is set up to not use TLS and you try to connect using a secure connection you will get this error.
+Either change the server to use TLS or change you client code to connect without a secure connection.
+We strongly suggest to use TLS for security reasons.
 
 
 .. _faq_proto_import_error:

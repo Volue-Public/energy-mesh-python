@@ -99,7 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-a-connection-grpc-error">I get a connection gRPC error.</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong">I get a SSL_ERROR_SSL. What am I doing wrong?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-get-an-ssl-error-ssl-what-am-i-doing-wrong">I get an SSL_ERROR_SSL. What am I doing wrong?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha">I get an ImportError: cannot import name ‘auth_pb2’ from ‘volue.mesh.proto.auth.v1alpha’.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-a-resource-exhausted-grpc-error">I get a RESOURCE_EXHAUSTED gRPC error.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a></li>
@@ -193,7 +193,7 @@
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#i-get-a-connection-grpc-error" id="id1">I get a connection gRPC error.</a></p></li>
-<li><p><a class="reference internal" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" id="id2">I get a SSL_ERROR_SSL. What am I doing wrong?</a></p></li>
+<li><p><a class="reference internal" href="#i-get-an-ssl-error-ssl-what-am-i-doing-wrong" id="id2">I get an SSL_ERROR_SSL. What am I doing wrong?</a></p></li>
 <li><p><a class="reference internal" href="#i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha" id="id3">I get an ImportError: cannot import name ‘auth_pb2’ from ‘volue.mesh.proto.auth.v1alpha’.</a></p></li>
 <li><p><a class="reference internal" href="#i-get-a-resource-exhausted-grpc-error" id="id4">I get a RESOURCE_EXHAUSTED gRPC error.</a></p></li>
 <li><p><a class="reference internal" href="#i-get-error-with-building-dependencies-when-installing-volue-mesh-on-linux" id="id5">I get error with building dependencies when installing <cite>volue.mesh</cite> on Linux.</a></p></li>
@@ -220,12 +220,14 @@
 <li><p>Is the server set up to run with gRPC enabled? For this please contact Volue consultant.</p></li>
 </ol>
 </div>
-<div class="section" id="i-get-a-ssl-error-ssl-what-am-i-doing-wrong">
-<h2><a class="toc-backref" href="#id2">I get a SSL_ERROR_SSL. What am I doing wrong?</a><a class="headerlink" href="#i-get-a-ssl-error-ssl-what-am-i-doing-wrong" title="Permalink to this heading">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E0903</span> <span class="mi">09</span><span class="p">:</span><span class="mi">26</span><span class="p">:</span><span class="mf">59.667000000</span> <span class="mi">29912</span> <span class="n">src</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">tsi</span><span class="o">/</span><span class="n">ssl_transport_security</span><span class="o">.</span><span class="n">cc</span><span class="p">:</span><span class="mi">1468</span><span class="p">]</span> <span class="n">Handshake</span> <span class="n">failed</span> <span class="k">with</span> <span class="n">fatal</span> <span class="n">error</span> <span class="n">SSL_ERROR_SSL</span><span class="p">:</span> <span class="n">error</span><span class="p">:</span><span class="mi">100000</span><span class="n">f7</span><span class="p">:</span><span class="n">SSL</span> <span class="n">routines</span><span class="p">:</span><span class="n">OPENSSL_internal</span><span class="p">:</span><span class="n">WRONG_VERSION_NUMBER</span><span class="o">.</span>
+<div class="section" id="i-get-an-ssl-error-ssl-what-am-i-doing-wrong">
+<h2><a class="toc-backref" href="#id2">I get an SSL_ERROR_SSL. What am I doing wrong?</a><a class="headerlink" href="#i-get-an-ssl-error-ssl-what-am-i-doing-wrong" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Ssl<span class="w"> </span>handshake<span class="w"> </span>failed<span class="w"> </span><span class="o">(</span>TSI_PROTOCOL_FAILURE<span class="o">)</span>:<span class="w"> </span>SSL_ERROR_SSL:<span class="w"> </span>error:100000f7:SSL<span class="w"> </span>routines:OPENSSL_internal:WRONG_VERSION_NUMBER
 </pre></div>
 </div>
-<p>If your server is set up to not use TLS and you try to connect using a secure connection you will get this error. Either change the server to use TLS (Configuration.Network.GRPC.EnableTLS(true)) or change you client code to connect without a secure connection.</p>
+<p>If your server is set up to not use TLS and you try to connect using a secure connection you will get this error.
+Either change the server to use TLS or change you client code to connect without a secure connection.
+We strongly suggest to use TLS for security reasons.</p>
 </div>
 <div class="section" id="i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha">
 <span id="faq-proto-import-error"></span><h2><a class="toc-backref" href="#id3">I get an ImportError: cannot import name ‘auth_pb2’ from ‘volue.mesh.proto.auth.v1alpha’.</a><a class="headerlink" href="#i-get-an-importerror-cannot-import-name-auth-pb2-from-volue-mesh-proto-auth-v1alpha" title="Permalink to this heading">¶</a></h2>
