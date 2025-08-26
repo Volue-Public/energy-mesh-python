@@ -256,64 +256,6 @@ class Authentication(grpc.AuthMetadataPlugin):
         self.token_expiration_date = None
 
 
-def authenticate_fake(
-    service: auth_pb2_grpc.AuthenticationServiceStub, name: str
-) -> typing.Tuple[str, datetime]:
-    """Authenticate to Mesh with a fake identity.
-
-    Requires Mesh configuration. Internal use only.
-
-    Args:
-        service: A mesh service stub.
-        name: The display name of the fake user.
-
-    Returns:
-        A pair (token, expiration) where token is a valid Mesh authorization
-        token, and expiration is the datetime for the expiration of that token.
-
-    Raises:
-        grpc.RpcError: If the remote procedure call fails.
-    """
-    request = auth_pb2.AuthenticateFakeRequest(
-        display_name=name, token_duration=protobuf.duration_pb2.Duration(seconds=3600)
-    )
-    now = datetime.now(timezone.utc)
-    response = service.AuthenticateFake(request)
-    return response.bearer_token, now + response.token_duration.ToTimedelta()
-
-
-class FakeIdentityPlugin(grpc.AuthMetadataPlugin):
-    """A grpc.AuthMetadataPlugin for fake Mesh authentication.
-
-    Requires Mesh configuration. Internal use only.
-    """
-
-    def __init__(
-        self, grpc_target: str, grpc_credentials: grpc.ChannelCredentials, name: str
-    ):
-        self.name = name
-        self.token: str = ""
-        self.token_expiration: datetime = datetime.now(timezone.utc)
-
-        channel = grpc.secure_channel(target=grpc_target, credentials=grpc_credentials)
-        self.auth_service = auth_pb2_grpc.AuthenticationServiceStub(channel)
-
-    def __call__(self, context, callback):
-        if self.token_expiration < datetime.now(timezone.utc) + timedelta(minutes=1):
-            self.token, self.token_expiration = authenticate_fake(
-                self.auth_service, self.name
-            )
-        callback((("authorization", "Bearer " + self.token),), None)
-
-    def delete_access_token(self):
-        """
-        Deletes (resets) current Mesh token if no longer needed.
-        auth_service.RevokeAccessToken call is made in Connection classes.
-        """
-        self.token = None
-        self.token_expiration_date = None
-
-
 class ExternalAccessTokenPlugin(grpc.AuthMetadataPlugin):
     """
     A grpc.AuthMetadataPlugin for Mesh connection using external access tokens.
