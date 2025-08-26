@@ -311,21 +311,6 @@ class Connection(abc.ABC):
         )
         return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
 
-    @classmethod
-    def _with_fake_identity(
-        cls, target: str, root_certificates: Optional[str], name: str
-    ):
-        ssl_credentials = grpc.ssl_channel_credentials(root_certificates)
-        auth_metadata_plugin = _authentication.FakeIdentityPlugin(
-            target, ssl_credentials, name
-        )
-        call_credentials = grpc.metadata_call_credentials(auth_metadata_plugin)
-        credentials = grpc.composite_channel_credentials(
-            ssl_credentials, call_credentials
-        )
-        channel = cls._secure_grpc_channel(target, credentials)
-        return cls(channel=channel, auth_metadata_plugin=auth_metadata_plugin)
-
     @abc.abstractmethod
     def get_version(self) -> config_pb2.VersionInfo:
         """Request version information of the connected Mesh server.
