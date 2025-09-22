@@ -634,11 +634,50 @@ class Session(abc.ABC):
         Args:
             timeseries_key: integer that only applies to a specific physical or
                 virtual time series.
-            new_curve_type: set new  curve type.
+            new_curve_type: set new curve type.
             new_unit_of_measurement: set new unit of measurement.
 
         Note:
             Specify which ever of the new_* fields you want to update.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+        """
+
+    @abc.abstractmethod
+    def create_physical_timeseries(
+        self,
+        path: str,
+        name: str,
+        curve_type: Timeseries.Curve,
+        resolution: Timeseries.Resolution,
+        unit_of_measurement: str,
+    ) -> TimeseriesResource:
+        """
+        Create a new physical time series.
+
+        Any missing components of the requested time series path will be created in
+        the catalog as well. For example, if we set the 'path' to "/Path/To/Timeseries/",
+        and its 'name' field to "Test_Timeseries", the entire  "Path/To/Timeseries/Test_Timeseries"
+        sequence of catalog entries will be created if it doesn't exist already.
+
+        Note that the 'path' field on the returned TimeseriesResource won't
+        have the same as the value as the 'path' argument in this request;
+        namely, the returned 'path' will have a "Resource/" prefix, and will be
+        suffixed with the contents of the 'name' field from this request. That is:
+        ReturnedTimeseriesResource.path == "Resource/" + request.path + "/" + request.name
+
+        Continuing with the previous example, in this case the 'path' field in the
+        response will be "Resource/Path/To/Timeseries/Test_Timeseries".
+
+        Args:
+            path: path of the new physical time series.
+                Must begin and end with forward slashes.
+            name: name of the new physical time series.
+            curve_type: curve type of the new physical time series
+            resolution: resolution of the new physical time series
+            unit_of_measurement: unit of measurement of the new physical time series.
+                It must match an existing unit in Mesh.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.

@@ -218,10 +218,10 @@ class TestCreatePhysicalTimeseries:
 
         self._verify_timeseries(timeseries, ts_init_data)
 
-        # TODO: We should also check that the time series actually exists in the database. Normally
-        # we'd be able to do this by using GetTimeseriesResource; however, that function currently
-        # requires us to know the time series' key, which CreatePhysicalTimeseries cannot return
-        # since it's generated at the commit stage.
+        # The time series key is assigned by the database. Since in this test
+        # we are running Mesh without an actual database, the returned time
+        # series doesn't have a time series key assigned.
+        assert timeseries.timeseries_key == 0
 
     def test_create_timeseries_with_non_existing_unit_of_measurement(
         self, session, ts_init_data
