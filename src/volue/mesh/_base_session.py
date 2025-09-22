@@ -671,13 +671,13 @@ class Session(abc.ABC):
         response will be "Resource/Path/To/Timeseries/Test_Timeseries".
 
         Args:
-            path: path of the new physical time series,
-                must begin and end with forward slashes.
+            path: path of the new physical time series.
+                Must begin and end with forward slashes.
             name: name of the new physical time series.
             curve_type: curve type of the new physical time series
             resolution: resolution of the new physical time series
-            unit_of_measurement: unit of measurement of the new physical time series,
-                the string must match an existing unit in Mesh.
+            unit_of_measurement: unit of measurement of the new physical time series.
+                It must match an existing unit in Mesh.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.

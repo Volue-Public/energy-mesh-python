@@ -218,9 +218,9 @@ class TestCreatePhysicalTimeseries:
 
         self._verify_timeseries(timeseries, ts_init_data)
 
-        # Time series key is assigned by the database. Because in this test we
-        # are running Mesh without actual database the returned time series
-        # doesn't have a time series key assigned.
+        # The time series key is assigned by the database. Since in this test
+        # we are running Mesh without an actual database, the returned time
+        # series doesn't have a time series key assigned.
         assert timeseries.timeseries_key == 0
 
     def test_create_timeseries_with_non_existing_unit_of_measurement(
