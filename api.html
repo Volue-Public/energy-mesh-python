@@ -484,7 +484,35 @@ information: name, path, ID and value(s).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.create_physical_timeseries">
 <span class="sig-name descname"><span class="pre">create_physical_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries.Curve" title="volue.mesh._timeseries.Timeseries.Curve"><span class="pre">Curve</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries.Resolution" title="volue.mesh._timeseries.Timeseries.Resolution"><span class="pre">Resolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_of_measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.TimeseriesResource" title="volue.mesh._timeseries_resource.TimeseriesResource"><span class="pre">TimeseriesResource</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.create_physical_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.create_physical_timeseries" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create a new physical time series.</p>
+<p>Any missing components of the requested time series path will be created in
+the catalog as well. For example, if we set the ‘path’ to “/Path/To/Timeseries/”,
+and its ‘name’ field to “Test_Timeseries”, the entire  “Path/To/Timeseries/Test_Timeseries”
+sequence of catalog entries will be created if it doesn’t exist already.</p>
+<p>Note that the ‘path’ field on the returned TimeseriesResource won’t
+have the same as the value as the ‘path’ argument in this request;
+namely, the returned ‘path’ will have a “Resource/” prefix, and will be
+suffixed with the contents of the ‘name’ field from this request. That is:
+ReturnedTimeseriesResource.path == “Resource/” + request.path + “/” + request.name</p>
+<p>Continuing with the previous example, in this case the ‘path’ field in the
+response will be “Resource/Path/To/Timeseries/Test_Timeseries”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – path of the new physical time series.
+Must begin and end with forward slashes.</p></li>
+<li><p><strong>name</strong> – name of the new physical time series.</p></li>
+<li><p><strong>curve_type</strong> – curve type of the new physical time series</p></li>
+<li><p><strong>resolution</strong> – resolution of the new physical time series</p></li>
+<li><p><strong>unit_of_measurement</strong> – unit of measurement of the new physical time series.
+It must match an existing unit in Mesh.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.74.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.delete_object">
@@ -1148,7 +1176,7 @@ argument to 0.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>timeseries_key</strong> – integer that only applies to a specific physical or
 virtual time series.</p></li>
-<li><p><strong>new_curve_type</strong> – set new  curve type.</p></li>
+<li><p><strong>new_curve_type</strong> – set new curve type.</p></li>
 <li><p><strong>new_unit_of_measurement</strong> – set new unit of measurement.</p></li>
 </ul>
 </dd>
@@ -3597,7 +3625,35 @@ information: name, path, ID and value(s).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.create_physical_timeseries">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_physical_timeseries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries.Curve" title="volue.mesh._timeseries.Timeseries.Curve"><span class="pre">Curve</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#volue.mesh.Timeseries.Resolution" title="volue.mesh._timeseries.Timeseries.Resolution"><span class="pre">Resolution</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit_of_measurement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.TimeseriesResource" title="volue.mesh._timeseries_resource.TimeseriesResource"><span class="pre">TimeseriesResource</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.create_physical_timeseries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.create_physical_timeseries" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create a new physical time series.</p>
+<p>Any missing components of the requested time series path will be created in
+the catalog as well. For example, if we set the ‘path’ to “/Path/To/Timeseries/”,
+and its ‘name’ field to “Test_Timeseries”, the entire  “Path/To/Timeseries/Test_Timeseries”
+sequence of catalog entries will be created if it doesn’t exist already.</p>
+<p>Note that the ‘path’ field on the returned TimeseriesResource won’t
+have the same as the value as the ‘path’ argument in this request;
+namely, the returned ‘path’ will have a “Resource/” prefix, and will be
+suffixed with the contents of the ‘name’ field from this request. That is:
+ReturnedTimeseriesResource.path == “Resource/” + request.path + “/” + request.name</p>
+<p>Continuing with the previous example, in this case the ‘path’ field in the
+response will be “Resource/Path/To/Timeseries/Test_Timeseries”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – path of the new physical time series.
+Must begin and end with forward slashes.</p></li>
+<li><p><strong>name</strong> – name of the new physical time series.</p></li>
+<li><p><strong>curve_type</strong> – curve type of the new physical time series</p></li>
+<li><p><strong>resolution</strong> – resolution of the new physical time series</p></li>
+<li><p><strong>unit_of_measurement</strong> – unit of measurement of the new physical time series.
+It must match an existing unit in Mesh.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://grpc.github.io/grpc/python/grpc.html#grpc.RpcError" title="(in gRPC Python v1.74.0)"><strong>grpc.RpcError</strong></a> – Error message raised if the gRPC request could not be completed.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.delete_object">
@@ -4261,7 +4317,7 @@ argument to 0.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>timeseries_key</strong> – integer that only applies to a specific physical or
 virtual time series.</p></li>
-<li><p><strong>new_curve_type</strong> – set new  curve type.</p></li>
+<li><p><strong>new_curve_type</strong> – set new curve type.</p></li>
 <li><p><strong>new_unit_of_measurement</strong> – set new unit of measurement.</p></li>
 </ul>
 </dd>

@@ -807,11 +807,50 @@
 <span class="sd">        Args:</span>
 <span class="sd">            timeseries_key: integer that only applies to a specific physical or</span>
 <span class="sd">                virtual time series.</span>
-<span class="sd">            new_curve_type: set new  curve type.</span>
+<span class="sd">            new_curve_type: set new curve type.</span>
 <span class="sd">            new_unit_of_measurement: set new unit of measurement.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            Specify which ever of the new_* fields you want to update.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_physical_timeseries</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">curve_type</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">,</span>
+        <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
+        <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new physical time series.</span>
+
+<span class="sd">        Any missing components of the requested time series path will be created in</span>
+<span class="sd">        the catalog as well. For example, if we set the &#39;path&#39; to &quot;/Path/To/Timeseries/&quot;,</span>
+<span class="sd">        and its &#39;name&#39; field to &quot;Test_Timeseries&quot;, the entire  &quot;Path/To/Timeseries/Test_Timeseries&quot;</span>
+<span class="sd">        sequence of catalog entries will be created if it doesn&#39;t exist already.</span>
+
+<span class="sd">        Note that the &#39;path&#39; field on the returned TimeseriesResource won&#39;t</span>
+<span class="sd">        have the same as the value as the &#39;path&#39; argument in this request;</span>
+<span class="sd">        namely, the returned &#39;path&#39; will have a &quot;Resource/&quot; prefix, and will be</span>
+<span class="sd">        suffixed with the contents of the &#39;name&#39; field from this request. That is:</span>
+<span class="sd">        ReturnedTimeseriesResource.path == &quot;Resource/&quot; + request.path + &quot;/&quot; + request.name</span>
+
+<span class="sd">        Continuing with the previous example, in this case the &#39;path&#39; field in the</span>
+<span class="sd">        response will be &quot;Resource/Path/To/Timeseries/Test_Timeseries&quot;.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: path of the new physical time series.</span>
+<span class="sd">                Must begin and end with forward slashes.</span>
+<span class="sd">            name: name of the new physical time series.</span>
+<span class="sd">            curve_type: curve type of the new physical time series</span>
+<span class="sd">            resolution: resolution of the new physical time series</span>
+<span class="sd">            unit_of_measurement: unit of measurement of the new physical time series.</span>
+<span class="sd">                It must match an existing unit in Mesh.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
