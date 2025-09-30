@@ -107,7 +107,7 @@ class AttributeBase:
     It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>`.
+    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
     """
 
     class AttributeBaseDefinition:
@@ -197,7 +197,7 @@ class SimpleAttribute(AttributeBase):
     - unit_of_measurement
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>`.
+    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
     """
 
     class SimpleAttributeDefinition(AttributeBase.AttributeBaseDefinition):
@@ -286,7 +286,8 @@ class OwnershipRelationAttribute(AttributeBase):
     attribute of one-to-many type (ElementCollectionAttributeDefinition).
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>` and :doc:`mesh_relations`.
+    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__ and
+    `Mesh relations <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__.
     """
 
     class OwnershipRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
@@ -349,7 +350,8 @@ class LinkRelationAttribute(AttributeBase):
     over time. See `VersionedLinkRelationAttribute`.
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>` and :doc:`mesh_relations`.
+    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__ and
+    `Mesh relations <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__.
     """
 
     class LinkRelationAttributeDefinition(AttributeBase.AttributeBaseDefinition):
@@ -413,7 +415,8 @@ class VersionedLinkRelationAttribute(AttributeBase):
     - one-to-many (ReferenceSeriesCollectionAttributeDefinition)
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>` and :doc:`mesh_relations`.
+    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__ and
+    `Mesh relations <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__.
     """
 
     @dataclass
@@ -484,7 +487,7 @@ class TimeseriesAttribute(AttributeBase):
     Note: physical and virtual time series are both called resource time series.
 
     Refer to documentation for more details:
-    :ref:`Mesh attribute <mesh_attribute>`.
+    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
     """
 
     class TimeseriesAttributeDefinition(AttributeBase.AttributeBaseDefinition):

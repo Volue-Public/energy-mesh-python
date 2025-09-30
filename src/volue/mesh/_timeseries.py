@@ -19,7 +19,7 @@ class Timeseries:
     Value is the actual data for the given timestamp.
 
     See Also:
-        :doc:`timeseries`
+        `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/time-series/>`__
     """
 
     class Curve(Enum):
@@ -142,8 +142,8 @@ class Timeseries:
             end_time: The end date and time of the time series interval.
             timskey: Integer that only applies to a specific physical or virtual time series.
             uuid_id: Universal Unique Identifier for Mesh objects.
-            full_name: Path in the :ref:`Mesh model <mesh_model>`.
-              See: :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+            full_name: Path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+              See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
 
         Raises:
             TypeError: Error message raised if PyArrow table schema is invalid.

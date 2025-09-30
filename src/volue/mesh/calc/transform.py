@@ -2,7 +2,8 @@
 Mesh calculation transformation functions.
 *******************************************
 
-For more information see :ref:`mesh_functions:transform`.
+For more information see
+`Mesh functions <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/>`__.
 
 """
 
@@ -83,7 +84,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
             resolution: The resolution to transform to.
             method: What method to use for the transformation.
             timezone: What time zone to use for the transformation.
-            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
 
         Returns:
             Mesh calculation expression.
@@ -137,7 +138,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
             resolution: The resolution to transform to.
             method: What method to use for the transformation.
             timezone: What time zone to use for the transformation.
-            search_query: a search formulated using the :doc:`Mesh search language <mesh_search>`.
+            search_query: a search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
 
         Note:
             The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `target` will be used.

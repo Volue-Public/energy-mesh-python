@@ -23,7 +23,7 @@ sys.path.insert(0, TESTS_FOLDER)
 # -- Project information -----------------------------------------------------
 
 project = "volue.mesh"
-copyright = "2024, Volue AS"
+copyright = "2025, Volue AS"
 author = "Volue AS"
 
 import re
