@@ -136,7 +136,7 @@ class _Calculation:
             target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
-                a path in the :ref:`Mesh model <mesh_model>`.
+                a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             start_time: The start date and time of the time series interval.
             end_time: The end date and time of the time series interval.
         """

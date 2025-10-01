@@ -210,7 +210,7 @@ class Session(abc.ABC):
         Args:
             target: Mesh attribute, virtual or physical time series. It could
                 be a time series key, Universal Unique Identifier or a path in
-                the :ref:`Mesh model <mesh_model>`.
+                the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -242,7 +242,7 @@ class Session(abc.ABC):
         self,
     ) -> List[Object]:
         """
-        List all :ref:`Mesh models <mesh_model>`.
+        List all `Mesh models <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
         Model is a root object that does not have an owner.
 
         Raises:
@@ -262,8 +262,8 @@ class Session(abc.ABC):
 
         Args:
             target: Mesh object to be read. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object will be returned, otherwise only name,
                 path, ID and value(s).
@@ -283,14 +283,14 @@ class Session(abc.ABC):
         attributes_filter: Optional[AttributesFilter] = None,
     ) -> List[Object]:
         """
-        Use the :doc:`Mesh search language <mesh_search>` to find Mesh objects
-        in the Mesh model.
+        Use the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__
+        to find Mesh objects in the Mesh model.
 
         Args:
             target: Start searching at the target object. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-            query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
+            query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -319,7 +319,7 @@ class Session(abc.ABC):
                 or one-to-many (object value type = "ElementCollectionAttributeDefinition")
                 ownership relation attribute.
                 It could be a Universal Unique Identifier or a path in the
-                :ref:`Mesh model <mesh_model>`.
+                `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             name: Name for the new object to create.
 
         Returns:
@@ -345,15 +345,15 @@ class Session(abc.ABC):
 
         Args:
             target: Mesh object to be updated. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             new_name: New name for the object.
             new_owner_attribute: New owner of the object. It must be a
                 one-to-one (object value type = "ElementAttributeDefinition")
                 or one-to-many (object value type = "ElementCollectionAttributeDefinition")
                 ownership relation attribute.
                 It could be a Universal Unique Identifier or a path in the
-                :ref:`Mesh model <mesh_model>`.
+                `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
@@ -368,8 +368,8 @@ class Session(abc.ABC):
 
         Args:
             target: Mesh object to be deleted. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             recursive_delete: If set then all child objects
                 (owned by the object to be deleted) in the model will also be deleted.
 
@@ -384,13 +384,13 @@ class Session(abc.ABC):
         full_attribute_info: bool = False,
     ) -> AttributeBase:
         """
-        Request information associated with a Mesh :ref:`attribute <mesh_attribute>`
-        from the Mesh model.
+        Request information associated with a Mesh attribute from the
+        Mesh `model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`_.
 
         Args:
             target: Mesh attribute to be read. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
@@ -405,12 +405,13 @@ class Session(abc.ABC):
         full_attribute_info: bool = False,
     ) -> TimeseriesAttribute:
         """
-        Request information associated with a Mesh :ref:`time series attribute <mesh_attribute>` from the Mesh model.
+        Request information associated with a Mesh attribute from the
+        Mesh `model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`_.
 
         Args:
             target: Mesh time series attribute to be read. It could be a Universal Unique
-                Identifier or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+                Identifier or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attribute will be returned, otherwise only name, path, ID and value(s).
 
@@ -428,14 +429,15 @@ class Session(abc.ABC):
         full_attribute_info: bool = False,
     ) -> List[AttributeBase]:
         """
-        Use the :doc:`Mesh search language <mesh_search>` to find Mesh
-        :ref:`attributes <mesh_attribute>` in the Mesh model.
+        Use the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__
+        to find Mesh attributes in the Mesh
+        `model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`_.
 
         Args:
             target: Start searching at the target object. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-            query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
+            query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -452,14 +454,15 @@ class Session(abc.ABC):
         full_attribute_info: bool = False,
     ) -> List[TimeseriesAttribute]:
         """
-        Use the :doc:`Mesh search language <mesh_search>` to find Mesh
-        :ref:`time series attributes <mesh_attribute>` in the Mesh model.
+        Use the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__
+        to find Mesh time series attributes in the Mesh
+        `model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`_.
 
         Args:
             target: Start searching at the target object. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
-            query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
+            query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
             full_attribute_info: If set then all information (e.g. description, value type, etc.)
                 of attributes owned by the object(s) will be returned, otherwise only name,
                 path, ID and value(s).
@@ -485,8 +488,8 @@ class Session(abc.ABC):
 
         Args:
             target: Mesh attribute to be updated. It could be a Universal Unique Identifier
-                or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+                or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             value: New simple attribute value. It can be one of following simple types:
                 bool, float, int, str, datetime or a list of simple types.
 
@@ -506,8 +509,8 @@ class Session(abc.ABC):
 
         Args:
             target: Mesh time series attribute to be updated. It could be a Universal Unique
-                Identifier or a path in the :ref:`Mesh model <mesh_model>`. See:
-                :ref:`objects and attributes paths <mesh_object_attribute_path>`.
+                Identifier or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             new_local_expression: New local expression.
             new_timeseries_resource_key: Time series key of a new time series resource
                 (physical or virtual) to connect to the time series attribute. To disconnect
@@ -531,8 +534,8 @@ class Session(abc.ABC):
         Args:
             target: Mesh one-to-one or one-to-many link relation (non-versioned) attribute
                 to be updated. It could be a Universal Unique Identifier or a path in the
-                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
-                <mesh_object_attribute_path>`.
+                `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             new_target_object_ids: List of objects the link relation will point to. For
                 one-to-one link relation this must contain zero or one `new_target_object_ids`.
                 If there is no `new_target_object_ids` provided then currently existing target
@@ -549,7 +552,7 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
 
         See Also:
-            :doc:`mesh_relations`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__
         """
 
     @abc.abstractmethod
@@ -567,8 +570,8 @@ class Session(abc.ABC):
         Args:
             target: Mesh one-to-one versioned link relation attribute to be updated.
                 It could be a Universal Unique Identifier or a path in the
-                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
-                <mesh_object_attribute_path>`.
+                `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             start_time: the (inclusive) start of the edit interval.
             end_time: the (exclusive) end of the edit interval.
             new_versions: the list of link relation versions to insert.
@@ -578,7 +581,7 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
 
         See Also:
-            :doc:`mesh_relations`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__
         """
 
     @abc.abstractmethod
@@ -594,8 +597,8 @@ class Session(abc.ABC):
         Args:
             target: Mesh one-to-many versioned link relation attribute to be updated.
                 It could be a Universal Unique Identifier or a path in the
-                :ref:`Mesh model <mesh_model>`. See: :ref:`objects and attributes paths
-                <mesh_object_attribute_path>`.
+                `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             new_entries: the list of lists of link relation versions to insert.
                 The first level list represents entries. Each entry can have multiple
                 link relation versions.
@@ -604,7 +607,7 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
 
         See Also:
-            :doc:`mesh_relations`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__
         """
 
     @abc.abstractmethod
@@ -690,13 +693,13 @@ class Session(abc.ABC):
         start_time: datetime,
         end_time: datetime,
     ) -> ForecastFunctions:
-        """Access to :ref:`mesh_functions:Forecast` functions.
+        """Access to forecast functions.
 
         Args:
             target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
-                a path in the :ref:`Mesh model <mesh_model>`.
+                a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -711,13 +714,13 @@ class Session(abc.ABC):
         start_time: datetime,
         end_time: datetime,
     ) -> HistoryFunctions:
-        """Access to :ref:`mesh_functions:History` functions.
+        """Access to history functions.
 
         Args:
             target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
-                a path in the :ref:`Mesh model <mesh_model>`.
+                a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -732,13 +735,13 @@ class Session(abc.ABC):
         start_time: datetime,
         end_time: datetime,
     ) -> StatisticalFunctions:
-        """Access to :ref:`mesh_functions:Statistical` functions.
+        """Access to statistical functions.
 
         Args:
             target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
-                a path in the :ref:`Mesh model <mesh_model>`.
+                a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -753,13 +756,13 @@ class Session(abc.ABC):
         start_time: datetime,
         end_time: datetime,
     ) -> TransformFunctions:
-        """Access to :ref:`mesh_functions:Transform` functions.
+        """Access to transform functions.
 
         Args:
             target: Mesh object, attribute, virtual or physical time series the
                 calculation expression will be evaluated relative to.
                 It could be a time series key, Universal Unique Identifier or
-                a path in the :ref:`Mesh model <mesh_model>`.
+                a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
             start_time: the start date and time of the time series interval
             end_time: the end date and time of the time series interval
 
@@ -808,7 +811,7 @@ class Session(abc.ABC):
             TypeError: on invalid arguments (see above).
 
         See Also:
-            :doc:`mesh_xy_sets`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/>`__
         """
 
     @abc.abstractmethod
@@ -848,7 +851,7 @@ class Session(abc.ABC):
             TypeError: on invalid arguments (see above).
 
         See Also:
-            :doc:`mesh_xy_sets`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/>`__
         """
 
     @abc.abstractmethod
@@ -881,7 +884,7 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
 
         See Also:
-            :doc:`mesh_rating_curve`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/>`__
         """
 
     @abc.abstractmethod
@@ -909,7 +912,7 @@ class Session(abc.ABC):
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
 
         See Also:
-            :doc:`mesh_rating_curve`
+            `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/>`__
         """
 
     @abc.abstractmethod

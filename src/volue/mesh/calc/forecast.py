@@ -2,7 +2,8 @@
 Mesh calculation forecast functions
 *************************************
 
-For more information see :ref:`mesh_functions:forecast`.
+For more information see
+`Mesh functions <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/>`__.
 """
 
 from abc import ABC, abstractmethod
@@ -26,7 +27,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
         Creates an expression for `get_all_forecasts` using a search query.
 
         Args:
-            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
 
         Returns:
             Mesh calculation expression.
@@ -51,7 +52,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             forecast_start_min: Forecast must start after this time.
             forecast_start_max: Forecast must start before this time.
             available_at_timepoint: Forecast that is valid at the given timestamp.
-            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`_
 
         Returns:
             Mesh calculation expression.
@@ -111,7 +112,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             The resulting objects from the `search_query` will be used in the `get_all_forecasts` function, if `search_query` is not set the `target` will be used.
 
         Args:
-            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
 
         Returns:
             An array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.
@@ -166,7 +167,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
             forecast_start_min: Forecast must start after this time.
             forecast_start_max: Forecast must start before this time.
             available_at_timepoint: Forecast that is valid at the given timestamp.
-            search_query: A search formulated using the :doc:`Mesh search language <mesh_search>`.
+            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
 
         See Also:
             :ref:`mesh_client:Date times and time zones`
