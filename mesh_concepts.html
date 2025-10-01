@@ -46,7 +46,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Mesh Availability" href="mesh_availability.html" />
+    <link rel="next" title="Availability" href="mesh_availability.html" />
     <link rel="prev" title="An introduction to Mesh" href="introduction_to_mesh.html" /> 
 </head>
 
@@ -95,15 +95,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh concepts</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mesh_availability.html">Mesh Availability</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_modelling.html">Mesh object modelling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries.html">Time series</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_relations.html">Relations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_xy_sets.html">XY-sets in Mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Mesh session</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_availability.html">Availability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Sessions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
@@ -194,62 +187,12 @@
             
   <div class="section" id="mesh-concepts">
 <h1>Mesh concepts<a class="headerlink" href="#mesh-concepts" title="Permalink to this heading">¶</a></h1>
+<p>Please refer to <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/">Mesh documentation</a>
+for a general description of Mesh concepts. Below are listed concepts with additional Mesh Python SDK specific information:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="mesh_availability.html">Mesh Availability</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_availability.html#types-of-availability-events">Types of Availability Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_availability.html#availability-recurrence">Availability Recurrence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_availability.html#instances">Instances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_availability.html#categories-and-statuses">Categories and Statuses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_availability.html#common-use-cases">Common Use Cases</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_modelling.html">Mesh object modelling</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#model-definition">Model definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#object-definition">Object definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#attribute-definition">Attribute definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#model">Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#object">Object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#attribute">Attribute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_modelling.html#objects-and-attributes-paths">Objects and attributes paths</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries.html">Time series</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#mesh-time-series">Mesh time series</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#resolution">Resolution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#types">Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#expressions">Expressions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_search.html">Mesh search language</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_search.html#query-syntax">Query syntax</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_search.html#combining-multiple-search-operations">Combining multiple search operations</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_functions.html">Mesh functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#definition-of-a-mesh-function">Definition of a Mesh function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#forecast">Forecast</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#history">History</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#statistical">Statistical</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_functions.html#transform">Transform</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_relations.html">Relations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_relations.html#ownership-relation">Ownership relation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_relations.html#link-relation">Link relation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_xy_sets.html">XY-sets in Mesh</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_xy_sets.html#xy-curves">XY-curves</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_xy_sets.html#xy-sets">XY-sets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mesh_xy_sets.html#accessing-xy-set-values-using-the-python-sdk">Accessing XY-set values using the Python SDK</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mesh_session.html">Mesh session</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="mesh_session.html#timeout">Timeout</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_availability.html">Availability</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mesh_session.html">Sessions</a></li>
 </ul>
 </div>
 </div>
@@ -260,7 +203,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mesh_availability.html" class="btn btn-neutral float-right" title="Mesh Availability" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mesh_availability.html" class="btn btn-neutral float-right" title="Availability" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="introduction_to_mesh.html" class="btn btn-neutral float-left" title="An introduction to Mesh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
@@ -268,7 +211,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2024, Volue AS.
+        &#169; Copyright 2025, Volue AS.
 
     </p>
   </div>

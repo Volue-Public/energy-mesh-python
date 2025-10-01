@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Mesh Python SDK" href="mesh_client.html" />
-    <link rel="prev" title="Mesh session" href="mesh_session.html" /> 
+    <link rel="prev" title="Sessions" href="mesh_session.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,7 +96,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh server</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Mesh session</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Sessions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_client.html">Mesh Python SDK</a></li>
@@ -189,7 +189,7 @@
 <p>The Volue Mesh server is an application built to handle incoming requests from clients. One way of handling such requests is by <a class="reference external" href="https://en.wikipedia.org/wiki/Remote_procedure_call">remote procedure calls</a>. The Mesh Python SDK is able to connect to the Mesh server using <a class="reference external" href="https://grpc.io/">gRPC</a>. The server has to be configured to listen for this kind of communication. To be able to connect you need the Mesh server’s IP address and the port open for RPC calls.</p>
 <p>Communication with the server can either be insecure or secured by encryption. The Mesh server supports <a class="reference external" href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS (transport layer security)</a> which is a protocol designed to provide communication’s security over a computer network through the use of certificates.</p>
 <p>Access to the server can be further secured by requiring users to <a class="reference internal" href="authentication.html"><span class="doc">authenticate</span></a> with an <a class="reference external" href="https://en.wikipedia.org/wiki/Active_Directory">active directory (AD)</a> service. The user will then be authorized to access data based on the permissions set in AD. Authorized user will get an access token from Mesh server. This requires that communication with the server is secured using encryption as explained above.</p>
-<p>When connected, authenticated and authorized the user will be able to create a <a class="reference internal" href="mesh_session.html"><span class="doc">Mesh session</span></a> within the Mesh server. A session is a temporal workspace and should be created and closed.</p>
+<p>When connected, authenticated and authorized the user will be able to create a <a class="reference internal" href="mesh_session.html"><span class="doc">Sessions</span></a> within the Mesh server. A session is a temporal workspace and should be created and closed.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
@@ -201,14 +201,14 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="mesh_client.html" class="btn btn-neutral float-right" title="Mesh Python SDK" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="mesh_session.html" class="btn btn-neutral float-left" title="Mesh session" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mesh_session.html" class="btn btn-neutral float-left" title="Sessions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2024, Volue AS.
+        &#169; Copyright 2025, Volue AS.
 
     </p>
   </div>

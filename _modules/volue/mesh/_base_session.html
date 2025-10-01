@@ -383,7 +383,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh attribute, virtual or physical time series. It could</span>
 <span class="sd">                be a time series key, Universal Unique Identifier or a path in</span>
-<span class="sd">                the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">            start_time: the start date and time of the time series interval</span>
 <span class="sd">            end_time: the end date and time of the time series interval</span>
 
@@ -415,7 +415,7 @@
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List all :ref:`Mesh models &lt;mesh_model&gt;`.</span>
+<span class="sd">        List all `Mesh models &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">        Model is a root object that does not have an owner.</span>
 
 <span class="sd">        Raises:</span>
@@ -435,8 +435,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object to be read. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            full_attribute_info: If set then all information (e.g. description, value type, etc.)</span>
 <span class="sd">                of attributes owned by the object will be returned, otherwise only name,</span>
 <span class="sd">                path, ID and value(s).</span>
@@ -456,14 +456,14 @@
         <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Use the :doc:`Mesh search language &lt;mesh_search&gt;` to find Mesh objects</span>
-<span class="sd">        in the Mesh model.</span>
+<span class="sd">        Use the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__</span>
+<span class="sd">        to find Mesh objects in the Mesh model.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Start searching at the target object. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-<span class="sd">            query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
+<span class="sd">            query: A search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 <span class="sd">            full_attribute_info: If set then all information (e.g. description, value type, etc.)</span>
 <span class="sd">                of attributes owned by the object(s) will be returned, otherwise only name,</span>
 <span class="sd">                path, ID and value(s).</span>
@@ -492,7 +492,7 @@
 <span class="sd">                or one-to-many (object value type = &quot;ElementCollectionAttributeDefinition&quot;)</span>
 <span class="sd">                ownership relation attribute.</span>
 <span class="sd">                It could be a Universal Unique Identifier or a path in the</span>
-<span class="sd">                :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">            name: Name for the new object to create.</span>
 
 <span class="sd">        Returns:</span>
@@ -518,15 +518,15 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object to be updated. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_name: New name for the object.</span>
 <span class="sd">            new_owner_attribute: New owner of the object. It must be a</span>
 <span class="sd">                one-to-one (object value type = &quot;ElementAttributeDefinition&quot;)</span>
 <span class="sd">                or one-to-many (object value type = &quot;ElementCollectionAttributeDefinition&quot;)</span>
 <span class="sd">                ownership relation attribute.</span>
 <span class="sd">                It could be a Universal Unique Identifier or a path in the</span>
-<span class="sd">                :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
@@ -541,8 +541,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object to be deleted. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            recursive_delete: If set then all child objects</span>
 <span class="sd">                (owned by the object to be deleted) in the model will also be deleted.</span>
 
@@ -557,13 +557,13 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeBase</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request information associated with a Mesh :ref:`attribute &lt;mesh_attribute&gt;`</span>
-<span class="sd">        from the Mesh model.</span>
+<span class="sd">        Request information associated with a Mesh attribute from the</span>
+<span class="sd">        Mesh `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh attribute to be read. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            full_attribute_info: If set then all information (e.g. description, value type, etc.)</span>
 <span class="sd">                of attribute will be returned, otherwise only name, path, ID and value(s).</span>
 
@@ -578,12 +578,13 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesAttribute</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request information associated with a Mesh :ref:`time series attribute &lt;mesh_attribute&gt;` from the Mesh model.</span>
+<span class="sd">        Request information associated with a Mesh attribute from the</span>
+<span class="sd">        Mesh `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh time series attribute to be read. It could be a Universal Unique</span>
-<span class="sd">                Identifier or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                Identifier or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            full_attribute_info: If set then all information (e.g. description, value type, etc.)</span>
 <span class="sd">                of attribute will be returned, otherwise only name, path, ID and value(s).</span>
 
@@ -601,14 +602,15 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeBase</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Use the :doc:`Mesh search language &lt;mesh_search&gt;` to find Mesh</span>
-<span class="sd">        :ref:`attributes &lt;mesh_attribute&gt;` in the Mesh model.</span>
+<span class="sd">        Use the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__</span>
+<span class="sd">        to find Mesh attributes in the Mesh</span>
+<span class="sd">        `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Start searching at the target object. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-<span class="sd">            query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
+<span class="sd">            query: A search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 <span class="sd">            full_attribute_info: If set then all information (e.g. description, value type, etc.)</span>
 <span class="sd">                of attributes owned by the object(s) will be returned, otherwise only name,</span>
 <span class="sd">                path, ID and value(s).</span>
@@ -625,14 +627,15 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Use the :doc:`Mesh search language &lt;mesh_search&gt;` to find Mesh</span>
-<span class="sd">        :ref:`time series attributes &lt;mesh_attribute&gt;` in the Mesh model.</span>
+<span class="sd">        Use the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__</span>
+<span class="sd">        to find Mesh time series attributes in the Mesh</span>
+<span class="sd">        `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Start searching at the target object. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
-<span class="sd">            query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
+<span class="sd">            query: A search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 <span class="sd">            full_attribute_info: If set then all information (e.g. description, value type, etc.)</span>
 <span class="sd">                of attributes owned by the object(s) will be returned, otherwise only name,</span>
 <span class="sd">                path, ID and value(s).</span>
@@ -658,8 +661,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh attribute to be updated. It could be a Universal Unique Identifier</span>
-<span class="sd">                or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            value: New simple attribute value. It can be one of following simple types:</span>
 <span class="sd">                bool, float, int, str, datetime or a list of simple types.</span>
 
@@ -679,8 +682,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh time series attribute to be updated. It could be a Universal Unique</span>
-<span class="sd">                Identifier or a path in the :ref:`Mesh model &lt;mesh_model&gt;`. See:</span>
-<span class="sd">                :ref:`objects and attributes paths &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                Identifier or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_local_expression: New local expression.</span>
 <span class="sd">            new_timeseries_resource_key: Time series key of a new time series resource</span>
 <span class="sd">                (physical or virtual) to connect to the time series attribute. To disconnect</span>
@@ -704,8 +707,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh one-to-one or one-to-many link relation (non-versioned) attribute</span>
 <span class="sd">                to be updated. It could be a Universal Unique Identifier or a path in the</span>
-<span class="sd">                :ref:`Mesh model &lt;mesh_model&gt;`. See: :ref:`objects and attributes paths</span>
-<span class="sd">                &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_target_object_ids: List of objects the link relation will point to. For</span>
 <span class="sd">                one-to-one link relation this must contain zero or one `new_target_object_ids`.</span>
 <span class="sd">                If there is no `new_target_object_ids` provided then currently existing target</span>
@@ -722,7 +725,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_relations`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -740,8 +743,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh one-to-one versioned link relation attribute to be updated.</span>
 <span class="sd">                It could be a Universal Unique Identifier or a path in the</span>
-<span class="sd">                :ref:`Mesh model &lt;mesh_model&gt;`. See: :ref:`objects and attributes paths</span>
-<span class="sd">                &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            start_time: the (inclusive) start of the edit interval.</span>
 <span class="sd">            end_time: the (exclusive) end of the edit interval.</span>
 <span class="sd">            new_versions: the list of link relation versions to insert.</span>
@@ -751,7 +754,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_relations`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -767,8 +770,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh one-to-many versioned link relation attribute to be updated.</span>
 <span class="sd">                It could be a Universal Unique Identifier or a path in the</span>
-<span class="sd">                :ref:`Mesh model &lt;mesh_model&gt;`. See: :ref:`objects and attributes paths</span>
-<span class="sd">                &lt;mesh_object_attribute_path&gt;`.</span>
+<span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_entries: the list of lists of link relation versions to insert.</span>
 <span class="sd">                The first level list represents entries. Each entry can have multiple</span>
 <span class="sd">                link relation versions.</span>
@@ -777,7 +780,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_relations`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -863,13 +866,13 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForecastFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:Forecast` functions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to forecast functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
 <span class="sd">                calculation expression will be evaluated relative to.</span>
 <span class="sd">                It could be a time series key, Universal Unique Identifier or</span>
-<span class="sd">                a path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">            start_time: the start date and time of the time series interval</span>
 <span class="sd">            end_time: the end date and time of the time series interval</span>
 
@@ -884,13 +887,13 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:History` functions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to history functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
 <span class="sd">                calculation expression will be evaluated relative to.</span>
 <span class="sd">                It could be a time series key, Universal Unique Identifier or</span>
-<span class="sd">                a path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">            start_time: the start date and time of the time series interval</span>
 <span class="sd">            end_time: the end date and time of the time series interval</span>
 
@@ -905,13 +908,13 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticalFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:Statistical` functions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to statistical functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
 <span class="sd">                calculation expression will be evaluated relative to.</span>
 <span class="sd">                It could be a time series key, Universal Unique Identifier or</span>
-<span class="sd">                a path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">            start_time: the start date and time of the time series interval</span>
 <span class="sd">            end_time: the end date and time of the time series interval</span>
 
@@ -926,13 +929,13 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to :ref:`mesh_functions:Transform` functions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to transform functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
 <span class="sd">                calculation expression will be evaluated relative to.</span>
 <span class="sd">                It could be a time series key, Universal Unique Identifier or</span>
-<span class="sd">                a path in the :ref:`Mesh model &lt;mesh_model&gt;`.</span>
+<span class="sd">                a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">            start_time: the start date and time of the time series interval</span>
 <span class="sd">            end_time: the end date and time of the time series interval</span>
 
@@ -981,7 +984,7 @@
 <span class="sd">            TypeError: on invalid arguments (see above).</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_xy_sets`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1021,7 +1024,7 @@
 <span class="sd">            TypeError: on invalid arguments (see above).</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_xy_sets`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1054,7 +1057,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_rating_curve`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1082,7 +1085,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
 
 <span class="sd">        See Also:</span>
-<span class="sd">            :doc:`mesh_rating_curve`</span>
+<span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/&gt;`__</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Session.run_simulation"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.run_simulation">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1885,7 +1888,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2024, Volue AS.
+        &#169; Copyright 2025, Volue AS.
 
     </p>
   </div>

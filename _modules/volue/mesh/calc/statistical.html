@@ -175,7 +175,8 @@
 <span class="sd">Mesh calculation statistical functions.</span>
 <span class="sd">*****************************************</span>
 
-<span class="sd">For more information see :ref:`mesh_functions:statistical`.</span>
+<span class="sd">For more information see</span>
+<span class="sd">`Mesh functions &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/&gt;`__.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -204,7 +205,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            input_type_symbol: Either `t` (for returning a number) or `T` (for returning a time series).</span>
-<span class="sd">            search_query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
+<span class="sd">            search_query: A search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Mesh calculation expression.</span>
@@ -225,7 +226,7 @@
 <span class="sd">        The resulting time series is equal to the sum of the values for each time interval in the expression.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            search_query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
+<span class="sd">            search_query: A search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `target` will be used.</span>
@@ -242,7 +243,7 @@
 <span class="sd">        It returns a number.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            search_query: A search formulated using the :doc:`Mesh search language &lt;mesh_search&gt;`.</span>
+<span class="sd">            search_query: A search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function, if `search_query` is not set the `target` will be used.</span>
@@ -253,17 +254,17 @@
         <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="StatisticalFunctions"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StatisticalFunctions</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
+<div class="viewcode-block" id="StatisticalFunctions"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.statistical.StatisticalFunctions">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StatisticalFunctions</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run synchronously&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="StatisticalFunctions.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StatisticalFunctions.sum"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.statistical.StatisticalFunctions.sum">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span>
             <span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span>
         <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StatisticalFunctions.sum_single_timeseries"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctions.sum_single_timeseries">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StatisticalFunctions.sum_single_timeseries"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.statistical.StatisticalFunctions.sum_single_timeseries">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span>
             <span class="n">_SINGLE_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span>
         <span class="p">)</span>
@@ -271,17 +272,17 @@
         <span class="k">return</span> <span class="n">_parse_single_float_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="StatisticalFunctionsAsync"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StatisticalFunctionsAsync</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
+<div class="viewcode-block" id="StatisticalFunctionsAsync"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">StatisticalFunctionsAsync</span><span class="p">(</span><span class="n">_StatisticalFunctionsBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for statistical functions that should be run asynchronously&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="StatisticalFunctionsAsync.sum"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">[docs]</a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StatisticalFunctionsAsync.sum"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum">[docs]</a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span>
             <span class="n">_ARRAY_OF_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span>
         <span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">run_async</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_parse_single_timeseries_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="StatisticalFunctionsAsync.sum_single_timeseries"><a class="viewcode-back" href="../../../../mesh_functions.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum_single_timeseries">[docs]</a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="StatisticalFunctionsAsync.sum_single_timeseries"><a class="viewcode-back" href="../../../../api.html#volue.mesh.calc.statistical.StatisticalFunctionsAsync.sum_single_timeseries">[docs]</a>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">sum_single_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_query</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_sum_expression</span><span class="p">(</span>
             <span class="n">_SINGLE_TIMESERIES_CALC_SYMBOL</span><span class="p">,</span> <span class="n">search_query</span>
         <span class="p">)</span>
@@ -298,7 +299,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2024, Volue AS.
+        &#169; Copyright 2025, Volue AS.
 
     </p>
   </div>

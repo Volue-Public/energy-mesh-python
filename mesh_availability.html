@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Mesh Availability &mdash; volue.mesh 1.14.0-dev documentation</title>
+  <title>Availability &mdash; volue.mesh 1.14.0-dev documentation</title>
   
 
   
@@ -46,7 +46,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Mesh object modelling" href="mesh_modelling.html" />
+    <link rel="next" title="Sessions" href="mesh_session.html" />
     <link rel="prev" title="Mesh concepts" href="mesh_concepts.html" /> 
 </head>
 
@@ -95,22 +95,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Mesh Availability</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#types-of-availability-events">Types of Availability Events</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#availability-recurrence">Availability Recurrence</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#instances">Instances</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#categories-and-statuses">Categories and Statuses</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#common-use-cases">Common Use Cases</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_modelling.html">Mesh object modelling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries.html">Time series</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_search.html">Mesh search language</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_functions.html">Mesh functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_relations.html">Relations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_xy_sets.html">XY-sets in Mesh</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_rating_curve.html">Rating curves</a></li>
-<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Mesh session</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Availability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Sessions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
@@ -182,7 +168,7 @@
         
           <li><a href="mesh_concepts.html">Mesh concepts</a> &raquo;</li>
         
-      <li>Mesh Availability</li>
+      <li>Availability</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -201,67 +187,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="mesh-availability">
-<h1>Mesh Availability<a class="headerlink" href="#mesh-availability" title="Permalink to this heading">¶</a></h1>
-<p>A Mesh availability event provides information about periods during which Mesh
-objects are unavailable or partially available. The availability functionality
-helps track and model the operational status of assets throughout time.</p>
-<div class="section" id="types-of-availability-events">
-<h2>Types of Availability Events<a class="headerlink" href="#types-of-availability-events" title="Permalink to this heading">¶</a></h2>
-<p>Mesh Python SDK supports three types of availability events:</p>
-<ul class="simple">
-<li><p><strong>Revision</strong> - Represents periods when an object is completely unavailable (e.g., during maintenance or outage)</p></li>
-<li><p><strong>Restriction</strong> - Represents periods when an object is partially available with reduced capacity</p></li>
-</ul>
-</div>
-<div class="section" id="availability-recurrence">
-<h2>Availability Recurrence<a class="headerlink" href="#availability-recurrence" title="Permalink to this heading">¶</a></h2>
-<p>Availability events can be defined with various recurrence patterns:</p>
-<ul class="simple">
-<li><p><strong>Single occurrence</strong> - One-time events with a specific start and end time</p></li>
-<li><p><strong>Daily</strong> - Repeating pattern on a daily basis</p></li>
-<li><p><strong>Weekly</strong> - Repeating pattern on a weekly basis</p></li>
-<li><p><strong>Monthly</strong> - Repeating pattern on a monthly basis</p></li>
-<li><p><strong>Yearly</strong> - Repeating pattern on a yearly basis</p></li>
-</ul>
-<p>Each recurrence pattern allows specifying:</p>
-<ul class="simple">
-<li><p>How often the pattern repeats (e.g., every 2 weeks)</p></li>
-<li><p>When the pattern ends (if applicable)</p></li>
-<li><p>The time interval for each occurrence</p></li>
-</ul>
-</div>
-<div class="section" id="instances">
-<h2>Instances<a class="headerlink" href="#instances" title="Permalink to this heading">¶</a></h2>
-<p>An <strong>instance</strong> is a single occurrence of a revision or restriction according
-to its recurrence pattern. When analyzing availability, you can search for
-all instances that occur within a specified time period.</p>
-<p>For example, a weekly revision occurring every Monday for two months would
-have approximately eight instances, one for each Monday in the specified
-period.</p>
-</div>
-<div class="section" id="categories-and-statuses">
-<h2>Categories and Statuses<a class="headerlink" href="#categories-and-statuses" title="Permalink to this heading">¶</a></h2>
-<p>Availability events can have:</p>
-<ul class="simple">
-<li><p><strong>Status</strong> - Indicates the current state of the event (e.g., planned, confirmed, cancelled)</p></li>
-<li><p><strong>Category</strong> - Classifies the type of event (e.g., maintenance, external constraints)</p></li>
-<li><p><strong>Reason</strong> - Text description explaining why the event exists</p></li>
-</ul>
-</div>
-<div class="section" id="common-use-cases">
-<h2>Common Use Cases<a class="headerlink" href="#common-use-cases" title="Permalink to this heading">¶</a></h2>
-<p>The availability functionality can be used for:</p>
-<ul class="simple">
-<li><p><strong>Maintenance Planning</strong> - Scheduling and tracking planned downtime periods</p></li>
-<li><p><strong>Capacity Management</strong> - Modeling partial capacity constraints</p></li>
-<li><p><strong>Outage Tracking</strong> - Documenting unexpected unavailability periods</p></li>
-<li><p><strong>Resource Allocation</strong> - Planning operations around known availability constraints</p></li>
-</ul>
-<p>When working with availability data, you can search for events affecting specific
-objects, find all instances occurring within a time period, and incorporate
-availability information into operational planning and analysis.</p>
-<p>The following example shows different ways of working with availability.</p>
+  <div class="section" id="availability">
+<h1>Availability<a class="headerlink" href="#availability" title="Permalink to this heading">¶</a></h1>
+<p>Please refer to <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/availability/">Mesh documentation</a>
+for a general description of availability concept in Mesh.</p>
+<p>The following example shows different ways of working with availability in Mesh Python SDK.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">dateutil</span>
@@ -663,7 +593,6 @@ availability information into operational planning and analysis.</p>
 </div>
 <p>Detailed API specification can be found here: <a class="reference internal" href="api.html#volue-mesh-availability"><span class="std std-ref">volue.mesh.availability</span></a></p>
 </div>
-</div>
 
 
            </div>
@@ -671,7 +600,7 @@ availability information into operational planning and analysis.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="mesh_modelling.html" class="btn btn-neutral float-right" title="Mesh object modelling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="mesh_session.html" class="btn btn-neutral float-right" title="Sessions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="mesh_concepts.html" class="btn btn-neutral float-left" title="Mesh concepts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
@@ -679,7 +608,7 @@ availability information into operational planning and analysis.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2024, Volue AS.
+        &#169; Copyright 2025, Volue AS.
 
     </p>
   </div>

@@ -467,7 +467,7 @@ one-to-one (object value type = “ElementAttributeDefinition”)
 or one-to-many (object value type = “ElementCollectionAttributeDefinition”)
 ownership relation attribute.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>name</strong> – Name for the new object to create.</p></li>
 </ul>
 </dd>
@@ -522,8 +522,8 @@ It must match an existing unit in Mesh.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object to be deleted. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a></p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>recursive_delete</strong> – If set then all child objects
 (owned by the object to be deleted) in the model will also be deleted.</p></li>
 </ul>
@@ -537,14 +537,14 @@ or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-mo
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.forecast_functions">
 <span class="sig-name descname"><span class="pre">forecast_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.forecast.ForecastFunctions" title="volue.mesh.calc.forecast.ForecastFunctions"><span class="pre">ForecastFunctions</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.forecast_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.forecast_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#forecast"><span class="std std-ref">Forecast</span></a> functions.</p>
+<dd><p>Access to forecast functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -558,14 +558,14 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.get_attribute">
 <span class="sig-name descname"><span class="pre">get_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.get_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.get_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request information associated with a Mesh <a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">attribute</span></a>
-from the Mesh model.</p>
+<dd><p>Request information associated with a Mesh attribute from the
+Mesh <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh attribute to be read. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attribute will be returned, otherwise only name, path, ID and value(s).</p></li>
 </ul>
@@ -612,8 +612,8 @@ Specify either <cite>object_id</cite> or <cite>object_path</cite> to a Mesh obje
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object to be read. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -656,20 +656,21 @@ curve version that started its validity period before the interval.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_rating_curve.html"><span class="doc">Rating curves</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.get_timeseries_attribute">
 <span class="sig-name descname"><span class="pre">get_timeseries_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.TimeseriesAttribute" title="volue.mesh._attribute.TimeseriesAttribute"><span class="pre">TimeseriesAttribute</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.get_timeseries_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.get_timeseries_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request information associated with a Mesh <a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">time series attribute</span></a> from the Mesh model.</p>
+<dd><p>Request information associated with a Mesh attribute from the
+Mesh <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh time series attribute to be read. It could be a Universal Unique
-Identifier or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+Identifier or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attribute will be returned, otherwise only name, path, ID and value(s).</p></li>
 </ul>
@@ -738,21 +739,21 @@ last XY set that started its validity period before the interval.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.history_functions">
 <span class="sig-name descname"><span class="pre">history_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.history.HistoryFunctions" title="volue.mesh.calc.history.HistoryFunctions"><span class="pre">HistoryFunctions</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.history_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.history_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#history"><span class="std std-ref">History</span></a> functions.</p>
+<dd><p>Access to history functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -766,7 +767,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.list_models">
 <span class="sig-name descname"><span class="pre">list_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.list_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.list_models" title="Permalink to this definition">¶</a></dt>
-<dd><p>List all <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh models</span></a>.
+<dd><p>List all <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh models</a>.
 Model is a root object that does not have an owner.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -802,7 +803,7 @@ See: <a class="reference internal" href="mesh_client.html#grpc-communication"><s
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh attribute, virtual or physical time series. It could
 be a time series key, Universal Unique Identifier or a path in
-the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -920,15 +921,16 @@ log messages from the server.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.search_for_attributes">
 <span class="sig-name descname"><span class="pre">search_for_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.search_for_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.search_for_attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a> to find Mesh
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">attributes</span></a> in the Mesh model.</p>
+<dd><p>Use the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>
+to find Mesh attributes in the Mesh
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Start searching at the target object. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
-<li><p><strong>query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
+<li><p><strong>query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object(s) will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -943,15 +945,15 @@ path, ID and value(s).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.search_for_objects">
 <span class="sig-name descname"><span class="pre">search_for_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.AttributesFilter" title="volue.mesh._common.AttributesFilter"><span class="pre">AttributesFilter</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.search_for_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.search_for_objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a> to find Mesh objects
-in the Mesh model.</p>
+<dd><p>Use the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>
+to find Mesh objects in the Mesh model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Start searching at the target object. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
-<li><p><strong>query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
+<li><p><strong>query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object(s) will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -968,15 +970,16 @@ object(s) should be returned. By default all attributes are returned.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.search_for_timeseries_attributes">
 <span class="sig-name descname"><span class="pre">search_for_timeseries_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.TimeseriesAttribute" title="volue.mesh._attribute.TimeseriesAttribute"><span class="pre">TimeseriesAttribute</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.search_for_timeseries_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.search_for_timeseries_attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a> to find Mesh
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">time series attributes</span></a> in the Mesh model.</p>
+<dd><p>Use the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>
+to find Mesh time series attributes in the Mesh
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Start searching at the target object. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
-<li><p><strong>query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
+<li><p><strong>query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object(s) will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -991,14 +994,14 @@ path, ID and value(s).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.statistical_functions">
 <span class="sig-name descname"><span class="pre">statistical_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.statistical.StatisticalFunctions" title="volue.mesh.calc.statistical.StatisticalFunctions"><span class="pre">StatisticalFunctions</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.statistical_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.statistical_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#statistical"><span class="std std-ref">Statistical</span></a> functions.</p>
+<dd><p>Access to statistical functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -1012,14 +1015,14 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.Connection.Session.transform_functions">
 <span class="sig-name descname"><span class="pre">transform_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.transform.TransformFunctions" title="volue.mesh.calc.transform.TransformFunctions"><span class="pre">TransformFunctions</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/_connection.html#Connection.Session.transform_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Connection.Session.transform_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#transform"><span class="std std-ref">Transform</span></a> functions.</p>
+<dd><p>Access to transform functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -1039,7 +1042,8 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh one-to-one or one-to-many link relation (non-versioned) attribute
 to be updated. It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_target_object_ids</strong> – List of objects the link relation will point to. For
 one-to-one link relation this must contain zero or one <cite>new_target_object_ids</cite>.
 If there is no <cite>new_target_object_ids</cite> provided then currently existing target
@@ -1059,7 +1063,7 @@ For one-to-one link relation attribute this must set to <cite>False</cite>.</p><
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -1074,15 +1078,15 @@ relation attribute. E.g.: for <cite>SomePowerPlant1</cite> object with path:
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object to be updated. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a></p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_name</strong> – New name for the object.</p></li>
 <li><p><strong>new_owner_attribute</strong> – New owner of the object. It must be a
 one-to-one (object value type = “ElementAttributeDefinition”)
 or one-to-many (object value type = “ElementCollectionAttributeDefinition”)
 ownership relation attribute.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -1114,7 +1118,7 @@ and sorted by <cite>valid_from_time</cite>.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_rating_curve.html"><span class="doc">Rating curves</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -1132,8 +1136,8 @@ Simple attribute is a singular type or collection of the following types:
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh attribute to be updated. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>value</strong> – New simple attribute value. It can be one of following simple types:
 bool, float, int, str, datetime or a list of simple types.</p></li>
 </ul>
@@ -1152,8 +1156,8 @@ bool, float, int, str, datetime or a list of simple types.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh time series attribute to be updated. It could be a Universal Unique
-Identifier or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+Identifier or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_local_expression</strong> – New local expression.</p></li>
 <li><p><strong>new_timeseries_resource_key</strong> – Time series key of a new time series resource
 (physical or virtual) to connect to the time series attribute. To disconnect
@@ -1202,7 +1206,8 @@ the Mesh model.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh one-to-many versioned link relation attribute to be updated.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_entries</strong> – the list of lists of link relation versions to insert.
 The first level list represents entries. Each entry can have multiple
 link relation versions.</p></li>
@@ -1214,7 +1219,7 @@ link relation versions.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -1228,7 +1233,8 @@ the Mesh model.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh one-to-one versioned link relation attribute to be updated.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>start_time</strong> – the (inclusive) start of the edit interval.</p></li>
 <li><p><strong>end_time</strong> – the (exclusive) end of the edit interval.</p></li>
 <li><p><strong>new_versions</strong> – the list of link relation versions to insert.
@@ -1241,7 +1247,7 @@ All versions must be within <cite>[start_time, end_time)</cite> interval.</p></l
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -1280,7 +1286,7 @@ within <code class="code docutils literal notranslate"><span class="pre">[start_
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -1506,7 +1512,7 @@ Mesh Attribute is an instance of Attribute Definition in the
 Mesh Model and has always an owner of Object type.
 It has some type (e.g. DoubleAttribute or BoolCollectionAttribute).</p>
 <p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.AttributeBase.AttributeBaseDefinition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AttributeBaseDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#AttributeBase.AttributeBaseDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.AttributeBase.AttributeBaseDefinition" title="Permalink to this definition">¶</a></dt>
@@ -1815,7 +1821,8 @@ another object does not own it like in <cite>OwnershipRelationAttribute</cite>.<
 <p>There is also a versioned link relation, where the target object can change
 over time. See <cite>VersionedLinkRelationAttribute</cite>.</p>
 <p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a> and <a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a>.</p>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a> and
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh relations</a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LinkRelationAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#LinkRelationAttribute.LinkRelationAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.LinkRelationAttribute.LinkRelationAttributeDefinition" title="Permalink to this definition">¶</a></dt>
@@ -1833,7 +1840,7 @@ version becomes active. If target object ID is None, then it means
 the target object is “empty”.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.LinkRelationVersion.target_object_id">
@@ -1869,9 +1876,9 @@ calculations.</p>
 <dt class="sig sig-object py" id="volue.mesh.Object">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">volue.mesh.</span></span><span class="sig-name descname"><span class="pre">Object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id:</span> <span class="pre">~uuid.UUID,</span> <span class="pre">path:</span> <span class="pre">str,</span> <span class="pre">name:</span> <span class="pre">str,</span> <span class="pre">type_name:</span> <span class="pre">str,</span> <span class="pre">owner_id:</span> <span class="pre">~typing.Optional[~uuid.UUID],</span> <span class="pre">owner_path:</span> <span class="pre">~typing.Optional[str],</span> <span class="pre">attributes:</span> <span class="pre">~typing.Dict[str,</span> <span class="pre">~volue.mesh._attribute.AttributeBase]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_object.html#Object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.Object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a Mesh Object.</p>
-<p>Mesh Object is an instance of Object Definition in the Mesh Model.
-Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-object"><span class="std std-ref">Mesh object</span></a>.</p>
+<p>Mesh Object is an instance of Object Definition in the Mesh Model.</p>
+<p>Refer to documentation for more details:
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.Object.attributes">
 <span class="sig-name descname"><span class="pre">attributes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.13)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#volue.mesh.Object.attributes" title="Permalink to this definition">¶</a></dt>
@@ -1923,7 +1930,8 @@ belongs to some other object.</p>
 <p>When creating a new object the owner must be an ownership relation
 attribute of one-to-many type (ElementCollectionAttributeDefinition).</p>
 <p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a> and <a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a>.</p>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a> and
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh relations</a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.OwnershipRelationAttribute.OwnershipRelationAttributeDefinition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">OwnershipRelationAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#OwnershipRelationAttribute.OwnershipRelationAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.OwnershipRelationAttribute.OwnershipRelationAttributeDefinition" title="Permalink to this definition">¶</a></dt>
@@ -1942,7 +1950,7 @@ Additionally each segment <cite>i</cite> stores a 64 bit floating point
 <cite>[x_range_until[i-1], x_range_until[i])</cite>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_rating_curve.html"><span class="doc">Rating curves</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/">Mesh documentation</a></p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.RatingCurveSegment.factor_a">
@@ -1976,7 +1984,7 @@ for the curve. For <cite>x &lt; x_range_from</cite> for the given version the
 <cite>f(x) = nan</cite>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_rating_curve.html"><span class="doc">Rating curves</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/">Mesh documentation</a></p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.RatingCurveVersion.valid_from_time">
@@ -2016,7 +2024,7 @@ may have additionally the following fields defined:
 - maximum_value
 - unit_of_measurement</p>
 <p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.SimpleAttribute.SimpleAttributeDefinition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SimpleAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#SimpleAttribute.SimpleAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.SimpleAttribute.SimpleAttributeDefinition" title="Permalink to this definition">¶</a></dt>
@@ -2035,7 +2043,7 @@ Flags
 Value is the actual data for the given timestamp.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="timeseries.html"><span class="doc">Time series</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/time-series/">Mesh documentation</a></p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.Timeseries.Curve">
@@ -2233,8 +2241,8 @@ then all old points on May 1st and 3rd will be removed and new points will be se
 <li><p><strong>end_time</strong> – The end date and time of the time series interval.</p></li>
 <li><p><strong>timskey</strong> – Integer that only applies to a specific physical or virtual time series.</p></li>
 <li><p><strong>uuid_id</strong> – Universal Unique Identifier for Mesh objects.</p></li>
-<li><p><strong>full_name</strong> – Path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.
-See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<li><p><strong>full_name</strong> – Path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -2295,7 +2303,7 @@ level (<cite>template_expression</cite>) or overwritten for the given attribute 
 </dl>
 <p>Note: physical and virtual time series are both called resource time series.</p>
 <p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a>.</p>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.TimeseriesAttribute.TimeseriesAttributeDefinition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeseriesAttributeDefinition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proto_definition</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AttributeDefinition</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#TimeseriesAttribute.TimeseriesAttributeDefinition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.TimeseriesAttribute.TimeseriesAttributeDefinition" title="Permalink to this definition">¶</a></dt>
@@ -2414,7 +2422,8 @@ object in the list, if any, becomes active.</p>
 - one-to-one (ReferenceSeriesAttributeDefinition)
 - one-to-many (ReferenceSeriesCollectionAttributeDefinition)</p>
 <p>Refer to documentation for more details:
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">Mesh attribute</span></a> and <a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a>.</p>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a> and
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh relations</a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VersionedLinkRelationEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">versions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.LinkRelationVersion" title="volue.mesh._common.LinkRelationVersion"><span class="pre">LinkRelationVersion</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/volue/mesh/_attribute.html#VersionedLinkRelationAttribute.VersionedLinkRelationEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.VersionedLinkRelationAttribute.VersionedLinkRelationEntry" title="Permalink to this definition">¶</a></dt>
@@ -2434,7 +2443,7 @@ object in the list, if any, becomes active.</p>
 <dd><p>A list of (x, y) pairs, indexed by a reference/z value.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/">Mesh documentation</a></p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.XyCurve.xy">
@@ -2457,7 +2466,7 @@ the <code class="code docutils literal notranslate"><span class="pre">valid_from
 period for the XY-set. Otherwise it will be <code class="code docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/">Mesh documentation</a></p>
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="volue.mesh.XySet.valid_from_time">
@@ -3608,7 +3617,7 @@ one-to-one (object value type = “ElementAttributeDefinition”)
 or one-to-many (object value type = “ElementCollectionAttributeDefinition”)
 ownership relation attribute.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>name</strong> – Name for the new object to create.</p></li>
 </ul>
 </dd>
@@ -3663,8 +3672,8 @@ It must match an existing unit in Mesh.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object to be deleted. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a></p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>recursive_delete</strong> – If set then all child objects
 (owned by the object to be deleted) in the model will also be deleted.</p></li>
 </ul>
@@ -3678,14 +3687,14 @@ or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-mo
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.forecast_functions">
 <span class="sig-name descname"><span class="pre">forecast_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.forecast.ForecastFunctionsAsync" title="volue.mesh.calc.forecast.ForecastFunctionsAsync"><span class="pre">ForecastFunctionsAsync</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.forecast_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.forecast_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#forecast"><span class="std std-ref">Forecast</span></a> functions.</p>
+<dd><p>Access to forecast functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -3699,14 +3708,14 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.get_attribute">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.get_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.get_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request information associated with a Mesh <a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">attribute</span></a>
-from the Mesh model.</p>
+<dd><p>Request information associated with a Mesh attribute from the
+Mesh <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh attribute to be read. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attribute will be returned, otherwise only name, path, ID and value(s).</p></li>
 </ul>
@@ -3753,8 +3762,8 @@ Specify either <cite>object_id</cite> or <cite>object_path</cite> to a Mesh obje
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object to be read. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -3797,20 +3806,21 @@ curve version that started its validity period before the interval.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_rating_curve.html"><span class="doc">Rating curves</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.get_timeseries_attribute">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_timeseries_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.TimeseriesAttribute" title="volue.mesh._attribute.TimeseriesAttribute"><span class="pre">TimeseriesAttribute</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.get_timeseries_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.get_timeseries_attribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Request information associated with a Mesh <a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">time series attribute</span></a> from the Mesh model.</p>
+<dd><p>Request information associated with a Mesh attribute from the
+Mesh <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh time series attribute to be read. It could be a Universal Unique
-Identifier or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+Identifier or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attribute will be returned, otherwise only name, path, ID and value(s).</p></li>
 </ul>
@@ -3879,21 +3889,21 @@ last XY set that started its validity period before the interval.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.history_functions">
 <span class="sig-name descname"><span class="pre">history_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.history.HistoryFunctionsAsync" title="volue.mesh.calc.history.HistoryFunctionsAsync"><span class="pre">HistoryFunctionsAsync</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.history_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.history_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#history"><span class="std std-ref">History</span></a> functions.</p>
+<dd><p>Access to history functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -3907,7 +3917,7 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.list_models">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_models</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.list_models"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.list_models" title="Permalink to this definition">¶</a></dt>
-<dd><p>List all <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh models</span></a>.
+<dd><p>List all <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh models</a>.
 Model is a root object that does not have an owner.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
@@ -3943,7 +3953,7 @@ See: <a class="reference internal" href="mesh_client.html#grpc-communication"><s
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh attribute, virtual or physical time series. It could
 be a time series key, Universal Unique Identifier or a path in
-the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -4061,15 +4071,16 @@ log messages from the server.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.search_for_attributes">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">search_for_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.search_for_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.search_for_attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a> to find Mesh
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">attributes</span></a> in the Mesh model.</p>
+<dd><p>Use the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>
+to find Mesh attributes in the Mesh
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Start searching at the target object. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
-<li><p><strong>query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
+<li><p><strong>query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object(s) will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -4084,15 +4095,15 @@ path, ID and value(s).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.search_for_objects">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">search_for_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes_filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.13)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.AttributesFilter" title="volue.mesh._common.AttributesFilter"><span class="pre">AttributesFilter</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.search_for_objects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.search_for_objects" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a> to find Mesh objects
-in the Mesh model.</p>
+<dd><p>Use the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>
+to find Mesh objects in the Mesh model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Start searching at the target object. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
-<li><p><strong>query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
+<li><p><strong>query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object(s) will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -4109,15 +4120,16 @@ object(s) should be returned. By default all attributes are returned.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.search_for_timeseries_attributes">
 <em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">search_for_timeseries_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_attribute_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.13)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#volue.mesh.TimeseriesAttribute" title="volue.mesh._attribute.TimeseriesAttribute"><span class="pre">TimeseriesAttribute</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.search_for_timeseries_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.search_for_timeseries_attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a> to find Mesh
-<a class="reference internal" href="mesh_modelling.html#mesh-attribute"><span class="std std-ref">time series attributes</span></a> in the Mesh model.</p>
+<dd><p>Use the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>
+to find Mesh time series attributes in the Mesh
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">model</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Start searching at the target object. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
-<li><p><strong>query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
+<li><p><strong>query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 <li><p><strong>full_attribute_info</strong> – If set then all information (e.g. description, value type, etc.)
 of attributes owned by the object(s) will be returned, otherwise only name,
 path, ID and value(s).</p></li>
@@ -4132,14 +4144,14 @@ path, ID and value(s).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.statistical_functions">
 <span class="sig-name descname"><span class="pre">statistical_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.statistical.StatisticalFunctionsAsync" title="volue.mesh.calc.statistical.StatisticalFunctionsAsync"><span class="pre">StatisticalFunctionsAsync</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.statistical_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.statistical_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#statistical"><span class="std std-ref">Statistical</span></a> functions.</p>
+<dd><p>Access to statistical functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -4153,14 +4165,14 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dl class="py method">
 <dt class="sig sig-object py" id="volue.mesh.aio.Connection.Session.transform_functions">
 <span class="sig-name descname"><span class="pre">transform_functions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.13)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.13)"><span class="pre">UUID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.AttributeBase" title="volue.mesh._attribute.AttributeBase"><span class="pre">AttributeBase</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#volue.mesh.Object" title="volue.mesh._object.Object"><span class="pre">Object</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.13)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#volue.mesh.calc.transform.TransformFunctionsAsync" title="volue.mesh.calc.transform.TransformFunctionsAsync"><span class="pre">TransformFunctionsAsync</span></a></span></span><a class="reference internal" href="_modules/volue/mesh/aio/_connection.html#Connection.Session.transform_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#volue.mesh.aio.Connection.Session.transform_functions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Access to <a class="reference internal" href="mesh_functions.html#transform"><span class="std std-ref">Transform</span></a> functions.</p>
+<dd><p>Access to transform functions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object, attribute, virtual or physical time series the
 calculation expression will be evaluated relative to.
 It could be a time series key, Universal Unique Identifier or
-a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 <li><p><strong>start_time</strong> – the start date and time of the time series interval</p></li>
 <li><p><strong>end_time</strong> – the end date and time of the time series interval</p></li>
 </ul>
@@ -4180,7 +4192,8 @@ a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh one-to-one or one-to-many link relation (non-versioned) attribute
 to be updated. It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_target_object_ids</strong> – List of objects the link relation will point to. For
 one-to-one link relation this must contain zero or one <cite>new_target_object_ids</cite>.
 If there is no <cite>new_target_object_ids</cite> provided then currently existing target
@@ -4200,7 +4213,7 @@ For one-to-one link relation attribute this must set to <cite>False</cite>.</p><
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -4215,15 +4228,15 @@ relation attribute. E.g.: for <cite>SomePowerPlant1</cite> object with path:
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh object to be updated. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a></p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_name</strong> – New name for the object.</p></li>
 <li><p><strong>new_owner_attribute</strong> – New owner of the object. It must be a
 one-to-one (object value type = “ElementAttributeDefinition”)
 or one-to-many (object value type = “ElementCollectionAttributeDefinition”)
 ownership relation attribute.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -4255,7 +4268,7 @@ and sorted by <cite>valid_from_time</cite>.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_rating_curve.html"><span class="doc">Rating curves</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -4273,8 +4286,8 @@ Simple attribute is a singular type or collection of the following types:
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh attribute to be updated. It could be a Universal Unique Identifier
-or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>value</strong> – New simple attribute value. It can be one of following simple types:
 bool, float, int, str, datetime or a list of simple types.</p></li>
 </ul>
@@ -4293,8 +4306,8 @@ bool, float, int, str, datetime or a list of simple types.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh time series attribute to be updated. It could be a Universal Unique
-Identifier or a path in the <a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See:
-<a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+Identifier or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_local_expression</strong> – New local expression.</p></li>
 <li><p><strong>new_timeseries_resource_key</strong> – Time series key of a new time series resource
 (physical or virtual) to connect to the time series attribute. To disconnect
@@ -4343,7 +4356,8 @@ the Mesh model.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh one-to-many versioned link relation attribute to be updated.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_entries</strong> – the list of lists of link relation versions to insert.
 The first level list represents entries. Each entry can have multiple
 link relation versions.</p></li>
@@ -4355,7 +4369,7 @@ link relation versions.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -4369,7 +4383,8 @@ the Mesh model.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target</strong> – Mesh one-to-one versioned link relation attribute to be updated.
 It could be a Universal Unique Identifier or a path in the
-<a class="reference internal" href="mesh_modelling.html#mesh-model"><span class="std std-ref">Mesh model</span></a>. See: <a class="reference internal" href="mesh_modelling.html#mesh-object-attribute-path"><span class="std std-ref">objects and attributes paths</span></a>.</p></li>
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
+See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>start_time</strong> – the (inclusive) start of the edit interval.</p></li>
 <li><p><strong>end_time</strong> – the (exclusive) end of the edit interval.</p></li>
 <li><p><strong>new_versions</strong> – the list of link relation versions to insert.
@@ -4382,7 +4397,7 @@ All versions must be within <cite>[start_time, end_time)</cite> interval.</p></l
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_relations.html"><span class="doc">Relations</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -4421,7 +4436,7 @@ within <code class="code docutils literal notranslate"><span class="pre">[start_
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="mesh_xy_sets.html"><span class="doc">XY-sets in Mesh</span></a></p>
+<p><a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/">Mesh documentation</a></p>
 </div>
 </dd></dl>
 
@@ -4675,7 +4690,8 @@ in bytes. By default the maximum inbound gRPC message size is 4MB.</p></li>
 
 <span class="target" id="module-volue.mesh.calc.forecast"></span><div class="section" id="mesh-calculation-forecast-functions">
 <h3>Mesh calculation forecast functions<a class="headerlink" href="#mesh-calculation-forecast-functions" title="Permalink to this heading">¶</a></h3>
-<p>For more information see <a class="reference internal" href="mesh_functions.html#forecast"><span class="std std-ref">Forecast</span></a>.</p>
+<p>For more information see
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/">Mesh functions</a>.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.calc.forecast.ForecastFunctions">
@@ -4695,7 +4711,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.</p>
@@ -4740,7 +4756,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 <li><p><strong>forecast_start_min</strong> – Forecast must start after this time.</p></li>
 <li><p><strong>forecast_start_max</strong> – Forecast must start before this time.</p></li>
 <li><p><strong>available_at_timepoint</strong> – Forecast that is valid at the given timestamp.</p></li>
-<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4775,7 +4791,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An array of forecast time series with values within the relevant period. Values in forecast series outside the period are not included. The function returns an empty array if no forecast time series have values within the relevant period.</p>
@@ -4820,7 +4836,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 <li><p><strong>forecast_start_min</strong> – Forecast must start after this time.</p></li>
 <li><p><strong>forecast_start_max</strong> – Forecast must start before this time.</p></li>
 <li><p><strong>available_at_timepoint</strong> – Forecast that is valid at the given timestamp.</p></li>
-<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4839,7 +4855,8 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 
 <span class="target" id="module-volue.mesh.calc.history"></span><div class="section" id="mesh-calculation-history-functions">
 <h3>Mesh calculation history functions.<a class="headerlink" href="#mesh-calculation-history-functions" title="Permalink to this heading">¶</a></h3>
-<p>For more information see <a class="reference internal" href="mesh_functions.html#history"><span class="std std-ref">History</span></a>.</p>
+<p>For more information see
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/">Mesh functions</a>.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.calc.history.HistoryFunctions">
@@ -4860,7 +4877,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>available_at_timepoint</strong> – Is valid at the given timestamp.</p></li>
-<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the :<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4883,7 +4900,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_number_of_versions_to_get</strong> – Maximum number of time series to return.</p></li>
-<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4919,7 +4936,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>available_at_timepoint</strong> – Is valid at the given timestamp.</p></li>
-<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the :<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4942,7 +4959,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_number_of_versions_to_get</strong> – Maximum number of time series to return.</p></li>
-<li><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4961,7 +4978,8 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 
 <span class="target" id="module-volue.mesh.calc.statistical"></span><div class="section" id="mesh-calculation-statistical-functions">
 <h3>Mesh calculation statistical functions.<a class="headerlink" href="#mesh-calculation-statistical-functions" title="Permalink to this heading">¶</a></h3>
-<p>For more information see <a class="reference internal" href="mesh_functions.html#statistical"><span class="std std-ref">Statistical</span></a>.</p>
+<p>For more information see
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/">Mesh functions</a>.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.calc.statistical.StatisticalFunctions">
@@ -4974,7 +4992,7 @@ The <cite>target</cite> and the time interval (<cite>start_time</cite> and <cite
 The resulting time series is equal to the sum of the values for each time interval in the expression.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -4995,7 +5013,7 @@ The resulting time series is equal to the sum of the values for each time interv
 It returns a number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -5022,7 +5040,7 @@ It returns a number.</p>
 The resulting time series is equal to the sum of the values for each time interval in the expression.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -5043,7 +5061,7 @@ The resulting time series is equal to the sum of the values for each time interv
 It returns a number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p>
+<dd class="field-odd"><p><strong>search_query</strong> – A search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -5061,7 +5079,8 @@ It returns a number.</p>
 
 <span class="target" id="module-volue.mesh.calc.transform"></span><div class="section" id="mesh-calculation-transformation-functions">
 <h3>Mesh calculation transformation functions.<a class="headerlink" href="#mesh-calculation-transformation-functions" title="Permalink to this heading">¶</a></h3>
-<p>For more information see <a class="reference internal" href="mesh_functions.html#transform"><span class="std std-ref">Transform</span></a>.</p>
+<p>For more information see
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/">Mesh functions</a>.</p>
 </div>
 <dl class="py class">
 <dt class="sig sig-object py" id="volue.mesh.calc.transform.Method">
@@ -5168,7 +5187,7 @@ Most transformation methods are available for this latter use.</p>
 <li><p><strong>resolution</strong> – The resolution to transform to.</p></li>
 <li><p><strong>method</strong> – What method to use for the transformation.</p></li>
 <li><p><strong>timezone</strong> – What time zone to use for the transformation.</p></li>
-<li><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – a search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5207,7 +5226,7 @@ Most transformation methods are available for this latter use.</p>
 <li><p><strong>resolution</strong> – The resolution to transform to.</p></li>
 <li><p><strong>method</strong> – What method to use for the transformation.</p></li>
 <li><p><strong>timezone</strong> – What time zone to use for the transformation.</p></li>
-<li><p><strong>search_query</strong> – a search formulated using the <a class="reference internal" href="mesh_search.html"><span class="doc">Mesh search language</span></a>.</p></li>
+<li><p><strong>search_query</strong> – a search formulated using the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/">Mesh search language</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5240,7 +5259,7 @@ Most transformation methods are available for this latter use.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2024, Volue AS.
+        &#169; Copyright 2025, Volue AS.
 
     </p>
   </div>
