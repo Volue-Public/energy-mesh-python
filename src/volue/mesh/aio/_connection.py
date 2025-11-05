@@ -38,6 +38,12 @@ from volue.mesh._common import (
     _to_proto_guid,
     _to_proto_resolution,
 )
+from volue.mesh._version_compatibility import (
+    get_client_version,
+    get_min_server_version,
+    get_client_version_header_name,
+    to_parsed_version
+)
 from volue.mesh.availability._availability_aio import Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
@@ -73,6 +79,7 @@ class Connection(_base_connection.Connection):
             session_service: session_pb2_grpc.SessionServiceStub,
             time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
             availability_service: availability_pb2_grpc.AvailabilityServiceStub,
+            connection: "Connection",
             session_id: Optional[uuid.UUID] = None,
         ):
             super().__init__(
@@ -87,6 +94,7 @@ class Connection(_base_connection.Connection):
             self.availability = Availability(
                 availability_service=availability_service, session_id=session_id
             )
+            self.connection = connection
 
         async def __aenter__(self):
             """
@@ -124,6 +132,17 @@ class Connection(_base_connection.Connection):
             )
 
         async def open(self) -> None:
+            # Multiple sessions can be created using one connection,
+            # remember the compatibility check result to avoid repeating it.
+            if self.connection.version_checked == False:
+                version = await self.connection.get_version()
+                parsed_version = to_parsed_version(version.version)
+                min_server_version = get_min_server_version()
+                if parsed_version is not None:
+                    if parsed_version < min_server_version:
+                        raise RuntimeError(f"connecting to incompatible server version: {version}, minimum version is {min_server_version}")
+                    self.connection.version_checked = True
+
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)
 
@@ -543,10 +562,12 @@ class Connection(_base_connection.Connection):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.version_checked = False
 
     async def get_version(self) -> VersionInfo:
+        metadata = [(get_client_version_header_name(), get_client_version())]
         return VersionInfo._from_proto(
-            await self.config_service.GetVersion(protobuf.empty_pb2.Empty())
+            await self.config_service.GetVersion(protobuf.empty_pb2.Empty(), metadata=metadata)
         )
 
     async def get_user_identity(self) -> UserIdentity:
@@ -579,7 +600,7 @@ class Connection(_base_connection.Connection):
         return self.connect_to_session(session_id=None)
 
     def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
-        return self.Session(
+        session = self.Session(
             calc_service=self.calc_service,
             hydsim_service=self.hydsim_service,
             model_service=self.model_service,
@@ -587,5 +608,7 @@ class Connection(_base_connection.Connection):
             session_service=self.session_service,
             time_series_service=self.time_series_service,
             availability_service=self.availability_service,
-            session_id=session_id,
+            connection=self,
+            session_id=session_id
         )
+        return session

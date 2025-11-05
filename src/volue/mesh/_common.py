@@ -165,7 +165,7 @@ class VersionInfo:
     """
     Represents a Mesh server version information.
 
-    version - version number, e.g.: 2.5.2.32
+    version - version number, e.g.: 2.5.2+32
 
     name - friendly name of the Mesh server, e.g.: Volue Mesh Server.
     """
