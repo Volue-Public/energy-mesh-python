@@ -38,7 +38,7 @@ from volue.mesh._version_compatibility import (
     get_client_version,
     get_min_server_version,
     get_client_version_metadata_key,
-    to_parsed_version
+    to_parsed_version,
 )
 from volue.mesh.availability._availability import Availability
 from volue.mesh.calc.forecast import ForecastFunctions
@@ -544,12 +544,16 @@ class Connection(_base_connection.Connection):
         min_server_version = get_min_server_version()
         if parsed_version is not None:
             if parsed_version < min_server_version:
-                    raise RuntimeError(f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}")
+                raise RuntimeError(
+                    f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
+                )
 
     def get_version(self) -> VersionInfo:
         metadata = [(get_client_version_metadata_key(), get_client_version())]
         return VersionInfo._from_proto(
-            self.config_service.GetVersion(protobuf.empty_pb2.Empty(), metadata=metadata)
+            self.config_service.GetVersion(
+                protobuf.empty_pb2.Empty(), metadata=metadata
+            )
         )
 
     def get_user_identity(self) -> UserIdentity:

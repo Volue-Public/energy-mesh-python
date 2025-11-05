@@ -42,7 +42,7 @@ from volue.mesh._version_compatibility import (
     get_client_version,
     get_min_server_version,
     get_client_version_metadata_key,
-    to_parsed_version
+    to_parsed_version,
 )
 from volue.mesh.availability._availability_aio import Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
@@ -140,7 +140,9 @@ class Connection(_base_connection.Connection):
                 min_server_version = get_min_server_version()
                 if parsed_version is not None:
                     if parsed_version < min_server_version:
-                        raise RuntimeError(f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}")
+                        raise RuntimeError(
+                            f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
+                        )
                     self.connection.version_checked = True
 
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
@@ -567,7 +569,9 @@ class Connection(_base_connection.Connection):
     async def get_version(self) -> VersionInfo:
         metadata = [(get_client_version_metadata_key(), get_client_version())]
         return VersionInfo._from_proto(
-            await self.config_service.GetVersion(protobuf.empty_pb2.Empty(), metadata=metadata)
+            await self.config_service.GetVersion(
+                protobuf.empty_pb2.Empty(), metadata=metadata
+            )
         )
 
     async def get_user_identity(self) -> UserIdentity:
@@ -609,6 +613,6 @@ class Connection(_base_connection.Connection):
             time_series_service=self.time_series_service,
             availability_service=self.availability_service,
             connection=self,
-            session_id=session_id
+            session_id=session_id,
         )
         return session

@@ -39,6 +39,7 @@ def test_to_proto_mesh_id_from_empty_timeseries():
     with pytest.raises(TypeError):
         _common._to_proto_mesh_id_from_timeseries(Timeseries())
 
+
 def test_to_parsed_version():
     parsed = to_parsed_version("99.0.0+0")
     assert parsed is not None
@@ -67,11 +68,13 @@ def test_to_parsed_version():
     parsed = to_parsed_version("")
     assert parsed is None
 
+
 def test_parsed_version_comparisons():
     assert ParsedVersion(1, 1, 1) < ParsedVersion(2, 1, 1)
     assert ParsedVersion(1, 1, 1) < ParsedVersion(1, 2, 1)
     assert ParsedVersion(1, 1, 1) < ParsedVersion(1, 1, 2)
     assert ParsedVersion(0, 0, 0) < ParsedVersion(1, 1, 1)
+
 
 if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))
