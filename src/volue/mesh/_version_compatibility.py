@@ -21,7 +21,7 @@ def get_client_version() -> str:
 def get_min_server_version() -> str:
     return MINIMUM_SERVER_VERSION
 
-def get_client_version_header_name() -> str:
+def get_client_version_metadata_key() -> str:
     return CLIENT_VERSION_METADATA_KEY
 
 # `order=True` generates the comparison operators

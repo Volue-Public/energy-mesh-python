@@ -41,7 +41,7 @@ from volue.mesh._common import (
 from volue.mesh._version_compatibility import (
     get_client_version,
     get_min_server_version,
-    get_client_version_header_name,
+    get_client_version_metadata_key,
     to_parsed_version
 )
 from volue.mesh.availability._availability_aio import Availability
@@ -565,7 +565,7 @@ class Connection(_base_connection.Connection):
         self.version_checked = False
 
     async def get_version(self) -> VersionInfo:
-        metadata = [(get_client_version_header_name(), get_client_version())]
+        metadata = [(get_client_version_metadata_key(), get_client_version())]
         return VersionInfo._from_proto(
             await self.config_service.GetVersion(protobuf.empty_pb2.Empty(), metadata=metadata)
         )
