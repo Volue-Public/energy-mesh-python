@@ -1,7 +1,3 @@
-"""
-Client version information for Mesh.
-"""
-
 from dataclasses import dataclass
 import re
 from typing import Optional

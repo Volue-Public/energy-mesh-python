@@ -539,12 +539,12 @@ class Connection(_base_connection.Connection):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        version = self.get_version()
-        parsed_version = to_parsed_version(version.version)
+        version_info = self.get_version()
+        parsed_version = to_parsed_version(version_info.version)
         min_server_version = get_min_server_version()
         if parsed_version is not None:
             if parsed_version < min_server_version:
-                raise RuntimeError(f"connecting to incompatible server version: {min_server_version}")
+                    raise RuntimeError(f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}")
 
     def get_version(self) -> VersionInfo:
         metadata = [(get_client_version_metadata_key(), get_client_version())]

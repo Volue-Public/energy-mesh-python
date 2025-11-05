@@ -135,12 +135,12 @@ class Connection(_base_connection.Connection):
             # Multiple sessions can be created using one connection,
             # remember the compatibility check result to avoid repeating it.
             if self.connection.version_checked == False:
-                version = await self.connection.get_version()
-                parsed_version = to_parsed_version(version.version)
+                version_info = await self.connection.get_version()
+                parsed_version = to_parsed_version(version_info.version)
                 min_server_version = get_min_server_version()
                 if parsed_version is not None:
                     if parsed_version < min_server_version:
-                        raise RuntimeError(f"connecting to incompatible server version: {version}, minimum version is {min_server_version}")
+                        raise RuntimeError(f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}")
                     self.connection.version_checked = True
 
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
