@@ -8,7 +8,7 @@ import uuid
 import pytest
 
 from volue.mesh import Timeseries, _common
-from volue.mesh._version_compatibility import to_parsed_version
+from volue.mesh._version_compatibility import to_parsed_version, ParsedVersion
 
 
 @pytest.mark.unittest
@@ -67,6 +67,11 @@ def test_to_parsed_version():
     parsed = to_parsed_version("")
     assert parsed is None
 
+def test_parsed_version_comparisons():
+    assert ParsedVersion(1, 1, 1) < ParsedVersion(2, 1, 1)
+    assert ParsedVersion(1, 1, 1) < ParsedVersion(1, 2, 1)
+    assert ParsedVersion(1, 1, 1) < ParsedVersion(1, 1, 2)
+    assert ParsedVersion(0, 0, 0) < ParsedVersion(1, 1, 1)
 
 if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))
