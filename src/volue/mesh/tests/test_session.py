@@ -92,13 +92,18 @@ async def test_sessions_using_async_contextmanager(async_connection):
     """Check if a session can be opened and closed using a contextmanager. |testaio|"""
     session_id1 = None
     session_id2 = None
+
     async with async_connection.create_session() as open_session:
         session_id1 = open_session.session_id
         assert session_id1 is not None
 
+    assert async_connection.version_checked == True
+
     async with async_connection.create_session() as open_session:
         session_id2 = open_session.session_id
         assert session_id1 is not None
+
+    assert async_connection.version_checked == True
 
     # Make sure the two sessions we opened were not the same
     assert session_id1 != session_id2

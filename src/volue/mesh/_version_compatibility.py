@@ -35,7 +35,7 @@ def to_parsed_version(version: str) -> Optional[ParsedVersion]:
     r = re.match(r"^(\d+)\.(\d+)\.(\d+)(\+\d+)?$", version)
     if r is not None:
         # group with index 0 contains the whole matched string
-        return ParsedVersion(major=r.group(1), minor=r.group(2), patch=r.group(3))
+        return ParsedVersion(major=int(r.group(1)), minor=int(r.group(2)), patch=int(r.group(3)))
     else:
         return None
     
