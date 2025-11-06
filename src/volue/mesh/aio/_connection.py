@@ -132,18 +132,14 @@ class Connection(_base_connection.Connection):
             )
 
         async def open(self) -> None:
-            # Multiple sessions can be created using one connection,
-            # remember the compatibility check result to avoid repeating it.
-            if self.connection.version_checked == False:
-                version_info = await self.connection.get_version()
-                parsed_version = to_parsed_version(version_info.version)
-                min_server_version = get_min_server_version()
-                if parsed_version is not None:
-                    if parsed_version < min_server_version:
-                        raise RuntimeError(
-                            f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
-                        )
-                    self.connection.version_checked = True
+            version_info = await self.connection.get_version()
+            parsed_version = to_parsed_version(version_info.version)
+            min_server_version = get_min_server_version()
+            if parsed_version is not None:
+                if parsed_version < min_server_version:
+                    raise RuntimeError(
+                        f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
+                    )
 
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)
@@ -564,7 +560,6 @@ class Connection(_base_connection.Connection):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.version_checked = False
 
     async def get_version(self) -> VersionInfo:
         metadata = [(get_client_version_metadata_key(), get_client_version())]
