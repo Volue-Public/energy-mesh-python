@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 import re
 from typing import Optional
-
-# Current client version (from pyproject.toml)
-CLIENT_VERSION = "1.14.0-dev"
+from importlib import metadata
 
 # Minimum supported Mesh server version
 MINIMUM_SERVER_VERSION_STR = "2.18.0"
@@ -11,10 +9,19 @@ MINIMUM_SERVER_VERSION_STR = "2.18.0"
 # Name of the metadata key used to transmit client version information
 CLIENT_VERSION_METADATA_KEY = "x-volue-mesh-client-version"
 
-
 def get_client_version() -> str:
-    return CLIENT_VERSION
+    try:
+        # Get the package version from the environment
+        return metadata.version("volue.mesh")
+    except:
+        # Fallback to a version number which shouldn't
+        # interrupt using the SDK in case of problems.
+        # Most of the time the package is installed via
+        # `pip install` or `poetry install`. For these
+        #  cases, using the importlib metadata should be fine.
+        return "99.99.99"
 
+CLIENT_VERSION = get_client_version()
 
 def get_min_server_version() -> str:
     return MINIMUM_SERVER_VERSION
