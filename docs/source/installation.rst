@@ -217,9 +217,11 @@ Version compatibility
 
 The Mesh Python SDK will perform the version compatibility check when connecting to the Mesh server.
 It will ask the server for its version number and will validate it according to the rules
-found in the `Versions <https://volue-public.github.io/energy-mesh-python/versions.html>` section.
+found in the :doc:`versions` section.
 
 The Mesh server will also perform the version compatibility check based on the version
-sent by the Mesh Python SDK. For the version metadata to be correctly populated,
-the `volue.mesh` package should be installed using the
-`recommended procedure <https://volue-public.github.io/energy-mesh-python/installation.html#setup-for-users-recommended>`.
+sent by the Mesh Python SDK in the gRPC request metadata.
+For the version metadata to be correctly populated, the `volue.mesh` package
+should be installed using the :ref:`recommended procedure <Setup for users>`.
+When using the Mesh Python SDK directly from the source,
+the version compatibility check will be skipped.
