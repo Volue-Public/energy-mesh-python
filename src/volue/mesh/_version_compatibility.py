@@ -9,6 +9,7 @@ MINIMUM_SERVER_VERSION_STR = "2.18.0"
 # Name of the metadata key used to transmit client version information
 CLIENT_VERSION_METADATA_KEY = "x-volue-mesh-client-version"
 
+
 def get_client_version() -> str:
     try:
         # Get the package version from the environment
@@ -21,7 +22,9 @@ def get_client_version() -> str:
         #  cases, using the importlib metadata should be fine.
         return "99.99.99"
 
+
 CLIENT_VERSION = get_client_version()
+
 
 def get_min_server_version() -> str:
     return MINIMUM_SERVER_VERSION
