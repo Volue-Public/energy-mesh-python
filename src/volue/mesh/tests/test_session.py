@@ -124,6 +124,7 @@ async def test_async_session_throws_if_mesh_server_version_is_incompatible(
             pass
     assert "connecting to incompatible server version" in str(e.value)
 
+
 @pytest.mark.database
 def test_commit(connection):
     """Check that commit keeps changes between sessions"""
