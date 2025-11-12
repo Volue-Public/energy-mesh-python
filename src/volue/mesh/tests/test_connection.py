@@ -25,13 +25,21 @@ def test_connection_throws_if_mesh_server_version_is_incompatible(mocker):
     mock_response = mocker.Mock()
     mock_response.version = "2.1.0"
 
-    # Patch _get_version method before connection creation
+    # Mock configuration service to return mock version on `GetVersion` call
+    mock_config_service = mocker.Mock()
+    mock_config_service.GetVersion.return_value = mock_response
+
+    # Mock the whole configuration service stub
     mocker.patch(
-        "volue.mesh._connection.Connection._get_version", return_value=mock_response
+        "volue.mesh._base_connection.config_pb2_grpc.ConfigurationServiceStub",
+        return_value=mock_config_service,
     )
 
+    # When the channel is not None
+    # the configuration service is populated
+    mock_channel = mocker.Mock()
     with pytest.raises(RuntimeError):
-        Connection(channel=mocker.Mock())
+        Connection(channel=mock_channel)
 
 
 @pytest.mark.server

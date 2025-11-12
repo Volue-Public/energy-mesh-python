@@ -128,13 +128,10 @@ class Connection(_base_connection.Connection):
                 unit_of_measurement, list_response
             )
 
-        async def _get_version(self) -> VersionInfo:
-            return await self.config_service.GetVersion(
+        async def open(self) -> None:
+            version_info = await self.config_service.GetVersion(
                 protobuf.empty_pb2.Empty(), metadata=get_compatibility_check_metadata()
             )
-
-        async def open(self) -> None:
-            version_info = await self._get_version()
 
             _validate_server_version(version_info)
 

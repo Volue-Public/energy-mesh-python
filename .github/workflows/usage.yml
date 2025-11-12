@@ -47,7 +47,7 @@ jobs:
           python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}
           python ./repo/src/volue/mesh/examples/get_version.py
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          python -m pip install pytest pytest-asyncio==0.21.2 pandas
+          python -m pip install pytest pytest-asyncio==0.21.2 pandas pytest-mock==3.15.1
           python -m pytest ./repo/src/volue/mesh/tests -m "not authentication and not long"
 
       - name: Install Ubuntu 22.04 (WSL)
