@@ -33,13 +33,9 @@ from volue.mesh._common import (
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_resolution,
+    _validate_server_version,
 )
-from volue.mesh._version_compatibility import (
-    get_client_version,
-    get_client_version_metadata_key,
-    get_min_server_version,
-    to_parsed_version,
-)
+from volue.mesh._version_compatibility import get_compatibility_check_metadata
 from volue.mesh.availability._availability import Availability
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
@@ -537,19 +533,15 @@ class Connection(_base_connection.Connection):
     def _insecure_grpc_channel(*args, **kwargs):
         return grpc.insecure_channel(*args, **kwargs)
 
+    def _get_version(self):
+        return self.config_service.GetVersion(
+            protobuf.empty_pb2.Empty(), metadata=get_compatibility_check_metadata()
+        )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        metadata = [(get_client_version_metadata_key(), get_client_version())]
-        version_info = self.config_service.GetVersion(
-            protobuf.empty_pb2.Empty(), metadata=metadata
-        )
-        parsed_version = to_parsed_version(version_info.version)
-        min_server_version = get_min_server_version()
-        if parsed_version is not None:
-            if parsed_version < min_server_version:
-                raise RuntimeError(
-                    f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
-                )
+        version_info = self._get_version()
+        _validate_server_version(version_info)
 
     def get_version(self) -> VersionInfo:
 

@@ -37,19 +37,15 @@ from volue.mesh._common import (
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_resolution,
+    _validate_server_version,
 )
-from volue.mesh._version_compatibility import (
-    get_client_version,
-    get_client_version_metadata_key,
-    get_min_server_version,
-    to_parsed_version,
-)
+from volue.mesh._version_compatibility import get_compatibility_check_metadata
 from volue.mesh.availability._availability_aio import Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
-from volue.mesh.proto.config.v1alpha import config_pb2, config_pb2_grpc
+from volue.mesh.proto.config.v1alpha import config_pb2_grpc
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
@@ -132,19 +128,15 @@ class Connection(_base_connection.Connection):
                 unit_of_measurement, list_response
             )
 
-        async def open(self) -> None:
-            metadata = [(get_client_version_metadata_key(), get_client_version())]
-            version_info = await self.config_service.GetVersion(
-                protobuf.empty_pb2.Empty(), metadata=metadata
+        async def _get_version(self) -> VersionInfo:
+            return await self.config_service.GetVersion(
+                protobuf.empty_pb2.Empty(), metadata=get_compatibility_check_metadata()
             )
 
-            parsed_version = to_parsed_version(version_info.version)
-            min_server_version = get_min_server_version()
-            if parsed_version is not None:
-                if parsed_version < min_server_version:
-                    raise RuntimeError(
-                        f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
-                    )
+        async def open(self) -> None:
+            version_info = await self._get_version()
+
+            _validate_server_version(version_info)
 
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)

@@ -105,6 +105,23 @@ async def test_sessions_using_async_contextmanager(async_connection):
     assert session_id1 != session_id2
 
 
+@pytest.mark.asyncio
+async def test_async_session_throws_if_mesh_server_version_is_incompatible(async_connection, mocker):
+
+    # Mock working with an old Mesh version
+    mock_response = mocker.Mock()
+    mock_response.version = "2.1.0"
+
+    # Mock GetVersion RPC returning the mocked response
+    async_mock = mocker.AsyncMock(return_value=mock_response)
+    async_connection.config_service.GetVersion = async_mock
+
+    # Expect the exception
+    with pytest.raises(RuntimeError):
+        async with async_connection.create_session() as _:
+            pass
+
+
 @pytest.mark.database
 def test_commit(connection):
     """Check that commit keeps changes between sessions"""

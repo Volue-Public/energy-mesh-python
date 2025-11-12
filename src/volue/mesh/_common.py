@@ -21,6 +21,10 @@ from volue.mesh.proto.auth.v1alpha import auth_pb2
 from volue.mesh.proto.config.v1alpha import config_pb2
 from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2
+from volue.mesh._version_compatibility import (
+    get_min_server_version,
+    to_parsed_version,
+)
 
 
 @dataclass
@@ -619,6 +623,23 @@ def _read_proto_reply(
 
         timeseries.append(ts)
     return timeseries
+
+
+def _validate_server_version(version_info: config_pb2.VersionInfo):
+    """
+    Validates the Mesh server version retrieved via GetVersion RPC against
+    minimum supported version.
+
+    Throws an exception is the client version
+    is not compatible with the server version.
+    """
+    parsed_version = to_parsed_version(version_info.version)
+    min_server_version = get_min_server_version()
+    if parsed_version is not None:
+        if parsed_version < min_server_version:
+            raise RuntimeError(
+                f"connecting to incompatible server version: {version_info.version}, minimum version is {min_server_version}"
+            )
 
 
 def _read_proto_numeric_reply(

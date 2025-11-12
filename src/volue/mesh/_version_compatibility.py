@@ -54,3 +54,7 @@ MINIMUM_SERVER_VERSION = to_parsed_version(MINIMUM_SERVER_VERSION_STR)
 
 def get_min_server_version() -> Optional[ParsedVersion]:
     return MINIMUM_SERVER_VERSION
+
+
+def get_compatibility_check_metadata() -> list[tuple[str, str]]:
+    return [(get_client_version_metadata_key(), get_client_version())]
