@@ -1,7 +1,7 @@
-from dataclasses import dataclass
 import re
-from typing import Optional
+from dataclasses import dataclass
 from importlib import metadata
+from typing import Optional
 
 # Minimum supported Mesh server version
 MINIMUM_SERVER_VERSION_STR = "2.18.0"
@@ -24,11 +24,6 @@ def get_client_version() -> str:
 
 
 CLIENT_VERSION = get_client_version()
-
-
-def get_min_server_version() -> str:
-    return MINIMUM_SERVER_VERSION
-
 
 def get_client_version_metadata_key() -> str:
     return CLIENT_VERSION_METADATA_KEY
@@ -54,3 +49,6 @@ def to_parsed_version(version: str) -> Optional[ParsedVersion]:
 
 
 MINIMUM_SERVER_VERSION = to_parsed_version(MINIMUM_SERVER_VERSION_STR)
+
+def get_min_server_version() -> Optional[ParsedVersion]:
+    return MINIMUM_SERVER_VERSION

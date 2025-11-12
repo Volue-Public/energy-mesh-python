@@ -40,8 +40,8 @@ from volue.mesh._common import (
 )
 from volue.mesh._version_compatibility import (
     get_client_version,
-    get_min_server_version,
     get_client_version_metadata_key,
+    get_min_server_version,
     to_parsed_version,
 )
 from volue.mesh.availability._availability_aio import Availability
@@ -49,6 +49,7 @@ from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
+from volue.mesh.proto.config.v1alpha import config_pb2, config_pb2_grpc
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
@@ -73,13 +74,13 @@ class Connection(_base_connection.Connection):
         def __init__(
             self,
             calc_service: calc_pb2_grpc.CalculationServiceStub,
+            config_service: config_pb2_grpc.ConfigurationServiceStub,
             hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
             model_service: model_pb2_grpc.ModelServiceStub,
             model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
             session_service: session_pb2_grpc.SessionServiceStub,
             time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
             availability_service: availability_pb2_grpc.AvailabilityServiceStub,
-            connection: "Connection",
             session_id: Optional[uuid.UUID] = None,
         ):
             super().__init__(
@@ -94,7 +95,7 @@ class Connection(_base_connection.Connection):
             self.availability = Availability(
                 availability_service=availability_service, session_id=session_id
             )
-            self.connection = connection
+            self.config_service = config_service
 
         async def __aenter__(self):
             """
@@ -132,7 +133,11 @@ class Connection(_base_connection.Connection):
             )
 
         async def open(self) -> None:
-            version_info = await self.connection.get_version()
+            metadata = [(get_client_version_metadata_key(), get_client_version())]
+            version_info =  await self.config_service.GetVersion(
+                protobuf.empty_pb2.Empty(), metadata=metadata
+            )
+
             parsed_version = to_parsed_version(version_info.version)
             min_server_version = get_min_server_version()
             if parsed_version is not None:
@@ -562,10 +567,9 @@ class Connection(_base_connection.Connection):
         super().__init__(*args, **kwargs)
 
     async def get_version(self) -> VersionInfo:
-        metadata = [(get_client_version_metadata_key(), get_client_version())]
         return VersionInfo._from_proto(
             await self.config_service.GetVersion(
-                protobuf.empty_pb2.Empty(), metadata=metadata
+                protobuf.empty_pb2.Empty()
             )
         )
 
@@ -601,13 +605,13 @@ class Connection(_base_connection.Connection):
     def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
         session = self.Session(
             calc_service=self.calc_service,
+            config_service=self.config_service,
             hydsim_service=self.hydsim_service,
             model_service=self.model_service,
             model_definition_service=self.model_definition_service,
             session_service=self.session_service,
             time_series_service=self.time_series_service,
             availability_service=self.availability_service,
-            connection=self,
             session_id=session_id,
         )
         return session

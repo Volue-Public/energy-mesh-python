@@ -36,8 +36,8 @@ from volue.mesh._common import (
 )
 from volue.mesh._version_compatibility import (
     get_client_version,
-    get_min_server_version,
     get_client_version_metadata_key,
+    get_min_server_version,
     to_parsed_version,
 )
 from volue.mesh.availability._availability import Availability
@@ -539,7 +539,10 @@ class Connection(_base_connection.Connection):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        version_info = self.get_version()
+        metadata = [(get_client_version_metadata_key(), get_client_version())]
+        version_info = self.config_service.GetVersion(
+            protobuf.empty_pb2.Empty(), metadata=metadata
+        )
         parsed_version = to_parsed_version(version_info.version)
         min_server_version = get_min_server_version()
         if parsed_version is not None:
@@ -549,10 +552,10 @@ class Connection(_base_connection.Connection):
                 )
 
     def get_version(self) -> VersionInfo:
-        metadata = [(get_client_version_metadata_key(), get_client_version())]
+
         return VersionInfo._from_proto(
             self.config_service.GetVersion(
-                protobuf.empty_pb2.Empty(), metadata=metadata
+                protobuf.empty_pb2.Empty()
             )
         )
 
