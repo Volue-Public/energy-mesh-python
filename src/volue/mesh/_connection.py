@@ -554,9 +554,7 @@ class Connection(_base_connection.Connection):
     def get_version(self) -> VersionInfo:
 
         return VersionInfo._from_proto(
-            self.config_service.GetVersion(
-                protobuf.empty_pb2.Empty()
-            )
+            self.config_service.GetVersion(protobuf.empty_pb2.Empty())
         )
 
     def get_user_identity(self) -> UserIdentity:

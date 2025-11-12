@@ -25,6 +25,7 @@ def get_client_version() -> str:
 
 CLIENT_VERSION = get_client_version()
 
+
 def get_client_version_metadata_key() -> str:
     return CLIENT_VERSION_METADATA_KEY
 
@@ -49,6 +50,7 @@ def to_parsed_version(version: str) -> Optional[ParsedVersion]:
 
 
 MINIMUM_SERVER_VERSION = to_parsed_version(MINIMUM_SERVER_VERSION_STR)
+
 
 def get_min_server_version() -> Optional[ParsedVersion]:
     return MINIMUM_SERVER_VERSION

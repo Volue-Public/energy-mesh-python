@@ -215,9 +215,12 @@ No additional dependencies should be needed after running the pip install.
 Version compatibility
 =====================
 
-The Mesh Python SDK will perform the version compatibility check when connecting to the Mesh server.
-It will ask the server for its version number and will validate it according to the rules
-found in the :doc:`versions` section.
+The Mesh Python SDK will perform the version compatibility check:
+- when connecting to the Mesh server for the synchronous code
+- when creating a Mesh session for the asynchronous code
+
+The Mesh Python SDK will ask the server for its version number
+and will validate it according to the rules found in the :doc:`versions` section.
 
 The Mesh server will also perform the version compatibility check based on the version
 sent by the Mesh Python SDK in the gRPC request metadata.

@@ -134,7 +134,7 @@ class Connection(_base_connection.Connection):
 
         async def open(self) -> None:
             metadata = [(get_client_version_metadata_key(), get_client_version())]
-            version_info =  await self.config_service.GetVersion(
+            version_info = await self.config_service.GetVersion(
                 protobuf.empty_pb2.Empty(), metadata=metadata
             )
 
@@ -568,9 +568,7 @@ class Connection(_base_connection.Connection):
 
     async def get_version(self) -> VersionInfo:
         return VersionInfo._from_proto(
-            await self.config_service.GetVersion(
-                protobuf.empty_pb2.Empty()
-            )
+            await self.config_service.GetVersion(protobuf.empty_pb2.Empty())
         )
 
     async def get_user_identity(self) -> UserIdentity:
