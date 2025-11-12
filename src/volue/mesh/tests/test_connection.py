@@ -38,8 +38,9 @@ def test_connection_throws_if_mesh_server_version_is_incompatible(mocker):
     # When the channel is not None
     # the configuration service is populated
     mock_channel = mocker.Mock()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError) as e:
         Connection(channel=mock_channel)
+    assert "connecting to incompatible server version" in str(e.value)
 
 
 @pytest.mark.server

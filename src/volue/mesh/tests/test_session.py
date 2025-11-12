@@ -119,10 +119,10 @@ async def test_async_session_throws_if_mesh_server_version_is_incompatible(
     async_connection.config_service.GetVersion = async_mock
 
     # Expect the exception
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RuntimeError) as e:
         async with async_connection.create_session() as _:
             pass
-
+    assert "connecting to incompatible server version" in str(e.value)
 
 @pytest.mark.database
 def test_commit(connection):
