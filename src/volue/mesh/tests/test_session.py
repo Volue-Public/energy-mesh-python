@@ -106,9 +106,11 @@ async def test_sessions_using_async_contextmanager(async_connection):
 
 
 @pytest.mark.asyncio
-async def test_async_session_throws_if_mesh_server_version_is_incompatible(async_connection, mocker):
-
-    # Mock working with an old Mesh version
+async def test_async_session_throws_if_mesh_server_version_is_incompatible(
+    async_connection, mocker
+):
+    # Mock working with an old Mesh version,
+    # this simulates a `VersionInfo` type.
     mock_response = mocker.Mock()
     mock_response.version = "2.1.0"
 

@@ -8,6 +8,7 @@ import pytest
 
 from volue.mesh._connection import Connection
 
+
 @pytest.mark.server
 def test_get_version(connection):
     """Check if the server can respond with its version."""
@@ -17,15 +18,17 @@ def test_get_version(connection):
     assert len(version_info.version) >= 7
     assert version_info.name == "Volue Mesh Server"
 
+
 def test_connection_throws_if_mesh_server_version_is_incompatible(mocker):
-    # Mock working with an old Mesh version
+    # Mock working with an old Mesh version,
+    # this simulates a `VersionInfo` type.
     mock_response = mocker.Mock()
     mock_response.version = "2.1.0"
 
-    # Patch get_version method before connection creation
+    # Patch _get_version method before connection creation
     mocker.patch(
-        "volue.mesh._connection.Connection._get_version",
-        return_value=mock_response)
+        "volue.mesh._connection.Connection._get_version", return_value=mock_response
+    )
 
     with pytest.raises(RuntimeError):
         Connection(channel=mocker.Mock())
