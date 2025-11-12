@@ -541,7 +541,6 @@ class Connection(_base_connection.Connection):
         _validate_server_version(version_info)
 
     def get_version(self) -> VersionInfo:
-
         return VersionInfo._from_proto(
             self.config_service.GetVersion(protobuf.empty_pb2.Empty())
         )
