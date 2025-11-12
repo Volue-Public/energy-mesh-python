@@ -630,7 +630,7 @@ def _validate_server_version(version_info: config_pb2.VersionInfo):
     Validates the Mesh server version retrieved via GetVersion RPC against
     minimum supported version.
 
-    Throws an exception is the client version
+    Throws an exception if the client version
     is not compatible with the server version.
     """
     parsed_version = to_parsed_version(version_info.version)
