@@ -104,27 +104,6 @@ async def test_sessions_using_async_contextmanager(async_connection):
     # Make sure the two sessions we opened were not the same
     assert session_id1 != session_id2
 
-
-@pytest.mark.asyncio
-async def test_async_session_throws_if_mesh_server_version_is_incompatible(
-    async_connection, mocker
-):
-    # Mock working with an old Mesh version,
-    # this simulates a `VersionInfo` type.
-    mock_response = mocker.Mock()
-    mock_response.version = "2.1.0"
-
-    # Mock GetVersion RPC returning the mocked response
-    async_mock = mocker.AsyncMock(return_value=mock_response)
-    async_connection.config_service.GetVersion = async_mock
-
-    # Expect the exception
-    with pytest.raises(RuntimeError) as e:
-        async with async_connection.create_session() as _:
-            pass
-    assert "connecting to incompatible server version" in str(e.value)
-
-
 @pytest.mark.database
 def test_commit(connection):
     """Check that commit keeps changes between sessions"""

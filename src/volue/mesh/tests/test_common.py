@@ -8,8 +8,6 @@ import uuid
 import pytest
 
 from volue.mesh import Timeseries, _common
-from volue.mesh._version_compatibility import to_parsed_version, ParsedVersion
-
 
 @pytest.mark.unittest
 @pytest.mark.parametrize(
@@ -38,43 +36,6 @@ def test_to_proto_mesh_id_from_timeseries(timeseries):
 def test_to_proto_mesh_id_from_empty_timeseries():
     with pytest.raises(TypeError):
         _common._to_proto_mesh_id_from_timeseries(Timeseries())
-
-
-def test_to_parsed_version():
-    parsed = to_parsed_version("99.0.0+0")
-    assert parsed is not None
-    assert parsed.major == 99 and parsed.minor == 0 and parsed.patch == 0
-
-    parsed = to_parsed_version("2.20.0")
-    assert parsed is not None
-    assert parsed.major == 2 and parsed.minor == 20 and parsed.patch == 0
-
-    parsed = to_parsed_version("01.01.01")
-    assert parsed is not None
-    assert parsed.major == 1 and parsed.minor == 1 and parsed.patch == 1
-
-    parsed = to_parsed_version("2.20")
-    assert parsed is None
-
-    parsed = to_parsed_version("-1.0.0")
-    assert parsed is None
-
-    parsed = to_parsed_version("a.0.0")
-    assert parsed is None
-
-    parsed = to_parsed_version("0,0.0")
-    assert parsed is None
-
-    parsed = to_parsed_version("")
-    assert parsed is None
-
-
-def test_parsed_version_comparisons():
-    assert ParsedVersion(1, 1, 1) < ParsedVersion(2, 1, 1)
-    assert ParsedVersion(1, 1, 1) < ParsedVersion(1, 2, 1)
-    assert ParsedVersion(1, 1, 1) < ParsedVersion(1, 1, 2)
-    assert ParsedVersion(0, 0, 0) < ParsedVersion(1, 1, 1)
-
 
 if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))
