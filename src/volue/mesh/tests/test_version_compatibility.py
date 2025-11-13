@@ -1,10 +1,12 @@
 """
 Tests for version compatibility checks.
 """
+
 from volue.mesh._version_compatibility import to_parsed_version, ParsedVersion
 from volue.mesh import Connection
 
 import pytest
+
 
 def test_connection_throws_if_mesh_server_version_is_incompatible(mocker):
     # Mock working with an old Mesh version,
