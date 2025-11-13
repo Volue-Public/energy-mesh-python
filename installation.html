@@ -106,6 +106,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#setup-for-developers">Setup for developers</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#tests">Tests</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#version-compatibility">Version compatibility</a></li>
 </ul>
 </li>
 </ul>
@@ -394,6 +395,20 @@ Actions.</p>
 <p>The Mesh Python SDK depends on the Python standard library, but also <a class="reference external" href="https://grpc.io/">gRPC</a> and <a class="reference external" href="https://arrow.apache.org/">Apache Arrow</a>.</p>
 <p>These dependencies are managed, installed and referenced by the library using <a class="reference external" href="https://python-poetry.org/docs/">Poetry</a>.
 No additional dependencies should be needed after running the pip install.</p>
+</div>
+<div class="section" id="version-compatibility">
+<h4>Version compatibility<a class="headerlink" href="#version-compatibility" title="Permalink to this heading">¶</a></h4>
+<p>The Mesh Python SDK will perform the version compatibility check:
+- when connecting to the Mesh server for the synchronous code
+- when creating a Mesh session for the asynchronous code</p>
+<p>The Mesh Python SDK will ask the server for its version number
+and will validate it according to the rules found in the <a class="reference internal" href="versions.html"><span class="doc">Versions</span></a> section.</p>
+<p>The Mesh server will also perform the version compatibility check based on the version
+sent by the Mesh Python SDK in the gRPC request metadata.
+For the version metadata to be correctly populated, the <cite>volue.mesh</cite> package
+should be installed using the <a class="reference internal" href="#setup-for-users"><span class="std std-ref">recommended procedure</span></a>.
+When using the Mesh Python SDK directly from the source,
+the version compatibility check will be skipped.</p>
 </div>
 </div>
 </div>

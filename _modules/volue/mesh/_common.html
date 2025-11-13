@@ -194,6 +194,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.config.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">config_pb2</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.model.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources_pb2</span> <span class="k">as</span> <span class="n">model_resources_pb2</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.time_series.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_series_pb2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._version_compatibility</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">get_min_server_version</span><span class="p">,</span>
+    <span class="n">to_parsed_version</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="AttributesFilter"><a class="viewcode-back" href="../../../api.html#volue.mesh.AttributesFilter">[docs]</a><span class="nd">@dataclass</span>
@@ -338,7 +342,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a Mesh server version information.</span>
 
-<span class="sd">    version - version number, e.g.: 2.5.2.32</span>
+<span class="sd">    version - version number, e.g.: 2.5.2+32</span>
 
 <span class="sd">    name - friendly name of the Mesh server, e.g.: Volue Mesh Server.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -792,6 +796,23 @@
 
         <span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timeseries</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_server_version</span><span class="p">(</span><span class="n">version_info</span><span class="p">:</span> <span class="n">config_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validates the Mesh server version retrieved via GetVersion RPC against</span>
+<span class="sd">    minimum supported version.</span>
+
+<span class="sd">    Throws an exception if the client version</span>
+<span class="sd">    is not compatible with the server version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parsed_version</span> <span class="o">=</span> <span class="n">to_parsed_version</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+    <span class="n">min_server_version</span> <span class="o">=</span> <span class="n">get_min_server_version</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">parsed_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parsed_version</span> <span class="o">&lt;</span> <span class="n">min_server_version</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;connecting to incompatible server version: </span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">, minimum version is </span><span class="si">{</span><span class="n">min_server_version</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_read_proto_numeric_reply</span><span class="p">(</span>

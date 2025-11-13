@@ -210,12 +210,15 @@
     <span class="n">_to_proto_curve_type</span><span class="p">,</span>
     <span class="n">_to_proto_guid</span><span class="p">,</span>
     <span class="n">_to_proto_resolution</span><span class="p">,</span>
+    <span class="n">_validate_server_version</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh._version_compatibility</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_compatibility_check_metadata</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.availability._availability_aio</span><span class="w"> </span><span class="kn">import</span> <span class="n">Availability</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.forecast</span><span class="w"> </span><span class="kn">import</span> <span class="n">ForecastFunctionsAsync</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.history</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryFunctionsAsync</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.statistical</span><span class="w"> </span><span class="kn">import</span> <span class="n">StatisticalFunctionsAsync</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.calc.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransformFunctionsAsync</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.config.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">config_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.availability.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">availability_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.calc.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_pb2_grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.proto.hydsim.v1alpha</span><span class="w"> </span><span class="kn">import</span> <span class="n">hydsim_pb2_grpc</span>
@@ -240,6 +243,7 @@
         <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">calc_service</span><span class="p">:</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span><span class="p">,</span>
+            <span class="n">config_service</span><span class="p">:</span> <span class="n">config_pb2_grpc</span><span class="o">.</span><span class="n">ConfigurationServiceStub</span><span class="p">,</span>
             <span class="n">hydsim_service</span><span class="p">:</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span><span class="p">,</span>
             <span class="n">model_service</span><span class="p">:</span> <span class="n">model_pb2_grpc</span><span class="o">.</span><span class="n">ModelServiceStub</span><span class="p">,</span>
             <span class="n">model_definition_service</span><span class="p">:</span> <span class="n">model_definition_pb2_grpc</span><span class="o">.</span><span class="n">ModelDefinitionServiceStub</span><span class="p">,</span>
@@ -260,6 +264,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">availability</span> <span class="o">=</span> <span class="n">Availability</span><span class="p">(</span>
                 <span class="n">availability_service</span><span class="o">=</span><span class="n">availability_service</span><span class="p">,</span> <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span>
             <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_service</span> <span class="o">=</span> <span class="n">config_service</span>
 
         <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
@@ -297,6 +302,12 @@
             <span class="p">)</span>
 
 <div class="viewcode-block" id="Connection.Session.open"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.Session.open">[docs]</a>        <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">version_info</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_service</span><span class="o">.</span><span class="n">GetVersion</span><span class="p">(</span>
+                <span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">(),</span> <span class="n">metadata</span><span class="o">=</span><span class="n">get_compatibility_check_metadata</span><span class="p">()</span>
+            <span class="p">)</span>
+
+            <span class="n">_validate_server_version</span><span class="p">(</span><span class="n">version_info</span><span class="p">)</span>
+
             <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_service</span><span class="o">.</span><span class="n">StartSession</span><span class="p">(</span><span class="n">protobuf</span><span class="o">.</span><span class="n">empty_pb2</span><span class="o">.</span><span class="n">Empty</span><span class="p">())</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">_from_proto_guid</span><span class="p">(</span><span class="n">reply</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
 
@@ -752,8 +763,9 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../../api.html#volue.mesh.aio.Connection.connect_to_session">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span>
             <span class="n">calc_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span><span class="p">,</span>
+            <span class="n">config_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config_service</span><span class="p">,</span>
             <span class="n">hydsim_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="p">,</span>
             <span class="n">model_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_service</span><span class="p">,</span>
             <span class="n">model_definition_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_definition_service</span><span class="p">,</span>
@@ -761,7 +773,8 @@
             <span class="n">time_series_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_series_service</span><span class="p">,</span>
             <span class="n">availability_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">availability_service</span><span class="p">,</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">session</span></div></div>
 </pre></div>
 
            </div>

@@ -330,7 +330,7 @@ environments:</p>
 <span class="w">          </span><span class="no">python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span>
 <span class="w">          </span><span class="no">python ./repo/src/volue/mesh/examples/get_version.py</span>
 <span class="w">          </span><span class="no">if ($LASTEXITCODE) { exit $LASTEXITCODE }</span>
-<span class="w">          </span><span class="no">python -m pip install pytest pytest-asyncio==0.21.2 pandas</span>
+<span class="w">          </span><span class="no">python -m pip install pytest pytest-asyncio==0.21.2 pandas pytest-mock==3.15.1</span>
 <span class="w">          </span><span class="no">python -m pytest ./repo/src/volue/mesh/tests -m &quot;not authentication and not long&quot;</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Ubuntu 22.04 (WSL)</span>
@@ -362,7 +362,7 @@ environments:</p>
 <span class="w">          </span><span class="no">sudo apt-get install --yes python${{ matrix.python-version }}-dev</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} ./repo/src/volue/mesh/examples/get_version.py</span>
-<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.2 pandas</span>
+<span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pip install pytest pytest-asyncio==0.21.2 pandas pytest-mock==3.15.1</span>
 <span class="w">          </span><span class="no">python${{ matrix.python-version }} -m pytest ./repo/src/volue/mesh/tests -m &quot;not authentication and not long&quot;</span>
 </pre></div>
 </div>

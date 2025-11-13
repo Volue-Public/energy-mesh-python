@@ -211,3 +211,20 @@ These dependencies are managed, installed and referenced by the library using `P
 No additional dependencies should be needed after running the pip install.
 
 .. _Poetry: https://python-poetry.org/docs/
+
+Version compatibility
+=====================
+
+The Mesh Python SDK will perform the version compatibility check:
+- when connecting to the Mesh server for the synchronous code
+- when creating a Mesh session for the asynchronous code
+
+The Mesh Python SDK will ask the server for its version number
+and will validate it according to the rules found in the :doc:`versions` section.
+
+The Mesh server will also perform the version compatibility check based on the version
+sent by the Mesh Python SDK in the gRPC request metadata.
+For the version metadata to be correctly populated, the `volue.mesh` package
+should be installed using the :ref:`recommended procedure <Setup for users>`.
+When using the Mesh Python SDK directly from the source,
+the version compatibility check will be skipped.
