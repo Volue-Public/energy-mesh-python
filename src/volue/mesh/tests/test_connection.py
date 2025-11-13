@@ -6,8 +6,6 @@ import sys
 
 import pytest
 
-from volue.mesh._connection import Connection
-
 
 @pytest.mark.server
 def test_get_version(connection):
@@ -17,6 +15,7 @@ def test_get_version(connection):
     # E.g.: 0.0.0.0
     assert len(version_info.version) >= 7
     assert version_info.name == "Volue Mesh Server"
+
 
 @pytest.mark.server
 @pytest.mark.asyncio

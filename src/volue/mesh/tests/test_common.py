@@ -9,6 +9,7 @@ import pytest
 
 from volue.mesh import Timeseries, _common
 
+
 @pytest.mark.unittest
 @pytest.mark.parametrize(
     "timeseries",
@@ -36,6 +37,7 @@ def test_to_proto_mesh_id_from_timeseries(timeseries):
 def test_to_proto_mesh_id_from_empty_timeseries():
     with pytest.raises(TypeError):
         _common._to_proto_mesh_id_from_timeseries(Timeseries())
+
 
 if __name__ == "__main__":
     sys.exit(pytest.main(sys.argv))
