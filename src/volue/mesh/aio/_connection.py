@@ -37,12 +37,15 @@ from volue.mesh._common import (
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_resolution,
+    _validate_server_version,
 )
+from volue.mesh._version_compatibility import get_compatibility_check_metadata
 from volue.mesh.availability._availability_aio import Availability
 from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
+from volue.mesh.proto.config.v1alpha import config_pb2_grpc
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
@@ -67,6 +70,7 @@ class Connection(_base_connection.Connection):
         def __init__(
             self,
             calc_service: calc_pb2_grpc.CalculationServiceStub,
+            config_service: config_pb2_grpc.ConfigurationServiceStub,
             hydsim_service: hydsim_pb2_grpc.HydsimServiceStub,
             model_service: model_pb2_grpc.ModelServiceStub,
             model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
@@ -87,6 +91,7 @@ class Connection(_base_connection.Connection):
             self.availability = Availability(
                 availability_service=availability_service, session_id=session_id
             )
+            self.config_service = config_service
 
         async def __aenter__(self):
             """
@@ -124,6 +129,12 @@ class Connection(_base_connection.Connection):
             )
 
         async def open(self) -> None:
+            version_info = await self.config_service.GetVersion(
+                protobuf.empty_pb2.Empty(), metadata=get_compatibility_check_metadata()
+            )
+
+            _validate_server_version(version_info)
+
             reply = await self.session_service.StartSession(protobuf.empty_pb2.Empty())
             self.session_id = _from_proto_guid(reply.session_id)
 
@@ -579,8 +590,9 @@ class Connection(_base_connection.Connection):
         return self.connect_to_session(session_id=None)
 
     def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
-        return self.Session(
+        session = self.Session(
             calc_service=self.calc_service,
+            config_service=self.config_service,
             hydsim_service=self.hydsim_service,
             model_service=self.model_service,
             model_definition_service=self.model_definition_service,
@@ -589,3 +601,4 @@ class Connection(_base_connection.Connection):
             availability_service=self.availability_service,
             session_id=session_id,
         )
+        return session

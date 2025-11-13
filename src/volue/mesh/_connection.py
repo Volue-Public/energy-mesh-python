@@ -33,7 +33,9 @@ from volue.mesh._common import (
     _to_proto_curve_type,
     _to_proto_guid,
     _to_proto_resolution,
+    _validate_server_version,
 )
+from volue.mesh._version_compatibility import get_compatibility_check_metadata
 from volue.mesh.availability._availability import Availability
 from volue.mesh.calc.forecast import ForecastFunctions
 from volue.mesh.calc.history import HistoryFunctions
@@ -533,6 +535,10 @@ class Connection(_base_connection.Connection):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        version_info = self.config_service.GetVersion(
+            protobuf.empty_pb2.Empty(), metadata=get_compatibility_check_metadata()
+        )
+        _validate_server_version(version_info)
 
     def get_version(self) -> VersionInfo:
         return VersionInfo._from_proto(
