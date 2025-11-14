@@ -17,7 +17,8 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Mesh version compatibility mechanism.
+  See documentation :ref:`Version compatibility` for more information. :pull:`583`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -46,8 +47,8 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Support for availability events. :issue:`523`
-  See :doc:`mesh_availability`.
+- Support for availability events.
+  See :doc:`mesh_availability` for more information. :issue:`523`
 
 - Support for Python 3.13 :pull:`558`
 
