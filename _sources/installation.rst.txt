@@ -212,6 +212,8 @@ No additional dependencies should be needed after running the pip install.
 
 .. _Poetry: https://python-poetry.org/docs/
 
+.. _Version compatibility:
+
 Version compatibility
 =====================
 
