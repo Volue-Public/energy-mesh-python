@@ -68,8 +68,6 @@ def test_update_timeseries_attribute_definition_with_template_expression_by_path
     )
     assert updated_attribute.definition.template_expression == new_template_expression
 
-    session.rollback()
-
 
 @pytest.mark.database
 def test_update_timeseries_attribute_definition_with_template_expression_by_object(
@@ -94,8 +92,6 @@ def test_update_timeseries_attribute_definition_with_template_expression_by_obje
         ATTRIBUTE_PATH, full_attribute_info=True
     )
     assert updated_attribute.definition.template_expression == new_template_expression
-
-    session.rollback()
 
 
 @pytest.mark.database
@@ -157,8 +153,6 @@ def test_update_timeseries_attribute_definition_both_fields(session):
     assert updated_attribute.definition.template_expression == new_template_expression
     assert updated_attribute.definition.description == new_description
 
-    session.rollback()
-
 
 @pytest.mark.database
 def test_update_timeseries_attribute_definition_without_parameters_to_update(session):
@@ -184,7 +178,9 @@ def test_local_expression_takes_precedence_over_template_expression(session):
         ATTRIBUTE_PATH, full_attribute_info=True
     )
     original_template_expression = attribute.definition.template_expression
-    original_local_expression = attribute.expression if attribute.is_local_expression else None
+    original_local_expression = (
+        attribute.expression if attribute.is_local_expression else None
+    )
 
     # First, update the template expression
     session.update_timeseries_attribute_definition(

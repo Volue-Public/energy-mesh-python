@@ -523,6 +523,32 @@ class Session(abc.ABC):
         """
 
     @abc.abstractmethod
+    def update_timeseries_attribute_definition(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+        new_template_expression: Optional[str] = None,
+        new_description: Optional[str] = None,
+    ) -> None:
+        """
+        Update an existing Mesh time series attribute definition.
+
+        Args:
+            target: Mesh time series attribute definition to be updated. It could be a Universal Unique
+                Identifier, a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__,
+                or an AttributeBaseDefinition instance.
+                See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
+            new_template_expression: New template expression for the attribute definition.
+                This will be used by all attribute instances that use this definition and don't have a local expression.
+            new_description: New description for the attribute definition.
+
+        Raises:
+            grpc.RpcError: Error message raised if the gRPC request could not be completed.
+
+        Note:
+            At least one of `new_template_expression` or `new_description` must be provided.
+        """
+
+    @abc.abstractmethod
     def update_link_relation_attribute(
         self,
         target: Union[uuid.UUID, str, AttributeBase],
