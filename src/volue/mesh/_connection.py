@@ -283,6 +283,17 @@ class Connection(_base_connection.Connection):
             )
             self.model_service.UpdateTimeseriesAttribute(request)
 
+        def update_timeseries_attribute_definition(
+            self,
+            target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+            new_template_expression: Optional[str] = None,
+            new_description: Optional[str] = None,
+        ) -> None:
+            request = super()._prepare_update_timeseries_attribute_definition_request(
+                target, new_template_expression, new_description
+            )
+            self.model_definition_service.UpdateTimeseriesAttributeDefinition(request)
+
         def update_link_relation_attribute(
             self,
             target: Union[uuid.UUID, str, AttributeBase],

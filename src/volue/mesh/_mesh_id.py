@@ -25,6 +25,21 @@ def _to_proto_attribute_mesh_id(
     return _to_proto_mesh_id(target)
 
 
+def _to_proto_attribute_definition_mesh_id(
+    target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+) -> type.resources_pb2.MeshId:
+    """
+    Accepts attribute definition identifiers (path and ID) and attribute definition instance as
+    input.
+    """
+    if not isinstance(target, (uuid.UUID, str, AttributeBase.AttributeBaseDefinition)):
+        raise TypeError(
+            "need to provide either path (as str), ID (as uuid.UUID) or attribute definition instance"
+        )
+
+    return _to_proto_mesh_id(target)
+
+
 def _to_proto_object_mesh_id(
     target: Union[uuid.UUID, str, Object],
 ) -> type.resources_pb2.MeshId:
@@ -75,7 +90,9 @@ def _to_proto_mesh_id(
     """Accepts path, ID and time series key as input."""
     proto_mesh_id = type.resources_pb2.MeshId()
 
-    if isinstance(target, AttributeBase) or isinstance(target, Object):
+    if isinstance(
+        target, (AttributeBase, Object, AttributeBase.AttributeBaseDefinition)
+    ):
         proto_mesh_id.id.CopyFrom(_to_proto_guid(target.id))
         proto_mesh_id.path = target.path
     elif isinstance(target, uuid.UUID):

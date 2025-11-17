@@ -47,6 +47,7 @@ from ._common import (
     _to_proto_utcinterval,
 )
 from ._mesh_id import (
+    _to_proto_attribute_definition_mesh_id,
     _to_proto_attribute_mesh_id,
     _to_proto_object_mesh_id,
     _to_proto_read_timeseries_mesh_id,
@@ -1367,6 +1368,31 @@ class Session(abc.ABC):
         if new_timeseries_resource_key is not None:
             fields_to_update.append("new_timeseries_resource_key")
             request.new_timeseries_resource_key = new_timeseries_resource_key
+
+        request.field_mask.CopyFrom(
+            protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)
+        )
+        return request
+
+    def _prepare_update_timeseries_attribute_definition_request(
+        self,
+        target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+        new_template_expression: Optional[str],
+        new_description: Optional[str],
+    ) -> model_definition_pb2.UpdateTimeseriesAttributeDefinitionRequest:
+        request = model_definition_pb2.UpdateTimeseriesAttributeDefinitionRequest(
+            session_id=_to_proto_guid(self.session_id),
+            attribute_definition_id=_to_proto_attribute_definition_mesh_id(target),
+        )
+
+        fields_to_update = []
+        if new_template_expression is not None:
+            fields_to_update.append("new_template_expression")
+            request.new_template_expression = new_template_expression
+
+        if new_description is not None:
+            fields_to_update.append("new_description")
+            request.new_description = new_description
 
         request.field_mask.CopyFrom(
             protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)
