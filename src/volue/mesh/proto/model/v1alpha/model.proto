@@ -3,7 +3,6 @@ syntax = "proto3";
 package volue.mesh.grpc.model.v1alpha;
 
 import "google/protobuf/field_mask.proto";
-import "google/protobuf/timestamp.proto";
 
 import "volue/mesh/proto/model/v1alpha/resources.proto";
 import "volue/mesh/proto/type/resources.proto";
@@ -102,12 +101,6 @@ service ModelService {
   // attribute (`RatingCurveAttribute`).
   // See `UpdateRatingCurveVersionsRequest` for more information.
   rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
-
-  // Get the validity of the object if it has.
-  rpc GetValidity(GetValidityRequest) returns (GetValidityResponse) {}
-
-  // Update validity of the object.
-  rpc UpdateValidity(UpdateValidityRequest) returns (UpdateValidityResponse) {}
 
   // Search for link relation attributes pointing to a given object.
   // See `SearchLinkedFromRequest` for more information.
@@ -558,26 +551,6 @@ message UpdateXySetsRequest {
 }
 
 message UpdateXySetsResponse {
-}
-
-message GetValidityRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId object_id = 2;
-}
-
-message GetValidityResponse {
-  optional google.protobuf.Timestamp valid_from = 1;
-  optional google.protobuf.Timestamp valid_until = 2;
-}
-
-message UpdateValidityRequest {
-  volue.mesh.grpc.type.Guid session_id = 1;
-  volue.mesh.grpc.type.MeshId object_id = 2;
-  optional google.protobuf.Timestamp valid_from = 3;
-  optional google.protobuf.Timestamp valid_until = 4;
-}
-
-message UpdateValidityResponse {
 }
 
 message SearchLinkedFromRequest {
