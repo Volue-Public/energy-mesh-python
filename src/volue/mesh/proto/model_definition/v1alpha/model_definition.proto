@@ -185,8 +185,8 @@ message SearchObjectDefinitionsRequest {
   // It is either a namespace OR model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
-  // If set to true then all child namespaces will be also included in the
-  // search. Otherwise only object definitions that are direct children of the
+  // If set to true, then all child namespaces will be also included in the
+  // search. Otherwise, only object definitions that are direct children of the
   // given namespace will be returned in the response.
   bool recursive_search = 3;
 
@@ -301,8 +301,8 @@ message SearchAttributeTypesRequest {
   // Namespace OR model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
-  // If set to true then all child namespaces will be also included in the
-  // search. Otherwise only attribute types that are direct children of the
+  // If set to true, then all child namespaces will be also included in the
+  // search. Otherwise, only attribute types that are direct children of the
   // given namespace will be returned in the response.
   bool recursive_search = 3;
 
@@ -372,11 +372,12 @@ message CreateSimpleAttributeTypeRequest {
   string description = 4;
   string expression = 5;
 
-  // Valid only for integer and double attributes.
-  volue.mesh.grpc.type.Guid unit_of_measurement_id = 6;
+  // Can be optionally set only for integer and double attribute types.
+  // Must not be set for other attribute types.
+  optional volue.mesh.grpc.type.Guid unit_of_measurement_id = 6;
 
-  // Must be set to simple attribute definition value.
-  // Simple attribute definitions which are:
+  // Must be set to simple attribute value type.
+  // Simple attribute types are:
   // - double
   // - integer
   // - boolean
@@ -575,8 +576,8 @@ message SearchNamespacesRequest {
   // It is either a namespace OR model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
-  // If set to true then all child namespaces will be also included in the
-  // search. Otherwise only namespaces that are direct children of the
+  // If set to true, then all child namespaces will be also included in the
+  // search. Otherwise, only namespaces that are direct children of the
   // given namespace will be returned in the response.
   bool recursive_search = 3;
 
@@ -593,7 +594,8 @@ message SearchNamespacesRequest {
 message AddRatingCurveAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // ID of the attribute type serving as a base for the attribute definition to be added.
+  // ID of the attribute type serving as a base for the attribute definition to
+  // be added.
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 
   // ID of the object definition to connect to.
@@ -605,7 +607,8 @@ message AddRatingCurveAttributeDefinitionRequest {
 message AddLinkRelationAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // ID of the attribute type serving as a base for the attribute definition to be added.
+  // ID of the attribute type serving as a base for the attribute definition to
+  // be added.
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 
   // ID of the object definition to connect to.
@@ -613,8 +616,6 @@ message AddLinkRelationAttributeDefinitionRequest {
 
   string description = 4;
 
-  // For versioned link relation attribute definitions,
-  // cardinality MUST BE set to 1.
   int32 cardinality = 5;
   bool versioned = 6;
 }
@@ -622,7 +623,8 @@ message AddLinkRelationAttributeDefinitionRequest {
 message AddOwnershipRelationAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // ID of the attribute type serving as a base for the attribute definition to be added.
+  // ID of the attribute type serving as a base for the attribute definition to
+  // be added.
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 
   // ID of the object definition to connect to.
@@ -635,7 +637,8 @@ message AddOwnershipRelationAttributeDefinitionRequest {
 message AddSimpleAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // ID of the attribute type serving as a base for the attribute definition to be added.
+  // ID of the attribute type serving as a base for the attribute definition to
+  // be added.
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 
   // ID of the object definition to connect to.
@@ -645,19 +648,49 @@ message AddSimpleAttributeDefinitionRequest {
   int32 cardinality = 5;
 
   // Valid for double, integer, boolean, UTC time and string attribute values.
+  //
+  // If allowed values are set, then the default value must be one of the
+  // allowed values.
+  // If allowed values are not set, but upper and lower thresholds are set,
+  // then the default value must be within minimum and maximum range.
+  // If neither allowed values nor upper and lower thresholds are set, then the
+  // default value has no restrictions.
+  // Setting default value is optional. If not set, then the default values is:
+  // - false for boolean attributes.
+  // - zero for numeric (integer and double) attributes.
+  // - empty string for string attribute.
+  // - undefined Mesh timestamp for UTC time attribute.
   optional AttributeDefinitionDefaultValue default_value = 6;
 
   // Valid for double, integer, UTC time attribute values.
+  // If not defined, there is no maximum attribute value limitation, except
+  // when allowed values are set for integer and double attribute values.
+  // When allowed values are set upper threshold must not be set.
   optional AttributeDefinitionThresholdValue upper_threshold = 7;
 
   // Valid for double, integer, UTC time attribute values.
+  // If not defined, there is no minimum attribute value limitation, except
+  // when allowed values are set for integer and double attribute values.
+  // When allowed values are set lower threshold must not be set.
   optional AttributeDefinitionThresholdValue lower_threshold = 8;
+
+  // Defines set of allowed attribute values
+  // 
+  // - Allowed values are applied only to integer, double and string attribute
+  //   values.
+  // - Allowed values have precedence over upper and lower thresholds for 
+  //   integer and double attribute values, therefore if defined, upper and 
+  //   lower thresholds must be left empty.
+  //
+  // If not defined, then upper and lower thresholds are used.
+  repeated AttributeDefinitionAllowedValue allowed_values = 9;
 }
 
 message AddTimeseriesAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // ID of the attribute type serving as a base for the attribute definition to be added.
+  // ID of the attribute type serving as a base for the attribute definition to
+  // be added.
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 
   // ID of the object definition to connect to.
@@ -665,12 +698,16 @@ message AddTimeseriesAttributeDefinitionRequest {
 
   string description = 4;
   int32 cardinality = 5;
+
+  // The template_expression is set only if not empty.
+  string template_expression = 6;
 }
 
 message AddXySetAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // ID of the attribute type serving as a base for the attribute definition to be added.
+  // ID of the attribute type serving as a base for the attribute definition to
+  // be added.
   volue.mesh.grpc.type.MeshId attribute_type_id = 2;
 
   // ID of the object definition to connect to.
@@ -678,8 +715,13 @@ message AddXySetAttributeDefinitionRequest {
 
   string description = 4;
 
+  // When setting XySetAxis its UnitOfMeasurement name field must be empty.
   XySetAxis x_axis = 5;
+  
+  // When setting XySetAxis its UnitOfMeasurement name field must be empty.
   XySetAxis y_axis = 6;
+
+  // When setting XySetAxis its UnitOfMeasurement name field must be empty.
   optional XySetAxis z_axis = 7;
 
   bool versioned = 8;
@@ -713,6 +755,7 @@ message UpdateRelationAttributeDefinitionRequest {
   google.protobuf.FieldMask field_mask = 3;
 
   string new_description = 4;
+  int32 new_cardinality = 5;
 }
 
 message UpdateSimpleAttributeDefinitionRequest {
@@ -728,15 +771,58 @@ message UpdateSimpleAttributeDefinitionRequest {
   google.protobuf.FieldMask field_mask = 3;
 
   string new_description = 4;
+  int32 new_cardinality = 5;
 
   // Valid for double, integer, boolean, UTC time and string attribute values.
-  optional AttributeDefinitionDefaultValue new_default_value = 5;
+  //
+  // If new allowed values are set to non-empty value, then the new default
+  // value must be one of the allowed values (if current default value is not).
+  // If allowed values are not set, but new upper or lower thresholds are set,
+  // then the new default value must be within minimum and maximum range (if 
+  // current default value is not).
+  // If neither allowed values nor upper and lower thresholds are set, then the
+  // new default value has no restrictions.
+  //
+  // To unset a UTC time attribute default value, include 'new_default_value'
+  // in the field mask but do not provide the value.
+  // 
+  // Setting a double (array) attribute's default value to NaN is accepted
+  // regardless of new/existing upper and lower thresholds. 
+  // NOTE: If allowed values are set, NaN still has to be one of them
+  // to set it as the new default value.
+  optional AttributeDefinitionDefaultValue new_default_value = 6;
 
   // Valid for double, integer, UTC time attribute values.
-  optional AttributeDefinitionThresholdValue new_upper_threshold = 6;
+  // When new upper threshold is set, new allowed values must be not be defined
+  // for double and integer attribute definitions (either already empty or 
+  // cleared by setting empty new allowed values).
+  // When new non-empty allowed values are set, a new upper threshold must not
+  // be set.
+  //
+  // To unset a UTC time attribute upper threshold, include 'new_upper_threshold'
+  // in the field mask but do not provide the value.
+  optional AttributeDefinitionThresholdValue new_upper_threshold = 7;
 
   // Valid for double, integer, UTC time attribute values.
-  optional AttributeDefinitionThresholdValue new_lower_threshold = 7;
+  // When new lower threshold is set, new allowed values must be not be defined
+  // for double and integer attribute definitions (either already empty or 
+  // cleared by setting empty new allowed values).
+  // When new non-empty allowed values are set, a new lower threshold must not 
+  // be set.
+  //
+  // To unset a UTC time attribute lower threshold, include 'new_lower_threshold'
+  // in the field mask but do not provide the value.
+  optional AttributeDefinitionThresholdValue new_lower_threshold = 8;
+
+  // Defines set of new allowed attribute values
+  // 
+  // - Allowed values are applied only to integer, double and string attribute
+  //   values.
+  // - Allowed values take precedence over existing upper and lower thresholds 
+  //   for integer and double attribute values.
+  // - When new allowed values are set to non-empty value, new upper and lower 
+  //   threshold must not be set.
+  repeated AttributeDefinitionAllowedValue new_allowed_values = 9;
 }
 
 message UpdateTimeseriesAttributeDefinitionRequest {
@@ -752,8 +838,11 @@ message UpdateTimeseriesAttributeDefinitionRequest {
   google.protobuf.FieldMask field_mask = 3;
 
   string new_description = 4;
-  string new_template_expression = 5;
+  int32 new_cardinality = 5;
+
+  string new_template_expression = 6;
 }
+
 
 message UpdateXySetAttributeDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
@@ -768,8 +857,28 @@ message UpdateXySetAttributeDefinitionRequest {
   google.protobuf.FieldMask field_mask = 3;
 
   string new_description = 4;
+
+  // When updating XySetAxis its UnitOfMeasurement name field must be empty.
   XySetAxis new_x_axis = 5;
+
+  // When updating XySetAxis its UnitOfMeasurement name field must be empty.
   XySetAxis new_y_axis = 6;
+
+  // The Z axis is handled in the following way:
+  // - If the attribute definition has Z axis and the `new_z_axis` is set in
+  //   the field mask, but no `new_z_axis` value is provided, then the existing
+  //   Z axis will be deleted and the attribute will have only XY axes after
+  //   the update operation.
+  // - If the attribute definition has Z axis, the `new_z_axis` is set in the
+  //   field mask, and `new_z_axis` value is provided, then the new Z axis will
+  //   replace the old one and the attribute will still have XYZ axes after the
+  //   update operation.
+  // - If the attribute definition does not have Z axis, the `new_z_axis` is
+  //   set in the field mask, and `new_z_axis` value is provided, then the new
+  //   Z axis will be added and the attribute will have XYZ axes after the
+  //   update operation.
+  // When updating XySetAxis its UnitOfMeasurement name field must be empty.
+  optional XySetAxis new_z_axis = 7;
 }
 
 message UpdateAttributeDefinitionResponse {
@@ -929,7 +1038,7 @@ message ListUnitsOfMeasurementResponse {
 message GetExtendedMetadataRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // Identifier of the attribute defintion, object definition or namespace to
+  // Identifier of the attribute definition, object definition or namespace to
   // get the extended metadata from.
   volue.mesh.grpc.type.MeshId id = 2;
 }
@@ -941,7 +1050,7 @@ message GetExtendedMetadataResponse {
 message SetExtendedMetadataRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
-  // Identifier of the attribute defintion, object definition or namespace
+  // Identifier of the attribute definition, object definition or namespace
   // where the extended metadata should be set.
   volue.mesh.grpc.type.MeshId id = 2;
 

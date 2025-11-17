@@ -98,6 +98,7 @@ message Int64AttributeDefinition {
   int64 minimum_value = 2;
   int64 maximum_value = 3;
   volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 4;
+  repeated int64 allowed_values = 5;
 }
 
 message DoubleAttributeDefinition {
@@ -105,6 +106,7 @@ message DoubleAttributeDefinition {
   double minimum_value = 2;
   double maximum_value = 3;
   volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 4;
+  repeated double allowed_values = 5;
 }
 
 message BooleanAttributeDefinition {
@@ -113,6 +115,7 @@ message BooleanAttributeDefinition {
 
 message StringAttributeDefinition {
   string default_value = 1;
+  repeated string allowed_values = 2;
 }
 
 message UtcTimeAttributeDefinition {
@@ -174,6 +177,14 @@ message AttributeDefinitionThresholdValue {
     int64 int_value = 1;
     double double_value = 2;
     google.protobuf.Timestamp utc_time_value = 3;
+  }
+}
+
+message AttributeDefinitionAllowedValue {
+  oneof value_oneof {
+    int64 int_value = 1;
+    double double_value = 2;
+    string string_value = 3;
   }
 }
 

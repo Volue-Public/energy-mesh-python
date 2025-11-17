@@ -47,7 +47,8 @@ message Curve {
 // Every field uniquely identifies a Mesh Object, Attribute or other types.
 // For request messages it is enough to provide just one of the fields:
 // ID, path or time series key.
-// Note: time series key is applicable only for resource time series: physical or virtual.
+// Note: time series key is applicable only for resource time series:
+// physical or virtual.
 message MeshId {
   optional Guid id = 1;
   optional string path = 2;
