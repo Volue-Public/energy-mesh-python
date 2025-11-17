@@ -58,6 +58,11 @@ message RunInflowCalculationRequest {
   // issues with inflow calculations. For performance reasons this should be
   // false when not trying to diagnose an issue.
   //
+  // By default, the maximum inbound gRPC message size is 4MB. When Mesh server
+  // returns datasets for longer simulation intervals the gRPC message size
+  // may exceed this limit. In such cases you may increase the maximum gRPC
+  // inbound message size from client side.
+  //
   // See the HydSimDataset message for more information.
   bool return_datasets = 5;
 }

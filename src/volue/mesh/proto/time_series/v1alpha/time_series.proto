@@ -38,9 +38,25 @@ import "volue/mesh/proto/type/resources.proto";
 //
 service TimeseriesService {
 
+  // Each time series point occupies 20 bytes. By default, gRPC has a limitation
+  // of 4MB inbound message size. In case of larger data volumes please send
+  // request data in chunks or increase the maximum gRPC inbound message size
+  // from client side.
   rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
   rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
 
+  // Read batch of time series with applied transformation.
+  //
+  // Mesh IDs of the returned time series match the requested Mesh IDs.
+  // Additionally, the order of responses is guaranteed to match the order of
+  // requests. E.g.: in the request user asks for data of 3 time series:
+  // Request: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
+  // Responses: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
+  rpc ReadTransformedTimeseries(ReadTransformedTimeseriesRequest) returns (stream ReadTimeseriesResponse) {}
+
+  // Each time series point occupies 20 bytes. Mesh server has a limitation of
+  // 4MB inbound message size. In case of larger data volumes please send input
+  // data in chunks.
   rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
 
   // Get time series resource.
@@ -80,7 +96,7 @@ service TimeseriesService {
   // Create a new (empty) physical time series resource. Returns the newly
   // created resource.
   //
-  // Any missing components of the requested time series path will be created in
+  // Any missing components of the requested timeseries path will be created in
   // the catalog as well. For example, if we set the CreatePhysicalTimeseriesRequest's
   // 'path' field to "/Path/To/Timeseries/", and its 'name' field to
   // "Test_Timeseries", the entire Path/To/Timeseries/Test_Timeseries sequence
@@ -91,7 +107,7 @@ service TimeseriesService {
   //
   // Note that the 'timeseries_key' field on the returned TimeseriesResource
   // will *not* have a valid value which can be used in other APIs. This is
-  // because the real time series key values are generated afterwards, at the
+  // because the real timeseries key values are generated afterwards, at the
   // commit stage.
   //
   // Note also that the 'path' field on the returned TimeseriesResource won't
@@ -111,12 +127,6 @@ message ReadTimeseriesRequest {
 
   volue.mesh.grpc.type.MeshId timeseries_id = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
-
-  // if we request points from a breakpoint series, the actual points
-  // describing our interval, might be long before the actual interval.
-  // Should we then return the actual point (outside our interval),
-  // or a "fake"/virtual point inside our interval?
-  // TODO: bool allow_virtual_points?
 }
 
 message ReadTimeseriesResponse {
@@ -128,6 +138,81 @@ message ReadTimeseriesStreamRequest{
 
   repeated volue.mesh.grpc.type.MeshId timeseries_ids = 2;
   volue.mesh.grpc.type.UtcInterval interval = 3;
+}
+
+message ReadTransformedTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  repeated ReadTransformedTimeseriesSingleRequest requests = 2;
+}
+
+message ReadTransformedTimeseriesSingleRequest {
+  volue.mesh.grpc.type.MeshId timeseries_id = 1;
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+  // Target transformation resolution. Must not be set to break point.
+  volue.mesh.grpc.type.Resolution resolution = 3;
+  TransformationMethod transformation_method = 4;
+  Timezone transformation_timezone = 5;
+}
+
+enum TransformationMethod {
+  // Defaults to IMPLICIT.
+  TRANSFORMATION_METHOD_UNSPECIFIED = 0;
+  // Method chosen automatically based on time series type.
+  IMPLICIT  = 1;
+  // The sum of the values included in the base for this value.
+  // Does not consider how long the values are valid, i.e. a break point series
+  // with two values in the current interval that will give the sum of these
+  // two values.
+  SUM       = 2;
+  // Integral based sum with resolution second. Calculates the sum of value
+  // multiplied with number of seconds each value is valid. Value equal 1 at
+  // the start of the day will give 86400 as day value if the base is one break
+  // point series and 3600 if this is an hour series with only one value on
+  // first hour.
+  SUMI      = 3;
+  // For fixed interval series. Sum of all values in accumulation period
+  // divided by number of values in the accumulation period (24 for hour series
+  // that is transformed to day series). For break point series: Mean value of
+  // the values included in the base for this value. Does not consider how long
+  // the values are valid, i.e. a break point series with two values in the
+  // current interval that will give the mean value of these two values.
+  AVG       = 4;
+  // Integral based mean value, i.e. considers how much of the accumulation
+  // period that a given value is valid (to next value that can be NaN for
+  // a fixed interval series).
+  AVGI      = 5;
+  // First value in the accumulation period. For break point series this is the
+  // functional value at the start of the accumulation period, unless there
+  // exist an explicit value. Please note! For fixed interval series it is the
+  // first value not being NaN in the accumulation period.
+  FIRST     = 6;
+  // Last value in the accumulation period. For break point series this is the
+  // functional value at the end of the accumulation period, unless there exist
+  // an explicit value. Note! For fixed interval series it is the last value
+  // not being NaN in the accumulation period.
+  LAST      = 7;
+  // Smallest value in the accumulation period.
+  MIN       = 8;
+  // Largest value in the accumulation period.
+  MAX       = 9;
+  // Same as SUM but with different period handling. In this case the period is
+  // not adjusted with regards to resolution. Here you can e.g. transform to
+  // week value based on Wednesday to Wednesday or inhomogeneous periods given
+  // by points of time on a given break point series.
+  GSUM      = 10;
+  // See GSUM. Same properties, but here mean value for period is calculated.
+  GMEAN     = 11;
+}
+
+enum Timezone {
+  // Defaults to UTC.
+  TIMEZONE_UNSPECIFIED = 0;
+  // Universal Time Coordinated (UTC).
+  UTC       = 1;
+  // Mesh server local time zone.
+  LOCAL     = 2;
+  // Mesh server local time zone without Daylight Saving Time (DST).
+  STANDARD  = 3;
 }
 
 message WriteTimeseriesRequest {
@@ -194,7 +279,8 @@ message Timeseries {
   volue.mesh.grpc.type.UtcInterval interval = 3;
 
   // Data contains an Apache Arrow byte representation of the time series
-  // points. Stored in the following columns:
+  // points. If no points exist empty table will be returned.
+  // Stored in the following columns:
   // 0: (timestamp('ms')) utc_time - UTC Unix timestamp expressed in
   //    milliseconds (internally it is stored as a 64-bit integer)
   // 1: (uint32) flags

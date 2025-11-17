@@ -3,6 +3,7 @@ syntax = "proto3";
 package volue.mesh.grpc.model.v1alpha;
 
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
 
 import "volue/mesh/proto/model/v1alpha/resources.proto";
 import "volue/mesh/proto/type/resources.proto";
@@ -101,6 +102,16 @@ service ModelService {
   // attribute (`RatingCurveAttribute`).
   // See `UpdateRatingCurveVersionsRequest` for more information.
   rpc UpdateRatingCurveVersions(UpdateRatingCurveVersionsRequest) returns (UpdateRatingCurveVersionsResponse) {}
+
+  // Get the validity of the object if it has.
+  rpc GetValidity(GetValidityRequest) returns (GetValidityResponse) {}
+
+  // Update validity of the object.
+  rpc UpdateValidity(UpdateValidityRequest) returns (UpdateValidityResponse) {}
+
+  // Search for link relation attributes pointing to a given object.
+  // See `SearchLinkedFromRequest` for more information.
+  rpc SearchLinkedFrom(SearchLinkedFromRequest) returns (stream SearchLinkedFromResponse) {}
 }
 
 message ListModelsRequest {
@@ -225,11 +236,17 @@ message CreateObjectRequest {
   string name = 2;
 
   // Owner of the new object.
-  // Owner must be an ownership relation attribute.
+  // To create first level child of a model, the owner must be a model.
+  // In all other cases the owner must be an ownership relation attribute.
   // E.g.: for `SomePowerPlant1` object with path:
   //   - Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1
   //   Owner will be the `ThermalPowerToPlantRef` attribute.
   volue.mesh.grpc.type.MeshId owner_id = 3;
+
+  // Must be set only when creating first level children of a model.
+  // If not creating first level children of the model, must not be set.
+  // To obtain list of object definitions use `SearchObjectDefinitions` RPC.
+  volue.mesh.grpc.type.MeshId object_definition_id = 4;
 }
 
 message CreateModelRequest {
@@ -362,7 +379,7 @@ message UpdateTimeseriesAttributeRequest {
   // series resource set `new_timeseries_resource_key` to 0.
   int64 new_timeseries_resource_key = 4;
 
-  // Sets new local epxression. To remove local expression set
+  // Sets new local expression. To remove local expression set
   // `new_local_expression` to empty string. When there is no local expression,
   // then the template expression is used.
   //
@@ -541,4 +558,37 @@ message UpdateXySetsRequest {
 }
 
 message UpdateXySetsResponse {
+}
+
+message GetValidityRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId object_id = 2;
+}
+
+message GetValidityResponse {
+  optional google.protobuf.Timestamp valid_from = 1;
+  optional google.protobuf.Timestamp valid_until = 2;
+}
+
+message UpdateValidityRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  volue.mesh.grpc.type.MeshId object_id = 2;
+  optional google.protobuf.Timestamp valid_from = 3;
+  optional google.protobuf.Timestamp valid_until = 4;
+}
+
+message UpdateValidityResponse {
+}
+
+message SearchLinkedFromRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Identifier of an object for which
+  // all link relation attributes that point to it will be returned.
+  volue.mesh.grpc.type.MeshId target_object_id = 2;
+}
+
+message SearchLinkedFromResponse {
+  // Identifier of the link relation attribute pointing to the target object.
+  volue.mesh.grpc.type.MeshId link_relation_id = 1;
 }

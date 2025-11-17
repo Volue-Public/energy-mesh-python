@@ -38,8 +38,6 @@ service AuthenticationService {
   // well as the expiration time for that token.
   rpc AuthenticateKerberos(stream google.protobuf.BytesValue) returns (stream AuthenticateKerberosResponse) {}
 
-  rpc AuthenticateFake(AuthenticateFakeRequest) returns (AuthenticateFakeResponse) {}
-
   // Revoke an access token received from `AuthenticateKerberos`, causing
   // it to become immediately unusable. If the RPC returns without error
   // the operation succeeded *or* the token does not exist.
@@ -59,17 +57,6 @@ message AuthenticateKerberosResponse {
 
   // The access token will become invalid at this time.
   google.protobuf.Duration token_duration = 3;
-}
-
-message AuthenticateFakeRequest {
-  string display_name = 1;
-  google.protobuf.Duration token_duration = 2;
-  string internal = 15;
-}
-
-message AuthenticateFakeResponse {
-  string bearer_token = 1;
-  google.protobuf.Duration token_duration = 2;
 }
 
 message RevokeAccessTokenResponse {

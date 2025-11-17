@@ -48,6 +48,13 @@ import "volue/mesh/proto/type/resources.proto";
 //  are longer, then the user needs to make explicit calls using that session.
 //  See `ExtendSession` RPC.
 //
+// Good practices
+// ---------------
+// - Close, using `EndSession` RPC, sessions that are not used anymore.
+// - If possible, reuse the same session for multiple calls to the server,
+//   instead of creating a new session for each call. This will reduce the
+//   overhead of creating, maintaining, and closing sessions.
+//
 service SessionService {
 
   rpc StartSession(google.protobuf.Empty) returns (StartSessionResponse) {}
