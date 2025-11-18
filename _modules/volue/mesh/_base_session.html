@@ -220,6 +220,7 @@
     <span class="n">_to_proto_utcinterval</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._mesh_id</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_to_proto_attribute_definition_mesh_id</span><span class="p">,</span>
     <span class="n">_to_proto_attribute_mesh_id</span><span class="p">,</span>
     <span class="n">_to_proto_object_mesh_id</span><span class="p">,</span>
     <span class="n">_to_proto_read_timeseries_mesh_id</span><span class="p">,</span>
@@ -692,6 +693,33 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_attribute_definition</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">],</span>
+        <span class="n">new_template_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update an existing Mesh time series attribute definition.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            target: Mesh time series attribute definition to be updated. It could be a Universal</span>
+<span class="sd">                Unique Identifier, a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__,</span>
+<span class="sd">                or an AttributeBaseDefinition instance.</span>
+<span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
+<span class="sd">            new_template_expression: New template expression for the attribute definition.</span>
+<span class="sd">                This will be used by all attribute instances that use this definition and don&#39;t</span>
+<span class="sd">                have a local expression.</span>
+<span class="sd">            new_description: New description for the attribute definition.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            At least one of `new_template_expression` or `new_description` must be provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -1540,6 +1568,31 @@
         <span class="k">if</span> <span class="n">new_timeseries_resource_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_timeseries_resource_key&quot;</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_timeseries_resource_key</span> <span class="o">=</span> <span class="n">new_timeseries_resource_key</span>
+
+        <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
+            <span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">fields_to_update</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">request</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_timeseries_attribute_definition_request</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">],</span>
+        <span class="n">new_template_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">new_description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_definition_pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeDefinitionRequest</span><span class="p">:</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">model_definition_pb2</span><span class="o">.</span><span class="n">UpdateTimeseriesAttributeDefinitionRequest</span><span class="p">(</span>
+            <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
+            <span class="n">attribute_definition_id</span><span class="o">=</span><span class="n">_to_proto_attribute_definition_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">new_template_expression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_template_expression&quot;</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_template_expression</span> <span class="o">=</span> <span class="n">new_template_expression</span>
+
+        <span class="k">if</span> <span class="n">new_description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_description&quot;</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">new_description</span> <span class="o">=</span> <span class="n">new_description</span>
 
         <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
             <span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">fields_to_update</span><span class="p">)</span>

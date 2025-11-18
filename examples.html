@@ -1508,6 +1508,20 @@ argument will be discarded if an insecure connection is used.</p>
             <span class="n">new_local_expression</span><span class="o">=</span><span class="n">new_local_expression</span><span class="p">,</span>
         <span class="p">)</span>
 
+        <span class="c1"># We can also update the template expression of a time series attribute definition,</span>
+        <span class="c1"># which affects all attribute instances using that definition.</span>
+        <span class="n">ts_calc_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span>
+            <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;TsCalcAtt&quot;</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">new_template_expression</span> <span class="o">=</span> <span class="s2">&quot;## = 100</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute_definition</span><span class="p">(</span>
+            <span class="n">ts_calc_attribute</span><span class="o">.</span><span class="n">definition</span><span class="p">,</span>
+            <span class="n">new_template_expression</span><span class="o">=</span><span class="n">new_template_expression</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Note: Updating the template expression affects ALL attributes that use</span>
+        <span class="c1"># this definition across all objects in the model (unless they have a</span>
+        <span class="c1"># local expression override).</span>
+
         <span class="c1"># Now lets change the object name.</span>
         <span class="n">session</span><span class="o">.</span><span class="n">update_object</span><span class="p">(</span><span class="n">new_object</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s2">&quot;NewNamePowerPlant&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Object&#39;s name changed.&quot;</span><span class="p">)</span>
