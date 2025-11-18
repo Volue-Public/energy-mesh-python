@@ -85,6 +85,20 @@ def main(address, tls_root_pem_cert):
             new_local_expression=new_local_expression,
         )
 
+        # We can also update the template expression of a time series attribute definition,
+        # which affects all attribute instances using that definition.
+        ts_calc_attribute = session.get_timeseries_attribute(
+            new_object.attributes["TsCalcAtt"], full_attribute_info=True
+        )
+        new_template_expression = "## = 100\n"
+        session.update_timeseries_attribute_definition(
+            ts_calc_attribute.definition,
+            new_template_expression=new_template_expression,
+        )
+        # Note: Updating the template expression affects ALL attributes that use
+        # this definition across all objects in the model (unless they have a
+        # local expression override).
+
         # Now lets change the object name.
         session.update_object(new_object, new_name="NewNamePowerPlant")
         print("Object's name changed.")
