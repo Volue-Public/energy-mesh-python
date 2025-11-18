@@ -226,3 +226,42 @@ def test_local_expression_takes_precedence_over_template_expression(session):
         assert restored_attribute.is_local_expression
     else:
         assert not restored_attribute.is_local_expression
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_timeseries_attribute_definition_with_template_expression_async(
+    async_session,
+):
+    """Check that time series attribute definition template expression can be updated using async session."""
+
+    new_template_expression = "##= @t('ReferenceSeriesAtt.TsRawAtt') + 500\n\n"
+
+    # Get the attribute to access its definition
+    attribute = await async_session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+    original_template_expression = attribute.definition.template_expression
+
+    # Update the template expression using definition object
+    await async_session.update_timeseries_attribute_definition(
+        attribute.definition, new_template_expression=new_template_expression
+    )
+
+    # Verify the template expression was updated
+    updated_attribute = await async_session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+    assert updated_attribute.definition.template_expression == new_template_expression
+
+    # Rollback to restore the original state
+    await async_session.rollback()
+
+    # Verify rollback restored the original expression
+    restored_attribute = await async_session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+    assert (
+        restored_attribute.definition.template_expression
+        == original_template_expression
+    )
