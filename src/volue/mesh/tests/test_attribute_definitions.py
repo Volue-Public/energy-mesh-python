@@ -75,10 +75,10 @@ def test_update_timeseries_attribute_definition_with_template_expression_by_path
 
 
 @pytest.mark.database
-def test_update_timeseries_attribute_definition_with_template_expression_by_object(
+def test_update_timeseries_attribute_definition_with_template_expression_by_attribute_definition(
     session,
 ):
-    """Check that time series attribute definition template expression can be updated using definition object."""
+    """Check that time series attribute definition template expression can be updated using attribute definition class instance."""
 
     new_template_expression = "##= @t('ReferenceSeriesAtt.TsRawAtt') + 300\n\n"
 
@@ -97,6 +97,27 @@ def test_update_timeseries_attribute_definition_with_template_expression_by_obje
         ATTRIBUTE_PATH, full_attribute_info=True
     )
     assert updated_attribute.definition.template_expression == new_template_expression
+
+
+@pytest.mark.database
+def test_update_timeseries_attribute_definition_by_attribute(session):
+    """Check that updating by attribute instance raises an error."""
+
+    attribute = session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+
+    new_description = "Updated description"
+
+    with pytest.raises(
+        TypeError,
+        match=re.escape(
+            "need to provide either path (as str), ID (as uuid.UUID) or attribute definition class instance"
+        ),
+    ):
+        session.update_timeseries_attribute_definition(
+            attribute, new_description=new_description
+        )
 
 
 @pytest.mark.database
@@ -169,27 +190,6 @@ def test_update_timeseries_attribute_definition_without_parameters_to_update(ses
 
     with pytest.raises(grpc.RpcError, match="nothing is set to be updated"):
         session.update_timeseries_attribute_definition(attribute.definition)
-
-
-@pytest.mark.database
-def test_update_timeseries_attribute_definition_with_attribute_object(session):
-    """Check that updating by attribute object raises an error."""
-
-    attribute = session.get_timeseries_attribute(
-        ATTRIBUTE_PATH, full_attribute_info=True
-    )
-
-    new_description = "Updated description"
-
-    with pytest.raises(
-        TypeError,
-        match=re.escape(
-            "need to provide either path (as str), ID (as uuid.UUID) or attribute definition class instance"
-        ),
-    ):
-        session.update_timeseries_attribute_definition(
-            attribute, new_description=new_description
-        )
 
 
 @pytest.mark.database
