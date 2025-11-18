@@ -29,12 +29,12 @@ def _to_proto_attribute_definition_mesh_id(
     target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
 ) -> type.resources_pb2.MeshId:
     """
-    Accepts attribute definition identifiers (path and ID) and attribute definition instance as
-    input.
+    Accepts attribute definition identifiers (path and ID)
+    and attribute definition class instance as input.
     """
     if not isinstance(target, (uuid.UUID, str, AttributeBase.AttributeBaseDefinition)):
         raise TypeError(
-            "need to provide either path (as str), ID (as uuid.UUID) or attribute definition instance"
+            "need to provide either path (as str), ID (as uuid.UUID) or attribute definition class instance"
         )
 
     return _to_proto_mesh_id(target)

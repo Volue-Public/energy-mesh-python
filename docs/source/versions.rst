@@ -17,7 +17,7 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Support for updating time series attribute definitions. :pull:`588`
+- Support for updating time series attribute definitions. :issue:`573`
   It allows modifications of template calculation expressions.
 
 - Mesh version compatibility mechanism.

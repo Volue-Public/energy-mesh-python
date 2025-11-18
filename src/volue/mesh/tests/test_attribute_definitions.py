@@ -2,8 +2,13 @@
 Tests for attribute definition operations.
 """
 
+import re
+
 import grpc
 import pytest
+
+from datetime import datetime
+from volue.mesh import Timeseries
 
 ATTRIBUTE_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsCalcAtt2"
 
@@ -167,6 +172,27 @@ def test_update_timeseries_attribute_definition_without_parameters_to_update(ses
 
 
 @pytest.mark.database
+def test_update_timeseries_attribute_definition_with_attribute_object(session):
+    """Check that updating by attribute object raises an error."""
+
+    attribute = session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+
+    new_description = "Updated description"
+
+    with pytest.raises(
+        TypeError,
+        match=re.escape(
+            "need to provide either path (as str), ID (as uuid.UUID) or attribute definition class instance"
+        ),
+    ):
+        session.update_timeseries_attribute_definition(
+            attribute, new_description=new_description
+        )
+
+
+@pytest.mark.database
 def test_local_expression_takes_precedence_over_template_expression(session):
     """Check that a local expression on an attribute takes precedence over the template expression."""
 
@@ -265,3 +291,49 @@ async def test_update_timeseries_attribute_definition_with_template_expression_a
         restored_attribute.definition.template_expression
         == original_template_expression
     )
+
+
+@pytest.mark.asyncio
+@pytest.mark.database
+async def test_update_timeseries_attribute_definition_and_read_points_async(
+    async_session,
+):
+    """Check that updated template expression is applied when reading time series points."""
+
+    # Define a template expression that returns a fixed value for each hour
+    fixed_value = 137.0
+    new_template_expression = f"## = @TS('HOUR', {fixed_value})\n\n"
+
+    # Get the attribute to access its definition
+    attribute = await async_session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+
+    # Update the template expression
+    await async_session.update_timeseries_attribute_definition(
+        attribute.definition, new_template_expression=new_template_expression
+    )
+
+    # Verify the template expression was updated
+    updated_attribute = await async_session.get_timeseries_attribute(
+        ATTRIBUTE_PATH, full_attribute_info=True
+    )
+    assert updated_attribute.definition.template_expression == new_template_expression
+
+    # Read time series points to verify the expression is applied
+    start_time = datetime(2025, 1, 1, 0)
+    end_time = datetime(2025, 1, 1, 4)
+    timeseries = await async_session.read_timeseries_points(
+        target=ATTRIBUTE_PATH,
+        start_time=start_time,
+        end_time=end_time,
+    )
+
+    assert type(timeseries) is Timeseries
+    assert timeseries.resolution == Timeseries.Resolution.HOUR
+
+    # Verify the time series contains the fixed value for all points
+    assert timeseries.number_of_points == 4
+    values = timeseries.arrow_table[2]
+    for value in values:
+        assert value.as_py() == fixed_value

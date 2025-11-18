@@ -9,7 +9,11 @@ import pytest
 
 from volue.mesh import Timeseries, _common, _mesh_id
 
-from .test_utilities.utilities import AttributeForTesting, ObjectForTesting
+from .test_utilities.utilities import (
+    AttributeForTesting,
+    ObjectForTesting,
+    AttributeDefinitionForTesting,
+)
 
 
 @pytest.mark.unittest
@@ -149,6 +153,11 @@ def test_to_proto_mesh_id():
     assert mesh_id.path == target.path
 
     target = ObjectForTesting()
+    mesh_id = _mesh_id._to_proto_mesh_id(target)
+    assert mesh_id.id == _common._to_proto_guid(target.id)
+    assert mesh_id.path == target.path
+
+    target = AttributeDefinitionForTesting()
     mesh_id = _mesh_id._to_proto_mesh_id(target)
     assert mesh_id.id == _common._to_proto_guid(target.id)
     assert mesh_id.path == target.path
