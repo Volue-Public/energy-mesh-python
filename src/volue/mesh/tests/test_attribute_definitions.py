@@ -100,8 +100,8 @@ def test_update_timeseries_attribute_definition_with_template_expression_by_attr
 
 
 @pytest.mark.database
-def test_update_timeseries_attribute_definition_by_attribute(session):
-    """Check that updating by attribute instance raises an error."""
+def test_update_timeseries_attribute_definition_by_attribute_as_target(session):
+    """Check that updating with attribute as target raises an error."""
 
     attribute = session.get_timeseries_attribute(
         ATTRIBUTE_PATH, full_attribute_info=True
