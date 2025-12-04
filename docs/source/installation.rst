@@ -218,6 +218,7 @@ Version compatibility
 =====================
 
 The Mesh Python SDK will perform the version compatibility check:
+
 - when connecting to the Mesh server for the synchronous code
 - when creating a Mesh session for the asynchronous code
 
