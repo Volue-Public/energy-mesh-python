@@ -131,3 +131,23 @@ Run inflow calculations
 ***********************
 .. literalinclude:: /../../src/volue/mesh/examples/run_inflow_calculation.py
    :language: python
+
+Working with availability events
+********************************
+.. literalinclude:: /../../src/volue/mesh/examples/availability.py
+   :language: python
+
+Check duplicated time series
+****************************
+.. literalinclude:: /../../src/volue/mesh/examples/check_duplicated_time_series.py
+   :language: python
+
+Create physical time series
+***************************
+.. literalinclude:: /../../src/volue/mesh/examples/create_physical_timeseries.py
+   :language: python
+
+Search calculation expressions
+******************************
+.. literalinclude:: /../../src/volue/mesh/examples/search_calculation_expressions.py
+   :language: python
