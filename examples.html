@@ -117,6 +117,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#write-time-series">Write time series</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run-simulations">Run simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run-inflow-calculations">Run inflow calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-availability-events">Working with availability events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#check-duplicated-time-series">Check duplicated time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-physical-time-series">Create physical time series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#search-calculation-expressions">Search calculation expressions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
@@ -2236,6 +2240,633 @@ argument will be discarded if an insecure connection is used.</p>
     <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
     <span class="n">sync_run_inflow_calculation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_run_inflow_calculation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-availability-events">
+<h2>Working with availability events<a class="headerlink" href="#working-with-availability-events" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">dateutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh.availability</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">EventType</span><span class="p">,</span>
+    <span class="n">Recurrence</span><span class="p">,</span>
+    <span class="n">RecurrenceType</span><span class="p">,</span>
+    <span class="n">RestrictionBasicRecurrence</span><span class="p">,</span>
+    <span class="n">RestrictionComplexRecurrence</span><span class="p">,</span>
+    <span class="n">Revision</span><span class="p">,</span>
+    <span class="n">TimePoint</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">CHIMNEY_PATH</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">revision_workflow</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstrates a complete workflow for creating, managing, and deleting revisions in Mesh.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Starting Revision Workflow Example ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 1. Create a revision</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Creating a new revision...&quot;</span><span class="p">)</span>
+    <span class="n">revision</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">create_revision</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="o">=</span><span class="s2">&quot;local_id&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Revision reason&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created revision with ID: </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Owner ID: </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">owner_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created by: </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Initial recurrences count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">revision</span><span class="o">.</span><span class="n">recurrences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 2. Add a recurrence to the revision</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Adding a basic recurrence...&quot;</span><span class="p">)</span>
+    <span class="n">recurrence_id</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">add_revision_recurrence</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="n">revision</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;Planned&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Recurrence&quot;</span><span class="p">,</span>
+            <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Added recurrence with ID: </span><span class="si">{</span><span class="n">recurrence_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Get the revision</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Getting the revision with its new recurrence...&quot;</span><span class="p">)</span>
+    <span class="n">revision_with_recurrence</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="n">revision</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Retrieved revision with ID: </span><span class="si">{</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Recurrences count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">recurrences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">recurrences</span><span class="p">:</span>
+        <span class="n">recurrence</span> <span class="o">=</span> <span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">recurrences</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Recurrence status: </span><span class="si">{</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Recurrence description: </span><span class="si">{</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;   Recurrence period: </span><span class="si">{</span><span class="n">recurrence</span><span class="o">.</span><span class="n">period_start</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">recurrence</span><span class="o">.</span><span class="n">period_end</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># 4. Add another recurrence with a different pattern</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">4. Adding a daily repeating recurrence...&quot;</span><span class="p">)</span>
+    <span class="n">second_recurrence_id</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">add_revision_recurrence</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="n">revision</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;Planned&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Second Recurrence&quot;</span><span class="p">,</span>
+            <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span>
+            <span class="n">recur_every</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">recur_until</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Added second recurrence with ID: </span><span class="si">{</span><span class="n">second_recurrence_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 5. Search for the revision using search_availability_events</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">5. Searching for revisions...&quot;</span><span class="p">)</span>
+    <span class="n">search_results</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">search_availability_events</span><span class="p">(</span>
+        <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">REVISION</span><span class="p">,</span>
+        <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="n">CHIMNEY_PATH</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">search_results</span><span class="p">)</span><span class="si">}</span><span class="s2"> revision events&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">search_results</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">Revision</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;   Result </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Event ID: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">, Reason: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># 6. Search for instances of the revision</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">6. Searching for specific instances of the revision...&quot;</span><span class="p">)</span>
+    <span class="n">instances</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">search_instances</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span><span class="si">}</span><span class="s2"> instances&quot;</span><span class="p">)</span>
+    <span class="c1"># These are the actual occurrences based on the recurrence pattern</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">instance</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">instances</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;   Instance </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Period: </span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">period_start</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">period_end</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># 7. Update the revision</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">7. Updating the revision...&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">update_revision</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="o">=</span><span class="s2">&quot;updated_local_id&quot;</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="o">=</span><span class="s2">&quot;Updated reason&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">updated_revision</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span> <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated local ID: </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">local_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated reason: </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Last modified: </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 8. Delete a specific recurrence</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">8. Deleting the second recurrence pattern...&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">delete_revision_recurrence</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
+        <span class="n">recurrence_id</span><span class="o">=</span><span class="n">second_recurrence_id</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">revision_after_delete</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span> <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Recurrences remaining: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">revision_after_delete</span><span class="o">.</span><span class="n">recurrences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 9. Finally, delete the revision using delete_availability_events_by_id</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">9. Deleting the entire revision...&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">delete_availability_events_by_id</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;event_id&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="n">remaining_revisions</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">search_availability_events</span><span class="p">(</span>
+        <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">REVISION</span><span class="p">,</span>
+        <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="n">CHIMNEY_PATH</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Revisions found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">remaining_revisions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Revision Workflow Example Completed ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">restriction_workflow</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Demonstrates a complete workflow for creating, managing, and deleting restrictions in Mesh.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Starting Restriction Workflow Example ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1. Create a basic restriction with constant value</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Creating a basic restriction...&quot;</span><span class="p">)</span>
+    <span class="n">basic_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">create_restriction</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="o">=</span><span class="s2">&quot;basic_local_id&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;basic restriction&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;DischargeMin[m3/s]&quot;</span><span class="p">,</span>
+        <span class="n">recurrence</span><span class="o">=</span><span class="n">RestrictionBasicRecurrence</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="p">(</span>
+                <span class="n">status</span><span class="o">=</span><span class="s2">&quot;SelfImposed&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Basic restriction&quot;</span><span class="p">,</span>
+                <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">WEEKLY</span><span class="p">,</span>
+                <span class="n">recur_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">recur_until</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">period_start</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>  <span class="c1"># Monday</span>
+            <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>  <span class="c1"># Tuesday</span>
+            <span class="n">value</span><span class="o">=</span><span class="mf">75.5</span><span class="p">,</span>  <span class="c1"># 75.5% capacity</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created basic restriction with ID: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Owner ID: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">owner_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Category: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Value: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Created by: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Status: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 2. Create a complex restriction with multiple time points</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">2. Creating a complex restriction with multiple time points...&quot;</span><span class="p">)</span>
+    <span class="n">complex_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">create_restriction</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;complex_restriction_id&quot;</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="o">=</span><span class="s2">&quot;complex_local_id&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Complex restriction&quot;</span><span class="p">,</span>
+        <span class="n">category</span><span class="o">=</span><span class="s2">&quot;DischargeMax[m3/s]&quot;</span><span class="p">,</span>
+        <span class="n">recurrence</span><span class="o">=</span><span class="n">RestrictionComplexRecurrence</span><span class="p">(</span>
+            <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="p">(</span>
+                <span class="n">status</span><span class="o">=</span><span class="s2">&quot;SelfImposed&quot;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Complex restriction&quot;</span><span class="p">,</span>
+                <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">DAILY</span><span class="p">,</span>
+                <span class="n">recur_every</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                <span class="n">recur_until</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">time_points</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">TimePoint</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="mf">80.0</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+                <span class="p">),</span>
+                <span class="n">TimePoint</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+                <span class="p">),</span>
+                <span class="n">TimePoint</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+                <span class="p">),</span>
+                <span class="n">TimePoint</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+                <span class="p">),</span>
+            <span class="p">],</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created complex restriction with ID: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Category: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Number of time points: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">time_points</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Recurrence type: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Repeats until: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recur_until</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. Search for restrictions</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Searching for all restrictions...&quot;</span><span class="p">)</span>
+    <span class="n">restrictions</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">search_availability_events</span><span class="p">(</span>
+        <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">RESTRICTION</span><span class="p">,</span>
+        <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="n">CHIMNEY_PATH</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">restrictions</span><span class="p">)</span><span class="si">}</span><span class="s2"> restrictions&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">restriction</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">restrictions</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;   Restriction </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: ID: </span><span class="si">{</span><span class="n">restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">, Category: </span><span class="si">{</span><span class="n">restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># 4. Get a specific restriction by ID</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">4. Getting specific restriction details...&quot;</span><span class="p">)</span>
+    <span class="n">retrieved_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Retrieved restriction with ID: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Local ID: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">local_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Reason: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Category: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check the type of recurrence and print the value accordingly</span>
+    <span class="c1"># In this case we expect the recurrence to be of type RestrictionBasicRecurrence</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="p">,</span> <span class="n">RestrictionBasicRecurrence</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Value: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">):</span>
+        <span class="c1"># In case of complex recurrence we can print the time points</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;   Time point </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Value: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, Timestamp: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># 4.5 Get a specific restriction by ID</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">4.5. Getting specific restriction details...&quot;</span><span class="p">)</span>
+    <span class="n">retrieved_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;complex_restriction_id&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Retrieved restriction with ID: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Local ID: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">local_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Reason: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Category: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check the type of recurrence and print the value accordingly</span>
+    <span class="c1"># In this case we expect the recurrence to be of type RestrictionComplexRecurrence</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="p">,</span> <span class="n">RestrictionBasicRecurrence</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Value: </span><span class="si">{</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">):</span>
+        <span class="c1"># In case of complex recurrence we can print the time points</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">retrieved_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">time_points</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;   Time point </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Value: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, Timestamp: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># 5. Search for instances within a time period</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">5. Searching for specific instances of the basic restriction...&quot;</span><span class="p">)</span>
+    <span class="n">instances</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">search_instances</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+        <span class="n">period_start</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span><span class="si">}</span><span class="s2"> instances&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">instance</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">instances</span><span class="p">):</span>  <span class="c1"># Just show first few instances</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;   Instance </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: Period: </span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">period_start</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">period_end</span><span class="si">}</span><span class="s2">, Value: </span><span class="si">{</span><span class="n">instance</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># 6. Update restriction</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">6. Updating the basic restriction...&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">update_restriction</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="o">=</span><span class="s2">&quot;updated_basic_id&quot;</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="o">=</span><span class="s2">&quot;Updated basic restriction reason&quot;</span><span class="p">,</span>
+        <span class="n">new_category</span><span class="o">=</span><span class="s2">&quot;DischargeMax[m3/s]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Verify the update</span>
+    <span class="n">updated_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated local ID: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">local_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated reason: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated category: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Last modified: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 7. Update restriction recurrence</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">7. Updating the restriction recurrence...&quot;</span><span class="p">)</span>
+    <span class="n">new_recurrence</span> <span class="o">=</span> <span class="n">RestrictionBasicRecurrence</span><span class="p">(</span>
+        <span class="n">recurrence</span><span class="o">=</span><span class="n">Recurrence</span><span class="p">(</span>
+            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;SelfImposed&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Updated restriction recurrence&quot;</span><span class="p">,</span>
+            <span class="n">recurrence_type</span><span class="o">=</span><span class="n">RecurrenceType</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">period_start</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">value</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">update_restriction</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+        <span class="n">new_restriction_recurrence</span><span class="o">=</span><span class="n">new_recurrence</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">updated_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   New recurrence period: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">period_start</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">period_end</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   New value: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   New recurrence type: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 8. Delete restrictions</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">8. Deleting restrictions...&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">delete_availability_events_by_id</span><span class="p">(</span>
+        <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
+        <span class="n">event_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span> <span class="s2">&quot;complex_restriction_id&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Verify deletion</span>
+    <span class="n">remaining_restrictions</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">search_availability_events</span><span class="p">(</span>
+        <span class="n">event_type</span><span class="o">=</span><span class="n">EventType</span><span class="o">.</span><span class="n">RESTRICTION</span><span class="p">,</span>
+        <span class="n">targets</span><span class="o">=</span><span class="p">[</span><span class="n">CHIMNEY_PATH</span><span class="p">],</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Restrictions found: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">remaining_restrictions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Restriction Workflow Example Completed ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to create a revision.&quot;&quot;&quot;</span>
+
+    <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
+    <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">revision_workflow</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+        <span class="n">restriction_workflow</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="check-duplicated-time-series">
+<h2>Check duplicated time series<a class="headerlink" href="#check-duplicated-time-series" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_pem_certificate_contents</span><span class="p">(</span><span class="n">certificate_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reads the contents of a PEM certificate file.&quot;&quot;&quot;</span>
+
+    <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">certificate_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="c1"># In case multiple root certificates are needed, e.g.:</span>
+        <span class="c1"># the same client accesses different Mesh servers (with different root certs)</span>
+        <span class="c1"># Just combine into single file the root certificates, like:</span>
+        <span class="c1"># -----BEGIN CERTIFICATE-----</span>
+        <span class="c1"># ...(first certificate)...</span>
+        <span class="c1"># -----END CERTIFICATE-----</span>
+        <span class="c1"># -----BEGIN CERTIFICATE-----</span>
+        <span class="c1"># ..(second certificate)..</span>
+        <span class="c1"># -----END CERTIFICATE-----</span>
+        <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">tls_root_pem_cert</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find_time_series_duplicates</span><span class="p">(</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Iterates over all Mesh model objects and stores time series key of physical</span>
+<span class="sd">    or virtual time series connected to time series attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">time_series_info</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;{*}&quot;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">time_series_resource</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">timeseries_key</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">timeseries_key</span>
+                    <span class="k">if</span> <span class="n">timeseries_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">time_series_info</span><span class="p">:</span>
+                        <span class="n">time_series_info</span><span class="p">[</span><span class="n">timeseries_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">path</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">time_series_info</span><span class="p">[</span><span class="n">timeseries_key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">time_series_info</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks for duplicated physical or virtual time series in a Mesh model.&quot;&quot;&quot;</span>
+
+    <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
+    <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+
+    <span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;SimpleThermalTestModel&quot;</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model: &#39;</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="n">time_series_info</span> <span class="o">=</span> <span class="n">find_time_series_duplicates</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">paths</span> <span class="ow">in</span> <span class="n">time_series_info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Time series key </span><span class="si">{</span><span class="n">timeseries_key</span><span class="si">}</span><span class="s2"> is connected in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span><span class="si">}</span><span class="s2"> time series attributes:&quot;</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Check for duplicated time series done.&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-physical-time-series">
+<h2>Create physical time series<a class="headerlink" href="#create-physical-time-series" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to create a physical time series resource.&quot;&quot;&quot;</span>
+
+    <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
+    <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># Mesh will throw an exception if we try to create a time series with an existing path</span>
+        <span class="c1"># and name. Add a random suffix to the time series name to avoid this.</span>
+        <span class="n">name_suffix</span> <span class="o">=</span> <span class="n">get_random_suffix</span><span class="p">()</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">create_physical_timeseries</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/Path/To/Test/Timeseries/&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test_Timeseries_&quot;</span> <span class="o">+</span> <span class="n">name_suffix</span><span class="p">,</span>
+            <span class="n">curve_type</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span><span class="p">,</span>
+            <span class="n">unit_of_measurement</span><span class="o">=</span><span class="s2">&quot;cm&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_random_suffix</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">random_chars</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">random</span><span class="o">.</span><span class="n">choices</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">random_chars</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="search-calculation-expressions">
+<h2>Search calculation expressions<a class="headerlink" href="#search-calculation-expressions" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span>
+
+<span class="n">keyword</span> <span class="o">=</span> <span class="s2">&quot;Income&quot;</span>
+<span class="n">local_expressions</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">template_expressions</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">add_expression_to_results</span><span class="p">(</span><span class="n">attr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if the attribute expression contains the keyword and adds it to the appropriate results dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">expression</span><span class="p">:</span>
+        <span class="c1"># Local expression is set on attribute level.</span>
+        <span class="c1"># Template expression is set on attribute definition level.</span>
+        <span class="c1"># By default all attributes inherit template expression from</span>
+        <span class="c1"># their attribute definition. If calculation expression is</span>
+        <span class="c1"># changed explicitly for a given attribute, then it is called</span>
+        <span class="c1"># a local expression.</span>
+        <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">is_local_expression</span><span class="p">:</span>
+            <span class="n">local_expressions</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">expression</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_expressions</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">definition</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">expression</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">search_calculation_expressions</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Traverses the Mesh model recursively and finds all time series</span>
+<span class="sd">    attributes that have calculation expressions containing specific string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">object</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">object</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">OwnershipRelationAttribute</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">child_id</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">target_object_ids</span><span class="p">:</span>
+                <span class="n">search_calculation_expressions</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">child_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">expression</span><span class="p">:</span>
+                <span class="n">add_expression_to_results</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">search_calculation_expressions_faster</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all objects from the Mesh model and search for time series</span>
+<span class="sd">    attributes that have calculation expressions containing specific string.</span>
+
+<span class="sd">    This method (with search_for_objects) is more efficient than</span>
+<span class="sd">    search_calculation_expressions, that does top-down traversal of the Mesh model.</span>
+<span class="sd">    `search_for_objects` retrieves all objects in a single streaming request.</span>
+<span class="sd">    Downside is that is does not preserve the order of objects in the Mesh model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;{*}&quot;</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
+                <span class="n">add_expression_to_results</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+
+    <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
+    <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">models</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model: &#39;</span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="c1"># search_calculation_expressions(session, model.id)</span>
+            <span class="n">search_calculation_expressions_faster</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">template_expressions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Attribute definition path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> has template expression:</span><span class="se">\n</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">expression</span> <span class="ow">in</span> <span class="n">local_expressions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attribute path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> has local expression:</span><span class="se">\n</span><span class="si">{</span><span class="n">expression</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># clear search results before traversing the next model</span>
+            <span class="n">local_expressions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">template_expressions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
