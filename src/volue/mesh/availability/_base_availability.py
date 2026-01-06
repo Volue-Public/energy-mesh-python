@@ -546,9 +546,9 @@ class Availability(abc.ABC):
         event_id: str,
         local_id: str,
         reason: str,
-        created_author: str,
-        created_timestamp: Optional[timestamp],
-        last_changed_author: str,
+        created_author: str='',
+        created_timestamp: timestamp=None,
+        last_changed_author: str='',
     ) -> Revision:
         """
         Creates a new revision for a specified Mesh object.
@@ -579,7 +579,7 @@ class Availability(abc.ABC):
     def _prepare_create_revision_request(
         self, target: Union[uuid.UUID, str, Object], id: str, local_id: str, reason: str,
         created_author: str,
-        created_timestamp: Optional[timestamp],
+        created_timestamp: datetime,
         last_changed_author: str,
     ) -> availability_pb2.CreateRevisionRequest:
         request = availability_pb2.CreateRevisionRequest(
