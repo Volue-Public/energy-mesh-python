@@ -34,7 +34,7 @@ def revision_workflow(session: Connection.Session):
         reason="Revision reason",
         created_author="martin_created",
         created_timestamp=datetime.fromtimestamp(0, UTC),
-        last_changed_author="martin_updated"
+        last_changed_author="martin_updated",
     )
 
     print(f"   Created revision with ID: {revision.event_id}")
