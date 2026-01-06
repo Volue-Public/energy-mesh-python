@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import UTC
 
 import dateutil
 import helpers
@@ -31,6 +32,9 @@ def revision_workflow(session: Connection.Session):
         event_id="event_id",
         local_id="local_id",
         reason="Revision reason",
+        created_author="martin_created",
+        created_timestamp=datetime.fromtimestamp(0, UTC),
+        last_changed_author="martin_updated"
     )
 
     print(f"   Created revision with ID: {revision.event_id}")
