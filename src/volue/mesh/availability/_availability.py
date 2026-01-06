@@ -31,9 +31,12 @@ class Availability(Availability):
         event_id: str,
         local_id: str,
         reason: str,
+        created_author: str,
+        created_timestamp: Optional[timestamp],
+        last_changed_author: str,
     ) -> Revision:
         request = super()._prepare_create_revision_request(
-            target, event_id, local_id, reason
+            target, event_id, local_id, reason, created_author, created_timestamp, last_changed_author,
         )
         proto_revision = self.availability_service.CreateRevision(request)
         return Revision._from_proto(proto_revision)

@@ -131,8 +131,8 @@ def revision_workflow(session: Connection.Session):
     )
     print(f"   Updated local ID: {updated_revision.local_id}")
     print(f"   Updated reason: {updated_revision.reason}")
-    print(f"   Created by: '{revision.created.author}' at {revision.created.timestamp}")
-    print(f"   Last changed by: '{revision.last_changed.author}' at {revision.last_changed.timestamp}")
+    print(f"   Created by: '{updated_revision.created.author}' at {updated_revision.created.timestamp}")
+    print(f"   Last changed by: '{updated_revision.last_changed.author}' at {updated_revision.last_changed.timestamp}")
     # print(f"   Last modified: {updated_revision.last_changed.timestamp}")
 
     # # 8. Delete a specific recurrence
