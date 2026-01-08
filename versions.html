@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Versions &mdash; volue.mesh 1.14.0-dev documentation</title>
+  <title>Versions &mdash; volue.mesh 1.14.0 documentation</title>
   
 
   
@@ -103,17 +103,16 @@
 <p class="caption" role="heading"><span class="caption-text">Versions</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Versions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mesh-python-sdk-version-1-14-0-dev">Mesh Python SDK version 1.14.0-dev</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Mesh Python SDK version 1.14.0</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#compatible-with">Compatible with</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#changes">Changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-instructions">Install instructions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">Mesh Python SDK version 1.13.0</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Compatible with</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">New features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Mesh Python SDK version 1.13.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Compatible with</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changes">Changes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id5">Install instructions</a></li>
 </ul>
 </li>
@@ -302,16 +301,21 @@
             
   <div class="section" id="versions">
 <h1>Versions<a class="headerlink" href="#versions" title="Permalink to this heading">¶</a></h1>
-<p>Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.</p>
-<div class="section" id="mesh-python-sdk-version-1-14-0-dev">
-<h2>Mesh Python SDK version 1.14.0-dev<a class="headerlink" href="#mesh-python-sdk-version-1-14-0-dev" title="Permalink to this heading">¶</a></h2>
-<p>This is the current master version.</p>
+<p>Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
+For detailed compatibility information, refer to the
+<a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/installation/MeshServiceInstallationGuide/#mesh-python-sdk-compatibility-matrix">compatibility matrix</a>.</p>
+<div class="section" id="id1">
+<h2><a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.14.0">Mesh Python SDK version 1.14.0</a><a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <div class="section" id="compatible-with">
 <h3>Compatible with<a class="headerlink" href="#compatible-with" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Mesh server version &gt;= 2.18 <strong>(may change)</strong></p></li>
-<li><p>Python [3.9, 3.10, 3.11, 3.12, 3.13] <strong>(may change)</strong></p></li>
+<li><p>Mesh server version &gt;= 2.18</p></li>
+<li><p>Python [3.9, 3.10, 3.11, 3.12, 3.13]</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Python 3.9 support will dropped in one of the next Mesh Python SDK releases.</p>
+</div>
 </div>
 <div class="section" id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Permalink to this heading">¶</a></h3>
@@ -322,31 +326,25 @@ It allows modifications of template calculation expressions.</p></li>
 See documentation <a class="reference internal" href="installation.html#version-compatibility"><span class="std std-ref">Version compatibility</span></a> for more information. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/pull/583">[583]</a></p></li>
 </ul>
 </div>
-<div class="section" id="changes">
-<h3>Changes<a class="headerlink" href="#changes" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>TBA</p></li>
-</ul>
-</div>
 <div class="section" id="install-instructions">
 <h3>Install instructions<a class="headerlink" href="#install-instructions" title="Permalink to this heading">¶</a></h3>
 <p>See instructions at <a class="reference internal" href="installation.html#setup-for-users"><span class="std std-ref">Setup for users (recommended)</span></a> and use the following:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>git+https://github.com/Volue-Public/energy-mesh-python
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/Volue-Public/energy-mesh-python@v1.14.0
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="id1">
-<h2><a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.13.0">Mesh Python SDK version 1.13.0</a><a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
 <div class="section" id="id2">
-<h3>Compatible with<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<h2><a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.13.0">Mesh Python SDK version 1.13.0</a><a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="id3">
+<h3>Compatible with<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Mesh server version &gt;= 2.18</p></li>
 <li><p>Python [3.9, 3.10, 3.11, 3.12, 3.13]</p></li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h3>New features<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="id4">
+<h3>New features<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Support for availability events.
 See <a class="reference internal" href="mesh_availability.html"><span class="doc">Availability</span></a> for more information. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/523">[523]</a></p></li>
@@ -357,8 +355,8 @@ See <a class="reference internal" href="mesh_availability.html"><span class="doc
 <p>Python 3.9 support will dropped in the next Mesh Python SDK release.</p>
 </div>
 </div>
-<div class="section" id="id4">
-<h3>Changes<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="changes">
+<h3>Changes<a class="headerlink" href="#changes" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Fixed:</strong> Async <cite>delete_object</cite> was missing an <cite>await</cite> on an internal async call. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/pull/551">[551]</a></p></li>
 </ul>
