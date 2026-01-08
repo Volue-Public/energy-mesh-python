@@ -685,7 +685,9 @@
 <span class="sd">            target: Mesh time series attribute to be updated. It could be a Universal Unique</span>
 <span class="sd">                Identifier or a path in the `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
-<span class="sd">            new_local_expression: New local expression.</span>
+<span class="sd">            new_local_expression: New local expression. It is not validated during this operation.</span>
+<span class="sd">                Invalid local expressions will be accepted but will cause failures when reading</span>
+<span class="sd">                time series points later.</span>
 <span class="sd">            new_timeseries_resource_key: Time series key of a new time series resource</span>
 <span class="sd">                (physical or virtual) to connect to the time series attribute. To disconnect</span>
 <span class="sd">                time series attribute from already connected time series resource set this</span>
@@ -712,7 +714,9 @@
 <span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_template_expression: New template expression for the attribute definition.</span>
 <span class="sd">                This will be used by all attribute instances that use this definition and don&#39;t</span>
-<span class="sd">                have a local expression.</span>
+<span class="sd">                have a local expression. The template expression is not validated during this</span>
+<span class="sd">                operation. Invalid template expressions will be accepted but will cause failures</span>
+<span class="sd">                when reading time series points later.</span>
 <span class="sd">            new_description: New description for the attribute definition.</span>
 
 <span class="sd">        Raises:</span>

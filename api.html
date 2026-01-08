@@ -1158,7 +1158,9 @@ bool, float, int, str, datetime or a list of simple types.</p></li>
 <li><p><strong>target</strong> – Mesh time series attribute to be updated. It could be a Universal Unique
 Identifier or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
 See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
-<li><p><strong>new_local_expression</strong> – New local expression.</p></li>
+<li><p><strong>new_local_expression</strong> – New local expression. It is not validated during this operation.
+Invalid local expressions will be accepted but will cause failures when reading
+time series points later.</p></li>
 <li><p><strong>new_timeseries_resource_key</strong> – Time series key of a new time series resource
 (physical or virtual) to connect to the time series attribute. To disconnect
 time series attribute from already connected time series resource set this
@@ -1184,7 +1186,9 @@ or an AttributeBaseDefinition instance.
 See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_template_expression</strong> – New template expression for the attribute definition.
 This will be used by all attribute instances that use this definition and don’t
-have a local expression.</p></li>
+have a local expression. The template expression is not validated during this
+operation. Invalid template expressions will be accepted but will cause failures
+when reading time series points later.</p></li>
 <li><p><strong>new_description</strong> – New description for the attribute definition.</p></li>
 </ul>
 </dd>
@@ -4335,7 +4339,9 @@ bool, float, int, str, datetime or a list of simple types.</p></li>
 <li><p><strong>target</strong> – Mesh time series attribute to be updated. It could be a Universal Unique
 Identifier or a path in the <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model">Mesh model</a>.
 See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
-<li><p><strong>new_local_expression</strong> – New local expression.</p></li>
+<li><p><strong>new_local_expression</strong> – New local expression. It is not validated during this operation.
+Invalid local expressions will be accepted but will cause failures when reading
+time series points later.</p></li>
 <li><p><strong>new_timeseries_resource_key</strong> – Time series key of a new time series resource
 (physical or virtual) to connect to the time series attribute. To disconnect
 time series attribute from already connected time series resource set this
@@ -4361,7 +4367,9 @@ or an AttributeBaseDefinition instance.
 See: <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths">objects and attributes paths</a>.</p></li>
 <li><p><strong>new_template_expression</strong> – New template expression for the attribute definition.
 This will be used by all attribute instances that use this definition and don’t
-have a local expression.</p></li>
+have a local expression. The template expression is not validated during this
+operation. Invalid template expressions will be accepted but will cause failures
+when reading time series points later.</p></li>
 <li><p><strong>new_description</strong> – New description for the attribute definition.</p></li>
 </ul>
 </dd>

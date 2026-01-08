@@ -1506,6 +1506,11 @@ argument will be discarded if an insecure connection is used.</p>
         <span class="p">)</span>
 
         <span class="c1"># Change local expression of a time series attribute of the new object.</span>
+        <span class="c1"># The local expression is not validated during update operation.</span>
+        <span class="c1"># Invalid local expressions will be accepted but will cause failures</span>
+        <span class="c1"># when reading time series points later. Before committing changes,</span>
+        <span class="c1"># make sure the expression is valid, by reading time series points and</span>
+        <span class="c1"># verifying they are as expected.</span>
         <span class="n">new_local_expression</span> <span class="o">=</span> <span class="s2">&quot;## = 2</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute</span><span class="p">(</span>
             <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;TsCalcAtt&quot;</span><span class="p">],</span>
@@ -1517,6 +1522,12 @@ argument will be discarded if an insecure connection is used.</p>
         <span class="n">ts_calc_attribute</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get_timeseries_attribute</span><span class="p">(</span>
             <span class="n">new_object</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;TsCalcAtt&quot;</span><span class="p">],</span> <span class="n">full_attribute_info</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
+        <span class="c1"># The template expression is not validated during update operation.</span>
+        <span class="c1"># Invalid template expressions will be accepted but will cause failures</span>
+        <span class="c1"># when reading time series points later - if there is no local</span>
+        <span class="c1"># expression set that takes precedence. In such case, before committing</span>
+        <span class="c1"># changes, make sure the expression is valid, by reading time series</span>
+        <span class="c1"># points and verifying they are as expected.</span>
         <span class="n">new_template_expression</span> <span class="o">=</span> <span class="s2">&quot;## = 100</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_attribute_definition</span><span class="p">(</span>
             <span class="n">ts_calc_attribute</span><span class="o">.</span><span class="n">definition</span><span class="p">,</span>
