@@ -2,17 +2,21 @@ Versions
 --------
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
+For detailed compatibility information, refer to the
+`compatibility matrix <https://volue-public.github.io/energy-smp-docs/latest/mesh/installation/MeshServiceInstallationGuide/#mesh-python-sdk-compatibility-matrix>`_.
 
-Mesh Python SDK version 1.14.0-dev
-**********************************
 
-This is the current master version.
+`Mesh Python SDK version 1.14.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.14.0>`_
+***********************************************************************************************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.18 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12, 3.13] **(may change)**
+- Mesh server version >= 2.18
+- Python [3.9, 3.10, 3.11, 3.12, 3.13]
+
+.. warning::
+    Python 3.9 support will dropped in one of the next Mesh Python SDK releases.
 
 New features
 ~~~~~~~~~~~~~~~~~~
@@ -23,11 +27,6 @@ New features
 - Mesh version compatibility mechanism.
   See documentation :ref:`Version compatibility` for more information. :pull:`583`
 
-Changes
-~~~~~~~~~~~~~~~~~~
-
-- TBA
-
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -35,7 +34,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 .. code-block:: bash
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.14.0
 
 
 `Mesh Python SDK version 1.13.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.13.0>`_
