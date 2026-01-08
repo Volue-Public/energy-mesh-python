@@ -15,12 +15,12 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.18 **(may change)**
-- Python [3.10, 3.11, 3.12, 3.13] **(may change)**
+- Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for Python 3.14 :issue:`598`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
