@@ -79,6 +79,11 @@ def main(address, tls_root_pem_cert):
         )
 
         # Change local expression of a time series attribute of the new object.
+        # The local expression is not validated during update operation.
+        # Invalid local expressions will be accepted but will cause failures
+        # when reading time series points later. Before committing changes,
+        # make sure the expression is valid, by reading time series points and
+        # verifying they are as expected.
         new_local_expression = "## = 2\n"
         session.update_timeseries_attribute(
             new_object.attributes["TsCalcAtt"],
@@ -90,6 +95,12 @@ def main(address, tls_root_pem_cert):
         ts_calc_attribute = session.get_timeseries_attribute(
             new_object.attributes["TsCalcAtt"], full_attribute_info=True
         )
+        # The template expression is not validated during update operation.
+        # Invalid template expressions will be accepted but will cause failures
+        # when reading time series points later - if there is no local
+        # expression set that takes precedence. In such case, before committing
+        # changes, make sure the expression is valid, by reading time series
+        # points and verifying they are as expected.
         new_template_expression = "## = 100\n"
         session.update_timeseries_attribute_definition(
             ts_calc_attribute.definition,
