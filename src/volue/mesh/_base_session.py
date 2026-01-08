@@ -512,7 +512,9 @@ class Session(abc.ABC):
             target: Mesh time series attribute to be updated. It could be a Universal Unique
                 Identifier or a path in the `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
                 See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
-            new_local_expression: New local expression.
+            new_local_expression: New local expression. It is not validated during this operation.
+                Invalid local expressions will be accepted but will cause failures when reading
+                time series points later.
             new_timeseries_resource_key: Time series key of a new time series resource
                 (physical or virtual) to connect to the time series attribute. To disconnect
                 time series attribute from already connected time series resource set this
@@ -539,7 +541,9 @@ class Session(abc.ABC):
                 See: `objects and attributes paths <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths>`__.
             new_template_expression: New template expression for the attribute definition.
                 This will be used by all attribute instances that use this definition and don't
-                have a local expression.
+                have a local expression. The template expression is not validated during this
+                operation. Invalid template expressions will be accepted but will cause failures
+                when reading time series points later.
             new_description: New description for the attribute definition.
 
         Raises:
