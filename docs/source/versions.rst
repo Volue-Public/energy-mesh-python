@@ -13,10 +13,10 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.18
-- Python [3.9, 3.10, 3.11, 3.12, 3.13]
+- Python [3.10, 3.11, 3.12, 3.13]
 
 .. warning::
-    Python 3.9 support will dropped in one of the next Mesh Python SDK releases.
+    Python 3.9 is no longer supported.
 
 New features
 ~~~~~~~~~~~~~~~~~~
