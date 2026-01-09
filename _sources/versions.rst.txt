@@ -6,6 +6,37 @@ For detailed compatibility information, refer to the
 `compatibility matrix <https://volue-public.github.io/energy-smp-docs/latest/mesh/installation/MeshServiceInstallationGuide/#mesh-python-sdk-compatibility-matrix>`_.
 
 
+Mesh Python SDK version 1.15.0-dev
+**********************************
+
+This is the current master version.
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.18 **(may change)**
+- Python [3.10, 3.11, 3.12, 3.13] **(may change)**
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+.. code-block:: bash
+
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+
+
 `Mesh Python SDK version 1.14.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.14.0>`_
 ***********************************************************************************************************
 
