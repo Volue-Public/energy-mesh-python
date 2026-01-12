@@ -26,21 +26,21 @@ def revision_workflow(session: Connection.Session):
     """
     print("\n=== Starting Revision Workflow Example ===\n")
     # 1. Create a revision
-    print("1. Creating a new revision...")
-    revision = session.availability.create_revision(
-        target=CHIMNEY_PATH,
-        event_id="event_id",
-        local_id="local_id",
-        reason="Revision reason",
-        created_author="martin_created",
-        created_timestamp=datetime.fromtimestamp(0, UTC),
-        last_changed_author="martin_updated",
-    )
+    # print("1. Creating a new revision...")
+    # revision = session.availability.create_revision(
+    #     target=CHIMNEY_PATH,
+    #     event_id="event_id",
+    #     local_id="local_id",
+    #     reason="Revision reason",
+    #     # created_author="martin_created",
+    #     created_timestamp=datetime.fromtimestamp(0, UTC),
+    #     # last_changed_author="martin_updated",
+    # )
 
-    print(f"   Created revision with ID: {revision.event_id}")
-    print(f"   Owner ID: {revision.owner_id}")
-    print(f"   Created by: '{revision.created.author}' at {revision.created.timestamp}")
-    print(f"   Last changed by: '{revision.last_changed.author}' at {revision.last_changed.timestamp}")
+    # print(f"   Created revision with ID: {revision.event_id}")
+    # print(f"   Owner ID: {revision.owner_id}")
+    # print(f"   Created by: '{revision.created.author}' at {revision.created.timestamp}")
+    # print(f"   Last changed by: '{revision.last_changed.author}' at {revision.last_changed.timestamp}")
     # print(f"   Initial recurrences count: {len(revision.recurrences)}")
 
     # # 2. Add a recurrence to the revision
@@ -58,13 +58,17 @@ def revision_workflow(session: Connection.Session):
     # )
     # print(f"   Added recurrence with ID: {recurrence_id}")
 
-    # # 3. Get the revision
+    # 3. Get the revision
     # print("\n3. Getting the revision with its new recurrence...")
-    # revision_with_recurrence = session.availability.get_availability_event(
-    #     target=CHIMNEY_PATH,
-    #     event_id=revision.event_id,
-    # )
-    # print(f"   Retrieved revision with ID: {revision_with_recurrence.event_id}")
+    revision_with_recurrence = session.availability.get_availability_event(
+        target=CHIMNEY_PATH,
+        event_id="event_id",
+    )
+    print(f"   Retrieved revision with ID: {revision_with_recurrence.event_id}")
+    print(f"   created_author: {revision_with_recurrence.created.author}")
+    print(f"   created_timestamp: {revision_with_recurrence.created.timestamp}")
+    print(f"   last_changed_author: {revision_with_recurrence.last_changed.author}")
+    print(f"   last_changed_timestamp: {revision_with_recurrence.last_changed.timestamp}")
     # print(f"   Recurrences count: {len(revision_with_recurrence.recurrences)}")
     # if revision_with_recurrence.recurrences:
     #     recurrence = revision_with_recurrence.recurrences[0]
@@ -119,24 +123,24 @@ def revision_workflow(session: Connection.Session):
     #         f"   Instance {i+1}: Period: {instance.period_start} to {instance.period_end}"
     #     )
 
-    time.sleep(5)
+    # time.sleep(5)
 
     # 7. Update the revision
-    print("\n7. Updating the revision...")
-    session.availability.update_revision(
-        target=CHIMNEY_PATH,
-        event_id="event_id",
-        new_local_id="updated_local_id",
-        new_reason="Updated reason",
-    )
+    # print("\n7. Updating the revision...")
+    # session.availability.update_revision(
+    #     target=CHIMNEY_PATH,
+    #     event_id="event_id",
+    #     new_local_id="updated_local_id",
+    #     new_reason="Updated reason",
+    # )
 
-    updated_revision = session.availability.get_availability_event(
-        target=CHIMNEY_PATH, event_id="event_id"
-    )
-    print(f"   Updated local ID: {updated_revision.local_id}")
-    print(f"   Updated reason: {updated_revision.reason}")
-    print(f"   Created by: '{updated_revision.created.author}' at {updated_revision.created.timestamp}")
-    print(f"   Last changed by: '{updated_revision.last_changed.author}' at {updated_revision.last_changed.timestamp}")
+    # updated_revision = session.availability.get_availability_event(
+    #     target=CHIMNEY_PATH, event_id="event_id"
+    # )
+    # print(f"   Updated local ID: {updated_revision.local_id}")
+    # print(f"   Updated reason: {updated_revision.reason}")
+    # print(f"   Created by: '{updated_revision.created.author}' at {updated_revision.created.timestamp}")
+    # print(f"   Last changed by: '{updated_revision.last_changed.author}' at {updated_revision.last_changed.timestamp}")
     # print(f"   Last modified: {updated_revision.last_changed.timestamp}")
 
     # # 8. Delete a specific recurrence
@@ -160,12 +164,14 @@ def revision_workflow(session: Connection.Session):
     )
 
     remaining_revisions = session.availability.search_availability_events(
-        event_type=EventType.REVISION,
+        event_type=EventType.ALL,
         targets=[CHIMNEY_PATH],
     )
-    print(f"   Revisions found: {len(remaining_revisions)}")
+    print(f"   Events found: {len(remaining_revisions)}")
 
-    print("\n=== Revision Workflow Example Completed ===\n")
+    session.commit()
+
+    # print("\n=== Revision Workflow Example Completed ===\n")
 
 
 def restriction_workflow(session: Connection.Session):

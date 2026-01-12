@@ -31,9 +31,9 @@ class Availability(Availability):
         event_id: str,
         local_id: str,
         reason: str,
-        created_author: str='',
+        created_author: str=None,
         created_timestamp: datetime=None,
-        last_changed_author: str='',
+        last_changed_author: str=None,
     ) -> Revision:
         request = super()._prepare_create_revision_request(
             target, event_id, local_id, reason, created_author, created_timestamp, last_changed_author,

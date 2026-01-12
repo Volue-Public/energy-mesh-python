@@ -546,9 +546,9 @@ class Availability(abc.ABC):
         event_id: str,
         local_id: str,
         reason: str,
-        created_author: str='',
+        created_author: str=None,
         created_timestamp: timestamp=None,
-        last_changed_author: str='',
+        last_changed_author: str=None,
     ) -> Revision:
         """
         Creates a new revision for a specified Mesh object.
