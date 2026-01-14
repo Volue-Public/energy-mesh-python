@@ -577,10 +577,14 @@ class Availability(abc.ABC):
         """
 
     def _prepare_create_revision_request(
-        self, target: Union[uuid.UUID, str, Object], id: str, local_id: str, reason: str,
-        created_author: str,
-        created_timestamp: datetime,
-        last_changed_author: str,
+        self,
+        target: Union[uuid.UUID, str, Object],
+        id: str,
+        local_id: str,
+        reason: str,
+        created_author: str=None,
+        created_timestamp: datetime=None,
+        last_changed_author: str=None,
     ) -> availability_pb2.CreateRevisionRequest:
         request = availability_pb2.CreateRevisionRequest(
             session_id=_to_proto_guid(self.session_id),
