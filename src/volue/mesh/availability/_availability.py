@@ -48,9 +48,10 @@ class Availability(Availability):
         recurrence: Recurrence,
         period_start: datetime,
         period_end: datetime,
+        author: str=None,
     ) -> int:
         request = super()._prepare_add_recurrence_request(
-            target, event_id, recurrence, period_start, period_end
+            target, event_id, recurrence, period_start, period_end, author
         )
         add_recurrence_response = self.availability_service.AddRevisionRecurrence(
             request
@@ -99,9 +100,10 @@ class Availability(Availability):
         target: Union[uuid.UUID, str, Object],
         event_id: str,
         recurrence_id: int,
+        author: str=None,
     ) -> None:
         request = super()._prepare_delete_revision_recurrence_request(
-            target, event_id, recurrence_id
+            target, event_id, recurrence_id, author
         )
         self.availability_service.DeleteRevisionRecurrence(request)
 
@@ -131,9 +133,13 @@ class Availability(Availability):
         reason: str,
         category: str,
         recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+        created_author: str=None,
+        created_timestamp: datetime=None,
+        last_changed_author: str=None,
     ) -> Restriction:
         request = super()._prepare_create_restriction_request(
-            target, event_id, local_id, reason, category, recurrence
+            target, event_id, local_id, reason, category, recurrence, created_author,
+            created_timestamp, last_changed_author,
         )
         proto_restriction = self.availability_service.CreateRestriction(request)
         return Restriction._from_proto(proto_restriction)
@@ -173,9 +179,10 @@ class Availability(Availability):
         event_id: str,
         new_local_id: Optional[str] = None,
         new_reason: Optional[str] = None,
+        author: str=None,
     ) -> None:
         request = super()._prepare_update_revision_request(
-            target, event_id, new_local_id, new_reason
+            target, event_id, new_local_id, new_reason, author
         )
         self.availability_service.UpdateRevision(request)
 
@@ -189,6 +196,7 @@ class Availability(Availability):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
+        author: str=None,
     ) -> None:
         request = super()._prepare_update_restriction_request(
             target,
@@ -197,5 +205,6 @@ class Availability(Availability):
             new_reason,
             new_category,
             new_restriction_recurrence,
+            author,
         )
         self.availability_service.UpdateRestriction(request)

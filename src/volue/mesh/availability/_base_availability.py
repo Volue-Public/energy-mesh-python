@@ -565,6 +565,9 @@ class Availability(abc.ABC):
             local_id: An additional identifier for the revision. This does not
                 need to be unique and can be used for external system references.
             reason: A description or explanation for creating the revision.
+            created_author: User who created this event.
+            created_timestamp: When this event was created.
+            last_changed_author: Last user who edited this event.
 
         Returns:
             Revision: An object representing the newly created revision, including
@@ -626,6 +629,9 @@ class Availability(abc.ABC):
             reason: A description or explanation for creating the restriction.
             category: The category of the restriction.
             recurrence: The recurrence details, which can be either basic or complex.
+            created_author: User who created this event.
+            created_timestamp: When this event was created.
+            last_changed_author: Last user who edited this event.
 
         Returns:
             Restriction: An object representing the newly created restriction,
@@ -645,6 +651,9 @@ class Availability(abc.ABC):
         reason: str,
         category: str,
         recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+        created_author: str=None,
+        created_timestamp: datetime=None,
+        last_changed_author: str=None,
     ) -> availability_pb2.CreateRestrictionRequest:
         proto_recurrence = availability_pb2.RestrictionRecurrence()
 
@@ -666,6 +675,9 @@ class Availability(abc.ABC):
             reason=reason,
             category=category,
             restriction_recurrence=proto_recurrence,
+            created_author=created_author,
+            created_timestamp=created_timestamp,
+            last_changed_author=last_changed_author,
         )
         return request
 
@@ -677,6 +689,7 @@ class Availability(abc.ABC):
         recurrence: Recurrence,
         period_start: datetime,
         period_end: datetime,
+        author: str=None
     ) -> int:
         """
         Adds a recurrence pattern to an existing revision.
@@ -694,6 +707,7 @@ class Availability(abc.ABC):
                 type, frequency, and description.
             period_start: The start time of the period during which the recurrence is active.
             period_end: The end time of the period during which the recurrence is active.
+            author: The user who requested this change.
 
         Returns:
             int: The unique identifier of the newly created recurrence.
@@ -710,6 +724,7 @@ class Availability(abc.ABC):
         recurrence: Recurrence,
         period_start: datetime,
         period_end: datetime,
+        author: str=None,
     ) -> availability_pb2.AddRevisionRecurrenceRequest:
 
         revision_recurrence = RevisionRecurrence(
@@ -721,6 +736,7 @@ class Availability(abc.ABC):
             owner_id=_to_proto_object_mesh_id(target),
             event_id=event_id,
             revision_recurrence=RevisionRecurrence._to_proto(revision_recurrence),
+            author=author,
         )
         return request
 
@@ -807,6 +823,7 @@ class Availability(abc.ABC):
         target: Union[uuid.UUID, str, Object],
         event_id: str,
         recurrence_id: int,
+        author: str=None,
     ) -> None:
         """
         Deletes a specific recurrence associated with a revision.
@@ -818,6 +835,7 @@ class Availability(abc.ABC):
                 This can be specified as a UUID, a string path, or an Object instance.
             event_id: The unique identifier of the revision from which the recurrence will be deleted.
             recurrence_id: The unique identifier of the recurrence to be deleted.
+            author: The user who requested this change.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.
@@ -829,12 +847,14 @@ class Availability(abc.ABC):
         target: Union[uuid.UUID, str, Object],
         event_id: str,
         recurrence_id: int,
+        author: str=None,
     ) -> availability_pb2.DeleteRevisionRecurrenceRequest:
         request = availability_pb2.DeleteRevisionRecurrenceRequest(
             session_id=_to_proto_guid(self.session_id),
             owner_id=_to_proto_object_mesh_id(target),
             event_id=event_id,
             recurrence_id=recurrence_id,
+            author=author,
         )
         return request
 
@@ -962,6 +982,7 @@ class Availability(abc.ABC):
         event_id: str,
         new_local_id: Optional[str] = None,
         new_reason: Optional[str] = None,
+        author: str=None,
     ) -> None:
         """
         Updates an existing revision with new information.
@@ -977,6 +998,7 @@ class Availability(abc.ABC):
                 the local ID will remain unchanged.
             new_reason: The new reason or description for the revision. If None,
                 the reason will remain unchanged.
+            author: The user who requested this change.
 
         Returns:
             None
@@ -997,6 +1019,7 @@ class Availability(abc.ABC):
         event_id: str,
         new_local_id: Optional[str] = None,
         new_reason: Optional[str] = None,
+        author: str=None,
     ) -> availability_pb2.UpdateRevisionRequest:
 
         if new_local_id is None and new_reason is None:
@@ -1008,6 +1031,7 @@ class Availability(abc.ABC):
             session_id=_to_proto_guid(self.session_id),
             owner_id=_to_proto_object_mesh_id(target),
             event_id=event_id,
+            author=author,
         )
 
         fields_to_update = []
@@ -1037,6 +1061,7 @@ class Availability(abc.ABC):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
+        author: str=None,
     ) -> None:
         """
         Updates an existing restriction with new information.
@@ -1057,6 +1082,7 @@ class Availability(abc.ABC):
                 the category will remain unchanged.
             new_restriction_recurrence: The new recurrence details for the restriction. If None,
                 the recurrence details will remain unchanged.
+            author: The user who requested this change.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.
@@ -1078,6 +1104,7 @@ class Availability(abc.ABC):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
+        author: str=None,
     ) -> availability_pb2.UpdateRestrictionRequest:
         if (
             new_local_id is None
@@ -1094,6 +1121,7 @@ class Availability(abc.ABC):
             session_id=_to_proto_guid(self.session_id),
             owner_id=_to_proto_object_mesh_id(target),
             event_id=event_id,
+            author=author,
         )
 
         fields_to_update = []
