@@ -546,9 +546,9 @@ class Availability(abc.ABC):
         event_id: str,
         local_id: str,
         reason: str,
-        created_author: str=None,
-        created_timestamp: timestamp=None,
-        last_changed_author: str=None,
+        created_author: str = None,
+        created_timestamp: datetime = None,
+        last_changed_author: str = None,
     ) -> Revision:
         """
         Creates a new revision for a specified Mesh object.
@@ -585,9 +585,9 @@ class Availability(abc.ABC):
         id: str,
         local_id: str,
         reason: str,
-        created_author: str=None,
-        created_timestamp: datetime=None,
-        last_changed_author: str=None,
+        created_author: str = None,
+        created_timestamp: datetime = None,
+        last_changed_author: str = None,
     ) -> availability_pb2.CreateRevisionRequest:
         request = availability_pb2.CreateRevisionRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -596,7 +596,11 @@ class Availability(abc.ABC):
             local_id=local_id,
             reason=reason,
             created_author=created_author,
-            created_timestamp=_datetime_to_timestamp_pb2(created_timestamp) if created_timestamp else None,
+            created_timestamp=(
+                _datetime_to_timestamp_pb2(created_timestamp)
+                if created_timestamp
+                else None
+            ),
             last_changed_author=last_changed_author,
         )
         return request
@@ -651,9 +655,9 @@ class Availability(abc.ABC):
         reason: str,
         category: str,
         recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
-        created_author: str=None,
-        created_timestamp: datetime=None,
-        last_changed_author: str=None,
+        created_author: str = None,
+        created_timestamp: datetime = None,
+        last_changed_author: str = None,
     ) -> availability_pb2.CreateRestrictionRequest:
         proto_recurrence = availability_pb2.RestrictionRecurrence()
 
@@ -689,7 +693,7 @@ class Availability(abc.ABC):
         recurrence: Recurrence,
         period_start: datetime,
         period_end: datetime,
-        author: str=None
+        author: str = None,
     ) -> int:
         """
         Adds a recurrence pattern to an existing revision.
@@ -724,7 +728,7 @@ class Availability(abc.ABC):
         recurrence: Recurrence,
         period_start: datetime,
         period_end: datetime,
-        author: str=None,
+        author: str = None,
     ) -> availability_pb2.AddRevisionRecurrenceRequest:
 
         revision_recurrence = RevisionRecurrence(
@@ -823,7 +827,7 @@ class Availability(abc.ABC):
         target: Union[uuid.UUID, str, Object],
         event_id: str,
         recurrence_id: int,
-        author: str=None,
+        author: str = None,
     ) -> None:
         """
         Deletes a specific recurrence associated with a revision.
@@ -847,7 +851,7 @@ class Availability(abc.ABC):
         target: Union[uuid.UUID, str, Object],
         event_id: str,
         recurrence_id: int,
-        author: str=None,
+        author: str = None,
     ) -> availability_pb2.DeleteRevisionRecurrenceRequest:
         request = availability_pb2.DeleteRevisionRecurrenceRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -982,7 +986,7 @@ class Availability(abc.ABC):
         event_id: str,
         new_local_id: Optional[str] = None,
         new_reason: Optional[str] = None,
-        author: str=None,
+        author: str = None,
     ) -> None:
         """
         Updates an existing revision with new information.
@@ -1019,7 +1023,7 @@ class Availability(abc.ABC):
         event_id: str,
         new_local_id: Optional[str] = None,
         new_reason: Optional[str] = None,
-        author: str=None,
+        author: str = None,
     ) -> availability_pb2.UpdateRevisionRequest:
 
         if new_local_id is None and new_reason is None:
@@ -1061,7 +1065,7 @@ class Availability(abc.ABC):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
-        author: str=None,
+        author: str = None,
     ) -> None:
         """
         Updates an existing restriction with new information.
@@ -1104,7 +1108,7 @@ class Availability(abc.ABC):
         new_restriction_recurrence: Optional[
             Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
         ] = None,
-        author: str=None,
+        author: str = None,
     ) -> availability_pb2.UpdateRestrictionRequest:
         if (
             new_local_id is None
