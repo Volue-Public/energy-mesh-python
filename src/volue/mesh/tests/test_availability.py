@@ -44,9 +44,9 @@ def test_create_revision(connection):
         assert revision.event_id == event_id
         assert revision.local_id == local_id
         assert revision.reason == reason
-        assert revision.created_author == created_author
-        assert revision.created_timestamp == created_timestamp
-        assert revision.last_changed_author == last_changed_author
+        assert revision.created.author == created_author
+        assert revision.created.timestamp == created_timestamp
+        assert revision.last_changed.author == last_changed_author
 
         assert revision.owner_id is not None
 
@@ -137,7 +137,7 @@ def test_add_revision_recurrence_and_get_event(session):
     assert revision.event_id == event_id
     assert revision.local_id == local_id
     assert revision.reason == reason
-    assert revision.created_author == created_author
+    assert revision.created.author == created_author
 
     period_start = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
     period_end = datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC)
@@ -166,8 +166,8 @@ def test_add_revision_recurrence_and_get_event(session):
         event_id=revision.event_id,
     )
 
-    assert revision.created_author == created_author
-    assert revision.last_changed_author == add_revision_recurrence_author
+    assert revision.created.author == created_author
+    assert revision.last_changed.author == add_revision_recurrence_author
 
     assert len(revision.recurrences) == 1
 
@@ -252,8 +252,8 @@ def test_delete_revision_recurrence(session):
 
     assert isinstance(revision, Revision)
 
-    assert revision.created_author == created_author
-    assert revision.last_changed_author == add_revision_recurrence_author
+    assert revision.created.author == created_author
+    assert revision.last_changed.author == add_revision_recurrence_author
 
     delete_revision_recurrence_author = "delete_revision_recurrence_author"
 
@@ -272,8 +272,8 @@ def test_delete_revision_recurrence(session):
     )
     assert len(revision.recurrences) == 0
 
-    assert revision.created_author == created_author
-    assert revision.last_changed_author == delete_revision_recurrence_author
+    assert revision.created.author == created_author
+    assert revision.last_changed.author == delete_revision_recurrence_author
 
 
 @pytest.mark.database
@@ -418,8 +418,8 @@ def test_add_multiple_recurrences(session):
 
     assert len(revision.recurrences) == 2
 
-    assert revision.created_author == created_author
-    assert revision.last_changed_author == add_revision_recurrence_author_2
+    assert revision.created.author == created_author
+    assert revision.last_changed.author == add_revision_recurrence_author_2
 
     # Verify recurrence details
     recurrences_by_id = {r.id: r for r in revision.recurrences}
@@ -490,9 +490,9 @@ def test_create_restriction_with_basic_recurrence(connection):
         assert restriction.local_id == local_id
         assert restriction.reason == reason
         assert restriction.category == category
-        assert restriction.created_author == created_author
-        assert restriction.created_timestamp == created_timestamp
-        assert restriction.last_changed_author == last_changed_author
+        assert restriction.created.author == created_author
+        assert restriction.created.timestamp == created_timestamp
+        assert restriction.last_changed.author == last_changed_author
 
         assert restriction.owner_id is not None
 
@@ -568,9 +568,9 @@ def test_create_restriction_with_complex_recurrence(connection):
         assert restriction.local_id == local_id
         assert restriction.reason == reason
         assert restriction.category == category
-        assert restriction.created_author == created_author
-        assert restriction.created_timestamp == created_timestamp
-        assert restriction.last_changed_author == last_changed_author
+        assert restriction.created.author == created_author
+        assert restriction.created.timestamp == created_timestamp
+        assert restriction.last_changed.author == last_changed_author
 
         assert restriction.owner_id is not None
 
@@ -826,8 +826,8 @@ def test_update_revision(session):
     # Verify retrieved revision has updated values
     assert retrieved_revision.local_id == new_local_id
     assert retrieved_revision.reason == new_reason
-    assert retrieved_revision.created_author == created_author
-    assert retrieved_revision.last_changed_author == update_revision_author
+    assert retrieved_revision.created.author == created_author
+    assert retrieved_revision.last_changed.author == update_revision_author
 
     # Verify timestamps reflect the update
     assert retrieved_revision.created.timestamp == original_revision.created.timestamp
@@ -931,8 +931,8 @@ def test_update_restriction(session):
     assert updated_restriction.local_id == new_local_id
     assert updated_restriction.reason == new_reason
     assert updated_restriction.category == new_category
-    assert updated_restriction.created_author == original_restriction.created_author
-    assert updated_restriction.last_changed_author == update_restriction_author
+    assert updated_restriction.created.author == original_restriction.created.author
+    assert updated_restriction.last_changed.author == update_restriction_author
 
     # Verify recurrence details were updated
     assert isinstance(updated_restriction.recurrence, RestrictionBasicRecurrence)
@@ -1226,9 +1226,9 @@ async def test_revision_async(async_session):
     assert revision.event_id == event_id
     assert revision.local_id == local_id
     assert revision.reason == reason
-    assert revision.created_author == created_author
-    assert revision.created_timestamp == created_timestamp
-    assert revision.last_changed_author == last_changed_author
+    assert revision.created.author == created_author
+    assert revision.created.timestamp == created_timestamp
+    assert revision.last_changed.author == last_changed_author
 
     assert revision.owner_id is not None
 
@@ -1261,7 +1261,7 @@ async def test_revision_async(async_session):
         event_id=event_id,
     )
 
-    assert revision_with_recurrence.last_changed_author == add_revision_recurrence_author
+    assert revision_with_recurrence.last_changed.author == add_revision_recurrence_author
 
     assert len(revision_with_recurrence.recurrences) == 1
     assert revision_with_recurrence.recurrences[0].recurrence.status == status
@@ -1328,10 +1328,10 @@ async def test_revision_async(async_session):
     )
     assert updated_revision.local_id == new_local_id
     assert updated_revision.reason == new_reason
-    assert updated_revision.created_author == revision.created_author
+    assert updated_revision.created.author == revision.created.author
     assert updated_revision.created.timestamp == revision.created.timestamp
     assert updated_revision.last_changed.timestamp >= revision.last_changed.timestamp
-    assert updated_revision.last_changed_author == update_revision_author
+    assert updated_revision.last_changed.author == update_revision_author
 
     # 8. Delete a specific recurrence
     delete_revision_recurrence_author = "delete_revision_recurrence_author"
@@ -1349,8 +1349,8 @@ async def test_revision_async(async_session):
         event_id=event_id,
     )
 
-    assert revision_after_delete.created_author == revision.created_author
-    assert revision_after_delete.last_changed_author == delete_revision_recurrence_author
+    assert revision_after_delete.created.author == revision.created.author
+    assert revision_after_delete.last_changed.author == delete_revision_recurrence_author
 
     assert len(revision_after_delete.recurrences) == 1
     assert revision_after_delete.recurrences[0].id == recurrence_id
@@ -1380,46 +1380,58 @@ async def test_revision_async(async_session):
 @pytest.mark.database
 async def test_restriction_async(async_session):
     """Test the async version of restriction-related functionality."""
+    event_id = "async_restriction_event"
+    local_id = "async_restriction_local_id"
+    reason = "Async restriction reason"
+    category = "DischargeMin[m3/s]"
+
+    status = "SelfImposed"
+    description = "Async basic restriction"
+    recurrence_type = RecurrenceType.NONE
+    period_start = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+    period_end = datetime(2023, 1, 10, tzinfo=dateutil.tz.UTC)
+    value = 0.75
+
     # 1. Create a restriction with basic recurrence
     restriction = await async_session.availability.create_restriction(
         target=THERMAL_COMPONENT_PATH,
-        event_id="async_restriction_event",
-        local_id="async_restriction_local_id",
-        reason="Async restriction reason",
-        category="DischargeMin[m3/s]",
+        event_id=event_id,
+        local_id=local_id,
+        reason=reason,
+        category=category,
         recurrence=RestrictionBasicRecurrence(
             recurrence=Recurrence(
-                status="SelfImposed",
-                description="Async basic restriction",
-                recurrence_type=RecurrenceType.NONE,
+                status=status,
+                description=description,
+                recurrence_type=recurrence_type,
             ),
-            period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
-            period_end=datetime(2023, 1, 10, tzinfo=dateutil.tz.UTC),
-            value=0.75,
+            period_start=period_start,
+            period_end=period_end,
+            value=value,
         ),
+        created_author=created_author,
+        created_timestamp=created_timestamp,
+        last_changed_author=last_changed_author,
     )
 
     # Verify creation succeeded
-    assert restriction.event_id == "async_restriction_event"
-    assert restriction.local_id == "async_restriction_local_id"
-    assert restriction.reason == "Async restriction reason"
-    assert restriction.category == "DischargeMin[m3/s]"
+    assert restriction.event_id == event_id
+    assert restriction.local_id == local_id
+    assert restriction.reason == reason
+    assert restriction.category == category
+    assert restriction.created.author == created_author
+    assert restriction.created.timestamp == created_timestamp
+    assert restriction.last_changed.author == last_changed_author
+
     assert restriction.owner_id is not None
-    assert restriction.created.author is not None
-    assert isinstance(restriction.created.timestamp, datetime)
-    assert restriction.last_changed.author is not None
-    assert isinstance(restriction.last_changed.timestamp, datetime)
 
     # Verify recurrence details
     assert isinstance(restriction.recurrence, RestrictionBasicRecurrence)
-    assert restriction.recurrence.recurrence.status == "SelfImposed"
-    assert restriction.recurrence.recurrence.description == "Async basic restriction"
-    assert restriction.recurrence.period_start == datetime(
-        2023, 1, 1, tzinfo=dateutil.tz.UTC
-    )
-    assert restriction.recurrence.period_end == datetime(
-        2023, 1, 10, tzinfo=dateutil.tz.UTC
-    )
+    assert restriction.recurrence.recurrence.status == status
+    assert restriction.recurrence.recurrence.description == description
+    assert restriction.recurrence.recurrence.recurrence_type == recurrence_type
+    assert restriction.recurrence.period_start == period_start
+    assert restriction.recurrence.period_end == period_end
 
     # 2. Search for the restriction in all restrictions
     search_results = await async_session.availability.search_availability_events(
@@ -1429,10 +1441,10 @@ async def test_restriction_async(async_session):
 
     found = False
     for result in search_results:
-        if result.event_id == "async_restriction_event":
+        if result.event_id == event_id:
             found = True
-            assert result.local_id == "async_restriction_local_id"
-            assert result.category == "DischargeMin[m3/s]"
+            assert result.local_id == local_id
+            assert result.category == category
             break
 
     assert found, "Created restriction not found in search results"
@@ -1440,19 +1452,22 @@ async def test_restriction_async(async_session):
     # 3. Get the restriction directly
     retrieved_restriction = await async_session.availability.get_availability_event(
         target=THERMAL_COMPONENT_PATH,
-        event_id="async_restriction_event",
+        event_id=event_id,
     )
 
-    assert retrieved_restriction.event_id == "async_restriction_event"
-    assert retrieved_restriction.local_id == "async_restriction_local_id"
-    assert retrieved_restriction.reason == "Async restriction reason"
-    assert retrieved_restriction.category == "DischargeMin[m3/s]"
+    assert retrieved_restriction.event_id == event_id
+    assert retrieved_restriction.local_id == local_id
+    assert retrieved_restriction.reason == reason
+    assert retrieved_restriction.category == category
+    assert retrieved_restriction.created.author = created_author
+    assert retrieved_restriction.created.timestamp = created_timestamp
+    assert retrieved_restriction.last_changed.author = last_changed_author
 
     # 4. Search for instances within a time interval
     instances = await async_session.availability.search_instances(
         target=THERMAL_COMPONENT_PATH,
-        event_id="async_restriction_event",
-        period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+        event_id=event_id,
+        period_start=period_start,
         period_end=datetime(2023, 1, 15, tzinfo=dateutil.tz.UTC),
     )
 
@@ -1461,37 +1476,45 @@ async def test_restriction_async(async_session):
 
     # Verify instance properties
     instance = instances[0]
-    assert instance.period_start <= datetime(2023, 1, 10, tzinfo=dateutil.tz.UTC)
-    assert instance.period_end >= datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
-    assert instance.value == 0.75
+    assert instance.period_start <= period_end
+    assert instance.period_end >= period_start
+    assert instance.value == value
 
     # 5. Update the restriction with new values
+    new_local_id = "updated_async_local_id"
+    new_reason = "Updated async reason"
+    new_category = "DischargeMax[m3/s]"
+    update_restriction_author = "update_restriction_author"
+
     await async_session.availability.update_restriction(
         target=THERMAL_COMPONENT_PATH,
-        event_id="async_restriction_event",
-        new_local_id="updated_async_local_id",
-        new_reason="Updated async reason",
-        new_category="DischargeMax[m3/s]",
+        event_id=event_id,
+        new_local_id=new_local_id,
+        new_reason=new_reason,
+        new_category=new_category,
+        author=update_restriction_author,
     )
 
     # Verify the update worked
     updated_restriction = await async_session.availability.get_availability_event(
         target=THERMAL_COMPONENT_PATH,
-        event_id="async_restriction_event",
+        event_id=event_id,
     )
 
-    assert updated_restriction.local_id == "updated_async_local_id"
-    assert updated_restriction.reason == "Updated async reason"
-    assert updated_restriction.category == "DischargeMax[m3/s]"
+    assert updated_restriction.local_id == new_local_id
+    assert updated_restriction.reason == new_reason
+    assert updated_restriction.category == new_category
+    assert updated_restriction.created.author == restriction.created.author
     assert updated_restriction.created.timestamp == restriction.created.timestamp
     assert (
         updated_restriction.last_changed.timestamp >= restriction.last_changed.timestamp
     )
+    assert updated_restriction.last_changed.author = update_restriction_author
 
     # 6. Update the recurrence of the restriction
     new_recurrence = RestrictionBasicRecurrence(
         recurrence=Recurrence(
-            status="SelfImposed",
+            status=status,
             description="Updated async recurrence",
             recurrence_type=RecurrenceType.WEEKLY,
             recur_every=1,
@@ -1504,7 +1527,7 @@ async def test_restriction_async(async_session):
 
     await async_session.availability.update_restriction(
         target=THERMAL_COMPONENT_PATH,
-        event_id="async_restriction_event",
+        event_id=event_id,
         new_restriction_recurrence=new_recurrence,
     )
 
@@ -1512,7 +1535,7 @@ async def test_restriction_async(async_session):
     restriction_after_recurrence_update = (
         await async_session.availability.get_availability_event(
             target=THERMAL_COMPONENT_PATH,
-            event_id="async_restriction_event",
+            event_id=event_id,
         )
     )
 
@@ -1521,7 +1544,7 @@ async def test_restriction_async(async_session):
     )
     assert (
         restriction_after_recurrence_update.recurrence.recurrence.status
-        == "SelfImposed"
+        == status
     )
     assert (
         restriction_after_recurrence_update.recurrence.recurrence.description
@@ -1545,10 +1568,10 @@ async def test_restriction_async(async_session):
         event_id="async_complex_restriction",
         local_id="async_complex_local_id",
         reason="Async complex restriction",
-        category="DischargeMin[m3/s]",
+        category=category,
         recurrence=RestrictionComplexRecurrence(
             recurrence=Recurrence(
-                status="SelfImposed",
+                status=status,
                 description="Async complex pattern",
                 recurrence_type=RecurrenceType.DAILY,
                 recur_every=1,
@@ -1592,7 +1615,7 @@ async def test_restriction_async(async_session):
 
     for result in search_results_after_delete:
         assert (
-            result.event_id != "async_restriction_event"
+            result.event_id != event_id
         ), "Basic restriction should have been deleted"
         assert (
             result.event_id != "async_complex_restriction"
