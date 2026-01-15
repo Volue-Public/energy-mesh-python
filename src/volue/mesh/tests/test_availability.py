@@ -38,7 +38,7 @@ def test_create_revision(connection):
             reason=reason,
             created_author=created_author,
             created_timestamp=created_timestamp,
-            last_changed_author=last_changed_author
+            last_changed_author=last_changed_author,
         )
 
         assert revision.event_id == event_id
@@ -577,9 +577,7 @@ def test_create_restriction_with_complex_recurrence(connection):
         # Assert recurrence details
         assert isinstance(restriction.recurrence, RestrictionComplexRecurrence)
         assert restriction.recurrence.recurrence.status == status
-        assert (
-            restriction.recurrence.recurrence.description == description
-        )
+        assert restriction.recurrence.recurrence.description == description
         assert restriction.recurrence.recurrence.recurrence_type == recurrence_type
         assert restriction.recurrence.recurrence.recur_every == recur_every
         assert restriction.recurrence.recurrence.recur_until == recur_until
@@ -1261,12 +1259,17 @@ async def test_revision_async(async_session):
         event_id=event_id,
     )
 
-    assert revision_with_recurrence.last_changed.author == add_revision_recurrence_author
+    assert (
+        revision_with_recurrence.last_changed.author == add_revision_recurrence_author
+    )
 
     assert len(revision_with_recurrence.recurrences) == 1
     assert revision_with_recurrence.recurrences[0].recurrence.status == status
     assert revision_with_recurrence.recurrences[0].recurrence.description == description
-    assert revision_with_recurrence.recurrences[0].recurrence.recurrence_type == recurrence_type
+    assert (
+        revision_with_recurrence.recurrences[0].recurrence.recurrence_type
+        == recurrence_type
+    )
 
     # 4. Add another recurrence with a different pattern
     second_recurrence_id = await async_session.availability.add_revision_recurrence(
@@ -1280,7 +1283,7 @@ async def test_revision_async(async_session):
             recurrence_type=RecurrenceType.DAILY,
             recur_every=2,
             recur_until=datetime(2023, 2, 15, tzinfo=dateutil.tz.UTC),
-        )
+        ),
     )
 
     assert second_recurrence_id == 1
@@ -1350,7 +1353,9 @@ async def test_revision_async(async_session):
     )
 
     assert revision_after_delete.created.author == revision.created.author
-    assert revision_after_delete.last_changed.author == delete_revision_recurrence_author
+    assert (
+        revision_after_delete.last_changed.author == delete_revision_recurrence_author
+    )
 
     assert len(revision_after_delete.recurrences) == 1
     assert revision_after_delete.recurrences[0].id == recurrence_id
@@ -1555,10 +1560,7 @@ async def test_restriction_async(async_session):
     assert isinstance(
         restriction_after_recurrence_update.recurrence, RestrictionBasicRecurrence
     )
-    assert (
-        restriction_after_recurrence_update.recurrence.recurrence.status
-        == status
-    )
+    assert restriction_after_recurrence_update.recurrence.recurrence.status == status
     assert (
         restriction_after_recurrence_update.recurrence.recurrence.description
         == new_description
@@ -1568,12 +1570,25 @@ async def test_restriction_async(async_session):
         == new_recurrence_type
     )
 
-    assert restriction_after_recurrence_update.recurrence.recurrence.recur_every == new_recur_every
-    assert restriction_after_recurrence_update.recurrence.period_start == new_period_start
+    assert (
+        restriction_after_recurrence_update.recurrence.recurrence.recur_every
+        == new_recur_every
+    )
+    assert (
+        restriction_after_recurrence_update.recurrence.period_start == new_period_start
+    )
     assert restriction_after_recurrence_update.recurrence.period_end == new_period_end
-    assert restriction_after_recurrence_update.created.author == restriction.created.author
-    assert restriction_after_recurrence_update.created.timestamp == restriction.created.timestamp
-    assert restriction_after_recurrence_update.last_changed.author == update_restriction_recurrence_author
+    assert (
+        restriction_after_recurrence_update.created.author == restriction.created.author
+    )
+    assert (
+        restriction_after_recurrence_update.created.timestamp
+        == restriction.created.timestamp
+    )
+    assert (
+        restriction_after_recurrence_update.last_changed.author
+        == update_restriction_recurrence_author
+    )
 
     # 7. Create a complex restriction
     complex_restriction = await async_session.availability.create_restriction(
@@ -1634,9 +1649,7 @@ async def test_restriction_async(async_session):
     )
 
     for result in search_results_after_delete:
-        assert (
-            result.event_id != event_id
-        ), "Basic restriction should have been deleted"
+        assert result.event_id != event_id, "Basic restriction should have been deleted"
         assert (
             result.event_id != "async_complex_restriction"
         ), "Complex restriction should have been deleted"
