@@ -1326,9 +1326,9 @@ async def test_revision_async(async_session):
         target=THERMAL_COMPONENT_PATH,
         event_id=event_id,
     )
-    assert updated_revision.local_id == updated_local_id
-    assert updated_revision.reason == updated_reason
-    assert updated_restriction.created_author == revision.created_author
+    assert updated_revision.local_id == new_local_id
+    assert updated_revision.reason == new_reason
+    assert updated_revision.created_author == revision.created_author
     assert updated_revision.created.timestamp == revision.created.timestamp
     assert updated_revision.last_changed.timestamp >= revision.last_changed.timestamp
     assert updated_revision.last_changed_author == update_revision_author
