@@ -1627,9 +1627,9 @@ async def test_restriction_async(async_session):
 
     # Verify complex restriction creation
     assert complex_restriction.event_id == "async_complex_restriction"
-    assert complex_restriction.created_author == created_author
-    assert complex_restriction.created_timestamp == created_timestamp
-    assert complex_restriction.last_changed_author == last_changed_author
+    assert complex_restriction.created.author == created_author
+    assert complex_restriction.created.timestamp == created_timestamp
+    assert complex_restriction.last_changed.author == last_changed_author
 
     assert isinstance(complex_restriction.recurrence, RestrictionComplexRecurrence)
     assert len(complex_restriction.recurrence.time_points) == 3
