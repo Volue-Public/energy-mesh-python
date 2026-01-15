@@ -2,8 +2,11 @@ Versions
 --------
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
+For detailed compatibility information, refer to the
+`compatibility matrix <https://volue-public.github.io/energy-smp-docs/latest/mesh/installation/MeshServiceInstallationGuide/#mesh-python-sdk-compatibility-matrix>`_.
 
-Mesh Python SDK version 1.14.0-dev
+
+Mesh Python SDK version 1.15.0-dev
 **********************************
 
 This is the current master version.
@@ -12,16 +15,12 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.18 **(may change)**
-- Python [3.9, 3.10, 3.11, 3.12, 3.13] **(may change)**
+- Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Support for updating time series attribute definitions. :issue:`573`
-  It allows modifications of template calculation expressions.
-
-- Mesh version compatibility mechanism.
-  See documentation :ref:`Version compatibility` for more information. :pull:`583`
+- Support for Python 3.14 :issue:`598`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -36,6 +35,37 @@ See instructions at :ref:`Setup for users` and use the following:
 .. code-block:: bash
 
     python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+
+
+`Mesh Python SDK version 1.14.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.14.0>`_
+***********************************************************************************************************
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.18
+- Python [3.10, 3.11, 3.12, 3.13]
+
+.. warning::
+    Python 3.9 is no longer supported.
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- Support for updating time series attribute definitions. :issue:`573`
+  It allows modifications of template calculation expressions.
+
+- Mesh version compatibility mechanism.
+  See documentation :ref:`Version compatibility` for more information. :pull:`583`
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+.. code-block:: bash
+
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.14.0
 
 
 `Mesh Python SDK version 1.13.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.13.0>`_

@@ -12,6 +12,7 @@ body:
         - [ ] If the minimal supported Mesh version changed, then create in Mesh repository a new release in GitHub with official Mesh build for Mesh Python SDK.
               Switch to this version in Mesh Python SDK repo. Provide the new build number in comment.
         - [ ] If the minimal supported Mesh version changed, then update the `MINIMUM_SERVER_VERSION_STR` in `_version_compatibility.py`
+        - [ ] Update the Mesh Python SDK compatibility matrix: https://github.com/Volue-Public/energy-smp-docs/blob/main/docs/mesh/installation/MeshServiceInstallationGuide.md#mesh-python-sdk-compatibility-matrix.
         - [ ] Update https://github.com/Volue-Public/energy-mesh-python/blob/master/docs/source/versions.rst.
         - [ ] Update the Python SDK version to official one (without `-dev` suffix).
         - [ ] Release stable version (take previous release description template as base).
