@@ -24,26 +24,31 @@ THERMAL_COMPONENT_PATH = "Model/SimpleThermalTestModel/ThermalComponent"
 @pytest.mark.database
 def test_create_revision(connection):
     with connection.create_session() as session:
+        event_id = "event_id"
+        local_id = "local_id"
+        reason = "reason"
+        created_author = "created_author"
+        created_timestamp = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+        last_changed_author = "last_changed_author"
+
         revision = session.availability.create_revision(
             target=THERMAL_COMPONENT_PATH,
-            event_id="event_id",
-            local_id="local_id",
-            reason="reason",
+            event_id=event_id,
+            local_id=local_id,
+            reason=reason,
+            created_author=created_author,
+            created_timestamp=created_timestamp,
+            last_changed_author=last_changed_author
         )
 
-        # Assert basic fields
-        assert revision.event_id == "event_id"
-        assert revision.local_id == "local_id"
-        assert revision.reason == "reason"
+        assert revision.event_id == event_id
+        assert revision.local_id == local_id
+        assert revision.reason == reason
+        assert revision.created_author == created_author
+        assert revision.created_timestamp == created_timestamp
+        assert revision.last_changed_author == last_changed_author
+
         assert revision.owner_id is not None
-
-        # Assert created record info
-        assert revision.created.author is not None
-        assert isinstance(revision.created.timestamp, datetime)
-
-        # Assert last_changed record info
-        assert revision.last_changed.author is not None
-        assert isinstance(revision.last_changed.timestamp, datetime)
 
         assert revision.recurrences == []
 
@@ -116,23 +121,42 @@ def test_create_revision_with_empty_reason(connection):
 
 @pytest.mark.database
 def test_add_revision_recurrence_and_get_event(session):
+    event_id = "event_id"
+    local_id = "local_id"
+    reason = "reason"
+    created_author = "created_author"
+
     revision = session.availability.create_revision(
         target=THERMAL_COMPONENT_PATH,
-        event_id="event_id",
-        local_id="local_id",
-        reason="reason",
+        event_id=event_id,
+        local_id=local_id,
+        reason=reason,
+        created_author=created_author,
     )
+
+    assert revision.event_id == event_id
+    assert revision.local_id == local_id
+    assert revision.reason == reason
+    assert revision.created_author == created_author
+
+    period_start = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+    period_end = datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC)
+    status = "Planned"
+    description = "Test Recurrence"
+    recurrence_type = RecurrenceType.NONE
+    add_revision_recurrence_author = "add_revision_recurrence_author"
 
     recurrence_id = session.availability.add_revision_recurrence(
         target=THERMAL_COMPONENT_PATH,
         event_id=revision.event_id,
-        period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
-        period_end=datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC),
+        period_start=period_start,
+        period_end=period_end,
         recurrence=Recurrence(
-            status="Planned",
-            description="Test Recurrence",
-            recurrence_type=RecurrenceType.NONE,
+            status=status,
+            description=description,
+            recurrence_type=recurrence_type,
         ),
+        author=add_revision_recurrence_author,
     )
 
     assert recurrence_id == 0
@@ -142,28 +166,17 @@ def test_add_revision_recurrence_and_get_event(session):
         event_id=revision.event_id,
     )
 
-    # Assert basic fields
-    assert revision.event_id == "event_id"
-    assert revision.local_id == "local_id"
-    assert revision.reason == "reason"
-    assert revision.owner_id is not None
-
-    # Assert created record info
-    assert revision.created.author is not None
-    assert isinstance(revision.created.timestamp, datetime)
-
-    # Assert last_changed record info
-    assert revision.last_changed.author is not None
-    assert isinstance(revision.last_changed.timestamp, datetime)
+    assert revision.created_author == created_author
+    assert revision.last_changed_author == add_revision_recurrence_author
 
     assert len(revision.recurrences) == 1
 
     recurrence = revision.recurrences[0]
-    assert recurrence.period_start == datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
-    assert recurrence.period_end == datetime(2023, 1, 2, tzinfo=dateutil.tz.UTC)
-    assert recurrence.recurrence.status == "Planned"
-    assert recurrence.recurrence.description == "Test Recurrence"
-    assert recurrence.recurrence.recurrence_type == RecurrenceType.NONE
+    assert recurrence.period_start == period_start
+    assert recurrence.period_end == period_end
+    assert recurrence.recurrence.status == status
+    assert recurrence.recurrence.description == description
+    assert recurrence.recurrence.recurrence_type == recurrence_type
 
 
 @pytest.mark.database
@@ -203,13 +216,21 @@ def test_search_availability_events(connection):
 
 @pytest.mark.database
 def test_delete_revision_recurrence(session):
+    event_id = "delete_recurrence_event"
+    local_id = "local_id"
+    reason = "reason"
+    created_author = "created_author"
+
     # Create a revision
     revision = session.availability.create_revision(
         target=THERMAL_COMPONENT_PATH,
         event_id="delete_recurrence_event",
         local_id="local_id",
         reason="reason",
+        created_author=created_author,
     )
+
+    add_revision_recurrence_author = "add_revision_recurrence_author"
 
     # Add a recurrence
     recurrence_id = session.availability.add_revision_recurrence(
@@ -222,6 +243,7 @@ def test_delete_revision_recurrence(session):
             description="Test Recurrence",
             recurrence_type=RecurrenceType.NONE,
         ),
+        author=add_revision_recurrence_author,
     )
 
     # Verify the recurrence was added
@@ -233,11 +255,17 @@ def test_delete_revision_recurrence(session):
 
     assert isinstance(revision, Revision)
 
+    assert revision.created_author == created_author
+    assert revision.last_changed_author == add_revision_recurrence_author
+
+    delete_revision_recurrence_author = "delete_revision_recurrence_author"
+
     # Delete the recurrence
     session.availability.delete_revision_recurrence(
         target=THERMAL_COMPONENT_PATH,
         event_id=revision.event_id,
         recurrence_id=recurrence_id,
+        author=delete_revision_recurrence_author,
     )
 
     # Verify the recurrence was deleted
@@ -246,6 +274,9 @@ def test_delete_revision_recurrence(session):
         event_id=revision.event_id,
     )
     assert len(revision.recurrences) == 0
+
+    assert revision.created_author == created_author
+    assert revision.last_changed_author == delete_revision_recurrence_author
 
 
 @pytest.mark.database
@@ -337,12 +368,17 @@ def test_delete_all_availability_events(session):
 @pytest.mark.database
 def test_add_multiple_recurrences(session):
     # Create a revision
+    created_author = "created_author"
+
     revision = session.availability.create_revision(
         target=THERMAL_COMPONENT_PATH,
         event_id="multi_recurrence_event",
         local_id="local_id",
         reason="reason",
+        created_author=created_author,
     )
+
+    add_revision_recurrence_author_1 = "add_revision_recurrence_author_1"
 
     # Add multiple recurrences with different patterns
     recurrence_id1 = session.availability.add_revision_recurrence(
@@ -357,7 +393,10 @@ def test_add_multiple_recurrences(session):
             recur_every=1,
             recur_until=datetime(2023, 1, 15, tzinfo=dateutil.tz.UTC),
         ),
+        author=add_revision_recurrence_author_1,
     )
+
+    add_revision_recurrence_author_2 = "add_revision_recurrence_author_2"
 
     recurrence_id2 = session.availability.add_revision_recurrence(
         target=THERMAL_COMPONENT_PATH,
@@ -371,6 +410,7 @@ def test_add_multiple_recurrences(session):
             recur_every=2,
             recur_until=datetime(2023, 2, 15, tzinfo=dateutil.tz.UTC),
         ),
+        author=add_revision_recurrence_author_2,
     )
 
     # Verify both recurrences were added
@@ -380,6 +420,9 @@ def test_add_multiple_recurrences(session):
     )
 
     assert len(revision.recurrences) == 2
+
+    assert revision.created_author == created_author
+    assert revision.last_changed_author == add_revision_recurrence_author_2
 
     # Verify recurrence details
     recurrences_by_id = {r.id: r for r in revision.recurrences}
@@ -405,55 +448,56 @@ def test_add_multiple_recurrences(session):
 
 @pytest.mark.database
 def test_create_restriction_with_basic_recurrence(connection):
+    event_id = "basic_restriction_event"
+    local_id = "basic_restriction_local_id"
+    reason = "Basic restriction reason"
+    category = "DischargeMin[m3/s]"
+
+    status = "SelfImposed"
+    description = "Basic test restriction"
+    recurrence_type = RecurrenceType.NONE
+    period_start = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+    period_end = datetime(2023, 1, 10, tzinfo=dateutil.tz.UTC)
+    value = 0.5
+
     with connection.create_session() as session:
         # Create a restriction with basic recurrence
         restriction = session.availability.create_restriction(
             target=THERMAL_COMPONENT_PATH,
-            event_id="basic_restriction_event",
-            local_id="basic_restriction_local_id",
-            reason="Basic restriction reason",
-            category="DischargeMin[m3/s]",
+            event_id=event_id,
+            local_id=local_id,
+            reason=reason,
+            category=category,
             recurrence=RestrictionBasicRecurrence(
                 recurrence=Recurrence(
-                    status="SelfImposed",
-                    description="Basic test restriction",
-                    recurrence_type=RecurrenceType.NONE,
+                    status=status,
+                    description=description,
+                    recurrence_type=recurrence_type,
                 ),
-                period_start=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
-                period_end=datetime(2023, 1, 10, tzinfo=dateutil.tz.UTC),
-                value=0.5,
+                period_start=period_start,
+                period_end=period_end,
+                value=value,
             ),
         )
 
         assert isinstance(restriction, Restriction)
 
         # Assert basic fields
-        assert restriction.event_id == "basic_restriction_event"
-        assert restriction.local_id == "basic_restriction_local_id"
-        assert restriction.reason == "Basic restriction reason"
-        assert restriction.category == "DischargeMin[m3/s]"
+        assert restriction.event_id == event_id
+        assert restriction.local_id == local_id
+        assert restriction.reason == reason
+        assert restriction.category == category
+
         assert restriction.owner_id is not None
-
-        # Assert created record info
-        assert restriction.created.author is not None
-        assert isinstance(restriction.created.timestamp, datetime)
-
-        # Assert last_changed record info
-        assert restriction.last_changed.author is not None
-        assert isinstance(restriction.last_changed.timestamp, datetime)
 
         # Assert recurrence details
         assert isinstance(restriction.recurrence, RestrictionBasicRecurrence)
-        assert restriction.recurrence.recurrence.status == "SelfImposed"
-        assert restriction.recurrence.recurrence.description == "Basic test restriction"
-        assert restriction.recurrence.recurrence.recurrence_type == RecurrenceType.NONE
-        assert restriction.recurrence.period_start == datetime(
-            2023, 1, 1, tzinfo=dateutil.tz.UTC
-        )
-        assert restriction.recurrence.period_end == datetime(
-            2023, 1, 10, tzinfo=dateutil.tz.UTC
-        )
-        assert restriction.recurrence.value == 0.5
+        assert restriction.recurrence.recurrence.status == status
+        assert restriction.recurrence.recurrence.description == description
+        assert restriction.recurrence.recurrence.recurrence_type == recurrence_type
+        assert restriction.recurrence.period_start == period_start
+        assert restriction.recurrence.period_end == period_end
+        assert restriction.recurrence.value == value
 
 
 @pytest.mark.database
