@@ -1384,6 +1384,9 @@ async def test_restriction_async(async_session):
     local_id = "async_restriction_local_id"
     reason = "Async restriction reason"
     category = "DischargeMin[m3/s]"
+    created_author = "created_author"
+    created_timestamp = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+    last_changed_author = "last_changed_author"
 
     status = "SelfImposed"
     description = "Async basic restriction"
@@ -1459,9 +1462,9 @@ async def test_restriction_async(async_session):
     assert retrieved_restriction.local_id == local_id
     assert retrieved_restriction.reason == reason
     assert retrieved_restriction.category == category
-    assert retrieved_restriction.created.author = created_author
-    assert retrieved_restriction.created.timestamp = created_timestamp
-    assert retrieved_restriction.last_changed.author = last_changed_author
+    assert retrieved_restriction.created.author == created_author
+    assert retrieved_restriction.created.timestamp == created_timestamp
+    assert retrieved_restriction.last_changed.author == last_changed_author
 
     # 4. Search for instances within a time interval
     instances = await async_session.availability.search_instances(
@@ -1509,7 +1512,7 @@ async def test_restriction_async(async_session):
     assert (
         updated_restriction.last_changed.timestamp >= restriction.last_changed.timestamp
     )
-    assert updated_restriction.last_changed.author = update_restriction_author
+    assert updated_restriction.last_changed.author == update_restriction_author
 
     # 6. Update the recurrence of the restriction
     new_description = "Updated async recurrence"
@@ -1532,13 +1535,13 @@ async def test_restriction_async(async_session):
         period_start=new_period_start,
         period_end=new_period_end,
         value=new_value,
-        author=update_restriction_recurrence_author,
     )
 
     await async_session.availability.update_restriction(
         target=THERMAL_COMPONENT_PATH,
         event_id=event_id,
         new_restriction_recurrence=new_recurrence,
+        author=update_restriction_recurrence_author,
     )
 
     # Verify recurrence was updated
@@ -1609,9 +1612,9 @@ async def test_restriction_async(async_session):
 
     # Verify complex restriction creation
     assert complex_restriction.event_id == "async_complex_restriction"
-    assert created_author == created_author
-    assert created_timestamp == created_timestamp
-    assert last_changed_author == last_changed_author
+    assert complex_restriction.created_author == created_author
+    assert complex_restriction.created_timestamp == created_timestamp
+    assert complex_restriction.last_changed_author == last_changed_author
 
     assert isinstance(complex_restriction.recurrence, RestrictionComplexRecurrence)
     assert len(complex_restriction.recurrence.time_points) == 3
