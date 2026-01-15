@@ -826,7 +826,7 @@ def test_update_revision(session):
     # Verify retrieved revision has updated values
     assert retrieved_revision.local_id == new_local_id
     assert retrieved_revision.reason == new_reason
-    assert retrieved_revision.created.author == created_author
+    assert retrieved_revision.created.author == original_revision.created.author
     assert retrieved_revision.last_changed.author == update_revision_author
 
     # Verify timestamps reflect the update
@@ -1512,17 +1512,27 @@ async def test_restriction_async(async_session):
     assert updated_restriction.last_changed.author = update_restriction_author
 
     # 6. Update the recurrence of the restriction
+    new_description = "Updated async recurrence"
+    new_recurrence_type = RecurrenceType.WEEKLY
+    new_recur_every = 1
+    new_recur_until = datetime(2023, 3, 1, tzinfo=dateutil.tz.UTC)
+    new_period_start = datetime(2023, 2, 1, tzinfo=dateutil.tz.UTC)
+    new_period_end = datetime(2023, 2, 3, tzinfo=dateutil.tz.UTC)
+    new_value = 1.25
+    update_restriction_recurrence_author = "update_restriction_recurrence_author"
+
     new_recurrence = RestrictionBasicRecurrence(
         recurrence=Recurrence(
             status=status,
-            description="Updated async recurrence",
-            recurrence_type=RecurrenceType.WEEKLY,
+            description=new_description,
+            recurrence_type=new_recurrence_type,
             recur_every=1,
-            recur_until=datetime(2023, 3, 1, tzinfo=dateutil.tz.UTC),
+            recur_until=new_recur_until,
         ),
-        period_start=datetime(2023, 2, 1, tzinfo=dateutil.tz.UTC),
-        period_end=datetime(2023, 2, 3, tzinfo=dateutil.tz.UTC),
-        value=1.25,
+        period_start=new_period_start,
+        period_end=new_period_end,
+        value=new_value,
+        author=update_restriction_recurrence_author,
     )
 
     await async_session.availability.update_restriction(
@@ -1548,19 +1558,19 @@ async def test_restriction_async(async_session):
     )
     assert (
         restriction_after_recurrence_update.recurrence.recurrence.description
-        == "Updated async recurrence"
+        == new_description
     )
     assert (
         restriction_after_recurrence_update.recurrence.recurrence.recurrence_type
-        == RecurrenceType.WEEKLY
+        == new_recurrence_type
     )
-    assert restriction_after_recurrence_update.recurrence.recurrence.recur_every == 1
-    assert restriction_after_recurrence_update.recurrence.period_start == datetime(
-        2023, 2, 1, tzinfo=dateutil.tz.UTC
-    )
-    assert restriction_after_recurrence_update.recurrence.period_end == datetime(
-        2023, 2, 3, tzinfo=dateutil.tz.UTC
-    )
+
+    assert restriction_after_recurrence_update.recurrence.recurrence.recur_every == new_recur_every
+    assert restriction_after_recurrence_update.recurrence.period_start == new_period_start
+    assert restriction_after_recurrence_update.recurrence.period_end == new_period_end
+    assert restriction_after_recurrence_update.created.author == restriction.created.author
+    assert restriction_after_recurrence_update.created.timestamp == restriction.created.timestamp
+    assert restriction_after_recurrence_update.last_changed.author == update_restriction_recurrence_author
 
     # 7. Create a complex restriction
     complex_restriction = await async_session.availability.create_restriction(
@@ -1592,10 +1602,17 @@ async def test_restriction_async(async_session):
                 ),
             ],
         ),
+        created_author=created_author,
+        created_timestamp=created_timestamp,
+        last_changed_author=last_changed_author,
     )
 
     # Verify complex restriction creation
     assert complex_restriction.event_id == "async_complex_restriction"
+    assert created_author == created_author
+    assert created_timestamp == created_timestamp
+    assert last_changed_author == last_changed_author
+
     assert isinstance(complex_restriction.recurrence, RestrictionComplexRecurrence)
     assert len(complex_restriction.recurrence.time_points) == 3
 
