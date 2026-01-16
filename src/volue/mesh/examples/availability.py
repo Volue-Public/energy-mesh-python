@@ -24,6 +24,15 @@ def revision_workflow(session: Connection.Session):
     print("\n=== Starting Revision Workflow Example ===\n")
     # 1. Create a revision
     print("1. Creating a new revision...")
+
+    # The 'created_author', 'created_timestamp', and 'last_changed_author' fields are optional.
+    # For 'created_author' and 'last_changed_author', if they're set Mesh will use their values
+    # as-is, even if they're empty strings. Otherwise, if the current user is authenticated Mesh
+    # will use his authenticated username. Otherwise, Mesh will use an empty string.
+    # Note that the authenticated username should not be considered a unique identifier for the user
+    # as it may be identical between users and change over time.
+    # For 'created_timestamp', if it's set Mesh will use its value as-is. If not, Mesh will use the
+    # current time at the moment the request is processed.
     revision = session.availability.create_revision(
         target=CHIMNEY_PATH,
         event_id="event_id",

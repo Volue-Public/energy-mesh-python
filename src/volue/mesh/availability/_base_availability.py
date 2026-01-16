@@ -565,9 +565,22 @@ class Availability(abc.ABC):
             local_id: An additional identifier for the revision. This does not
                 need to be unique and can be used for external system references.
             reason: A description or explanation for creating the revision.
-            created_author: User who created this event.
-            created_timestamp: When this event was created.
-            last_changed_author: Last user who edited this event.
+            created_author: User who created this event. If this field is set,
+                we'll use its value as-is, even if it's an empty string.
+                Otherwise, if the current user is authenticated we'll use its
+                authenticated username. Otherwise, we'll use an empty string.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
+            created_timestamp: When this event was created. If this field is set,
+                we'll use its value as-is. If not, we'll use the current time
+                at the moment the request is processed.
+            last_changed_author: Last user who edited this event. If this field
+                is set, we'll use its value as-is, even if it's an empty string.
+                Otherwise, we'll use the same value we set for 'created_author'.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
 
         Returns:
             Revision: An object representing the newly created revision, including
@@ -633,9 +646,22 @@ class Availability(abc.ABC):
             reason: A description or explanation for creating the restriction.
             category: The category of the restriction.
             recurrence: The recurrence details, which can be either basic or complex.
-            created_author: User who created this event.
-            created_timestamp: When this event was created.
-            last_changed_author: Last user who edited this event.
+            created_author: User who created this event. If this field is set,
+                we'll use its value as-is, even if it's an empty string.
+                Otherwise, if the current user is authenticated we'll use its
+                authenticated username. Otherwise, we'll use an empty string.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
+            created_timestamp: When this event was created. If this field is set,
+                we'll use its value as-is. If not, we'll use the current time
+                at the moment the request is processed.
+            last_changed_author: Last user who edited this event. If this field
+                is set, we'll use its value as-is, even if it's an empty string.
+                Otherwise, we'll use the same value we set for 'created_author'.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
 
         Returns:
             Restriction: An object representing the newly created restriction,
@@ -711,7 +737,13 @@ class Availability(abc.ABC):
                 type, frequency, and description.
             period_start: The start time of the period during which the recurrence is active.
             period_end: The end time of the period during which the recurrence is active.
-            author: The user who requested this change.
+            author: The user who requested this change. If this field is set,
+                we'll use its value as-is, even if it's an empty string.
+                Otherwise, if the current user is authenticated we'll use its
+                authenticated username. Otherwise, we'll use an empty string.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
 
         Returns:
             int: The unique identifier of the newly created recurrence.
@@ -839,7 +871,13 @@ class Availability(abc.ABC):
                 This can be specified as a UUID, a string path, or an Object instance.
             event_id: The unique identifier of the revision from which the recurrence will be deleted.
             recurrence_id: The unique identifier of the recurrence to be deleted.
-            author: The user who requested this change.
+            author: The user who requested this change. If this field is set,
+                we'll use its value as-is, even if it's an empty string.
+                Otherwise, if the current user is authenticated we'll use its
+                authenticated username. Otherwise, we'll use an empty string.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.
@@ -1002,7 +1040,13 @@ class Availability(abc.ABC):
                 the local ID will remain unchanged.
             new_reason: The new reason or description for the revision. If None,
                 the reason will remain unchanged.
-            author: The user who requested this change.
+            author: The user who requested this change. If this field is set,
+                we'll use its value as-is, even if it's an empty string.
+                Otherwise, if the current user is authenticated we'll use its
+                authenticated username. Otherwise, we'll use an empty string.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
 
         Returns:
             None
@@ -1086,7 +1130,13 @@ class Availability(abc.ABC):
                 the category will remain unchanged.
             new_restriction_recurrence: The new recurrence details for the restriction. If None,
                 the recurrence details will remain unchanged.
-            author: The user who requested this change.
+            author: The user who requested this change. If this field is set,
+                we'll use its value as-is, even if it's an empty string.
+                Otherwise, if the current user is authenticated we'll use its
+                authenticated username. Otherwise, we'll use an empty string.
+                Note that the authenticated username should not be considered
+                a unique identifier for the user as it may be identical between
+                users and change over time.
 
         Raises:
             grpc.RpcError: If the gRPC request fails or the server returns an error.
