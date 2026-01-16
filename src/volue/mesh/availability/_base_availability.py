@@ -598,7 +598,7 @@ class Availability(abc.ABC):
             created_author=created_author,
             created_timestamp=(
                 _datetime_to_timestamp_pb2(created_timestamp)
-                if created_timestamp
+                if created_timestamp != None
                 else None
             ),
             last_changed_author=last_changed_author,
