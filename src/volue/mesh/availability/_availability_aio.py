@@ -57,12 +57,7 @@ class Availability(Availability):
         author: str = None,
     ) -> int:
         request = super()._prepare_add_recurrence_request(
-            target,
-            event_id,
-            recurrence,
-            period_start,
-            period_end,
-            author,
+            target, event_id, recurrence, period_start, period_end, author
         )
         add_recurrence_response = await self.availability_service.AddRevisionRecurrence(
             request
