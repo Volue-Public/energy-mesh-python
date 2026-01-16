@@ -48,6 +48,8 @@ def test_create_revision(connection):
         assert revision.created.timestamp == created_timestamp
         assert revision.last_changed.author == last_changed_author
 
+        assert isinstance(revision.last_changed.timestamp, datetime)
+
         assert revision.owner_id is not None
         assert revision.recurrences == []
 
@@ -167,6 +169,8 @@ def test_add_revision_recurrence_and_get_event(session):
 
     assert revision.created.author == created_author
     assert revision.last_changed.author == add_revision_recurrence_author
+
+    assert isinstance(revision.last_changed.timestamp, datetime)
 
     assert len(revision.recurrences) == 1
 
@@ -1226,6 +1230,8 @@ async def test_revision_async(async_session):
     assert revision.created.author == created_author
     assert revision.created.timestamp == created_timestamp
     assert revision.last_changed.author == last_changed_author
+
+    assert isinstance(revision.last_changed.timestamp, datetime)
 
     assert revision.owner_id is not None
 
