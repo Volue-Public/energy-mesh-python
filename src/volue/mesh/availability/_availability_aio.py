@@ -206,11 +206,7 @@ class Availability(Availability):
         author: str = None,
     ) -> None:
         request = super()._prepare_update_revision_request(
-            target,
-            event_id,
-            new_local_id,
-            new_reason,
-            author,
+            target, event_id, new_local_id, new_reason, author
         )
         await self.availability_service.UpdateRevision(request)
 
