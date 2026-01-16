@@ -90,6 +90,40 @@ message CreateRevisionRequest {
 
   // Reason for creating the revision.
   string reason = 5;
+
+  // User-editable info about who created this event. This is useful when e.g.
+  // connecting to Mesh through a common service which would always use the same
+  // generic author name for all API operations; in this case a user can
+  // manually set his own name here.
+  //
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string created_author = 6;
+
+  // User-editable info about when this event was created. This is useful when
+  // e.g. importing old events from a different system, in which case it may be
+  // desirable to preserve their original creation date instead of using
+  // the date when they were imported.
+  //
+  // If this field is set, we'll use its value as-is. If not, we'll use the
+  // current time at the moment the request is processed.
+  optional google.protobuf.Timestamp created_timestamp = 7;
+
+  // User-editable info about the last user who edited this event.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, we'll use the same value we set for 'created_author'.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string last_changed_author = 8;
 }
 
 message CreateRestrictionRequest {
@@ -115,6 +149,32 @@ message CreateRestrictionRequest {
 
   // Recurrence describes how and if the restriction will recur.
   RestrictionRecurrence restriction_recurrence = 7;
+
+  // User-editable info about who created this event.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string created_author = 8;
+
+  // User-editable info about when this event was created.
+  // If this field is set, we'll use its value as-is. If not, we'll use the
+  // current time at the moment the request is processed.
+  optional google.protobuf.Timestamp created_timestamp = 9;
+
+  // User-editable info about the last user who edited this event.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, we'll use the same value we set for 'created_author'.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string last_changed_author = 10;
 }
 
 message CreateAdvancedRestrictionRequest {
@@ -133,6 +193,22 @@ message CreateAdvancedRestrictionRequest {
   // Timeseries calculation must have the same owner entity as this Advanced
   // Restriction.
   volue.mesh.grpc.type.MeshId calculation_id = 4;
+
+  // User-editable info about who created this event.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string created_author = 5;
+
+  // User-editable info about when this event was created.
+  // If this field is set, we'll use its value as-is. If not, we'll use the
+  // current time at the moment the request is processed.
+  optional google.protobuf.Timestamp created_timestamp = 6;
 }
 
 message AddRevisionRecurrenceRequest {
@@ -147,6 +223,17 @@ message AddRevisionRecurrenceRequest {
   // Recurrence of the event. Single revision can have multiple
   // recurrences.
   RevisionRecurrence revision_recurrence = 4;
+
+  // The user who requested this change.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string author = 5;
 }
 
 message AddRevisionRecurrenceResponse {
@@ -259,6 +346,17 @@ message UpdateRevisionRequest {
   google.protobuf.FieldMask field_mask = 4;
   string new_local_id = 5;
   string new_reason = 6;
+
+  // The user who requested this change.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string author = 7;
 }
 
 message UpdateRevisionResponse {
@@ -274,6 +372,17 @@ message UpdateRestrictionRequest {
   string new_reason = 6;
   string new_category = 7;
   RestrictionRecurrence new_restriction_recurrence = 8;
+
+  // The user who requested this change.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string author = 9;
 }
 
 message UpdateRestrictionResponse {
@@ -284,6 +393,17 @@ message DeleteRevisionRecurrenceRequest {
   volue.mesh.grpc.type.MeshId owner_id = 2;
   string event_id = 3;
   uint32 recurrence_id = 4;
+
+  // The user who requested this change.
+  // If this field is set, we'll use its value as-is, even if it's an empty
+  // string. Otherwise, if the current user is authenticated we'll use its
+  // authenticated username. Otherwise, we'll use an empty string.
+  //
+  // Note that, when using the authenticated username, we'll effectively use
+  // the UserIdentity.display_name field from auth.proto. This username should
+  // not be considered an unique identifier for the user as it may be identical
+  // between users and change over time.
+  optional string author = 5;
 }
 
 message DeleteRevisionRecurrenceResponse {
@@ -330,9 +450,7 @@ message Revision {
   string event_id = 3;
   string local_id = 4;
   string reason = 5;
-  // [OUTPUT_ONLY]
   RecordInfo created = 6;
-  // [OUTPUT_ONLY]
   RecordInfo last_changed = 7;
   repeated RevisionRecurrence recurrences = 8;
 }
