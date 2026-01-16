@@ -49,7 +49,6 @@ def test_create_revision(connection):
         assert revision.last_changed.author == last_changed_author
 
         assert revision.owner_id is not None
-
         assert revision.recurrences == []
 
 
