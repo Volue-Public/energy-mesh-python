@@ -5,7 +5,7 @@ Common classes/enums/etc for Mesh calculation functions.
 import datetime
 import uuid
 from enum import Enum
-from typing import List, Union
+from typing import List
 
 from dateutil import tz
 
@@ -126,7 +126,7 @@ class _Calculation:
     def __init__(
         self,
         session,
-        target: Union[uuid.UUID, str, int, AttributeBase, Object],
+        target: uuid.UUID | str | int | AttributeBase | Object,
         start_time: datetime.datetime,
         end_time: datetime.datetime,
     ):
@@ -141,7 +141,7 @@ class _Calculation:
             end_time: The end date and time of the time series interval.
         """
         self.session = session
-        self.target: Union[uuid.UUID, str, int, AttributeBase, Object] = target
+        self.target: uuid.UUID | str | int | AttributeBase | Object = target
         self.start_time: datetime.datetime = start_time
         self.end_time: datetime.datetime = end_time
 

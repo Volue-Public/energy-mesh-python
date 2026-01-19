@@ -9,7 +9,6 @@ For more information see
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional
 
 from volue.mesh import Timeseries
 from volue.mesh.calc.common import (
@@ -74,8 +73,8 @@ class _TransformFunctionsBase(_Calculation, ABC):
         self,
         resolution: Timeseries.Resolution,
         method: Method,
-        timezone: Optional[Timezone],
-        search_query: Optional[str],
+        timezone: Timezone | None,
+        search_query: str | None,
     ) -> str:
         """
         Create an expression for `transform`.
@@ -119,7 +118,7 @@ class _TransformFunctionsBase(_Calculation, ABC):
         resolution: Timeseries.Resolution,
         method: Method,
         timezone: Timezone = Timezone.UTC,
-        search_query: Optional[str] = None,
+        search_query: str | None = None,
     ) -> Timeseries:
         """
         Transforms time series from one resolution to another resolution.
@@ -157,7 +156,7 @@ class TransformFunctions(_TransformFunctionsBase):
         resolution: Timeseries.Resolution,
         method: Method,
         timezone: Timezone = Timezone.UTC,
-        search_query: Optional[str] = None,
+        search_query: str | None = None,
     ) -> Timeseries:
         expression = super()._transform_expression(
             resolution, method, timezone, search_query
@@ -174,7 +173,7 @@ class TransformFunctionsAsync(_TransformFunctionsBase):
         resolution: Timeseries.Resolution,
         method: Method,
         timezone: Timezone = Timezone.UTC,
-        search_query: Optional[str] = None,
+        search_query: str | None = None,
     ) -> Timeseries:
         expression = super()._transform_expression(
             resolution, method, timezone, search_query

@@ -8,7 +8,6 @@ import typing
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
-from typing import Optional
 
 import grpc
 from google import protobuf
@@ -48,7 +47,7 @@ class Authentication(grpc.AuthMetadataPlugin):
         """
 
         service_principal: str
-        user_principal: Optional[str] = None
+        user_principal: str | None = None
 
     class KerberosTokenIterator:
         """
@@ -67,10 +66,10 @@ class Authentication(grpc.AuthMetadataPlugin):
             self.first_iteration: bool = True
             self.final_response_received: bool = False
             self.response_received = threading.Event()
-            self.server_kerberos_token: Optional[bytes] = None
+            self.server_kerberos_token: bytes | None = None
             self.service_principal: str = service_principal
             self.user_principal: str = user_principal
-            self.exception: Optional[Exception] = None
+            self.exception: Exception | None = None
 
             # there is no need to check status for failures as
             # kerberos module converts failures to exceptions
@@ -168,9 +167,9 @@ class Authentication(grpc.AuthMetadataPlugin):
         """
 
         self.service_principal: str = parameters.service_principal
-        self.user_principal: Optional[str] = parameters.user_principal
-        self.token: Optional[str] = None
-        self.token_expiration_date: Optional[datetime] = None
+        self.user_principal: str | None = parameters.user_principal
+        self.token: str | None = None
+        self.token_expiration_date: datetime | None = None
 
         # create separate channel for getting and refreshing Mesh token
         channel = grpc.secure_channel(target=target, credentials=channel_credentials)

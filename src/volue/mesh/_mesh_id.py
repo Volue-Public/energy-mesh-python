@@ -3,7 +3,6 @@ Mesh ID helper functions.
 """
 
 import uuid
-from typing import Union
 
 from volue.mesh import AttributeBase, Object
 from volue.mesh._common import _to_proto_guid
@@ -11,7 +10,7 @@ from volue.mesh.proto import type
 
 
 def _to_proto_attribute_mesh_id(
-    target: Union[uuid.UUID, str, AttributeBase],
+    target: uuid.UUID | str | AttributeBase,
 ) -> type.resources_pb2.MeshId:
     """
     Accepts attribute identifiers (path and ID) and attribute instance as
@@ -26,7 +25,7 @@ def _to_proto_attribute_mesh_id(
 
 
 def _to_proto_attribute_definition_mesh_id(
-    target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+    target: uuid.UUID | str | AttributeBase.AttributeBaseDefinition,
 ) -> type.resources_pb2.MeshId:
     """
     Accepts attribute definition identifiers (path and ID)
@@ -41,7 +40,7 @@ def _to_proto_attribute_definition_mesh_id(
 
 
 def _to_proto_object_mesh_id(
-    target: Union[uuid.UUID, str, Object],
+    target: uuid.UUID | str | Object,
 ) -> type.resources_pb2.MeshId:
     """
     Accepts object identifiers (path and ID) and object instance as input.
@@ -55,7 +54,7 @@ def _to_proto_object_mesh_id(
 
 
 def _to_proto_read_timeseries_mesh_id(
-    target: Union[uuid.UUID, str, int, AttributeBase],
+    target: uuid.UUID | str | int | AttributeBase,
 ) -> type.resources_pb2.MeshId:
     """
     Accepts identifiers for reading time series:
@@ -70,7 +69,7 @@ def _to_proto_read_timeseries_mesh_id(
 
 
 def _to_proto_calculation_target_mesh_id(
-    target: Union[uuid.UUID, str, int, AttributeBase, Object],
+    target: uuid.UUID | str | int | AttributeBase | Object,
 ) -> type.resources_pb2.MeshId:
     """
     Accepts identifiers for calculation target (`relative_to` in gRPC):
@@ -85,7 +84,7 @@ def _to_proto_calculation_target_mesh_id(
 
 
 def _to_proto_mesh_id(
-    target: Union[uuid.UUID, str, int, AttributeBase, Object],
+    target: uuid.UUID | str | int | AttributeBase | Object,
 ) -> type.resources_pb2.MeshId:
     """Accepts path, ID and time series key as input."""
     proto_mesh_id = type.resources_pb2.MeshId()

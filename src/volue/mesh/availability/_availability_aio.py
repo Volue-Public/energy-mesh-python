@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from typing import Optional, Union
 
 from volue.mesh._object import Object
 from volue.mesh.availability import (
@@ -21,13 +20,13 @@ class Availability(Availability):
     def __init__(
         self,
         availability_service: availability_pb2_grpc.AvailabilityServiceStub,
-        session_id: Optional[uuid.UUID],
+        session_id: uuid.UUID | None,
     ):
         super().__init__(availability_service, session_id)
 
     async def create_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object | None,
         event_id: str,
         local_id: str,
         reason: str,
@@ -49,7 +48,7 @@ class Availability(Availability):
 
     async def add_revision_recurrence(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence: Recurrence,
         period_start: datetime,
@@ -65,8 +64,8 @@ class Availability(Availability):
         return add_recurrence_response.recurrence_id
 
     async def get_availability_event(
-        self, target: Union[uuid.UUID, str, Object], event_id: str
-    ) -> Union[Revision, Restriction]:
+        self, target: uuid.UUID | str | Object, event_id: str
+    ) -> Revision | Restriction:
 
         request = super()._prepare_get_availability_event_request(
             target=target,
@@ -83,8 +82,8 @@ class Availability(Availability):
     async def search_availability_events(
         self,
         event_type: EventType,
-        targets: list[Union[uuid.UUID, str, Object]],
-    ) -> list[Union[Revision, Restriction]]:
+        targets: list[uuid.UUID | str | Object],
+    ) -> list[Revision | Restriction]:
         request = super()._prepare_search_availability_events_request(
             event_type=event_type,
             targets=targets,
@@ -109,7 +108,7 @@ class Availability(Availability):
 
     async def delete_revision_recurrence(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence_id: int,
         author: str | None = None,
@@ -125,7 +124,7 @@ class Availability(Availability):
 
     async def delete_availability_events_by_id(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_ids: list[str],
     ) -> None:
         request = super()._prepare_delete_availability_events_by_id_request(
@@ -134,7 +133,7 @@ class Availability(Availability):
         await self.availability_service.DeleteAvailabilityEventsById(request)
 
     async def delete_availability_events(
-        self, target: Union[uuid.UUID, str, Object], event_type: EventType
+        self, target: uuid.UUID | str | Object, event_type: EventType
     ) -> None:
         request = super()._prepare_delete_availability_events_request(
             target=target, event_type=event_type
@@ -143,12 +142,12 @@ class Availability(Availability):
 
     async def create_restriction(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         local_id: str,
         reason: str,
         category: str,
-        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+        recurrence: RestrictionBasicRecurrence | RestrictionComplexRecurrence,
         created_author: str | None = None,
         created_timestamp: datetime | None = None,
         last_changed_author: str | None = None,
@@ -169,11 +168,11 @@ class Availability(Availability):
 
     async def search_instances(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         period_start: datetime,
         period_end: datetime,
-    ) -> Union[list[RevisionInstance], list[RestrictionInstance]]:
+    ) -> list[RevisionInstance] | list[RestrictionInstance]:
         request = super()._prepare_search_instances_request(
             target=target,
             event_id=event_id,
@@ -199,10 +198,10 @@ class Availability(Availability):
 
     async def update_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
         author: str | None = None,
     ) -> None:
         request = super()._prepare_update_revision_request(
@@ -212,14 +211,14 @@ class Availability(Availability):
 
     async def update_restriction(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
-        new_category: Optional[str] = None,
-        new_restriction_recurrence: Optional[
-            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
-        ] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
+        new_category: str | None = None,
+        new_restriction_recurrence: (
+            RestrictionBasicRecurrence | RestrictionComplexRecurrence | None
+        ) = None,
         author: str | None = None,
     ) -> None:
         request = super()._prepare_update_restriction_request(

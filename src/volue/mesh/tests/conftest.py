@@ -48,10 +48,10 @@ def pytest_addoption(parser):
 class TestConfig:
     address: str
     creds_type: str
-    tls_root_pem_certs_path: typing.Optional[str]
-    tls_root_pem_certs: typing.Optional[bytes]
-    krb5_svc: typing.Optional[str]
-    krb5_usr: typing.Optional[str]
+    tls_root_pem_certs_path: str | None
+    tls_root_pem_certs: bytes | None
+    krb5_svc: str | None
+    krb5_usr: str | None
 
     def __init__(self, config):
         self.address = config.getoption("--address")
@@ -83,7 +83,7 @@ class TestConfig:
             self.tls_root_pem_certs = None
 
 
-_test_config: typing.Optional[TestConfig] = None
+_test_config: TestConfig | None = None
 
 
 # pytest magically runs this after parsing the command line.

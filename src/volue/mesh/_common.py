@@ -8,7 +8,7 @@ import datetime
 import logging
 import uuid
 from dataclasses import dataclass, fields
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 import pyarrow as pa
 from google.protobuf import field_mask_pb2, timestamp_pb2
@@ -122,9 +122,9 @@ class AttributesFilter:
             In this case attributes A1 and A2 will be returned.
     """
 
-    name_mask: Optional[List[str]] = None
-    tag_mask: Optional[List[str]] = None
-    namespace_mask: Optional[List[str]] = None
+    name_mask: List[str] | None = None
+    tag_mask: List[str] | None = None
+    namespace_mask: List[str] | None = None
     return_no_attributes: bool = False
 
 
@@ -214,7 +214,7 @@ class XySet:
         `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/>`__
     """
 
-    valid_from_time: Optional[datetime.datetime]
+    valid_from_time: datetime.datetime | None
     xy_curves: List[XyCurve]
 
     def __iter__(self):
@@ -293,7 +293,7 @@ class LinkRelationVersion:
         `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__
     """
 
-    target_object_id: Optional[uuid.UUID]
+    target_object_id: uuid.UUID | None
     valid_from_time: datetime.datetime
 
     def __iter__(self):
@@ -343,7 +343,7 @@ class HydSimDataset:
         return cls(proto.name, proto.data)
 
 
-def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[type.resources_pb2.Guid]:
+def _to_proto_guid(uuid: uuid.UUID | None) -> type.resources_pb2.Guid | None:
     """Converts from Python UUID format to Microsoft's GUID format.
 
     Args:
@@ -354,7 +354,7 @@ def _to_proto_guid(uuid: Optional[uuid.UUID]) -> Optional[type.resources_pb2.Gui
     return type.resources_pb2.Guid(bytes_le=uuid.bytes_le)
 
 
-def _from_proto_guid(guid: Optional[type.resources_pb2.Guid]) -> Optional[uuid.UUID]:
+def _from_proto_guid(guid: type.resources_pb2.Guid | None) -> uuid.UUID | None:
     """Converts from Microsoft's GUID format to UUID format.
 
     Args:
@@ -517,7 +517,7 @@ def _to_proto_mesh_id_from_timeseries(
 
 
 def _to_proto_attribute_masks(
-    attributes_filter: Optional[AttributesFilter],
+    attributes_filter: AttributesFilter | None,
 ) -> model_resources_pb2.AttributesMasks:
     attributes_masks = model_resources_pb2.AttributesMasks()
 
@@ -539,8 +539,8 @@ def _to_proto_attribute_masks(
 
 
 def _object_to_proto_field_mask(
-    attributes_filter: Optional[AttributesFilter],
-) -> Optional[field_mask_pb2.FieldMask]:
+    attributes_filter: AttributesFilter | None,
+) -> field_mask_pb2.FieldMask | None:
     if attributes_filter is None or not attributes_filter.return_no_attributes:
         return None
     fields = [field.name for field in model_resources_pb2.Object.DESCRIPTOR.fields]
@@ -549,8 +549,8 @@ def _object_to_proto_field_mask(
 
 
 def _to_proto_attribute_field_mask(
-    full_attribute_info: bool, attributes_filter: Optional[AttributesFilter] = None
-) -> Optional[field_mask_pb2.FieldMask]:
+    full_attribute_info: bool, attributes_filter: AttributesFilter | None = None
+) -> field_mask_pb2.FieldMask | None:
     # If attributes_filter.return_no_attributes is set to True we must not provide attribute field mask,
     # at the same time we can't expect user to provide full_attribute_info set to True. It would be very counter intuitive
     # to request no attributes and have to explicitly request full attributes info.

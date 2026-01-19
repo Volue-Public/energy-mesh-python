@@ -9,7 +9,7 @@ For more information see
 
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from volue.mesh import Timeseries
 from volue.mesh.calc.common import (
@@ -24,7 +24,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
     """Base class for all history function classes."""
 
     def _get_ts_as_of_time_expression(
-        self, available_at_timepoint: datetime, search_query: Optional[str]
+        self, available_at_timepoint: datetime, search_query: str | None
     ) -> str:
         """
         Create an expression for `get_ts_as_of_time`.
@@ -46,7 +46,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
         return expression
 
     def _get_ts_historical_versions_expression(
-        self, max_number_of_versions_to_get: int, search_query: Optional[str]
+        self, max_number_of_versions_to_get: int, search_query: str | None
     ) -> str:
         """
         Creates an expression for `get_ts_historical_versions`.
@@ -69,7 +69,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
     @abstractmethod
     def get_ts_as_of_time(
-        self, available_at_timepoint: datetime, search_query: Optional[str] = None
+        self, available_at_timepoint: datetime, search_query: str | None = None
     ) -> Timeseries:
         """
         Finds values and status for a time series at a given historical time `available_at_timepoint`.
@@ -91,7 +91,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
     @abstractmethod
     def get_ts_historical_versions(
-        self, max_number_of_versions_to_get: int, search_query: Optional[str] = None
+        self, max_number_of_versions_to_get: int, search_query: str | None = None
     ) -> List[Timeseries]:
         """
         Requests an array of a given number of versions of a time series.
@@ -120,7 +120,7 @@ class HistoryFunctions(_HistoryFunctionsBase):
     """Class for history functions that should be run synchronously"""
 
     def get_ts_as_of_time(
-        self, available_at_timepoint: datetime, search_query: Optional[str] = None
+        self, available_at_timepoint: datetime, search_query: str | None = None
     ) -> Timeseries:
         expression = super()._get_ts_as_of_time_expression(
             available_at_timepoint, search_query
@@ -129,7 +129,7 @@ class HistoryFunctions(_HistoryFunctionsBase):
         return _parse_single_timeseries_response(response)
 
     def get_ts_historical_versions(
-        self, max_number_of_versions_to_get: int, search_query: Optional[str] = None
+        self, max_number_of_versions_to_get: int, search_query: str | None = None
     ) -> List[Timeseries]:
         expression = super()._get_ts_historical_versions_expression(
             max_number_of_versions_to_get, search_query
@@ -142,7 +142,7 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
     """Class for history functions that should be run asynchronously"""
 
     async def get_ts_as_of_time(
-        self, available_at_timepoint: datetime, search_query: Optional[str] = None
+        self, available_at_timepoint: datetime, search_query: str | None = None
     ) -> Timeseries:
         expression = super()._get_ts_as_of_time_expression(
             available_at_timepoint, search_query
@@ -151,7 +151,7 @@ class HistoryFunctionsAsync(_HistoryFunctionsBase):
         return _parse_single_timeseries_response(response)
 
     async def get_ts_historical_versions(
-        self, max_number_of_versions_to_get: int, search_query: Optional[str] = None
+        self, max_number_of_versions_to_get: int, search_query: str | None = None
     ) -> List[Timeseries]:
         expression = super()._get_ts_historical_versions_expression(
             max_number_of_versions_to_get, search_query
