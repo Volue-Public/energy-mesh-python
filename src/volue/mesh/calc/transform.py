@@ -9,7 +9,6 @@ For more information see
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Optional
 
 from volue.mesh import Timeseries
 from volue.mesh.calc.common import (

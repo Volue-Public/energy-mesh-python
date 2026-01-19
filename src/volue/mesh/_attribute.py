@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Union
+from typing import Any, List
 
 from dateutil import tz
 from google.protobuf import timestamp_pb2
@@ -19,10 +19,10 @@ from volue.mesh.proto.model_definition.v1alpha import (
     resources_pb2 as model_definition_resources_pb2,
 )
 
-SIMPLE_TYPE = Union[int, float, bool, str, datetime]
-SIMPLE_TYPE_OR_COLLECTION = Union[
-    SIMPLE_TYPE, List[int], List[float], List[bool], List[str], List[datetime]
-]
+SIMPLE_TYPE = int | float | bool | str | datetime
+SIMPLE_TYPE_OR_COLLECTION = (
+    SIMPLE_TYPE | List[int] | List[float] | List[bool] | List[str] | List[datetime]
+)
 
 PROTO_VALUE_ONE_OF_FIELD_NAME = "value_oneof"
 PROTO_DEFINITION_ONE_OF_FIELD_NAME = "definition_type_oneof"

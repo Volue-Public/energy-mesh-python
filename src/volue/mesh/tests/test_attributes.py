@@ -5,7 +5,7 @@ Tests for volue.mesh.AttributeBase and volue.mesh.TimeseriesAttribute
 import sys
 import uuid
 from datetime import datetime
-from typing import Optional, Tuple, Union
+from typing import Tuple, Union
 
 import grpc
 import pytest

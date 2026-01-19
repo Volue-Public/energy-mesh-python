@@ -6,7 +6,7 @@ import threading
 import typing
 import uuid
 from datetime import datetime, timedelta
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import dateutil
 from google import protobuf
@@ -193,7 +193,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def read_timeseries_points(
         self,
-        target: Union[uuid.UUID, str, int, AttributeBase],
+        target: uuid.UUID | str | int | AttributeBase,
         start_time: datetime,
         end_time: datetime,
     ) -> Timeseries:
@@ -253,7 +253,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_object(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         full_attribute_info: bool = False,
         attributes_filter: AttributesFilter | None = None,
     ) -> Object:
@@ -278,7 +278,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def search_for_objects(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         query: str,
         full_attribute_info: bool = False,
         attributes_filter: AttributesFilter | None = None,
@@ -304,7 +304,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def create_object(
-        self, target: Union[uuid.UUID, str, AttributeBase], name: str
+        self, target: uuid.UUID | str | AttributeBase, name: str
     ) -> Object:
         """
         Create new Mesh object in the Mesh model.
@@ -334,7 +334,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_object(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         new_name: str | None = None,
         new_owner_attribute: uuid.UUID | str | AttributeBase | None = None,
     ) -> None:
@@ -362,7 +362,7 @@ class Session(abc.ABC):
 
     @abc.abstractmethod
     def delete_object(
-        self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
+        self, target: uuid.UUID | str | Object, recursive_delete: bool = False
     ) -> None:
         """
         Delete an existing Mesh object in the Mesh model.
@@ -381,7 +381,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         full_attribute_info: bool = False,
     ) -> AttributeBase:
         """
@@ -402,7 +402,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_timeseries_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         full_attribute_info: bool = False,
     ) -> TimeseriesAttribute:
         """
@@ -425,7 +425,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def search_for_attributes(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         query: str,
         full_attribute_info: bool = False,
     ) -> List[AttributeBase]:
@@ -450,7 +450,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def search_for_timeseries_attributes(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         query: str,
         full_attribute_info: bool = False,
     ) -> List[TimeseriesAttribute]:
@@ -475,7 +475,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_simple_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         value: SIMPLE_TYPE_OR_COLLECTION,
     ) -> None:
         """
@@ -501,7 +501,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_timeseries_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         new_local_expression: str | None = None,
         new_timeseries_resource_key: int | None = None,
     ) -> None:
@@ -527,7 +527,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_timeseries_attribute_definition(
         self,
-        target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+        target: uuid.UUID | str | AttributeBase.AttributeBaseDefinition,
         new_template_expression: str | None = None,
         new_description: str | None = None,
     ) -> None:
@@ -556,7 +556,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_link_relation_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         new_target_object_ids: List[uuid.UUID],
         append: bool,
     ) -> None:
@@ -590,7 +590,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_versioned_one_to_one_link_relation_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime,
         end_time: datetime,
         new_versions: List[LinkRelationVersion],
@@ -619,7 +619,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_versioned_one_to_many_link_relation_attribute(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         new_entries: List[List[LinkRelationVersion]],
     ) -> None:
         """
@@ -721,7 +721,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def forecast_functions(
         self,
-        target: Union[uuid.UUID, str, int],
+        target: uuid.UUID | str | int,
         start_time: datetime,
         end_time: datetime,
     ) -> ForecastFunctions:
@@ -742,7 +742,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def history_functions(
         self,
-        target: Union[uuid.UUID, str, int],
+        target: uuid.UUID | str | int,
         start_time: datetime,
         end_time: datetime,
     ) -> HistoryFunctions:
@@ -763,7 +763,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def statistical_functions(
         self,
-        target: Union[uuid.UUID, str, int],
+        target: uuid.UUID | str | int,
         start_time: datetime,
         end_time: datetime,
     ) -> StatisticalFunctions:
@@ -784,7 +784,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def transform_functions(
         self,
-        target: Union[uuid.UUID, str, int],
+        target: uuid.UUID | str | int,
         start_time: datetime,
         end_time: datetime,
     ) -> TransformFunctions:
@@ -805,7 +805,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_xy_sets(
         self,
-        target: typing.Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime | None,
         end_time: datetime | None,
         versions_only: bool,
@@ -849,7 +849,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_xy_sets(
         self,
-        target: typing.Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime | None,
         end_time: datetime | None,
         new_xy_sets: typing.List[XySet],
@@ -889,7 +889,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def get_rating_curve_versions(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime,
         end_time: datetime,
         versions_only: bool = False,
@@ -922,7 +922,7 @@ class Session(abc.ABC):
     @abc.abstractmethod
     def update_rating_curve_versions(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime,
         end_time: datetime,
         new_versions: List[RatingCurveVersion],
@@ -958,7 +958,7 @@ class Session(abc.ABC):
         resolution: timedelta = None,
         scenario: int = None,
         return_datasets: bool = False,
-    ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+    ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
         """Run a hydro simulation using HydSim on the Mesh server.
 
         In case of running a simulation on longer interval and with
@@ -1009,7 +1009,7 @@ class Session(abc.ABC):
         *,
         resolution: timedelta = None,
         return_datasets: bool = False,
-    ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+    ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
         """Run an inflow calculation using HydSim on the Mesh server.
 
         In case of running an inflow calculation on longer interval and with
@@ -1052,7 +1052,7 @@ class Session(abc.ABC):
         case: str,
         start_time: datetime,
         end_time: datetime,
-    ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+    ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
         """Generate Marginal Cost input using HydSim on the Mesh server.
 
         Args:
@@ -1073,7 +1073,7 @@ class Session(abc.ABC):
 
     def _get_xy_sets_impl(
         self,
-        target: typing.Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime | None,
         end_time: datetime | None,
         versions_only: bool,
@@ -1125,7 +1125,7 @@ class Session(abc.ABC):
 
     def _prepare_update_xy_sets_request(
         self,
-        target: typing.Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime | None,
         end_time: datetime | None,
         new_xy_sets: typing.List[XySet],
@@ -1171,7 +1171,7 @@ class Session(abc.ABC):
 
     def _read_timeseries_impl(
         self,
-        target: Union[uuid.UUID, str, int, AttributeBase],
+        target: uuid.UUID | str | int | AttributeBase,
         start_time: datetime,
         end_time: datetime,
     ) -> typing.Generator[typing.Any, time_series_pb2.ReadTimeseriesResponse, None]:
@@ -1233,7 +1233,7 @@ class Session(abc.ABC):
 
     def _prepare_get_object_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         full_attribute_info: bool,
         attributes_filter: AttributesFilter | None,
     ) -> model_pb2.GetObjectRequest:
@@ -1252,7 +1252,7 @@ class Session(abc.ABC):
 
     def _prepare_search_for_objects_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         query: str,
         full_attribute_info: bool,
         attributes_filter: AttributesFilter | None,
@@ -1272,7 +1272,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_create_object_request(
-        self, target: Union[uuid.UUID, str, AttributeBase], name: str
+        self, target: uuid.UUID | str | AttributeBase, name: str
     ) -> model_pb2.CreateObjectRequest:
         """Create a gRPC `CreateObjectRequest`"""
 
@@ -1285,7 +1285,7 @@ class Session(abc.ABC):
 
     def _prepare_update_object_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         new_name: str | None,
         new_owner_attribute: uuid.UUID | str | AttributeBase | None,
     ) -> model_pb2.UpdateObjectRequest:
@@ -1321,7 +1321,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_delete_object_request(
-        self, target: Union[uuid.UUID, str, Object], recursive_delete: bool
+        self, target: uuid.UUID | str | Object, recursive_delete: bool
     ) -> model_pb2.DeleteObjectRequest:
         """Create a gRPC `DeleteObjectRequest`"""
 
@@ -1333,7 +1333,7 @@ class Session(abc.ABC):
         return request
 
     def _prepare_get_attribute_request(
-        self, target: Union[uuid.UUID, str, AttributeBase], full_attribute_info: bool
+        self, target: uuid.UUID | str | AttributeBase, full_attribute_info: bool
     ) -> model_pb2.GetAttributeRequest:
         request = model_pb2.GetAttributeRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -1344,7 +1344,7 @@ class Session(abc.ABC):
 
     def _prepare_search_attributes_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         query: str,
         full_attribute_info: bool,
     ) -> model_pb2.SearchAttributesRequest:
@@ -1358,7 +1358,7 @@ class Session(abc.ABC):
 
     def _prepare_update_simple_attribute_request(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         value: SIMPLE_TYPE_OR_COLLECTION,
     ) -> model_pb2.UpdateSimpleAttributeRequest:
         request = model_pb2.UpdateSimpleAttributeRequest(
@@ -1382,7 +1382,7 @@ class Session(abc.ABC):
 
     def _prepare_update_timeseries_attribute_request(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         new_local_expression: str | None,
         new_timeseries_resource_key: int | None,
     ) -> model_pb2.UpdateTimeseriesAttributeRequest:
@@ -1407,7 +1407,7 @@ class Session(abc.ABC):
 
     def _prepare_update_timeseries_attribute_definition_request(
         self,
-        target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+        target: uuid.UUID | str | AttributeBase.AttributeBaseDefinition,
         new_template_expression: str | None,
         new_description: str | None,
     ) -> model_definition_pb2.UpdateTimeseriesAttributeDefinitionRequest:
@@ -1432,7 +1432,7 @@ class Session(abc.ABC):
 
     def _prepare_update_link_relation_attribute_request(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         new_target_object_ids: List[uuid.UUID],
         append: bool,
     ) -> model_pb2.UpdateLinkRelationAttributeRequest:
@@ -1451,7 +1451,7 @@ class Session(abc.ABC):
 
     def _prepare_versioned_link_relation_attribute_request(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         entries: List[List[LinkRelationVersion]],
         start_time: datetime | None = None,
         end_time: datetime | None = None,
@@ -1568,7 +1568,7 @@ class Session(abc.ABC):
 
     def _get_rating_curve_versions_impl(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime,
         end_time: datetime,
         versions_only: bool,
@@ -1617,7 +1617,7 @@ class Session(abc.ABC):
 
     def _prepare_update_rating_curve_versions_request(
         self,
-        target: Union[uuid.UUID, str, AttributeBase],
+        target: uuid.UUID | str | AttributeBase,
         start_time: datetime,
         end_time: datetime,
         new_versions: List[RatingCurveVersion],

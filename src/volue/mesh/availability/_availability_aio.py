@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import Optional, Union
+from typing import Union
 
 from volue.mesh._object import Object
 from volue.mesh.availability import (
