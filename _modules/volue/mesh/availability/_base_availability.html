@@ -178,7 +178,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">dateutil</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bidict</span><span class="w"> </span><span class="kn">import</span> <span class="n">bidict</span>
@@ -305,8 +304,8 @@
     <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">recurrence_type</span><span class="p">:</span> <span class="n">RecurrenceType</span>
-    <span class="n">recur_every</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">recur_until</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">recur_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">recur_until</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_recurrence</span><span class="p">:</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">Recurrence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Recurrence</span><span class="p">:</span>
@@ -375,7 +374,7 @@
     <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span>
     <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span>
     <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span>
-    <span class="nb">id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
@@ -521,8 +520,8 @@
     <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">recurrence_type</span><span class="p">:</span> <span class="n">RecurrenceType</span>
-    <span class="n">recur_every</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">recur_until</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">recur_every</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">recur_until</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="RestrictionBasicRecurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.RestrictionBasicRecurrence">[docs]</a><span class="nd">@dataclass</span>
@@ -668,7 +667,7 @@
     <span class="n">category</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">created</span><span class="p">:</span> <span class="n">AvailabilityRecordInfo</span>
     <span class="n">last_changed</span><span class="p">:</span> <span class="n">AvailabilityRecordInfo</span>
-    <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
+    <span class="n">recurrence</span><span class="p">:</span> <span class="n">RestrictionBasicRecurrence</span> <span class="o">|</span> <span class="n">RestrictionComplexRecurrence</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span>
@@ -705,9 +704,9 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">availability_service</span><span class="p">:</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span><span class="p">,</span>
-        <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">],</span>
+        <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="n">session_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">session_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">availability_service</span><span class="p">:</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">availability_service</span>
         <span class="p">)</span>
@@ -715,7 +714,7 @@
 <div class="viewcode-block" id="Availability.create_revision"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.create_revision">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_revision</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -767,7 +766,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_revision_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -794,12 +793,12 @@
 <div class="viewcode-block" id="Availability.create_restriction"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.create_restriction">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_restriction</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">],</span>
+        <span class="n">recurrence</span><span class="p">:</span> <span class="n">RestrictionBasicRecurrence</span> <span class="o">|</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Restriction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new restriction for a specified Mesh object.</span>
@@ -848,12 +847,12 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_restriction_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">],</span>
+        <span class="n">recurrence</span><span class="p">:</span> <span class="n">RestrictionBasicRecurrence</span> <span class="o">|</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">,</span>
         <span class="n">created_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">created_timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">last_changed_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -887,7 +886,7 @@
 <div class="viewcode-block" id="Availability.add_revision_recurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.add_revision_recurrence">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_revision_recurrence</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">,</span>
         <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -928,7 +927,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_add_recurrence_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">,</span>
         <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -952,9 +951,9 @@
 <div class="viewcode-block" id="Availability.get_availability_event"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.get_availability_event">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_availability_event</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Revision</span><span class="p">,</span> <span class="n">Restriction</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Revision</span> <span class="o">|</span> <span class="n">Restriction</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieves a specific availability event (Revision or Restriction) for a given Mesh object.</span>
 
@@ -976,7 +975,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_get_availability_event_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">GetAvailabilityEventRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">GetAvailabilityEventRequest</span><span class="p">(</span>
@@ -990,8 +989,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">search_availability_events</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span><span class="p">,</span>
-        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">]],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Revision</span><span class="p">,</span> <span class="n">Restriction</span><span class="p">]]:</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Revision</span> <span class="o">|</span> <span class="n">Restriction</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Searches for availability events (Revisions or Restrictions) in specified Mesh objects.</span>
 
@@ -1017,7 +1016,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_availability_events_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span><span class="p">,</span>
-        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">]],</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">SearchAvailabilityEventsRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">SearchAvailabilityEventsRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1029,7 +1028,7 @@
 <div class="viewcode-block" id="Availability.delete_revision_recurrence"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.delete_revision_recurrence">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_revision_recurrence</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1059,7 +1058,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_revision_recurrence_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1076,7 +1075,7 @@
 <div class="viewcode-block" id="Availability.delete_availability_events_by_id"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.delete_availability_events_by_id">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_availability_events_by_id</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1098,7 +1097,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_availability_events_by_id_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsByIdRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsByIdRequest</span><span class="p">(</span>
@@ -1110,7 +1109,7 @@
 
 <div class="viewcode-block" id="Availability.delete_availability_events"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.delete_availability_events">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_availability_events</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span> <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deletes all availability events (Revisions or Restrictions) of a specific type for a given Mesh object.</span>
@@ -1134,7 +1133,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_availability_events_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_type</span><span class="p">:</span> <span class="n">EventType</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteAvailabilityEventsRequest</span><span class="p">(</span>
@@ -1147,11 +1146,11 @@
 <div class="viewcode-block" id="Availability.search_instances"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.search_instances">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">search_instances</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">RevisionInstance</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">RestrictionInstance</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RevisionInstance</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">RestrictionInstance</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Searches for instances of availability events (Revisions or Restrictions) within a specific time period.</span>
 
@@ -1177,7 +1176,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_search_instances_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
@@ -1193,10 +1192,10 @@
 <div class="viewcode-block" id="Availability.update_revision"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.update_revision">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_revision</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1236,10 +1235,10 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_revision_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRevisionRequest</span><span class="p">:</span>
 
@@ -1274,14 +1273,14 @@
 <div class="viewcode-block" id="Availability.update_restriction"><a class="viewcode-back" href="../../../../api.html#volue.mesh.availability.Availability.update_restriction">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_restriction</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">RestrictionBasicRecurrence</span> <span class="o">|</span> <span class="n">RestrictionComplexRecurrence</span> <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1323,14 +1322,14 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_update_restriction_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_category</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-            <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
-        <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_local_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="p">(</span>
+            <span class="n">RestrictionBasicRecurrence</span> <span class="o">|</span> <span class="n">RestrictionComplexRecurrence</span> <span class="o">|</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRestrictionRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span>

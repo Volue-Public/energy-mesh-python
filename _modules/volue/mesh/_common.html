@@ -181,7 +181,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">google.protobuf</span><span class="w"> </span><span class="kn">import</span> <span class="n">field_mask_pb2</span><span class="p">,</span> <span class="n">timestamp_pb2</span>
@@ -295,9 +295,9 @@
 <span class="sd">            In this case attributes A1 and A2 will be returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">name_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tag_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">namespace_mask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">name_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tag_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">namespace_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">return_no_attributes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
@@ -387,7 +387,7 @@
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]</span>
+    <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">xy_curves</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">XyCurve</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -466,7 +466,7 @@
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">target_object_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span>
+    <span class="n">target_object_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -516,7 +516,7 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">proto</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">proto</span><span class="o">.</span><span class="n">data</span><span class="p">)</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
 
 <span class="sd">    Args:</span>
@@ -527,7 +527,7 @@
     <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Microsoft&#39;s GUID format to UUID format.</span>
 
 <span class="sd">    Args:</span>
@@ -690,7 +690,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_attribute_masks</span><span class="p">(</span>
-    <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">],</span>
+    <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributesMasks</span><span class="p">:</span>
     <span class="n">attributes_masks</span> <span class="o">=</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributesMasks</span><span class="p">()</span>
 
@@ -712,8 +712,8 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_object_to_proto_field_mask</span><span class="p">(</span>
-    <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">]:</span>
+    <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">attributes_filter</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">attributes_filter</span><span class="o">.</span><span class="n">return_no_attributes</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">Object</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
@@ -722,8 +722,8 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_attribute_field_mask</span><span class="p">(</span>
-    <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">]:</span>
+    <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># If attributes_filter.return_no_attributes is set to True we must not provide attribute field mask,</span>
     <span class="c1"># at the same time we can&#39;t expect user to provide full_attribute_info set to True. It would be very counter intuitive</span>
     <span class="c1"># to request no attributes and have to explicitly request full attributes info.</span>

@@ -178,7 +178,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">grpc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">google</span><span class="w"> </span><span class="kn">import</span> <span class="n">protobuf</span>
@@ -244,7 +244,7 @@
             <span class="n">session_service</span><span class="p">:</span> <span class="n">session_pb2_grpc</span><span class="o">.</span><span class="n">SessionServiceStub</span><span class="p">,</span>
             <span class="n">time_series_service</span><span class="p">:</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">,</span>
             <span class="n">availability_service</span><span class="p">:</span> <span class="n">availability_pb2_grpc</span><span class="o">.</span><span class="n">AvailabilityServiceStub</span><span class="p">,</span>
-            <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
@@ -318,7 +318,7 @@
 
 <div class="viewcode-block" id="Connection.Session.read_timeseries_points"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.read_timeseries_points">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">read_timeseries_points</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
@@ -346,8 +346,8 @@
 <div class="viewcode-block" id="Connection.Session.update_timeseries_resource_info"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_timeseries_resource_info">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_resource_info</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-            <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_curve_type</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_unit_of_measurement_id</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -388,7 +388,7 @@
 
 <div class="viewcode-block" id="Connection.Session.get_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">get_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeBase</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_get_attribute_request</span><span class="p">(</span>
@@ -399,7 +399,7 @@
 
 <div class="viewcode-block" id="Connection.Session.get_timeseries_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_timeseries_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">get_timeseries_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesAttribute</span><span class="p">:</span>
             <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
@@ -411,7 +411,7 @@
 
 <div class="viewcode-block" id="Connection.Session.search_for_attributes"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.search_for_attributes">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">search_for_attributes</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeBase</span><span class="p">]:</span>
@@ -428,7 +428,7 @@
 
 <div class="viewcode-block" id="Connection.Session.search_for_timeseries_attributes"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.search_for_timeseries_attributes">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">search_for_timeseries_attributes</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
@@ -439,7 +439,7 @@
 
 <div class="viewcode-block" id="Connection.Session.update_simple_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_simple_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_simple_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">value</span><span class="p">:</span> <span class="n">_attribute</span><span class="o">.</span><span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_simple_attribute_request</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -447,9 +447,9 @@
 
 <div class="viewcode-block" id="Connection.Session.update_timeseries_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_timeseries_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
-            <span class="n">new_local_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
+            <span class="n">new_local_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_timeseries_attribute_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">new_local_expression</span><span class="p">,</span> <span class="n">new_timeseries_resource_key</span>
@@ -458,9 +458,9 @@
 
 <div class="viewcode-block" id="Connection.Session.update_timeseries_attribute_definition"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_timeseries_attribute_definition">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_attribute_definition</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">],</span>
-            <span class="n">new_template_expression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">new_description</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="o">.</span><span class="n">AttributeBaseDefinition</span><span class="p">,</span>
+            <span class="n">new_template_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_timeseries_attribute_definition_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">new_template_expression</span><span class="p">,</span> <span class="n">new_description</span>
@@ -469,7 +469,7 @@
 
 <div class="viewcode-block" id="Connection.Session.update_link_relation_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_link_relation_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_link_relation_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">new_target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">],</span>
             <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -480,7 +480,7 @@
 
 <div class="viewcode-block" id="Connection.Session.update_versioned_one_to_one_link_relation_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_versioned_one_to_one_link_relation_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_versioned_one_to_one_link_relation_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">new_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">],</span>
@@ -494,7 +494,7 @@
 
 <div class="viewcode-block" id="Connection.Session.update_versioned_one_to_many_link_relation_attribute"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_versioned_one_to_many_link_relation_attribute">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_versioned_one_to_many_link_relation_attribute</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">new_entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]],</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_versioned_link_relation_attribute_request</span><span class="p">(</span>
@@ -511,9 +511,9 @@
 
 <div class="viewcode-block" id="Connection.Session.get_object"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_object">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">get_object</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Object</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_get_object_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">,</span> <span class="n">attributes_filter</span>
@@ -523,10 +523,10 @@
 
 <div class="viewcode-block" id="Connection.Session.search_for_objects"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.search_for_objects">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">search_for_objects</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AttributesFilter</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_search_for_objects_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">,</span> <span class="n">attributes_filter</span>
@@ -540,7 +540,7 @@
             <span class="k">return</span> <span class="n">objects</span></div>
 
 <div class="viewcode-block" id="Connection.Session.create_object"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.create_object">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">create_object</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Object</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_create_object_request</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
             <span class="n">proto_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span><span class="o">.</span><span class="n">CreateObject</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
@@ -548,9 +548,9 @@
 
 <div class="viewcode-block" id="Connection.Session.update_object"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_object">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_object</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
-            <span class="n">new_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">new_owner_attribute</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
+            <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">new_owner_attribute</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_object_request</span><span class="p">(</span>
                 <span class="n">target</span><span class="p">,</span> <span class="n">new_name</span><span class="p">,</span> <span class="n">new_owner_attribute</span>
@@ -558,14 +558,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span><span class="o">.</span><span class="n">UpdateObject</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.delete_object"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.delete_object">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">delete_object</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="n">recursive_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span> <span class="n">recursive_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_delete_object_request</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">recursive_delete</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model_service</span><span class="o">.</span><span class="n">DeleteObject</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Connection.Session.forecast_functions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.forecast_functions">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">forecast_functions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForecastFunctions</span><span class="p">:</span>
@@ -573,7 +573,7 @@
 
 <div class="viewcode-block" id="Connection.Session.history_functions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.history_functions">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">history_functions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryFunctions</span><span class="p">:</span>
@@ -581,7 +581,7 @@
 
 <div class="viewcode-block" id="Connection.Session.statistical_functions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.statistical_functions">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">statistical_functions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticalFunctions</span><span class="p">:</span>
@@ -589,7 +589,7 @@
 
 <div class="viewcode-block" id="Connection.Session.transform_functions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.transform_functions">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">transform_functions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformFunctions</span><span class="p">:</span>
@@ -597,9 +597,9 @@
 
 <div class="viewcode-block" id="Connection.Session.get_xy_sets"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_xy_sets">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">get_xy_sets</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
-            <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">XySet</span><span class="p">]:</span>
             <span class="n">gen</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_xy_sets_impl</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">versions_only</span><span class="p">)</span>
@@ -608,9 +608,9 @@
 
 <div class="viewcode-block" id="Connection.Session.update_xy_sets"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_xy_sets">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_xy_sets</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
-            <span class="n">start_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">end_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">new_xy_sets</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">XySet</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_prepare_update_xy_sets_request</span><span class="p">(</span>
@@ -620,7 +620,7 @@
 
 <div class="viewcode-block" id="Connection.Session.get_rating_curve_versions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.get_rating_curve_versions">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">get_rating_curve_versions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -633,7 +633,7 @@
 
 <div class="viewcode-block" id="Connection.Session.update_rating_curve_versions"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session.update_rating_curve_versions">[docs]</a>        <span class="k">def</span><span class="w"> </span><span class="nf">update_rating_curve_versions</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">AttributeBase</span><span class="p">],</span>
+            <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">new_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RatingCurveVersion</span><span class="p">],</span>
@@ -697,7 +697,7 @@
             <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
             <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]]:</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
             <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_get_mc_file_request</span><span class="p">(</span>
                 <span class="n">model</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
             <span class="p">)</span>
@@ -758,7 +758,7 @@
 <div class="viewcode-block" id="Connection.create_session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.create_session">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">create_session</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.connect_to_session">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
+<div class="viewcode-block" id="Connection.connect_to_session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.connect_to_session">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">connect_to_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Session</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span>
             <span class="n">calc_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span><span class="p">,</span>
             <span class="n">hydsim_service</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="p">,</span>

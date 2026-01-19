@@ -173,7 +173,7 @@
   <h1>Source code for volue.mesh._base_connection</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeVar</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">grpc</span>
 
@@ -241,7 +241,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_grpc_channel_options</span><span class="p">(</span><span class="n">max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_grpc_channel_options</span><span class="p">(</span><span class="n">max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a secure gRPC channel.</span>
 
 <span class="sd">        Derived classes should implement this using either grpc.aio.secure_channel</span>
@@ -260,7 +260,7 @@
         <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">tls_root_pem_cert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">authentication_parameters</span><span class="p">:</span> <span class="n">Authentication</span><span class="o">.</span><span class="n">Parameters</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">channel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">auth_metadata_plugin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
@@ -358,7 +358,7 @@
 
 <div class="viewcode-block" id="Connection.insecure"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.insecure">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">insecure</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an insecure connection to a Mesh server.</span>
 
@@ -376,9 +376,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">with_tls</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted connection to a Mesh server.</span>
 
@@ -401,11 +401,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">with_kerberos</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service_principal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">user_principal</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">user_principal</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted and authenticated connection to a Mesh server.</span>
 
@@ -451,10 +451,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">with_external_access_token</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">root_certificates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an encrypted connection to a Mesh server and will add</span>
 <span class="sd">        provided access token to authorization header to each server request.</span>
