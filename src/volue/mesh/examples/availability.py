@@ -24,16 +24,31 @@ def revision_workflow(session: Connection.Session):
     print("\n=== Starting Revision Workflow Example ===\n")
     # 1. Create a revision
     print("1. Creating a new revision...")
+
+    # The 'created_author', 'created_timestamp', and 'last_changed_author' fields are optional.
+    # For 'created_author' and 'last_changed_author', if they're set Mesh will use their values
+    # as-is, even if they're empty strings. Otherwise, if the current user is authenticated Mesh
+    # will use his authenticated username. Otherwise, Mesh will use an empty string.
+    # Note that the authenticated username should not be considered a unique identifier for the user
+    # as it may be identical between users and change over time.
+    # For 'created_timestamp', if it's set Mesh will use its value as-is. If not, Mesh will use the
+    # current time at the moment the request is processed.
     revision = session.availability.create_revision(
         target=CHIMNEY_PATH,
         event_id="event_id",
         local_id="local_id",
         reason="Revision reason",
+        created_author="created_author",
+        created_timestamp=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+        last_changed_author="last_changed_author",
     )
 
     print(f"   Created revision with ID: {revision.event_id}")
     print(f"   Owner ID: {revision.owner_id}")
-    print(f"   Created by: {revision.created.author} at {revision.created.timestamp}")
+    print(f"   Created by: '{revision.created.author}' at {revision.created.timestamp}")
+    print(
+        f"   Last changed by: '{revision.last_changed.author}' at {revision.last_changed.timestamp}"
+    )
     print(f"   Initial recurrences count: {len(revision.recurrences)}")
 
     # 2. Add a recurrence to the revision
@@ -58,6 +73,12 @@ def revision_workflow(session: Connection.Session):
         event_id=revision.event_id,
     )
     print(f"   Retrieved revision with ID: {revision_with_recurrence.event_id}")
+    print(
+        f"   Created by: {revision_with_recurrence.created.author} at {revision_with_recurrence.created.timestamp}"
+    )
+    print(
+        f"   Last changed by: {revision_with_recurrence.last_changed.author} at {revision_with_recurrence.last_changed.timestamp}"
+    )
     print(f"   Recurrences count: {len(revision_with_recurrence.recurrences)}")
     if revision_with_recurrence.recurrences:
         recurrence = revision_with_recurrence.recurrences[0]
@@ -119,6 +140,7 @@ def revision_workflow(session: Connection.Session):
         event_id="event_id",
         new_local_id="updated_local_id",
         new_reason="Updated reason",
+        author="update_revision_author",
     )
 
     updated_revision = session.availability.get_availability_event(
@@ -126,7 +148,12 @@ def revision_workflow(session: Connection.Session):
     )
     print(f"   Updated local ID: {updated_revision.local_id}")
     print(f"   Updated reason: {updated_revision.reason}")
-    print(f"   Last modified: {updated_revision.last_changed.timestamp}")
+    print(
+        f"   Created by: '{updated_revision.created.author}' at {updated_revision.created.timestamp}"
+    )
+    print(
+        f"   Last changed by: '{updated_revision.last_changed.author}' at {updated_revision.last_changed.timestamp}"
+    )
 
     # 8. Delete a specific recurrence
     print("\n8. Deleting the second recurrence pattern...")
@@ -134,6 +161,7 @@ def revision_workflow(session: Connection.Session):
         target=CHIMNEY_PATH,
         event_id="event_id",
         recurrence_id=second_recurrence_id,
+        author="delete_revision_recurrence_author",
     )
 
     revision_after_delete = session.availability.get_availability_event(
@@ -183,6 +211,9 @@ def restriction_workflow(session: Connection.Session):
             period_end=datetime(2023, 1, 3, tzinfo=dateutil.tz.UTC),  # Tuesday
             value=75.5,  # 75.5% capacity
         ),
+        created_author="created_author",
+        created_timestamp=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+        last_changed_author="last_changed_author",
     )
 
     print(f"   Created basic restriction with ID: {basic_restriction.event_id}")
@@ -191,6 +222,9 @@ def restriction_workflow(session: Connection.Session):
     print(f"   Value: {basic_restriction.recurrence.value}")
     print(
         f"   Created by: {basic_restriction.created.author} at {basic_restriction.created.timestamp}"
+    )
+    print(
+        f"   Last changed by: {basic_restriction.last_changed.author} at {basic_restriction.last_changed.timestamp}"
     )
     print(f"   Status: {basic_restriction.recurrence.recurrence.status}")
 
@@ -229,6 +263,9 @@ def restriction_workflow(session: Connection.Session):
                 ),
             ],
         ),
+        created_author="created_author",
+        created_timestamp=datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC),
+        last_changed_author="last_changed_author",
     )
 
     print(f"   Created complex restriction with ID: {complex_restriction.event_id}")
@@ -240,6 +277,12 @@ def restriction_workflow(session: Connection.Session):
         f"   Recurrence type: {complex_restriction.recurrence.recurrence.recurrence_type.name}"
     )
     print(f"   Repeats until: {complex_restriction.recurrence.recurrence.recur_until}")
+    print(
+        f"   Created by: {complex_restriction.created.author} at {complex_restriction.created.timestamp}"
+    )
+    print(
+        f"   Last changed by: {complex_restriction.last_changed.author} at {complex_restriction.last_changed.timestamp}"
+    )
 
     # 3. Search for restrictions
     print("\n3. Searching for all restrictions...")
@@ -319,6 +362,7 @@ def restriction_workflow(session: Connection.Session):
         new_local_id="updated_basic_id",
         new_reason="Updated basic restriction reason",
         new_category="DischargeMax[m3/s]",
+        author="update_restriction_author",
     )
 
     # Verify the update
@@ -329,7 +373,9 @@ def restriction_workflow(session: Connection.Session):
     print(f"   Updated local ID: {updated_restriction.local_id}")
     print(f"   Updated reason: {updated_restriction.reason}")
     print(f"   Updated category: {updated_restriction.category}")
-    print(f"   Last modified: {updated_restriction.last_changed.timestamp}")
+    print(
+        f"   Last changed by: {updated_restriction.last_changed.author} at {updated_restriction.last_changed.timestamp}"
+    )
 
     # 7. Update restriction recurrence
     print("\n7. Updating the restriction recurrence...")
@@ -348,6 +394,7 @@ def restriction_workflow(session: Connection.Session):
         target=CHIMNEY_PATH,
         event_id="basic_restriction_id",
         new_restriction_recurrence=new_recurrence,
+        author="update_restriction_recurrence_author",
     )
 
     updated_restriction = session.availability.get_availability_event(
@@ -360,6 +407,9 @@ def restriction_workflow(session: Connection.Session):
     print(f"   New value: {updated_restriction.recurrence.value}")
     print(
         f"   New recurrence type: {updated_restriction.recurrence.recurrence.recurrence_type.name}"
+    )
+    print(
+        f"   Last changed by: {updated_restriction.last_changed.author} at {updated_restriction.last_changed.timestamp}"
     )
 
     # 8. Delete restrictions
