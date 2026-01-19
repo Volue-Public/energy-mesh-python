@@ -21,7 +21,7 @@ New features
 ~~~~~~~~~~~~~~~~~~
 
 - Support for Python 3.14 :issue:`598`
-- Added new optional fields to the availability events API for setting user identity and event creation time.
+- Added new optional fields to the availability events API for setting user identity and event creation time. :issue:`590`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
