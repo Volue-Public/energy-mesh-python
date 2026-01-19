@@ -63,6 +63,7 @@ def revision_workflow(session: Connection.Session):
             description="Recurrence",
             recurrence_type=RecurrenceType.NONE,
         ),
+        author="add_basic_recurrence_author",
     )
     print(f"   Added recurrence with ID: {recurrence_id}")
 
@@ -74,10 +75,10 @@ def revision_workflow(session: Connection.Session):
     )
     print(f"   Retrieved revision with ID: {revision_with_recurrence.event_id}")
     print(
-        f"   Created by: {revision_with_recurrence.created.author} at {revision_with_recurrence.created.timestamp}"
+        f"   Created by: '{revision_with_recurrence.created.author}' at {revision_with_recurrence.created.timestamp}"
     )
     print(
-        f"   Last changed by: {revision_with_recurrence.last_changed.author} at {revision_with_recurrence.last_changed.timestamp}"
+        f"   Last changed by: '{revision_with_recurrence.last_changed.author}' at {revision_with_recurrence.last_changed.timestamp}"
     )
     print(f"   Recurrences count: {len(revision_with_recurrence.recurrences)}")
     if revision_with_recurrence.recurrences:
@@ -221,10 +222,10 @@ def restriction_workflow(session: Connection.Session):
     print(f"   Category: {basic_restriction.category}")
     print(f"   Value: {basic_restriction.recurrence.value}")
     print(
-        f"   Created by: {basic_restriction.created.author} at {basic_restriction.created.timestamp}"
+        f"   Created by: '{basic_restriction.created.author}' at {basic_restriction.created.timestamp}"
     )
     print(
-        f"   Last changed by: {basic_restriction.last_changed.author} at {basic_restriction.last_changed.timestamp}"
+        f"   Last changed by: '{basic_restriction.last_changed.author}' at {basic_restriction.last_changed.timestamp}"
     )
     print(f"   Status: {basic_restriction.recurrence.recurrence.status}")
 
@@ -278,10 +279,10 @@ def restriction_workflow(session: Connection.Session):
     )
     print(f"   Repeats until: {complex_restriction.recurrence.recurrence.recur_until}")
     print(
-        f"   Created by: {complex_restriction.created.author} at {complex_restriction.created.timestamp}"
+        f"   Created by: '{complex_restriction.created.author}' at {complex_restriction.created.timestamp}"
     )
     print(
-        f"   Last changed by: {complex_restriction.last_changed.author} at {complex_restriction.last_changed.timestamp}"
+        f"   Last changed by: '{complex_restriction.last_changed.author}' at {complex_restriction.last_changed.timestamp}"
     )
 
     # 3. Search for restrictions
@@ -374,7 +375,7 @@ def restriction_workflow(session: Connection.Session):
     print(f"   Updated reason: {updated_restriction.reason}")
     print(f"   Updated category: {updated_restriction.category}")
     print(
-        f"   Last changed by: {updated_restriction.last_changed.author} at {updated_restriction.last_changed.timestamp}"
+        f"   Last changed by: '{updated_restriction.last_changed.author}' at {updated_restriction.last_changed.timestamp}"
     )
 
     # 7. Update restriction recurrence
@@ -409,7 +410,7 @@ def restriction_workflow(session: Connection.Session):
         f"   New recurrence type: {updated_restriction.recurrence.recurrence.recurrence_type.name}"
     )
     print(
-        f"   Last changed by: {updated_restriction.last_changed.author} at {updated_restriction.last_changed.timestamp}"
+        f"   Last changed by: '{updated_restriction.last_changed.author}' at {updated_restriction.last_changed.timestamp}"
     )
 
     # 8. Delete restrictions
