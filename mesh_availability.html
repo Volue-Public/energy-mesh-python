@@ -218,16 +218,31 @@ for a general description of availability concept in Mesh.</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Starting Revision Workflow Example ===</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># 1. Create a revision</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Creating a new revision...&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The &#39;created_author&#39;, &#39;created_timestamp&#39;, and &#39;last_changed_author&#39; fields are optional.</span>
+    <span class="c1"># For &#39;created_author&#39; and &#39;last_changed_author&#39;, if they&#39;re set Mesh will use their values</span>
+    <span class="c1"># as-is, even if they&#39;re empty strings. Otherwise, if the current user is authenticated Mesh</span>
+    <span class="c1"># will use his authenticated username. Otherwise, Mesh will use an empty string.</span>
+    <span class="c1"># Note that the authenticated username should not be considered a unique identifier for the user</span>
+    <span class="c1"># as it may be identical between users and change over time.</span>
+    <span class="c1"># For &#39;created_timestamp&#39;, if it&#39;s set Mesh will use its value as-is. If not, Mesh will use the</span>
+    <span class="c1"># current time at the moment the request is processed.</span>
     <span class="n">revision</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">create_revision</span><span class="p">(</span>
         <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
         <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
         <span class="n">local_id</span><span class="o">=</span><span class="s2">&quot;local_id&quot;</span><span class="p">,</span>
         <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Revision reason&quot;</span><span class="p">,</span>
+        <span class="n">created_author</span><span class="o">=</span><span class="s2">&quot;created_author&quot;</span><span class="p">,</span>
+        <span class="n">created_timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">last_changed_author</span><span class="o">=</span><span class="s2">&quot;last_changed_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created revision with ID: </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Owner ID: </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">owner_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created by: </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created by: &#39;</span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&#39; at </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: &#39;</span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&#39; at </span><span class="si">{</span><span class="n">revision</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Initial recurrences count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">revision</span><span class="o">.</span><span class="n">recurrences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># 2. Add a recurrence to the revision</span>
@@ -252,6 +267,12 @@ for a general description of availability concept in Mesh.</p>
         <span class="n">event_id</span><span class="o">=</span><span class="n">revision</span><span class="o">.</span><span class="n">event_id</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Retrieved revision with ID: </span><span class="si">{</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Created by: </span><span class="si">{</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: </span><span class="si">{</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Recurrences count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">recurrences</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">recurrences</span><span class="p">:</span>
         <span class="n">recurrence</span> <span class="o">=</span> <span class="n">revision_with_recurrence</span><span class="o">.</span><span class="n">recurrences</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -313,6 +334,7 @@ for a general description of availability concept in Mesh.</p>
         <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
         <span class="n">new_local_id</span><span class="o">=</span><span class="s2">&quot;updated_local_id&quot;</span><span class="p">,</span>
         <span class="n">new_reason</span><span class="o">=</span><span class="s2">&quot;Updated reason&quot;</span><span class="p">,</span>
+        <span class="n">author</span><span class="o">=</span><span class="s2">&quot;update_revision_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">updated_revision</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
@@ -320,7 +342,12 @@ for a general description of availability concept in Mesh.</p>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated local ID: </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">local_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated reason: </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Last modified: </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Created by: &#39;</span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&#39; at </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: &#39;</span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2">&#39; at </span><span class="si">{</span><span class="n">updated_revision</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># 8. Delete a specific recurrence</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">8. Deleting the second recurrence pattern...&quot;</span><span class="p">)</span>
@@ -328,6 +355,7 @@ for a general description of availability concept in Mesh.</p>
         <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
         <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;event_id&quot;</span><span class="p">,</span>
         <span class="n">recurrence_id</span><span class="o">=</span><span class="n">second_recurrence_id</span><span class="p">,</span>
+        <span class="n">author</span><span class="o">=</span><span class="s2">&quot;delete_revision_recurrence_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">revision_after_delete</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
@@ -377,6 +405,9 @@ for a general description of availability concept in Mesh.</p>
             <span class="n">period_end</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>  <span class="c1"># Tuesday</span>
             <span class="n">value</span><span class="o">=</span><span class="mf">75.5</span><span class="p">,</span>  <span class="c1"># 75.5% capacity</span>
         <span class="p">),</span>
+        <span class="n">created_author</span><span class="o">=</span><span class="s2">&quot;created_author&quot;</span><span class="p">,</span>
+        <span class="n">created_timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">last_changed_author</span><span class="o">=</span><span class="s2">&quot;last_changed_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created basic restriction with ID: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -385,6 +416,9 @@ for a general description of availability concept in Mesh.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Value: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;   Created by: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Status: </span><span class="si">{</span><span class="n">basic_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -423,6 +457,9 @@ for a general description of availability concept in Mesh.</p>
                 <span class="p">),</span>
             <span class="p">],</span>
         <span class="p">),</span>
+        <span class="n">created_author</span><span class="o">=</span><span class="s2">&quot;created_author&quot;</span><span class="p">,</span>
+        <span class="n">created_timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">),</span>
+        <span class="n">last_changed_author</span><span class="o">=</span><span class="s2">&quot;last_changed_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Created complex restriction with ID: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">event_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -434,6 +471,12 @@ for a general description of availability concept in Mesh.</p>
         <span class="sa">f</span><span class="s2">&quot;   Recurrence type: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Repeats until: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recur_until</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Created by: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">created</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">complex_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># 3. Search for restrictions</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">3. Searching for all restrictions...&quot;</span><span class="p">)</span>
@@ -513,6 +556,7 @@ for a general description of availability concept in Mesh.</p>
         <span class="n">new_local_id</span><span class="o">=</span><span class="s2">&quot;updated_basic_id&quot;</span><span class="p">,</span>
         <span class="n">new_reason</span><span class="o">=</span><span class="s2">&quot;Updated basic restriction reason&quot;</span><span class="p">,</span>
         <span class="n">new_category</span><span class="o">=</span><span class="s2">&quot;DischargeMax[m3/s]&quot;</span><span class="p">,</span>
+        <span class="n">author</span><span class="o">=</span><span class="s2">&quot;update_restriction_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Verify the update</span>
@@ -523,7 +567,9 @@ for a general description of availability concept in Mesh.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated local ID: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">local_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated reason: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Updated category: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Last modified: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
 
     <span class="c1"># 7. Update restriction recurrence</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">7. Updating the restriction recurrence...&quot;</span><span class="p">)</span>
@@ -542,6 +588,7 @@ for a general description of availability concept in Mesh.</p>
         <span class="n">target</span><span class="o">=</span><span class="n">CHIMNEY_PATH</span><span class="p">,</span>
         <span class="n">event_id</span><span class="o">=</span><span class="s2">&quot;basic_restriction_id&quot;</span><span class="p">,</span>
         <span class="n">new_restriction_recurrence</span><span class="o">=</span><span class="n">new_recurrence</span><span class="p">,</span>
+        <span class="n">author</span><span class="o">=</span><span class="s2">&quot;update_restriction_recurrence_author&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="n">updated_restriction</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">availability</span><span class="o">.</span><span class="n">get_availability_event</span><span class="p">(</span>
@@ -554,6 +601,9 @@ for a general description of availability concept in Mesh.</p>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   New value: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;   New recurrence type: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence</span><span class="o">.</span><span class="n">recurrence_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;   Last changed by: </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">updated_restriction</span><span class="o">.</span><span class="n">last_changed</span><span class="o">.</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
 
     <span class="c1"># 8. Delete restrictions</span>

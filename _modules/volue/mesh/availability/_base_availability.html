@@ -719,6 +719,9 @@
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">created_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">created_timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">last_changed_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Revision</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a new revision for a specified Mesh object.</span>
@@ -735,6 +738,22 @@
 <span class="sd">            local_id: An additional identifier for the revision. This does not</span>
 <span class="sd">                need to be unique and can be used for external system references.</span>
 <span class="sd">            reason: A description or explanation for creating the revision.</span>
+<span class="sd">            created_author: User who created this event. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, if the current user is authenticated we&#39;ll use its</span>
+<span class="sd">                authenticated username. Otherwise, we&#39;ll use an empty string.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
+<span class="sd">            created_timestamp: When this event was created. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is. If not, we&#39;ll use the current time</span>
+<span class="sd">                at the moment the request is processed.</span>
+<span class="sd">            last_changed_author: Last user who edited this event. If this field</span>
+<span class="sd">                is set, we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, we&#39;ll use the same value we set for &#39;created_author&#39;.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Revision: An object representing the newly created revision, including</span>
@@ -747,7 +766,14 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_revision_request</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">local_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">created_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">created_timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">last_changed_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRevisionRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRevisionRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -755,6 +781,13 @@
             <span class="n">event_id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">local_id</span><span class="o">=</span><span class="n">local_id</span><span class="p">,</span>
             <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
+            <span class="n">created_author</span><span class="o">=</span><span class="n">created_author</span><span class="p">,</span>
+            <span class="n">created_timestamp</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">created_timestamp</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">created_timestamp</span> <span class="o">!=</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
+            <span class="n">last_changed_author</span><span class="o">=</span><span class="n">last_changed_author</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
@@ -786,6 +819,22 @@
 <span class="sd">            reason: A description or explanation for creating the restriction.</span>
 <span class="sd">            category: The category of the restriction.</span>
 <span class="sd">            recurrence: The recurrence details, which can be either basic or complex.</span>
+<span class="sd">            created_author: User who created this event. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, if the current user is authenticated we&#39;ll use its</span>
+<span class="sd">                authenticated username. Otherwise, we&#39;ll use an empty string.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
+<span class="sd">            created_timestamp: When this event was created. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is. If not, we&#39;ll use the current time</span>
+<span class="sd">                at the moment the request is processed.</span>
+<span class="sd">            last_changed_author: Last user who edited this event. If this field</span>
+<span class="sd">                is set, we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, we&#39;ll use the same value we set for &#39;created_author&#39;.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Restriction: An object representing the newly created restriction,</span>
@@ -805,6 +854,9 @@
         <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">category</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">],</span>
+        <span class="n">created_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">created_timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">last_changed_author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">CreateRestrictionRequest</span><span class="p">:</span>
         <span class="n">proto_recurrence</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">RestrictionRecurrence</span><span class="p">()</span>
 
@@ -826,6 +878,9 @@
             <span class="n">reason</span><span class="o">=</span><span class="n">reason</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
             <span class="n">restriction_recurrence</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="p">,</span>
+            <span class="n">created_author</span><span class="o">=</span><span class="n">created_author</span><span class="p">,</span>
+            <span class="n">created_timestamp</span><span class="o">=</span><span class="n">created_timestamp</span><span class="p">,</span>
+            <span class="n">last_changed_author</span><span class="o">=</span><span class="n">last_changed_author</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
@@ -837,6 +892,7 @@
         <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">,</span>
         <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Adds a recurrence pattern to an existing revision.</span>
@@ -854,6 +910,13 @@
 <span class="sd">                type, frequency, and description.</span>
 <span class="sd">            period_start: The start time of the period during which the recurrence is active.</span>
 <span class="sd">            period_end: The end time of the period during which the recurrence is active.</span>
+<span class="sd">            author: The user who requested this change. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, if the current user is authenticated we&#39;ll use its</span>
+<span class="sd">                authenticated username. Otherwise, we&#39;ll use an empty string.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            int: The unique identifier of the newly created recurrence.</span>
@@ -870,6 +933,7 @@
         <span class="n">recurrence</span><span class="p">:</span> <span class="n">Recurrence</span><span class="p">,</span>
         <span class="n">period_start</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">period_end</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">AddRevisionRecurrenceRequest</span><span class="p">:</span>
 
         <span class="n">revision_recurrence</span> <span class="o">=</span> <span class="n">RevisionRecurrence</span><span class="p">(</span>
@@ -881,6 +945,7 @@
             <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
             <span class="n">revision_recurrence</span><span class="o">=</span><span class="n">RevisionRecurrence</span><span class="o">.</span><span class="n">_to_proto</span><span class="p">(</span><span class="n">revision_recurrence</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
@@ -967,6 +1032,7 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Deletes a specific recurrence associated with a revision.</span>
@@ -978,6 +1044,13 @@
 <span class="sd">                This can be specified as a UUID, a string path, or an Object instance.</span>
 <span class="sd">            event_id: The unique identifier of the revision from which the recurrence will be deleted.</span>
 <span class="sd">            recurrence_id: The unique identifier of the recurrence to be deleted.</span>
+<span class="sd">            author: The user who requested this change. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, if the current user is authenticated we&#39;ll use its</span>
+<span class="sd">                authenticated username. Otherwise, we&#39;ll use an empty string.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
@@ -989,12 +1062,14 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Object</span><span class="p">],</span>
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">recurrence_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteRevisionRecurrenceRequest</span><span class="p">:</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">DeleteRevisionRecurrenceRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
             <span class="n">recurrence_id</span><span class="o">=</span><span class="n">recurrence_id</span><span class="p">,</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
 
@@ -1122,6 +1197,7 @@
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates an existing revision with new information.</span>
@@ -1137,6 +1213,13 @@
 <span class="sd">                the local ID will remain unchanged.</span>
 <span class="sd">            new_reason: The new reason or description for the revision. If None,</span>
 <span class="sd">                the reason will remain unchanged.</span>
+<span class="sd">            author: The user who requested this change. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, if the current user is authenticated we&#39;ll use its</span>
+<span class="sd">                authenticated username. Otherwise, we&#39;ll use an empty string.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -1157,6 +1240,7 @@
         <span class="n">event_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">new_local_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_reason</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRevisionRequest</span><span class="p">:</span>
 
         <span class="k">if</span> <span class="n">new_local_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">new_reason</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1168,6 +1252,7 @@
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1197,6 +1282,7 @@
         <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
             <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates an existing restriction with new information.</span>
@@ -1217,6 +1303,13 @@
 <span class="sd">                the category will remain unchanged.</span>
 <span class="sd">            new_restriction_recurrence: The new recurrence details for the restriction. If None,</span>
 <span class="sd">                the recurrence details will remain unchanged.</span>
+<span class="sd">            author: The user who requested this change. If this field is set,</span>
+<span class="sd">                we&#39;ll use its value as-is, even if it&#39;s an empty string.</span>
+<span class="sd">                Otherwise, if the current user is authenticated we&#39;ll use its</span>
+<span class="sd">                authenticated username. Otherwise, we&#39;ll use an empty string.</span>
+<span class="sd">                Note that the authenticated username should not be considered</span>
+<span class="sd">                a unique identifier for the user as it may be identical between</span>
+<span class="sd">                users and change over time.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: If the gRPC request fails or the server returns an error.</span>
@@ -1238,6 +1331,7 @@
         <span class="n">new_restriction_recurrence</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
             <span class="n">Union</span><span class="p">[</span><span class="n">RestrictionBasicRecurrence</span><span class="p">,</span> <span class="n">RestrictionComplexRecurrence</span><span class="p">]</span>
         <span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">author</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">availability_pb2</span><span class="o">.</span><span class="n">UpdateRestrictionRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">new_local_id</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -1254,6 +1348,7 @@
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
             <span class="n">owner_id</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">target</span><span class="p">),</span>
             <span class="n">event_id</span><span class="o">=</span><span class="n">event_id</span><span class="p">,</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
