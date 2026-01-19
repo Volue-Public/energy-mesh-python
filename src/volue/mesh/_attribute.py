@@ -146,7 +146,7 @@ class AttributeBase:
 
         # in basic view the definition is not a part of response from Mesh server
         if init_definition and proto_attribute.HasField("definition"):
-            self.definition: Optional[AttributeBase.AttributeBaseDefinition] = (
+            self.definition: AttributeBase.AttributeBaseDefinition | None = (
                 self.AttributeBaseDefinition(proto_attribute.definition)
             )
 
@@ -250,7 +250,7 @@ class SimpleAttribute(AttributeBase):
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
-            self.definition: Optional[SimpleAttribute.SimpleAttributeDefinition] = (
+            self.definition: SimpleAttribute.SimpleAttributeDefinition | None = (
                 self.SimpleAttributeDefinition(proto_attribute.definition)
             )
 
@@ -314,9 +314,9 @@ class OwnershipRelationAttribute(AttributeBase):
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
-            self.definition: Optional[
-                OwnershipRelationAttribute.OwnershipRelationAttributeDefinition
-            ] = self.OwnershipRelationAttributeDefinition(proto_attribute.definition)
+            self.definition: (
+                OwnershipRelationAttribute.OwnershipRelationAttributeDefinition | None
+            ) = self.OwnershipRelationAttributeDefinition(proto_attribute.definition)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
@@ -378,9 +378,9 @@ class LinkRelationAttribute(AttributeBase):
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
-            self.definition: Optional[
-                LinkRelationAttribute.LinkRelationAttributeDefinition
-            ] = self.LinkRelationAttributeDefinition(proto_attribute.definition)
+            self.definition: (
+                LinkRelationAttribute.LinkRelationAttributeDefinition | None
+            ) = self.LinkRelationAttributeDefinition(proto_attribute.definition)
 
     def __str__(self) -> str:
         base_message = super()._get_string_representation()
@@ -448,9 +448,9 @@ class VersionedLinkRelationAttribute(AttributeBase):
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
-            self.definition: Optional[
-                LinkRelationAttribute.LinkRelationAttributeDefinition
-            ] = LinkRelationAttribute.LinkRelationAttributeDefinition(
+            self.definition: (
+                LinkRelationAttribute.LinkRelationAttributeDefinition | None
+            ) = LinkRelationAttribute.LinkRelationAttributeDefinition(
                 proto_attribute.definition
             )
 
@@ -529,14 +529,14 @@ class TimeseriesAttribute(AttributeBase):
                     None  # for typing hints: "TimeseriesResource | None"
                 )
 
-            self.is_local_expression: Optional[bool] = proto_value.is_local_expression
-            self.expression: Optional[str] = proto_value.expression
+            self.is_local_expression: bool | None = proto_value.is_local_expression
+            self.expression: str | None = proto_value.expression
 
         # in basic view the definition is not a part of response from Mesh server
         if proto_attribute.HasField("definition"):
-            self.definition: Optional[
-                TimeseriesAttribute.TimeseriesAttributeDefinition
-            ] = self.TimeseriesAttributeDefinition(proto_attribute.definition)
+            self.definition: (
+                TimeseriesAttribute.TimeseriesAttributeDefinition | None
+            ) = self.TimeseriesAttributeDefinition(proto_attribute.definition)
 
     def __str__(self: TimeseriesAttribute) -> str:
         base_message = super()._get_string_representation()
