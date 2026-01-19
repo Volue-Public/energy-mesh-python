@@ -5,7 +5,6 @@ import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Union
 
 import dateutil
 from bidict import bidict
@@ -495,7 +494,7 @@ class Restriction:
     category: str
     created: AvailabilityRecordInfo
     last_changed: AvailabilityRecordInfo
-    recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
+    recurrence: RestrictionBasicRecurrence | RestrictionComplexRecurrence
 
     @classmethod
     def _from_proto(
@@ -542,7 +541,7 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def create_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         local_id: str,
         reason: str,
@@ -594,7 +593,7 @@ class Availability(abc.ABC):
 
     def _prepare_create_revision_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         id: str,
         local_id: str,
         reason: str,
@@ -621,12 +620,12 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def create_restriction(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         local_id: str,
         reason: str,
         category: str,
-        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+        recurrence: RestrictionBasicRecurrence | RestrictionComplexRecurrence,
     ) -> Restriction:
         """
         Creates a new restriction for a specified Mesh object.
@@ -675,12 +674,12 @@ class Availability(abc.ABC):
 
     def _prepare_create_restriction_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         local_id: str,
         reason: str,
         category: str,
-        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+        recurrence: RestrictionBasicRecurrence | RestrictionComplexRecurrence,
         created_author: str | None = None,
         created_timestamp: datetime | None = None,
         last_changed_author: str | None = None,
@@ -714,7 +713,7 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def add_revision_recurrence(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence: Recurrence,
         period_start: datetime,
@@ -755,7 +754,7 @@ class Availability(abc.ABC):
 
     def _prepare_add_recurrence_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence: Recurrence,
         period_start: datetime,
@@ -779,9 +778,9 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def get_availability_event(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
-    ) -> Union[Revision, Restriction]:
+    ) -> Revision | Restriction:
         """
         Retrieves a specific availability event (Revision or Restriction) for a given Mesh object.
 
@@ -803,7 +802,7 @@ class Availability(abc.ABC):
 
     def _prepare_get_availability_event_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
     ) -> availability_pb2.GetAvailabilityEventRequest:
         request = availability_pb2.GetAvailabilityEventRequest(
@@ -817,8 +816,8 @@ class Availability(abc.ABC):
     def search_availability_events(
         self,
         event_type: EventType,
-        targets: list[Union[uuid.UUID, str, Object]],
-    ) -> list[Union[Revision, Restriction]]:
+        targets: list[uuid.UUID | str | Object],
+    ) -> list[Revision | Restriction]:
         """
         Searches for availability events (Revisions or Restrictions) in specified Mesh objects.
 
@@ -844,7 +843,7 @@ class Availability(abc.ABC):
     def _prepare_search_availability_events_request(
         self,
         event_type: EventType,
-        targets: list[Union[uuid.UUID, str, Object]],
+        targets: list[uuid.UUID | str | Object],
     ) -> availability_pb2.SearchAvailabilityEventsRequest:
         request = availability_pb2.SearchAvailabilityEventsRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -856,7 +855,7 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def delete_revision_recurrence(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence_id: int,
         author: str | None = None,
@@ -886,7 +885,7 @@ class Availability(abc.ABC):
 
     def _prepare_delete_revision_recurrence_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence_id: int,
         author: str | None = None,
@@ -903,7 +902,7 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def delete_availability_events_by_id(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_ids: list[str],
     ) -> None:
         """
@@ -925,7 +924,7 @@ class Availability(abc.ABC):
 
     def _prepare_delete_availability_events_by_id_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_ids: list[str],
     ) -> availability_pb2.DeleteAvailabilityEventsByIdRequest:
         request = availability_pb2.DeleteAvailabilityEventsByIdRequest(
@@ -937,7 +936,7 @@ class Availability(abc.ABC):
 
     @abc.abstractmethod
     def delete_availability_events(
-        self, target: Union[uuid.UUID, str, Object], event_type: EventType
+        self, target: uuid.UUID | str | Object, event_type: EventType
     ) -> None:
         """
         Deletes all availability events (Revisions or Restrictions) of a specific type for a given Mesh object.
@@ -961,7 +960,7 @@ class Availability(abc.ABC):
 
     def _prepare_delete_availability_events_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_type: EventType,
     ) -> availability_pb2.DeleteAvailabilityEventsRequest:
         request = availability_pb2.DeleteAvailabilityEventsRequest(
@@ -974,11 +973,11 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def search_instances(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         period_start: datetime,
         period_end: datetime,
-    ) -> Union[list[RevisionInstance], list[RestrictionInstance]]:
+    ) -> list[RevisionInstance] | list[RestrictionInstance]:
         """
         Searches for instances of availability events (Revisions or Restrictions) within a specific time period.
 
@@ -1004,7 +1003,7 @@ class Availability(abc.ABC):
 
     def _prepare_search_instances_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         period_start: datetime,
         period_end: datetime,
@@ -1020,7 +1019,7 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def update_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         new_local_id: str | None = None,
         new_reason: str | None = None,
@@ -1101,7 +1100,7 @@ class Availability(abc.ABC):
     @abc.abstractmethod
     def update_restriction(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         new_local_id: str | None = None,
         new_reason: str | None = None,
@@ -1150,7 +1149,7 @@ class Availability(abc.ABC):
 
     def _prepare_update_restriction_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         new_local_id: str | None = None,
         new_reason: str | None = None,

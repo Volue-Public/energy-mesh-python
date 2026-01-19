@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import uuid
-from typing import Union
 
 import helpers
 
@@ -29,7 +28,7 @@ def get_pem_certificate_contents(certificate_path: str):
 
 
 def find_time_series_duplicates(
-    session: Connection.Session, model: Union[str, uuid.UUID]
+    session: Connection.Session, model: str | uuid.UUID
 ) -> dict[int, list[str]]:
     """
     Iterates over all Mesh model objects and stores time series key of physical

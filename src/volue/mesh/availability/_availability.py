@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from typing import Union
 
 from volue.mesh._object import Object
 from volue.mesh.availability import (
@@ -27,7 +26,7 @@ class Availability(Availability):
 
     def create_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         local_id: str,
         reason: str,
@@ -49,7 +48,7 @@ class Availability(Availability):
 
     def add_revision_recurrence(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence: Recurrence,
         period_start: datetime,
@@ -65,8 +64,8 @@ class Availability(Availability):
         return add_recurrence_response.recurrence_id
 
     def get_availability_event(
-        self, target: Union[uuid.UUID, str, Object], event_id: str
-    ) -> Union[Revision, Restriction]:
+        self, target: uuid.UUID | str | Object, event_id: str
+    ) -> Revision | Restriction:
 
         request = super()._prepare_get_availability_event_request(
             target=target,
@@ -83,8 +82,8 @@ class Availability(Availability):
     def search_availability_events(
         self,
         event_type: EventType,
-        targets: list[Union[uuid.UUID, str, Object]],
-    ) -> list[Union[Revision, Restriction]]:
+        targets: list[uuid.UUID | str | Object],
+    ) -> list[Revision | Restriction]:
         request = super()._prepare_search_availability_events_request(
             event_type=event_type, targets=targets
         )
@@ -103,7 +102,7 @@ class Availability(Availability):
 
     def delete_revision_recurrence(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         recurrence_id: int,
         author: str | None = None,
@@ -115,7 +114,7 @@ class Availability(Availability):
 
     def delete_availability_events_by_id(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_ids: list[str],
     ) -> None:
         request = super()._prepare_delete_availability_events_by_id_request(
@@ -124,7 +123,7 @@ class Availability(Availability):
         self.availability_service.DeleteAvailabilityEventsById(request)
 
     def delete_availability_events(
-        self, target: Union[uuid.UUID, str, Object], event_type: EventType
+        self, target: uuid.UUID | str | Object, event_type: EventType
     ) -> None:
         request = super()._prepare_delete_availability_events_request(
             target=target, event_type=event_type
@@ -133,12 +132,12 @@ class Availability(Availability):
 
     def create_restriction(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         local_id: str,
         reason: str,
         category: str,
-        recurrence: Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence],
+        recurrence: RestrictionBasicRecurrence | RestrictionComplexRecurrence,
         created_author: str | None = None,
         created_timestamp: datetime | None = None,
         last_changed_author: str | None = None,
@@ -159,11 +158,11 @@ class Availability(Availability):
 
     def search_instances(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         period_start: datetime,
         period_end: datetime,
-    ) -> Union[list[RevisionInstance], list[RestrictionInstance]]:
+    ) -> list[RevisionInstance] | list[RestrictionInstance]:
         request = super()._prepare_search_instances_request(
             target=target,
             event_id=event_id,
@@ -188,7 +187,7 @@ class Availability(Availability):
 
     def update_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
         new_local_id: str | None = None,
         new_reason: str | None = None,

@@ -5,7 +5,7 @@ Functionality for synchronously connecting to a Mesh server and working with its
 import typing
 import uuid
 from datetime import datetime, timedelta
-from typing import List, Union
+from typing import List
 
 import grpc
 from google import protobuf
@@ -145,7 +145,7 @@ class Connection(_base_connection.Connection):
 
         def read_timeseries_points(
             self,
-            target: Union[uuid.UUID, str, int, AttributeBase],
+            target: uuid.UUID | str | int | AttributeBase,
             start_time: datetime,
             end_time: datetime,
         ) -> Timeseries:
@@ -215,7 +215,7 @@ class Connection(_base_connection.Connection):
 
         def get_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             full_attribute_info: bool = False,
         ) -> AttributeBase:
             request = super()._prepare_get_attribute_request(
@@ -226,7 +226,7 @@ class Connection(_base_connection.Connection):
 
         def get_timeseries_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             full_attribute_info: bool = False,
         ) -> TimeseriesAttribute:
             attribute = self.get_attribute(target, full_attribute_info)
@@ -238,7 +238,7 @@ class Connection(_base_connection.Connection):
 
         def search_for_attributes(
             self,
-            target: Union[uuid.UUID, str, Object],
+            target: uuid.UUID | str | Object,
             query: str,
             full_attribute_info: bool = False,
         ) -> List[AttributeBase]:
@@ -255,7 +255,7 @@ class Connection(_base_connection.Connection):
 
         def search_for_timeseries_attributes(
             self,
-            target: Union[uuid.UUID, str, Object],
+            target: uuid.UUID | str | Object,
             query: str,
             full_attribute_info: bool = False,
         ) -> List[TimeseriesAttribute]:
@@ -266,7 +266,7 @@ class Connection(_base_connection.Connection):
 
         def update_simple_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             value: _attribute.SIMPLE_TYPE_OR_COLLECTION,
         ) -> None:
             request = super()._prepare_update_simple_attribute_request(target, value)
@@ -274,7 +274,7 @@ class Connection(_base_connection.Connection):
 
         def update_timeseries_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             new_local_expression: str | None = None,
             new_timeseries_resource_key: int | None = None,
         ) -> None:
@@ -285,7 +285,7 @@ class Connection(_base_connection.Connection):
 
         def update_timeseries_attribute_definition(
             self,
-            target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
+            target: uuid.UUID | str | AttributeBase.AttributeBaseDefinition,
             new_template_expression: str | None = None,
             new_description: str | None = None,
         ) -> None:
@@ -296,7 +296,7 @@ class Connection(_base_connection.Connection):
 
         def update_link_relation_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             new_target_object_ids: List[uuid.UUID],
             append: bool = False,
         ) -> None:
@@ -307,7 +307,7 @@ class Connection(_base_connection.Connection):
 
         def update_versioned_one_to_one_link_relation_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             start_time: datetime,
             end_time: datetime,
             new_versions: List[LinkRelationVersion],
@@ -321,7 +321,7 @@ class Connection(_base_connection.Connection):
 
         def update_versioned_one_to_many_link_relation_attribute(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             new_entries: List[List[LinkRelationVersion]],
         ) -> None:
             request = super()._prepare_versioned_link_relation_attribute_request(
@@ -338,7 +338,7 @@ class Connection(_base_connection.Connection):
 
         def get_object(
             self,
-            target: Union[uuid.UUID, str, Object],
+            target: uuid.UUID | str | Object,
             full_attribute_info: bool = False,
             attributes_filter: AttributesFilter | None = None,
         ) -> Object:
@@ -350,7 +350,7 @@ class Connection(_base_connection.Connection):
 
         def search_for_objects(
             self,
-            target: Union[uuid.UUID, str, Object],
+            target: uuid.UUID | str | Object,
             query: str,
             full_attribute_info: bool = False,
             attributes_filter: AttributesFilter | None = None,
@@ -367,7 +367,7 @@ class Connection(_base_connection.Connection):
             return objects
 
         def create_object(
-            self, target: Union[uuid.UUID, str, AttributeBase], name: str
+            self, target: uuid.UUID | str | AttributeBase, name: str
         ) -> Object:
             request = super()._prepare_create_object_request(target=target, name=name)
             proto_object = self.model_service.CreateObject(request)
@@ -375,7 +375,7 @@ class Connection(_base_connection.Connection):
 
         def update_object(
             self,
-            target: Union[uuid.UUID, str, Object],
+            target: uuid.UUID | str | Object,
             new_name: str | None = None,
             new_owner_attribute: uuid.UUID | str | AttributeBase | None = None,
         ) -> None:
@@ -385,14 +385,14 @@ class Connection(_base_connection.Connection):
             self.model_service.UpdateObject(request)
 
         def delete_object(
-            self, target: Union[uuid.UUID, str, Object], recursive_delete: bool = False
+            self, target: uuid.UUID | str | Object, recursive_delete: bool = False
         ) -> None:
             request = super()._prepare_delete_object_request(target, recursive_delete)
             self.model_service.DeleteObject(request)
 
         def forecast_functions(
             self,
-            target: Union[uuid.UUID, str, int, AttributeBase, Object],
+            target: uuid.UUID | str | int | AttributeBase | Object,
             start_time: datetime,
             end_time: datetime,
         ) -> ForecastFunctions:
@@ -400,7 +400,7 @@ class Connection(_base_connection.Connection):
 
         def history_functions(
             self,
-            target: Union[uuid.UUID, str, int, AttributeBase, Object],
+            target: uuid.UUID | str | int | AttributeBase | Object,
             start_time: datetime,
             end_time: datetime,
         ) -> HistoryFunctions:
@@ -408,7 +408,7 @@ class Connection(_base_connection.Connection):
 
         def statistical_functions(
             self,
-            target: Union[uuid.UUID, str, int, AttributeBase, Object],
+            target: uuid.UUID | str | int | AttributeBase | Object,
             start_time: datetime,
             end_time: datetime,
         ) -> StatisticalFunctions:
@@ -416,7 +416,7 @@ class Connection(_base_connection.Connection):
 
         def transform_functions(
             self,
-            target: Union[uuid.UUID, str, int, AttributeBase, Object],
+            target: uuid.UUID | str | int | AttributeBase | Object,
             start_time: datetime,
             end_time: datetime,
         ) -> TransformFunctions:
@@ -424,7 +424,7 @@ class Connection(_base_connection.Connection):
 
         def get_xy_sets(
             self,
-            target: typing.Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             start_time: datetime | None = None,
             end_time: datetime | None = None,
             versions_only: bool = False,
@@ -435,7 +435,7 @@ class Connection(_base_connection.Connection):
 
         def update_xy_sets(
             self,
-            target: typing.Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             start_time: datetime | None = None,
             end_time: datetime | None = None,
             new_xy_sets: typing.List[XySet] = [],
@@ -447,7 +447,7 @@ class Connection(_base_connection.Connection):
 
         def get_rating_curve_versions(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             start_time: datetime,
             end_time: datetime,
             versions_only: bool = False,
@@ -460,7 +460,7 @@ class Connection(_base_connection.Connection):
 
         def update_rating_curve_versions(
             self,
-            target: Union[uuid.UUID, str, AttributeBase],
+            target: uuid.UUID | str | AttributeBase,
             start_time: datetime,
             end_time: datetime,
             new_versions: List[RatingCurveVersion],
@@ -524,7 +524,7 @@ class Connection(_base_connection.Connection):
             case: str,
             start_time: datetime,
             end_time: datetime,
-        ) -> Union[typing.Iterator[None], typing.AsyncIterator[None]]:
+        ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
             request = self._prepare_get_mc_file_request(
                 model, case, start_time, end_time
             )

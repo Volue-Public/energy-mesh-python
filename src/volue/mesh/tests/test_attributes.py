@@ -5,7 +5,7 @@ Tests for volue.mesh.AttributeBase and volue.mesh.TimeseriesAttribute
 import sys
 import uuid
 from datetime import datetime
-from typing import Tuple, Union
+from typing import Tuple
 
 import grpc
 import pytest
@@ -52,7 +52,7 @@ def verify_plant_base_attribute(
 
 
 def verify_plant_raw_timeseries_attribute(
-    attribute: Union[AttributeBase, TimeseriesAttribute], is_definition: bool
+    attribute: AttributeBase | TimeseriesAttribute, is_definition: bool
 ):
     attribute_name = "TsRawAtt"
 
