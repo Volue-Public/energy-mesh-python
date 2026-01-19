@@ -68,7 +68,7 @@ class Connection(abc.ABC):
         """
 
     @staticmethod
-    def _get_grpc_channel_options(max_receive_message_length: Optional[int]):
+    def _get_grpc_channel_options(max_receive_message_length: int | None):
         """Create a secure gRPC channel.
 
         Derived classes should implement this using either grpc.aio.secure_channel
@@ -87,7 +87,7 @@ class Connection(abc.ABC):
         host=None,
         port=None,
         tls_root_pem_cert=None,
-        authentication_parameters: Optional[Authentication.Parameters] = None,
+        authentication_parameters: Authentication.Parameters | None = None,
         channel=None,
         auth_metadata_plugin=None,
     ):
@@ -185,7 +185,7 @@ class Connection(abc.ABC):
 
     @classmethod
     def insecure(
-        cls: C, target: str, *, grpc_max_receive_message_length: Optional[int] = None
+        cls: C, target: str, *, grpc_max_receive_message_length: int | None = None
     ) -> C:
         """Creates an insecure connection to a Mesh server.
 
@@ -203,9 +203,9 @@ class Connection(abc.ABC):
     def with_tls(
         cls: C,
         target: str,
-        root_certificates: Optional[str],
+        root_certificates: str | None,
         *,
-        grpc_max_receive_message_length: Optional[int] = None,
+        grpc_max_receive_message_length: int | None = None,
     ) -> C:
         """Creates an encrypted connection to a Mesh server.
 
@@ -228,11 +228,11 @@ class Connection(abc.ABC):
     def with_kerberos(
         cls: C,
         target: str,
-        root_certificates: Optional[str],
+        root_certificates: str | None,
         service_principal: str,
-        user_principal: Optional[str] = None,
+        user_principal: str | None = None,
         *,
-        grpc_max_receive_message_length: Optional[int] = None,
+        grpc_max_receive_message_length: int | None = None,
     ) -> C:
         """Creates an encrypted and authenticated connection to a Mesh server.
 
@@ -278,10 +278,10 @@ class Connection(abc.ABC):
     def with_external_access_token(
         cls: C,
         target: str,
-        root_certificates: Optional[str],
+        root_certificates: str | None,
         access_token: str,
         *,
-        grpc_max_receive_message_length: Optional[int] = None,
+        grpc_max_receive_message_length: int | None = None,
     ) -> C:
         """Creates an encrypted connection to a Mesh server and will add
         provided access token to authorization header to each server request.
