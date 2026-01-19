@@ -21,6 +21,7 @@ New features
 ~~~~~~~~~~~~~~~~~~
 
 - Support for Python 3.14 :issue:`598`
+- Added new optional fields to the availability events API for setting user identity and event creation time.
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -122,7 +123,7 @@ Changes
 
   Starting from Mesh 2.17 when an empty time series is read (e.g.: break point
   time series with no values), instead of raising an `ValueError` with message
-  `No data in time series reply for the given interval`, we will now return 
+  `No data in time series reply for the given interval`, we will now return
   `volue.mesh.Timeseries` instance with an empty Arrow table and start/end
   timestamps set to `None`. Other time series metadata like resolution will be
   set as usual.
