@@ -5,7 +5,6 @@ Functionality for working with time series.
 import uuid
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Optional
 
 import pyarrow as pa
 
@@ -115,12 +114,12 @@ class Timeseries:
     def __init__(
         self,
         table: pa.Table = None,
-        resolution: Optional[Resolution] = None,
-        start_time: Optional[datetime] = None,
-        end_time: Optional[datetime] = None,
-        timskey: Optional[int] = None,
-        uuid_id: Optional[uuid.UUID] = None,
-        full_name: Optional[str] = None,
+        resolution: Resolution | None = None,
+        start_time: datetime | None = None,
+        end_time: datetime | None = None,
+        timskey: int | None = None,
+        uuid_id: uuid.UUID | None = None,
+        full_name: str | None = None,
     ):
         """A representation of a time series.
         If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.

@@ -1,7 +1,6 @@
 import re
 from dataclasses import dataclass
 from importlib import metadata
-from typing import Optional
 
 # Minimum supported Mesh server version
 MINIMUM_SERVER_VERSION_STR = "2.18.0"
@@ -38,7 +37,7 @@ class ParsedVersion:
     patch: int = 0
 
 
-def to_parsed_version(version: str) -> Optional[ParsedVersion]:
+def to_parsed_version(version: str) -> ParsedVersion | None:
     r = re.match(r"^(\d+)\.(\d+)\.(\d+)(\+\d+)?$", version)
     if r is not None:
         # group with index 0 contains the whole matched string
@@ -52,7 +51,7 @@ def to_parsed_version(version: str) -> Optional[ParsedVersion]:
 MINIMUM_SERVER_VERSION = to_parsed_version(MINIMUM_SERVER_VERSION_STR)
 
 
-def get_min_server_version() -> Optional[ParsedVersion]:
+def get_min_server_version() -> ParsedVersion | None:
     return MINIMUM_SERVER_VERSION
 
 

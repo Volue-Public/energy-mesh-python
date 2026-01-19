@@ -22,7 +22,7 @@ from volue.mesh.calc.common import (
 class _ForecastFunctionsBase(_Calculation, ABC):
     """Base class for all forecast function classes."""
 
-    def _get_all_forecasts_expression(self, search_query: Optional[str]) -> str:
+    def _get_all_forecasts_expression(self, search_query: str | None) -> str:
         """
         Creates an expression for `get_all_forecasts` using a search query.
 
@@ -40,10 +40,10 @@ class _ForecastFunctionsBase(_Calculation, ABC):
 
     def _get_forecast_expression(
         self,
-        forecast_start_min: Optional[datetime],
-        forecast_start_max: Optional[datetime],
-        available_at_timepoint: Optional[datetime],
-        search_query: Optional[str],
+        forecast_start_min: datetime | None,
+        forecast_start_max: datetime | None,
+        available_at_timepoint: datetime | None,
+        search_query: str | None,
     ) -> str:
         """
         Creates an expression for `get_forecasts` using a search query.
@@ -97,7 +97,7 @@ class _ForecastFunctionsBase(_Calculation, ABC):
     # abstractmethod does not take into account if method is async or not
 
     @abstractmethod
-    def get_all_forecasts(self, search_query: Optional[str] = None) -> List[Timeseries]:
+    def get_all_forecasts(self, search_query: str | None = None) -> List[Timeseries]:
         """
         Get all forecasts for a given Mesh object in a time interval.
         The `target` and the time interval (`start_time` and `end_time`) are set by :py:func:`volue.mesh.Connection.Session.forecast_functions`.
@@ -122,10 +122,10 @@ class _ForecastFunctionsBase(_Calculation, ABC):
     @abstractmethod
     def get_forecast(
         self,
-        forecast_start_min: Optional[datetime] = None,
-        forecast_start_max: Optional[datetime] = None,
-        available_at_timepoint: Optional[datetime] = None,
-        search_query: Optional[str] = None,
+        forecast_start_min: datetime | None = None,
+        forecast_start_max: datetime | None = None,
+        available_at_timepoint: datetime | None = None,
+        search_query: str | None = None,
     ) -> Timeseries:
         r"""
         Get one forecast for a given Mesh object in a time interval.
@@ -181,17 +181,17 @@ class _ForecastFunctionsBase(_Calculation, ABC):
 class ForecastFunctions(_ForecastFunctionsBase):
     """Class for forecast functions that should be run synchronously"""
 
-    def get_all_forecasts(self, search_query: Optional[str] = None) -> List[Timeseries]:
+    def get_all_forecasts(self, search_query: str | None = None) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = super().run(expression)
         return _parse_timeseries_list_response(response)
 
     def get_forecast(
         self,
-        forecast_start_min: Optional[datetime] = None,
-        forecast_start_max: Optional[datetime] = None,
-        available_at_timepoint: Optional[datetime] = None,
-        search_query: Optional[str] = None,
+        forecast_start_min: datetime | None = None,
+        forecast_start_max: datetime | None = None,
+        available_at_timepoint: datetime | None = None,
+        search_query: str | None = None,
     ) -> Timeseries:
         expression = super()._get_forecast_expression(
             forecast_start_min, forecast_start_max, available_at_timepoint, search_query
@@ -204,7 +204,7 @@ class ForecastFunctionsAsync(_ForecastFunctionsBase):
     """Class for forecast functions that should be run asynchronously"""
 
     async def get_all_forecasts(
-        self, search_query: Optional[str] = None
+        self, search_query: str | None = None
     ) -> List[Timeseries]:
         expression = super()._get_all_forecasts_expression(search_query)
         response = await super().run_async(expression)
@@ -212,10 +212,10 @@ class ForecastFunctionsAsync(_ForecastFunctionsBase):
 
     async def get_forecast(
         self,
-        forecast_start_min: Optional[datetime] = None,
-        forecast_start_max: Optional[datetime] = None,
-        available_at_timepoint: Optional[datetime] = None,
-        search_query: Optional[str] = None,
+        forecast_start_min: datetime | None = None,
+        forecast_start_max: datetime | None = None,
+        available_at_timepoint: datetime | None = None,
+        search_query: str | None = None,
     ) -> Timeseries:
         expression = super()._get_forecast_expression(
             forecast_start_min, forecast_start_max, available_at_timepoint, search_query

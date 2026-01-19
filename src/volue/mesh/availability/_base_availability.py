@@ -132,8 +132,8 @@ class Recurrence:
     status: str
     description: str
     recurrence_type: RecurrenceType
-    recur_every: Optional[int] = None
-    recur_until: Optional[datetime] = None
+    recur_every: int | None = None
+    recur_until: datetime | None = None
 
     @classmethod
     def _from_proto(cls, proto_recurrence: availability_pb2.Recurrence) -> Recurrence:
@@ -202,7 +202,7 @@ class RevisionRecurrence:
     recurrence: Recurrence
     period_start: datetime
     period_end: datetime
-    id: Optional[int] = None
+    id: int | None = None
 
     @classmethod
     def _from_proto(
@@ -348,8 +348,8 @@ class RestrictionRecurrence:
     status: str
     description: str
     recurrence_type: RecurrenceType
-    recur_every: Optional[int] = None
-    recur_until: Optional[datetime] = None
+    recur_every: int | None = None
+    recur_until: datetime | None = None
 
 
 @dataclass
@@ -532,9 +532,9 @@ class Availability(abc.ABC):
     def __init__(
         self,
         availability_service: availability_pb2_grpc.AvailabilityServiceStub,
-        session_id: Optional[uuid.UUID],
+        session_id: uuid.UUID | None,
     ):
-        self.session_id: Optional[uuid.UUID] = session_id
+        self.session_id: uuid.UUID | None = session_id
         self.availability_service: availability_pb2_grpc.AvailabilityServiceStub = (
             availability_service
         )
@@ -1022,8 +1022,8 @@ class Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
         author: str | None = None,
     ) -> None:
         """
@@ -1063,10 +1063,10 @@ class Availability(abc.ABC):
 
     def _prepare_update_revision_request(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object,
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
         author: str | None = None,
     ) -> availability_pb2.UpdateRevisionRequest:
 
@@ -1103,12 +1103,12 @@ class Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
-        new_category: Optional[str] = None,
-        new_restriction_recurrence: Optional[
-            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
-        ] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
+        new_category: str | None = None,
+        new_restriction_recurrence: (
+            RestrictionBasicRecurrence | RestrictionComplexRecurrence | None
+        ) = None,
         author: str | None = None,
     ) -> None:
         """
@@ -1152,12 +1152,12 @@ class Availability(abc.ABC):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
-        new_category: Optional[str] = None,
-        new_restriction_recurrence: Optional[
-            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
-        ] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
+        new_category: str | None = None,
+        new_restriction_recurrence: (
+            RestrictionBasicRecurrence | RestrictionComplexRecurrence | None
+        ) = None,
         author: str | None = None,
     ) -> availability_pb2.UpdateRestrictionRequest:
         if (

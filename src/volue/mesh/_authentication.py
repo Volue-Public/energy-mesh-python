@@ -8,7 +8,6 @@ import typing
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from sys import platform
-from typing import Optional
 
 import grpc
 from google import protobuf

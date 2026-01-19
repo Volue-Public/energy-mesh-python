@@ -1,6 +1,6 @@
 import abc
 import uuid
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 import grpc
 

@@ -5,7 +5,6 @@ Functionality for working with time series resources.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 from volue.mesh import Timeseries
 from volue.mesh._common import _from_proto_curve_type, _from_proto_resolution
@@ -30,8 +29,8 @@ class TimeseriesResource:
     temporary: bool
     curve_type: Timeseries.Curve
     resolution: Timeseries.Resolution
-    unit_of_measurement: Optional[str]
-    virtual_timeseries_expression: Optional[str] = None
+    unit_of_measurement: str | None
+    virtual_timeseries_expression: str | None = None
 
     @classmethod
     def _from_proto_timeseries_resource(

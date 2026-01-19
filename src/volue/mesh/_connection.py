@@ -5,7 +5,7 @@ Functionality for synchronously connecting to a Mesh server and working with its
 import typing
 import uuid
 from datetime import datetime, timedelta
-from typing import List, Optional, Union
+from typing import List, Union
 
 import grpc
 from google import protobuf
@@ -71,7 +71,7 @@ class Connection(_base_connection.Connection):
             session_service: session_pb2_grpc.SessionServiceStub,
             time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
             availability_service: availability_pb2_grpc.AvailabilityServiceStub,
-            session_id: Optional[uuid.UUID] = None,
+            session_id: uuid.UUID | None = None,
         ):
             super().__init__(
                 session_id=session_id,
@@ -173,8 +173,8 @@ class Connection(_base_connection.Connection):
         def update_timeseries_resource_info(
             self,
             timeseries_key: int,
-            new_curve_type: Optional[Timeseries.Curve] = None,
-            new_unit_of_measurement: Optional[str] = None,
+            new_curve_type: Timeseries.Curve | None = None,
+            new_unit_of_measurement: str | None = None,
         ) -> None:
             new_unit_of_measurement_id = None
 
@@ -275,8 +275,8 @@ class Connection(_base_connection.Connection):
         def update_timeseries_attribute(
             self,
             target: Union[uuid.UUID, str, AttributeBase],
-            new_local_expression: Optional[str] = None,
-            new_timeseries_resource_key: Optional[int] = None,
+            new_local_expression: str | None = None,
+            new_timeseries_resource_key: int | None = None,
         ) -> None:
             request = super()._prepare_update_timeseries_attribute_request(
                 target, new_local_expression, new_timeseries_resource_key
@@ -286,8 +286,8 @@ class Connection(_base_connection.Connection):
         def update_timeseries_attribute_definition(
             self,
             target: Union[uuid.UUID, str, AttributeBase.AttributeBaseDefinition],
-            new_template_expression: Optional[str] = None,
-            new_description: Optional[str] = None,
+            new_template_expression: str | None = None,
+            new_description: str | None = None,
         ) -> None:
             request = super()._prepare_update_timeseries_attribute_definition_request(
                 target, new_template_expression, new_description
@@ -340,7 +340,7 @@ class Connection(_base_connection.Connection):
             self,
             target: Union[uuid.UUID, str, Object],
             full_attribute_info: bool = False,
-            attributes_filter: Optional[AttributesFilter] = None,
+            attributes_filter: AttributesFilter | None = None,
         ) -> Object:
             request = super()._prepare_get_object_request(
                 target, full_attribute_info, attributes_filter
@@ -353,7 +353,7 @@ class Connection(_base_connection.Connection):
             target: Union[uuid.UUID, str, Object],
             query: str,
             full_attribute_info: bool = False,
-            attributes_filter: Optional[AttributesFilter] = None,
+            attributes_filter: AttributesFilter | None = None,
         ) -> List[Object]:
             request = super()._prepare_search_for_objects_request(
                 target, query, full_attribute_info, attributes_filter
@@ -376,8 +376,8 @@ class Connection(_base_connection.Connection):
         def update_object(
             self,
             target: Union[uuid.UUID, str, Object],
-            new_name: Optional[str] = None,
-            new_owner_attribute: Optional[Union[uuid.UUID, str, AttributeBase]] = None,
+            new_name: str | None = None,
+            new_owner_attribute: uuid.UUID | str | AttributeBase | None = None,
         ) -> None:
             request = super()._prepare_update_object_request(
                 target, new_name, new_owner_attribute
@@ -425,8 +425,8 @@ class Connection(_base_connection.Connection):
         def get_xy_sets(
             self,
             target: typing.Union[uuid.UUID, str, AttributeBase],
-            start_time: Optional[datetime] = None,
-            end_time: Optional[datetime] = None,
+            start_time: datetime | None = None,
+            end_time: datetime | None = None,
             versions_only: bool = False,
         ) -> typing.List[XySet]:
             gen = super()._get_xy_sets_impl(target, start_time, end_time, versions_only)
@@ -436,8 +436,8 @@ class Connection(_base_connection.Connection):
         def update_xy_sets(
             self,
             target: typing.Union[uuid.UUID, str, AttributeBase],
-            start_time: Optional[datetime] = None,
-            end_time: Optional[datetime] = None,
+            start_time: datetime | None = None,
+            end_time: datetime | None = None,
             new_xy_sets: typing.List[XySet] = [],
         ) -> None:
             request = super()._prepare_update_xy_sets_request(
@@ -585,7 +585,7 @@ class Connection(_base_connection.Connection):
     def create_session(self) -> Session:
         return self.connect_to_session(session_id=None)
 
-    def connect_to_session(self, session_id: Optional[uuid.UUID]) -> Session:
+    def connect_to_session(self, session_id: uuid.UUID | None) -> Session:
         return self.Session(
             calc_service=self.calc_service,
             hydsim_service=self.hydsim_service,

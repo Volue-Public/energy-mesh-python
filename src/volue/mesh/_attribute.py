@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, List, Optional, Union
+from typing import Any, List, Union
 
 from dateutil import tz
 from google.protobuf import timestamp_pb2

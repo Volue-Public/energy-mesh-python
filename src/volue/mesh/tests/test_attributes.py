@@ -104,7 +104,7 @@ def verify_plant_double_attribute(
 
 def verify_time_series_attribute_with_calculation(
     attribute: TimeseriesAttribute,
-    attribute_info: Tuple[bool, str, Optional[str]],
+    attribute_info: Tuple[bool, str, str | None],
     attribute_name: str,
     attribute_id: uuid.UUID,
     is_definition: bool = True,

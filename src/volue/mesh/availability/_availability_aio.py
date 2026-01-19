@@ -21,13 +21,13 @@ class Availability(Availability):
     def __init__(
         self,
         availability_service: availability_pb2_grpc.AvailabilityServiceStub,
-        session_id: Optional[uuid.UUID],
+        session_id: uuid.UUID | None,
     ):
         super().__init__(availability_service, session_id)
 
     async def create_revision(
         self,
-        target: Union[uuid.UUID, str, Object],
+        target: uuid.UUID | str | Object | None,
         event_id: str,
         local_id: str,
         reason: str,
@@ -201,8 +201,8 @@ class Availability(Availability):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
         author: str | None = None,
     ) -> None:
         request = super()._prepare_update_revision_request(
@@ -214,12 +214,12 @@ class Availability(Availability):
         self,
         target: Union[uuid.UUID, str, Object],
         event_id: str,
-        new_local_id: Optional[str] = None,
-        new_reason: Optional[str] = None,
-        new_category: Optional[str] = None,
-        new_restriction_recurrence: Optional[
-            Union[RestrictionBasicRecurrence, RestrictionComplexRecurrence]
-        ] = None,
+        new_local_id: str | None = None,
+        new_reason: str | None = None,
+        new_category: str | None = None,
+        new_restriction_recurrence: (
+            RestrictionBasicRecurrence | RestrictionComplexRecurrence | None
+        ) = None,
         author: str | None = None,
     ) -> None:
         request = super()._prepare_update_restriction_request(

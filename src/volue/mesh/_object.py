@@ -4,7 +4,7 @@ Functionality for working with Mesh objects.
 
 import uuid
 from dataclasses import dataclass, field
-from typing import Dict, Optional
+from typing import Dict
 
 from volue.mesh._attribute import AttributeBase, _from_proto_attribute
 from volue.mesh._common import _from_proto_guid
@@ -25,8 +25,8 @@ class Object:
     path: str
     name: str
     type_name: str
-    owner_id: Optional[uuid.UUID]
-    owner_path: Optional[str]
+    owner_id: uuid.UUID | None
+    owner_path: str | None
     attributes: Dict[str, AttributeBase] = field(default_factory=dict)
 
     @classmethod
