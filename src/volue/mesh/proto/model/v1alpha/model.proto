@@ -105,6 +105,25 @@ service ModelService {
   // Search for link relation attributes pointing to a given object.
   // See `SearchLinkedFromRequest` for more information.
   rpc SearchLinkedFrom(SearchLinkedFromRequest) returns (stream SearchLinkedFromResponse) {}
+
+  // Recursively clones an object along with all of its child objects 
+  // in the model.
+  // The operation duplicates the source object and all of its descendants.
+  // The cloned copy can be inserted either as a sibling of the source 
+  // object or as a child of a specified target object.
+  // 
+  // Time series connections can be handled in three ways:
+  // - NONE: All time series connections are reset.
+  // - INTERNAL: Time series are cloned and reconnected if they match 
+  //             paths in the cloned hierarchy.
+  // - ALL: All time series connections are fully recreated.
+  //
+  // Links to external objects are preserved, while links between objects
+  // in the clone are updated accordingly.
+  // Incoming links from external objects are not processed.
+  // The root object in the clone must have a unique name in the destination,
+  // and all cardinality rules must be followed.
+  rpc CloneObject(CloneObjectRequest) returns (CloneObjectResponse) {}
 }
 
 message ListModelsRequest {
@@ -564,4 +583,42 @@ message SearchLinkedFromRequest {
 message SearchLinkedFromResponse {
   // Identifier of the link relation attribute pointing to the target object.
   volue.mesh.grpc.type.MeshId link_relation_id = 1;
+}
+
+message CloneObjectRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Identifier of the source object to clone.
+  // May be a model or another object.
+  volue.mesh.grpc.type.MeshId source_object_id = 2;
+
+  // Identifier of the new parent of the source object.
+  // If omitted, the clone will be created as a sibling of the source object.
+  // Can be an object or an ownership relation attribute.
+  // Must be empty if the source object is a model.
+  optional volue.mesh.grpc.type.MeshId new_owner_id = 3;
+
+  // Name of the root object to be cloned.
+  // Must be unique in the target context.
+  string new_object_name = 4;
+
+  // Defines how time series connections are handled.
+  TimeseriesCopyMode timeseries_copy_mode = 5;
+}
+
+message CloneObjectResponse {
+  // The root cloned object in the cloned hierarchy.
+  Object new_object = 1;
+}
+
+enum TimeseriesCopyMode {
+  // Defaults to ALL.
+  COPY_MODE_UNSPECIFIED = 0;
+  // All time series connections are reset.
+  NONE = 1;
+  // All time series connections are fully recreated.
+  ALL = 2;
+  // Time series are cloned and reconnected if they match paths
+  // in the cloned hierarchy.
+  INTERNAL = 3;
 }

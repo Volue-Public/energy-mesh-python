@@ -3,7 +3,6 @@ syntax = "proto3";
 package volue.mesh.grpc.hydsim.v1alpha;
 
 import "google/protobuf/duration.proto";
-
 import "volue/mesh/proto/type/resources.proto";
 
 // Experimental HydSim API, very unstable.
