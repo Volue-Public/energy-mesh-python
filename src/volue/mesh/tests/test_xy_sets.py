@@ -6,7 +6,6 @@ import uuid
 import dateutil
 import grpc
 import pytest
-
 from volue import mesh
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"

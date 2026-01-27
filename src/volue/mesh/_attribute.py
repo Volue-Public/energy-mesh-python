@@ -11,7 +11,6 @@ from typing import Any, List
 
 from dateutil import tz
 from google.protobuf import timestamp_pb2
-
 from volue.mesh import TimeseriesResource
 from volue.mesh._common import LinkRelationVersion, _from_proto_guid
 from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2

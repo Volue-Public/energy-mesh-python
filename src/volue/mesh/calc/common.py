@@ -8,7 +8,6 @@ from enum import Enum
 from typing import List
 
 from dateutil import tz
-
 from volue.mesh import AttributeBase, Object, Timeseries
 from volue.mesh._common import (
     _read_proto_numeric_reply,

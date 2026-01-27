@@ -13,7 +13,6 @@ from typing import List
 import grpc
 import pandas as pd
 import pyarrow as pa
-
 from volue.mesh import Connection, Timeseries
 
 # Ip address for the Mesh server

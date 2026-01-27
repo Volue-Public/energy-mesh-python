@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import helpers
-
 from volue.mesh import Connection, RatingCurveSegment, RatingCurveVersion
 
 

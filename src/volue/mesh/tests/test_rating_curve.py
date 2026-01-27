@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 import grpc
 import pytest
 from dateutil import tz
-
 from volue import mesh
 from volue.mesh import _base_session
 

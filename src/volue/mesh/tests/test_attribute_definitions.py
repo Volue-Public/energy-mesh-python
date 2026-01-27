@@ -3,11 +3,10 @@ Tests for attribute definition operations.
 """
 
 import re
+from datetime import datetime
 
 import grpc
 import pytest
-
-from datetime import datetime
 from volue.mesh import Timeseries
 
 ATTRIBUTE_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1.TsCalcAtt2"

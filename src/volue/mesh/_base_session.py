@@ -10,7 +10,6 @@ from typing import List, Tuple
 
 import dateutil
 from google import protobuf
-
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2, hydsim_pb2_grpc
 from volue.mesh.proto.model.v1alpha import model_pb2, model_pb2_grpc
@@ -21,6 +20,10 @@ from volue.mesh.proto.model_definition.v1alpha import (
 )
 from volue.mesh.proto.session.v1alpha import session_pb2_grpc
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
+from volue.mesh.proto.time_series.v2alpha import (
+    timeseries_resource_pb2,
+    timeseries_resource_pb2_grpc,
+)
 from volue.mesh.proto.type import resources_pb2
 
 from ._attribute import (
@@ -120,6 +123,7 @@ class Session(abc.ABC):
         model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
         session_service: session_pb2_grpc.SessionServiceStub,
         time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
+        timeseries_resource_service: timeseries_resource_pb2_grpc.TimeseriesResourceServiceStub,
         session_id: uuid.UUID | None = None,
     ):
         """
@@ -145,6 +149,9 @@ class Session(abc.ABC):
         self.time_series_service: time_series_pb2_grpc.TimeseriesServiceStub = (
             time_series_service
         )
+        self.timeseries_resource_service: (
+            timeseries_resource_pb2_grpc.TimeseriesResourceServiceStub
+        ) = timeseries_resource_service
 
         self.stop_worker_thread: threading.Event = threading.Event()
         self.worker_thread: Session.WorkerThread | None = None
@@ -687,6 +694,7 @@ class Session(abc.ABC):
         curve_type: Timeseries.Curve,
         resolution: Timeseries.Resolution,
         unit_of_measurement: str,
+        time_zone: str | None = None,
     ) -> TimeseriesResource:
         """
         Create a new physical time series.
@@ -713,6 +721,9 @@ class Session(abc.ABC):
             resolution: resolution of the new physical time series
             unit_of_measurement: unit of measurement of the new physical time series.
                 It must match an existing unit in Mesh.
+            time_zone: time zone of the new physical time series. If not set,
+                the server default time zone will be used. Valid only for resolution
+                DAY or coarser.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
@@ -1546,8 +1557,9 @@ class Session(abc.ABC):
         timeseries_key: int,
         new_curve_type: Timeseries.Curve | None,
         new_unit_of_measurement_id: resources_pb2.Guid | None,
-    ) -> time_series_pb2.UpdateTimeseriesResourceRequest:
-        request = time_series_pb2.UpdateTimeseriesResourceRequest(
+        new_time_zone: str | None,
+    ) -> timeseries_resource_pb2.UpdateTimeseriesResourceRequest:
+        request = timeseries_resource_pb2.UpdateTimeseriesResourceRequest(
             session_id=_to_proto_guid(self.session_id),
             timeseries_resource_key=timeseries_key,
         )
@@ -1560,6 +1572,10 @@ class Session(abc.ABC):
         if new_unit_of_measurement_id is not None:
             fields_to_update.append("new_unit_of_measurement_id")
             request.new_unit_of_measurement_id.CopyFrom(new_unit_of_measurement_id)
+
+        if new_time_zone is not None:
+            fields_to_update.append("new_time_zone")
+            request.new_time_zone = new_time_zone
 
         request.field_mask.CopyFrom(
             protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)

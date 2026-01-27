@@ -8,7 +8,6 @@ import sys
 
 import grpc
 import pytest
-
 from volue.mesh import Timeseries, TimeseriesResource
 
 from .test_utilities.utilities import UNIT_1, UNIT_2
@@ -63,7 +62,7 @@ def test_get_timeseries_resource(session, timeseries):
     )
     assert isinstance(timeseries_info, TimeseriesResource)
     assert timeseries_info.timeseries_key == timeseries.timeseries_key
-    assert timeseries_info.path == timeseries.path
+    assert "Resource" + timeseries_info.path + timeseries_info.name == timeseries.path
     assert timeseries_info.name == timeseries.name
     assert timeseries_info.temporary == timeseries.temporary
     assert timeseries_info.curve_type == timeseries.curve_type
@@ -161,7 +160,7 @@ class TestCreatePhysicalTimeseries:
         # name appended to it.
         expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
 
-        assert timeseries.path == expected_path
+        assert "Resource" + timeseries.path + timeseries.name == expected_path
         assert timeseries.name == expected_ts_data.name
         assert timeseries.curve_type == expected_ts_data.curve_type
         assert timeseries.resolution == expected_ts_data.resolution

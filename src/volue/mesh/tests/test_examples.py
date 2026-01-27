@@ -9,7 +9,6 @@ import subprocess
 import sys
 
 import pytest
-
 from volue import mesh
 
 

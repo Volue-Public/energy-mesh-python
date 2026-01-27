@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 import helpers
 from dateutil import tz
-
 from volue.mesh import Connection, LinkRelationVersion, VersionedLinkRelationAttribute
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"

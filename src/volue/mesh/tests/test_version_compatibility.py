@@ -2,10 +2,9 @@
 Tests for version compatibility checks.
 """
 
-from volue.mesh._version_compatibility import to_parsed_version, ParsedVersion
-from volue.mesh import Connection
-
 import pytest
+from volue.mesh import Connection
+from volue.mesh._version_compatibility import ParsedVersion, to_parsed_version
 
 
 def test_connection_throws_if_mesh_server_version_is_incompatible(mocker):

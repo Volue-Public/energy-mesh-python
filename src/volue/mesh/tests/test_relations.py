@@ -8,7 +8,6 @@ from datetime import datetime, timedelta
 import grpc
 import pytest
 from dateutil import tz
-
 from volue.mesh import LinkRelationVersion
 
 from .test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID

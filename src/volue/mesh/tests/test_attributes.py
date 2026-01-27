@@ -10,7 +10,6 @@ from typing import Tuple
 import grpc
 import pytest
 from dateutil import tz
-
 from volue.mesh import AttributeBase, Timeseries, TimeseriesAttribute
 
 from .test_utilities.utilities import CHIMNEY_1_ID, CHIMNEY_2_ID, UNIT_2

@@ -1,7 +1,6 @@
 import datetime
 
 import helpers
-
 from volue import mesh
 
 OBJECT_PATH = "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef/SomePowerPlant1"

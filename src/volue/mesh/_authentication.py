@@ -11,7 +11,6 @@ from sys import platform
 
 import grpc
 from google import protobuf
-
 from volue.mesh.proto.auth.v1alpha import auth_pb2, auth_pb2_grpc
 
 if platform.startswith("win32"):

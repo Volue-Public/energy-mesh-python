@@ -7,12 +7,18 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from volue.mesh import Timeseries
-from volue.mesh._common import _from_proto_curve_type, _from_proto_resolution
-from volue.mesh.proto.time_series.v1alpha import time_series_pb2
+from volue.mesh._common import (
+    _from_proto_curve_type,
+    _from_proto_resolution,
+)
+from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2
+from volue.mesh.proto.time_series.v2alpha import (
+    timeseries_resource_pb2,
+)
 
 
 def _get_unit_of_measurement(
-    proto_timeseries_resource: time_series_pb2.TimeseriesResource,
+    proto_timeseries_resource: timeseries_resource_pb2.TimeseriesResource,
 ):
     if proto_timeseries_resource.HasField("unit_of_measurement"):
         return proto_timeseries_resource.unit_of_measurement.name
@@ -31,10 +37,11 @@ class TimeseriesResource:
     resolution: Timeseries.Resolution
     unit_of_measurement: str | None
     virtual_timeseries_expression: str | None = None
+    time_zone: str = ""
 
     @classmethod
     def _from_proto_timeseries_resource(
-        cls, proto_timeseries_resource: time_series_pb2.TimeseriesResource
+        cls, proto_timeseries_resource: timeseries_resource_pb2.TimeseriesResource
     ) -> TimeseriesResource:
         """Create a `TimeseriesResource` from protobuf TimeseriesResource.
 
@@ -50,6 +57,7 @@ class TimeseriesResource:
             resolution=_from_proto_resolution(proto_timeseries_resource.resolution),
             unit_of_measurement=_get_unit_of_measurement(proto_timeseries_resource),
             virtual_timeseries_expression=proto_timeseries_resource.virtual_timeseries_expression,
+            time_zone=proto_timeseries_resource.time_zone,
         )
 
         return resource

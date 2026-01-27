@@ -3,9 +3,10 @@ Testing model, adding, removing, modifying objects.
 """
 
 import sys
+import time
+
 import grpc
 import pytest
-import time
 
 THERMAL_OBJECT_OWNERSHIP_RELATION_ATTRIBUTE_PATH = (
     "Model/SimpleThermalTestModel/ThermalComponent.ThermalPowerToPlantRef"

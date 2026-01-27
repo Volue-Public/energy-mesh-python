@@ -5,7 +5,6 @@ import helpers
 import pandas as pd
 import pyarrow as pa
 from dateutil import tz
-
 from volue.mesh import Connection, Timeseries
 from volue.mesh.calc import transform as Transform
 from volue.mesh.calc.common import Timezone

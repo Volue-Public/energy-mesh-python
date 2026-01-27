@@ -4,7 +4,6 @@ from datetime import datetime
 import dateutil
 import grpc
 import pytest
-
 from volue.mesh.availability import (
     EventType,
     Recurrence,

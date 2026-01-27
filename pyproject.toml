@@ -34,6 +34,8 @@ include = [
     { path = "src/volue/mesh/proto/session/v1alpha/session_pb2_grpc.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/time_series/v1alpha/time_series_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/time_series/v1alpha/time_series_pb2_grpc.py", format = ["sdist", "wheel"] },
+    { path = "src/volue/mesh/proto/time_series/v1alpha/timeseries_resource_pb2.py", format = ["sdist", "wheel"] },
+    { path = "src/volue/mesh/proto/time_series/v1alpha/timeseries_resource_pb2_grpc.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/type/resources_pb2.py", format = ["sdist", "wheel"] },
     { path = "src/volue/mesh/proto/type/resources_pb2_grpc.py", format = ["sdist", "wheel"] }
 ]

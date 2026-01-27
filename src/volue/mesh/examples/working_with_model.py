@@ -1,5 +1,4 @@
 import helpers
-
 from volue.mesh import AttributesFilter, Connection, OwnershipRelationAttribute
 
 

@@ -3,7 +3,6 @@ import uuid
 from typing import TypeVar
 
 import grpc
-
 from volue.mesh.proto.auth.v1alpha import auth_pb2, auth_pb2_grpc
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
@@ -13,6 +12,7 @@ from volue.mesh.proto.model.v1alpha import model_pb2_grpc
 from volue.mesh.proto.model_definition.v1alpha import model_definition_pb2_grpc
 from volue.mesh.proto.session.v1alpha import session_pb2_grpc
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2_grpc
+from volue.mesh.proto.time_series.v2alpha import timeseries_resource_pb2_grpc
 
 from . import _authentication
 from ._authentication import Authentication, ExternalAccessTokenPlugin
@@ -125,6 +125,9 @@ class Connection(abc.ABC):
             self.session_service = session_pb2_grpc.SessionServiceStub(channel)
             self.time_series_service = time_series_pb2_grpc.TimeseriesServiceStub(
                 channel
+            )
+            self.timeseries_resource_service = (
+                timeseries_resource_pb2_grpc.TimeseriesResourceServiceStub(channel)
             )
             return
 

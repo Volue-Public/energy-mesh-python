@@ -10,7 +10,6 @@ from typing import List
 
 import pytest
 from dateutil import tz
-
 from volue.mesh import Timeseries
 from volue.mesh.calc import transform
 from volue.mesh.calc.common import (

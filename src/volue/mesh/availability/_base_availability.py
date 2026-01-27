@@ -9,7 +9,6 @@ from enum import Enum
 import dateutil
 from bidict import bidict
 from google import protobuf
-
 from volue.mesh._common import (
     _datetime_to_timestamp_pb2,
     _from_proto_guid,
