@@ -76,7 +76,7 @@ message UserIdentity {
   // instance, but not necessarily globally. Combining `source` and
   // `identifier` does not guarantee to get globally unique identifier for the
   // user as there may be different Active Directories using the same security
-  // packages (`source`) with  duplicated user identifiers. However such
+  // packages (`source`) with duplicated user identifiers. However such
   // situation is rather unlikely.
   string identifier = 3;
 }

@@ -5,7 +5,6 @@ from dataclasses import dataclass
 
 import pytest
 import pytest_asyncio
-
 import volue.mesh.aio
 from volue import mesh
 

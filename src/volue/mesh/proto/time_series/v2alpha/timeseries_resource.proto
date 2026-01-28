@@ -1,0 +1,357 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.time_series.v2alpha;
+
+import "google/protobuf/field_mask.proto";
+
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Mesh time series resource service
+// ---------------------------------
+// The Mesh time series resource service is an API for managing Mesh resource
+// time series.
+//
+// There are 2 types of Mesh resource time series:
+// - physical time series
+// - virtual time series
+//
+// Physical time series have actual time series point(s) data. Each time series
+// point has a timestamp, value and status flags.
+//
+// Virtual time series (VTS) have defined expressions to calculate time series
+// data (similar to calculation time series) but are stored in Mesh resources,
+// just like physical time series.
+//
+// Additionally, both: physical and virtual time series have associated meta
+// data (e.g.: curve type, resolution, paths, etc.).
+//
+// Physical and virtual time series can be connected to a time series
+// attribute in a Mesh model.
+//
+service TimeseriesResourceService {
+
+  // Get time series resource.
+  // A time series resource:
+  // - can be either physical or virtual time series
+  // - can be connected to time series attributes.
+  // - is identified by time series key or path within Resource catalog
+  //
+  // Physical time series has data (timestamps, values and flags) and
+  // metadata (e.g.: curve type, resolution, etc.).
+  // Virtual time series has metadata but instead of timestamps, values and
+  // flags it has defined an expression to calculate time series data
+  // (similar to calculation time series) but is stored in the resources.
+  rpc GetTimeseriesResource(GetTimeseriesResourceRequest) returns (TimeseriesResource) {}
+
+  rpc UpdateTimeseriesResource(UpdateTimeseriesResourceRequest) returns (UpdateTimeseriesResourceResponse) {}
+
+  // Create a new (empty) physical time series resource. Returns the newly
+  // created resource.
+  //
+  // Any missing components of the requested timeseries path will be created in
+  // the catalog as well. For example, if we set the CreatePhysicalTimeseriesRequest's
+  // 'path' field to "/Path/To/Timeseries/", and its 'name' field to
+  // "Test_Timeseries", the entire Path/To/Timeseries/Test_Timeseries sequence
+  // of catalog entries will be created if it doesn't exist already.
+  //
+  // It is not mandatory that the path mirrors the topology of the Mesh model.
+  // The path *must* begin and end with forward slashes.
+  //
+  // Note: writing points to uncommitted physical time series is supported.
+  // Note: reading points from uncommitted physical time series is not supported.
+  // Commit the newly created physical time series to read its points.
+  rpc CreatePhysicalTimeseries(CreatePhysicalTimeseriesRequest) returns (TimeseriesResource) {}
+
+  rpc ListTimeseriesResources(ListTimeseriesResourcesRequest) returns (ListTimeseriesResourcesResponse) {}
+
+  rpc ListTimeseriesResourcePaths(ListTimeseriesResourcePathsRequest) returns (ListTimeseriesResourcePathsResponse) {}
+}
+
+message GetTimeseriesResourceRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series key of the time series resource to be returned.
+  int64 timeseries_resource_key = 2;
+}
+
+// Information about physical or virtual time series.
+message TimeseriesResource {
+  // Unique identifier for physical or virtual time series.
+  // Set to 0 if it is a local session time series.
+  // This is the only field that could be used for updating
+  // time series attribute with new time series resource.
+  int64 timeseries_key = 1;
+
+  string path = 2;
+
+  string name = 3;
+
+  // Set to true if it is a local session time series.
+  bool temporary = 4;
+
+  volue.mesh.grpc.type.Curve curve_type = 5;
+
+  volue.mesh.grpc.type.Resolution resolution = 6;
+
+  UnitOfMeasurement unit_of_measurement = 7;
+
+  string virtual_timeseries_expression = 8;
+
+  bool is_virtual_timeseries = 9;
+
+  optional string time_zone = 10;
+}
+
+message UnitOfMeasurement {
+  volue.mesh.grpc.type.Guid id = 1;
+  string name = 2;
+}
+
+message UpdateTimeseriesResourceRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series key of the time series resource to be updated.
+  int64 timeseries_resource_key = 2;
+
+  // An array containing field names to be updated.
+  // For example to update a time series resource curve type and
+  // unit of measurement:
+  //   field_mask = ['new_curve_type', 'new_unit_of_measurement_id']
+  //   new_curve_type = CurveType::PIECEWISELINEAR
+  //   new_unit_of_measurement_id = ID of the unit of measurement.
+  //
+  // All units of measurements can be listed using model definition service
+  // `ListUnitsOfMeasurement` RPC.
+  google.protobuf.FieldMask field_mask = 3;
+
+  volue.mesh.grpc.type.Curve new_curve_type = 4;
+
+  // To clear the unit of measurement leave the `new_unit_of_measurement_id`
+  // field empty (not ID with only zeros), but provide
+  //`new_unit_of_measurement_id` string in the field mask.
+  volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 5;
+
+  string new_time_zone = 6;
+}
+
+message UpdateTimeseriesResourceResponse {
+}
+
+// Request for creating new physical timeseries resources. All the fields are
+// mandatory.
+// See the documentation of the CreatePhysicalTimeseries RPC for more info.
+message CreatePhysicalTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  string path = 2;
+
+  string name = 3;
+
+  volue.mesh.grpc.type.Curve curve_type = 4;
+
+  volue.mesh.grpc.type.Resolution resolution = 5;
+
+  volue.mesh.grpc.type.Guid unit_of_measurement_id = 6;
+
+  // Time zone of the time series. Must be a valid IANA time zone name.
+  // E.g.: "Pacific/Nauru", "Europe/Warsaw"
+  string time_zone = 7;
+}
+
+message ListTimeseriesResourcesRequest {
+  // Physical time series created using `CreatePhysicalTimeseries`, but not
+  // committed yet, are not returned in the search results.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // How deep in the path hierarchy the search should go.
+  // - Depth 0 means only the given start path level.
+  // - Depth 1 means the given start path level and all its direct children
+  //   and so on.
+  // - Depth -1 means going all the way down.
+  //
+  // Start path is provided as a `starts_with` filter with `path` field name.
+  // If not provided, the default is "/".
+  // Start path does not necessarily have to end with a forward slash "/".
+  //
+  // Example: consider a hierarchy of time series resources:
+  //
+  // /
+  //    Ts0
+  //    Root/
+  //        Ts1
+  //        Ts2
+  //        Path1/
+  //           Ts3
+  //           Ts4
+  //        Path2/
+  //           Ts5
+  //           Ts6
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root" and
+  // recursion depth 0, then only { Ts0 } is returned.
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root/" and
+  // recursion depth 0, then only { Ts1, Ts2 } are returned.
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root/Pa" and
+  // recursion depth 0, then only { Ts1, Ts2 } are returned.
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root/Pa" and
+  // recursion depth 1, then only { Ts1, Ts2, Ts3, Ts4, Ts5, Ts6 } are returned.
+  int32 recursion_depth = 2;
+
+  // The order in which the time series resources should be returned.
+  // It is a comma separated list with a subset of `TimeseriesResource`
+  // message field names. Possible values are:
+  // - name
+  // - path
+  //
+  // The default sorting order is ascending. To specify descending order for
+  // a field, users append a " desc" suffix to the field name. E.g.:
+  // name desc
+  //
+  // If not set, the default order is ascending by path concatenated with name:
+  // path, name
+  // The order of returned results is case sensitive.
+  string order_by = 3;
+
+  // Defines what time series resources information should be included in the
+  // response. If not set, then all information will be included.
+  //
+  // An array containing `TimeseriesResource` message field names to be
+  // returned in the response.
+  // For example to return only time series key and name:
+  //   field_mask = ['timeseries_key', 'name']
+  google.protobuf.FieldMask field_mask = 4;
+
+  // The page token, received from a previous `ListTimeseriesResources` call.
+  // Provide this to retrieve the next page. If not provided, the first page
+  // will be fetched.
+  //
+  // If set, then all other parameters provided to `ListTimeseriesResources`
+  // must match the call that provided the page token.
+  string page_token = 5;
+
+  // The maximum number of time series resources to return.
+  int32 page_size = 6;
+
+  // The search filters are combined with AND.
+  // Accepted filter field names are:
+  // - name
+  // - path
+  repeated SearchFilter filters = 7;
+}
+
+message SearchFilter {
+  enum FilterType {
+    // Defaults to STARTS_WITH.
+    FILTER_TYPE_UNSPECIFIED = 0;
+    STARTS_WITH = 1;
+    CONTAINS = 2;
+  }
+
+  // Field name is always case sensitive.
+  string field_name = 1;
+  string value = 2;
+  // If true, then the filter value is case sensitive.
+  // This does not apply to the field name, which is always case sensitive.
+  bool case_sensitive = 3;
+  FilterType type = 4;
+}
+
+message ListTimeseriesResourcesResponse {
+  // The time series resources that matched the search criteria, sorted
+  // according to the requested order, see: `order_by` in the
+  // `ListTimeseriesResourcesRequest` message.
+  repeated TimeseriesResource timeseries_resources = 1;
+
+  // A token that can be sent as `page_token` in
+  // `ListTimeseriesResourcesRequest` to retrieve the next page.
+  // If this field is not set, then there are no subsequent pages.
+  string next_page_token = 2;
+}
+
+message ListTimeseriesResourcePathsRequest {
+  // New paths of physical time series created using
+  // `CreatePhysicalTimeseries`, but not committed yet, are not returned in the
+  // search results.
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // How deep in the path hierarchy the search should go.
+  // - Depth 0 means only the given start path level.
+  // - Depth 1 means the given start path level and all its direct children
+  //   and so on.
+  // - Depth -1 means going all the way down.
+  //
+  // Start path is provided as a `starts_with` filter with `path` field name.
+  // If not provided, the default is "/".
+  // Start path does not necessarily have to end with a forward slash "/".
+  //
+  // Example: consider a hierarchy of time series resources:
+  //
+  // /
+  //    Root/
+  //        Path1/
+  //        Path2/
+  //           SubPath1/
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root" and
+  // recursion depth 0, then only { Root } is returned.
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root/" and
+  // recursion depth 0, then only { Path1, Path2 } are returned.
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root/Pa" and
+  // recursion depth 0, then only { Path1, Path2 } are returned.
+  //
+  // If the `starts_with` filter with `path` field name has value "/Root/Pa" and
+  // recursion depth 1, then only { Path1, Path2, SubPath1 } are returned.
+  int32 recursion_depth = 2;
+
+  // The order in which the time series resource paths should be returned.
+  // It is a comma separated list with a subset of `TimeseriesResourcePath`
+  // message field names. Possible values are:
+  // - path
+  //
+  // The default sorting order is ascending. To specify descending order for
+  // a field, users append a " desc" suffix to the field name. E.g.:
+  // path desc
+  //
+  // If not set, the default order is ascending by path.
+  // The order of returned results is case sensitive.
+  string order_by = 3;
+  
+  // The page token, received from a previous `ListTimeseriesResourcePaths`
+  // call. Provide this to retrieve the next page. If not provided, the first
+  // page will be fetched.
+  //
+  // If set, then all other parameters provided to
+  // `ListTimeseriesResourcePaths` must match the call that provided the page
+  // token.
+  string page_token = 4;
+
+  // The maximum number of time series resource paths to return.
+  int32 page_size = 5;
+
+  // The search filters are combined with AND.
+  // Accepted filter field names are:
+  // - path
+  repeated SearchFilter filters = 6;
+}
+
+message ListTimeseriesResourcePathsResponse {
+  // The time series resource paths that matched the search criteria, sorted
+  // according to the requested order, see: `order_by` in the
+  // `ListTimeseriesResourcePathsRequest` message.
+  repeated TimeseriesResourcePath paths = 1;
+
+  // A token that can be sent as `page_token` in
+  // `ListTimeseriesResourcePathsRequest` to retrieve the next page.
+  // If this field is not set, then there are no subsequent pages.
+  string next_page_token = 2;
+}
+
+message TimeseriesResourcePath {
+  string path = 1;
+}

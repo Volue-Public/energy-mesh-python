@@ -21,8 +21,7 @@ import "volue/mesh/proto/type/resources.proto";
 //
 // Additionally advanced restriction exists to represent objects availability
 // using timeseries calculation.
-
-
+//
 service AvailabilityService {
   // Create revision for given object.
   // Each revision can have multiple `RevisionRecurrence`. To create those use
@@ -450,7 +449,9 @@ message Revision {
   string event_id = 3;
   string local_id = 4;
   string reason = 5;
+  // [OUTPUT_ONLY]
   RecordInfo created = 6;
+  // [OUTPUT_ONLY]
   RecordInfo last_changed = 7;
   repeated RevisionRecurrence recurrences = 8;
 }

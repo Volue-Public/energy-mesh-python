@@ -2,7 +2,6 @@ from datetime import datetime
 
 import dateutil
 import helpers
-
 from volue.mesh import Connection
 from volue.mesh.availability import (
     EventType,

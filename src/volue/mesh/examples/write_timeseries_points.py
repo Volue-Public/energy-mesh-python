@@ -6,7 +6,6 @@ import grpc
 import helpers
 import pandas as pd
 import pyarrow as pa
-
 import volue.mesh.aio
 from volue import mesh
 

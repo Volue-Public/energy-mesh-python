@@ -6,7 +6,6 @@ import sys
 import uuid
 
 import pytest
-
 from volue.mesh import Timeseries, _common
 
 

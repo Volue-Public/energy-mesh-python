@@ -10,7 +10,6 @@ from typing import List
 
 import grpc
 from google import protobuf
-
 from volue.mesh import (
     AttributeBase,
     AttributesFilter,
@@ -45,17 +44,25 @@ from volue.mesh.calc.forecast import ForecastFunctionsAsync
 from volue.mesh.calc.history import HistoryFunctionsAsync
 from volue.mesh.calc.statistical import StatisticalFunctionsAsync
 from volue.mesh.calc.transform import TransformFunctionsAsync
-from volue.mesh.proto.config.v1alpha import config_pb2_grpc
 from volue.mesh.proto.availability.v1alpha import availability_pb2_grpc
 from volue.mesh.proto.calc.v1alpha import calc_pb2_grpc
+from volue.mesh.proto.config.v1alpha import config_pb2_grpc
 from volue.mesh.proto.hydsim.v1alpha import hydsim_pb2_grpc
 from volue.mesh.proto.model.v1alpha import model_pb2_grpc
+from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2
 from volue.mesh.proto.model_definition.v1alpha import (
     model_definition_pb2,
     model_definition_pb2_grpc,
 )
+from volue.mesh.proto.model_definition.v1alpha import (
+    resources_pb2 as model_definition_resources_pb2,
+)
 from volue.mesh.proto.session.v1alpha import session_pb2_grpc
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2, time_series_pb2_grpc
+from volue.mesh.proto.time_series.v2alpha import (
+    timeseries_resource_pb2,
+    timeseries_resource_pb2_grpc,
+)
 from volue.mesh.proto.type import resources_pb2
 
 
@@ -76,6 +83,7 @@ class Connection(_base_connection.Connection):
             model_definition_service: model_definition_pb2_grpc.ModelDefinitionServiceStub,
             session_service: session_pb2_grpc.SessionServiceStub,
             time_series_service: time_series_pb2_grpc.TimeseriesServiceStub,
+            timeseries_resource_service: timeseries_resource_pb2_grpc.TimeseriesResourceServiceStub,
             availability_service: availability_pb2_grpc.AvailabilityServiceStub,
             session_id: uuid.UUID | None = None,
         ):
@@ -87,6 +95,7 @@ class Connection(_base_connection.Connection):
                 model_definition_service=model_definition_service,
                 session_service=session_service,
                 time_series_service=time_series_service,
+                timeseries_resource_service=timeseries_resource_service,
             )
             self.availability = Availability(
                 availability_service=availability_service, session_id=session_id
@@ -127,6 +136,30 @@ class Connection(_base_connection.Connection):
             return super()._get_unit_of_measurement_id_by_name(
                 unit_of_measurement, list_response
             )
+
+        async def _update_timeseries_resource_path_v2_async(
+            self, proto_attribute: model_resources_pb2.Attribute
+        ):
+            if (
+                proto_attribute.value_type
+                != model_definition_resources_pb2.ATTRIBUTE_VALUE_TYPE_TIMESERIES
+            ):
+                return
+
+            if len(proto_attribute.values) == 1:
+                proto_value = proto_attribute.values[0].timeseries_value
+                if proto_value.HasField(
+                    "time_series_resource"
+                ) and proto_value.time_series_resource.timeseries_key not in (0, None):
+                    proto_timeseries_resource = await self.timeseries_resource_service.GetTimeseriesResource(
+                        timeseries_resource_pb2.GetTimeseriesResourceRequest(
+                            session_id=_to_proto_guid(self.session_id),
+                            timeseries_resource_key=proto_value.time_series_resource.timeseries_key,
+                        )
+                    )
+                    proto_value.time_series_resource.path = (
+                        proto_timeseries_resource.path
+                    )
 
         async def open(self) -> None:
             version_info = await self.config_service.GetVersion(
@@ -175,8 +208,8 @@ class Connection(_base_connection.Connection):
             self, timeseries_key: int
         ) -> TimeseriesResource:
             proto_timeseries_resource = (
-                await self.time_series_service.GetTimeseriesResource(
-                    time_series_pb2.GetTimeseriesResourceRequest(
+                await self.timeseries_resource_service.GetTimeseriesResource(
+                    timeseries_resource_pb2.GetTimeseriesResourceRequest(
                         session_id=_to_proto_guid(self.session_id),
                         timeseries_resource_key=timeseries_key,
                     )
@@ -191,6 +224,7 @@ class Connection(_base_connection.Connection):
             timeseries_key: int,
             new_curve_type: Timeseries.Curve | None = None,
             new_unit_of_measurement: str | None = None,
+            new_time_zone: str | None = None,
         ) -> None:
             new_unit_of_measurement_id = None
 
@@ -202,9 +236,12 @@ class Connection(_base_connection.Connection):
                 )
 
             request = super()._prepare_update_timeseries_resource_request(
-                timeseries_key, new_curve_type, new_unit_of_measurement_id
+                timeseries_key,
+                new_curve_type,
+                new_unit_of_measurement_id,
+                new_time_zone,
             )
-            await self.time_series_service.UpdateTimeseriesResource(request)
+            await self.timeseries_resource_service.UpdateTimeseriesResource(request)
 
         async def create_physical_timeseries(
             self,
@@ -213,21 +250,25 @@ class Connection(_base_connection.Connection):
             curve_type: Timeseries.Curve,
             resolution: Timeseries.Resolution,
             unit_of_measurement: str,
+            time_zone: str | None = None,
         ) -> TimeseriesResource:
             unit_of_measurement_id = await self._get_unit_of_measurement_id_by_name(
                 unit_of_measurement
             )
 
-            request = time_series_pb2.CreatePhysicalTimeseriesRequest(
+            request = timeseries_resource_pb2.CreatePhysicalTimeseriesRequest(
                 session_id=_to_proto_guid(self.session_id),
                 path=path,
                 name=name,
                 curve_type=_to_proto_curve_type(curve_type),
                 resolution=_to_proto_resolution(resolution),
                 unit_of_measurement_id=unit_of_measurement_id,
+                time_zone=time_zone if time_zone is not None else "",
             )
 
-            response = await self.time_series_service.CreatePhysicalTimeseries(request)
+            response = await self.timeseries_resource_service.CreatePhysicalTimeseries(
+                request
+            )
 
             return TimeseriesResource._from_proto_timeseries_resource(response)
 
@@ -240,6 +281,7 @@ class Connection(_base_connection.Connection):
                 target, full_attribute_info
             )
             proto_attribute = await self.model_service.GetAttribute(request)
+            await self._update_timeseries_resource_path_v2_async(proto_attribute)
             return _from_proto_attribute(proto_attribute)
 
         async def get_timeseries_attribute(
@@ -264,9 +306,15 @@ class Connection(_base_connection.Connection):
                 target, query, full_attribute_info
             )
 
-            attributes = []
+            proto_attributes = []
             async for proto_attribute in self.model_service.SearchAttributes(request):
+                proto_attributes.append(proto_attribute)
+
+            attributes = []
+            for proto_attribute in proto_attributes:
+                await self._update_timeseries_resource_path_v2_async(proto_attribute)
                 attributes.append(_from_proto_attribute(proto_attribute))
+
             return attributes
 
         async def search_for_timeseries_attributes(
@@ -367,6 +415,10 @@ class Connection(_base_connection.Connection):
                 target, full_attribute_info, attributes_filter
             )
             proto_object = await self.model_service.GetObject(request)
+
+            for proto_attribute in proto_object.attributes:
+                await self._update_timeseries_resource_path_v2_async(proto_attribute)
+
             return Object._from_proto_object(proto_object)
 
         async def search_for_objects(
@@ -380,9 +432,18 @@ class Connection(_base_connection.Connection):
                 target, query, full_attribute_info, attributes_filter
             )
 
-            objects = []
+            proto_objects = []
             async for proto_object in self.model_service.SearchObjects(request):
+                proto_objects.append(proto_object)
+
+            objects = []
+            for proto_object in proto_objects:
+                for proto_attribute in proto_object.attributes:
+                    await self._update_timeseries_resource_path_v2_async(
+                        proto_attribute
+                    )
                 objects.append(Object._from_proto_object(proto_object))
+
             return objects
 
         async def create_object(
@@ -390,6 +451,10 @@ class Connection(_base_connection.Connection):
         ) -> Object:
             request = super()._prepare_create_object_request(target=target, name=name)
             proto_object = await self.model_service.CreateObject(request)
+
+            for proto_attribute in proto_object.attributes:
+                await self._update_timeseries_resource_path_v2_async(proto_attribute)
+
             return Object._from_proto_object(proto_object)
 
         async def update_object(
@@ -611,6 +676,7 @@ class Connection(_base_connection.Connection):
             model_definition_service=self.model_definition_service,
             session_service=self.session_service,
             time_series_service=self.time_series_service,
+            timeseries_resource_service=self.timeseries_resource_service,
             availability_service=self.availability_service,
             session_id=session_id,
         )

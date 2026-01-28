@@ -6,13 +6,12 @@ import sys
 import uuid
 
 import pytest
-
 from volue.mesh import Timeseries, _common, _mesh_id
 
 from .test_utilities.utilities import (
+    AttributeDefinitionForTesting,
     AttributeForTesting,
     ObjectForTesting,
-    AttributeDefinitionForTesting,
 )
 
 

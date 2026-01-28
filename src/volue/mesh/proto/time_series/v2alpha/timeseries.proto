@@ -1,0 +1,250 @@
+syntax = "proto3";
+
+package volue.mesh.grpc.time_series.v2alpha;
+
+import "volue/mesh/proto/type/resources.proto";
+
+
+// Mesh time series service
+// -------------------------------
+// The Mesh time series service is an API for managing Mesh time series,
+// including reading and writing.
+//
+// In its simplest form a time series is just a table of timestamps, flags
+// and values. Time series can be organized and generated in different ways.
+//
+// Some time series are retrieved 'as is' from the database where they are
+// stored. Such time series are called physical time series. They reside in
+// Mesh resources which is a container storing data, that could be used by Mesh
+// model(s). Physical time series together with time series data (timestamps,
+// values and flags) have also associated metadata (e.g.: curve type,
+// resolution, etc.).
+//
+// Others are generated using calculations which can be based on an arbitrary
+// set of data. Such time series are called calculation time series.
+//
+// There is also third type of time series called virtual time series (VTS).
+// Virtual time series has defined an expression to calculate time series data
+// (similar to calculation time series) but is stored in Mesh resources, just
+// like physical time series.
+//
+// Physical and virtual time series can be organized in Mesh resources in
+// a structure which resembles catalogs and thus can have a path associated
+// with it. They can also potentially be connected to a time series attribute
+// in a Mesh model.
+//
+service TimeseriesService {
+
+  // Each time series point occupies 20 bytes. By default, gRPC has a limitation
+  // of 4MB inbound message size. In case of larger data volumes please send
+  // request data in chunks or increase the maximum gRPC inbound message size
+  // from client side.
+  // Note: reading points from uncommitted physical time series is not supported.
+  // Commit the newly created physical time series to read its points.
+  rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
+  rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
+
+  // Read batch of time series with applied transformation.
+  //
+  // Mesh IDs of the returned time series match the requested Mesh IDs.
+  // Additionally, the order of responses is guaranteed to match the order of
+  // requests. E.g.: in the request user asks for data of 3 time series:
+  // Request: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
+  // Responses: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
+  // Note: reading points from uncommitted physical time series is not supported.
+  // Commit the newly created physical time series to read its points.
+  rpc ReadTransformedTimeseries(ReadTransformedTimeseriesRequest) returns (stream ReadTimeseriesResponse) {}
+
+  // Each time series point occupies 20 bytes. Mesh server has a limitation of
+  // 4MB inbound message size. In case of larger data volumes please send input
+  // data in chunks.
+  rpc WriteTimeseries(WriteTimeseriesRequest) returns (WriteTimeseriesResponse) {}
+
+  // Sign up for time series attribute change notifications.
+  //
+  // After creating the subscription, the client is required to read
+  // the subscribed time series attribute values using the subscribed interval.
+  // Otherwise, the notifications won't be sent.
+  //
+  // When a time series attribute values are modified,
+  // a notification is sent through the response stream.
+  //
+  // After the first notification to the client connection is delivered,
+  // the future notifications on that subscription are blocked.
+  // The notifications are unblocked once any client using
+  // the session specified in the
+  // `SubscribeToTimeseriesChangeNotificationsRequest` reads the time
+  // series attribute values via gRPC TimeseriesService interface
+  // using the subscribed interval.
+  //
+  // The client can update the subscription settings by sending another
+  // message to the existing request stream. 
+  // Updating the subscription settings unblocks the notifications.
+  //
+  // Connecting/disconnecting the time series resource to/from subscribed
+  // time series attribute results in sending a notification.
+  //
+  // Only one subscription per session is allowed.
+  //
+  // A rollback operation on a session results in sending a notification
+  // for edited (uncommitted) time series attributes.
+  //
+  // This RPC can sometimes deliver false-positive notifications,
+  // i.e. the notification can be sent when the change interval
+  // does not overlap with the subscription interval.
+  rpc SubscribeToTimeseriesChangeNotifications(
+    stream SubscribeToTimeseriesChangeNotificationsRequest);
+   returns (stream SubscribeToTimeseriesChangeNotificationsResponse) {}
+}
+
+message ReadTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  volue.mesh.grpc.type.MeshId timeseries_id = 2;
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+}
+
+message ReadTimeseriesResponse {
+  repeated Timeseries timeseries = 1;
+}
+
+message ReadTimeseriesStreamRequest{
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  repeated volue.mesh.grpc.type.MeshId timeseries_ids = 2;
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+}
+
+message ReadTransformedTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+  repeated ReadTransformedTimeseriesSingleRequest requests = 2;
+}
+
+message ReadTransformedTimeseriesSingleRequest {
+  volue.mesh.grpc.type.MeshId timeseries_id = 1;
+  volue.mesh.grpc.type.UtcInterval interval = 2;
+  // Target transformation resolution. Must not be set to break point.
+  volue.mesh.grpc.type.Resolution resolution = 3;
+  TransformationMethod transformation_method = 4;
+  Timezone transformation_timezone = 5;
+}
+
+enum TransformationMethod {
+  // Defaults to IMPLICIT.
+  TRANSFORMATION_METHOD_UNSPECIFIED = 0;
+  // Method chosen automatically based on time series type.
+  IMPLICIT  = 1;
+  // The sum of the values included in the base for this value.
+  // Does not consider how long the values are valid, i.e. a break point series
+  // with two values in the current interval that will give the sum of these
+  // two values.
+  SUM       = 2;
+  // Integral based sum with resolution second. Calculates the sum of value
+  // multiplied with number of seconds each value is valid. Value equal 1 at
+  // the start of the day will give 86400 as day value if the base is one break
+  // point series and 3600 if this is an hour series with only one value on
+  // first hour.
+  SUMI      = 3;
+  // For fixed interval series. Sum of all values in accumulation period
+  // divided by number of values in the accumulation period (24 for hour series
+  // that is transformed to day series). For break point series: Mean value of
+  // the values included in the base for this value. Does not consider how long
+  // the values are valid, i.e. a break point series with two values in the
+  // current interval that will give the mean value of these two values.
+  AVG       = 4;
+  // Integral based mean value, i.e. considers how much of the accumulation
+  // period that a given value is valid (to next value that can be NaN for
+  // a fixed interval series).
+  AVGI      = 5;
+  // First value in the accumulation period. For break point series this is the
+  // functional value at the start of the accumulation period, unless there
+  // exist an explicit value. Please note! For fixed interval series it is the
+  // first value not being NaN in the accumulation period.
+  FIRST     = 6;
+  // Last value in the accumulation period. For break point series this is the
+  // functional value at the end of the accumulation period, unless there exist
+  // an explicit value. Note! For fixed interval series it is the last value
+  // not being NaN in the accumulation period.
+  LAST      = 7;
+  // Smallest value in the accumulation period.
+  MIN       = 8;
+  // Largest value in the accumulation period.
+  MAX       = 9;
+}
+
+enum Timezone {
+  // Defaults to UTC.
+  TIMEZONE_UNSPECIFIED = 0;
+  // Universal Time Coordinated (UTC).
+  UTC       = 1;
+  // Mesh server local time zone.
+  LOCAL     = 2;
+  // Mesh server local time zone without Daylight Saving Time (DST).
+  STANDARD  = 3;
+}
+
+message WriteTimeseriesRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  // Time series must point to exactly one time series
+  // - attribute or source (pointed by path or ID)
+  // - physical or virtual (pointed by time series key)
+  // The resolution of the points has to fit the stored time series.
+  // Otherwise it will be rejected.
+  Timeseries timeseries = 2;
+}
+
+message WriteTimeseriesResponse {
+}
+
+message Timeseries {
+  volue.mesh.grpc.type.MeshId id = 1;
+
+  // [OUTPUT_ONLY] - no need to set when writing time series using
+  // `WriteTimeseries`.
+  // Resolution/spacing for this timeseries.
+  volue.mesh.grpc.type.Resolution resolution = 2;
+
+  // Time interval for this timeseries.
+  volue.mesh.grpc.type.UtcInterval interval = 3;
+
+  // Data contains an Apache Arrow byte representation of the time series
+  // points. If no points exist empty table will be returned.
+  // Stored in the following columns:
+  // 0: (timestamp('ms')) utc_time - UTC Unix timestamp expressed in
+  //    milliseconds (internally it is stored as a 64-bit integer)
+  // 1: (uint32) flags
+  // 2: (double) value
+  bytes data = 4;
+}
+
+message SubscribeToTimeseriesChangeNotificationsRequest {
+  volue.mesh.grpc.type.Guid session_id = 1;
+
+  repeated SubscriptionDetails subscription_details = 2;
+}
+
+message SubscriptionDetails {
+  // ID of the time series to send notifications for.
+  volue.mesh.grpc.type.MeshId id = 1;
+
+  // An interval associated with the `id`.
+  // Mesh will not send notifications for the time series changes
+  // happening outside of the observation interval.
+  // The start of the interval is inclusive, the end is exclusive.
+  type.UtcInterval interval = 2;
+}
+
+message SubscribeToTimeseriesChangeNotificationsResponse {
+
+  // The response contains an ID of the time series that has changed
+  // and an interval matching the interval from the
+  // `subscription_details` in the request. It indicates the interval
+  // where the time series points have changed.
+  //
+  // The request can contain multiple `subscription_details` entries
+  // for the same time series attribute ID but different intervals.
+  // If the time series change spans across multiple observation intervals,
+  // one notification per interval will be sent.
+  repeated SubscriptionDetails notifications = 1;
+}

@@ -9,9 +9,9 @@ from ._attribute import (
     AttributeBase,
     LinkRelationAttribute,
     OwnershipRelationAttribute,
+    SimpleAttribute,
     TimeseriesAttribute,
     VersionedLinkRelationAttribute,
-    SimpleAttribute,
 )
 from ._object import Object
 from ._common import (

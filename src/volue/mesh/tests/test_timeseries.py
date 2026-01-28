@@ -12,7 +12,6 @@ import pandas as pd
 import pyarrow as pa
 import pytest
 from dateutil import tz
-
 from volue.mesh import Timeseries
 from volue.mesh._common import _to_proto_guid, _to_proto_timeseries
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2

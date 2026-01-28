@@ -7,7 +7,6 @@ import uuid
 
 import grpc
 import pytest
-
 from volue.mesh import (
     AttributeBase,
     AttributesFilter,

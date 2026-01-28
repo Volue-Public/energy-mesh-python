@@ -11,20 +11,15 @@ from dataclasses import dataclass, fields
 from typing import List, Tuple
 
 import pyarrow as pa
-from google.protobuf import field_mask_pb2, timestamp_pb2
-
 from bidict import bidict
-
+from google.protobuf import field_mask_pb2, timestamp_pb2
 from volue.mesh import Timeseries
+from volue.mesh._version_compatibility import get_min_server_version, to_parsed_version
 from volue.mesh.proto import type
 from volue.mesh.proto.auth.v1alpha import auth_pb2
 from volue.mesh.proto.config.v1alpha import config_pb2
 from volue.mesh.proto.model.v1alpha import resources_pb2 as model_resources_pb2
 from volue.mesh.proto.time_series.v1alpha import time_series_pb2
-from volue.mesh._version_compatibility import (
-    get_min_server_version,
-    to_parsed_version,
-)
 
 
 @dataclass
