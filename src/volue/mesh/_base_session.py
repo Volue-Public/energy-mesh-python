@@ -669,6 +669,7 @@ class Session(abc.ABC):
         timeseries_key: int,
         new_curve_type: Timeseries.Curve | None = None,
         new_unit_of_measurement: str | None = None,
+        new_time_zone: str | None = None,
     ) -> None:
         """
         Update information associated with a physical or virtual time series.
