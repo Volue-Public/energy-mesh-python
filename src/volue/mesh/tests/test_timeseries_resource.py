@@ -106,6 +106,37 @@ def test_update_timeseries_resource(
     if new_unit_of_measurement is not None:
         assert timeseries_info.unit_of_measurement == new_unit_of_measurement
 
+@pytest.mark.database
+def test_update_timeseries_resource_time_zone_wrong_resolution(
+    session
+):
+    with pytest.raises(Exception, match="time zone can only be set for a time series with a daily resolution or coarser"):
+        session.update_timeseries_resource_info(
+            get_physical_timeseries().timeseries_key, None, None, new_time_zone="Europe/Warsaw"
+        )
+        # name_suffix = "".join(
+        #         random.choices(string.ascii_uppercase + string.digits, k=10)
+        #     )
+
+        # timeseries = session.create_physical_timeseries(
+        #     path="/Path/To/Test/Timeseries/",
+        #     name="Test_Timeseries_" + name_suffix,
+        #     curve_type=Timeseries.Curve.PIECEWISELINEAR,
+        #     resolution=Timeseries.Resolution.DAY,
+        #     unit_of_measurement=UNIT_1,
+        #     time_zone= "Europe/Oslo",
+        # )
+
+        # session.commit()
+
+        # """Check that time series resource can be updated."""
+        # session.update_timeseries_resource_info(
+        #     timeseries.timeseries_key, None, None, new_time_zone="Europe/Warsaw"
+        # )
+        # timeseries_info = session.get_timeseries_resource_info(timeseries.timeseries_key)
+
+        # assert timeseries_info.time_zone == "Europe/Warsaw"
+
 
 @pytest.mark.database
 def test_update_timeseries_resource_with_non_existing_unit_of_measurement(session):
@@ -235,6 +266,73 @@ class TestCreatePhysicalTimeseries:
                 unit_of_measurement=INVALID_UNIT_OF_MEASUREMENT_NAME,
             )
 
+    def test_create_timeseries_with_time_zone(
+        self, session, ts_init_data
+    ):
+        """Check that passing time zone works."""
+        ts_data = ts_init_data
+        ts_data.curve_type = Timeseries.Curve.UNKNOWN
+
+        timeseries = session.create_physical_timeseries(
+            path=ts_data.path,
+            name=ts_data.name,
+            curve_type=ts_data.curve_type,
+            resolution=Timeseries.Resolution.DAY,
+            unit_of_measurement=ts_data.unit_of_measurement,
+            time_zone= "Europe/Oslo",
+        )
+
+        session.commit()
+
+        expected_path = "Resource" + ts_init_data.path + ts_init_data.name
+
+        assert "Resource" + timeseries.path + timeseries.name == expected_path
+        assert timeseries.name == ts_init_data.name
+        assert timeseries.curve_type == ts_init_data.curve_type
+        assert timeseries.resolution == Timeseries.Resolution.DAY
+        assert timeseries.unit_of_measurement == ts_init_data.unit_of_measurement
+        assert timeseries.time_zone == "Europe/Oslo"
+
+    @pytest.mark.asyncio
+    async def test_create_timeseries_with_time_zone_async(
+        self, async_session, ts_init_data
+    ):
+        """Check that passing time zone works."""
+        ts_data = ts_init_data
+        ts_data.curve_type = Timeseries.Curve.UNKNOWN
+
+        timeseries = await async_session.create_physical_timeseries(
+            path=ts_data.path,
+            name=ts_data.name,
+            curve_type=ts_data.curve_type,
+            resolution=Timeseries.Resolution.DAY,
+            unit_of_measurement=ts_data.unit_of_measurement,
+            time_zone= "Europe/Oslo",
+        )
+
+        await async_session.commit()
+
+        expected_path = "Resource" + ts_init_data.path + ts_init_data.name
+
+        assert "Resource" + timeseries.path + timeseries.name == expected_path
+        assert timeseries.name == ts_init_data.name
+        assert timeseries.curve_type == ts_init_data.curve_type
+        assert timeseries.resolution == Timeseries.Resolution.DAY
+        assert timeseries.unit_of_measurement == ts_init_data.unit_of_measurement
+        assert timeseries.time_zone == "Europe/Oslo"
+
+    def test_create_timeseries_with_wrong_time_zone(
+        self, session, ts_init_data
+    ):
+        with pytest.raises(Exception, match="invalid time zone specified: 'Invalid/TimeZone'"):
+            timeseries = session.create_physical_timeseries(
+                path=ts_init_data.path,
+                name=ts_init_data.name,
+                curve_type=ts_init_data.curve_type,
+                resolution=ts_init_data.resolution,
+                unit_of_measurement=ts_init_data.unit_of_measurement,
+                time_zone="Invalid/TimeZone",
+            )
 
 @pytest.mark.asyncio
 @pytest.mark.database

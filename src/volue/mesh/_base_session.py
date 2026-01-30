@@ -662,6 +662,7 @@ class Session(abc.ABC):
         timeseries_key: int,
         new_curve_type: Timeseries.Curve | None = None,
         new_unit_of_measurement: str | None = None,
+        new_time_zone: str | None = None,
     ) -> None:
         """
         Update information associated with a physical or virtual time series.
@@ -671,7 +672,7 @@ class Session(abc.ABC):
                 virtual time series.
             new_curve_type: set new curve type.
             new_unit_of_measurement: set new unit of measurement.
-
+            new_time_zone: set new time zone.
         Note:
             Specify which ever of the new_* fields you want to update.
 
@@ -687,6 +688,7 @@ class Session(abc.ABC):
         curve_type: Timeseries.Curve,
         resolution: Timeseries.Resolution,
         unit_of_measurement: str,
+        time_zone: str | None = None,
     ) -> TimeseriesResource:
         """
         Create a new physical time series.
@@ -713,6 +715,7 @@ class Session(abc.ABC):
             resolution: resolution of the new physical time series
             unit_of_measurement: unit of measurement of the new physical time series.
                 It must match an existing unit in Mesh.
+            time_zone: IANA name of time zone of the new physical time series. Valid only if resolution is Day or coarser.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
