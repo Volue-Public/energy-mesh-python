@@ -1549,6 +1549,7 @@ class Session(abc.ABC):
         timeseries_key: int,
         new_curve_type: Timeseries.Curve | None,
         new_unit_of_measurement_id: resources_pb2.Guid | None,
+        new_time_zone: str | None,
     ) -> time_series_pb2.UpdateTimeseriesResourceRequest:
         request = time_series_pb2.UpdateTimeseriesResourceRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -1563,6 +1564,10 @@ class Session(abc.ABC):
         if new_unit_of_measurement_id is not None:
             fields_to_update.append("new_unit_of_measurement_id")
             request.new_unit_of_measurement_id.CopyFrom(new_unit_of_measurement_id)
+
+        if new_time_zone is not None:
+            fields_to_update.append("new_time_zone")
+            request.new_time_zone = new_time_zone
 
         request.field_mask.CopyFrom(
             protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)
