@@ -175,6 +175,7 @@ class Connection(_base_connection.Connection):
             timeseries_key: int,
             new_curve_type: Timeseries.Curve | None = None,
             new_unit_of_measurement: str | None = None,
+            new_time_zone: str | None = None,
         ) -> None:
             new_unit_of_measurement_id = None
 
@@ -184,7 +185,7 @@ class Connection(_base_connection.Connection):
                 )
 
             request = super()._prepare_update_timeseries_resource_request(
-                timeseries_key, new_curve_type, new_unit_of_measurement_id
+                timeseries_key, new_curve_type, new_unit_of_measurement_id, new_time_zone
             )
             self.time_series_service.UpdateTimeseriesResource(request)
 
@@ -195,6 +196,7 @@ class Connection(_base_connection.Connection):
             curve_type: Timeseries.Curve,
             resolution: Timeseries.Resolution,
             unit_of_measurement: str,
+            time_zone: str | None = None,
         ) -> TimeseriesResource:
             unit_of_measurement_id = self._get_unit_of_measurement_id_by_name(
                 unit_of_measurement
@@ -207,6 +209,7 @@ class Connection(_base_connection.Connection):
                 curve_type=_to_proto_curve_type(curve_type),
                 resolution=_to_proto_resolution(resolution),
                 unit_of_measurement_id=unit_of_measurement_id,
+                time_zone=time_zone or "",
             )
 
             response = self.time_series_service.CreatePhysicalTimeseries(request)

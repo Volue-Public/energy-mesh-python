@@ -20,7 +20,7 @@ import "volue/mesh/proto/type/resources.proto";
 // stored. Such time series are called physical time series. They reside in
 // Mesh resources which is a container storing data, that could be used by Mesh
 // model(s). Physical time series together with time series data (timestamps,
-// values and flags) have also associated meta data (e.g.: curve type,
+// values and flags) have also associated metadata (e.g.: curve type,
 // resolution, etc.).
 //
 // Others are generated using calculations which can be based on an arbitrary
@@ -42,6 +42,9 @@ service TimeseriesService {
   // of 4MB inbound message size. In case of larger data volumes please send
   // request data in chunks or increase the maximum gRPC inbound message size
   // from client side.
+  //
+  // Note: reading points from uncommitted physical time series is not supported.
+  // Commit the newly created physical time series to read its points.
   rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
   rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
 
@@ -52,6 +55,9 @@ service TimeseriesService {
   // requests. E.g.: in the request user asks for data of 3 time series:
   // Request: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
   // Responses: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
+  //
+  // Note: reading points from uncommitted physical time series is not supported.
+  // Commit the newly created physical time series to read its points.
   rpc ReadTransformedTimeseries(ReadTransformedTimeseriesRequest) returns (stream ReadTimeseriesResponse) {}
 
   // Each time series point occupies 20 bytes. Mesh server has a limitation of
@@ -105,12 +111,7 @@ service TimeseriesService {
   // It is not mandatory that the path mirrors the topology of the Mesh model.
   // The path *must* begin and end with forward slashes.
   //
-  // Note that the 'timeseries_key' field on the returned TimeseriesResource
-  // will *not* have a valid value which can be used in other APIs. This is
-  // because the real timeseries key values are generated afterwards, at the
-  // commit stage.
-  //
-  // Note also that the 'path' field on the returned TimeseriesResource won't
+  // Note that the 'path' field on the returned TimeseriesResource won't
   // have the same as the value as CreatePhysicalTimeseriesRequest's 'path';
   // namely, the returned 'path' will have a "Resource/" prefix, and will be
   // suffixed with the contents of the 'name' field from this request. That is:
@@ -195,13 +196,6 @@ enum TransformationMethod {
   MIN       = 8;
   // Largest value in the accumulation period.
   MAX       = 9;
-  // Same as SUM but with different period handling. In this case the period is
-  // not adjusted with regards to resolution. Here you can e.g. transform to
-  // week value based on Wednesday to Wednesday or inhomogeneous periods given
-  // by points of time on a given break point series.
-  GSUM      = 10;
-  // See GSUM. Same properties, but here mean value for period is calculated.
-  GMEAN     = 11;
 }
 
 enum Timezone {
@@ -244,27 +238,22 @@ message TimeseriesResource {
   // time series attribute with new time series resource.
   int64 timeseries_key = 1;
 
-  // [OUTPUT_ONLY]
   string path = 2;
 
-  // [OUTPUT_ONLY]
   string name = 3;
 
   // Set to true if it is a local session time series.
-  // [OUTPUT_ONLY]
   bool temporary = 4;
 
-  // [OUTPUT_ONLY]
   volue.mesh.grpc.type.Curve curve_type = 5;
 
-  // [OUTPUT_ONLY]
   volue.mesh.grpc.type.Resolution resolution = 6;
 
-  // [OUTPUT_ONLY]
   volue.mesh.grpc.model_definition.v1alpha.UnitOfMeasurement unit_of_measurement = 7;
 
-  // [OUTPUT_ONLY]
   string virtual_timeseries_expression = 8;
+
+  optional string time_zone = 9;
 }
 
 message Timeseries {
@@ -311,6 +300,8 @@ message UpdateTimeseriesResourceRequest {
   // field empty (not ID with only zeros), but provide
   //`new_unit_of_measurement_id` string in the field mask.
   volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 5;
+
+  string new_time_zone = 6;
 }
 
 message UpdateTimeseriesResourceResponse {
@@ -413,4 +404,8 @@ message CreatePhysicalTimeseriesRequest {
   volue.mesh.grpc.type.Resolution resolution = 5;
 
   volue.mesh.grpc.type.Guid unit_of_measurement_id = 6;
+
+  // Time zone of the time series. Must be a valid IANA time zone name.
+  // E.g.: "Pacific/Nauru", "Europe/Warsaw"
+  optional string time_zone = 7;
 }
