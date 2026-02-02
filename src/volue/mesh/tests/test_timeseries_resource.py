@@ -287,13 +287,13 @@ class TestCreatePhysicalTimeseries:
 
         session.commit()
 
-        expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
+        expected_path = "Resource" + ts_init_data.path + ts_init_data.name
 
         assert timeseries.path == expected_path
-        assert timeseries.name == expected_ts_data.name
-        assert timeseries.curve_type == expected_ts_data.curve_type
+        assert timeseries.name == ts_init_data.name
+        assert timeseries.curve_type == ts_init_data.curve_type
         assert timeseries.resolution == Timeseries.Resolution.DAY
-        assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
+        assert timeseries.unit_of_measurement == ts_init_data.unit_of_measurement
         assert timeseries.time_zone == "Europe/Oslo"
 
     @pytest.mark.asyncio
@@ -315,13 +315,13 @@ class TestCreatePhysicalTimeseries:
 
         await async_session.commit()
 
-        expected_path = "Resource" + expected_ts_data.path + expected_ts_data.name
+        expected_path = "Resource" + ts_init_data.path + ts_init_data.name
 
         assert timeseries.path == expected_path
-        assert timeseries.name == expected_ts_data.name
-        assert timeseries.curve_type == expected_ts_data.curve_type
+        assert timeseries.name == ts_init_data.name
+        assert timeseries.curve_type == ts_init_data.curve_type
         assert timeseries.resolution == Timeseries.Resolution.DAY
-        assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
+        assert timeseries.unit_of_measurement == ts_init_data.unit_of_measurement
 
         assert timeseries.time_zone == "Europe/Oslo"
 
