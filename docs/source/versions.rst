@@ -6,7 +6,7 @@ For detailed compatibility information, refer to the
 `compatibility matrix <https://volue-public.github.io/energy-smp-docs/latest/mesh/installation/MeshServiceInstallationGuide/#mesh-python-sdk-compatibility-matrix>`_.
 
 
-Mesh Python SDK version 1.15.0-dev
+Mesh Python SDK version 1.15.0
 **********************************
 
 This is the current master version.
@@ -14,19 +14,14 @@ This is the current master version.
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.18 **(may change)**
-- Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
+- Mesh server version >= 2.20.1
+- Python [3.10, 3.11, 3.12, 3.13, 3.14]
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
 - Support for Python 3.14 :issue:`598`
 - Added new optional fields to the availability events API for setting user identity and event creation time. :issue:`590`
-
-Changes
-~~~~~~~~~~~~~~~~~~
-
-- TBA
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
