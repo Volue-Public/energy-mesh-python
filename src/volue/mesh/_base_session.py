@@ -672,7 +672,9 @@ class Session(abc.ABC):
                 virtual time series.
             new_curve_type: set new curve type.
             new_unit_of_measurement: set new unit of measurement.
-            new_time_zone: set new time zone.
+            new_time_zone: new IANA name of time zone of the new physical time series. 
+                Valid only if resolution is Day or coarser.
+
         Note:
             Specify which ever of the new_* fields you want to update.
 

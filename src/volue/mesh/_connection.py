@@ -212,7 +212,7 @@ class Connection(_base_connection.Connection):
                 curve_type=_to_proto_curve_type(curve_type),
                 resolution=_to_proto_resolution(resolution),
                 unit_of_measurement_id=unit_of_measurement_id,
-                time_zone=time_zone or "",
+                time_zone=time_zone,
             )
 
             response = self.time_series_service.CreatePhysicalTimeseries(request)

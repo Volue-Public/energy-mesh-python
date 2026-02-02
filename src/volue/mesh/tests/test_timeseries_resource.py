@@ -193,6 +193,7 @@ class TestCreatePhysicalTimeseries:
         assert timeseries.curve_type == expected_ts_data.curve_type
         assert timeseries.resolution == expected_ts_data.resolution
         assert timeseries.unit_of_measurement == expected_ts_data.unit_of_measurement
+        assert timeseries.time_zone == ""
 
     def test_create_physical_timeseries(self, session, ts_init_data):
         """Check that we can create a new physical time series."""
