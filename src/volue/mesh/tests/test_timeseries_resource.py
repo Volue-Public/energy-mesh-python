@@ -120,6 +120,7 @@ def test_update_timeseries_resource_time_zone_wrong_resolution(session):
             new_time_zone="Europe/Warsaw",
         )
 
+
 @pytest.mark.database
 def test_update_timeseries_resource_time_zone(session):
     # Hardcoded in Mesh simple thermal model
