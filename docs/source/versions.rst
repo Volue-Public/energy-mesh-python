@@ -59,7 +59,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 .. code-block:: bash
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.15.0
 
 
 `Mesh Python SDK version 1.14.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.14.0>`_
