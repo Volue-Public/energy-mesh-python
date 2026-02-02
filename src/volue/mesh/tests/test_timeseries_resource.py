@@ -119,28 +119,18 @@ def test_update_timeseries_resource_time_zone_wrong_resolution(session):
             None,
             new_time_zone="Europe/Warsaw",
         )
-        # name_suffix = "".join(
-        #         random.choices(string.ascii_uppercase + string.digits, k=10)
-        #     )
 
-        # timeseries = session.create_physical_timeseries(
-        #     path="/Path/To/Test/Timeseries/",
-        #     name="Test_Timeseries_" + name_suffix,
-        #     curve_type=Timeseries.Curve.PIECEWISELINEAR,
-        #     resolution=Timeseries.Resolution.DAY,
-        #     unit_of_measurement=UNIT_1,
-        #     time_zone= "Europe/Oslo",
-        # )
+@pytest.mark.database
+def test_update_timeseries_resource_time_zone(session):
+    # Hardcoded in Mesh simple thermal model
+    zoned_series_key = 50
+    """Check that time series resource can be updated."""
+    session.update_timeseries_resource_info(
+        zoned_series_key, None, None, new_time_zone="Europe/London"
+    )
+    timeseries_info = session.get_timeseries_resource_info(zoned_series_key)
 
-        # session.commit()
-
-        # """Check that time series resource can be updated."""
-        # session.update_timeseries_resource_info(
-        #     timeseries.timeseries_key, None, None, new_time_zone="Europe/Warsaw"
-        # )
-        # timeseries_info = session.get_timeseries_resource_info(timeseries.timeseries_key)
-
-        # assert timeseries_info.time_zone == "Europe/Warsaw"
+    assert timeseries_info.time_zone == "Europe/London"
 
 
 @pytest.mark.database
