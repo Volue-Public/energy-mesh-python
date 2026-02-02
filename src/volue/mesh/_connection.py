@@ -185,7 +185,10 @@ class Connection(_base_connection.Connection):
                 )
 
             request = super()._prepare_update_timeseries_resource_request(
-                timeseries_key, new_curve_type, new_unit_of_measurement_id, new_time_zone
+                timeseries_key,
+                new_curve_type,
+                new_unit_of_measurement_id,
+                new_time_zone,
             )
             self.time_series_service.UpdateTimeseriesResource(request)
 
