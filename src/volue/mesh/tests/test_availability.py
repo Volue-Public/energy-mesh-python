@@ -55,6 +55,33 @@ def test_create_revision(connection):
 
 
 @pytest.mark.database
+def test_create_revision_no_optional_fields(connection):
+    with connection.create_session() as session:
+        event_id = "event_id"
+        local_id = "local_id"
+        reason = "reason"
+
+        revision = session.availability.create_revision(
+            target=THERMAL_COMPONENT_PATH,
+            event_id=event_id,
+            local_id=local_id,
+            reason=reason,
+        )
+
+        assert revision.event_id == event_id
+        assert revision.local_id == local_id
+        assert revision.reason == reason
+        assert revision.created.author == ""
+        assert revision.last_changed.author == revision.created.author
+
+        assert isinstance(revision.created.timestamp, datetime)
+        assert revision.created.timestamp == revision.last_changed.timestamp
+
+        assert revision.owner_id is not None
+        assert revision.recurrences == []
+
+
+@pytest.mark.database
 def test_create_revision_with_invalid_target(connection):
     with connection.create_session() as session:
         with pytest.raises(grpc.RpcError, match="object not found"):
@@ -601,6 +628,65 @@ def test_create_restriction_with_complex_recurrence(connection):
 
 
 @pytest.mark.database
+def test_create_restriction_no_optional_fields(connection):
+    event_id = "basic_restriction_event"
+    local_id = "basic_restriction_local_id"
+    reason = "Basic restriction reason"
+    category = "DischargeMin[m3/s]"
+
+    status = "SelfImposed"
+    description = "Basic test restriction"
+    recurrence_type = RecurrenceType.NONE
+    period_start = datetime(2023, 1, 1, tzinfo=dateutil.tz.UTC)
+    period_end = datetime(2023, 1, 10, tzinfo=dateutil.tz.UTC)
+    value = 0.5
+
+    with connection.create_session() as session:
+        # Create a restriction with basic recurrence
+        restriction = session.availability.create_restriction(
+            target=THERMAL_COMPONENT_PATH,
+            event_id=event_id,
+            local_id=local_id,
+            reason=reason,
+            category=category,
+            recurrence=RestrictionBasicRecurrence(
+                recurrence=Recurrence(
+                    status=status,
+                    description=description,
+                    recurrence_type=recurrence_type,
+                ),
+                period_start=period_start,
+                period_end=period_end,
+                value=value,
+            ),
+        )
+
+        assert isinstance(restriction, Restriction)
+
+        # Assert basic fields
+        assert restriction.event_id == event_id
+        assert restriction.local_id == local_id
+        assert restriction.reason == reason
+        assert restriction.category == category
+        assert restriction.created.author == ""
+        assert restriction.last_changed.author == restriction.created.author
+
+        assert isinstance(restriction.created.timestamp, datetime)
+        assert restriction.created.timestamp == restriction.last_changed.timestamp
+
+        assert restriction.owner_id is not None
+
+        # Assert recurrence details
+        assert isinstance(restriction.recurrence, RestrictionBasicRecurrence)
+        assert restriction.recurrence.recurrence.status == status
+        assert restriction.recurrence.recurrence.description == description
+        assert restriction.recurrence.recurrence.recurrence_type == recurrence_type
+        assert restriction.recurrence.period_start == period_start
+        assert restriction.recurrence.period_end == period_end
+        assert restriction.recurrence.value == value
+
+
+@pytest.mark.database
 def test_create_restriction_with_invalid_target(connection):
     with connection.create_session() as session:
         with pytest.raises(grpc.RpcError, match="object not found"):
@@ -866,6 +952,17 @@ def test_update_revision_partial(session):
     assert retrieved_revision.local_id == "updated_local_id"
     assert retrieved_revision.reason == "Original reason"
 
+    # Verify last changed author is empty since it wasn't set for the call to update_revision.
+    assert retrieved_revision.created.author == original_revision.created.author
+    assert retrieved_revision.last_changed.author == ""
+
+    # Verify timestamps reflect the update
+    assert retrieved_revision.created.timestamp == original_revision.created.timestamp
+    assert (
+        retrieved_revision.last_changed.timestamp
+        >= original_revision.last_changed.timestamp
+    )
+
 
 @pytest.mark.database
 def test_update_restriction(session):
@@ -1013,6 +1110,20 @@ def test_update_restriction_partial(session):
         2023, 1, 10, tzinfo=dateutil.tz.UTC
     )
     assert retrieved_restriction.recurrence.value == 0.5
+
+    # Verify last changed author is empty since it wasn't set for the call to update_restriction.
+    assert retrieved_restriction.created.author == original_restriction.created.author
+    assert retrieved_restriction.last_changed.author == ""
+
+    # Verify timestamps reflect the update
+    assert (
+        retrieved_restriction.created.timestamp
+        == original_restriction.created.timestamp
+    )
+    assert (
+        retrieved_restriction.last_changed.timestamp
+        >= original_restriction.last_changed.timestamp
+    )
 
 
 @pytest.mark.database
