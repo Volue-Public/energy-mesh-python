@@ -608,11 +608,7 @@ class Availability(abc.ABC):
             local_id=local_id,
             reason=reason,
             created_author=created_author,
-            created_timestamp=(
-                _datetime_to_timestamp_pb2(created_timestamp)
-                if created_timestamp != None
-                else None
-            ),
+            created_timestamp=created_timestamp,
             last_changed_author=last_changed_author,
         )
         return request
