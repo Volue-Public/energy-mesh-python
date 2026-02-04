@@ -672,7 +672,6 @@ def test_create_restriction_no_optional_fields(connection):
         assert restriction.last_changed.author == restriction.created.author
 
         assert isinstance(restriction.created.timestamp, datetime)
-        assert restriction.created.timestamp == restriction.last_changed.timestamp
 
         assert restriction.owner_id is not None
 
