@@ -20,7 +20,7 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Added support for zoned series. 
 
 Changes
 ~~~~~~~~~~~~~~~~~~
