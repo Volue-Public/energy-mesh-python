@@ -674,7 +674,7 @@ class Session(abc.ABC):
             new_unit_of_measurement: set new unit of measurement.
             new_time_zone: set new time zone. Must be an IANA name or empty
                 for changing to time zone naive timeseries. Valid only if resolution
-                is Day or coarser.
+                is DAY or coarser.
 
         Note:
             Specify which ever of the new_* fields you want to update.
@@ -718,8 +718,8 @@ class Session(abc.ABC):
             resolution: resolution of the new physical time series
             unit_of_measurement: unit of measurement of the new physical time series.
                 It must match an existing unit in Mesh.
-            time_zone: IANA name of time zone of the new physical time series. Valid only if resolution is Day or coarser.
-                Setting to empty string or leaving empty will create time zone naive time series.
+            time_zone: IANA name of time zone of the new physical time series. Valid only if resolution is DAY or coarser.
+                Setting to empty string or leaving unset will create time zone naive time series.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.

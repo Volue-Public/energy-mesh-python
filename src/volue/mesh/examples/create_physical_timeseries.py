@@ -21,8 +21,10 @@ def main(address, tls_root_pem_cert):
             path="/Path/To/Test/Timeseries/",
             name="Test_Timeseries_" + name_suffix,
             curve_type=Timeseries.Curve.PIECEWISELINEAR,
-            resolution=Timeseries.Resolution.HOUR,
+            resolution=Timeseries.Resolution.DAY,
             unit_of_measurement="cm",
+            # time_zone valid only if resolution is DAY or coarser
+            time_zeone="Europe/Warsaw",
         )
 
         session.commit()
