@@ -24,7 +24,7 @@ def main(address, tls_root_pem_cert):
             resolution=Timeseries.Resolution.DAY,
             unit_of_measurement="cm",
             # time_zone valid only if resolution is DAY or coarser
-            time_zeone="Europe/Warsaw",
+            time_zone="Europe/Warsaw",
         )
 
         session.commit()
