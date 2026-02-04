@@ -120,8 +120,6 @@ def test_update_timeseries_resource_time_zone_wrong_resolution(session):
 
 @pytest.mark.database
 def test_update_timeseries_resource_time_zone(session):
-    """Check that time series resource can be updated."""
-
     # Hardcoded in Mesh simple thermal model
     zoned_series_key = 50
     session.update_timeseries_resource_info(
@@ -134,8 +132,6 @@ def test_update_timeseries_resource_time_zone(session):
 
 @pytest.mark.database
 def test_update_timeseries_resource_time_zone_empty(session):
-    """Check that time series resource can be updated to empty time series."""
-
     # Hardcoded in Mesh simple thermal model
     zoned_series_key = 50
     session.update_timeseries_resource_info(zoned_series_key, new_time_zone="")
@@ -274,7 +270,6 @@ class TestCreatePhysicalTimeseries:
             )
 
     def test_create_timeseries_with_time_zone(self, session, ts_init_data):
-        """Check that passing time zone works."""
         ts_data = ts_init_data
         ts_data.curve_type = Timeseries.Curve.UNKNOWN
 
@@ -302,7 +297,6 @@ class TestCreatePhysicalTimeseries:
     async def test_create_timeseries_with_time_zone_async(
         self, async_session, ts_init_data
     ):
-        """Check that passing time zone works."""
         ts_data = ts_init_data
         ts_data.curve_type = Timeseries.Curve.UNKNOWN
 
