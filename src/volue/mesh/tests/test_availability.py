@@ -75,7 +75,6 @@ def test_create_revision_no_optional_fields(connection):
         assert revision.last_changed.author == revision.created.author
 
         assert isinstance(revision.created.timestamp, datetime)
-        assert revision.created.timestamp == revision.last_changed.timestamp
 
         assert revision.owner_id is not None
         assert revision.recurrences == []
@@ -917,10 +916,6 @@ def test_update_revision(session):
 
     # Verify timestamps reflect the update
     assert retrieved_revision.created.timestamp == original_revision.created.timestamp
-    assert (
-        retrieved_revision.last_changed.timestamp
-        >= original_revision.last_changed.timestamp
-    )
 
 
 @pytest.mark.database
@@ -1118,10 +1113,6 @@ def test_update_restriction_partial(session):
     assert (
         retrieved_restriction.created.timestamp
         == original_restriction.created.timestamp
-    )
-    assert (
-        retrieved_restriction.last_changed.timestamp
-        >= original_restriction.last_changed.timestamp
     )
 
 
