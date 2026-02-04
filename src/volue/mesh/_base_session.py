@@ -673,7 +673,7 @@ class Session(abc.ABC):
             new_curve_type: set new curve type.
             new_unit_of_measurement: set new unit of measurement.
             new_time_zone: set new time zone. Must be an IANA name or empty
-                for changing to time zone naive timeseries. Valid only if resolution
+                for changing to time zone naive time series. Valid only if resolution
                 is DAY or coarser.
 
         Note:
