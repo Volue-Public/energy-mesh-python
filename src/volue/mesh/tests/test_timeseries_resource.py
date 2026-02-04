@@ -123,9 +123,10 @@ def test_update_timeseries_resource_time_zone_wrong_resolution(session):
 
 @pytest.mark.database
 def test_update_timeseries_resource_time_zone(session):
+    """Check that time series resource can be updated."""
+
     # Hardcoded in Mesh simple thermal model
     zoned_series_key = 50
-    """Check that time series resource can be updated."""
     session.update_timeseries_resource_info(
         zoned_series_key, None, None, new_time_zone="Europe/London"
     )
