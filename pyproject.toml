@@ -46,7 +46,7 @@ exclude = [
 python = ">=3.10, <3.15"
 grpcio = ">=1.37.0"
 pyarrow = ">=7.0.0"
-# It seems like grpc provides its own version of protobuf, which may not always be compatible with
+# It seems like grpc provides its own version of protobuf which may not always be compatible with
 # the one we set here. This should be considered when updating the protobuf version so that we don't
 # introduce incompatibilities with grpc's; see also https://github.com/Volue-Public/energy-mesh-python/issues/503
 protobuf = ">=5.29.5"
