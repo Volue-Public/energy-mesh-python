@@ -114,10 +114,7 @@ def test_update_timeseries_resource_time_zone_wrong_resolution(session):
         match="time zone can only be set for a time series with a daily resolution or coarser",
     ):
         session.update_timeseries_resource_info(
-            get_physical_timeseries().timeseries_key,
-            None,
-            None,
-            new_time_zone="Europe/Warsaw",
+            get_physical_timeseries().timeseries_key, new_time_zone="Europe/Warsaw"
         )
 
 
@@ -128,11 +125,23 @@ def test_update_timeseries_resource_time_zone(session):
     # Hardcoded in Mesh simple thermal model
     zoned_series_key = 50
     session.update_timeseries_resource_info(
-        zoned_series_key, None, None, new_time_zone="Europe/London"
+        zoned_series_key, new_time_zone="Europe/London"
     )
     timeseries_info = session.get_timeseries_resource_info(zoned_series_key)
 
     assert timeseries_info.time_zone == "Europe/London"
+
+
+@pytest.mark.database
+def test_update_timeseries_resource_time_zone_empty(session):
+    """Check that time series resource can be updated to empty time series."""
+
+    # Hardcoded in Mesh simple thermal model
+    zoned_series_key = 50
+    session.update_timeseries_resource_info(zoned_series_key, new_time_zone="")
+    timeseries_info = session.get_timeseries_resource_info(zoned_series_key)
+
+    assert timeseries_info.time_zone == None
 
 
 @pytest.mark.database
