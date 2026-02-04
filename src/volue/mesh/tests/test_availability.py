@@ -916,6 +916,10 @@ def test_update_revision(session):
 
     # Verify timestamps reflect the update
     assert retrieved_revision.created.timestamp == original_revision.created.timestamp
+    assert (
+        retrieved_revision.last_changed.timestamp
+        >= original_revision.last_changed.timestamp
+    )
 
 
 @pytest.mark.database
@@ -952,10 +956,6 @@ def test_update_revision_partial(session):
 
     # Verify timestamps reflect the update
     assert retrieved_revision.created.timestamp == original_revision.created.timestamp
-    assert (
-        retrieved_revision.last_changed.timestamp
-        >= original_revision.last_changed.timestamp
-    )
 
 
 @pytest.mark.database
