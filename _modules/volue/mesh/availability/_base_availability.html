@@ -878,7 +878,11 @@
             <span class="n">category</span><span class="o">=</span><span class="n">category</span><span class="p">,</span>
             <span class="n">restriction_recurrence</span><span class="o">=</span><span class="n">proto_recurrence</span><span class="p">,</span>
             <span class="n">created_author</span><span class="o">=</span><span class="n">created_author</span><span class="p">,</span>
-            <span class="n">created_timestamp</span><span class="o">=</span><span class="n">created_timestamp</span><span class="p">,</span>
+            <span class="n">created_timestamp</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">created_timestamp</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">created_timestamp</span> <span class="o">!=</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
             <span class="n">last_changed_author</span><span class="o">=</span><span class="n">last_changed_author</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">request</span>
