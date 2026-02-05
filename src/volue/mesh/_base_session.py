@@ -662,6 +662,7 @@ class Session(abc.ABC):
         timeseries_key: int,
         new_curve_type: Timeseries.Curve | None = None,
         new_unit_of_measurement: str | None = None,
+        new_time_zone: str | None = None,
     ) -> None:
         """
         Update information associated with a physical or virtual time series.
@@ -671,6 +672,9 @@ class Session(abc.ABC):
                 virtual time series.
             new_curve_type: set new curve type.
             new_unit_of_measurement: set new unit of measurement.
+            new_time_zone: set new time zone. Must be an IANA name or empty
+                for changing to time zone naive time series. Valid only if resolution
+                is DAY or coarser.
 
         Note:
             Specify which ever of the new_* fields you want to update.
@@ -687,6 +691,7 @@ class Session(abc.ABC):
         curve_type: Timeseries.Curve,
         resolution: Timeseries.Resolution,
         unit_of_measurement: str,
+        time_zone: str | None = None,
     ) -> TimeseriesResource:
         """
         Create a new physical time series.
@@ -713,6 +718,8 @@ class Session(abc.ABC):
             resolution: resolution of the new physical time series
             unit_of_measurement: unit of measurement of the new physical time series.
                 It must match an existing unit in Mesh.
+            time_zone: IANA name of time zone of the new physical time series. Valid only if resolution is DAY or coarser.
+                Setting to empty string or leaving unset will create time zone naive time series.
 
         Raises:
             grpc.RpcError: Error message raised if the gRPC request could not be completed.
@@ -1546,6 +1553,7 @@ class Session(abc.ABC):
         timeseries_key: int,
         new_curve_type: Timeseries.Curve | None,
         new_unit_of_measurement_id: resources_pb2.Guid | None,
+        new_time_zone: str | None,
     ) -> time_series_pb2.UpdateTimeseriesResourceRequest:
         request = time_series_pb2.UpdateTimeseriesResourceRequest(
             session_id=_to_proto_guid(self.session_id),
@@ -1560,6 +1568,10 @@ class Session(abc.ABC):
         if new_unit_of_measurement_id is not None:
             fields_to_update.append("new_unit_of_measurement_id")
             request.new_unit_of_measurement_id.CopyFrom(new_unit_of_measurement_id)
+
+        if new_time_zone is not None:
+            fields_to_update.append("new_time_zone")
+            request.new_time_zone = new_time_zone
 
         request.field_mask.CopyFrom(
             protobuf.field_mask_pb2.FieldMask(paths=fields_to_update)

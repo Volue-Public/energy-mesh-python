@@ -182,7 +182,7 @@ message SearchObjectDefinitionsRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the object definitions to be searched for.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   // If set to true, then all child namespaces will be also included in the
@@ -218,7 +218,7 @@ message CreateObjectDefinitionRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the object definition to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   // Name of the new object definition.
@@ -249,6 +249,11 @@ message UpdateObjectDefinitionRequest {
   // List of tags that will be added to the object definition.
   // If set then all old tags will be replaced by the new tags.
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 6;
+
+  // New owner of the object definition.
+  // Owner must be either a namespace OR a model definition (which is also
+  // a namespace).
+  volue.mesh.grpc.type.MeshId new_name_space_id = 7;
 }
 
 message UpdateObjectDefinitionResponse {
@@ -337,7 +342,7 @@ message CreateRelationAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the relation attribute definition to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   string name = 3;
@@ -353,7 +358,7 @@ message CreateRatingCurveAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the simple attribute definition to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   string name = 3;
@@ -365,7 +370,7 @@ message CreateSimpleAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the simple attribute definition to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   string name = 3;
@@ -394,7 +399,7 @@ message CreateTimeseriesAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the time series attribute definition to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   string name = 3;
@@ -407,7 +412,7 @@ message CreateXySetAttributeTypeRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the simple attribute definition to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   string name = 3;
@@ -434,6 +439,11 @@ message UpdateRatingCurveAttributeTypeRequest {
   string new_description = 5;
 
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 6;
+
+  // New owner of the attribute type.
+  // Owner must be either a namespace OR a model definition (which is also
+  // a namespace).
+  volue.mesh.grpc.type.MeshId new_name_space_id = 7;
 }
 
 message UpdateRelationAttributeTypeRequest {
@@ -454,6 +464,11 @@ message UpdateRelationAttributeTypeRequest {
   string new_description = 5;
 
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 6;
+
+  // New owner of the attribute type.
+  // Owner must be either a namespace OR a model definition (which is also
+  // a namespace).
+  volue.mesh.grpc.type.MeshId new_name_space_id = 7;
 }
 
 message UpdateSimpleAttributeTypeRequest {
@@ -486,6 +501,11 @@ message UpdateSimpleAttributeTypeRequest {
   volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 7;
 
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 8;
+
+  // New owner of the attribute type.
+  // Owner must be either a namespace OR a model definition (which is also
+  // a namespace).
+  volue.mesh.grpc.type.MeshId new_name_space_id = 9;
 }
 
 message UpdateTimeseriesAttributeTypeRequest {
@@ -515,6 +535,11 @@ message UpdateTimeseriesAttributeTypeRequest {
   // definitions and attributes based on the given attribute type.
   volue.mesh.grpc.type.Guid new_unit_of_measurement_id = 6;
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 7;
+
+  // New owner of the attribute type.
+  // Owner must be either a namespace OR a model definition (which is also
+  // a namespace).
+  volue.mesh.grpc.type.MeshId new_name_space_id = 8;
 }
 
 message UpdateXySetAttributeTypeRequest {
@@ -535,6 +560,11 @@ message UpdateXySetAttributeTypeRequest {
   string new_description = 5;
   string new_expression = 6;
   repeated volue.mesh.grpc.type.Guid new_tag_ids = 7;
+
+  // New owner of the attribute type.
+  // Owner must be either a namespace OR a model definition (which is also
+  // a namespace).
+  volue.mesh.grpc.type.MeshId new_name_space_id = 8;
 }
 
 message UpdateAttributeTypeResponse {
@@ -573,7 +603,7 @@ message SearchNamespacesRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the namespaces to be searched for.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   volue.mesh.grpc.type.MeshId name_space_id = 2;
 
   // If set to true, then all child namespaces will be also included in the
@@ -675,11 +705,11 @@ message AddSimpleAttributeDefinitionRequest {
   optional AttributeDefinitionThresholdValue lower_threshold = 8;
 
   // Defines set of allowed attribute values
-  // 
+  //
   // - Allowed values are applied only to integer, double and string attribute
   //   values.
-  // - Allowed values have precedence over upper and lower thresholds for 
-  //   integer and double attribute values, therefore if defined, upper and 
+  // - Allowed values have precedence over upper and lower thresholds for
+  //   integer and double attribute values, therefore if defined, upper and
   //   lower thresholds must be left empty.
   //
   // If not defined, then upper and lower thresholds are used.
@@ -912,7 +942,7 @@ message CreateNamespaceRequest {
   volue.mesh.grpc.type.Guid session_id = 1;
 
   // Owner ID of the namespace to be created.
-  // It is either a namespace OR model definition (which is also a namespace).
+  // It is either a namespace OR a model definition (which is also a namespace).
   //
   // When creating new model definition this MUST NOT be set.
   volue.mesh.grpc.type.MeshId name_space_id = 2;
