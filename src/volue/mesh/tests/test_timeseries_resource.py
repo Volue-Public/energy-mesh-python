@@ -33,6 +33,13 @@ def get_physical_timeseries():
     return test_timeseries
 
 
+def get_zoned_series_timeseries_key():
+    """
+    Zoned series timeseries_key from SimpleThermalModel test model.
+    """
+    return 50
+
+
 def get_virtual_timeseries():
     """
     Virtual time series from SimpleThermalModel test model.
@@ -120,22 +127,24 @@ def test_update_timeseries_resource_time_zone_wrong_resolution(session):
 
 @pytest.mark.database
 def test_update_timeseries_resource_time_zone(session):
-    # Hardcoded in Mesh simple thermal model
-    zoned_series_key = 50
     session.update_timeseries_resource_info(
-        zoned_series_key, new_time_zone="Europe/London"
+        get_zoned_series_timeseries_key(), new_time_zone="Europe/London"
     )
-    timeseries_info = session.get_timeseries_resource_info(zoned_series_key)
+    timeseries_info = session.get_timeseries_resource_info(
+        get_zoned_series_timeseries_key()
+    )
 
     assert timeseries_info.time_zone == "Europe/London"
 
 
 @pytest.mark.database
 def test_update_timeseries_resource_time_zone_empty(session):
-    # Hardcoded in Mesh simple thermal model
-    zoned_series_key = 50
-    session.update_timeseries_resource_info(zoned_series_key, new_time_zone="")
-    timeseries_info = session.get_timeseries_resource_info(zoned_series_key)
+    session.update_timeseries_resource_info(
+        get_zoned_series_timeseries_key(), new_time_zone=""
+    )
+    timeseries_info = session.get_timeseries_resource_info(
+        get_zoned_series_timeseries_key()
+    )
 
     assert timeseries_info.time_zone == None
 
@@ -340,16 +349,18 @@ class TestCreatePhysicalTimeseries:
 async def test_timeseries_resource_async(async_session):
     """For async run the simplest test, implementation is the same."""
 
-    timeseries_key = get_physical_timeseries().timeseries_key
+    timeseries_key = get_zoned_series_timeseries_key()
     new_curve_type = Timeseries.Curve.STAIRCASE
     new_unit_of_measurement = UNIT_1
+    new_time_zone = "Europe/London"
 
     await async_session.update_timeseries_resource_info(
-        timeseries_key, new_curve_type, new_unit_of_measurement
+        timeseries_key, new_curve_type, new_unit_of_measurement, new_time_zone
     )
     timeseries_info = await async_session.get_timeseries_resource_info(timeseries_key)
     assert timeseries_info.curve_type == new_curve_type
     assert timeseries_info.unit_of_measurement == new_unit_of_measurement
+    assert timeseries_info.time_zone == new_time_zone
 
 
 if __name__ == "__main__":
