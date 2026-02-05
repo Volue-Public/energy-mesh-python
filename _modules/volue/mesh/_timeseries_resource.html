@@ -204,6 +204,7 @@
     <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span>
     <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">virtual_timeseries_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto_timeseries_resource</span><span class="p">(</span>
@@ -223,6 +224,11 @@
             <span class="n">resolution</span><span class="o">=</span><span class="n">_from_proto_resolution</span><span class="p">(</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">resolution</span><span class="p">),</span>
             <span class="n">unit_of_measurement</span><span class="o">=</span><span class="n">_get_unit_of_measurement</span><span class="p">(</span><span class="n">proto_timeseries_resource</span><span class="p">),</span>
             <span class="n">virtual_timeseries_expression</span><span class="o">=</span><span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">virtual_timeseries_expression</span><span class="p">,</span>
+            <span class="n">time_zone</span><span class="o">=</span><span class="p">(</span>
+                <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">time_zone</span>
+                <span class="k">if</span> <span class="n">proto_timeseries_resource</span><span class="o">.</span><span class="n">time_zone</span>
+                <span class="k">else</span> <span class="kc">None</span>
+            <span class="p">),</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">resource</span></div>

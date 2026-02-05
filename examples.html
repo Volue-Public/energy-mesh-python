@@ -2815,8 +2815,10 @@ argument will be discarded if an insecure connection is used.</p>
             <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/Path/To/Test/Timeseries/&quot;</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test_Timeseries_&quot;</span> <span class="o">+</span> <span class="n">name_suffix</span><span class="p">,</span>
             <span class="n">curve_type</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span><span class="p">,</span>
-            <span class="n">resolution</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span><span class="p">,</span>
+            <span class="n">resolution</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span>
             <span class="n">unit_of_measurement</span><span class="o">=</span><span class="s2">&quot;cm&quot;</span><span class="p">,</span>
+            <span class="c1"># time_zone valid only if resolution is DAY or coarser</span>
+            <span class="n">time_zone</span><span class="o">=</span><span class="s2">&quot;Europe/Warsaw&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
