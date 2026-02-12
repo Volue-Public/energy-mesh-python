@@ -108,7 +108,8 @@ message CreateRevisionRequest {
   // User-editable info about when this event was created. This is useful when
   // e.g. importing old events from a different system, in which case it may be
   // desirable to preserve their original creation date instead of using
-  // the date when they were imported.
+  // the date when they were imported. This value will be also set as the
+  // last changed timestamp for the event.
   //
   // If this field is set, we'll use its value as-is. If not, we'll use the
   // current time at the moment the request is processed.
@@ -160,7 +161,8 @@ message CreateRestrictionRequest {
   // between users and change over time.
   optional string created_author = 8;
 
-  // User-editable info about when this event was created.
+  // User-editable info about when this event was created. This value will be
+  // also set as the last changed timestamp for the event.
   // If this field is set, we'll use its value as-is. If not, we'll use the
   // current time at the moment the request is processed.
   optional google.protobuf.Timestamp created_timestamp = 9;
@@ -204,7 +206,8 @@ message CreateAdvancedRestrictionRequest {
   // between users and change over time.
   optional string created_author = 5;
 
-  // User-editable info about when this event was created.
+  // User-editable info about when this event was created. This value will be
+  // also set as the last changed timestamp for the event.
   // If this field is set, we'll use its value as-is. If not, we'll use the
   // current time at the moment the request is processed.
   optional google.protobuf.Timestamp created_timestamp = 6;
