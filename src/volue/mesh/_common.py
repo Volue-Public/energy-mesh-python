@@ -410,6 +410,9 @@ RESOLUTIONS = bidict(
         Timeseries.Resolution.WEEK: type.resources_pb2.Resolution.WEEK,
         Timeseries.Resolution.MONTH: type.resources_pb2.Resolution.MONTH,
         Timeseries.Resolution.YEAR: type.resources_pb2.Resolution.YEAR,
+        Timeseries.Resolution.MIN: type.resources_pb2.Resolution.MIN,
+        Timeseries.Resolution.MIN5: type.resources_pb2.Resolution.MIN5,
+        Timeseries.Resolution.MIN10: type.resources_pb2.Resolution.MIN10,
     }
 )
 
