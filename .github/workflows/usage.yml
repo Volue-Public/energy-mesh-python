@@ -8,6 +8,9 @@ on:
 
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   checkout_and_use:
     runs-on: windows-2025
@@ -18,15 +21,15 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           path: repo
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Checkout GitHub action
-        uses: actions/checkout@v2
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: PowelAS/sme-run-mesh-service
           ref: master
@@ -40,8 +43,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.OAUTH_TOKEN }}
           MESH_SERVICE_TAG: "v2.21.0.2751"
 
-      # run one example before installing pytest packages and pandas
-      # to check if all dependencies are installed together with Mesh Python SDK pip package
+      # Run one example before installing pytest packages and pandas
+      # to check if all dependencies are installed together with Mesh Python SDK pip package.
       - name: Install and test Python SDK (Windows)
         run: |
           python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}
@@ -51,15 +54,15 @@ jobs:
           python -m pytest ./repo/src/volue/mesh/tests -m "not authentication and not long"
 
       - name: Install Ubuntu 22.04 (WSL)
-        uses: Vampire/setup-wsl@v5
+        uses: Vampire/setup-wsl@6a8db447be7ed35f2f499c02c6e60ff77ef11278 # v6.0.0
         with:
           distribution: Ubuntu-22.04
           wsl-version: 1
           set-as-default: "true"
           update: "false"
 
-      # run one example before installing pytest packages and pandas
-      # to check if all dependencies are installed together with Mesh Python SDK pip package
+      # Run one example before installing pytest packages and pandas
+      # to check if all dependencies are installed together with Mesh Python SDK pip package.
       - name: Install and test Python SDK (Ubuntu 22.04)
         shell: wsl-bash {0}
         run: |
