@@ -7,19 +7,27 @@ on:
 
   workflow_dispatch:
 
+# Default all tokens to read-only. Only the single publish job
+# elevates to contents:write so that any future jobs added to this
+# workflow don't silently inherit write access.
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build and publish
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    permissions:
+      contents: write  # needed to push to gh-pages branch
     steps:
     - name: Checkout origin/master to master/
-      uses: actions/checkout@v2
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         path: master
 
     - name: Checkout origin/gh-pages to gh-pages/
-      uses: actions/checkout@v2
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         ref: gh-pages
         path: gh-pages
@@ -30,10 +38,10 @@ jobs:
         sudo apt-get install -y libkrb5-dev
 
     - name: Install poetry
-      run: curl -sSL https://install.python-poetry.org | python3 - --version 1.7.1
+      run: python3 -m pip install poetry==1.8.5
 
     - name: Build and publish page
       run: |
-        git -C gh-pages config user.name $GITHUB_ACTOR
+        git -C gh-pages config user.name "$GITHUB_ACTOR"
         git -C gh-pages config user.email "$GITHUB_ACTOR@bots.github.com"
         ./master/.github/workflows/pages.sh master/ gh-pages/
