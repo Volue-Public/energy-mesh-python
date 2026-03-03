@@ -21,6 +21,7 @@ New features
 ~~~~~~~~~~~~~~~~~~
 
 - Added support for zoned series. :issue:`587`
+- Added support for `MIN`, `MIN5` and `MIN10` resolutions. :pull:`617`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
