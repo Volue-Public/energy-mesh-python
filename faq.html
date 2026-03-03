@@ -291,6 +291,9 @@ environments:</p>
 
 <span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
 
+<span class="nt">permissions</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+
 <span class="nt">jobs</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">checkout_and_use</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">windows-2025</span>
@@ -301,15 +304,15 @@ environments:</p>
 <span class="w">    </span><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span>
 
 <span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd</span><span class="w"> </span><span class="c1"># v6.0.2</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">repo</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v2</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405</span><span class="w"> </span><span class="c1"># v6.2.0</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.python-version }}</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Checkout GitHub action</span>
-<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd</span><span class="w"> </span><span class="c1"># v6.0.2</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PowelAS/sme-run-mesh-service</span>
 <span class="w">          </span><span class="nt">ref</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span>
@@ -323,8 +326,8 @@ environments:</p>
 <span class="w">          </span><span class="nt">GITHUB_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.OAUTH_TOKEN }}</span>
 <span class="w">          </span><span class="nt">MESH_SERVICE_TAG</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v2.21.0.2796&quot;</span>
 
-<span class="w">      </span><span class="c1"># run one example before installing pytest packages and pandas</span>
-<span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package</span>
+<span class="w">      </span><span class="c1"># Run one example before installing pytest packages and pandas</span>
+<span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package.</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and test Python SDK (Windows)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
 <span class="w">          </span><span class="no">python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@${{ github.ref }}</span>
@@ -334,15 +337,15 @@ environments:</p>
 <span class="w">          </span><span class="no">python -m pytest ./repo/src/volue/mesh/tests -m &quot;not authentication and not long&quot;</span>
 
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install Ubuntu 22.04 (WSL)</span>
-<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Vampire/setup-wsl@v5</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Vampire/setup-wsl@6a8db447be7ed35f2f499c02c6e60ff77ef11278</span><span class="w"> </span><span class="c1"># v6.0.0</span>
 <span class="w">        </span><span class="nt">with</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ubuntu-22.04</span>
 <span class="w">          </span><span class="nt">wsl-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="w">          </span><span class="nt">set-as-default</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
 <span class="w">          </span><span class="nt">update</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 
-<span class="w">      </span><span class="c1"># run one example before installing pytest packages and pandas</span>
-<span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package</span>
+<span class="w">      </span><span class="c1"># Run one example before installing pytest packages and pandas</span>
+<span class="w">      </span><span class="c1"># to check if all dependencies are installed together with Mesh Python SDK pip package.</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Install and test Python SDK (Ubuntu 22.04)</span>
 <span class="w">        </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">wsl-bash {0}</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
