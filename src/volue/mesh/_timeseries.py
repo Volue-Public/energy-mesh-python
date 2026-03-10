@@ -47,6 +47,9 @@ class Timeseries:
             UNSPECIFIED:
             UNDEFINED:
             BREAKPOINT:
+            MIN:
+            MIN5:
+            MIN10:
             MIN15:
             MIN30:
             HOUR:
@@ -66,6 +69,9 @@ class Timeseries:
         YEAR = 7
         MIN30 = 8
         UNDEFINED = 9
+        MIN = 10
+        MIN5 = 11
+        MIN10 = 12
 
     class PointFlags(Enum):
         """

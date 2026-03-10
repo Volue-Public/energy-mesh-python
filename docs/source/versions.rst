@@ -14,13 +14,14 @@ This is the current master version.
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.20.1 **(may change)**
+- Mesh server version >= 2.21.0 **(may change)**
 - Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Added support for zoned series. :issue:`587`
+- Added support for `MIN`, `MIN5` and `MIN10` resolutions. :pull:`617`
 
 Changes
 ~~~~~~~~~~~~~~~~~~

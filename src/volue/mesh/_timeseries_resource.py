@@ -31,6 +31,7 @@ class TimeseriesResource:
     resolution: Timeseries.Resolution
     unit_of_measurement: str | None
     virtual_timeseries_expression: str | None = None
+    time_zone: str | None = None
 
     @classmethod
     def _from_proto_timeseries_resource(
@@ -50,6 +51,11 @@ class TimeseriesResource:
             resolution=_from_proto_resolution(proto_timeseries_resource.resolution),
             unit_of_measurement=_get_unit_of_measurement(proto_timeseries_resource),
             virtual_timeseries_expression=proto_timeseries_resource.virtual_timeseries_expression,
+            time_zone=(
+                proto_timeseries_resource.time_zone
+                if proto_timeseries_resource.time_zone
+                else None
+            ),
         )
 
         return resource

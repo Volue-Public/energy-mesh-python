@@ -10,12 +10,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
       with:
         python-version: ${{ inputs.python-version }}
 
     - name: Installing poetry
-      uses: abatilo/actions-poetry@v2.0.0
+      uses: abatilo/actions-poetry@1f9adef0261964471fcf93ba269e1762a33a8a26 # v2.0.0
       with:
         poetry-version: "1.8.5"
 
@@ -29,7 +29,7 @@ runs:
       shell: bash
 
     - name: Checkout GitHub action
-      uses: actions/checkout@v3
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         repository: PowelAS/sme-run-mesh-service
         ref: master
@@ -41,4 +41,4 @@ runs:
       id: download-mesh-server
       with:
         GITHUB_TOKEN: ${{ inputs.token }}
-        MESH_SERVICE_TAG: "v2.21.0.2751"
+        MESH_SERVICE_TAG: "v2.21.0.2796"
