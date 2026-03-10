@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from importlib import metadata
 
 # Minimum supported Mesh server version
-MINIMUM_SERVER_VERSION_STR = "2.18.0"
+MINIMUM_SERVER_VERSION_STR = "2.20.1"
 
 # Name of the metadata key used to transmit client version information
 CLIENT_VERSION_METADATA_KEY = "x-volue-mesh-client-version"
