@@ -165,7 +165,9 @@ class Timeseries:
         # setting start and end time should only take effect when writing time series
         if start_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
-                self.start_time = self.arrow_table["utc_time"][0].as_py()
+                self.start_time = self.arrow_table[Timeseries.TIMESTAMP_PA_FIELD_NAME][
+                    0
+                ].as_py()
             else:
                 # Means we have an empty time series
                 self.start_time = None
@@ -175,9 +177,9 @@ class Timeseries:
         if end_time is None:
             if self.arrow_table and self.arrow_table.num_rows > 0:
                 # end time must be greater than last time point in PyArrow table
-                self.end_time = self.arrow_table["utc_time"][-1].as_py() + timedelta(
-                    seconds=1
-                )
+                self.end_time = self.arrow_table[Timeseries.TIMESTAMP_PA_FIELD_NAME][
+                    -1
+                ].as_py() + timedelta(seconds=1)
             else:
                 # Means we have an empty time series
                 self.end_time = None
