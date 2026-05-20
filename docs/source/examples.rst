@@ -32,6 +32,13 @@ Best practices
    the example script. The PEM-encoded TLS certificate passed as a second
    argument will be discarded if an insecure connection is used.
 
+.. note::
+   Address with port and path to PEM-encoded TLS certificate are parsed by
+   `get_connection_info` function defined in separate file helpers.py, which
+   needs to be copied together with the example script(s). The function is used
+   in all examples that require connection to the Mesh server, except
+   quickstart.py which is self-contained and does not require helpers.py.
+
 Quickstart
 *****************
 .. literalinclude:: /../../src/volue/mesh/examples/quickstart.py
