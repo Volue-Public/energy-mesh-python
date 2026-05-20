@@ -201,9 +201,34 @@
 <div class="section" id="first-call-to-mesh-server">
 <h2>First call to Mesh server<a class="headerlink" href="#first-call-to-mesh-server" title="Permalink to this heading">¶</a></h2>
 <p>Lets connect to the server, get its version and create a session for getting data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_connection_info</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper function to set hand over connection info to examples.&quot;&quot;&quot;</span>
+    <span class="n">address</span> <span class="o">=</span> <span class="s2">&quot;localhost:50051&quot;</span>
+    <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">root_certificate_path</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">root_certificate_path</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">root_certificate_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="c1"># In case multiple root certificates are needed, e.g.:</span>
+                <span class="c1"># the same client accesses different Mesh servers (with different root certs)</span>
+                <span class="c1"># Just combine into single file the root certificates, like:</span>
+                <span class="c1"># -----BEGIN CERTIFICATE-----</span>
+                <span class="c1"># ...(first certificate)...</span>
+                <span class="c1"># -----END CERTIFICATE-----</span>
+                <span class="c1"># -----BEGIN CERTIFICATE-----</span>
+                <span class="c1"># ..(second certificate)..</span>
+                <span class="c1"># -----END CERTIFICATE-----</span>
+                <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
@@ -218,16 +243,14 @@
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected to </span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Create a remote session on the Volue Mesh server</span>
-    <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have now an open session and can request time series&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Close the remote session</span>
-    <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have now an open session and can request time series&quot;</span><span class="p">)</span>
+        <span class="c1"># Do some work with the session, e.g. read time series points, write time series points, etc.</span>
+        <span class="c1"># The session will be automatically closed when the block is exited.</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
 </pre></div>
 </div>
