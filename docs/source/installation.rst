@@ -107,31 +107,41 @@ As a user you can install the Mesh Python SDK using Python's standard package ma
 Setup for users (offline environments)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To install Mesh Python SDK on a computer without internet connection you first need to download
-binaries on a computer with internet connection and then copy those binaries to the target machine.
+To install Mesh Python SDK on a computer without internet connection you first need to
+prepare wheel packages on a computer with internet connection and then copy them to the
+target machine.
 
-On computer with internet connection download the Mesh Python SDK along with its dependencies using
-Python's standard package manager system pip::
+.. important::
+    The computer used to prepare the wheels **must have the same Python version and
+    platform** (e.g. Windows/Linux, 64-bit) as the target offline machine. Wheel files
+    contain platform-specific tags (e.g. ``cp313-cp313-win_amd64``) and are not
+    interchangeable between Python versions or platforms.
 
-    # Use correct volue.mesh package version.
-    python -m pip download git+https://github.com/Volue-Public/energy-mesh-python@vX.Y.Z
+**Step 1 — Build wheels (on a computer with internet access)**
 
-
-Additionally, download Mesh Python SDK build dependencies. Those are specified in the [build-system]
-section in pyproject.toml file.::
-
-    # Check [build-system] section in pyproject.toml file if those are up to date.
-    python -m pip download poetry-core==1.9.1
-    python -m pip download grpcio-tools==1.67.1
-
-Copy all the downloaded binaries to the target computer without internet connection.
-In the directory with the downloaded binaries execute::
+Build the Mesh Python SDK wheel together with all of its runtime dependencies::
 
     # Use correct volue.mesh package version.
-    python -m pip install volue.mesh-X.Y.Z.zip --no-index -f .
+    python -m pip wheel git+https://github.com/Volue-Public/energy-mesh-python@vX.Y.Z -w ./offline_installer
+
+This will:
+
+- Build the ``volue.mesh`` package into a ``.whl`` file.
+- Download pre-built wheels for all runtime dependencies into the same directory.
 
 .. note::
     See :doc:`versions` if you need a specific Mesh version.
+
+**Step 2 — Copy to the target machine**
+
+Copy the entire ``offline_installer`` directory to the target computer without internet
+connection.
+
+**Step 3 — Install on the target machine**
+
+In the directory with the downloaded wheels execute::
+
+    python -m pip install volue.mesh --no-index --find-links ./offline_installer
 
 .. _Setup for developers:
 
