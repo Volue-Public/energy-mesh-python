@@ -107,21 +107,21 @@ As a user you can install the Mesh Python SDK using Python's standard package ma
 Setup for users (offline environments)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To install Mesh Python SDK on a computer without internet connection you first need to
-prepare wheel packages on a computer with internet connection and then copy them to the
+To install the Mesh Python SDK on a machine without internet connection, you first need to
+prepare the required wheel packages on a machine with internet connection and then copy them to the
 target machine.
 
 .. important::
-    The computer used to prepare the wheels **must have the same Python version and
+    The machine used to prepare the wheels **must have the same Python version and
     platform** (e.g. Windows/Linux, 64-bit) as the target offline machine. Wheel files
     contain platform-specific tags (e.g. ``cp313-cp313-win_amd64``) and are not
     interchangeable between Python versions or platforms.
 
-**Step 1 — Build wheels (on a computer with internet access)**
+**Step 1 — Build wheels (on a machine with internet access)**
 
 Build the Mesh Python SDK wheel together with all of its runtime dependencies::
 
-    # Use correct volue.mesh package version.
+    # Replace X.Y.Z by the appropriate volue.mesh package version
     python -m pip wheel git+https://github.com/Volue-Public/energy-mesh-python@vX.Y.Z -w ./offline_installer
 
 This will:
@@ -134,8 +134,7 @@ This will:
 
 **Step 2 — Copy to the target machine**
 
-Copy the entire ``offline_installer`` directory to the target computer without internet
-connection.
+Copy the entire `offline_installer` directory to the target machine.
 
 **Step 3 — Install on the target machine**
 
