@@ -121,7 +121,7 @@ target machine.
 
 Build the Mesh Python SDK wheel together with all of its runtime dependencies::
 
-    # Replace X.Y.Z by the appropriate volue.mesh package version
+    # Replace X.Y.Z with the appropriate volue.mesh package version
     python -m pip wheel git+https://github.com/Volue-Public/energy-mesh-python@vX.Y.Z -w ./offline_installer
 
 This will:
