@@ -138,7 +138,7 @@ Copy the entire `offline_installer` directory to the target machine.
 
 **Step 3 — Install on the target machine**
 
-In the directory with the downloaded wheels execute::
+Finally, run the following in the directory with the copied wheels::
 
     python -m pip install volue.mesh --no-index --find-links ./offline_installer
 
