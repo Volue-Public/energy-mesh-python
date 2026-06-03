@@ -82,7 +82,7 @@ def fix_ts_1111(session: Connection.Session):
 
     for point in zip(utc_date, flags, values):
         # Keep the points at DB time midnight.
-        # if point[0].as_py().hour == 23:
+        if point[0].as_py().hour == 23:
             new_utc_date.append(point[0].as_py())
             new_flags.append(point[1])
             new_values.append(point[2])
