@@ -25,20 +25,22 @@ import pyarrow as pa
 #
 # Now, the user needs to peek in the DB and assess how to fix the data. The fix
 # depends on the way the data is broken and what was the intention of the data
-# writer.  See 2 fix examples below.
+# writer. There are several options:
+# 1. Delete old points before conversion
+#    Simple approach that works when the historical data is not important.
+# 2. Create a new time series
+#    Simple approach, but the old time series resource needs to be replaced
+#    with a new one in the model. Additionally, if some calculation expressions
+#    refer to the time series directly, they have to be updated.
+# 3. Save-Remove-Adjust-Write
+#    Save the old points to some storage (other time series, file, etc...).
+#    Remove the points from the old time series. Once it's empty, set the time zone.
+#    Adjust the saved points to the time zone and write them back.
+# 4. Fix the points, commit, set the time zone
+#    Create a script that fixes a specific time series case. 
+#    The time zone can be set once the data is correct.See 2 fix examples below.
 
 TS_KEYS = [
-    # This daily time series (key: 448438) data is unaligned to the DB time zone
-    # midnight in the interval [2025-10-25; 2026-03-28) (DB time zone):
-    # 2025-10-24 12:00
-    # 2025-10-25 01:00
-    # 2025-10-26 01:00
-    # 2025-10-27 01:00
-    # 2025-10-28 01:00
-    # ...
-    # Before adding a time zone to this time series, shift the timestamps one
-    # hour back in that interval.
-    448438,
     # This daily time series (key: 254335) has 2 points per day in the interval
     # [2025-10-27; 2026-03-28) (DB time zone):
     # 2025-10-27 12:00
@@ -51,6 +53,17 @@ TS_KEYS = [
     # The values and flags matchBefore adding a time zone to this time series,
     # remove the points at 01:00.
     254335,
+    # This daily time series (key: 448438) data is unaligned to the DB time zone
+    # midnight in the interval [2025-10-25; 2026-03-28) (DB time zone):
+    # 2025-10-24 12:00
+    # 2025-10-25 01:00
+    # 2025-10-26 01:00
+    # 2025-10-27 01:00
+    # 2025-10-28 01:00
+    # ...
+    # Before adding a time zone to this time series, shift the timestamps one
+    # hour back in that interval.
+    448438
 ]
 
 
