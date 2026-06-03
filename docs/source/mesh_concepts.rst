@@ -10,3 +10,4 @@ for a general description of Mesh concepts. Below are listed concepts with addit
 
    mesh_availability
    mesh_session
+   time_zone_aware_timeseries

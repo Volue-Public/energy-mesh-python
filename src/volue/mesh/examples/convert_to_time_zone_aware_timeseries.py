@@ -5,24 +5,24 @@ import helpers
 import pyarrow as pa
 
 # This file is an example of a transformation from time zone naive time
-# series to time zone aware time series.  Several things to note: 
+# series to time zone aware time series. Several things to note:
 # 1. Only time series with resolution of DAY or coarser can be converted to
 #    time zone aware time series 
-# 2. Time series with edits can not be converted to time zone aware
+# 2. Time series with edits cannot be converted to time zone aware
 #    time series
 # 3. If the time series points in the database are misaligned to the
 #    DB time zone midnight, the conversion to time zone aware time series
 #    will fail
 #
 # Once we know all the time series we want to convert, let's find the ones with
-# misaligned data that need fixing before the conversion.  Use this function:
-# `validate_points_alignment(session, ts_key)` It will scan a range of points
-# and stop on the first misaligned point.  The log will point to the misaligned
+# misaligned data that need fixing before the conversion. Use this function:
+# `validate_points_alignment(session, ts_key)`. It will scan a range of points
+# and stop on the first misaligned point. The log will point to the misaligned
 # timestamp.
 #
 # Now, the user needs to peek in the DB and assess how to fix the data. The fix
-# depends on the way the data is broken and what was the intention of the data
-# writer. There are several options:
+# depends on the way the data is broken and what the data writer intended.
+# There are several options:
 # 1. Delete old points before conversion
 #    Simple approach that works when the historical data is not important.
 # 2. Create a new time zone aware time series
@@ -36,6 +36,7 @@ import pyarrow as pa
 # 4. Fix the points, commit, set the time zone
 #    Create a script that fixes a specific time series case. 
 #    The time zone can be set once the data is correct. See 2 fix examples below.
+#    THEY MAY NOT APPLY TO YOUR CASE. Be sure to examine the data and adjust the script.
 
 TS_KEYS = [
     # This daily time series (key: 1111) has 2 points per day in the interval
@@ -47,7 +48,7 @@ TS_KEYS = [
     # 2025-10-29 00:00
     # 2025-10-29 01:00
     # ...
-    # The values and flags matchBefore adding a time zone to this time series,
+    # Before adding a time zone to this time series,
     # remove the points at 01:00.
     1111,
     # This daily time series (key: 2222) data is unaligned to the DB time zone
