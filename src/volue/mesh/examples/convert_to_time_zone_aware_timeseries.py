@@ -11,7 +11,8 @@ import pyarrow as pa
 # 2. Time series with edits can not be converted to time zone aware
 #    time series
 # 3. If the time series points in the database are misaligned to the
-#    DB time zone, the conversion to time zone aware time series will fail
+#    DB time zone midnight, the conversion to time zone aware time series
+#    will fail
 #
 # Once we know all the time series we want to convert, let's find the ones with
 # misaligned data that need fixing before the conversion.  Use this function:
@@ -24,7 +25,7 @@ import pyarrow as pa
 # writer. There are several options:
 # 1. Delete old points before conversion
 #    Simple approach that works when the historical data is not important.
-# 2. Create a new time series
+# 2. Create a new time zone aware time series
 #    Simple approach, but the old time series resource needs to be replaced
 #    with a new one in the model. Additionally, if some calculation expressions
 #    refer to the time series directly, they have to be updated.
