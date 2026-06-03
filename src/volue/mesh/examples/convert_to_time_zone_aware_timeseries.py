@@ -13,10 +13,6 @@ import pyarrow as pa
 # 3. If the time series points in the database are misaligned to the
 #    DB time zone, the conversion to time zone aware time series will fail
 #
-# To find all physical daily time zone naive time series in the database, one
-# can use the following SQL query: `SELECT tims_key FROM timeser WHERE tsin_key
-# = 111 AND time_zone is null AND rc_key is null;`
-#
 # Once we know all the time series we want to convert, let's find the ones with
 # misaligned data that need fixing before the conversion.  Use this function:
 # `validate_points_alignment(session, ts_key)` It will scan a range of points
@@ -38,24 +34,24 @@ import pyarrow as pa
 #    Adjust the saved points to the time zone and write them back.
 # 4. Fix the points, commit, set the time zone
 #    Create a script that fixes a specific time series case. 
-#    The time zone can be set once the data is correct.See 2 fix examples below.
+#    The time zone can be set once the data is correct. See 2 fix examples below.
 
 TS_KEYS = [
-    # This daily time series (key: 254335) has 2 points per day in the interval
+    # This daily time series (key: 1111) has 2 points per day in the interval
     # [2025-10-27; 2026-03-28) (DB time zone):
-    # 2025-10-27 12:00
+    # 2025-10-27 00:00
     # 2025-10-27 01:00
-    # 2025-10-28 12:00
+    # 2025-10-28 00:00
     # 2025-10-28 01:00
-    # 2025-10-29 12:00
+    # 2025-10-29 00:00
     # 2025-10-29 01:00
     # ...
     # The values and flags matchBefore adding a time zone to this time series,
     # remove the points at 01:00.
-    254335,
-    # This daily time series (key: 448438) data is unaligned to the DB time zone
+    1111,
+    # This daily time series (key: 2222) data is unaligned to the DB time zone
     # midnight in the interval [2025-10-25; 2026-03-28) (DB time zone):
-    # 2025-10-24 12:00
+    # 2025-10-24 00:00
     # 2025-10-25 01:00
     # 2025-10-26 01:00
     # 2025-10-27 01:00
@@ -63,12 +59,12 @@ TS_KEYS = [
     # ...
     # Before adding a time zone to this time series, shift the timestamps one
     # hour back in that interval.
-    448438
+    2222
 ]
 
 
-def fix_ts_254335(session: Connection.Session):
-    target = 254335
+def fix_ts_1111(session: Connection.Session):
+    target = 1111
     start = datetime(2025, 10, 24, 23, 0, 0)
     end = datetime(2026, 3, 27, 23, 0, 0)
     points = session.read_timeseries_points(
@@ -106,8 +102,8 @@ def fix_ts_254335(session: Connection.Session):
 
 
 
-def fix_ts_448438(session: Connection.Session):
-    target = 448438
+def fix_ts_2222(session: Connection.Session):
+    target = 2222
     start = datetime(2025, 10, 24, 23, 0, 0)
     end = datetime(2026, 3, 27, 23, 0, 0)
     points = session.read_timeseries_points(
@@ -192,11 +188,11 @@ def main(address, tls_root_pem_cert):
     connection = Connection.insecure(address)
     with connection.create_session() as session:
         if validate_points_alignment(session=session, ts_key=TS_KEYS[0]) == False:
-            fix_ts_254335(session)
+            fix_ts_1111(session)
             convert_to_time_zone_aware(session, TS_KEYS[0])
 
         if validate_points_alignment(session=session, ts_key=TS_KEYS[1]) == False:
-            fix_ts_448438(session)
+            fix_ts_2222(session)
             convert_to_time_zone_aware(session, TS_KEYS[1])
 
 
