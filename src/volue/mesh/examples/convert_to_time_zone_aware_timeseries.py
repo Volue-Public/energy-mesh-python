@@ -70,7 +70,7 @@ DB_ZONE_1AM_IN_UTC = 0
 
 def fix_ts_1111(session: Connection.Session):
     target = 1111
-    start = datetime(2025, 10, 24, 23, 0, 0)
+    start = datetime(2025, 10, 26, 23, 0, 0)
     end = datetime(2026, 3, 27, 23, 0, 0)
     points = session.read_timeseries_points(
         target=target, start_time=start, end_time=end
