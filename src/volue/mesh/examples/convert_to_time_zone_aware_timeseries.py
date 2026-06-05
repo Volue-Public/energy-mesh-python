@@ -1,10 +1,11 @@
-from volue.mesh import Connection, Timeseries
 from datetime import datetime, timedelta
 
 import helpers
 import pyarrow as pa
 
-# This example shows how to convert two time series from time zone-naive to time zone-aware
+from volue.mesh import Connection, Timeseries
+
+# This example shows how to convert two daily time series from time zone-naive to time zone-aware
 # and back.
 #
 # Assuming we want to convert the time series with keys 1111 and 2222, we first use the
@@ -20,8 +21,10 @@ import pyarrow as pa
 # 2025-10-29 00:00
 # 2025-10-29 01:00
 # ...
-#
-# Before adding a time zone to this time series, we must remove the points at 01:00.
+# The values at midnight and 1AM are the same. If the values were different,
+# the user would need to make a decision which value should stay and adjust the script.
+# For this simple case, before adding a time zone to this time series,
+# we must remove the points at 01:00.
 #
 # The second time series (key: 2222) has its data unaligned to the midnight in the interval
 # [2025-10-25; 2026-03-28) (DB time zone):
@@ -63,13 +66,9 @@ DB_ZONE_MIDNIGHT_IN_UTC = 23
 DB_ZONE_1AM_IN_UTC = 0
 
 
-def fix_ts_1111(session: Connection.Session):
-    target = 1111
+def fix_ts_1111(session: Connection.Session, points: Timeseries):
     start = datetime(2025, 10, 26, 23, 0, 0)
     end = datetime(2026, 3, 27, 23, 0, 0)
-    points = session.read_timeseries_points(
-        target=target, start_time=start, end_time=end
-    )
 
     utc_date = points.arrow_table[0]
     flags = points.arrow_table[1]
@@ -81,7 +80,12 @@ def fix_ts_1111(session: Connection.Session):
 
     for point in zip(utc_date, flags, values):
         # Keep the points at DB time midnight.
-        if point[0].as_py().hour == DB_ZONE_MIDNIGHT_IN_UTC:
+        timestamp = point[0].as_py()
+        if (
+            timestamp >= start
+            and timestamp < end
+            and timestamp.hour == DB_ZONE_MIDNIGHT_IN_UTC
+        ):
             new_utc_date.append(point[0].as_py())
             new_flags.append(point[1])
             new_values.append(point[2])
@@ -90,7 +94,7 @@ def fix_ts_1111(session: Connection.Session):
 
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
     new_points = Timeseries(table=table, start_time=start, end_time=end)
-    new_points.timskey = target
+    new_points.timskey = points.timskey
 
     session.write_timeseries_points(new_points)
 
@@ -102,13 +106,9 @@ def fix_ts_1111(session: Connection.Session):
     session.rollback()
 
 
-def fix_ts_2222(session: Connection.Session):
-    target = 2222
+def fix_ts_2222(session: Connection.Session, points: Timeseries):
     start = datetime(2025, 10, 24, 23, 0, 0)
     end = datetime(2026, 3, 27, 23, 0, 0)
-    points = session.read_timeseries_points(
-        target=target, start_time=start, end_time=end
-    )
 
     utc_date = points.arrow_table[0]
     flags = points.arrow_table[1]
@@ -120,8 +120,13 @@ def fix_ts_2222(session: Connection.Session):
 
     for point in zip(utc_date, flags, values):
         # Move the points from 01:00 to 00:00 (DB time).
-        if point[0].as_py().hour == DB_ZONE_1AM_IN_UTC:
-            new_utc_date.append(point[0].as_py() + timedelta(hours=-1))
+        timestamp = point[0].as_py()
+        if (
+            timestamp >= start
+            and timestamp < end
+            and timestamp.hour == DB_ZONE_1AM_IN_UTC
+        ):
+            new_utc_date.append(point[0].as_py() - timedelta(hours=1))
             new_flags.append(point[1])
             new_values.append(point[2])
 
@@ -129,7 +134,7 @@ def fix_ts_2222(session: Connection.Session):
 
     table = pa.Table.from_arrays(arrays, schema=Timeseries.schema)
     new_points = Timeseries(table=table, start_time=start, end_time=end)
-    new_points.timskey = target
+    new_points.timskey = points.timskey
 
     session.write_timeseries_points(new_points)
 
@@ -141,22 +146,7 @@ def fix_ts_2222(session: Connection.Session):
     session.rollback()
 
 
-def validate_points_alignment(session: Connection.Session, ts_key: int):
-    START = datetime(year=1900, month=12, day=31, hour=23)
-    END = datetime(
-        START.year + 200,
-        START.month,
-        START.day,
-        START.hour,
-        START.minute,
-        START.second,
-        START.microsecond,
-        START.tzinfo,
-    )
-
-    points = session.read_timeseries_points(
-        target=ts_key, start_time=START, end_time=END
-    )
+def validate_points_alignment(points: Timeseries):
     if points.resolution is not Timeseries.Resolution.DAY:
         raise Exception(
             f"Time series (key {points.timskey}) resolution not equal to DAY: {points.resolution}"
@@ -170,7 +160,7 @@ def validate_points_alignment(session: Connection.Session, ts_key: int):
     for timestamp in utc_time:
         if timestamp.as_py().hour != DB_ZONE_MIDNIGHT_IN_UTC:
             print(
-                f"Time series key {ts_key}: the timestamp {timestamp.as_py()} is not aligned to the DB time zone midnight"
+                f"Time series key {points.timskey}: the timestamp {timestamp.as_py()} is not aligned to the DB time zone midnight"
             )
             aligned = False
             break
@@ -190,20 +180,36 @@ def convert_to_time_zone_naive(session: Connection.Session, ts_key: int):
 
 
 def main(address, tls_root_pem_cert):
+    # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
+    # connection = Connection.with_tls(address, tls_root_pem_cert)
     connection = Connection.insecure(address)
     with connection.create_session() as session:
+        # In perfect case all points of the time series to be converted to time zone-aware are correctly aligned.
+        # In such case, we can set the time zone and commit changes successfully. However, it may happen that the
+        # points are unaligned, especially around DST transitions. In this example we show 2 potential unalignment scenarios.
         try:
-            if validate_points_alignment(session=session, ts_key=TS_KEYS[0]) == False:
-                fix_ts_1111(session)
-                convert_to_time_zone_aware(session, TS_KEYS[0])
-                convert_to_time_zone_naive(session, TS_KEYS[0])
+            START = datetime(year=1900, month=12, day=31, hour=23)
+            END = datetime(year=2100, month=12, day=31, hour=23)
 
-            if validate_points_alignment(session=session, ts_key=TS_KEYS[1]) == False:
-                fix_ts_2222(session)
-                convert_to_time_zone_aware(session, TS_KEYS[1])
-                convert_to_time_zone_naive(session, TS_KEYS[1])
-        except:
-            print("Failed to convert the time series")
+            points = session.read_timeseries_points(
+                target=TS_KEYS[0], start_time=START, end_time=END
+            )
+
+            if not validate_points_alignment(points):
+                fix_ts_1111(session, points)
+            convert_to_time_zone_aware(session, TS_KEYS[0])
+            convert_to_time_zone_naive(session, TS_KEYS[0])
+
+            points = session.read_timeseries_points(
+                target=TS_KEYS[1], start_time=START, end_time=END
+            )
+
+            if not validate_points_alignment(points):
+                fix_ts_2222(session, points)
+            convert_to_time_zone_aware(session, TS_KEYS[1])
+            convert_to_time_zone_naive(session, TS_KEYS[1])
+        except Exception as e:
+            print(f"Failed to convert the time series: {e}")
 
 
 if __name__ == "__main__":
