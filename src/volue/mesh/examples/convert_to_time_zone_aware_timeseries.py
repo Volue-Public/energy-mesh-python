@@ -5,9 +5,9 @@ import helpers
 import pyarrow as pa
 
 # This file is an example of a transformation from time zone naive time
-# series to time zone aware time series. Several things to note:
+# series to time zone aware time series and back. Several things to note:
 # 1. Only time series with resolution of DAY or coarser can be converted to
-#    time zone aware time series 
+#    time zone aware time series
 # 2. Time series with edits cannot be converted to time zone aware
 #    time series
 # 3. If the time series points in the database are misaligned to the
@@ -34,7 +34,7 @@ import pyarrow as pa
 #    Remove the points from the old time series. Once it's empty, set the time zone.
 #    Adjust the saved points to the time zone and write them back.
 # 4. Fix the points, commit, set the time zone
-#    Create a script that fixes a specific time series case. 
+#    Create a script that fixes a specific time series case.
 #    The time zone can be set once the data is correct. See 2 fix examples below.
 #    THEY MAY NOT APPLY TO YOUR CASE. Be sure to examine the data and adjust the script.
 
@@ -61,8 +61,11 @@ TS_KEYS = [
     # ...
     # Before adding a time zone to this time series, shift the timestamps one
     # hour back in that interval.
-    2222
+    2222,
 ]
+
+DB_ZONE_MIDNIGHT_IN_UTC = 23
+DB_ZONE_1AM_IN_UTC = 0
 
 
 def fix_ts_1111(session: Connection.Session):
@@ -83,7 +86,7 @@ def fix_ts_1111(session: Connection.Session):
 
     for point in zip(utc_date, flags, values):
         # Keep the points at DB time midnight.
-        if point[0].as_py().hour == 23:
+        if point[0].as_py().hour == DB_ZONE_MIDNIGHT_IN_UTC:
             new_utc_date.append(point[0].as_py())
             new_flags.append(point[1])
             new_values.append(point[2])
@@ -104,7 +107,6 @@ def fix_ts_1111(session: Connection.Session):
     session.rollback()
 
 
-
 def fix_ts_2222(session: Connection.Session):
     target = 2222
     start = datetime(2025, 10, 24, 23, 0, 0)
@@ -123,7 +125,7 @@ def fix_ts_2222(session: Connection.Session):
 
     for point in zip(utc_date, flags, values):
         # Move the points from 01:00 to 00:00 (DB time).
-        if point[0].as_py().hour == 0:
+        if point[0].as_py().hour == DB_ZONE_1AM_IN_UTC:
             new_utc_date.append(point[0].as_py() + timedelta(hours=-1))
             new_flags.append(point[1])
             new_values.append(point[2])
@@ -142,7 +144,6 @@ def fix_ts_2222(session: Connection.Session):
     # If the result is fine - commit.
     # session.commit()
     session.rollback()
-
 
 
 def validate_points_alignment(session: Connection.Session, ts_key: int):
@@ -172,7 +173,7 @@ def validate_points_alignment(session: Connection.Session, ts_key: int):
 
     aligned = True
     for timestamp in utc_time:
-        if timestamp.as_py().hour != 23:
+        if timestamp.as_py().hour != DB_ZONE_MIDNIGHT_IN_UTC:
             print(
                 f"Time series key {ts_key}: the timestamp {timestamp.as_py()} is not aligned to the DB time zone midnight"
             )
@@ -188,16 +189,26 @@ def convert_to_time_zone_aware(session: Connection.Session, ts_key: int):
     session.commit()
 
 
+def convert_to_time_zone_naive(session: Connection.Session, ts_key: int):
+    session.update_timeseries_resource_info(timeseries_key=ts_key, new_time_zone="")
+    session.commit()
+
+
 def main(address, tls_root_pem_cert):
     connection = Connection.insecure(address)
     with connection.create_session() as session:
-        if validate_points_alignment(session=session, ts_key=TS_KEYS[0]) == False:
-            fix_ts_1111(session)
-            convert_to_time_zone_aware(session, TS_KEYS[0])
+        try:
+            if validate_points_alignment(session=session, ts_key=TS_KEYS[0]) == False:
+                fix_ts_1111(session)
+                convert_to_time_zone_aware(session, TS_KEYS[0])
+                convert_to_time_zone_naive(session, TS_KEYS[0])
 
-        if validate_points_alignment(session=session, ts_key=TS_KEYS[1]) == False:
-            fix_ts_2222(session)
-            convert_to_time_zone_aware(session, TS_KEYS[1])
+            if validate_points_alignment(session=session, ts_key=TS_KEYS[1]) == False:
+                fix_ts_2222(session)
+                convert_to_time_zone_aware(session, TS_KEYS[1])
+                convert_to_time_zone_naive(session, TS_KEYS[1])
+        except:
+            print("Failed to convert the time series")
 
 
 if __name__ == "__main__":
