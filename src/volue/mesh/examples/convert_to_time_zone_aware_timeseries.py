@@ -86,7 +86,7 @@ def fix_ts_1111(session: Connection.Session, points: Timeseries):
             and timestamp < end
             and timestamp.hour == DB_ZONE_MIDNIGHT_IN_UTC
         ):
-            new_utc_date.append(point[0].as_py())
+            new_utc_date.append(timestamp)
             new_flags.append(point[1])
             new_values.append(point[2])
 
@@ -126,7 +126,7 @@ def fix_ts_2222(session: Connection.Session, points: Timeseries):
             and timestamp < end
             and timestamp.hour == DB_ZONE_1AM_IN_UTC
         ):
-            new_utc_date.append(point[0].as_py() - timedelta(hours=1))
+            new_utc_date.append(timestamp - timedelta(hours=1))
             new_flags.append(point[1])
             new_values.append(point[2])
 
