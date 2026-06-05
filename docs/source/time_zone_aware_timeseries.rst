@@ -4,7 +4,12 @@ Time zone aware timeseries
 
 
 The Mesh Python SDK allows for setting time zones
-through its time series creation and update APIs. For example:
+through its time series creation and update APIs:
+
+:py:meth:`volue.mesh.Connection.Session.create_physical_timeseries`
+:py:meth:`volue.mesh.Connection.Session.update_timeseries_resource_info`
+
+For example:
 
 .. code-block:: python
 
