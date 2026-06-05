@@ -121,6 +121,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#check-duplicated-time-series">Check duplicated time series</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#create-physical-time-series">Create physical time series</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#search-calculation-expressions">Search calculation expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-zone-aware-time-series-conversion">Time zone-aware time series conversion</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authentication.html">Client authentication</a></li>
@@ -2964,6 +2965,228 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="time-zone-aware-time-series-conversion">
+<h2>Time zone-aware time series conversion<a class="headerlink" href="#time-zone-aware-time-series-conversion" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">Timeseries</span>
+
+<span class="c1"># This example shows how to convert two daily time series from time zone-naive to time zone-aware</span>
+<span class="c1"># and back.</span>
+<span class="c1">#</span>
+<span class="c1"># Assuming we want to convert the time series with keys 1111 and 2222, we first use the</span>
+<span class="c1"># `validate_points_alignment` function to scan a range of points on each series and verify whether</span>
+<span class="c1"># their points are correctly aligned. In this case, both of these time series have points that need</span>
+<span class="c1"># to be adjusted before we can perform the conversion:</span>
+<span class="c1">#</span>
+<span class="c1"># The first time series (key 1111) has 2 points per day in the interval [2025-10-27; 2026-03-28) (DB time zone):</span>
+<span class="c1"># 2025-10-27 00:00</span>
+<span class="c1"># 2025-10-27 01:00</span>
+<span class="c1"># 2025-10-28 00:00</span>
+<span class="c1"># 2025-10-28 01:00</span>
+<span class="c1"># 2025-10-29 00:00</span>
+<span class="c1"># 2025-10-29 01:00</span>
+<span class="c1"># ...</span>
+<span class="c1"># The values at midnight and 1AM are the same. If the values were different,</span>
+<span class="c1"># the user would need to make a decision which value should stay and adjust the script.</span>
+<span class="c1"># For this simple case, before adding a time zone to this time series,</span>
+<span class="c1"># we must remove the points at 01:00.</span>
+<span class="c1">#</span>
+<span class="c1"># The second time series (key: 2222) has its data misaligned to the midnight in the interval</span>
+<span class="c1"># [2025-10-25; 2026-03-28) (DB time zone):</span>
+<span class="c1"># 2025-10-24 00:00</span>
+<span class="c1"># 2025-10-25 01:00</span>
+<span class="c1"># 2025-10-26 01:00</span>
+<span class="c1"># 2025-10-27 01:00</span>
+<span class="c1"># 2025-10-28 01:00</span>
+<span class="c1"># ...</span>
+<span class="c1">#</span>
+<span class="c1"># Before adding a time zone to this time series, we must shift the timestamps one hour back in that interval.</span>
+<span class="c1">#</span>
+<span class="c1"># We now need to decide on how to fix the time series for conversion. The method we choose for this</span>
+<span class="c1"># will depend on how the points are misaligned, and the intention of the user who originally wrote</span>
+<span class="c1"># them:</span>
+<span class="c1">#</span>
+<span class="c1"># 1. Delete the old points before conversion</span>
+<span class="c1">#    Simple approach that works when the historical data is not important.</span>
+<span class="c1"># 2. Create a new time zone-aware time series</span>
+<span class="c1">#    Simple approach, but the old time series resource needs to be replaced</span>
+<span class="c1">#    with a new one in the model. Additionally, if some calculation expressions</span>
+<span class="c1">#    refer to the time series directly, they have to be updated.</span>
+<span class="c1"># 3. Save-Remove-Adjust-Write</span>
+<span class="c1">#    Save the old points to some storage (other time series, file, etc...).</span>
+<span class="c1">#    Remove the points from the old time series. Once it&#39;s empty, set the time zone and commit.</span>
+<span class="c1">#    Adjust the saved points to the time zone and write them back.</span>
+<span class="c1"># 4. Fix the points, commit, set the time zone</span>
+<span class="c1">#    Create a script that fixes a specific time series case.</span>
+<span class="c1">#    The time zone can be set once the data is correct.</span>
+<span class="c1">#</span>
+<span class="c1"># For this example, we will use the last method.</span>
+
+<span class="n">TS_KEYS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">1111</span><span class="p">,</span>
+    <span class="mi">2222</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">DB_ZONE_MIDNIGHT_IN_UTC</span> <span class="o">=</span> <span class="mi">23</span>
+<span class="n">DB_ZONE_1AM_IN_UTC</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fix_ts_1111</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">utc_date</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">new_utc_date</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_flags</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">utc_date</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="c1"># Keep the points at DB time midnight.</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">timestamp</span> <span class="o">&gt;=</span> <span class="n">start</span>
+            <span class="ow">and</span> <span class="n">timestamp</span> <span class="o">&lt;</span> <span class="n">end</span>
+            <span class="ow">and</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">hour</span> <span class="o">==</span> <span class="n">DB_ZONE_MIDNIGHT_IN_UTC</span>
+        <span class="p">):</span>
+            <span class="n">new_utc_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+            <span class="n">new_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">new_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_utc_date</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_flags</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_values</span><span class="p">)]</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+    <span class="n">new_points</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">new_points</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">timskey</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span>
+
+    <span class="c1"># Read the points again and visually confirm the data is correct.</span>
+    <span class="c1"># points_not_saved = session.read_timeseries_points(target=target, start_time=start, end_time=end)</span>
+    <span class="c1"># print(points_not_saved.arrow_table.to_pandas())</span>
+    <span class="c1"># If the result is fine - commit.</span>
+    <span class="c1"># session.commit()</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">fix_ts_2222</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">points</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2026</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">utc_date</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="n">new_utc_date</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_flags</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">new_values</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">utc_date</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="c1"># Move the points from 01:00 to 00:00 (DB time).</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">timestamp</span> <span class="o">&gt;=</span> <span class="n">start</span>
+            <span class="ow">and</span> <span class="n">timestamp</span> <span class="o">&lt;</span> <span class="n">end</span>
+            <span class="ow">and</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">hour</span> <span class="o">==</span> <span class="n">DB_ZONE_1AM_IN_UTC</span>
+        <span class="p">):</span>
+            <span class="n">new_utc_date</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">timestamp</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">new_flags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">new_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_utc_date</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_flags</span><span class="p">),</span> <span class="n">pa</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_values</span><span class="p">)]</span>
+
+    <span class="n">table</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">Table</span><span class="o">.</span><span class="n">from_arrays</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">)</span>
+    <span class="n">new_points</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span><span class="n">table</span><span class="o">=</span><span class="n">table</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">new_points</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">timskey</span>
+
+    <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span>
+
+    <span class="c1"># Read the points again and visually confirm the data is correct.</span>
+    <span class="c1"># points_not_saved = session.read_timeseries_points(target=target, start_time=start, end_time=end)</span>
+    <span class="c1"># print(points_not_saved.arrow_table.to_pandas())</span>
+    <span class="c1"># If the result is fine - commit.</span>
+    <span class="c1"># session.commit()</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_points_alignment</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">points</span><span class="o">.</span><span class="n">resolution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;time series (key </span><span class="si">{</span><span class="n">points</span><span class="o">.</span><span class="n">timskey</span><span class="si">}</span><span class="s2">) resolution not equal to DAY: </span><span class="si">{</span><span class="n">points</span><span class="o">.</span><span class="n">resolution</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">utc_time</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">arrow_table</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">utc_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unexpected empty segment&quot;</span><span class="p">)</span>
+
+    <span class="n">aligned</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">timestamp</span> <span class="ow">in</span> <span class="n">utc_time</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">timestamp</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span><span class="o">.</span><span class="n">hour</span> <span class="o">!=</span> <span class="n">DB_ZONE_MIDNIGHT_IN_UTC</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;time series key </span><span class="si">{</span><span class="n">points</span><span class="o">.</span><span class="n">timskey</span><span class="si">}</span><span class="s2">: the timestamp </span><span class="si">{</span><span class="n">timestamp</span><span class="o">.</span><span class="n">as_py</span><span class="p">()</span><span class="si">}</span><span class="s2"> is not aligned to the DB time zone midnight&quot;</span>
+            <span class="p">)</span>
+            <span class="n">aligned</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">aligned</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_to_time_zone_aware</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">ts_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span>
+        <span class="n">timeseries_key</span><span class="o">=</span><span class="n">ts_key</span><span class="p">,</span> <span class="n">new_time_zone</span><span class="o">=</span><span class="s2">&quot;Europe/Warsaw&quot;</span>
+    <span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_to_time_zone_naive</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">Session</span><span class="p">,</span> <span class="n">ts_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">update_timeseries_resource_info</span><span class="p">(</span><span class="n">timeseries_key</span><span class="o">=</span><span class="n">ts_key</span><span class="p">,</span> <span class="n">new_time_zone</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
+    <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
+    <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="c1"># In the perfect case, all points in the time series are correctly aligned, and we can</span>
+        <span class="c1"># simply set the time zone and commit. However, points may be misaligned, for example</span>
+        <span class="c1"># around DST transitions. This example covers 2 potential misalignment scenarios.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">1900</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="mi">2100</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="mi">31</span><span class="p">,</span> <span class="n">hour</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
+
+            <span class="n">points</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">TS_KEYS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_points_alignment</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="n">fix_ts_1111</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+            <span class="n">convert_to_time_zone_aware</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">TS_KEYS</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">convert_to_time_zone_naive</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">TS_KEYS</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+            <span class="n">points</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">TS_KEYS</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="n">end</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_points_alignment</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="n">fix_ts_2222</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+            <span class="n">convert_to_time_zone_aware</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">TS_KEYS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">convert_to_time_zone_naive</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">TS_KEYS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to convert the time series: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -2980,7 +3203,7 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2025, Volue AS.
+        &#169; Copyright 2026, Volue AS.
 
     </p>
   </div>
