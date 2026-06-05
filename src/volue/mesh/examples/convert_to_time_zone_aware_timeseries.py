@@ -4,63 +4,58 @@ from datetime import datetime, timedelta
 import helpers
 import pyarrow as pa
 
-# This file is an example of a transformation from time zone naive time
-# series to time zone aware time series and back. Several things to note:
-# 1. Only time series with resolution of DAY or coarser can be converted to
-#    time zone aware time series
-# 2. Time series with edits cannot be converted to time zone aware
-#    time series
-# 3. If the time series points in the database are misaligned to the
-#    DB time zone midnight, the conversion to time zone aware time series
-#    will fail
+# This example shows how to convert two time series from time zone-naive to time zone-aware
+# and back.
 #
-# Once we know all the time series we want to convert, let's find the ones with
-# misaligned data that need fixing before the conversion. Use this function:
-# `validate_points_alignment(session, ts_key)`. It will scan a range of points
-# and stop on the first misaligned point. The log will point to the misaligned
-# timestamp.
+# Assuming we want to convert the time series with keys 1111 and 2222, we first use the
+# `validate_points_alignment` function to scan a range of points on each series and verify whether
+# their points are correctly aligned. In this case, both of these time series have points that need
+# to be adjusted before we can perform the conversion:
 #
-# Now, the user needs to peek in the DB and assess how to fix the data. The fix
-# depends on the way the data is broken and what the data writer intended.
-# There are several options:
-# 1. Delete old points before conversion
+# The first time series (key 1111) has 2 points per day in the interval [2025-10-27; 2026-03-28) (DB time zone):
+# 2025-10-27 00:00
+# 2025-10-27 01:00
+# 2025-10-28 00:00
+# 2025-10-28 01:00
+# 2025-10-29 00:00
+# 2025-10-29 01:00
+# ...
+#
+# Before adding a time zone to this time series, we must remove the points at 01:00.
+#
+# The second time series (key: 2222) has its data unaligned to the midnight in the interval
+# [2025-10-25; 2026-03-28) (DB time zone):
+# 2025-10-24 00:00
+# 2025-10-25 01:00
+# 2025-10-26 01:00
+# 2025-10-27 01:00
+# 2025-10-28 01:00
+# ...
+#
+# Before adding a time zone to this time series, we must shift the timestamps one hour back in that interval.
+#
+# We now need to decide on how to fix the time series for conversion. The method we choose for this
+# will depend on how the points are misaligned, and the intention of the user who originally wrote
+# them:
+#
+# 1. Delete the old points before conversion
 #    Simple approach that works when the historical data is not important.
-# 2. Create a new time zone aware time series
+# 2. Create a new time zone-aware time series
 #    Simple approach, but the old time series resource needs to be replaced
 #    with a new one in the model. Additionally, if some calculation expressions
 #    refer to the time series directly, they have to be updated.
 # 3. Save-Remove-Adjust-Write
 #    Save the old points to some storage (other time series, file, etc...).
-#    Remove the points from the old time series. Once it's empty, set the time zone.
+#    Remove the points from the old time series. Once it's empty, set the time zone and commit.
 #    Adjust the saved points to the time zone and write them back.
 # 4. Fix the points, commit, set the time zone
 #    Create a script that fixes a specific time series case.
-#    The time zone can be set once the data is correct. See 2 fix examples below.
-#    THEY MAY NOT APPLY TO YOUR CASE. Be sure to examine the data and adjust the script.
+#    The time zone can be set once the data is correct.
+#
+# For this example, we will use the last method.
 
 TS_KEYS = [
-    # This daily time series (key: 1111) has 2 points per day in the interval
-    # [2025-10-27; 2026-03-28) (DB time zone):
-    # 2025-10-27 00:00
-    # 2025-10-27 01:00
-    # 2025-10-28 00:00
-    # 2025-10-28 01:00
-    # 2025-10-29 00:00
-    # 2025-10-29 01:00
-    # ...
-    # Before adding a time zone to this time series,
-    # remove the points at 01:00.
     1111,
-    # This daily time series (key: 2222) data is unaligned to the DB time zone
-    # midnight in the interval [2025-10-25; 2026-03-28) (DB time zone):
-    # 2025-10-24 00:00
-    # 2025-10-25 01:00
-    # 2025-10-26 01:00
-    # 2025-10-27 01:00
-    # 2025-10-28 01:00
-    # ...
-    # Before adding a time zone to this time series, shift the timestamps one
-    # hour back in that interval.
     2222,
 ]
 

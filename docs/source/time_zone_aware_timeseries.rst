@@ -1,5 +1,5 @@
 ==========================
-Time zone aware timeseries
+Time zone-aware timeseries
 ==========================
 
 
@@ -29,4 +29,4 @@ See also the following examples:
 
 * :ref:`examples:Create physical time series`
 * :ref:`examples:Write time series`
-* :ref:`examples:Time zone aware time series conversion`
+* :ref:`examples:Time zone-aware time series conversion`

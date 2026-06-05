@@ -159,7 +159,7 @@ Search calculation expressions
 .. literalinclude:: /../../src/volue/mesh/examples/search_calculation_expressions.py
    :language: python
 
-Time zone aware time series conversion
+Time zone-aware time series conversion
 **************************************
 .. literalinclude:: /../../src/volue/mesh/examples/convert_to_time_zone_aware_timeseries.py
    :language: python
