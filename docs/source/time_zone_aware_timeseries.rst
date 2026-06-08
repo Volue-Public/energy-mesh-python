@@ -1,6 +1,6 @@
-==========================
-Time zone-aware timeseries
-==========================
+===========================
+Time zone-aware time series
+===========================
 
 
 The Mesh Python SDK allows for setting time zones

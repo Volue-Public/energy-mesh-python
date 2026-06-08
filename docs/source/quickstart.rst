@@ -45,7 +45,7 @@ If everything is set up right you should be getting output like the following:
 ::
 
     Connected to Volue Mesh Server 99.0.0+0
-    You have now an open session and can request timeseries
+    You have now an open session and can request time series
 
 If there are some problems with this code check out :doc:`faq`.
 
