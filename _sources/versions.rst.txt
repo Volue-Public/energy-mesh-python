@@ -664,7 +664,7 @@ New features
 ~~~~~~~~~~~~~~~~~~
 
 - Sum function for single time series. :issue:`161`
-- Read of virtual timeseries in SmG. :issue:`153`
+- Read of virtual time series in SmG. :issue:`153`
 - Logging and audit trail. :issue:`156`
 - Read and write of objects in the physical Mesh model. :issue:`151`
 - Implement RPCs for handling attributes. :issue:`203`
@@ -673,7 +673,7 @@ Changes
 ~~~~~~~~~~~~~~~~~~
 
 - **Enhancement:** Separate forecasting and history functions. :issue:`113`
-- **Enhancement:** Readable error for reply with no timeseries data. :issue:`164`
+- **Enhancement:** Readable error for reply with no time series data. :issue:`164`
 - **Enhancement:** Expose transformation functions the same way other calc functions are exposed. :issue:`157`
 - **Fixed:** Dependencies not set correctly :issue:`178`
 - **Fixed:** Inconsistent handling of timestamps in time series data point update. :issue:`183`
@@ -712,8 +712,8 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- Read transformed timeseries. :issue:`100`
-- Read historical timeseries. :issue:`101`, :issue:`102`
+- Read transformed time series. :issue:`100`
+- Read historical time series. :issue:`101`, :issue:`102`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -724,7 +724,7 @@ Changes
 - **Enhancement:** "Expose TLS credential settings" :issue:`135`
 - **Fixed:** "read_timeseries_points(...) returns either a List[Timeseries] or just Timeseries" :issue:`125`
 - **Fixed:** "update_timeseries_resource_info(...) is not working as intended" :issue:`116`
-- **Fixed:** "Writing to a timeseries does not behave as expected" :issue:`115`
+- **Fixed:** "Writing to a time series does not behave as expected" :issue:`115`
 - **Fixed:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
 - **Fixed:** "Visual bug when displaying results for use cases" :issue:`122`
 
@@ -760,10 +760,10 @@ New features
 
 - Authenticate with Mesh using the Kerberos protocol towards Active Directory.
 - Create and/or connect to a session on a running Mesh server using both secure and insecure connection.
-- Read and write timeseries points using full name, GUID or timskey.
-- Get and update metadata about physical Oracle timeseries.
-- Get and update metadata about timeseries objects connected in the Mesh model.
-- Search for timeseries objects in the Mesh model using the model, a query and either a start path or start guid.
+- Read and write time series points using full name, GUID or timskey.
+- Get and update metadata about physical Oracle time series.
+- Get and update metadata about time series objects connected in the Mesh model.
+- Search for time series objects in the Mesh model using the model, a query and either a start path or start guid.
 - Rollback and/or commit changes made to a Mesh session.
 - Documentation, guides and examples.
 - Automatic testing.
@@ -777,7 +777,7 @@ Known issues
 ~~~~~~~~~~~~~~~~~~
 
 - **Critical**: "update_timeseries_resource_info(...) is not working as intended" :issue:`116`
-- **Major/Minor:** "Writing to a timeseries does not behave as expected" :issue:`115`
+- **Major/Minor:** "Writing to a time series does not behave as expected" :issue:`115`
 - **Major:** "get_timeseries_attribute(...) won't accept GUIDs from Nimbus" :issue:`120`
 - **Minor:** "Visual bug when displaying results for use cases" :issue:`122`
 

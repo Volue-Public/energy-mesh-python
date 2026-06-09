@@ -979,7 +979,7 @@ Get it with <a class="reference external" href="https://visualstudio.microsoft.c
 <h3>New features<a class="headerlink" href="#id84" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Sum function for single time series. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/161">[161]</a></p></li>
-<li><p>Read of virtual timeseries in SmG. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/153">[153]</a></p></li>
+<li><p>Read of virtual time series in SmG. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/153">[153]</a></p></li>
 <li><p>Logging and audit trail. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/156">[156]</a></p></li>
 <li><p>Read and write of objects in the physical Mesh model. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/151">[151]</a></p></li>
 <li><p>Implement RPCs for handling attributes. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/203">[203]</a></p></li>
@@ -989,7 +989,7 @@ Get it with <a class="reference external" href="https://visualstudio.microsoft.c
 <h3>Changes<a class="headerlink" href="#id85" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Enhancement:</strong> Separate forecasting and history functions. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/113">[113]</a></p></li>
-<li><p><strong>Enhancement:</strong> Readable error for reply with no timeseries data. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/164">[164]</a></p></li>
+<li><p><strong>Enhancement:</strong> Readable error for reply with no time series data. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/164">[164]</a></p></li>
 <li><p><strong>Enhancement:</strong> Expose transformation functions the same way other calc functions are exposed. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/157">[157]</a></p></li>
 <li><p><strong>Fixed:</strong> Dependencies not set correctly <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/178">[178]</a></p></li>
 <li><p><strong>Fixed:</strong> Inconsistent handling of timestamps in time series data point update. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/183">[183]</a></p></li>
@@ -1028,8 +1028,8 @@ Get it with <a class="reference external" href="https://visualstudio.microsoft.c
 <div class="section" id="id89">
 <h3>New features<a class="headerlink" href="#id89" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>Read transformed timeseries. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/100">[100]</a></p></li>
-<li><p>Read historical timeseries. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/101">[101]</a>, <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/102">[102]</a></p></li>
+<li><p>Read transformed time series. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/100">[100]</a></p></li>
+<li><p>Read historical time series. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/101">[101]</a>, <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/102">[102]</a></p></li>
 </ul>
 </div>
 <div class="section" id="id90">
@@ -1041,7 +1041,7 @@ Get it with <a class="reference external" href="https://visualstudio.microsoft.c
 <li><p><strong>Enhancement:</strong> “Expose TLS credential settings” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/135">[135]</a></p></li>
 <li><p><strong>Fixed:</strong> “read_timeseries_points(…) returns either a List[Timeseries] or just Timeseries” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/125">[125]</a></p></li>
 <li><p><strong>Fixed:</strong> “update_timeseries_resource_info(…) is not working as intended” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/116">[116]</a></p></li>
-<li><p><strong>Fixed:</strong> “Writing to a timeseries does not behave as expected” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/115">[115]</a></p></li>
+<li><p><strong>Fixed:</strong> “Writing to a time series does not behave as expected” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/115">[115]</a></p></li>
 <li><p><strong>Fixed:</strong> “get_timeseries_attribute(…) won’t accept GUIDs from Nimbus” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/120">[120]</a></p></li>
 <li><p><strong>Fixed:</strong> “Visual bug when displaying results for use cases” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/122">[122]</a></p></li>
 </ul>
@@ -1075,10 +1075,10 @@ Get it with <a class="reference external" href="https://visualstudio.microsoft.c
 <ul class="simple">
 <li><p>Authenticate with Mesh using the Kerberos protocol towards Active Directory.</p></li>
 <li><p>Create and/or connect to a session on a running Mesh server using both secure and insecure connection.</p></li>
-<li><p>Read and write timeseries points using full name, GUID or timskey.</p></li>
-<li><p>Get and update metadata about physical Oracle timeseries.</p></li>
-<li><p>Get and update metadata about timeseries objects connected in the Mesh model.</p></li>
-<li><p>Search for timeseries objects in the Mesh model using the model, a query and either a start path or start guid.</p></li>
+<li><p>Read and write time series points using full name, GUID or timskey.</p></li>
+<li><p>Get and update metadata about physical Oracle time series.</p></li>
+<li><p>Get and update metadata about time series objects connected in the Mesh model.</p></li>
+<li><p>Search for time series objects in the Mesh model using the model, a query and either a start path or start guid.</p></li>
 <li><p>Rollback and/or commit changes made to a Mesh session.</p></li>
 <li><p>Documentation, guides and examples.</p></li>
 <li><p>Automatic testing.</p></li>
@@ -1094,7 +1094,7 @@ Get it with <a class="reference external" href="https://visualstudio.microsoft.c
 <h3>Known issues<a class="headerlink" href="#id96" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p><strong>Critical</strong>: “update_timeseries_resource_info(…) is not working as intended” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/116">[116]</a></p></li>
-<li><p><strong>Major/Minor:</strong> “Writing to a timeseries does not behave as expected” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/115">[115]</a></p></li>
+<li><p><strong>Major/Minor:</strong> “Writing to a time series does not behave as expected” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/115">[115]</a></p></li>
 <li><p><strong>Major:</strong> “get_timeseries_attribute(…) won’t accept GUIDs from Nimbus” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/120">[120]</a></p></li>
 <li><p><strong>Minor:</strong> “Visual bug when displaying results for use cases” <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/122">[122]</a></p></li>
 </ul>
