@@ -28,7 +28,7 @@ Changes
 - **Breaking change:** The default value of the ``timezone`` argument in
   :py:meth:`~volue.mesh.calc.transform.TransformFunctions.transform` has
   been changed from ``UTC`` to ``None``. Code that relied on the previous
-  ``UTC`` default without passing the argument explicitly should now pass
+  ``UTC`` default without passing the argument explicitly must now explicitly pass
   ``timezone=Timezone.UTC``.
 
 Install instructions

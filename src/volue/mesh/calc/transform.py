@@ -121,7 +121,8 @@ class _TransformFunctionsBase(_Calculation, ABC):
         search_query: str | None = None,
     ) -> Timeseries:
         """
-        Transforms time series from one resolution to another resolution using ad-hoc calculation.
+        Transforms time series from one resolution to another. This is done using an ad-hoc calculation
+        which in turn uses the `TRANSFORM` calculation function.
         See `Mesh documentation about transform functions <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/>`__.
 
         Some of target resolutions have a time zone foundation.
@@ -136,10 +137,10 @@ class _TransformFunctionsBase(_Calculation, ABC):
         Args:
             resolution: The resolution to transform to.
             method: What method to use for the transformation.
-            timezone: What time zone to use for the transformation. If not set then the
-              `TRANSFORM(t,s,s) <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/#transformt-s-s>`__ is used,
-              otherwise `TRANSFORM(t,s,s,s) <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/#transformt-s-s-s>`__ is used.
-            search_query: a search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            timezone: What time zone to use for the transformation. If not set, the
+              `TRANSFORM(t,s,s) <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/#transformt-s-s>`__ overload is used,
+              otherwise the `TRANSFORM(t,s,s,s) <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/#transformt-s-s-s>`__ overload is used.
+           search_query: a search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
 
         Note:
             The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `target` will be used.

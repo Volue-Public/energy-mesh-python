@@ -34,10 +34,9 @@ See also the following examples:
 * :ref:`examples:Time zone-aware time series conversion`
 
 
-Transforming time zone-aware time series 2
-===========================================
-
-
+Transforming time zone-aware time series
+========================================
+
 When transforming a time zone-aware time series using
 :py:meth:`volue.mesh.calc.transform.TransformFunctions.transform`, the
 ``timezone`` argument must be set to ``None``.
@@ -56,7 +55,7 @@ When transforming a time zone-aware time series using
 
 .. note::
     Before version 1.17 the default value of ``timezone`` was ``UTC``.
-    This meant that to correctly transform a time zone-aware time series the
+    This meant that to correctly transform a time zone-aware time series, the
     ``timezone`` argument had to be explicitly set to ``None``.
     Starting from version 1.17 the default is ``None``, so the argument can
     be omitted.
