@@ -290,18 +290,19 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Transforms time series from one resolution to another resolution.</span>
+<span class="sd">        Transforms time series from one resolution to another. This is done using an ad-hoc calculation</span>
+<span class="sd">        which in turn uses the `TRANSFORM` calculation function.</span>
+<span class="sd">        See `Mesh documentation about transform functions &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/&gt;`__.</span>
 
 <span class="sd">        Some of target resolutions have a time zone foundation.</span>
 <span class="sd">        Note: the `LOCAL` and `STANDARD` time zone refers to time zone of Mesh server, not the Python client.</span>
 
 <span class="sd">        Example:</span>
 <span class="sd">            `DAY` can be related to European Standard Time (UTC+1), which is different from the DAY scope in Finland (UTC+2).</span>
-<span class="sd">            When the time zone argument to TRANSFORM is omitted, the configured standard time zone with no Daylight Saving Time enabled is used.</span>
 <span class="sd">            You can use it to convert both ways, i.e. both from finer to coarser resolution, and the other way.</span>
 <span class="sd">            The most common use is accumulation, i.e. transformation to coarser resolution.</span>
 <span class="sd">            Most transformation methods are available for this latter use.</span>
@@ -309,8 +310,10 @@
 <span class="sd">        Args:</span>
 <span class="sd">            resolution: The resolution to transform to.</span>
 <span class="sd">            method: What method to use for the transformation.</span>
-<span class="sd">            timezone: What time zone to use for the transformation.</span>
-<span class="sd">            search_query: a search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
+<span class="sd">            timezone: What time zone to use for the transformation. If not set, the</span>
+<span class="sd">              `TRANSFORM(t,s,s) &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/#transformt-s-s&gt;`__ overload is used,</span>
+<span class="sd">              otherwise the `TRANSFORM(t,s,s,s) &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/transform/#transformt-s-s-s&gt;`__ overload is used.</span>
+<span class="sd">           search_query: a search formulated using the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__.</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            The resulting objects from the `search_query` will be used in the `transform` function, if `search_query` is not set the `target` will be used.</span>
@@ -328,7 +331,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span>
@@ -345,7 +348,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">Method</span><span class="p">,</span>
-        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">=</span> <span class="n">Timezone</span><span class="o">.</span><span class="n">UTC</span><span class="p">,</span>
+        <span class="n">timezone</span><span class="p">:</span> <span class="n">Timezone</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">search_query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
         <span class="n">expression</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_transform_expression</span><span class="p">(</span>

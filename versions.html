@@ -342,7 +342,11 @@ For detailed compatibility information, refer to the
 <div class="section" id="changes">
 <h3>Changes<a class="headerlink" href="#changes" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>TBA</p></li>
+<li><p><strong>Breaking change:</strong> The default value of the <code class="docutils literal notranslate"><span class="pre">timezone</span></code> argument in
+<a class="reference internal" href="api.html#volue.mesh.calc.transform.TransformFunctions.transform" title="volue.mesh.calc.transform.TransformFunctions.transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transform()</span></code></a> has
+been changed from <code class="docutils literal notranslate"><span class="pre">UTC</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Code that relied on the previous
+<code class="docutils literal notranslate"><span class="pre">UTC</span></code> default without passing the argument explicitly must now explicitly pass
+<code class="docutils literal notranslate"><span class="pre">timezone=Timezone.UTC</span></code>.</p></li>
 </ul>
 </div>
 <div class="section" id="install-instructions">

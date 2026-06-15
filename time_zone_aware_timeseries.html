@@ -97,7 +97,10 @@
 <li class="toctree-l2 current"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="mesh_availability.html">Availability</a></li>
 <li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Sessions</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Time zone-aware time series</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Time zone-aware time series</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#transforming-time-zone-aware-time-series">Transforming time zone-aware time series</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
@@ -190,6 +193,8 @@
             
   <div class="section" id="time-zone-aware-time-series">
 <h1>Time zone-aware time series<a class="headerlink" href="#time-zone-aware-time-series" title="Permalink to this heading">¶</a></h1>
+<p>Please refer to <a class="reference external" href="https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/time-series/time-zone-aware-time-series/">Mesh documentation</a>
+for a general description of time zone-aware time series in Mesh.</p>
 <p>The Mesh Python SDK allows for setting time zones
 through its time series creation and update APIs:</p>
 <p><a class="reference internal" href="api.html#volue.mesh.Connection.Session.create_physical_timeseries" title="volue.mesh.Connection.Session.create_physical_timeseries"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.create_physical_timeseries()</span></code></a>
@@ -202,7 +207,7 @@ through its time series creation and update APIs:</p>
     <span class="n">resolution</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span>
     <span class="n">unit_of_measurement</span><span class="o">=</span><span class="s2">&quot;cm&quot;</span><span class="p">,</span>
     <span class="c1"># time_zone is valid only if resolution is DAY or coarser</span>
-    <span class="n">time_zone</span><span class="o">=</span><span class="s2">&quot;Europe/Warsaw&quot;</span><span class="p">,</span>
+    <span class="n">time_zone</span><span class="o">=</span><span class="s2">&quot;Europe/Warsaw&quot;</span>
 <span class="p">)</span>
 <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </pre></div>
@@ -213,6 +218,31 @@ through its time series creation and update APIs:</p>
 <li><p><a class="reference internal" href="examples.html#write-time-series"><span class="std std-ref">Write time series</span></a></p></li>
 <li><p><a class="reference internal" href="examples.html#time-zone-aware-time-series-conversion"><span class="std std-ref">Time zone-aware time series conversion</span></a></p></li>
 </ul>
+<div class="section" id="transforming-time-zone-aware-time-series">
+<h2>Transforming time zone-aware time series<a class="headerlink" href="#transforming-time-zone-aware-time-series" title="Permalink to this heading">¶</a></h2>
+<p>When transforming a time zone-aware time series using
+<a class="reference internal" href="api.html#volue.mesh.calc.transform.TransformFunctions.transform" title="volue.mesh.calc.transform.TransformFunctions.transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.calc.transform.TransformFunctions.transform()</span></code></a>, the
+<code class="docutils literal notranslate"><span class="pre">timezone</span></code> argument must be set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
+    <span class="n">target</span><span class="o">=</span><span class="n">ts_attribute</span><span class="p">,</span>
+    <span class="n">start_time</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+    <span class="n">end_time</span><span class="o">=</span><span class="n">end</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+    <span class="n">resolution</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">HOUR</span><span class="p">,</span>
+    <span class="n">method</span><span class="o">=</span><span class="n">transform</span><span class="o">.</span><span class="n">Method</span><span class="o">.</span><span class="n">AVG</span><span class="p">,</span>
+    <span class="n">timezone</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before version 1.17 the default value of <code class="docutils literal notranslate"><span class="pre">timezone</span></code> was <code class="docutils literal notranslate"><span class="pre">UTC</span></code>.
+This meant that to correctly transform a time zone-aware time series, the
+<code class="docutils literal notranslate"><span class="pre">timezone</span></code> argument had to be explicitly set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+Starting from version 1.17 the default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, so the argument can
+be omitted.</p>
+</div>
+</div>
 </div>
 
 
