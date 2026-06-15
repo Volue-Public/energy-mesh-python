@@ -34,9 +34,9 @@ See also the following examples:
 * :ref:`examples:Time zone-aware time series conversion`
 
 
-Transforming time zone-aware time series
-========================================
-
+Transforming time zone-aware time series
+========================================
+
 When transforming a time zone-aware time series using
 :py:meth:`volue.mesh.calc.transform.TransformFunctions.transform`, the
 ``timezone`` argument must be set to ``None``.
