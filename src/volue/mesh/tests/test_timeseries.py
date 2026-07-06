@@ -608,7 +608,10 @@ def test_write_timeseries_points_to_calculation_timeseries(session):
         table=new_table, full_name=TIME_SERIES_ATTRIBUTE_WITH_CALCULATION_PATH
     )
 
-    with pytest.raises(grpc.RpcError, match="not found"):
+    # Starting from Mesh 2.23 the error message has changed.
+    # Handle both cases for "some time".
+    error_message_regex = "(not found)|(target time series is not connected to a physical time series nor marked as session series)"
+    with pytest.raises(grpc.RpcError, match=error_message_regex):
         session.write_timeseries_points(timeseries)
 
 
