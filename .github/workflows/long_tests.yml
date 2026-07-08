@@ -37,7 +37,7 @@ jobs:
         run: |
           poetry run pytest --junit-xml=TestResults/unittests.xml --cov-report=json:TestResults/coverage.json --cov --cov-branch -m "not authentication and not long"
       - name: Upload test results and coverage report to Quality Reporter
-        uses: Volue/platform-workflow-library/quality-reporter@b118883941300267ac9d0d1951158405a2573a33 # v1.0.1
+        uses: Volue/platform-workflow-library/quality-reporter@340eaf76e0e0afaa121727e56cb9935e162f061e # v1.0.3
         with:
           platform-tools-checkout-key: ${{ secrets.VOLUE_PLATFORM_TOOLS_READ_KEY }}
           grafana-publisher-token: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_TOKEN }}
