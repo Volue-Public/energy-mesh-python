@@ -26,13 +26,23 @@ jobs:
         run: |
           echo "NEW_COMMITS=$(git log --since '1 day ago' --oneline | wc -l)" >> "$env:GITHUB_ENV"
       - name: Install dev environment
-        if: ${{ env.NEW_COMMITS > 0 }}
+        #if: ${{ env.NEW_COMMITS > 0 }}
         uses: ./.github/workflows/install_dev_env
         with:
           python-version: ${{ matrix.python-version }}
           token: ${{ secrets.OAUTH_TOKEN }}
-      - name: Run long tests
-        if: ${{ success() && env.NEW_COMMITS > 0 }}
+      - name: Run tests and upload test results
+        #if: ${{ success() && env.NEW_COMMITS > 0 }}
         working-directory: ${{ github.workspace }}
         run: |
-          poetry run pytest -m "long"
+          poetry run pytest --junit-xml=TestResults/unittests.xml --cov-report=json:TestResults/coverage.json --cov --cov-branch -m "not authentication and not long"
+      - name: Upload test results and coverage report to Quality Reporter
+        uses: Volue/platform-workflow-library/quality-reporter@b118883941300267ac9d0d1951158405a2573a33 # v1.0.1
+        with:
+          platform-tools-checkout-key: ${{ secrets.VOLUE_PLATFORM_TOOLS_READ_KEY }}
+          grafana-publisher-token: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_TOKEN }}
+          required-test-count: "590"
+          required-line-coverage: "80.0"
+          required-branch-coverage: "70.0"
+          required-method-coverage: "85.0"          
+          programming-language: "python"
