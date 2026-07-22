@@ -34,4 +34,72 @@ jobs:
         if: ${{ success() }}
         working-directory: ${{ github.workspace }}
         run: |
-          poetry run pytest -m "not authentication and not long"
+          poetry run pytest -m "not authentication and not long" --junitxml=TestResults/unittests.xml --cov=volue.mesh --cov-branch --cov-report=json:TestResults/coverage.json
+
+      # ---- Quality Reporter ----------------------------------------------
+      # Publishes test results and coverage to the Volue Grafana Code Quality
+      # dashboard. This is a public repository, so the steps are gated to never
+      # run for pull requests coming from forks (GitHub withholds secrets there
+      # anyway); pushes, manual dispatch, and same-repo PRs all report.
+      # The reporter runs on its own Python 3.11 (matching its dependency
+      # lock), independent of the matrix Python used for the tests, so it can
+      # run from any matrix leg. It is currently limited to the 3.11 leg to
+      # report once per run — drop the matrix.python-version condition to
+      # enable other legs.
+      # Requires the secrets QUALITY_REPORTER_READ_TOKEN (fine-grained PAT,
+      # Contents:Read on Volue/quality-reporter only) and
+      # VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_TOKEN.
+
+      - name: Check out quality reporter tooling
+        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: Volue/quality-reporter
+          ref: 17eaec0120b82b3193b825d06b2c28bb5bfe79d6 # v1.0.4
+          token: ${{ secrets.QUALITY_REPORTER_READ_TOKEN }}
+          path: qr-tools
+          persist-credentials: false
+
+      - name: Fetch repository custom properties
+        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -s \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}" \
+            > custom_properties.json
+          echo "QR_PRODUCT=$(jq -r '.custom_properties.product' custom_properties.json)" >> $GITHUB_ENV
+          echo "QR_PRODUCT_LINE=$(jq -r '.custom_properties.product_line' custom_properties.json)" >> $GITHUB_ENV
+          echo "QR_PRODUCT_CODE=$(jq -r '.custom_properties.product_code | select(. != null) // ""' custom_properties.json)" >> $GITHUB_ENV
+
+      - name: Set up Python for quality reporter
+        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          # The reporter's hash-locked dependencies are resolved for 3.11,
+          # independent of the matrix Python the tests ran on.
+          python-version: "3.11"
+
+      - name: Upload results to quality reporter
+        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        shell: bash
+        env:
+          QR_GRAFANA_USERNAME: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_USER }}
+          QR_GRAFANA_TOKEN: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_TOKEN }}
+          QR_GRAFANA_PUSHGATEWAY: https://quality-reporter.platform.volue.eu
+          QR_REPOSITORY: ${{ github.repository }}
+          QR_BRANCH: ${{ github.head_ref || github.ref_name }}
+          QR_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          QR_GIT_SHA: ${{ github.sha }}
+          QR_CODE_LANG: python
+          QR_REQUIRED_TESTS: "200" # TODO: tune to the real suite size
+          QR_DEBUG: "true"
+        run: |
+          # Hash-locked install: any dependency missing from the lock or failing
+          # its sha256 aborts the install.
+          python -m pip install --require-hashes --no-deps -r qr-tools/requirements.txt
+          python qr-tools/scripts/grafana_quality_reporter.py
