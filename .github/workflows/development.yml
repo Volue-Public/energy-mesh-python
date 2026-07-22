@@ -88,7 +88,7 @@ jobs:
         if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
         shell: bash
         env:
-          QR_GRAFANA_USERNAME: 777544
+          QR_GRAFANA_USERNAME: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_USER }}
           QR_GRAFANA_TOKEN: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_TOKEN }}
           QR_GRAFANA_PUSHGATEWAY: https://quality-reporter.platform.volue.eu
           QR_REPOSITORY: ${{ github.repository }}
