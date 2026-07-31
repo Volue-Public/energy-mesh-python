@@ -39,7 +39,7 @@ jobs:
         if: ${{ success() && env.NEW_COMMITS > 0 }}
         working-directory: ${{ github.workspace }}
         run: |
-          poetry run pytest -m "long"
+          poetry run pytest -m "long" --junitxml=TestResults/unittests.xml --cov=volue.mesh --cov-branch --cov-report=json:TestResults/coverage.json
 
       # ---- Quality Reporter ----------------------------------------------
       # Publishes test results and coverage to the Volue Grafana Code Quality
