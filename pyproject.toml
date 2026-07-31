@@ -84,6 +84,12 @@ markers = [
     "long: Long tests, longer than a minute.",
 ]
 
+[tool.coverage.run]
+omit = [
+    "src/volue/mesh/proto/*",
+    "src/volue/mesh/tests/*",
+]
+
 [build-system]
 requires = [
     "poetry-core>=1.8.5, <2.0.0",
