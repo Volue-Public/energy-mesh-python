@@ -366,6 +366,21 @@ def test_model_changes_in_multiple_concurrent_sessions(connection):
     doing changes and committing them, does not crash Mesh.
     """
 
+    dbl_paths = [
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney1.DblAtt",
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.DblAtt",
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.DblAtt",
+    ]
+    int64_path = (
+        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.Int64Att"
+    )
+
+    with connection.create_session() as save_session:
+        initial_values = {
+            path: save_session.get_attribute(path).value for path in dbl_paths
+        }
+        initial_values[int64_path] = save_session.get_attribute(int64_path).value
+
     def update_simple_attribute(connection, path):
         with connection.create_session() as session:
             value = random.uniform(0, 10)
@@ -385,27 +400,24 @@ def test_model_changes_in_multiple_concurrent_sessions(connection):
         for thread in threads:
             thread.join()
 
-    session_with_no_changes = connection.create_session()
-    session_with_no_changes.open()
+    try:
+        session_with_no_changes = connection.create_session()
+        session_with_no_changes.open()
 
-    session_with_changes = connection.create_session()
-    session_with_changes.open()
-    session_with_changes.update_simple_attribute(
-        "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.Int64Att", 80
-    )
+        session_with_changes = connection.create_session()
+        session_with_changes.open()
+        session_with_changes.update_simple_attribute(int64_path, 80)
 
-    for _ in range(100):
-        run_in_threads(
-            connection,
-            [
-                "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney1.DblAtt",
-                "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1/SomePowerPlantChimney2.DblAtt",
-                "Model/SimpleThermalTestModel/ThermalComponent/SomePowerPlant1.DblAtt",
-            ],
-        )
+        for _ in range(100):
+            run_in_threads(connection, dbl_paths)
 
-    session_with_no_changes.close()
-    session_with_changes.close()
+        session_with_no_changes.close()
+        session_with_changes.close()
+    finally:
+        with connection.create_session() as restore_session:
+            for path, value in initial_values.items():
+                restore_session.update_simple_attribute(path, value)
+            restore_session.commit()
 
 
 if __name__ == "__main__":
