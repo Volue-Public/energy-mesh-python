@@ -55,8 +55,12 @@ jobs:
       # Contents:Read on Volue/quality-reporter only) and
       # VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_TOKEN.
 
+      - name: Check if quality reporting is needed
+        if: ${{ success() && env.NEW_COMMITS > 0 && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        run: echo "REPORT_QUALITY=true" >> "$env:GITHUB_ENV"
+
       - name: Check out quality reporter tooling
-        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        if: ${{ env.REPORT_QUALITY == 'true' }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: Volue/quality-reporter
@@ -66,7 +70,7 @@ jobs:
           persist-credentials: false
 
       - name: Fetch repository custom properties
-        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        if: ${{ env.REPORT_QUALITY == 'true' }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -87,7 +91,7 @@ jobs:
           echo "QR_PRODUCT_CODE=$QR_PRODUCT_CODE" >> "$GITHUB_ENV"
 
       - name: Set up Python for quality reporter
-        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        if: ${{ env.REPORT_QUALITY == 'true' }}
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           # The reporter's hash-locked dependencies are resolved for 3.11,
@@ -95,7 +99,7 @@ jobs:
           python-version: "3.11"
 
       - name: Upload results to quality reporter
-        if: ${{ success() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && matrix.python-version == '3.11' }}
+        if: ${{ env.REPORT_QUALITY == 'true' }}
         shell: bash
         env:
           QR_GRAFANA_USERNAME: ${{ secrets.VOLUE_PLATFORM_GRAFANA_METRICS_PUBLISHER_USER }}
