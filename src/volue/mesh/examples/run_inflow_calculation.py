@@ -7,8 +7,6 @@ import helpers
 import volue.mesh.aio
 from volue import mesh
 
-GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES = 10 * 1024 * 1024  # 10MB
-
 
 def sync_run_inflow_calculation(address, tls_root_pem_cert):
     print("connecting...")
@@ -16,18 +14,10 @@ def sync_run_inflow_calculation(address, tls_root_pem_cert):
     # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
     # connection = mesh.Connection.with_tls(
     #     address,
-    #     tls_root_pem_cert,
-    #     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
+    #     tls_root_pem_cert
     # )
 
-    # By default the maximum inbound gRPC message size is 4MB. When Mesh server
-    # returns datasets for longer inflow calculation intervals the gRPC message
-    # size may exceed this limit. In such cases the user can set new limit
-    # using `grpc_max_receive_message_length` when creating a connection to Mesh.
-    connection = mesh.Connection.insecure(
-        address,
-        grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
-    )
+    connection = mesh.Connection.insecure(address)
 
     with connection.create_session() as session:
         start_time = datetime(2021, 1, 1)
@@ -42,16 +32,11 @@ def sync_run_inflow_calculation(address, tls_root_pem_cert):
                 "WaterCourse",
                 start_time,
                 end_time,
-                return_datasets=True,
                 resolution=timedelta(minutes=5),
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
                         f"[{logging.getLevelName(response.level)}] {response.message}"
-                    )
-                elif isinstance(response, mesh.HydSimDataset):
-                    print(
-                        f"Received dataset {response.name} with {len(response.data)} bytes"
                     )
             print("done")
         except Exception as e:
@@ -64,18 +49,10 @@ async def async_run_inflow_calculation(address, tls_root_pem_cert):
     # For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:
     # connection = mesh.aio.Connection.with_tls(
     #     address,
-    #     tls_root_pem_cert,
-    #     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
+    #     tls_root_pem_cert
     # )
 
-    # By default the maximum inbound gRPC message size is 4MB. When Mesh server
-    # returns datasets for longer inflow calculation intervals the gRPC message
-    # size may exceed this limit. In such cases the user can set new limit
-    # using `grpc_max_receive_message_length` when creating a connection to Mesh.
-    connection = mesh.aio.Connection.insecure(
-        address,
-        grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,
-    )
+    connection = mesh.aio.Connection.insecure(address)
 
     async with connection.create_session() as session:
         start_time = datetime(2021, 1, 1)
@@ -90,16 +67,11 @@ async def async_run_inflow_calculation(address, tls_root_pem_cert):
                 "WaterCourse",
                 start_time,
                 end_time,
-                return_datasets=True,
                 resolution=timedelta(minutes=5),
             ):
                 if isinstance(response, mesh.LogMessage):
                     print(
                         f"[{logging.getLevelName(response.level)}] {response.message}"
-                    )
-                elif isinstance(response, mesh.HydSimDataset):
-                    print(
-                        f"Received dataset {response.name} with {len(response.data)} bytes"
                     )
             print("done")
         except Exception as e:
