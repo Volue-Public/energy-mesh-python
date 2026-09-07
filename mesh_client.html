@@ -197,22 +197,22 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to send get the server version.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Showing how to send get the server version."""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"1. Requesting server version"</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Showing how to start and end a session."""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"A. Starting session"</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"B. Ending session"</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks sequentially.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Showing how to connect to a server and run two tasks sequentially."""</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
@@ -222,10 +222,10 @@
     <span class="n">start_and_end_session</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">())</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Done"</span><span class="p">)</span>
 
 <span class="c1"># Outputs:</span>
 <span class="c1"># 1. Requesting server version</span>
@@ -244,22 +244,22 @@
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="n">connection</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to get the server version.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. Requesting server version&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Showing how to get the server version."""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"1. Requesting server version"</span><span class="p">)</span>
     <span class="n">version</span> <span class="o">=</span> <span class="k">await</span> <span class="n">connection</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"2. Server version is </span><span class="si">{</span><span class="n">version</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start_and_end_session</span><span class="p">(</span><span class="n">session</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to start and end a session.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A. Starting session&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Showing how to start and end a session."""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"A. Starting session"</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;B. Ending session&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"B. Ending session"</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to connect to a server and run two tasks concurrently.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Showing how to connect to a server and run two tasks concurrently."""</span>
     <span class="c1"># Creating a connection, but not sending any requests yet.</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
@@ -272,10 +272,10 @@
     <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Done"</span><span class="p">)</span>
 
 <span class="c1"># Outputs:</span>
 <span class="c1"># 1. Requesting server version</span>
@@ -362,10 +362,10 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to find time series, write, read points from it and convert them to pandas format.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Showing how to find time series, write, read points from it and convert them to pandas format."""</span>
 
-    <span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;*[.Name=SomePowerPlantChimney2].TsRawAtt&quot;</span>  <span class="c1"># make sure only 1 time series is returned</span>
-    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">&quot;Model/SimpleThermalTestModel/ThermalComponent&quot;</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="s2">"*[.Name=SomePowerPlantChimney2].TsRawAtt"</span>  <span class="c1"># make sure only 1 time series is returned</span>
+    <span class="n">start_object_path</span> <span class="o">=</span> <span class="s2">"Model/SimpleThermalTestModel/ThermalComponent"</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
@@ -378,26 +378,26 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
                 <span class="n">start_object_path</span><span class="p">,</span> <span class="n">query</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not find time series attribute: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No such time series attribute in the given model/database&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"No such time series attribute in the given model/database"</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of found time series: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries_attributes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># pick the first time series and do some operations with it</span>
         <span class="n">timeseries_attribute</span> <span class="o">=</span> <span class="n">timeseries_attributes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Working on timeseries with path: &quot;</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Working on timeseries with path: "</span> <span class="o">+</span> <span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
         <span class="c1"># check for example the curve type of the connected physical time series</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Curve: </span><span class="si">{</span><span class="n">timeseries_attribute</span><span class="o">.</span><span class="n">time_series_resource</span><span class="o">.</span><span class="n">curve_type</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># now lets write some data to it</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Mesh data is organized as an Arrow table with the following schema:</span>
-            <span class="c1"># utc_time - [pa.timestamp(&#39;ms&#39;)] as a UTC Unix timestamp expressed in milliseconds</span>
+            <span class="c1"># utc_time - [pa.timestamp('ms')] as a UTC Unix timestamp expressed in milliseconds</span>
             <span class="c1"># flags - [pa.uint32]</span>
             <span class="c1"># value - [pa.float64]</span>
 
@@ -423,7 +423,7 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="n">session</span><span class="o">.</span><span class="n">write_timeseries_points</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not write timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not write timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">local_time_zone</span> <span class="o">=</span> <span class="n">tz</span><span class="o">.</span><span class="n">tzlocal</span><span class="p">()</span>
 
@@ -443,8 +443,8 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 
             <span class="c1"># lets convert it back to local time zone</span>
             <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
-                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">"utc_time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">"utc_time"</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
@@ -455,10 +455,10 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
             <span class="c1"># do some further processing</span>
 
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">RpcError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not read timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># now lets read transformations from it (transform to days)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transform resolution to days:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Transform resolution to days:"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">local_time_zone</span><span class="p">)</span>
@@ -478,21 +478,21 @@ All time zone naive date time objects are treated as UTC. Time zone aware date t
 
             <span class="c1"># lets convert it back to local time zone</span>
             <span class="c1"># first convert to UTC time zone aware datetime object and then to local time zone (set in operating system)</span>
-            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
-                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">&quot;utc_time&quot;</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">pandas_series</span><span class="p">[</span><span class="s2">"utc_time"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span>
+                <span class="n">pandas_series</span><span class="p">[</span><span class="s2">"utc_time"</span><span class="p">],</span> <span class="n">utc</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">tz_convert</span><span class="p">(</span><span class="n">local_time_zone</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">pandas_series</span><span class="p">)</span>
 
             <span class="c1"># do some further processing</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not read transformed timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not read transformed timeseries points: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># optionally discard changes</span>
         <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="c1"># This will search for a given time series, write some data,</span>
     <span class="c1"># read it and convert to pandas format.</span>
 

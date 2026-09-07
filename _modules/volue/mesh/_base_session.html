@@ -270,20 +270,20 @@
                     <span class="c1"># In case of an exception just add more descriptive</span>
                     <span class="c1"># message and exit the worker thread.</span>
                     <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;session </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2"> worker thread exception&quot;</span>
+                        <span class="sa">f</span><span class="s2">"session </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2"> worker thread exception"</span>
                     <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a session to a Mesh server.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Represents a session to a Mesh server."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_extend_lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request to extend session lifetime on the Mesh server.</span>
 <span class="sd">        This is used internally by the Mesh Python SDK and the user does not</span>
 <span class="sd">        need to call it explicitly.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -295,7 +295,7 @@
         <span class="n">time_series_service</span><span class="p">:</span> <span class="n">time_series_pb2_grpc</span><span class="o">.</span><span class="n">TimeseriesServiceStub</span><span class="p">,</span>
         <span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize a session object for working with the Mesh server.</span>
 
 <span class="sd">        Args:</span>
@@ -306,7 +306,7 @@
 <span class="sd">            session_service: gRPC generated Mesh session service.</span>
 <span class="sd">            time_series_service: gRPC generated Mesh time series service.</span>
 <span class="sd">            session_id: ID of the session you are (or want to be) connected to.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">session_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_service</span><span class="p">:</span> <span class="n">calc_pb2_grpc</span><span class="o">.</span><span class="n">CalculationServiceStub</span> <span class="o">=</span> <span class="n">calc_service</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="p">:</span> <span class="n">hydsim_pb2_grpc</span><span class="o">.</span><span class="n">HydsimServiceStub</span> <span class="o">=</span> <span class="n">hydsim_service</span>
@@ -324,17 +324,17 @@
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request to open a session on the Mesh server.</span>
 <span class="sd">        An opened session must be closed using the same `Session` object.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request to close a session on the Mesh server.</span>
 
 <span class="sd">        Raises:</span>
@@ -343,25 +343,25 @@
 <span class="sd">        Note:</span>
 <span class="sd">            This method does not wait for the Mesh server to finish closing</span>
 <span class="sd">            the session on the Mesh server.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Discard changes in the :doc:`Mesh session &lt;mesh_session&gt;`.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Commit changes made in the :doc:`Mesh session &lt;mesh_session&gt;` to the shared storage.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">read_timeseries_points</span><span class="p">(</span>
@@ -370,7 +370,7 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Reads time series points for the specified time series in the given</span>
 <span class="sd">        interval.</span>
 
@@ -392,11 +392,11 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
 <span class="sd">            RuntimeError: Error message raised if the input is not valid</span>
 <span class="sd">            TypeError: Error message raised if the returned result from the request is not as expected</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">write_timeseries_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Writes time series points for the specified time series in the given interval.</span>
 <span class="sd">        Resolution of the time series does not need to be set when writing time series.</span>
 
@@ -409,19 +409,19 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">list_models</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        List all `Mesh models &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 <span class="sd">        Model is a root object that does not have an owner.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_object</span><span class="p">(</span>
@@ -430,7 +430,7 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Object</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request information associated with a Mesh object from the Mesh model.</span>
 <span class="sd">        Specify either `object_id` or `object_path` to a Mesh object.</span>
 
@@ -446,7 +446,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">search_for_objects</span><span class="p">(</span>
@@ -456,7 +456,7 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Object</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Use the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__</span>
 <span class="sd">        to find Mesh objects in the Mesh model.</span>
 
@@ -473,13 +473,13 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Object</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create new Mesh object in the Mesh model.</span>
 <span class="sd">        Owner of the new object must be a one-to-one or one-to-many ownership</span>
 <span class="sd">        relation attribute. E.g.: for `SomePowerPlant1` object with path:</span>
@@ -489,8 +489,8 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Owner of the new object to be created. It must be a</span>
-<span class="sd">                one-to-one (object value type = &quot;ElementAttributeDefinition&quot;)</span>
-<span class="sd">                or one-to-many (object value type = &quot;ElementCollectionAttributeDefinition&quot;)</span>
+<span class="sd">                one-to-one (object value type = "ElementAttributeDefinition")</span>
+<span class="sd">                or one-to-many (object value type = "ElementCollectionAttributeDefinition")</span>
 <span class="sd">                ownership relation attribute.</span>
 <span class="sd">                It could be a Universal Unique Identifier or a path in the</span>
 <span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
@@ -502,7 +502,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_object</span><span class="p">(</span>
@@ -511,7 +511,7 @@
         <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_owner_attribute</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update an existing Mesh object in the Mesh model.</span>
 <span class="sd">        New owner of the object must be a one-to-one or one-to-many ownership</span>
 <span class="sd">        relation attribute. E.g.: for `SomePowerPlant1` object with path:</span>
@@ -523,21 +523,21 @@
 <span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_name: New name for the object.</span>
 <span class="sd">            new_owner_attribute: New owner of the object. It must be a</span>
-<span class="sd">                one-to-one (object value type = &quot;ElementAttributeDefinition&quot;)</span>
-<span class="sd">                or one-to-many (object value type = &quot;ElementCollectionAttributeDefinition&quot;)</span>
+<span class="sd">                one-to-one (object value type = "ElementAttributeDefinition")</span>
+<span class="sd">                or one-to-many (object value type = "ElementCollectionAttributeDefinition")</span>
 <span class="sd">                ownership relation attribute.</span>
 <span class="sd">                It could be a Universal Unique Identifier or a path in the</span>
 <span class="sd">                `Mesh model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`__.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">delete_object</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span> <span class="n">recursive_delete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Delete an existing Mesh object in the Mesh model.</span>
 
 <span class="sd">        Args:</span>
@@ -549,7 +549,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_attribute</span><span class="p">(</span>
@@ -557,7 +557,7 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttributeBase</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request information associated with a Mesh attribute from the</span>
 <span class="sd">        Mesh `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
 
@@ -570,7 +570,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_timeseries_attribute</span><span class="p">(</span>
@@ -578,7 +578,7 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesAttribute</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request information associated with a Mesh attribute from the</span>
 <span class="sd">        Mesh `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
 
@@ -593,7 +593,7 @@
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
 <span class="sd">            ValueError: Raised if given attribute ID or path points to an attribute of</span>
 <span class="sd">                different type than `TimeseriesAttribute`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">search_for_attributes</span><span class="p">(</span>
@@ -602,7 +602,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeBase</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Use the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__</span>
 <span class="sd">        to find Mesh attributes in the Mesh</span>
 <span class="sd">        `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
@@ -618,7 +618,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">search_for_timeseries_attributes</span><span class="p">(</span>
@@ -627,7 +627,7 @@
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">TimeseriesAttribute</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Use the `Mesh search language &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/&gt;`__</span>
 <span class="sd">        to find Mesh time series attributes in the Mesh</span>
 <span class="sd">        `model &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model&gt;`_.</span>
@@ -643,7 +643,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_simple_attribute</span><span class="p">(</span>
@@ -651,8 +651,8 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="n">SIMPLE_TYPE_OR_COLLECTION</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update an existing Mesh simple attribute&#39;s value in the Mesh model.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Update an existing Mesh simple attribute's value in the Mesh model.</span>
 <span class="sd">        Simple attribute is a singular type or collection of the following types:</span>
 <span class="sd">        - double (float in Python)</span>
 <span class="sd">        - integer (int in Python)</span>
@@ -669,7 +669,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_attribute</span><span class="p">(</span>
@@ -678,8 +678,8 @@
         <span class="n">new_local_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_timeseries_resource_key</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update meta data of an existing Mesh time series attribute&#39;s in the Mesh model.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Update meta data of an existing Mesh time series attribute's in the Mesh model.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh time series attribute to be updated. It could be a Universal Unique</span>
@@ -695,7 +695,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_attribute_definition</span><span class="p">(</span>
@@ -704,7 +704,7 @@
         <span class="n">new_template_expression</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update an existing Mesh time series attribute definition.</span>
 
 <span class="sd">        Args:</span>
@@ -713,7 +713,7 @@
 <span class="sd">                or an AttributeBaseDefinition instance.</span>
 <span class="sd">                See: `objects and attributes paths &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#objects-and-attributes-paths&gt;`__.</span>
 <span class="sd">            new_template_expression: New template expression for the attribute definition.</span>
-<span class="sd">                This will be used by all attribute instances that use this definition and don&#39;t</span>
+<span class="sd">                This will be used by all attribute instances that use this definition and don't</span>
 <span class="sd">                have a local expression. The template expression is not validated during this</span>
 <span class="sd">                operation. Invalid template expressions will be accepted but will cause failures</span>
 <span class="sd">                when reading time series points later.</span>
@@ -724,7 +724,7 @@
 
 <span class="sd">        Note:</span>
 <span class="sd">            At least one of `new_template_expression` or `new_description` must be provided.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_link_relation_attribute</span><span class="p">(</span>
@@ -733,7 +733,7 @@
         <span class="n">new_target_object_ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">],</span>
         <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update an existing Mesh link relation (non-versioned) attribute in the Mesh model.</span>
 
 <span class="sd">        Args:</span>
@@ -758,7 +758,7 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_versioned_one_to_one_link_relation_attribute</span><span class="p">(</span>
@@ -768,7 +768,7 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">new_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update an existing Mesh versioned one-to-one link relation attribute in</span>
 <span class="sd">        the Mesh model.</span>
 
@@ -787,7 +787,7 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_versioned_one_to_many_link_relation_attribute</span><span class="p">(</span>
@@ -795,7 +795,7 @@
         <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span>
         <span class="n">new_entries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">LinkRelationVersion</span><span class="p">]],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update an existing Mesh versioned one-to-many link relation attribute in</span>
 <span class="sd">        the Mesh model.</span>
 
@@ -813,11 +813,11 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_timeseries_resource_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeseries_key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Request information (like curve type or resolution) associated with</span>
 <span class="sd">        a physical or virtual time series.</span>
 
@@ -827,7 +827,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_timeseries_resource_info</span><span class="p">(</span>
@@ -837,7 +837,7 @@
         <span class="n">new_unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Update information associated with a physical or virtual time series.</span>
 
 <span class="sd">        Args:</span>
@@ -854,7 +854,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_physical_timeseries</span><span class="p">(</span>
@@ -866,22 +866,22 @@
         <span class="n">unit_of_measurement</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">time_zone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesResource</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Create a new physical time series.</span>
 
 <span class="sd">        Any missing components of the requested time series path will be created in</span>
-<span class="sd">        the catalog as well. For example, if we set the &#39;path&#39; to &quot;/Path/To/Timeseries/&quot;,</span>
-<span class="sd">        and its &#39;name&#39; field to &quot;Test_Timeseries&quot;, the entire  &quot;Path/To/Timeseries/Test_Timeseries&quot;</span>
-<span class="sd">        sequence of catalog entries will be created if it doesn&#39;t exist already.</span>
+<span class="sd">        the catalog as well. For example, if we set the 'path' to "/Path/To/Timeseries/",</span>
+<span class="sd">        and its 'name' field to "Test_Timeseries", the entire  "Path/To/Timeseries/Test_Timeseries"</span>
+<span class="sd">        sequence of catalog entries will be created if it doesn't exist already.</span>
 
-<span class="sd">        Note that the &#39;path&#39; field on the returned TimeseriesResource won&#39;t</span>
-<span class="sd">        have the same as the value as the &#39;path&#39; argument in this request;</span>
-<span class="sd">        namely, the returned &#39;path&#39; will have a &quot;Resource/&quot; prefix, and will be</span>
-<span class="sd">        suffixed with the contents of the &#39;name&#39; field from this request. That is:</span>
-<span class="sd">        ReturnedTimeseriesResource.path == &quot;Resource/&quot; + request.path + &quot;/&quot; + request.name</span>
+<span class="sd">        Note that the 'path' field on the returned TimeseriesResource won't</span>
+<span class="sd">        have the same as the value as the 'path' argument in this request;</span>
+<span class="sd">        namely, the returned 'path' will have a "Resource/" prefix, and will be</span>
+<span class="sd">        suffixed with the contents of the 'name' field from this request. That is:</span>
+<span class="sd">        ReturnedTimeseriesResource.path == "Resource/" + request.path + "/" + request.name</span>
 
-<span class="sd">        Continuing with the previous example, in this case the &#39;path&#39; field in the</span>
-<span class="sd">        response will be &quot;Resource/Path/To/Timeseries/Test_Timeseries&quot;.</span>
+<span class="sd">        Continuing with the previous example, in this case the 'path' field in the</span>
+<span class="sd">        response will be "Resource/Path/To/Timeseries/Test_Timeseries".</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            path: path of the new physical time series.</span>
@@ -896,7 +896,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            grpc.RpcError: Error message raised if the gRPC request could not be completed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">forecast_functions</span><span class="p">(</span>
@@ -905,7 +905,7 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForecastFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to forecast functions.</span>
+<span class="w">        </span><span class="sd">"""Access to forecast functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
@@ -917,7 +917,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Object containing all forecast functions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">history_functions</span><span class="p">(</span>
@@ -926,7 +926,7 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HistoryFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to history functions.</span>
+<span class="w">        </span><span class="sd">"""Access to history functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
@@ -938,7 +938,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">           Object containing all history functions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">statistical_functions</span><span class="p">(</span>
@@ -947,7 +947,7 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StatisticalFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to statistical functions.</span>
+<span class="w">        </span><span class="sd">"""Access to statistical functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
@@ -959,7 +959,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Object containing all statistical functions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">transform_functions</span><span class="p">(</span>
@@ -968,7 +968,7 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TransformFunctions</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Access to transform functions.</span>
+<span class="w">        </span><span class="sd">"""Access to transform functions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: Mesh object, attribute, virtual or physical time series the</span>
@@ -980,7 +980,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Object containing all transformation functions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_xy_sets</span><span class="p">(</span>
@@ -990,7 +990,7 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">XySet</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get zero or more XY-sets from an XY-set attribute on the server.</span>
+<span class="w">        </span><span class="sd">"""Get zero or more XY-sets from an XY-set attribute on the server.</span>
 
 <span class="sd">        An XY-set attribute is either versioned, with a kind</span>
 <span class="sd">        :code:`XYZSeriesAttribute`, or unversioned, with a kind</span>
@@ -1007,7 +1007,7 @@
 <span class="sd">                in for versioned XY-set attributes. Must be :code:`None` for</span>
 <span class="sd">                unversioned attributes.</span>
 
-<span class="sd">            versions_only: don&#39;t retrieve XY-set curves, only :code:`valid_from_time`.</span>
+<span class="sd">            versions_only: don't retrieve XY-set curves, only :code:`valid_from_time`.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A list of :class:`XySet`. The list always contains one element for</span>
@@ -1024,7 +1024,7 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_xy_sets</span><span class="p">(</span>
@@ -1034,7 +1034,7 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_xy_sets</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">XySet</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace XY sets on an XY-set attribute on the server.</span>
+<span class="w">        </span><span class="sd">"""Replace XY sets on an XY-set attribute on the server.</span>
 
 <span class="sd">        An XY-set attribute is either versioned, with a kind</span>
 <span class="sd">        :code:`XYZSeriesAttribute`, or unversioned, with a kind</span>
@@ -1064,7 +1064,7 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_rating_curve_versions</span><span class="p">(</span>
@@ -1074,7 +1074,7 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">RatingCurveVersion</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get rating curve versions from an rating curve attribute on the server.</span>
+<span class="w">        </span><span class="sd">"""Get rating curve versions from an rating curve attribute on the server.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            target: the ID or the path of an rating curve attribute.</span>
@@ -1097,7 +1097,7 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_rating_curve_versions</span><span class="p">(</span>
@@ -1107,7 +1107,7 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">new_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RatingCurveVersion</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace rating curve versions on an rating curve attribute on the server.</span>
+<span class="w">        </span><span class="sd">"""Replace rating curve versions on an rating curve attribute on the server.</span>
 
 <span class="sd">        The update operation deletes all versions in the</span>
 <span class="sd">        `[start_time, end_time)` interval, and inserts the new versions.</span>
@@ -1125,7 +1125,7 @@
 
 <span class="sd">        See Also:</span>
 <span class="sd">            `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/&gt;`__</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
 <div class="viewcode-block" id="Session.run_simulation"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.run_simulation">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_simulation</span><span class="p">(</span>
@@ -1139,7 +1139,7 @@
         <span class="n">scenario</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run a hydro simulation using HydSim on the Mesh server.</span>
+<span class="w">        </span><span class="sd">"""Run a hydro simulation using HydSim on the Mesh server.</span>
 
 <span class="sd">        In case of running a simulation on longer interval and with</span>
 <span class="sd">        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`</span>
@@ -1150,7 +1150,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            model: The name of the Mesh model in which the simulation case exists.</span>
 <span class="sd">            case: The names of the case group and simulation case in the form</span>
-<span class="sd">                &#39;CaseGroup/CaseName&#39;.</span>
+<span class="sd">                'CaseGroup/CaseName'.</span>
 <span class="sd">            start_time: The (inclusive) start of the simulation interval.</span>
 <span class="sd">            end_time: The (exclusive) end of the simulation interval.</span>
 <span class="sd">            resolution: The resolution of the simulation. The default resolution</span>
@@ -1170,13 +1170,13 @@
 
 <span class="sd">            Exhausting the iterator without an exception does not guarantee</span>
 <span class="sd">            that the simulation completed successfully. To determine that</span>
-<span class="sd">            you must analyze the simulation&#39;s result time series and the</span>
+<span class="sd">            you must analyze the simulation's result time series and the</span>
 <span class="sd">            log messages from the server.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError</span>
 <span class="sd">            grpc.RpcError</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 <div class="viewcode-block" id="Session.run_inflow_calculation"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.run_inflow_calculation">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">run_inflow_calculation</span><span class="p">(</span>
@@ -1190,7 +1190,7 @@
         <span class="n">resolution</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run an inflow calculation using HydSim on the Mesh server.</span>
+<span class="w">        </span><span class="sd">"""Run an inflow calculation using HydSim on the Mesh server.</span>
 
 <span class="sd">        In case of running an inflow calculation on longer interval and with</span>
 <span class="sd">        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`</span>
@@ -1217,13 +1217,13 @@
 
 <span class="sd">            Exhausting the iterator without an exception does not guarantee</span>
 <span class="sd">            that the calculation completed successfully. To determine that</span>
-<span class="sd">            you must analyze the calculation&#39;s result time series and the</span>
+<span class="sd">            you must analyze the calculation's result time series and the</span>
 <span class="sd">            log messages from the server.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError</span>
 <span class="sd">            grpc.RpcError</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
 <div class="viewcode-block" id="Session.get_mc_file"><a class="viewcode-back" href="../../../hydsim.html#volue.mesh._base_session.Session.get_mc_file">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_mc_file</span><span class="p">(</span>
@@ -1233,12 +1233,12 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate Marginal Cost input using HydSim on the Mesh server.</span>
+<span class="w">        </span><span class="sd">"""Generate Marginal Cost input using HydSim on the Mesh server.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model: The name of the Mesh model in which the simulation case exists.</span>
 <span class="sd">            case: The names of the case group and simulation case in the form</span>
-<span class="sd">                &#39;CaseGroup/CaseName&#39;.</span>
+<span class="sd">                'CaseGroup/CaseName'.</span>
 <span class="sd">            start_time: The (inclusive) start of the simulation interval.</span>
 <span class="sd">            end_time: The (exclusive) end of the simulation interval.</span>
 
@@ -1249,7 +1249,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError</span>
 <span class="sd">            grpc.RpcError</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
+<span class="sd">        """</span></div>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_xy_sets_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1258,15 +1258,15 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">GetXySetsResponse</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator implementation of get_xy_sets.</span>
+<span class="w">        </span><span class="sd">"""Generator implementation of get_xy_sets.</span>
 
 <span class="sd">        Yields the protobuf request, receives the protobuf response, and yields</span>
 <span class="sd">        the final result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;start_time and end_time must both be None or both have a value&quot;</span>
+                <span class="s2">"start_time and end_time must both be None or both have a value"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1284,7 +1284,7 @@
         <span class="n">response</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">request</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">get_valid_from_time</span><span class="p">(</span><span class="n">proto</span><span class="p">:</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">XySet</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">proto</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;valid_from_time&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">proto</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"valid_from_time"</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">proto</span><span class="o">.</span><span class="n">valid_from_time</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
@@ -1312,7 +1312,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">UpdateXySetsRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;start_time and end_time must both be None or both have a value&quot;</span>
+                <span class="s2">"start_time and end_time must both be None or both have a value"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1355,11 +1355,11 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator implementation of read_timeseries.</span>
+<span class="w">        </span><span class="sd">"""Generator implementation of read_timeseries.</span>
 
 <span class="sd">        Yields the protobuf request, receives the protobuf response, and yields</span>
 <span class="sd">        the final result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1372,8 +1372,8 @@
         <span class="n">timeseries</span> <span class="o">=</span> <span class="n">_read_proto_reply</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;invalid result from &#39;read_timeseries_points&#39;, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;expected 1 time series, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"invalid result from 'read_timeseries_points', "</span>
+                <span class="sa">f</span><span class="s2">"expected 1 time series, but got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">timeseries</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
         <span class="k">yield</span> <span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1381,10 +1381,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_write_timeseries_points_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check that time series is correct to be written, e.g.: has start and end time.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check that time series is correct to be written, e.g.: has start and end time."""</span>
         <span class="k">if</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;time series start_time and end_time must both have a value&quot;</span>
+                <span class="s2">"time series start_time and end_time must both have a value"</span>
             <span class="p">)</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">WriteTimeseriesRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1395,11 +1395,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_list_models_impl</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">ListModelsResponse</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator implementation of list_models.</span>
+<span class="w">        </span><span class="sd">"""Generator implementation of list_models.</span>
 
 <span class="sd">        Yields the protobuf request, receives the protobuf response, and yields</span>
 <span class="sd">        the final result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">ListModelsRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1417,7 +1417,7 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">GetObjectRequest</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `GetObjectRequest`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a gRPC `GetObjectRequest`"""</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">GetObjectRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1437,7 +1437,7 @@
         <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">SearchObjectsRequest</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `SearchObjectsRequest`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a gRPC `SearchObjectsRequest`"""</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">SearchObjectsRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1454,7 +1454,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_create_object_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">CreateObjectRequest</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `CreateObjectRequest`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a gRPC `CreateObjectRequest`"""</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">CreateObjectRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1469,7 +1469,7 @@
         <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">new_owner_attribute</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">AttributeBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">UpdateObjectRequest</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `UpdateObjectRequest`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a gRPC `UpdateObjectRequest`"""</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">UpdateObjectRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1485,15 +1485,15 @@
             <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="c1"># Wrap the error so that the user can distinguish what</span>
                 <span class="c1"># MeshId is wrong: target or new_owner_attribute.</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid new owner attribute&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"invalid new owner attribute"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
             <span class="n">request</span><span class="o">.</span><span class="n">new_owner_id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">new_owner_mesh_id</span><span class="p">)</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_owner_id&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_owner_id"</span><span class="p">)</span>
 
         <span class="c1"># providing new name is optional</span>
         <span class="k">if</span> <span class="n">new_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_name</span> <span class="o">=</span> <span class="n">new_name</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_name&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_name"</span><span class="p">)</span>
 
         <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
             <span class="n">protobuf</span><span class="o">.</span><span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">fields_to_update</span><span class="p">)</span>
@@ -1503,7 +1503,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_delete_object_request</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Object</span><span class="p">,</span> <span class="n">recursive_delete</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">DeleteObjectRequest</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a gRPC `DeleteObjectRequest`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a gRPC `DeleteObjectRequest`"""</span>
 
         <span class="n">request</span> <span class="o">=</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">DeleteObjectRequest</span><span class="p">(</span>
             <span class="n">session_id</span><span class="o">=</span><span class="n">_to_proto_guid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">),</span>
@@ -1573,11 +1573,11 @@
 
         <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">new_local_expression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_local_expression&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_local_expression"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_local_expression</span> <span class="o">=</span> <span class="n">new_local_expression</span>
 
         <span class="k">if</span> <span class="n">new_timeseries_resource_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_timeseries_resource_key&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_timeseries_resource_key"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_timeseries_resource_key</span> <span class="o">=</span> <span class="n">new_timeseries_resource_key</span>
 
         <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
@@ -1598,11 +1598,11 @@
 
         <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">new_template_expression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_template_expression&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_template_expression"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_template_expression</span> <span class="o">=</span> <span class="n">new_template_expression</span>
 
         <span class="k">if</span> <span class="n">new_description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_description&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_description"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_description</span> <span class="o">=</span> <span class="n">new_description</span>
 
         <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
@@ -1638,7 +1638,7 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">UpdateVersionedLinkRelationAttributeRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;start_time and end_time must both be None or both have a value&quot;</span>
+                <span class="s2">"start_time and end_time must both be None or both have a value"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1694,7 +1694,7 @@
             <span class="n">att_value</span><span class="o">.</span><span class="n">utc_time_value</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Not supported value type. Supported simple types are: boolean, float, int, str, datetime.&quot;</span>
+                <span class="s2">"Not supported value type. Supported simple types are: boolean, float, int, str, datetime."</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">att_value</span>
@@ -1705,10 +1705,10 @@
         <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">List</span><span class="p">[</span><span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">AttributeValue</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Convert value supplied by the user to singular value/collection values</span>
 <span class="sd">        expected by the protobuf request.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">new_singular_value</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">new_collection_values</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
@@ -1735,15 +1735,15 @@
 
         <span class="n">fields_to_update</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">new_curve_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_curve_type&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_curve_type"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_curve_type</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">_to_proto_curve_type</span><span class="p">(</span><span class="n">new_curve_type</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">new_unit_of_measurement_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_unit_of_measurement_id&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_unit_of_measurement_id"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_unit_of_measurement_id</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">new_unit_of_measurement_id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">new_time_zone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;new_time_zone&quot;</span><span class="p">)</span>
+            <span class="n">fields_to_update</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"new_time_zone"</span><span class="p">)</span>
             <span class="n">request</span><span class="o">.</span><span class="n">new_time_zone</span> <span class="o">=</span> <span class="n">new_time_zone</span>
 
         <span class="n">request</span><span class="o">.</span><span class="n">field_mask</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span>
@@ -1758,14 +1758,14 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">versions_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Generator</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">GetRatingCurveVersionsResponse</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generator implementation of get_rating_curve_versions.</span>
+<span class="w">        </span><span class="sd">"""Generator implementation of get_rating_curve_versions.</span>
 
 <span class="sd">        Yields the protobuf request, receives the protobuf response, and yields</span>
 <span class="sd">        the final result.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
 
         <span class="n">interval</span> <span class="o">=</span> <span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
 
@@ -1784,7 +1784,7 @@
         <span class="k">yield</span> <span class="p">[</span>
             <span class="n">RatingCurveVersion</span><span class="p">(</span>
                 <span class="n">x_range_from</span><span class="o">=</span><span class="n">proto_version</span><span class="o">.</span><span class="n">x_range_from</span><span class="p">,</span>
-                <span class="n">valid_from_time</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">proto_version</span><span class="p">,</span> <span class="s2">&quot;from&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span>
+                <span class="n">valid_from_time</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">proto_version</span><span class="p">,</span> <span class="s2">"from"</span><span class="p">)</span><span class="o">.</span><span class="n">ToDatetime</span><span class="p">(</span>
                     <span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">UTC</span>
                 <span class="p">),</span>
                 <span class="n">x_value_segments</span><span class="o">=</span><span class="p">[</span>
@@ -1808,7 +1808,7 @@
         <span class="n">new_versions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">RatingCurveVersion</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">model_pb2</span><span class="o">.</span><span class="n">UpdateRatingCurveVersionsRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">to_proto_rating_curve_segment</span><span class="p">(</span>
             <span class="n">segment</span><span class="p">:</span> <span class="n">RatingCurveSegment</span><span class="p">,</span>
@@ -1837,7 +1837,7 @@
             <span class="c1"># first we need to call `getattr` and then set its value via</span>
             <span class="c1"># CopyFrom or FromDatetime, see:</span>
             <span class="c1"># https://developers.google.com/protocol-buffers/docs/reference/python-generated#keyword-conflicts</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">proto_version</span><span class="p">,</span> <span class="s2">&quot;from&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">)</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">proto_version</span><span class="p">,</span> <span class="s2">"from"</span><span class="p">)</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">version</span><span class="o">.</span><span class="n">valid_from_time</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">proto_version</span>
 
         <span class="n">proto_versions</span> <span class="o">=</span> <span class="p">[</span>
@@ -1863,10 +1863,10 @@
         <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">RunHydroSimulationRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
 
-        <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">simulation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation&quot;</span>
+        <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">simulation</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">.has_OptimisationParameters/Optimal.has_HydroSimulation/HydroSimulation"</span>
 
         <span class="n">proto_resolution</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1891,10 +1891,10 @@
         <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">RunInflowCalculationRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;expected one water course, found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"expected one water course, found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">proto_resolution</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">resolution</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1917,11 +1917,11 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;start_time and end_time must both have a value&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
 
-        <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">case_group</span><span class="p">,</span> <span class="n">case_name</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">optimisation_case</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">case_group</span><span class="si">}</span><span class="s2">.has_OptimisationCases/</span><span class="si">{</span><span class="n">case_name</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">GetMcFileRequest</span><span class="p">(</span>
@@ -1943,7 +1943,7 @@
                 <span class="k">break</span>
 
         <span class="k">if</span> <span class="n">new_unit_of_measurement_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid unit of measurement provided&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"invalid unit of measurement provided"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">new_unit_of_measurement_id</span>
 </pre></div>

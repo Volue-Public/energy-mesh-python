@@ -208,11 +208,11 @@ environment.</p>
 this guide.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"certificate.pem"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span><span class="s2">&quot;mesh.local:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
-                                           <span class="s2">&quot;HOST/mesh.local@DOMAIN.COM&quot;</span><span class="p">,</span> <span class="s2">&quot;user@DOMAIN.COM&quot;</span><span class="p">)</span>
+<span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span><span class="s2">"mesh.local:50051"</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
+                                           <span class="s2">"HOST/mesh.local@DOMAIN.COM"</span><span class="p">,</span> <span class="s2">"user@DOMAIN.COM"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -310,18 +310,18 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 <p>Finally, we can connect to the Mesh server from Python.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="c1"># Most certificates won&#39;t work with IP addresses, therefore</span>
-<span class="c1"># you&#39;ll need to be able to resolve the Mesh server by name,</span>
+<span class="c1"># Most certificates won't work with IP addresses, therefore</span>
+<span class="c1"># you'll need to be able to resolve the Mesh server by name,</span>
 <span class="c1"># either through your DNS configuration, or through /etc/hosts.</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"certificate.pem"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
 <span class="c1"># mesh.domain.com is the address of the Mesh server.</span>
 <span class="c1"># HOST/... is the service principal name, and user@DOMAIN.COM</span>
 <span class="c1"># is the user principal name.</span>
 <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_kerberos</span><span class="p">(</span>
-    <span class="s2">&quot;mesh.domain.com:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
-    <span class="s2">&quot;HOST/mesh.domain.com@DOMAIN.COM&quot;</span><span class="p">,</span> <span class="s2">&quot;user@DOMAIN.COM&quot;</span>
+    <span class="s2">"mesh.domain.com:50051"</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span>
+    <span class="s2">"HOST/mesh.domain.com@DOMAIN.COM"</span><span class="p">,</span> <span class="s2">"user@DOMAIN.COM"</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
 </pre></div>
@@ -339,7 +339,7 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Synchronous authentication example: &quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Synchronous authentication example: "</span><span class="p">)</span>
 
     <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
     <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
@@ -356,7 +356,7 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Asynchronous authentication example:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Asynchronous authentication example:"</span><span class="p">)</span>
 
     <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
     <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
@@ -373,24 +373,24 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing how to authorize to gRPC Mesh server.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Showing how to authorize to gRPC Mesh server."""</span>
 
     <span class="c1"># If Mesh gRPC server is running as a service user,</span>
     <span class="c1"># for example LocalSystem, NetworkService or a user account</span>
     <span class="c1"># with a registered service principal name then it is enough</span>
     <span class="c1"># to provide hostname as service principal, e.g.:</span>
-    <span class="c1">#   &#39;HOST/hostname.companyad.company.com&#39;</span>
+    <span class="c1">#   'HOST/hostname.companyad.company.com'</span>
     <span class="c1"># If Mesh gRPC server is running as a user account without</span>
     <span class="c1"># registered service principal name then it is enough to provide</span>
     <span class="c1"># user account name running Mesh server as service principal, e.g.:</span>
-    <span class="c1">#   &#39;ad\\user.name&#39; or r&#39;ad\user.name&#39;</span>
+    <span class="c1">#   'ad\\user.name' or r'ad\user.name'</span>
     <span class="c1"># Note: winkerberos converts service principal name if provided in</span>
-    <span class="c1">#       RFC-2078 format. &#39;@&#39; is converted to &#39;/&#39; if there is no &#39;/&#39;</span>
+    <span class="c1">#       RFC-2078 format. '@' is converted to '/' if there is no '/'</span>
     <span class="c1">#       character in the service principal name. E.g.:</span>
     <span class="c1">#           service@hostname</span>
     <span class="c1">#       Would be converted to:</span>
     <span class="c1">#           service/hostname</span>
-    <span class="n">service_principal</span> <span class="o">=</span> <span class="s2">&quot;HOST/hostname.companyad.company.com&quot;</span>
+    <span class="n">service_principal</span> <span class="o">=</span> <span class="s2">"HOST/hostname.companyad.company.com"</span>
     <span class="n">user_principal</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">sync_auth</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">,</span> <span class="n">service_principal</span><span class="p">,</span> <span class="n">user_principal</span><span class="p">)</span>
@@ -399,7 +399,7 @@ To destroy the ticket run <code class="docutils literal notranslate"><span class
     <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="c1"># This will authenticate Python client (receive authorization token from Mesh),</span>
     <span class="c1"># then send gRPC request that requires authorization (e.g.: GetUserIdentity)</span>
     <span class="c1"># and print the result. If your user name info is printed, you have successfully</span>

@@ -171,9 +171,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._connection</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functionality for synchronously connecting to a Mesh server and working with its sessions.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">typing</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
@@ -231,9 +231,9 @@
 
 <div class="viewcode-block" id="Connection"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Connection</span><span class="p">(</span><span class="n">_base_connection</span><span class="o">.</span><span class="n">Connection</span><span class="p">):</span>
 <div class="viewcode-block" id="Connection.Session"><a class="viewcode-back" href="../../../api.html#volue.mesh.Connection.Session">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">Session</span><span class="p">(</span><span class="n">_base_session</span><span class="o">.</span><span class="n">Session</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This class supports the with statement, because it&#39;s a contextmanager.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        This class supports the with statement, because it's a contextmanager.</span>
+<span class="sd">        """</span>
 
         <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -260,21 +260,21 @@
             <span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Used by the &#39;with&#39; statement to open a session when entering &#39;with&#39;</span>
+<span class="w">            </span><span class="sd">"""</span>
+<span class="sd">            Used by the 'with' statement to open a session when entering 'with'</span>
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">self</span>
 
         <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Used by the &#39;with&#39; statement to close a session when exiting &#39;with&#39;.</span>
+<span class="w">            </span><span class="sd">"""</span>
+<span class="sd">            Used by the 'with' statement to close a session when exiting 'with'.</span>
 
 <span class="sd">            Raises:</span>
 <span class="sd">                grpc.RpcError: Error message raised if the gRPC request could not be completed</span>
-<span class="sd">            &quot;&quot;&quot;</span>
+<span class="sd">            """</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">_extend_lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -411,7 +411,7 @@
             <span class="n">attribute</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">full_attribute_info</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">TimeseriesAttribute</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;attribute is not a TimeseriesAttribute, but a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">"attribute is not a TimeseriesAttribute, but a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">attribute</span></div>
 
@@ -664,9 +664,9 @@
                 <span class="n">model</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">scenario</span><span class="p">,</span> <span class="n">return_datasets</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="o">.</span><span class="n">RunHydroSimulation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;log_message&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"log_message"</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">LogMessage</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">log_message</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"dataset"</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">HydSimDataset</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="kc">None</span></div>
@@ -683,16 +683,16 @@
             <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
             <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">search_for_objects</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/Mesh.To_Areas/</span><span class="si">{</span><span class="n">area</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                <span class="sa">f</span><span class="s2">&quot;To_HydroProduction/To_WaterCourses/@[.Name=</span><span class="si">{</span><span class="n">water_course</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"Model/</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">/Mesh.To_Areas/</span><span class="si">{</span><span class="n">area</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">"To_HydroProduction/To_WaterCourses/@[.Name=</span><span class="si">{</span><span class="n">water_course</span><span class="si">}</span><span class="s2">]"</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_run_inflow_calculation_request</span><span class="p">(</span>
                 <span class="n">targets</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">resolution</span><span class="p">,</span> <span class="n">return_datasets</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="o">.</span><span class="n">RunInflowCalculation</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;log_message&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"log_message"</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">LogMessage</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">log_message</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;dataset&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"dataset"</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">HydSimDataset</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="kc">None</span></div>
@@ -708,9 +708,9 @@
                 <span class="n">model</span><span class="p">,</span> <span class="n">case</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydsim_service</span><span class="o">.</span><span class="n">GetMcFile</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;log_message&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"log_message"</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">LogMessage</span><span class="o">.</span><span class="n">_from_proto</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">log_message</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;mc_file&quot;</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="n">response</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"mc_file"</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">response</span><span class="o">.</span><span class="n">mc_file</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="kc">None</span></div></div>
@@ -745,7 +745,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">ExternalAccessTokenPlugin</span>
         <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;connection is not using external access token mode&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"connection is not using external access token mode"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">update_access_token</span><span class="p">(</span><span class="n">access_token</span><span class="p">)</span></div>
 
@@ -754,7 +754,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span> <span class="ow">is</span> <span class="kc">None</span>
             <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="p">)</span> <span class="ow">is</span> <span class="n">ExternalAccessTokenPlugin</span>
         <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Authentication not configured for this connection&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Authentication not configured for this connection"</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">auth_service</span><span class="o">.</span><span class="n">RevokeAccessToken</span><span class="p">(</span>
             <span class="n">protobuf</span><span class="o">.</span><span class="n">wrappers_pb2</span><span class="o">.</span><span class="n">StringValue</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">auth_metadata_plugin</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>

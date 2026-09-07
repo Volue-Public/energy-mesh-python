@@ -201,13 +201,13 @@ through its time series creation and update APIs:</p>
 <a class="reference internal" href="api.html#volue.mesh.Connection.Session.update_timeseries_resource_info" title="volue.mesh.Connection.Session.update_timeseries_resource_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.update_timeseries_resource_info()</span></code></a></p>
 <p>For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">create_physical_timeseries</span><span class="p">(</span>
-    <span class="n">path</span><span class="o">=</span><span class="s2">&quot;/Path/To/Test/Timeseries/&quot;</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test_Timeseries&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s2">"/Path/To/Test/Timeseries/"</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Test_Timeseries"</span><span class="p">,</span>
     <span class="n">curve_type</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="o">.</span><span class="n">PIECEWISELINEAR</span><span class="p">,</span>
     <span class="n">resolution</span><span class="o">=</span><span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="o">.</span><span class="n">DAY</span><span class="p">,</span>
-    <span class="n">unit_of_measurement</span><span class="o">=</span><span class="s2">&quot;cm&quot;</span><span class="p">,</span>
+    <span class="n">unit_of_measurement</span><span class="o">=</span><span class="s2">"cm"</span><span class="p">,</span>
     <span class="c1"># time_zone is valid only if resolution is DAY or coarser</span>
-    <span class="n">time_zone</span><span class="o">=</span><span class="s2">&quot;Europe/Warsaw&quot;</span>
+    <span class="n">time_zone</span><span class="o">=</span><span class="s2">"Europe/Warsaw"</span>
 <span class="p">)</span>
 <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 </pre></div>

@@ -211,17 +211,17 @@ token.</p></li>
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="c1"># Most certificates won&#39;t work with IP addresses, therefore</span>
-<span class="c1"># you&#39;ll need to be able to resolve the Mesh server by name,</span>
+<span class="c1"># Most certificates won't work with IP addresses, therefore</span>
+<span class="c1"># you'll need to be able to resolve the Mesh server by name,</span>
 <span class="c1"># either through your DNS configuration, or through /etc/hosts.</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;certificate.pem&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"certificate.pem"</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">certificate</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-<span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_access_token&quot;</span>  <span class="c1"># obtain it from authorization server</span>
+<span class="n">token</span> <span class="o">=</span> <span class="s2">"my_access_token"</span>  <span class="c1"># obtain it from authorization server</span>
 
 <span class="c1"># mesh.domain.com is the address of the Mesh server.</span>
 <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_external_access_token</span><span class="p">(</span>
-    <span class="s2">&quot;mesh.domain.com:50051&quot;</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">token</span>
+    <span class="s2">"mesh.domain.com:50051"</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">token</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
 </pre></div>
@@ -235,7 +235,7 @@ token.</p></li>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Showing how to authorize to gRPC Mesh server using externally obtained</span>
 <span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
 <span class="sd">    for this example.</span>
@@ -243,9 +243,9 @@ token.</p></li>
 <span class="sd">    Depending on your environment, e.g.: Microsoft Entra ID, using libraries</span>
 <span class="sd">    like Microsoft Authentication Library (MSAL) for getting the tokens is</span>
 <span class="sd">    suggested.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;my_token&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">"my_token"</span>
 
     <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
     <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
@@ -272,10 +272,10 @@ token.</p></li>
         <span class="c1"># Other possibility would be to catch grpc.RpcError with status code</span>
         <span class="c1"># UNAUTHENTICATED and then get new access token and update it in the</span>
         <span class="c1"># Mesh connection using `update_external_access_token`.</span>
-        <span class="n">connection</span><span class="o">.</span><span class="n">update_external_access_token</span><span class="p">(</span><span class="s2">&quot;my_new_access_token&quot;</span><span class="p">)</span>
+        <span class="n">connection</span><span class="o">.</span><span class="n">update_external_access_token</span><span class="p">(</span><span class="s2">"my_new_access_token"</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="c1"># This requires Mesh server to be running with enabled TLS and OAuth options.</span>
     <span class="c1"># Obtaining access token is out of the scope for this example.</span>
 

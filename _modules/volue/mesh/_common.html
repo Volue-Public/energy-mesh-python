@@ -171,9 +171,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._common</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Common classes/enums/etc. for the Mesh API.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -202,7 +202,7 @@
 
 <div class="viewcode-block" id="AttributesFilter"><a class="viewcode-back" href="../../../api.html#volue.mesh.AttributesFilter">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">AttributesFilter</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Defines what attributes need to be returned in response message.</span>
+<span class="w">    </span><span class="sd">"""Defines what attributes need to be returned in response message.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        Name mask:</span>
@@ -234,7 +234,7 @@
 <span class="sd">            If multiple namespaces are provided in the mask then all</span>
 <span class="sd">            attributes having at least one of them are returned (logical OR).</span>
 <span class="sd">            Namespace mask does not accept entries with namespaces</span>
-<span class="sd">            concatenated with dots &#39;.&#39;. Each namespace mask entry must</span>
+<span class="sd">            concatenated with dots '.'. Each namespace mask entry must</span>
 <span class="sd">            be a separate namespace.</span>
 <span class="sd">            If name mask or `return_no_attributes` flag is also set</span>
 <span class="sd">            then an error will be returned.</span>
@@ -256,44 +256,44 @@
 
 <span class="sd">    Example 1:</span>
 
-<span class="sd">        Arg:      `names` is set to &quot;Price,Volume,Production&quot;</span>
-<span class="sd">        Response: All attributes with names &quot;Price&quot;, &quot;Volume&quot; or &quot;Production&quot; will be returned.</span>
+<span class="sd">        Arg:      `names` is set to "Price,Volume,Production"</span>
+<span class="sd">        Response: All attributes with names "Price", "Volume" or "Production" will be returned.</span>
 <span class="sd">        Note:     `tag_mask` or `namespace_mask` will be ignored even if set.</span>
 
 <span class="sd">    Example 2:</span>
 
-<span class="sd">        Arg:      `tag_mask` is set to &quot;ProductionAttributes,LocationAttributes&quot;</span>
-<span class="sd">        Response: All attributes with tag name &quot;ProductionAttributes&quot; or &quot;LocationAttributes&quot; will be returned.</span>
-<span class="sd">        Note:     If attributes A1, A2 have tag &quot;ProductionAttributes&quot; and A3</span>
-<span class="sd">        has &quot;LocationAttributes&quot; then all three attributes (A1, A2 and A3) will be returned.</span>
+<span class="sd">        Arg:      `tag_mask` is set to "ProductionAttributes,LocationAttributes"</span>
+<span class="sd">        Response: All attributes with tag name "ProductionAttributes" or "LocationAttributes" will be returned.</span>
+<span class="sd">        Note:     If attributes A1, A2 have tag "ProductionAttributes" and A3</span>
+<span class="sd">        has "LocationAttributes" then all three attributes (A1, A2 and A3) will be returned.</span>
 <span class="sd">        Exactly the same rules apply to `namespace_mask`.</span>
 
 <span class="sd">    Example 3:</span>
 
-<span class="sd">        Arg:      `namespace_mask` is set to &quot;Hydro,Wind&quot;.</span>
-<span class="sd">        Response: All attributes with namespace &quot;Hydro&quot; or &quot;Wind&quot; will be returned.</span>
+<span class="sd">        Arg:      `namespace_mask` is set to "Hydro,Wind".</span>
+<span class="sd">        Response: All attributes with namespace "Hydro" or "Wind" will be returned.</span>
 <span class="sd">        Note:     Suppose there are the following attributes:</span>
-<span class="sd">        - A1 (namespace &quot;EnergySystem.Hydro&quot;)</span>
-<span class="sd">        - A2 (namespace &quot;EnergySystem.Wind&quot;)</span>
-<span class="sd">        - A3 (namespace &quot;EnergySystem.Carbon&quot;)</span>
-<span class="sd">        - A4 (namespace &quot;EnergySystem.Hydro.Small&quot;)</span>
-<span class="sd">        - A5 (namespace &quot;Hydro.Normal&quot;)</span>
+<span class="sd">        - A1 (namespace "EnergySystem.Hydro")</span>
+<span class="sd">        - A2 (namespace "EnergySystem.Wind")</span>
+<span class="sd">        - A3 (namespace "EnergySystem.Carbon")</span>
+<span class="sd">        - A4 (namespace "EnergySystem.Hydro.Small")</span>
+<span class="sd">        - A5 (namespace "Hydro.Normal")</span>
 
 <span class="sd">            In this case attributes A1, A2, A4 and A5 will be returned.</span>
 
 <span class="sd">    Example 4:</span>
 
-<span class="sd">        Arg:      `tag_mask` is set to &quot;ProductionAttributes&quot;, `namespace_mask` is set to &quot;Hydro,Wind&quot;.</span>
-<span class="sd">        Response: All attributes with tag name &quot;ProductionAttributes&quot; and namespace &quot;Hydro&quot; or &quot;Wind&quot; will be returned.</span>
+<span class="sd">        Arg:      `tag_mask` is set to "ProductionAttributes", `namespace_mask` is set to "Hydro,Wind".</span>
+<span class="sd">        Response: All attributes with tag name "ProductionAttributes" and namespace "Hydro" or "Wind" will be returned.</span>
 <span class="sd">        Note:     Suppose there are the following attributes:</span>
-<span class="sd">        - A1 (tag &quot;ProductionAttributes&quot;, namespace &quot;Hydro&quot;)</span>
-<span class="sd">        - A2 (tag &quot;ProductionAttributes&quot;, namespace &quot;Wind&quot;)</span>
-<span class="sd">        - A3 (tag &quot;ProductionAttributes&quot;, namespace &quot;Carbon&quot;)</span>
-<span class="sd">        - A4 (tag &quot;LocationAttributes&quot;, namespace &quot;Hydro&quot;)</span>
-<span class="sd">        - A5 (tag &quot;LocationAttributes&quot;, namespace &quot;Wind&quot;)</span>
+<span class="sd">        - A1 (tag "ProductionAttributes", namespace "Hydro")</span>
+<span class="sd">        - A2 (tag "ProductionAttributes", namespace "Wind")</span>
+<span class="sd">        - A3 (tag "ProductionAttributes", namespace "Carbon")</span>
+<span class="sd">        - A4 (tag "LocationAttributes", namespace "Hydro")</span>
+<span class="sd">        - A5 (tag "LocationAttributes", namespace "Wind")</span>
 
 <span class="sd">            In this case attributes A1 and A2 will be returned.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">name_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">tag_mask</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -303,7 +303,7 @@
 
 <div class="viewcode-block" id="UserIdentity"><a class="viewcode-back" href="../../../api.html#volue.mesh.UserIdentity">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">UserIdentity</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a Mesh server user identity.</span>
+<span class="w">    </span><span class="sd">"""Represents a Mesh server user identity.</span>
 
 <span class="sd">    display_name - a human readable name identifying this user. This name</span>
 <span class="sd">    should not be used as a unique identifier for the user as it may be</span>
@@ -317,7 +317,7 @@
 <span class="sd">    to get globally unique identifier for the user as there may be different</span>
 <span class="sd">    Active Directories using the same security packages (`source`) with</span>
 <span class="sd">    duplicated user identifiers. However such situation is rather unlikely.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>
@@ -325,11 +325,11 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_user_identity</span><span class="p">:</span> <span class="n">auth_pb2</span><span class="o">.</span><span class="n">UserIdentity</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserIdentity</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `UserIdentity` from protobuf UserIdentity.</span>
+<span class="w">        </span><span class="sd">"""Create a `UserIdentity` from protobuf UserIdentity.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            proto_user_identity: Protobuf UserIdentity returned from the gRPC method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">display_name</span><span class="o">=</span><span class="n">proto_user_identity</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span>
             <span class="n">source</span><span class="o">=</span><span class="n">proto_user_identity</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
@@ -339,34 +339,34 @@
 
 <div class="viewcode-block" id="VersionInfo"><a class="viewcode-back" href="../../../api.html#volue.mesh.VersionInfo">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">VersionInfo</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Represents a Mesh server version information.</span>
 
 <span class="sd">    version - version number, e.g.: 2.5.2+32</span>
 
 <span class="sd">    name - friendly name of the Mesh server, e.g.: Volue Mesh Server.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">proto_version_info</span><span class="p">:</span> <span class="n">config_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VersionInfo</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a `VersionInfo` from protobuf VersionInfo.</span>
+<span class="w">        </span><span class="sd">"""Create a `VersionInfo` from protobuf VersionInfo.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            proto_version_info: protobuf VersionInfo returned from the gRPC method.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">proto_version_info</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">proto_version_info</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="XyCurve"><a class="viewcode-back" href="../../../api.html#volue.mesh.XyCurve">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">XyCurve</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A list of (x, y) pairs, indexed by a reference/z value.</span>
+<span class="w">    </span><span class="sd">"""A list of (x, y) pairs, indexed by a reference/z value.</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">z</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">xy</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span>
@@ -377,7 +377,7 @@
 
 <div class="viewcode-block" id="XySet"><a class="viewcode-back" href="../../../api.html#volue.mesh.XySet">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">XySet</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A set of XY-curves.</span>
+<span class="w">    </span><span class="sd">"""A set of XY-curves.</span>
 
 <span class="sd">    If this set is part of a versioned XY-set attribute (:code:`XYZSeriesAttribute`)</span>
 <span class="sd">    the :code:`valid_from_time` field contains a datetime with the start of the validity</span>
@@ -385,7 +385,7 @@
 
 <span class="sd">    See Also:</span>
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/&gt;`__</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">xy_curves</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">XyCurve</span><span class="p">]</span>
@@ -396,7 +396,7 @@
 
 <div class="viewcode-block" id="RatingCurveSegment"><a class="viewcode-back" href="../../../api.html#volue.mesh.RatingCurveSegment">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RatingCurveSegment</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a rating curve segment.</span>
+<span class="w">    </span><span class="sd">"""Represents a rating curve segment.</span>
 
 <span class="sd">    Contains `a`, `b` and `c` factors for the discharge formula.</span>
 <span class="sd">    Additionally each segment `i` stores a 64 bit floating point</span>
@@ -405,7 +405,7 @@
 
 <span class="sd">    See Also:</span>
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/&gt;`__</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">x_range_until</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">factor_a</span><span class="p">:</span> <span class="nb">float</span>
@@ -417,16 +417,16 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;x range until=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range_until</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;a=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_a</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;b=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_b</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;c=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_c</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"x range until=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range_until</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"a=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_a</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"b=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_b</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"c=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">factor_c</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RatingCurveVersion"><a class="viewcode-back" href="../../../api.html#volue.mesh.RatingCurveVersion">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">RatingCurveVersion</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a rating curve version.</span>
+<span class="w">    </span><span class="sd">"""Represents a rating curve version.</span>
 
 <span class="sd">    Contains rating curve segments, timestamp with the time at which the</span>
 <span class="sd">    version becomes active and a threshold indicating the minimal `x` value</span>
@@ -435,7 +435,7 @@
 
 <span class="sd">    See Also:</span>
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/&gt;`__</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">x_range_from</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
@@ -446,25 +446,25 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Valid from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_from_time</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;x range from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range_from</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"Valid from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_from_time</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"x range from: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">x_range_from</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_value_segments</span><span class="p">):</span>
-            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Segment </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">segment</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="s2">Segment </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">segment</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">return</span> <span class="n">message</span></div>
 
 
 <div class="viewcode-block" id="LinkRelationVersion"><a class="viewcode-back" href="../../../api.html#volue.mesh.LinkRelationVersion">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LinkRelationVersion</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a link relation version.</span>
+<span class="w">    </span><span class="sd">"""Represents a link relation version.</span>
 
 <span class="sd">    Contains target object ID and timestamp with the time at which the</span>
 <span class="sd">    version becomes active. If target object ID is None, then it means</span>
-<span class="sd">    the target object is &quot;empty&quot;.</span>
+<span class="sd">    the target object is "empty".</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/&gt;`__</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">target_object_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span>
     <span class="n">valid_from_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
@@ -475,11 +475,11 @@
 
 <div class="viewcode-block" id="LogMessage"><a class="viewcode-back" href="../../../api.html#volue.mesh.LogMessage">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LogMessage</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a log message from the Mesh server.</span>
+<span class="w">    </span><span class="sd">"""Represents a log message from the Mesh server.</span>
 
 <span class="sd">    These are returned as a response from hydro simulations and inflow</span>
 <span class="sd">    calculations.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">level</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
@@ -501,12 +501,12 @@
 
 <div class="viewcode-block" id="HydSimDataset"><a class="viewcode-back" href="../../../api.html#volue.mesh.HydSimDataset">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">HydSimDataset</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A representation of data used in a hydro simulation or inflow calculation.</span>
+<span class="w">    </span><span class="sd">"""A representation of data used in a hydro simulation or inflow calculation.</span>
 
 <span class="sd">    The HydSim team may use a dataset to diagnose issues. When Volue requests a</span>
 <span class="sd">    dataset we recommend storing datasets with filename `name` and contents</span>
 <span class="sd">    from `data` and then sending those files to Volue.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span>
@@ -517,22 +517,22 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_guid</span><span class="p">(</span><span class="n">uuid</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Python UUID format to Microsoft&#39;s GUID format.</span>
+<span class="w">    </span><span class="sd">"""Converts from Python UUID format to Microsoft's GUID format.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        uuid: Identifier in Python&#39;s UUID format.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        uuid: Identifier in Python's UUID format.</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto_guid</span><span class="p">(</span><span class="n">guid</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Guid</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts from Microsoft&#39;s GUID format to UUID format.</span>
+<span class="w">    </span><span class="sd">"""Converts from Microsoft's GUID format to UUID format.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        guid: GUID to be converted.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">guid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">guid</span><span class="o">.</span><span class="n">bytes_le</span><span class="p">)</span>
@@ -549,12 +549,12 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_curve_type</span><span class="p">(</span><span class="n">curve</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts from Timeseries.Curve type to protobuf curve type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        curve: The curve to convert.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">proto_curve</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">()</span>
 
     <span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">CURVE_TYPES</span><span class="p">[</span><span class="n">curve</span><span class="p">]</span>
@@ -563,12 +563,12 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto_curve_type</span><span class="p">(</span><span class="n">proto_curve</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Curve</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Curve</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts from protobuf curve type to Timeseries.Curve type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        proto_curve: The protobuf curve to convert.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">CURVE_TYPES</span><span class="o">.</span><span class="n">inverse</span><span class="p">[</span><span class="n">proto_curve</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
 
 
@@ -593,12 +593,12 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_resolution</span><span class="p">(</span>
     <span class="n">resolution</span><span class="p">:</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts from Timeseries.Resolution type to protobuf resolution type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        resolution: The resolution to convert.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">proto_resolution</span> <span class="o">=</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">()</span>
 
     <span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">RESOLUTIONS</span><span class="p">[</span><span class="n">resolution</span><span class="p">]</span>
@@ -609,19 +609,19 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_from_proto_resolution</span><span class="p">(</span>
     <span class="n">proto_resolution</span><span class="p">:</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">Resolution</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">Resolution</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts from protobuf resolution type to Timeseries.Resolution type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        proto_resolution: The protobuf resolution to convert.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">RESOLUTIONS</span><span class="o">.</span><span class="n">inverse</span><span class="p">[</span><span class="n">proto_resolution</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_utcinterval</span><span class="p">(</span>
     <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">resources_pb2</span><span class="o">.</span><span class="n">UtcInterval</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts to protobuf UtcInterval.</span>
 
 <span class="sd">    Args:</span>
@@ -630,7 +630,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Protobuf UtcInterval.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
     <span class="n">start</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
@@ -642,7 +642,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_to_proto_timeseries</span><span class="p">(</span>
     <span class="n">timeseries</span><span class="p">:</span> <span class="n">Timeseries</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">Timeseries</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts a Timeseries to corresponding protobuf Timeseries.</span>
 
 <span class="sd">    Args:</span>
@@ -650,7 +650,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Protobuf Timeseries.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">stream</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">BufferOutputStream</span><span class="p">()</span>
     <span class="n">writer</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">RecordBatchStreamWriter</span><span class="p">(</span>
         <span class="n">sink</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">timeseries</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span>
@@ -687,7 +687,7 @@
         <span class="ow">and</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="ow">and</span> <span class="n">timeseries</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="kc">None</span>
     <span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;need to specify either path, id or time series key&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"need to specify either path, id or time series key"</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">proto_mesh_id</span>
 
@@ -720,7 +720,7 @@
     <span class="k">if</span> <span class="n">attributes_filter</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">attributes_filter</span><span class="o">.</span><span class="n">return_no_attributes</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model_resources_pb2</span><span class="o">.</span><span class="n">Object</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
-    <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;attributes&quot;</span><span class="p">)</span>
+    <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">"attributes"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">fields</span><span class="p">)</span>
 
 
@@ -728,7 +728,7 @@
     <span class="n">full_attribute_info</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">attributes_filter</span><span class="p">:</span> <span class="n">AttributesFilter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
     <span class="c1"># If attributes_filter.return_no_attributes is set to True we must not provide attribute field mask,</span>
-    <span class="c1"># at the same time we can&#39;t expect user to provide full_attribute_info set to True. It would be very counter intuitive</span>
+    <span class="c1"># at the same time we can't expect user to provide full_attribute_info set to True. It would be very counter intuitive</span>
     <span class="c1"># to request no attributes and have to explicitly request full attributes info.</span>
     <span class="k">if</span> <span class="n">attributes_filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">attributes_filter</span><span class="o">.</span><span class="n">return_no_attributes</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -738,13 +738,13 @@
 
     <span class="k">return</span> <span class="n">field_mask_pb2</span><span class="o">.</span><span class="n">FieldMask</span><span class="p">(</span>
         <span class="n">paths</span><span class="o">=</span><span class="p">[</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;path&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;values&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;value_type&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;value_type_collection&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;owner_id&quot;</span><span class="p">,</span>
+            <span class="s2">"id"</span><span class="p">,</span>
+            <span class="s2">"path"</span><span class="p">,</span>
+            <span class="s2">"name"</span><span class="p">,</span>
+            <span class="s2">"values"</span><span class="p">,</span>
+            <span class="s2">"value_type"</span><span class="p">,</span>
+            <span class="s2">"value_type_collection"</span><span class="p">,</span>
+            <span class="s2">"owner_id"</span><span class="p">,</span>
         <span class="p">]</span>
     <span class="p">)</span>
 
@@ -752,7 +752,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_read_proto_reply</span><span class="p">(</span>
     <span class="n">reply</span><span class="p">:</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Timeseries</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts a protobuf time series reply from Mesh server into Timeseries.</span>
 
 <span class="sd">    Args:</span>
@@ -763,7 +763,7 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: no time series data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">proto_timeseries</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
         <span class="n">resolution</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">resolution</span>
@@ -771,9 +771,9 @@
         <span class="c1"># Since Mesh 2.17 in case of an empty time series an empty Arrow table is returned.</span>
         <span class="c1"># As a result, the below ValueError is deprecated and will be removed in future releases.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No data in time series reply for the given interval&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"No data in time series reply for the given interval"</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;interval&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"interval"</span><span class="p">):</span>
             <span class="n">start_time</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">start_time</span>
             <span class="n">end_time</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">interval</span><span class="o">.</span><span class="n">end_time</span>
         <span class="k">else</span><span class="p">:</span>
@@ -783,7 +783,7 @@
         <span class="n">reader</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">ipc</span><span class="o">.</span><span class="n">open_stream</span><span class="p">(</span><span class="n">proto_timeseries</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="n">table</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read_all</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">HasField</span><span class="p">(</span><span class="s2">"id"</span><span class="p">):</span>
             <span class="n">timeseries_id</span> <span class="o">=</span> <span class="n">proto_timeseries</span><span class="o">.</span><span class="n">id</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">Timeseries</span><span class="p">(</span>
                 <span class="n">table</span><span class="p">,</span>
@@ -802,26 +802,26 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_validate_server_version</span><span class="p">(</span><span class="n">version_info</span><span class="p">:</span> <span class="n">config_pb2</span><span class="o">.</span><span class="n">VersionInfo</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Validates the Mesh server version retrieved via GetVersion RPC against</span>
 <span class="sd">    minimum supported version.</span>
 
 <span class="sd">    Throws an exception if the client version</span>
 <span class="sd">    is not compatible with the server version.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">parsed_version</span> <span class="o">=</span> <span class="n">to_parsed_version</span><span class="p">(</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
     <span class="n">min_server_version</span> <span class="o">=</span> <span class="n">get_min_server_version</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">parsed_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">parsed_version</span> <span class="o">&lt;</span> <span class="n">min_server_version</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;connecting to incompatible server version: </span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">, minimum version is </span><span class="si">{</span><span class="n">min_server_version</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"connecting to incompatible server version: </span><span class="si">{</span><span class="n">version_info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">, minimum version is </span><span class="si">{</span><span class="n">min_server_version</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_read_proto_numeric_reply</span><span class="p">(</span>
     <span class="n">reply</span><span class="p">:</span> <span class="n">time_series_pb2</span><span class="o">.</span><span class="n">ReadTimeseriesResponse</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Converts a protobuf numeric calculation reply from Mesh server into an array of floating points values.</span>
 
 <span class="sd">    Args:</span>
@@ -829,7 +829,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        An array of floating point values extracted from the reply.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reply</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
         <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -837,7 +837,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_datetime_to_timestamp_pb2</span><span class="p">(</span><span class="n">datetime</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts datetime type to protobuf Timestamp type.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Converts datetime type to protobuf Timestamp type."""</span>
     <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp_pb2</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">()</span>
     <span class="n">timestamp</span><span class="o">.</span><span class="n">FromDatetime</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">timestamp</span>

@@ -171,9 +171,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for volue.mesh._timeseries</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""</span>
 <span class="sd">Functionality for working with time series.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
@@ -183,7 +183,7 @@
 
 
 <div class="viewcode-block" id="Timeseries"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Timeseries</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a Mesh time series.</span>
+<span class="w">    </span><span class="sd">"""Represents a Mesh time series.</span>
 
 <span class="sd">    Contains an arrow table with a schema of 3 fields (utc_time, flags, value.)</span>
 <span class="sd">    Utc_time is the timestamps of the points (milliseconds since UNIX epoch 1970-01-01)</span>
@@ -192,10 +192,10 @@
 
 <span class="sd">    See Also:</span>
 <span class="sd">        `Mesh documentation &lt;https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/time-series/&gt;`__</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="Timeseries.Curve"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Curve">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">Curve</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        A curve type of a time series.</span>
 <span class="sd">        It specifies how the values are laid out relative to each other.</span>
 
@@ -204,7 +204,7 @@
 <span class="sd">            STAIRCASESTARTOFSTEP:</span>
 <span class="sd">            PIECEWISELINEAR:</span>
 <span class="sd">            STAIRCASE:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">STAIRCASESTARTOFSTEP</span> <span class="o">=</span> <span class="mi">1</span>
@@ -212,7 +212,7 @@
         <span class="n">STAIRCASE</span> <span class="o">=</span> <span class="mi">3</span></div>
 
 <div class="viewcode-block" id="Timeseries.Resolution"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.Resolution">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">Resolution</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        The resolution of values in the time series.</span>
 <span class="sd">        It specifies the time interval between each value.</span>
 
@@ -230,7 +230,7 @@
 <span class="sd">            WEEK:</span>
 <span class="sd">            MONTH:</span>
 <span class="sd">            YEAR:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">UNSPECIFIED</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">BREAKPOINT</span> <span class="o">=</span> <span class="mi">1</span>
@@ -247,10 +247,10 @@
         <span class="n">MIN10</span> <span class="o">=</span> <span class="mi">12</span></div>
 
 <div class="viewcode-block" id="Timeseries.PointFlags"><a class="viewcode-back" href="../../../api.html#volue.mesh.Timeseries.PointFlags">[docs]</a>    <span class="k">class</span><span class="w"> </span><span class="nc">PointFlags</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Information about certain action that has been performed on the values</span>
 <span class="sd">        and the state. It is 32 bit flag setting the status for the point. Enum</span>
-<span class="sd">        values could be used in combination (logical &quot;OR&quot;), e.g.:</span>
+<span class="sd">        values could be used in combination (logical "OR"), e.g.:</span>
 <span class="sd">        flag = MISSING | SUSPECT</span>
 
 <span class="sd">        There are more options than the ones exposed here.</span>
@@ -270,7 +270,7 @@
 <span class="sd">                physical time series points) is missing values. If all</span>
 <span class="sd">                calculation components are missing values then a MISSING flag</span>
 <span class="sd">                is set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
 
         <span class="n">OK</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">NOT_OK</span> <span class="o">=</span> <span class="mh">0x40000000</span>
@@ -278,13 +278,13 @@
         <span class="n">SUSPECT</span> <span class="o">=</span> <span class="mh">0x02000000</span></div>
 
     <span class="c1"># Mesh PyArrow schema fields names.</span>
-    <span class="n">TIMESTAMP_PA_FIELD_NAME</span> <span class="o">=</span> <span class="s2">&quot;utc_time&quot;</span>
-    <span class="n">FLAGS_PA_FIELD_NAME</span> <span class="o">=</span> <span class="s2">&quot;flags&quot;</span>
-    <span class="n">VALUE_PA_FIELD_NAME</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span>
+    <span class="n">TIMESTAMP_PA_FIELD_NAME</span> <span class="o">=</span> <span class="s2">"utc_time"</span>
+    <span class="n">FLAGS_PA_FIELD_NAME</span> <span class="o">=</span> <span class="s2">"flags"</span>
+    <span class="n">VALUE_PA_FIELD_NAME</span> <span class="o">=</span> <span class="s2">"value"</span>
 
     <span class="n">schema</span> <span class="o">=</span> <span class="n">pa</span><span class="o">.</span><span class="n">schema</span><span class="p">(</span>
         <span class="p">[</span>
-            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">TIMESTAMP_PA_FIELD_NAME</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s2">&quot;ms&quot;</span><span class="p">)),</span>
+            <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">TIMESTAMP_PA_FIELD_NAME</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">timestamp</span><span class="p">(</span><span class="s2">"ms"</span><span class="p">)),</span>
             <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">FLAGS_PA_FIELD_NAME</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">uint32</span><span class="p">()),</span>
             <span class="n">pa</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">VALUE_PA_FIELD_NAME</span><span class="p">,</span> <span class="n">pa</span><span class="o">.</span><span class="n">float64</span><span class="p">()),</span>
         <span class="p">]</span>
@@ -300,7 +300,7 @@
         <span class="n">uuid_id</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">full_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A representation of a time series.</span>
+<span class="w">        </span><span class="sd">"""A representation of a time series.</span>
 <span class="sd">        If `start_time` and `end_time` are not provided explicitly they will be taken from PyArrow `table`.</span>
 <span class="sd">        Providing broader time interval (`start_time` and `end_time`) could be used when writing new time series points,</span>
 <span class="sd">        then all existing time series points within the time interval that are not covered by new time series points will be removed.</span>
@@ -325,7 +325,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: Error message raised if PyArrow table schema is invalid.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="n">full_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">uuid_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timskey</span> <span class="o">=</span> <span class="n">timskey</span>
@@ -333,7 +333,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="n">resolution</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">schema</span> <span class="o">!=</span> <span class="n">Timeseries</span><span class="o">.</span><span class="n">schema</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;invalid PyArrow table schema&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"invalid PyArrow table schema"</span><span class="p">)</span>
 
         <span class="c1"># setting start and end time should only take effect when writing time series</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -361,25 +361,25 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">number_of_points</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Number of points inside the time series.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The number of points in the time series</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_table</span><span class="o">.</span><span class="n">num_rows</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_calculation_expression_result</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Checks if a time series is a calculated or a physical or virtual time series.</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation &#39;Concepts&#39; for more information.</span>
+<span class="sd">            If time series does not have timskey, uuid and full_name set, then it is an ad-hoc calculation expression result (like e.g.: timeseries transformations). Refer to documentation 'Concepts' for more information.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if it is a calculated time series</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">timskey</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">uuid</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">is</span> <span class="kc">None</span></div>
 </pre></div>
 

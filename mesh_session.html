@@ -202,7 +202,7 @@ for a general description of session concept in Mesh.</p>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Showing different ways of working with sessions.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Showing different ways of working with sessions."""</span>
 
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = Connection.with_tls(address, tls_root_pem_cert)</span>
@@ -211,13 +211,13 @@ for a general description of session concept in Mesh.</p>
     <span class="c1"># 1. Create a session, open and close session.</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;1. You now have a new open session&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"1. You now have a new open session"</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="c1"># 2. Create session using the with statement.</span>
-    <span class="c1"># Session will be created, opened and closed within the &#39;with&#39; statement scope</span>
+    <span class="c1"># Session will be created, opened and closed within the 'with' statement scope</span>
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;2. You now have a new open session&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"2. You now have a new open session"</span><span class="p">)</span>
 
     <span class="c1"># 3. Connecting to a potentially open session.</span>
     <span class="c1"># Session ids can be found in the session object:</span>
@@ -225,20 +225,20 @@ for a general description of session concept in Mesh.</p>
     <span class="c1"># Note: If the session_id is not the id of an open session,</span>
     <span class="c1"># the server will create a new one for you.</span>
     <span class="c1"># Set the session id you want to connect to</span>
-    <span class="n">session_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">&quot;123e4567-e89b-12d3-a456-556642440000&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you want to connect to: </span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">session_id</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s2">"123e4567-e89b-12d3-a456-556642440000"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"3. Session id you want to connect to: </span><span class="si">{</span><span class="n">session_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">connect_to_session</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
     <span class="c1"># Try connecting to that session id, if it does not exist, a new one will be created without warning</span>
     <span class="n">session</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;3. You have now an open session, either the one you requested or a new one if it did not exist&quot;</span>
+        <span class="s2">"3. You have now an open session, either the one you requested or a new one if it did not exist"</span>
     <span class="p">)</span>
     <span class="c1"># Check which session you are connected to and close it</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;3. Session id you are to connect to: </span><span class="si">{</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"3. Session id you are to connect to: </span><span class="si">{</span><span class="n">session</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
     <span class="n">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">)</span>
 </pre></div>
