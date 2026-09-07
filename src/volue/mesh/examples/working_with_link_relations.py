@@ -29,7 +29,7 @@ def one_to_one_link_relation_example(session: Connection.Session):
     )
 
     # Get more information on the target object the link relation points to.
-    # The link relation can be potentially nullable,check if there is any
+    # The link relation can be potentially nullable, check if there is any
     # target object the link relation points to.
     if len(attribute.target_object_ids) > 0:
         target_object = session.get_object(attribute.target_object_ids[0])
@@ -59,7 +59,7 @@ def one_to_many_link_relation_example(session: Connection.Session):
     )
 
     # Get more information on the target object the link relation points to.
-    # The link relation can be potentially nullable,check if there is any
+    # The link relation can be potentially nullable, check if there is any
     # target object the link relation points to.
     print("\tTarget object paths:")
     for index, target_object_id in enumerate(attribute.target_object_ids, 1):
