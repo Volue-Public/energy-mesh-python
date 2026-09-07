@@ -222,8 +222,5 @@ async def async_write_timeseries_points(
 
 if __name__ == "__main__":
     address, tls_root_pem_cert = helpers.get_connection_info()
-    sync_write_timeseries_points(
-        address,
-        tls_root_pem_cert,
-    )
+    sync_write_timeseries_points(address, tls_root_pem_cert)
     asyncio.run(async_write_timeseries_points(address, tls_root_pem_cert))
