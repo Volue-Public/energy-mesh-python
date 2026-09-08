@@ -49,7 +49,7 @@ Example usage:
 .. note::
     gRPC outbound message size is not limited by default.
 
-In normal usage this setting does not need to be changed. For cases like
+In normal usage this setting does not need to be changed. For cases such as
 reading time series data, we suggest reading the data in chunks. E.g.: instead
 of reading 50 years of hourly time series data in a single request, the user
 should request several read operations with shorter read intervals.
