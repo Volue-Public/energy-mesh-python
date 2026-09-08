@@ -30,6 +30,12 @@ Changes
   been changed from ``UTC`` to ``None``. Code that relied on the previous
   ``UTC`` default without passing the argument explicitly must now explicitly pass
   ``timezone=Timezone.UTC``.
+- **Breaking change:** The ``return_datasets`` argument has been removed from
+  :py:meth:`~volue.mesh._base_session.Session.run_simulation` and
+  :py:meth:`~volue.mesh._base_session.Session.run_inflow_calculation`, and the
+  ``HydSimDataset`` class has been removed. :issue:`646`
+  HydSim now records runs on the HydSim server, so Mesh no longer returns
+  datasets to the client.
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

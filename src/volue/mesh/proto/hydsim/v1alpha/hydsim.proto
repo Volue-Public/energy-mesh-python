@@ -36,12 +36,11 @@ message RunHydroSimulationRequest {
   // scenario.
   int32 scenario = 5;
 
-  // Generate and return HydSim datasets that can be used by Volue to diagnose
-  // issues with hydro simulations. For performance reasons this should be
-  // false when not trying to diagnose an issue.
-  //
-  // See the HydSimDataset message for more information.
-  bool return_datasets = 6;
+  // Deprecated: previously asked Mesh to return HydSim datasets for diagnosing
+  // hydro simulations, see HydSimDataset. HydSim now records runs on the HydSim
+  // server, so the value is ignored and the field will be removed in a later
+  // version.
+  bool return_datasets = 6 [deprecated = true];
 }
 
 message RunInflowCalculationRequest {
@@ -53,17 +52,11 @@ message RunInflowCalculationRequest {
   // If left unset the default resolution of the inflow calculation is used.
   google.protobuf.Duration resolution = 4;
 
-  // Generate and return HydSim datasets that can be used by Volue to diagnose
-  // issues with inflow calculations. For performance reasons this should be
-  // false when not trying to diagnose an issue.
-  //
-  // By default, the maximum inbound gRPC message size is 4MB. When Mesh server
-  // returns datasets for longer simulation intervals the gRPC message size
-  // may exceed this limit. In such cases you may increase the maximum gRPC
-  // inbound message size from client side.
-  //
-  // See the HydSimDataset message for more information.
-  bool return_datasets = 5;
+  // Deprecated: previously asked Mesh to return HydSim datasets for diagnosing
+  // inflow calculations, see HydSimDataset. HydSim now records runs on the
+  // HydSim server, so the value is ignored and the field will be removed in a
+  // later version.
+  bool return_datasets = 5 [deprecated = true];
 }
 
 message GetMcFileRequest {
@@ -80,7 +73,7 @@ message SimulationLog {
 // A HydSim dataset is a representation of data used in a hydro simulation or
 // inflow calculation. The HydSim team may use a dataset to diagnose issues.
 // When Volue requests a dataset we recommend storing datasets with filename
-// `name` and contents from `data` and then sending those files to Volue
+// `name` and contents from `data` and then sending those files to Volue.
 message HydSimDataset {
   string name = 1;
   bytes data = 2;

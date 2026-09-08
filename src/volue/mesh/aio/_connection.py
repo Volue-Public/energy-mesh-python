@@ -15,7 +15,6 @@ from volue.mesh import (
     AttributeBase,
     AttributesFilter,
     Authentication,
-    HydSimDataset,
     LinkRelationVersion,
     LogMessage,
     Object,
@@ -506,18 +505,14 @@ class Connection(_base_connection.Connection):
             *,
             resolution: timedelta = None,
             scenario: int = None,
-            return_datasets: bool = False,
-        ) -> typing.AsyncIterator[None]:
+        ) -> typing.AsyncIterator[LogMessage]:
             request = self._prepare_run_simulation_request(
-                model, case, start_time, end_time, resolution, scenario, return_datasets
+                model, case, start_time, end_time, resolution, scenario
             )
             async for response in self.hydsim_service.RunHydroSimulation(request):
                 if response.HasField("log_message"):
                     yield LogMessage._from_proto(response.log_message)
-                if response.HasField("dataset"):
-                    yield HydSimDataset._from_proto(response.dataset)
-                else:
-                    yield None
+                # Skip responses this version of the Python SDK does not know.
 
         async def run_inflow_calculation(
             self,
@@ -528,22 +523,18 @@ class Connection(_base_connection.Connection):
             end_time: datetime,
             *,
             resolution: timedelta = None,
-            return_datasets: bool = False,
-        ) -> typing.AsyncIterator[None]:
+        ) -> typing.AsyncIterator[LogMessage]:
             targets = await self.search_for_objects(
                 f"Model/{model}/Mesh.To_Areas/{area}",
                 f"To_HydroProduction/To_WaterCourses/@[.Name={water_course}]",
             )
             request = self._prepare_run_inflow_calculation_request(
-                targets, start_time, end_time, resolution, return_datasets
+                targets, start_time, end_time, resolution
             )
             async for response in self.hydsim_service.RunInflowCalculation(request):
                 if response.HasField("log_message"):
                     yield LogMessage._from_proto(response.log_message)
-                if response.HasField("dataset"):
-                    yield HydSimDataset._from_proto(response.dataset)
-                else:
-                    yield None
+                # Skip responses this version of the Python SDK does not know.
 
         async def get_mc_file(
             self,
@@ -551,7 +542,7 @@ class Connection(_base_connection.Connection):
             case: str,
             start_time: datetime,
             end_time: datetime,
-        ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
+        ) -> typing.AsyncIterator[LogMessage | str]:
             request = self._prepare_get_mc_file_request(
                 model, case, start_time, end_time
             )
@@ -560,8 +551,7 @@ class Connection(_base_connection.Connection):
                     yield LogMessage._from_proto(response.log_message)
                 elif response.HasField("mc_file"):
                     yield response.mc_file
-                else:
-                    yield None
+                # Skip responses this version of the Python SDK does not know.
 
     @staticmethod
     def _secure_grpc_channel(*args, **kwargs):

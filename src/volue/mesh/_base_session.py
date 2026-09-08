@@ -32,6 +32,7 @@ from ._attribute import (
 from ._common import (
     AttributesFilter,
     LinkRelationVersion,
+    LogMessage,
     RatingCurveSegment,
     RatingCurveVersion,
     XyCurve,
@@ -964,13 +965,8 @@ class Session(abc.ABC):
         *,
         resolution: timedelta = None,
         scenario: int = None,
-        return_datasets: bool = False,
-    ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
+    ) -> typing.Iterator[LogMessage] | typing.AsyncIterator[LogMessage]:
         """Run a hydro simulation using HydSim on the Mesh server.
-
-        In case of running a simulation on longer interval and with
-        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`
-        error. See: :ref:`mesh_client:gRPC communication`.
 
         This function is experimental and subject to larger changes.
 
@@ -986,14 +982,10 @@ class Session(abc.ABC):
             scenario: The scenario(s) to run. All scenarios are run if left as
                 `None`, no scenarios are run if set as -1, and a specific
                 numbered scenario is run if set as the number of that scenario.
-            return_datasets: Generate and return HydSim datasets that can be used
-                by Volue to diagnose issues with hydro simulations. For performance
-                reasons this should be false when not trying to diagnose an issue.
 
         Returns:
-            An iterator of `None`. In future versions this iterator will yield
-            log messages, datasets, and potentially more. The simulation is
-            done when the iterator is exhausted.
+            An iterator of `LogMessage` objects. The simulation is done when
+            the iterator is exhausted.
 
             Exhausting the iterator without an exception does not guarantee
             that the simulation completed successfully. To determine that
@@ -1015,13 +1007,10 @@ class Session(abc.ABC):
         end_time: datetime,
         *,
         resolution: timedelta = None,
-        return_datasets: bool = False,
-    ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
+    ) -> typing.Iterator[LogMessage] | typing.AsyncIterator[LogMessage]:
         """Run an inflow calculation using HydSim on the Mesh server.
 
-        In case of running an inflow calculation on longer interval and with
-        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`
-        error. See: :ref:`mesh_client:gRPC communication`.
+        This function is experimental and subject to larger changes.
 
         Args:
             model: The name of the Mesh model in which the inflow calculation
@@ -1033,14 +1022,10 @@ class Session(abc.ABC):
             resolution: The resolution of the simulation. The default resolution
                 of the inflow calculation case is used if this is left as `None`.
                 Officially supported resolutions are 5, 10, 15, and 60 minutes.
-            return_datasets: Generate and return HydSim datasets that can be used
-                by Volue to diagnose issues with inflow calculations. For performance
-                reasons this should be false when not trying to diagnose an issue.
 
         Returns:
-            An iterator of `None`. In future versions this iterator will yield
-            log messages, datasets, and potentially more. The calculation is
-            done when the iterator is exhausted.
+            An iterator of `LogMessage` objects. The calculation is done when
+            the iterator is exhausted.
 
             Exhausting the iterator without an exception does not guarantee
             that the calculation completed successfully. To determine that
@@ -1059,7 +1044,7 @@ class Session(abc.ABC):
         case: str,
         start_time: datetime,
         end_time: datetime,
-    ) -> typing.Iterator[None] | typing.AsyncIterator[None]:
+    ) -> typing.Iterator[LogMessage | str] | typing.AsyncIterator[LogMessage | str]:
         """Generate Marginal Cost input using HydSim on the Mesh server.
 
         Args:
@@ -1070,8 +1055,8 @@ class Session(abc.ABC):
             end_time: The (exclusive) end of the simulation interval.
 
         Returns:
-            An iterator of `LogMessage`s followed by a single `str`. The final
-            string is the Marginal Cost input.
+            An iterator of `LogMessage` objects followed by a single `str`. The
+            final string is the Marginal Cost input.
 
         Raises:
             TypeError
@@ -1687,7 +1672,6 @@ class Session(abc.ABC):
         end_time: datetime,
         resolution: timedelta,
         scenario: int,
-        return_datasets: bool,
     ) -> hydsim_pb2.RunHydroSimulationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
@@ -1706,7 +1690,6 @@ class Session(abc.ABC):
             interval=_to_proto_utcinterval(start_time, end_time),
             scenario=scenario,
             resolution=proto_resolution,
-            return_datasets=return_datasets,
         )
 
     def _prepare_run_inflow_calculation_request(
@@ -1715,7 +1698,6 @@ class Session(abc.ABC):
         start_time: datetime,
         end_time: datetime,
         resolution: timedelta,
-        return_datasets: bool,
     ) -> hydsim_pb2.RunInflowCalculationRequest:
         if start_time is None or end_time is None:
             raise TypeError("start_time and end_time must both have a value")
@@ -1733,7 +1715,6 @@ class Session(abc.ABC):
             watercourse=_to_proto_object_mesh_id(targets[0].id),
             interval=_to_proto_utcinterval(start_time, end_time),
             resolution=proto_resolution,
-            return_datasets=return_datasets,
         )
 
     def _prepare_get_mc_file_request(
