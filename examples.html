@@ -2062,8 +2062,6 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 10MB</span>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_run_simulation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"connecting..."</span><span class="p">)</span>
@@ -2071,18 +2069,10 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer simulation intervals the gRPC message size</span>
-    <span class="c1"># may exceed this limit. In such cases the user can set new limit using</span>
-    <span class="c1"># `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -2096,16 +2086,11 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
                 <span class="s2">"Cases/Demo"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -2118,18 +2103,10 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.aio.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer simulation intervals the gRPC message size</span>
-    <span class="c1"># may exceed this limit. In such cases the user can set new limit using</span>
-    <span class="c1"># `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -2143,16 +2120,11 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
                 <span class="s2">"Cases/Demo"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -2177,8 +2149,6 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 10MB</span>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_run_inflow_calculation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"connecting..."</span><span class="p">)</span>
@@ -2186,18 +2156,10 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer inflow calculation intervals the gRPC message</span>
-    <span class="c1"># size may exceed this limit. In such cases the user can set new limit</span>
-    <span class="c1"># using `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -2212,16 +2174,11 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
                 <span class="s2">"WaterCourse"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -2234,18 +2191,10 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.aio.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer inflow calculation intervals the gRPC message</span>
-    <span class="c1"># size may exceed this limit. In such cases the user can set new limit</span>
-    <span class="c1"># using `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -2260,16 +2209,11 @@ quickstart.py which is self-contained and does not require helpers.py.</p>
                 <span class="s2">"WaterCourse"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>

@@ -306,19 +306,14 @@ using <cite>grpc_max_receive_message_length</cite> argument.</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Another example of connection with <cite>grpc_max_receive_message_length</cite> argument
-is in <cite>run_simulation.py</cite>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>gRPC outbound message size is not limited by default.</p>
 </div>
-<p>This might be useful when e.g.: running long simulations with
-<cite>return_datasets</cite> enabled. In such cases the dataset size might exceed the 4MB
-limit and a <cite>RESOURCE_EXHAUSTED</cite> status code would be returned.</p>
-<p>However, in other cases like reading time series data, we suggest reading the
-data in chunks. E.g.: instead of reading 50 years of hourly time series data
-in a single request, the user should request several read operations with
-shorter read intervals.</p>
+<p>In normal usage this setting does not need to be changed. For cases such as
+reading time series data, we suggest reading the data in chunks. E.g.: instead
+of reading 50 years of hourly time series data in a single request, the user
+should request several read operations with shorter read intervals.</p>
 <p>The same is true for writing data, like time series data. Here however, it is
 not a suggestion, but a must. Mesh server gRPC inbound message size is not
 configurable and therefore it is always equal to 4MB. If gRPC client, like Mesh

@@ -46,20 +46,13 @@ Example usage:
     )
 
 
-Another example of connection with `grpc_max_receive_message_length` argument
-is in `run_simulation.py`.
-
 .. note::
     gRPC outbound message size is not limited by default.
 
-This might be useful when e.g.: running long simulations with
-`return_datasets` enabled. In such cases the dataset size might exceed the 4MB
-limit and a `RESOURCE_EXHAUSTED` status code would be returned.
-
-However, in other cases like reading time series data, we suggest reading the
-data in chunks. E.g.: instead of reading 50 years of hourly time series data
-in a single request, the user should request several read operations with
-shorter read intervals.
+In normal usage this setting does not need to be changed. For cases such as
+reading time series data, we suggest reading the data in chunks. E.g.: instead
+of reading 50 years of hourly time series data in a single request, the user
+should request several read operations with shorter read intervals.
 
 The same is true for writing data, like time series data. Here however, it is
 not a suggestion, but a must. Mesh server gRPC inbound message size is not

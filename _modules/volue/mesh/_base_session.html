@@ -205,6 +205,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">._common</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">AttributesFilter</span><span class="p">,</span>
     <span class="n">LinkRelationVersion</span><span class="p">,</span>
+    <span class="n">LogMessage</span><span class="p">,</span>
     <span class="n">RatingCurveSegment</span><span class="p">,</span>
     <span class="n">RatingCurveVersion</span><span class="p">,</span>
     <span class="n">XyCurve</span><span class="p">,</span>
@@ -1137,13 +1138,8 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">scenario</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">LogMessage</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="n">LogMessage</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Run a hydro simulation using HydSim on the Mesh server.</span>
-
-<span class="sd">        In case of running a simulation on longer interval and with</span>
-<span class="sd">        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`</span>
-<span class="sd">        error. See: :ref:`mesh_client:gRPC communication`.</span>
 
 <span class="sd">        This function is experimental and subject to larger changes.</span>
 
@@ -1159,14 +1155,10 @@
 <span class="sd">            scenario: The scenario(s) to run. All scenarios are run if left as</span>
 <span class="sd">                `None`, no scenarios are run if set as -1, and a specific</span>
 <span class="sd">                numbered scenario is run if set as the number of that scenario.</span>
-<span class="sd">            return_datasets: Generate and return HydSim datasets that can be used</span>
-<span class="sd">                by Volue to diagnose issues with hydro simulations. For performance</span>
-<span class="sd">                reasons this should be false when not trying to diagnose an issue.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An iterator of `None`. In future versions this iterator will yield</span>
-<span class="sd">            log messages, datasets, and potentially more. The simulation is</span>
-<span class="sd">            done when the iterator is exhausted.</span>
+<span class="sd">            An iterator of `LogMessage` objects. The simulation is done when</span>
+<span class="sd">            the iterator is exhausted.</span>
 
 <span class="sd">            Exhausting the iterator without an exception does not guarantee</span>
 <span class="sd">            that the simulation completed successfully. To determine that</span>
@@ -1188,13 +1180,10 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">timedelta</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">LogMessage</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="n">LogMessage</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Run an inflow calculation using HydSim on the Mesh server.</span>
 
-<span class="sd">        In case of running an inflow calculation on longer interval and with</span>
-<span class="sd">        `return_datasets` enabled you might get a `StatusCode.RESOURCE_EXHAUSTED`</span>
-<span class="sd">        error. See: :ref:`mesh_client:gRPC communication`.</span>
+<span class="sd">        This function is experimental and subject to larger changes.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            model: The name of the Mesh model in which the inflow calculation</span>
@@ -1206,14 +1195,10 @@
 <span class="sd">            resolution: The resolution of the simulation. The default resolution</span>
 <span class="sd">                of the inflow calculation case is used if this is left as `None`.</span>
 <span class="sd">                Officially supported resolutions are 5, 10, 15, and 60 minutes.</span>
-<span class="sd">            return_datasets: Generate and return HydSim datasets that can be used</span>
-<span class="sd">                by Volue to diagnose issues with inflow calculations. For performance</span>
-<span class="sd">                reasons this should be false when not trying to diagnose an issue.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An iterator of `None`. In future versions this iterator will yield</span>
-<span class="sd">            log messages, datasets, and potentially more. The calculation is</span>
-<span class="sd">            done when the iterator is exhausted.</span>
+<span class="sd">            An iterator of `LogMessage` objects. The calculation is done when</span>
+<span class="sd">            the iterator is exhausted.</span>
 
 <span class="sd">            Exhausting the iterator without an exception does not guarantee</span>
 <span class="sd">            that the calculation completed successfully. To determine that</span>
@@ -1232,7 +1217,7 @@
         <span class="n">case</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="kc">None</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Iterator</span><span class="p">[</span><span class="n">LogMessage</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">typing</span><span class="o">.</span><span class="n">AsyncIterator</span><span class="p">[</span><span class="n">LogMessage</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Generate Marginal Cost input using HydSim on the Mesh server.</span>
 
 <span class="sd">        Args:</span>
@@ -1243,8 +1228,8 @@
 <span class="sd">            end_time: The (exclusive) end of the simulation interval.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            An iterator of `LogMessage`s followed by a single `str`. The final</span>
-<span class="sd">            string is the Marginal Cost input.</span>
+<span class="sd">            An iterator of `LogMessage` objects followed by a single `str`. The</span>
+<span class="sd">            final string is the Marginal Cost input.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError</span>
@@ -1860,7 +1845,6 @@
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
         <span class="n">scenario</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">RunHydroSimulationRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
@@ -1879,7 +1863,6 @@
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
             <span class="n">scenario</span><span class="o">=</span><span class="n">scenario</span><span class="p">,</span>
             <span class="n">resolution</span><span class="o">=</span><span class="n">proto_resolution</span><span class="p">,</span>
-            <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_run_inflow_calculation_request</span><span class="p">(</span>
@@ -1888,7 +1871,6 @@
         <span class="n">start_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">end_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
         <span class="n">resolution</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
-        <span class="n">return_datasets</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">hydsim_pb2</span><span class="o">.</span><span class="n">RunInflowCalculationRequest</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"start_time and end_time must both have a value"</span><span class="p">)</span>
@@ -1906,7 +1888,6 @@
             <span class="n">watercourse</span><span class="o">=</span><span class="n">_to_proto_object_mesh_id</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
             <span class="n">interval</span><span class="o">=</span><span class="n">_to_proto_utcinterval</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">),</span>
             <span class="n">resolution</span><span class="o">=</span><span class="n">proto_resolution</span><span class="p">,</span>
-            <span class="n">return_datasets</span><span class="o">=</span><span class="n">return_datasets</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_get_mc_file_request</span><span class="p">(</span>

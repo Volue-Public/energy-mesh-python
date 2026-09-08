@@ -183,12 +183,10 @@
 <h1>HydSim<a class="headerlink" href="#hydsim" title="Permalink to this heading">¶</a></h1>
 <p>The Mesh Python SDK includes experimental functionality to run hydro simulations, run inflow
 calculations and generate inputs for Marginal Cost using HydSim on the Mesh server. This
-functionality is under development. Therefore, it is subject to change in future releases.
-Planned but not yet implemented functionality includes:</p>
-<ul class="simple">
-<li><p>Selection the resolution to use.</p></li>
-<li><p>Retrieve datasets from the simulation. These are used by Volue for debugging.</p></li>
-</ul>
+functionality is under development. Therefore, it is subject to change in future releases.</p>
+<p>All methods stream log messages from the server while the operation runs. Responses that
+this version of the Python SDK does not know are skipped, so newer Mesh servers may send
+additional response kinds without breaking existing clients.</p>
 <p>The functionality may be used both through a synchronous
 <a class="reference internal" href="api.html#volue.mesh.Connection.Session" title="volue.mesh.Connection.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session</span></code></a> and through an asynchronous
 <a class="reference internal" href="api.html#volue.mesh.aio.Connection.Session" title="volue.mesh.aio.Connection.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.aio.Connection.Session</span></code></a> using the following methods.
@@ -197,11 +195,8 @@ Further below you’ll find synchronous and asynchronous examples.</p>
 <h2>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this heading">¶</a></h2>
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.14)"><span class="pre">timedelta</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.14)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.14)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.run_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">run_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.14)"><span class="pre">timedelta</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scenario</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.14)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.LogMessage" title="volue.mesh._common.LogMessage"><span class="pre">LogMessage</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.14)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.LogMessage" title="volue.mesh._common.LogMessage"><span class="pre">LogMessage</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.run_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Run a hydro simulation using HydSim on the Mesh server.</p>
-<p>In case of running a simulation on longer interval and with
-<cite>return_datasets</cite> enabled you might get a <cite>StatusCode.RESOURCE_EXHAUSTED</cite>
-error. See: <a class="reference internal" href="mesh_client.html#grpc-communication"><span class="std std-ref">gRPC communication</span></a>.</p>
 <p>This function is experimental and subject to larger changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -217,15 +212,11 @@ Officially supported resolutions are 5, 10, 15, and 60 minutes.</p></li>
 <li><p><strong>scenario</strong> – The scenario(s) to run. All scenarios are run if left as
 <cite>None</cite>, no scenarios are run if set as -1, and a specific
 numbered scenario is run if set as the number of that scenario.</p></li>
-<li><p><strong>return_datasets</strong> – Generate and return HydSim datasets that can be used
-by Volue to diagnose issues with hydro simulations. For performance
-reasons this should be false when not trying to diagnose an issue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>An iterator of <cite>None</cite>. In future versions this iterator will yield
-log messages, datasets, and potentially more. The simulation is
-done when the iterator is exhausted.</p>
+<dd class="field-even"><p><p>An iterator of <cite>LogMessage</cite> objects. The simulation is done when
+the iterator is exhausted.</p>
 <p>Exhausting the iterator without an exception does not guarantee
 that the simulation completed successfully. To determine that
 you must analyze the simulation’s result time series and the
@@ -243,11 +234,9 @@ log messages from the server.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.14)"><span class="pre">timedelta</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_datasets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.14)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.14)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">run_inflow_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">water_course</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.timedelta" title="(in Python v3.14)"><span class="pre">timedelta</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.14)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.LogMessage" title="volue.mesh._common.LogMessage"><span class="pre">LogMessage</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.14)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.LogMessage" title="volue.mesh._common.LogMessage"><span class="pre">LogMessage</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.run_inflow_calculation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Run an inflow calculation using HydSim on the Mesh server.</p>
-<p>In case of running an inflow calculation on longer interval and with
-<cite>return_datasets</cite> enabled you might get a <cite>StatusCode.RESOURCE_EXHAUSTED</cite>
-error. See: <a class="reference internal" href="mesh_client.html#grpc-communication"><span class="std std-ref">gRPC communication</span></a>.</p>
+<p>This function is experimental and subject to larger changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -260,15 +249,11 @@ exists.</p></li>
 <li><p><strong>resolution</strong> – The resolution of the simulation. The default resolution
 of the inflow calculation case is used if this is left as <cite>None</cite>.
 Officially supported resolutions are 5, 10, 15, and 60 minutes.</p></li>
-<li><p><strong>return_datasets</strong> – Generate and return HydSim datasets that can be used
-by Volue to diagnose issues with inflow calculations. For performance
-reasons this should be false when not trying to diagnose an issue.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>An iterator of <cite>None</cite>. In future versions this iterator will yield
-log messages, datasets, and potentially more. The calculation is
-done when the iterator is exhausted.</p>
+<dd class="field-even"><p><p>An iterator of <cite>LogMessage</cite> objects. The calculation is done when
+the iterator is exhausted.</p>
 <p>Exhausting the iterator without an exception does not guarantee
 that the calculation completed successfully. To determine that
 you must analyze the calculation’s result time series and the
@@ -286,7 +271,7 @@ log messages from the server.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">get_mc_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.14)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.14)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.get_mc_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">Session.</span></span><span class="sig-name descname"><span class="pre">get_mc_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.14)"><span class="pre">datetime</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.14)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.14)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.LogMessage" title="volue.mesh._common.LogMessage"><span class="pre">volue.mesh._common.LogMessage</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.AsyncIterator" title="(in Python v3.14)"><span class="pre">AsyncIterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api.html#volue.mesh.LogMessage" title="volue.mesh._common.LogMessage"><span class="pre">volue.mesh._common.LogMessage</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/volue/mesh/_base_session.html#Session.get_mc_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Generate Marginal Cost input using HydSim on the Mesh server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -299,8 +284,8 @@ log messages from the server.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An iterator of <cite>LogMessage`s followed by a single `str</cite>. The final
-string is the Marginal Cost input.</p>
+<dd class="field-even"><p>An iterator of <cite>LogMessage</cite> objects followed by a single <cite>str</cite>. The
+final string is the Marginal Cost input.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><ul class="simple">
@@ -323,8 +308,6 @@ string is the Marginal Cost input.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 10MB</span>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_run_simulation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"connecting..."</span><span class="p">)</span>
@@ -332,18 +315,10 @@ string is the Marginal Cost input.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer simulation intervals the gRPC message size</span>
-    <span class="c1"># may exceed this limit. In such cases the user can set new limit using</span>
-    <span class="c1"># `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -357,16 +332,11 @@ string is the Marginal Cost input.</p>
                 <span class="s2">"Cases/Demo"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -379,18 +349,10 @@ string is the Marginal Cost input.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.aio.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer simulation intervals the gRPC message size</span>
-    <span class="c1"># may exceed this limit. In such cases the user can set new limit using</span>
-    <span class="c1"># `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -404,16 +366,11 @@ string is the Marginal Cost input.</p>
                 <span class="s2">"Cases/Demo"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -438,8 +395,6 @@ string is the Marginal Cost input.</p>
 <span class="kn">import</span><span class="w"> </span><span class="nn">volue.mesh.aio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue</span><span class="w"> </span><span class="kn">import</span> <span class="n">mesh</span>
 
-<span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># 10MB</span>
-
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_run_inflow_calculation</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"connecting..."</span><span class="p">)</span>
@@ -447,18 +402,10 @@ string is the Marginal Cost input.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer inflow calculation intervals the gRPC message</span>
-    <span class="c1"># size may exceed this limit. In such cases the user can set new limit</span>
-    <span class="c1"># using `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -473,16 +420,11 @@ string is the Marginal Cost input.</p>
                 <span class="s2">"WaterCourse"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -495,18 +437,10 @@ string is the Marginal Cost input.</p>
     <span class="c1"># For production environments create connection using: with_tls, with_kerberos, or with_external_access_token, e.g.:</span>
     <span class="c1"># connection = mesh.aio.Connection.with_tls(</span>
     <span class="c1">#     address,</span>
-    <span class="c1">#     tls_root_pem_cert,</span>
-    <span class="c1">#     grpc_max_receive_message_length=GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES,</span>
+    <span class="c1">#     tls_root_pem_cert</span>
     <span class="c1"># )</span>
 
-    <span class="c1"># By default the maximum inbound gRPC message size is 4MB. When Mesh server</span>
-    <span class="c1"># returns datasets for longer inflow calculation intervals the gRPC message</span>
-    <span class="c1"># size may exceed this limit. In such cases the user can set new limit</span>
-    <span class="c1"># using `grpc_max_receive_message_length` when creating a connection to Mesh.</span>
-    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span>
-        <span class="n">address</span><span class="p">,</span>
-        <span class="n">grpc_max_receive_message_length</span><span class="o">=</span><span class="n">GRPC_MAX_RECEIVE_MESSAGE_LENGTH_IN_BYTES</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">insecure</span><span class="p">(</span><span class="n">address</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">create_session</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -521,16 +455,11 @@ string is the Marginal Cost input.</p>
                 <span class="s2">"WaterCourse"</span><span class="p">,</span>
                 <span class="n">start_time</span><span class="p">,</span>
                 <span class="n">end_time</span><span class="p">,</span>
-                <span class="n">return_datasets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">resolution</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">LogMessage</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">logging</span><span class="o">.</span><span class="n">getLevelName</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">level</span><span class="p">)</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">mesh</span><span class="o">.</span><span class="n">HydSimDataset</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">"Received dataset </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes"</span>
                     <span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>

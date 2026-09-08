@@ -347,6 +347,12 @@ For detailed compatibility information, refer to the
 been changed from <code class="docutils literal notranslate"><span class="pre">UTC</span></code> to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Code that relied on the previous
 <code class="docutils literal notranslate"><span class="pre">UTC</span></code> default without passing the argument explicitly must now explicitly pass
 <code class="docutils literal notranslate"><span class="pre">timezone=Timezone.UTC</span></code>.</p></li>
+<li><p><strong>Breaking change:</strong> The <code class="docutils literal notranslate"><span class="pre">return_datasets</span></code> argument has been removed from
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">run_simulation()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">run_inflow_calculation()</span></code>, and the
+<code class="docutils literal notranslate"><span class="pre">HydSimDataset</span></code> class has been removed. <a class="reference external" href="https://github.com/Volue-Public/energy-mesh-python/issues/646">[646]</a>
+HydSim now records runs on the HydSim server, so Mesh no longer returns
+datasets to the client.</p></li>
 </ul>
 </div>
 <div class="section" id="install-instructions">
