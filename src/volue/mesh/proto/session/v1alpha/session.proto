@@ -29,24 +29,28 @@ import "volue/mesh/proto/type/resources.proto";
 // search for and retrieve data (like time series or information about object)
 // and perform calculations using functions among other things.
 //
-//  Session timeout
-//  ---------------
-//  Each session that has been inactive for some period of time will be
-//  automatically closed on the server side. This period is called session
-//  timeout. Currently the session timeout for gRPC sessions is set to 5
-//  minutes. This may change in the future versions of Mesh server. To
-//  check when the session expires you can use `ExtendSession` RPC which
-//  returns session timeout.
+// Session timeout
+// ---------------
+// Each session that has been inactive for some period of time will be
+// automatically closed on the server side. This period is called session
+// timeout. Currently the session timeout for gRPC sessions is set to 5
+// minutes. This may change in the future versions of Mesh server. To
+// check when the session expires you can use `ExtendSession` RPC which
+// returns session timeout.
 //
-//  The session timeout is counted from the moment where handling of the last
-//  request made using that session was completed. So, if you are using
-//  a session for longer period than the session timeout, but you are actively
-//  making calls to, for example read time series points, then the session will
-//  not timeout.
+// The session timeout is counted from the moment where handling of the last
+// request made using that session was completed. So, if you are using
+// a session for longer period than the session timeout, but you are actively
+// making calls to, for example read time series points, then the session will
+// not timeout. `SubscribeToTimeseriesChangeNotifications` RPC is a special
+// case, because it is a long-running streaming RPC. When you have an active
+// subscription through that RPC, the session will not timeout, even if there
+// are no requests made through that session, because the subscription itself
+// keeps the session active.
 //
-//  In cases where a session needs to be preserved, but the inactivity periods
-//  are longer, then the user needs to make explicit calls using that session.
-//  See `ExtendSession` RPC.
+// In cases where a session needs to be preserved, but the inactivity periods
+// are longer, then the user needs to make explicit calls using that session.
+// See `ExtendSession` RPC.
 //
 // Good practices
 // ---------------

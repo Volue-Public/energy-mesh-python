@@ -12,7 +12,16 @@ import "volue/mesh/proto/type/resources.proto";
 //
 service CalculationService {
 
-  // Run ad-hoc calculation
+  // Run ad-hoc calculation.
+  //
+  // The default max client inbound message size is 4 megabytes. If the
+  // response size is greater than this limit, a `RESOURCE_EXHAUSTED` status is
+  // returned.
+  //
+  // Each time series point occupies 20 bytes. In case of larger data volumes
+  // please send request data in chunks or increase the maximum gRPC inbound
+  // message size from the client side. The limit can be configured when
+  // creating the connection to the Mesh server.
   rpc RunCalculation(CalculationRequest) returns (CalculationResponse) {}
 }
 
@@ -25,8 +34,8 @@ message CalculationRequest {
 
 message CalculationResponse {
   oneof calculation_result_oneof {
-    // not all fields in Timeseries result will be set (e.g. full_name,
-    // or timskey)
+    // Not all fields in Timeseries result will be set (e.g. `path`,
+    // or `timeseries_key` in the `id` field)
     volue.mesh.grpc.time_series.v1alpha.ReadTimeseriesResponse timeseries_results = 1;
     NumericResults numeric_results = 2;
     StringResults string_results = 3;

@@ -190,8 +190,8 @@ message CreateAdvancedRestrictionRequest {
   // `ListAvailabilityCategories` RPC.
   string category = 3;
 
-  // MeshId of timeseries calculation associated with advanced event.
-  // Timeseries calculation must have the same owner entity as this Advanced
+  // Time series calculation associated with the advanced event.
+  // Time series calculation must have the same owner entity as this Advanced
   // Restriction.
   volue.mesh.grpc.type.MeshId calculation_id = 4;
 
