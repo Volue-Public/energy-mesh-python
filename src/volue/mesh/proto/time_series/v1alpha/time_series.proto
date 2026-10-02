@@ -38,14 +38,21 @@ import "volue/mesh/proto/type/resources.proto";
 //
 service TimeseriesService {
 
+  // Read time series.
+  //
   // Each time series point occupies 20 bytes. By default, gRPC has a limitation
   // of 4MB inbound message size. In case of larger data volumes please send
   // request data in chunks or increase the maximum gRPC inbound message size
   // from client side.
   //
-  // Note: reading points from uncommitted physical time series is not supported.
-  // Commit the newly created physical time series to read its points.
   rpc ReadTimeseries(ReadTimeseriesRequest) returns (ReadTimeseriesResponse) {}
+
+  // Read batch of time series.
+  //
+  // Each time series point occupies 20 bytes. By default, gRPC has a limitation
+  // of 4MB inbound message size. In case of larger data volumes please send
+  // request data in chunks or increase the maximum gRPC inbound message size
+  // from client side.
   rpc ReadTimeseriesStream(ReadTimeseriesStreamRequest) returns (stream ReadTimeseriesResponse) {}
 
   // Read batch of time series with applied transformation.
@@ -56,8 +63,11 @@ service TimeseriesService {
   // Request: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
   // Responses: [TS_ATTRIBUTE_ID1, TS_ATTRIBUTE_ID2, TS_ATTRIBUTE_ID3]
   //
-  // Note: reading points from uncommitted physical time series is not supported.
-  // Commit the newly created physical time series to read its points.
+  // Each time series point occupies 20 bytes. By default, gRPC has a limitation
+  // of 4MB inbound message size. In case of larger data volumes please send
+  // request data in chunks or increase the maximum gRPC inbound message size
+  // from client side.
+  //
   rpc ReadTransformedTimeseries(ReadTransformedTimeseriesRequest) returns (stream ReadTimeseriesResponse) {}
 
   // Each time series point occupies 20 bytes. Mesh server has a limitation of
@@ -148,10 +158,31 @@ message ReadTransformedTimeseriesRequest {
 
 message ReadTransformedTimeseriesSingleRequest {
   volue.mesh.grpc.type.MeshId timeseries_id = 1;
+
+  // Interval to transform.
+  //
+  // Before the transformation the interval is extended outwards to the
+  // nearest target resolution boundaries, in the transformation time zone
+  // (UTC when unspecified): the start is moved back and the end forward.
+  // Every returned point therefore covers one full resolution step and may
+  // include values from outside the requested interval. Only points whose
+  // timestamp lies inside the requested interval are returned.
+  //
+  // Example: requesting 2024-01-01T06:00Z to 2024-01-02T18:00Z at DAY
+  // resolution returns one point, 2024-01-02, aggregated over the whole day.
+  // The 2024-01-01 point is not returned because it starts before the
+  // interval. Request an interval aligned to the target resolution to avoid
+  // these effects.
   volue.mesh.grpc.type.UtcInterval interval = 2;
+
   // Target transformation resolution. Must not be set to break point.
   volue.mesh.grpc.type.Resolution resolution = 3;
   TransformationMethod transformation_method = 4;
+
+  // The timezone parameter is not used when transforming time series to sub-day resolutions.
+  // When set to other value than `TIMEZONE_UNSPECIFIED` for sub-day target resolution:
+  // - time zone-aware time series will return an error.
+  // - time zone-naive time series will ignore it.
   Timezone transformation_timezone = 5;
 }
 
