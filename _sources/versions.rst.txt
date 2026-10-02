@@ -6,6 +6,37 @@ For detailed compatibility information, refer to the
 `compatibility matrix <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/installation/mesh-service-installation-guide#mesh-python-sdk-compatibility-matrix>`_.
 
 
+Mesh Python SDK version 1.18.0-dev
+**********************************
+
+This is the current master version.
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.21.0 **(may change)**
+- Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+.. code-block:: bash
+
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+
+
 `Mesh Python SDK version 1.17.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.17.0>`_
 ***********************************************************************************************************
 
@@ -22,7 +53,7 @@ Changes
   :py:meth:`~volue.mesh.calc.transform.TransformFunctions.transform` has
   been changed from ``UTC`` to ``None``. Code that relied on the previous
   ``UTC`` default without passing the argument explicitly must now explicitly pass
-  ``timezone=Timezone.UTC``.
+  ``timezone=Timezone.UTC``. :pull:`636`
 - **Breaking change:** The ``return_datasets`` argument has been removed from
   :py:meth:`~volue.mesh._base_session.Session.run_simulation` and
   :py:meth:`~volue.mesh._base_session.Session.run_inflow_calculation`, and the
