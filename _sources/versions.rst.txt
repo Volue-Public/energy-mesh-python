@@ -3,24 +3,17 @@ Versions
 
 Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 For detailed compatibility information, refer to the
-`compatibility matrix <https://volue-public.github.io/energy-smp-docs/latest/mesh/installation/MeshServiceInstallationGuide/#mesh-python-sdk-compatibility-matrix>`_.
+`compatibility matrix <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/installation/mesh-service-installation-guide#mesh-python-sdk-compatibility-matrix>`_.
 
 
-Mesh Python SDK version 1.17.0-dev
-**********************************
-
-This is the current master version.
+`Mesh Python SDK version 1.17.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.17.0>`_
+***********************************************************************************************************
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.21.0 **(may change)**
-- Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
-
-New features
-~~~~~~~~~~~~~~~~~~
-
-- TBA
+- Mesh server version >= 2.21.0
+- Python [3.10, 3.11, 3.12, 3.13, 3.14]
 
 Changes
 ~~~~~~~~~~~~~~~~~~
@@ -44,7 +37,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 .. code-block:: bash
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.17.0
 
 
 `Mesh Python SDK version 1.16.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.16.0>`_
@@ -55,6 +48,12 @@ Compatible with
 
 - Mesh server version >= 2.21.0
 - Python [3.10, 3.11, 3.12, 3.13, 3.14]
+
+.. warning::
+    For Mesh Python SDK 1.16.0 and older versions, the ``return_datasets`` from
+    :py:meth:`~volue.mesh._base_session.Session.run_simulation` and
+    :py:meth:`~volue.mesh._base_session.Session.run_inflow_calculation` will be
+    ignored and no dataset will be returned on Mesh server 2.23 and later.
 
 New features
 ~~~~~~~~~~~~~~~~~~
