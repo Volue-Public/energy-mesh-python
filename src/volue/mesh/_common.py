@@ -192,7 +192,7 @@ class XyCurve:
     """A list of (x, y) pairs, indexed by a reference/z value.
 
     See Also:
-        `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/>`__
+        `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/modelling/xy-sets/>`__
     """
 
     z: float
@@ -211,7 +211,7 @@ class XySet:
     period for the XY-set. Otherwise it will be :code:`None`.
 
     See Also:
-        `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/xy-sets/>`__
+        `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/modelling/xy-sets/>`__
     """
 
     valid_from_time: datetime.datetime | None
@@ -231,7 +231,7 @@ class RatingCurveSegment:
     `[x_range_until[i-1], x_range_until[i])`.
 
     See Also:
-        `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/>`__
+        `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/modelling/rating-curves/>`__
     """
 
     x_range_until: float
@@ -261,7 +261,7 @@ class RatingCurveVersion:
     `f(x) = nan`.
 
     See Also:
-        `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/rating-curves/>`__
+        `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/modelling/rating-curves/>`__
     """
 
     x_range_from: float
@@ -290,7 +290,7 @@ class LinkRelationVersion:
     the target object is "empty".
 
     See Also:
-        `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/relations/>`__
+        `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/modelling/relations/>`__
     """
 
     target_object_id: uuid.UUID | None

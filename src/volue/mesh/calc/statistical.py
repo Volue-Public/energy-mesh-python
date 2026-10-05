@@ -3,7 +3,7 @@ Mesh calculation statistical functions.
 *****************************************
 
 For more information see
-`Mesh functions <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/>`__.
+`Mesh functions <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/calculations/functions/introduction/>`__.
 
 """
 
@@ -29,7 +29,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
 
         Args:
             input_type_symbol: Either `t` (for returning a number) or `T` (for returning a time series).
-            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the `Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         Returns:
             Mesh calculation expression.
@@ -50,7 +50,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         The resulting time series is equal to the sum of the values for each time interval in the expression.
 
         Args:
-            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the `Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         Note:
             The resulting objects from the `search_query` will be used in the `sum` function, if `search_query` is not set the `target` will be used.
@@ -67,7 +67,7 @@ class _StatisticalFunctionsBase(_Calculation, ABC):
         It returns a number.
 
         Args:
-            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the `Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         Note:
             The resulting object (single time series) from the `search_query` will be used in the `sum_single_timeseries` function, if `search_query` is not set the `target` will be used.

@@ -2,7 +2,7 @@
 Time zone-aware time series
 ===========================
 
-Please refer to `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/time-series/time-zone-aware-time-series/>`_
+Please refer to `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/time-series/time-zone-aware-time-series/>`_
 for a general description of time zone-aware time series in Mesh.
 
 The Mesh Python SDK allows for setting time zones

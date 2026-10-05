@@ -2,7 +2,7 @@
 Mesh concepts
 ==============
 
-Please refer to `Smart Power documentation <https://volue-public.github.io/energy-smp-docs/latest/>`_
+Please refer to `Smart Power documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/>`_
 for a general description of Mesh concepts. Below are listed concepts with additional Mesh Python SDK specific information:
 
 .. toctree::

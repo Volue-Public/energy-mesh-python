@@ -3,7 +3,7 @@ Mesh calculation history functions.
 *************************************
 
 For more information see
-`Mesh functions <https://volue-public.github.io/energy-smp-docs/latest/mesh/calculations/functions/>`__.
+`Mesh functions <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/calculations/functions/>`__.
 
 """
 
@@ -31,7 +31,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             available_at_timepoint: Is valid at the given timestamp.
-            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the `Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         Returns:
             Mesh calculation expression.
@@ -53,7 +53,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             max_number_of_versions_to_get: Maximum number of time series to return.
-            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the `Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         Returns:
             Mesh calculation expression.
@@ -80,7 +80,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             available_at_timepoint: Is valid at the given timestamp.
-            search_query: A search formulated using the :`Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the :`Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         For information about `datetime` arguments and time zones refer to :ref:`mesh_client:Date times and time zones`.
 
@@ -105,7 +105,7 @@ class _HistoryFunctionsBase(_Calculation, ABC):
 
         Args:
             max_number_of_versions_to_get: Maximum number of time series to return.
-            search_query: A search formulated using the `Mesh search language <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/search-language/>`__.
+            search_query: A search formulated using the `Mesh search language <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/search-language/>`__.
 
         Note:
             The resulting objects from the `search_query` will be used in the `get_ts_historical_versions` function, if `search_query` is not set the `target` will be used.
