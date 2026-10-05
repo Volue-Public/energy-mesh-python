@@ -2,7 +2,7 @@
 Sessions
 ========
 
-Please refer to `Mesh documentation <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/sessions/>`_
+Please refer to `Mesh documentation <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/sessions/>`_
 for a general description of session concept in Mesh.
 
 The following example shows some different ways of working with sessions.
