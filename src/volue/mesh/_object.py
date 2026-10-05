@@ -18,7 +18,7 @@ class Object:
     Mesh Object is an instance of Object Definition in the Mesh Model.
 
     Refer to documentation for more details:
-    `Mesh model <https://volue-public.github.io/energy-smp-docs/latest/mesh/concepts/modelling/general/#model>`__.
+    `Mesh model <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/concepts/modelling/general/#model>`__.
     """
 
     id: uuid.UUID
