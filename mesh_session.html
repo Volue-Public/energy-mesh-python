@@ -98,6 +98,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="mesh_server.html">Mesh server</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Sessions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#timeout">Timeout</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#good-practices">Good practices</a></li>
 </ul>
 </li>
 </ul>
@@ -247,14 +248,34 @@ for a general description of session concept in Mesh.</p>
 <h2>Timeout<a class="headerlink" href="#timeout" title="Permalink to this heading">¶</a></h2>
 <p>To make working with Mesh via Python SDK more user-friendly the extension of
 session lifetime is handled automatically by the Mesh Python SDK. So as long
-as you have an opened session, the Python SDK will send automatically calls to
+as you have an opened session, the Python SDK will automatically send calls to
 extend the session lifetime in the background.</p>
-<p>In very limited and special use case where you want to connect to already
-existing and opened session via <a class="reference internal" href="api.html#volue-mesh"><span class="std std-ref">volue.mesh</span></a>.Connection.connect_to_session
-Python SDK will not automatically extend the lifetime of the session. In such
-case the user needs to make explicit calls. This is because tracking of an open
-session that needs automatic lifetime extension is started when it is open via
-Python’s <a class="reference internal" href="api.html#volue-mesh"><span class="std std-ref">volue.mesh</span></a>.Connection.Session object.</p>
+<p>In the very limited and special use case where you want to connect to an
+already existing and opened session via
+<a class="reference internal" href="api.html#volue.mesh.Connection.connect_to_session" title="volue.mesh.Connection.connect_to_session"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.connect_to_session()</span></code></a> Python SDK will not
+automatically extend the lifetime of the session. In such case the user needs
+to make explicit calls. This is because tracking of an open session that needs
+automatic lifetime extension is started when it is opened via Python’s
+<a class="reference internal" href="api.html#volue.mesh.Connection.Session" title="volue.mesh.Connection.Session"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session</span></code></a> object.</p>
+</div>
+<div class="section" id="good-practices">
+<h2>Good practices<a class="headerlink" href="#good-practices" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Close unused sessions. If you create the session with a <code class="docutils literal notranslate"><span class="pre">with</span></code> statement,
+it is closed automatically when the block exits, even if an exception is
+raised. Otherwise you should close it explicitly using
+<a class="reference internal" href="api.html#volue.mesh.Connection.Session.close" title="volue.mesh.Connection.Session.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.close()</span></code></a>. Every open session occupies
+resources on the Mesh server and runs a background thread in the Python SDK
+that extends its lifetime, see <a class="reference internal" href="#timeout">Timeout</a> above.</p></li>
+<li><p>If possible, reuse the same session for multiple calls to the server,
+instead of creating a new session for each call. Opening and closing a
+session requires additional calls to the Mesh server and starting a new
+lifetime extension thread, so reusing a session reduces this overhead.</p></li>
+<li><p>Commit changes before closing a session. Closing a session discards all
+uncommitted changes, so call <a class="reference internal" href="api.html#volue.mesh.Connection.Session.commit" title="volue.mesh.Connection.Session.commit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.commit()</span></code></a>
+for the changes you want to keep. No explicit rollback is needed for changes
+you want to discard.</p></li>
+</ul>
 </div>
 </div>
 
