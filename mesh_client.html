@@ -190,7 +190,7 @@
 <p>The Mesh Python SDK can create a client which is able to communicate with a Mesh server using <a class="reference external" href="https://grpc.io/">gRPC</a>. <a class="reference external" href="https://en.wikipedia.org/wiki/Remote_procedure_call">Remote procedure calls</a> is a way of sending requests and responses over a network. The request is serialized, using <a class="reference external" href="https://developers.google.com/protocol-buffers">protocol buffers (aka proto)</a> and packaged then sent to the server which processes the request and sends back a response.</p>
 <p>Depending on the request it may take a long time to process by the server. In such cases the client may use package <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a> which is implemented using the <a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio</a> library that enables concurrency and lets Python perform other tasks while waiting for the response from the server.</p>
 <p>This concept of concurrency can be demonstrated using the following examples. Notice the output of the different examples: 1, 2, A, B vs 1, A, 2, B.</p>
-<p>Using <a class="reference internal" href="api.html#volue-mesh"><span class="std std-ref">volue.mesh</span></a>.Connection:</p>
+<p>Using <a class="reference internal" href="api.html#volue.mesh.Connection" title="volue.mesh.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.Connection</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
@@ -235,7 +235,7 @@
 <span class="c1"># Done</span>
 </pre></div>
 </div>
-<p>Using <a class="reference internal" href="api.html#module-volue.mesh.aio"><span class="std std-ref">volue.mesh.aio</span></a>.Connection:</p>
+<p>Using <a class="reference internal" href="api.html#volue.mesh.aio.Connection" title="volue.mesh.aio.Connection"><code class="xref py py-class docutils literal notranslate"><span class="pre">volue.mesh.aio.Connection</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
@@ -293,10 +293,10 @@ SDK side, the user can change this limit when creating a connection to Mesh
 using <cite>grpc_max_receive_message_length</cite> argument.</p>
 <p>See:</p>
 <ul class="simple">
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.insecure()</span></code></p></li>
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_tls()</span></code></p></li>
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_kerberos()</span></code></p></li>
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_external_access_token()</span></code></p></li>
+<li><p><a class="reference internal" href="api.html#volue.mesh.Connection.insecure" title="volue.mesh.Connection.insecure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.insecure()</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#volue.mesh.Connection.with_tls" title="volue.mesh.Connection.with_tls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_tls()</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#volue.mesh.Connection.with_kerberos" title="volue.mesh.Connection.with_kerberos"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_kerberos()</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#volue.mesh.Connection.with_external_access_token" title="volue.mesh.Connection.with_external_access_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_external_access_token()</span></code></a></p></li>
 </ul>
 <p>Example usage:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_tls</span><span class="p">(</span>

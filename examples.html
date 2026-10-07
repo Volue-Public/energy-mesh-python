@@ -204,8 +204,9 @@
             
   <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
-<p>This section contains code examples. Most of them require specific Mesh model on the server side.
-Best practice is to copy the examples scripts that are of interest for you together with helpers.py</p>
+<p>This section contains code examples. Most of them require specific Mesh model
+on the server side. Best practice is to copy the examples scripts that are of
+interest for you together with helpers.py.</p>
 <div class="section" id="best-practices">
 <h2>Best practices<a class="headerlink" href="#best-practices" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic">
@@ -222,15 +223,16 @@ together with helpers.py and paste it to your own workspace.</p></li>
 localhost:50051.</p>
 <p>Second argument - path to PEM-encoded TLS certificate used by Mesh server.
 Skip it if the Mesh server is configured to accept insecure gRPC connections.
-If provided, then make sure that instead of <code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.insecure()</span></code>,
-the <code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.with_tls()</span></code> is used to establish
-connection to Mesh.</p>
+If provided, then make sure that instead of
+<a class="reference internal" href="api.html#volue.mesh.Connection.insecure" title="volue.mesh.Connection.insecure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.insecure()</span></code></a>, the
+<a class="reference internal" href="api.html#volue.mesh.Connection.with_tls" title="volue.mesh.Connection.with_tls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_tls()</span></code></a> is used to establish connection
+to Mesh.</p>
 </li>
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Starting from Mesh Python SDK 1.9, in all examples the connection to Mesh
-server is established using <code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.Session.insecure()</span></code>.
+server is established using <a class="reference internal" href="api.html#volue.mesh.Connection.insecure" title="volue.mesh.Connection.insecure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.insecure()</span></code></a>.
 To use a different connection type, e.g.: with TLS, the user has to change
 the example script. The PEM-encoded TLS certificate passed as a second
 argument will be discarded if an insecure connection is used.</p>
