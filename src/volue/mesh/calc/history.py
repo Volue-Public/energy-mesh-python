@@ -3,7 +3,7 @@ Mesh calculation history functions.
 *************************************
 
 For more information see
-`Mesh functions <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/calculations/functions/>`__.
+`Mesh functions <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/calculations/functions/introduction/>`__.
 
 """
 

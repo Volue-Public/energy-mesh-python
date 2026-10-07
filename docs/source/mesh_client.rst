@@ -7,12 +7,12 @@ Depending on the request it may take a long time to process by the server. In su
 
 This concept of concurrency can be demonstrated using the following examples. Notice the output of the different examples: 1, 2, A, B vs 1, A, 2, B.
 
-Using :ref:`api:volue.mesh`.Connection:
+Using :py:class:`volue.mesh.Connection`: 
 
 .. literalinclude:: /../../src/volue/mesh/examples/connect_synchronously.py
 
 
-Using :ref:`api:volue.mesh.aio`.Connection:
+Using :py:class:`volue.mesh.aio.Connection`: 
 
 .. literalinclude:: /../../src/volue/mesh/examples/connect_asynchronously.py
 
@@ -30,10 +30,10 @@ using `grpc_max_receive_message_length` argument.
 
 See:
 
-* :meth:`volue.mesh.Connection.Session.insecure`
-* :meth:`volue.mesh.Connection.Session.with_tls`
-* :meth:`volue.mesh.Connection.Session.with_kerberos`
-* :meth:`volue.mesh.Connection.Session.with_external_access_token`
+* :py:meth:`volue.mesh.Connection.insecure`
+* :py:meth:`volue.mesh.Connection.with_tls`
+* :py:meth:`volue.mesh.Connection.with_kerberos`
+* :py:meth:`volue.mesh.Connection.with_external_access_token`
 
 Example usage:
 

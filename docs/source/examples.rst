@@ -1,8 +1,9 @@
 Examples
 ---------
 
-This section contains code examples. Most of them require specific Mesh model on the server side.
-Best practice is to copy the examples scripts that are of interest for you together with helpers.py 
+This section contains code examples. Most of them require specific Mesh model
+on the server side. Best practice is to copy the examples scripts that are of
+interest for you together with helpers.py.
 
 Best practices
 **************
@@ -21,13 +22,14 @@ Best practices
 
    Second argument - path to PEM-encoded TLS certificate used by Mesh server.
    Skip it if the Mesh server is configured to accept insecure gRPC connections.
-   If provided, then make sure that instead of :meth:`volue.mesh.Connection.Session.insecure`,
-   the :meth:`volue.mesh.Connection.Session.with_tls` is used to establish
-   connection to Mesh.
+   If provided, then make sure that instead of
+   :py:meth:`volue.mesh.Connection.insecure`, the
+   :py:meth:`volue.mesh.Connection.with_tls` is used to establish connection
+   to Mesh.
 
 .. note::
    Starting from Mesh Python SDK 1.9, in all examples the connection to Mesh
-   server is established using :meth:`volue.mesh.Connection.Session.insecure`.
+   server is established using :py:meth:`volue.mesh.Connection.insecure`.
    To use a different connection type, e.g.: with TLS, the user has to change
    the example script. The PEM-encoded TLS certificate passed as a second
    argument will be discarded if an insecure connection is used.
