@@ -78,6 +78,7 @@ certifi = ">=2026.10.19"
 setuptools = ">=84.1.0"
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
 markers = [
     "database: Tests that require a running Mesh server with a test model named SimpleThermalTestModel. Warning: might read/write to db.",
     "server: Tests that require a running Mesh server.",
