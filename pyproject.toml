@@ -43,7 +43,7 @@ exclude = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.15"
+python = ">=3.10, <3.16"
 grpcio = ">=1.37.0"
 pyarrow = ">=7.0.0"
 # It seems like grpc provides its own version of protobuf which may not always be compatible with
