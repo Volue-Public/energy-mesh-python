@@ -139,8 +139,8 @@ def session(connection: mesh.Connection) -> mesh.Connection.Session:
         yield session
 
 
-@pytest.fixture
-def async_connection():
+@pytest_asyncio.fixture
+async def async_connection():
     """Return a :class:`mesh.aio.Connection` for the current test."""
     if _test_config.creds_type == "insecure":
         return mesh.aio.Connection.insecure(_test_config.address)
