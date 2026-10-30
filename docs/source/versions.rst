@@ -15,17 +15,23 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.21.0 **(may change)**
-- Python [3.10, 3.11, 3.12, 3.13, 3.14] **(may change)**
+- Python [3.11, 3.12, 3.13, 3.14, 3.15] **(may change)**
+
+.. warning::
+    Python 3.10 is no longer supported.
 
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for Python 3.15 :pull:`658`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- The upper bound on the Python version has been removed from the package
+  requirements. Installing Mesh Python SDK on a Python version newer than the
+  ones listed above is no longer blocked, but only the listed versions are
+  tested and officially supported. :pull:`658`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
