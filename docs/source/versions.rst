@@ -15,7 +15,10 @@ Compatible with
 ~~~~~~~~~~~~~~~~~~
 
 - Mesh server version >= 2.21.0 **(may change)**
-- Python [3.10, 3.11, 3.12, 3.13, 3.14, 3.15] **(may change)**
+- Python [3.11, 3.12, 3.13, 3.14, 3.15] **(may change)**
+
+.. warning::
+    Python 3.10 is no longer supported.
 
 New features
 ~~~~~~~~~~~~~~~~~~
