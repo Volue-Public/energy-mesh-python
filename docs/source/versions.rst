@@ -20,12 +20,15 @@ Compatible with
 New features
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- Support for Python 3.15 :pull:`658`
 
 Changes
 ~~~~~~~~~~~~~~~~~~
 
-- TBA
+- The upper bound on the Python version has been removed from the package
+  requirements. Installing Mesh Python SDK on a Python version newer than the
+  ones listed above is no longer blocked, but only the listed versions are
+  tested and officially supported. :pull:`658`
 
 Install instructions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
