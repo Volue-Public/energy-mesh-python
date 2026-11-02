@@ -6,6 +6,24 @@ For detailed compatibility information, refer to the
 `compatibility matrix <https://docs.volue.com/optimisation-and-planning/smart-power/mesh/installation/mesh-service-installation-guide#mesh-python-sdk-compatibility-matrix>`_.
 
 
+Python version support policy
+*****************************
+
+Mesh Python SDK supports the Python versions that are actively maintained,
+see the `Python versions overview <https://devguide.python.org/versions/>`_.
+
+- Support for a new Python version is added once all dependencies of Mesh
+  Python SDK are available for it and the Mesh Python SDK test suite passes
+  on it.
+- Support for a Python version is dropped once it reaches its end of life.
+  Whenever possible the drop is announced in the release preceding the one
+  that removes the support.
+- There is no upper bound on the Python version in the package requirements,
+  so newer Python versions are not blocked from installing. Only the Python
+  versions listed for a given release below are tested and officially
+  supported.
+
+
 Mesh Python SDK version 1.18.0-dev
 **********************************
 

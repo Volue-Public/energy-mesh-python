@@ -36,6 +36,7 @@ Python
 **********
 
 Mesh Python SDK works with Python 3.11, 3.12, 3.13, 3.14, and 3.15. Support for earlier and later versions is not guaranteed due to dependencies.
+See the :ref:`Python version support policy` for details on when Python versions are added and dropped.
 
 #. Download and install (Windows):
 
