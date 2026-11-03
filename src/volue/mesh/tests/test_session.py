@@ -61,12 +61,16 @@ def test_can_connect_to_existing_session(connection):
     # Closing a session on the server is not a blocking call,
     # so there is not telling how long closing a session will take.
     sleep(1)
-    with pytest.raises(grpc.RpcError) as info:
+
+    # The error message format depends on the Mesh server version, e.g.:
+    # - Since Mesh 2.24: session with ID 62769f6c-b5f1-4c80-a625-4e5202ad0b1c not found
+    # - Older Mesh versions: Session with id {62769F6C-B5F1-4C80-A625-4E5202AD0B1C} not found.
+    with pytest.raises(
+        grpc.RpcError,
+        match=rf"(?i)session with id \{{?{session.session_id}\}}? not found",
+    ) as info:
         session.close()
     assert info.type == grpc._channel._InactiveRpcError
-    assert info.value.details() == (
-        "Session with id {} not found.".format({str(session.session_id).upper()})
-    ).replace("'", "")
 
 
 @pytest.mark.server
