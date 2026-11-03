@@ -96,7 +96,7 @@ This error can have multiple causes. Some things to check are:
 
 ::
 
-  sudo apt-get install libkrb5-dev python3.10-dev gcc
+  sudo apt-get install libkrb5-dev python3.11-dev gcc
 
 We are automatically verifying that Mesh Python SDK is working for all
 supported Python versions using GitHub Actions. Please take a look at the
