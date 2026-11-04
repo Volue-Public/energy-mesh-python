@@ -8,8 +8,3 @@ Communication with the server can either be insecure or secured by encryption. T
 Access to the server can be further secured by requiring users to :doc:`authenticate <authentication>` with an `active directory (AD) <https://en.wikipedia.org/wiki/Active_Directory>`_ service. The user will then be authorized to access data based on the permissions set in AD. Authorized user will get an access token from Mesh server. This requires that communication with the server is secured using encryption as explained above.
 
 When connected, authenticated and authorized the user will be able to create a :doc:`mesh_session` within the Mesh server. A session is a temporal workspace and should be created and closed.
-
-.. toctree::
-   :hidden:
-
-   mesh_session
