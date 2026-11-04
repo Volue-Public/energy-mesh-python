@@ -51,10 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="introduction_to_mesh.html">An introduction to Mesh</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="mesh_concepts.html">Mesh concepts</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh server</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mesh_session.html">Sessions</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mesh_client.html">Mesh Python SDK</a></li>
 </ul>
 </li>
@@ -104,8 +101,6 @@
 <p>Communication with the server can either be insecure or secured by encryption. The Mesh server supports <a class="reference external" href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS (transport layer security)</a> which is a protocol designed to provide communication’s security over a computer network through the use of certificates.</p>
 <p>Access to the server can be further secured by requiring users to <a class="reference internal" href="authentication.html"><span class="doc">authenticate</span></a> with an <a class="reference external" href="https://en.wikipedia.org/wiki/Active_Directory">active directory (AD)</a> service. The user will then be authorized to access data based on the permissions set in AD. Authorized user will get an access token from Mesh server. This requires that communication with the server is secured using encryption as explained above.</p>
 <p>When connected, authenticated and authorized the user will be able to create a <a class="reference internal" href="mesh_session.html"><span class="doc">Sessions</span></a> within the Mesh server. A session is a temporal workspace and should be created and closed.</p>
-<div class="toctree-wrapper compound">
-</div>
 </section>
 
 
