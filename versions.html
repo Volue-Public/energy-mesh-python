@@ -59,6 +59,7 @@
 <p class="caption" role="heading"><span class="caption-text">Versions</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Versions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#python-version-support-policy">Python version support policy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mesh-python-sdk-version-1-18-0-dev">Mesh Python SDK version 1.18.0-dev</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#compatible-with">Compatible with</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#new-features">New features</a></li>
@@ -244,6 +245,23 @@
 <p>Depending on the Mesh Server version you intend to communicate with a compatible version of Mesh Python SDK is needed.
 For detailed compatibility information, refer to the
 <a class="reference external" href="https://docs.volue.com/optimisation-and-planning/smart-power/mesh/installation/mesh-service-installation-guide#mesh-python-sdk-compatibility-matrix">compatibility matrix</a>.</p>
+<section id="python-version-support-policy">
+<h2>Python version support policy<a class="headerlink" href="#python-version-support-policy" title="Link to this heading"></a></h2>
+<p>Mesh Python SDK supports the Python versions that are actively maintained,
+see the <a class="reference external" href="https://devguide.python.org/versions/">Python versions overview</a>.</p>
+<ul class="simple">
+<li><p>Support for a new Python version is added once all the Mesh Python SDK
+dependencies are available for it and the Mesh Python SDK test suite passes
+on it.</p></li>
+<li><p>Support for a Python version is dropped once it reaches its end of life.
+Whenever possible the drop is announced in the release preceding the one
+that removes the support.</p></li>
+<li><p>There is no upper bound on the Python version in the package requirements,
+so newer Python versions are not blocked from installing. However, only the
+Python versions listed for a given release below are tested and officially
+supported.</p></li>
+</ul>
+</section>
 <section id="mesh-python-sdk-version-1-18-0-dev">
 <h2>Mesh Python SDK version 1.18.0-dev<a class="headerlink" href="#mesh-python-sdk-version-1-18-0-dev" title="Link to this heading"></a></h2>
 <p>This is the current master version.</p>
