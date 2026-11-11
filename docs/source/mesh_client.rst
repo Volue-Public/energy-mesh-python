@@ -65,6 +65,70 @@ discarded. To avoid this, clients must send data in chunks.
     limit single read or write operation should contain ~200k points maximum.
 
 
+.. _mesh_client_tls_root_certificates:
+
+TLS root certificates
+*********************
+
+When connecting with TLS (:py:meth:`volue.mesh.Connection.with_tls`,
+:py:meth:`volue.mesh.Connection.with_kerberos` or
+:py:meth:`volue.mesh.Connection.with_external_access_token`) the
+`root_certificates` argument tells gRPC which root certificates to trust when
+verifying the Mesh server certificate. It is either:
+
+* PEM-encoded root certificate(s) as `bytes`, or
+* `None`, to let the gRPC runtime choose the root certificates.
+
+.. note::
+    By default, with `None` gRPC for Python uses a list of public root
+    certificates bundled with the `grpcio` package. It does **not** use the
+    operating system certificate store, e.g. the Windows certificate store. A
+    Mesh server certificate that is self-signed or issued by a company
+    internal certificate authority (CA) is then rejected, even if the operating
+    system trusts it.
+
+Using the operating system certificate store
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting from `grpcio` 1.76.0 gRPC can be told to use the operating system
+certificate store instead of the bundled list. To enable it:
+
+#. Make sure `grpcio` 1.76.0 or newer is installed::
+
+      python -m pip install --upgrade grpcio
+
+#. Set the environment variable
+   `GRPC_USE_SYSTEM_ROOTS_OVER_LANGUAGE_CALLBACK` to `true`, e.g. in
+   PowerShell::
+
+      $env:GRPC_USE_SYSTEM_ROOTS_OVER_LANGUAGE_CALLBACK = "true"
+
+   or in Python, before the first connection to Mesh is created:
+
+   .. code-block:: python
+
+       import os
+
+       os.environ["GRPC_USE_SYSTEM_ROOTS_OVER_LANGUAGE_CALLBACK"] = "true"
+
+#. Pass `None` as `root_certificates`:
+
+   .. code-block:: python
+
+       connection = mesh.Connection.with_tls(address, None)
+
+Windows certificate stores used by gRPC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+On Windows gRPC reads the *Trusted Root Certification Authorities* store
+(system store name `ROOT`) of the user account that runs the Python process
+(``Cert:\CurrentUser\Root``).
+
+The root CA certificate that issued the Mesh server certificate, or the Mesh
+server certificate itself if it is self-signed, must be installed in that
+store.
+
+
 Date times and time zones
 *************************
 
