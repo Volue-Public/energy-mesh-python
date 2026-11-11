@@ -24,16 +24,16 @@ see the `Python versions overview <https://devguide.python.org/versions/>`_.
   supported.
 
 
-Mesh Python SDK version 1.18.0-dev
-**********************************
+`Mesh Python SDK version 1.18.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.18.0>`_
+***********************************************************************************************************
 
 This is the current master version.
 
 Compatible with
 ~~~~~~~~~~~~~~~~~~
 
-- Mesh server version >= 2.21.0 **(may change)**
-- Python [3.11, 3.12, 3.13, 3.14, 3.15] **(may change)**
+- Mesh server version >= 2.21.0
+- Python [3.11, 3.12, 3.13, 3.14, 3.15]
 
 .. warning::
     Python 3.10 is no longer supported.
@@ -58,7 +58,7 @@ See instructions at :ref:`Setup for users` and use the following:
 
 .. code-block:: bash
 
-    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+    python -m pip install git+https://github.com/Volue-Public/energy-mesh-python@v1.18.0
 
 
 `Mesh Python SDK version 1.17.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.17.0>`_
