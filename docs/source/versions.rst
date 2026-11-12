@@ -23,6 +23,36 @@ see the `Python versions overview <https://devguide.python.org/versions/>`_.
   Python versions listed for a given release below are tested and officially
   supported.
 
+Mesh Python SDK version 1.19.0-dev
+**********************************
+
+This is the current master version.
+
+Compatible with
+~~~~~~~~~~~~~~~~~~
+
+- Mesh server version >= 2.21.0 **(may change)**
+- Python [3.11, 3.12, 3.13, 3.14, 3.15] **(may change)**
+
+New features
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Changes
+~~~~~~~~~~~~~~~~~~
+
+- TBA
+
+Install instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See instructions at :ref:`Setup for users` and use the following:
+
+.. code-block:: bash
+
+    python -m pip install --force-reinstall git+https://github.com/Volue-Public/energy-mesh-python
+
 
 `Mesh Python SDK version 1.18.0 <https://github.com/Volue-Public/energy-mesh-python/releases/tag/v1.18.0>`_
 ***********************************************************************************************************
