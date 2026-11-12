@@ -4,7 +4,7 @@ import sys
 def get_connection_info():
     """Helper function to set hand over connection info to examples."""
     address = "localhost:50051"
-    tls_root_pem_cert = ""
+    tls_root_pem_cert = None
 
     if len(sys.argv) > 1:
         address = sys.argv[1]

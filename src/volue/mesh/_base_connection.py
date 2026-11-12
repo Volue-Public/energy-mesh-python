@@ -203,7 +203,7 @@ class Connection(abc.ABC):
     def with_tls(
         cls: C,
         target: str,
-        root_certificates: str | None,
+        root_certificates: bytes | None,
         *,
         grpc_max_receive_message_length: int | None = None,
     ) -> C:
@@ -213,7 +213,10 @@ class Connection(abc.ABC):
             target: The server address.
             root_certificates: The PEM-encoded TLS root certificates as a byte
                 string, or None to retrieve them from a default location chosen
-                by the gRPC runtime.
+                by the gRPC runtime. By default this is a list of public root
+                certificates bundled with gRPC, not the operating system
+                certificate store, see
+                :ref:`mesh_client_tls_root_certificates`.
             grpc_max_receive_message_length: Maximum inbound gRPC message size
                 in bytes. By default the maximum inbound gRPC message size is 4MB.
         """
@@ -228,7 +231,7 @@ class Connection(abc.ABC):
     def with_kerberos(
         cls: C,
         target: str,
-        root_certificates: str | None,
+        root_certificates: bytes | None,
         service_principal: str,
         user_principal: str | None = None,
         *,
@@ -251,7 +254,10 @@ class Connection(abc.ABC):
             target: The server address.
             root_certificates: The PEM-encoded TLS root certificates as a byte
                 string, or None to retrieve them from a default location chosen
-                by the gRPC runtime.
+                by the gRPC runtime. By default this is a list of public root
+                certificates bundled with gRPC, not the operating system
+                certificate store, see
+                :ref:`mesh_client_tls_root_certificates`.
             service_principal: The Kerberos service principal name for the Mesh
                 service. For example 'HOST\\server.at.host'.
             user_principal: The Kerberos user principal name. For example
@@ -278,7 +284,7 @@ class Connection(abc.ABC):
     def with_external_access_token(
         cls: C,
         target: str,
-        root_certificates: str | None,
+        root_certificates: bytes | None,
         access_token: str,
         *,
         grpc_max_receive_message_length: int | None = None,
@@ -293,7 +299,10 @@ class Connection(abc.ABC):
             target: The server address.
             root_certificates: The PEM-encoded TLS root certificates as a byte
                 string, or None to retrieve them from a default location chosen
-                by the gRPC runtime.
+                by the gRPC runtime. By default this is a list of public root
+                certificates bundled with gRPC, not the operating system
+                certificate store, see
+                :ref:`mesh_client_tls_root_certificates`.
             access_token: Token obtained externally, used to get access to Mesh
                 server.
             grpc_max_receive_message_length: Maximum inbound gRPC message size
