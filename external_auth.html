@@ -140,26 +140,156 @@ token.</p></li>
 <span class="nb">print</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">get_user_identity</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>For more complex example please refer to <em>connect_using_external_access_token.py</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<p>For more complex example please refer to <em>connect_using_external_access_token.py</em>.
+It also shows, as an option, how to obtain the access token from Microsoft
+Entra ID using the <a class="reference external" href="https://learn.microsoft.com/entra/msal/python/">Microsoft Authentication Library (MSAL) for Python</a>,
+either as an application (client credentials flow) or as a user (interactive
+sign-in in a web browser).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>MSAL is a third-party library developed and maintained by Microsoft. It is
+not a part of the Mesh Python SDK, nor is it installed with it. The MSAL
+usage shown below is just an example. Volue does not maintain MSAL, takes
+no responsibility for it, and does not commit to keeping the example
+compatible with future MSAL versions. Please refer to the official MSAL and
+Microsoft Entra ID documentation for up to date and authoritative guidance.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">helpers</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">volue.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span>
 
+<span class="c1"># Settings for the optional Microsoft Entra ID examples below. They are read</span>
+<span class="c1"># from environment variables, so that no secrets are stored in the source code.</span>
+<span class="c1">#</span>
+<span class="c1"># - MESH_ENTRA_TENANT_ID: Directory (tenant) ID.</span>
+<span class="c1"># - MESH_ENTRA_CLIENT_ID: Application (client) ID of the app registration that</span>
+<span class="c1">#   represents your script or service.</span>
+<span class="c1"># - MESH_ENTRA_CLIENT_SECRET: Client secret of that app registration. Needed</span>
+<span class="c1">#   only when signing in as an application.</span>
+<span class="c1"># - MESH_ENTRA_SCOPE: Scope exposed by the app registration that represents the</span>
+<span class="c1">#   Mesh server, e.g.:</span>
+<span class="c1">#   - "api://&lt;mesh-server-client-id&gt;/.default" when signing in as an application</span>
+<span class="c1">#   - "api://&lt;mesh-server-client-id&gt;/&lt;scope-name&gt;" when signing in as a user</span>
+<span class="n">ENTRA_TENANT_ID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"MESH_ENTRA_TENANT_ID"</span><span class="p">)</span>
+<span class="n">ENTRA_CLIENT_ID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"MESH_ENTRA_CLIENT_ID"</span><span class="p">)</span>
+<span class="n">ENTRA_CLIENT_SECRET</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"MESH_ENTRA_CLIENT_SECRET"</span><span class="p">)</span>
+<span class="n">ENTRA_SCOPE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"MESH_ENTRA_SCOPE"</span><span class="p">)</span>
+
+<span class="c1"># MSAL application objects keep an in-memory token cache. Create them once and</span>
+<span class="c1"># reuse them, so that subsequent token requests are served from the cache until</span>
+<span class="c1"># the token is about to expire.</span>
+<span class="n">_msal_applications</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_access_token_from_msal_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s2">"access_token"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s2">"Failed to obtain access token: "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'error'</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'error_description'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s2">"access_token"</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_entra_id_token_as_application</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Optional: obtain an access token from Microsoft Entra ID using the</span>
+<span class="sd">    Microsoft Authentication Library (MSAL) for Python and the OAuth 2.0 client</span>
+<span class="sd">    credentials flow. The script signs in as itself (an application), without</span>
+<span class="sd">    any user interaction. Suitable for services and scheduled jobs.</span>
+
+<span class="sd">    Requires: `pip install msal`</span>
+
+<span class="sd">    Note: MSAL is a third-party library developed and maintained by Microsoft.</span>
+<span class="sd">    It is not a part of the Mesh Python SDK. This is just an example. Volue</span>
+<span class="sd">    does not maintain MSAL, takes no responsibility for it, and does not</span>
+<span class="sd">    commit to keeping this example compatible with future MSAL versions.</span>
+<span class="sd">    Please refer to the official MSAL and Microsoft Entra ID documentation for</span>
+<span class="sd">    up to date and authoritative guidance:</span>
+<span class="sd">    https://learn.microsoft.com/entra/msal/python/</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">msal</span>  <span class="c1"># Third-party library, not a dependency of Mesh Python SDK.</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">_msal_applications</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"application"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">msal</span><span class="o">.</span><span class="n">ConfidentialClientApplication</span><span class="p">(</span>
+            <span class="n">ENTRA_CLIENT_ID</span><span class="p">,</span>
+            <span class="n">authority</span><span class="o">=</span><span class="sa">f</span><span class="s2">"https://login.microsoftonline.com/</span><span class="si">{</span><span class="n">ENTRA_TENANT_ID</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">client_credential</span><span class="o">=</span><span class="n">ENTRA_CLIENT_SECRET</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_msal_applications</span><span class="p">[</span><span class="s2">"application"</span><span class="p">]</span> <span class="o">=</span> <span class="n">app</span>
+
+    <span class="c1"># MSAL looks up its token cache first and requests a new token from</span>
+    <span class="c1"># Microsoft Entra ID only when needed.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">acquire_token_for_client</span><span class="p">(</span><span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="n">ENTRA_SCOPE</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">_get_access_token_from_msal_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_entra_id_token_as_user</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Optional: obtain an access token from Microsoft Entra ID using the</span>
+<span class="sd">    Microsoft Authentication Library (MSAL) for Python and the OAuth 2.0</span>
+<span class="sd">    authorization code flow (with PKCE). A web browser is opened where the user</span>
+<span class="sd">    signs in. Suitable for scripts run interactively by a user.</span>
+
+<span class="sd">    The app registration that represents your script (MESH_ENTRA_CLIENT_ID)</span>
+<span class="sd">    must be set up in Microsoft Entra ID as a public client (desktop)</span>
+<span class="sd">    application with `http://localhost` (`http`, not `https`) as a redirect</span>
+<span class="sd">    URI, and it must be granted the delegated permission for the scope exposed</span>
+<span class="sd">    by the Mesh server app registration (MESH_ENTRA_SCOPE). Refer to the</span>
+<span class="sd">    Microsoft Entra ID documentation for details.</span>
+
+<span class="sd">    Requires: `pip install msal`</span>
+
+<span class="sd">    Note: MSAL is a third-party library developed and maintained by Microsoft.</span>
+<span class="sd">    It is not a part of the Mesh Python SDK. This is just an example. Volue</span>
+<span class="sd">    does not maintain MSAL, takes no responsibility for it, and does not</span>
+<span class="sd">    commit to keeping this example compatible with future MSAL versions.</span>
+<span class="sd">    Please refer to the official MSAL and Microsoft Entra ID documentation for</span>
+<span class="sd">    up to date and authoritative guidance:</span>
+<span class="sd">    https://learn.microsoft.com/entra/msal/python/</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">msal</span>  <span class="c1"># Third-party library, not a dependency of Mesh Python SDK.</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">_msal_applications</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"user"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">app</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">msal</span><span class="o">.</span><span class="n">PublicClientApplication</span><span class="p">(</span>
+            <span class="n">ENTRA_CLIENT_ID</span><span class="p">,</span>
+            <span class="n">authority</span><span class="o">=</span><span class="sa">f</span><span class="s2">"https://login.microsoftonline.com/</span><span class="si">{</span><span class="n">ENTRA_TENANT_ID</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_msal_applications</span><span class="p">[</span><span class="s2">"user"</span><span class="p">]</span> <span class="o">=</span> <span class="n">app</span>
+
+    <span class="c1"># First try to get the token from the cache (it is refreshed if needed),</span>
+    <span class="c1"># so that the user needs to sign in only once.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">accounts</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">get_accounts</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">accounts</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">acquire_token_silent</span><span class="p">([</span><span class="n">ENTRA_SCOPE</span><span class="p">],</span> <span class="n">account</span><span class="o">=</span><span class="n">accounts</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">acquire_token_interactive</span><span class="p">(</span><span class="n">scopes</span><span class="o">=</span><span class="p">[</span><span class="n">ENTRA_SCOPE</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">_get_access_token_from_msal_result</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Showing how to authorize to gRPC Mesh server using externally obtained</span>
-<span class="sd">    access token, e.g: a OAuth JWT. Obtaining the access token is out of scope</span>
-<span class="sd">    for this example.</span>
+<span class="sd">    access token, e.g: a OAuth JWT.</span>
 
-<span class="sd">    Depending on your environment, e.g.: Microsoft Entra ID, using libraries</span>
-<span class="sd">    like Microsoft Authentication Library (MSAL) for getting the tokens is</span>
-<span class="sd">    suggested.</span>
+<span class="sd">    How to obtain the access token depends on your authorization server and is</span>
+<span class="sd">    in general out of scope for Mesh Python SDK. For Microsoft Entra ID, using</span>
+<span class="sd">    Microsoft Authentication Library (MSAL) is suggested. See the optional</span>
+<span class="sd">    `get_entra_id_token_*` functions above. Treat the access token as a secret,</span>
+<span class="sd">    do not print or log it.</span>
 <span class="sd">    """</span>
 
     <span class="n">token</span> <span class="o">=</span> <span class="s2">"my_token"</span>
+    <span class="c1"># Optionally, if you are using Microsoft Entra ID, use one of:</span>
+    <span class="c1"># token = get_entra_id_token_as_application()</span>
+    <span class="c1"># token = get_entra_id_token_as_user()</span>
 
     <span class="c1"># Providing `root_certificates` is optional. If set to `None` root</span>
     <span class="c1"># certificates will be retrieved from a default location chosen by the gRPC</span>
@@ -175,7 +305,7 @@ token.</p></li>
 
         <span class="c1"># Read some time series data.</span>
         <span class="c1"># This requires the user has time series read permissions.</span>
-        <span class="n">timeseries_key</span> <span class="o">=</span> <span class="mi">1388</span>
+        <span class="n">timeseries_key</span> <span class="o">=</span> <span class="mi">3</span>
         <span class="n">timeseries</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">read_timeseries_points</span><span class="p">(</span>
             <span class="n">timeseries_key</span><span class="p">,</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="p">)</span>
@@ -187,13 +317,18 @@ token.</p></li>
         <span class="c1"># UNAUTHENTICATED and then get new access token and update it in the</span>
         <span class="c1"># Mesh connection using `update_external_access_token`.</span>
         <span class="n">connection</span><span class="o">.</span><span class="n">update_external_access_token</span><span class="p">(</span><span class="s2">"my_new_access_token"</span><span class="p">)</span>
+        <span class="c1"># If you are using one of the optional Microsoft Entra ID functions,</span>
+        <span class="c1"># just call it again. A new token is requested only when the cached one</span>
+        <span class="c1"># is about to expire:</span>
+        <span class="c1"># connection.update_external_access_token(get_entra_id_token_as_application())</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="c1"># This requires Mesh server to be running with enabled TLS and OAuth options.</span>
-    <span class="c1"># Obtaining access token is out of the scope for this example.</span>
-
     <span class="n">address</span><span class="p">,</span> <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">get_connection_info</span><span class="p">()</span>
+
+    <span class="c1"># The call below is commented out on purpose: this example needs a Mesh</span>
+    <span class="c1"># server running with TLS and OAuth enabled and a valid access token (see</span>
+    <span class="c1"># `token` in `main`). Once you have both, uncomment it to run the example.</span>
     <span class="c1"># main(address, tls_root_pem_cert)</span>
 </pre></div>
 </div>

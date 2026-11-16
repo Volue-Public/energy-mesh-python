@@ -50,9 +50,22 @@ Example
 	print(connection.get_user_identity())
 
 
-For more complex example please refer to *connect_using_external_access_token.py*:
+For more complex example please refer to *connect_using_external_access_token.py*.
+It also shows, as an option, how to obtain the access token from Microsoft
+Entra ID using the `Microsoft Authentication Library (MSAL) for Python <https://learn.microsoft.com/entra/msal/python/>`_,
+either as an application (client credentials flow) or as a user (interactive
+sign-in in a web browser).
+
+.. note::
+   MSAL is a third-party library developed and maintained by Microsoft. It is
+   not a part of the Mesh Python SDK, nor is it installed with it. The MSAL
+   usage shown below is just an example. Volue does not maintain MSAL, takes
+   no responsibility for it, and does not commit to keeping the example
+   compatible with future MSAL versions. Please refer to the official MSAL and
+   Microsoft Entra ID documentation for up to date and authoritative guidance.
 
 .. literalinclude:: /../../src/volue/mesh/examples/connect_using_external_access_token.py
+   :language: python
 
 
 Internals
