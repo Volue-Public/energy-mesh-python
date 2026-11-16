@@ -54,6 +54,11 @@
 <li class="toctree-l2"><a class="reference internal" href="mesh_server.html">Mesh server</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Mesh Python SDK</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#grpc-communication">gRPC communication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tls-root-certificates">TLS root certificates</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-the-operating-system-certificate-store">Using the operating system certificate store</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#windows-certificate-stores-used-by-grpc">Windows certificate stores used by gRPC</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#date-times-and-time-zones">Date times and time zones</a></li>
 </ul>
 </li>
@@ -238,6 +243,66 @@ discarded. To avoid this, clients must send data in chunks.</p>
 <p>Single time series point occupies 20 bytes. To avoid exceeding the 4MB
 limit single read or write operation should contain ~200k points maximum.</p>
 </div>
+</section>
+<section id="tls-root-certificates">
+<span id="mesh-client-tls-root-certificates"></span><h2>TLS root certificates<a class="headerlink" href="#tls-root-certificates" title="Link to this heading"></a></h2>
+<p>When connecting with TLS (<a class="reference internal" href="api.html#volue.mesh.Connection.with_tls" title="volue.mesh.Connection.with_tls"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_tls()</span></code></a>,
+<a class="reference internal" href="api.html#volue.mesh.Connection.with_kerberos" title="volue.mesh.Connection.with_kerberos"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_kerberos()</span></code></a> or
+<a class="reference internal" href="api.html#volue.mesh.Connection.with_external_access_token" title="volue.mesh.Connection.with_external_access_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">volue.mesh.Connection.with_external_access_token()</span></code></a>) the
+<cite>root_certificates</cite> argument tells gRPC which root certificates to trust when
+verifying the Mesh server certificate. It is either:</p>
+<ul class="simple">
+<li><p>PEM-encoded root certificate(s) as <cite>bytes</cite>, or</p></li>
+<li><p><cite>None</cite>, to let the gRPC runtime choose the root certificates.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, with <cite>None</cite> gRPC for Python uses a list of public root
+certificates bundled with the <cite>grpcio</cite> package. It does <strong>not</strong> use the
+operating system certificate store, e.g. the Windows certificate store. A
+Mesh server certificate that is self-signed or issued by a company
+internal certificate authority (CA) is then rejected, even if the operating
+system trusts it.</p>
+</div>
+<section id="using-the-operating-system-certificate-store">
+<h3>Using the operating system certificate store<a class="headerlink" href="#using-the-operating-system-certificate-store" title="Link to this heading"></a></h3>
+<p>Starting from <cite>grpcio</cite> 1.76.0 gRPC can be told to use the operating system
+certificate store instead of the bundled list. To enable it:</p>
+<ol class="arabic">
+<li><p>Make sure <cite>grpcio</cite> 1.76.0 or newer is installed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">grpcio</span>
+</pre></div>
+</div>
+</li>
+<li><p>Set the environment variable
+<cite>GRPC_USE_SYSTEM_ROOTS_OVER_LANGUAGE_CALLBACK</cite> to <cite>true</cite>, e.g. in
+PowerShell:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$env:GRPC_USE_SYSTEM_ROOTS_OVER_LANGUAGE_CALLBACK = "true"
+</pre></div>
+</div>
+<p>or in Python, before the first connection to Mesh is created:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"GRPC_USE_SYSTEM_ROOTS_OVER_LANGUAGE_CALLBACK"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"true"</span>
+</pre></div>
+</div>
+</li>
+<li><p>Pass <cite>None</cite> as <cite>root_certificates</cite>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">connection</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">Connection</span><span class="o">.</span><span class="n">with_tls</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="windows-certificate-stores-used-by-grpc">
+<h3>Windows certificate stores used by gRPC<a class="headerlink" href="#windows-certificate-stores-used-by-grpc" title="Link to this heading"></a></h3>
+<p>On Windows gRPC reads the <em>Trusted Root Certification Authorities</em> store
+(system store name <cite>ROOT</cite>) of the user account that runs the Python process
+(<code class="docutils literal notranslate"><span class="pre">Cert:\CurrentUser\Root</span></code>).</p>
+<p>The root CA certificate that issued the Mesh server certificate, or the Mesh
+server certificate itself if it is self-signed, must be installed in that
+store.</p>
+</section>
 </section>
 <section id="date-times-and-time-zones">
 <h2>Date times and time zones<a class="headerlink" href="#date-times-and-time-zones" title="Link to this heading"></a></h2>

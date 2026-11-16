@@ -297,7 +297,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">with_tls</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">C</span><span class="p">:</span>
@@ -307,7 +307,10 @@
 <span class="sd">            target: The server address.</span>
 <span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
 <span class="sd">                string, or None to retrieve them from a default location chosen</span>
-<span class="sd">                by the gRPC runtime.</span>
+<span class="sd">                by the gRPC runtime. By default this is a list of public root</span>
+<span class="sd">                certificates bundled with gRPC, not the operating system</span>
+<span class="sd">                certificate store, see</span>
+<span class="sd">                :ref:`mesh_client_tls_root_certificates`.</span>
 <span class="sd">            grpc_max_receive_message_length: Maximum inbound gRPC message size</span>
 <span class="sd">                in bytes. By default the maximum inbound gRPC message size is 4MB.</span>
 <span class="sd">        """</span>
@@ -325,7 +328,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">with_kerberos</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">service_principal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">user_principal</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -348,7 +351,10 @@
 <span class="sd">            target: The server address.</span>
 <span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
 <span class="sd">                string, or None to retrieve them from a default location chosen</span>
-<span class="sd">                by the gRPC runtime.</span>
+<span class="sd">                by the gRPC runtime. By default this is a list of public root</span>
+<span class="sd">                certificates bundled with gRPC, not the operating system</span>
+<span class="sd">                certificate store, see</span>
+<span class="sd">                :ref:`mesh_client_tls_root_certificates`.</span>
 <span class="sd">            service_principal: The Kerberos service principal name for the Mesh</span>
 <span class="sd">                service. For example 'HOST\\server.at.host'.</span>
 <span class="sd">            user_principal: The Kerberos user principal name. For example</span>
@@ -378,7 +384,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">with_external_access_token</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">root_certificates</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">access_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">grpc_max_receive_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -393,7 +399,10 @@
 <span class="sd">            target: The server address.</span>
 <span class="sd">            root_certificates: The PEM-encoded TLS root certificates as a byte</span>
 <span class="sd">                string, or None to retrieve them from a default location chosen</span>
-<span class="sd">                by the gRPC runtime.</span>
+<span class="sd">                by the gRPC runtime. By default this is a list of public root</span>
+<span class="sd">                certificates bundled with gRPC, not the operating system</span>
+<span class="sd">                certificate store, see</span>
+<span class="sd">                :ref:`mesh_client_tls_root_certificates`.</span>
 <span class="sd">            access_token: Token obtained externally, used to get access to Mesh</span>
 <span class="sd">                server.</span>
 <span class="sd">            grpc_max_receive_message_length: Maximum inbound gRPC message size</span>

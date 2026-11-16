@@ -124,7 +124,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">get_connection_info</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""Helper function to set hand over connection info to examples."""</span>
     <span class="n">address</span> <span class="o">=</span> <span class="s2">"localhost:50051"</span>
-    <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">tls_root_pem_cert</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">address</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
