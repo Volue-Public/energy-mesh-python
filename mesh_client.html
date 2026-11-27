@@ -233,10 +233,18 @@ using <cite>grpc_max_receive_message_length</cite> argument.</p>
 reading time series data, we suggest reading the data in chunks. E.g.: instead
 of reading 50 years of hourly time series data in a single request, the user
 should request several read operations with shorter read intervals.</p>
-<p>The same is true for writing data, like time series data. Here however, it is
-not a suggestion, but a must. Mesh server gRPC inbound message size is not
-configurable and therefore it is always equal to 4MB. If gRPC client, like Mesh
-Python SDK, sends a message which is too large, then the request will be
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When reading calculated time series, the combined results of several
+chunked reads may differ from the result of reading the whole interval in
+a single request. This depends on the calculation functions used. In such
+cases, read the whole interval in a single request and increase the gRPC
+maximum inbound message size accordingly (see the note below for sizing).</p>
+</div>
+<p>Writing data, like time series data, should also be done in chunks. Here however,
+it is not a suggestion, but a must. Mesh server gRPC inbound message size is
+not configurable and therefore it is always equal to 4MB. If gRPC client, like
+Mesh Python SDK, sends a message which is too large, then the request will be
 discarded. To avoid this, clients must send data in chunks.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
